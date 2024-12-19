@@ -13,7 +13,7 @@
     }) }}
   {% endif %}
 
-  <h1 class="govuk-heading-l page-title">Card types</h1>
+  <h1 class="govuk-heading-l">Card types</h1>
 
   {% if isAdminUser %}
     <p class="govuk-body">Choose which credit and debit cards you want to accept.</p>
@@ -24,13 +24,13 @@
       govukCheckboxes({
         idPrefix: "debit",
         name: "debit",
-        classes: "with-border govuk-!-padding-top-3 pay-!-border-top",
         fieldset: {
           legend: {
             text: "Debit cards",
             classes: "govuk-fieldset__legend--s"
           }
         },
+        classes: "card-types govuk-!-padding-top-2",
         items: cardTypes.debitCards
       })
       }}
@@ -39,13 +39,13 @@
       govukCheckboxes({
         idPrefix: "credit",
         name: "credit",
-        classes: "with-border govuk-!-padding-top-3 pay-!-border-top",
         fieldset: {
           legend: {
             text: "Credit cards",
             classes: "govuk-fieldset__legend--s"
           }
         },
+        classes: "card-types govuk-!-padding-top-2",
         items: cardTypes.creditCards
       })
       }}
@@ -62,25 +62,26 @@
   {% else %}
     {% for category, item in cardTypes %}
       {% if (item.cards.length > 0) %}
-        <h3 class="govuk-heading-m">
+        <h2 class="govuk-heading-s">
           {{ item.heading }}
-        </h3>
+        </h2>
         {% set cardList = [] %}
-        {% for card in item.cards %}
+        {% for cardBrand in item.cards %}
           {% set cardListItem = {
             key: {
-              text: card,
               classes: "govuk-!-display-none"
             },
             value: {
-              html: card
+              text: cardBrand
             }
           } %}
           {% set cardList = (cardList.push(cardListItem), cardList) %}
         {% endfor %}
-        {{ govukSummaryList({ rows: cardList }) }}
+        {{ govukSummaryList({
+          rows: cardList,
+          classes: "card-types govuk-!-margin-bottom-4"
+        }) }}
       {% endif %}
     {% endfor %}
   {% endif %}
-
 {% endblock %}
