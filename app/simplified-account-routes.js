@@ -63,11 +63,9 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permissi
 simplifiedAccount.post(paths.simplifiedAccount.settings.cardTypes.index, permission('payment-types:update'), serviceSettingsController.cardTypes.post)
 
 // worldpay details
-const worldpayDetailsRouter = new Router({ mergeParams: true }).use(enforcePaymentProviderType(WORLDPAY))
-worldpayDetailsRouter.get(paths.simplifiedAccount.settings.worldpayDetails.index, permission('gateway-credentials:read'), serviceSettingsController.worldpayDetails.get)
-worldpayDetailsRouter.get(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.get)
-worldpayDetailsRouter.post(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.post)
-simplifiedAccount.use(worldpayDetailsRouter)
+simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.index, enforcePaymentProviderType(WORLDPAY), permission('gateway-credentials:read'), serviceSettingsController.worldpayDetails.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated, enforcePaymentProviderType(WORLDPAY), permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated, enforcePaymentProviderType(WORLDPAY), permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.post)
 
 // card types
 simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permission('transactions:read'), serviceSettingsController.cardTypes.get)
