@@ -29,7 +29,7 @@ class WorldpayTasks {
         worldpayCredentials.completedCard = {
           title: 'Account credentials',
           rows: [{
-            keyText: 'Merchant Code',
+            keyText: 'Merchant code',
             valueText: credential.credentials?.oneOffCustomerInitiated?.merchantCode
           }, {
             keyText: 'Username',
