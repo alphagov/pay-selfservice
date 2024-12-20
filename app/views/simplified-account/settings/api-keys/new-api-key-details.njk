@@ -1,0 +1,69 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  New API key
+{% endblock %}
+
+{% block settingsContent %}
+
+  {{ govukBackLink({
+    text: "Back to API keys",
+    href: backToApiKeysLink
+  }) }}
+
+  <h1 class="govuk-heading-l page-title">New API key</h1>
+
+  {% set html %}
+    <p class="govuk-body">
+      Copy your key to somewhere safe.</br></br>You won’t be able to see it again once you leave this page.
+    </p>
+  {% endset %}
+
+  {{ govukInsetText({
+    html: html
+  }) }}
+
+  <p class="govuk-body">
+    You must copy the whole key, including the <span class="key-prefix">api_test_</span> or <span class="key-prefix">api_live_</span> prefix.
+  </p>
+
+  {{ govukWarningText(
+    {
+      text: 'API security',
+      iconFallbackText: 'Warning'
+    }
+  ) }}
+
+  <ul class="govuk-list govuk-list--bullet">
+    <li>You must store your API keys securely.</li>
+    <li>You must not share this key in publicly accessible documents or repositories.</li>
+    <li>You must not share it with anyone who should not be using the GOV.UK Pay API directly.</li>
+  </ul>
+
+  <p class="govuk-body">
+    More about <a class="govuk-link" href="https://docs.payments.service.gov.uk/security/#securing-your-developer-keys">
+    securing your API keys</a>.
+  </p>
+
+  <h2 class="govuk-heading-m">
+    {{ description }}
+  </h2>
+  <div>
+    <span id="apiKey" class="code copy-this-api-key govuk-!-margin-top-6">{{ apiKey }}</span>
+  </div>
+
+  {{ govukButton({
+    text: "Copy API key to clipboard",
+    classes: "govuk-button--secondary govuk-!-margin-top-6",
+    attributes: {
+      id: "generate-button",
+      "data-copy-text": true,
+      "data-target": "copy-this-api-key",
+      "data-success": "API key has been copied",
+      "data-notification-target": "copy-this-api-key-notification"
+    }
+  }) }}
+
+  <div class="copy-this-api-key-notification govuk-visually-hidden" aria-live="assertive"></div>
+
+{% endblock %}
