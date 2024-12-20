@@ -7,9 +7,12 @@ const worldpayDetailsService = require('@services/worldpay-details.service')
 const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
 
 function get (req, res) {
+  const existingCredentials = req.account.getCurrentCredential().credentials?.oneOffCustomerInitiated || {}
+
   return response(req, res, 'simplified-account/settings/worldpay-details/credentials', {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
-      req.service.externalId, req.account.type)
+      req.service.externalId, req.account.type),
+    credentials: existingCredentials
   })
 }
 
