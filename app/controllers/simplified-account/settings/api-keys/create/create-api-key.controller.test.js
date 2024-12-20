@@ -38,13 +38,9 @@ describe('Controller: settings/create-api-key', () => {
       expect(mockResponse).to.have.been.calledOnce // eslint-disable-line
     })
 
-    it('should pass req, res and template path to the response method', () => {
-      expect(mockResponse).to.have.been.calledWith(req, res, 'simplified-account/settings/api-keys/api-key-name')
-    })
-
-    it('should pass context data to the response method', () => {
-      expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal(
-        formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, SERVICE_ID, ACCOUNT_TYPE))
+    it('should pass req, res, template path and context to the response method', () => {
+      expect(mockResponse).to.have.been.calledWith(req, res, 'simplified-account/settings/api-keys/api-key-name',
+        { backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, SERVICE_ID, ACCOUNT_TYPE) })
     })
   })
 

@@ -11,7 +11,7 @@ const TOKEN_SOURCE = {
  * @param {string} description
  * @param {string} email - the user email
  * @param {'API' | 'PRODUCTS'} tokenSource - The type of the token (must match one of TOKEN_TYPE values).
- * @returns {string} the new api key
+ * @returns {Promise<string>} the new api key
  */
 const createApiKey = async (gatewayAccount, description, email, tokenSource) => {
   const payload = {
