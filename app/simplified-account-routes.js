@@ -12,7 +12,7 @@ const userIsAuthorised = require('@middleware/user-is-authorised')
 const permission = require('@middleware/permission')
 const paths = require('./paths')
 const serviceSettingsController = require('@controllers/simplified-account/settings')
-const { STRIPE } = require('@models/payment-providers')
+const { STRIPE, WORLDPAY } = require('@models/payment-providers')
 const { GOV_ENTITY_DOC_FORM_FIELD_NAME } = require('@controllers/simplified-account/settings/stripe-details/government-entity-document/constants')
 
 const upload = multer({ storage: multer.memoryStorage() })
@@ -63,12 +63,11 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permissi
 simplifiedAccount.post(paths.simplifiedAccount.settings.cardTypes.index, permission('payment-types:update'), serviceSettingsController.cardTypes.post)
 
 // worldpay details
-simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.index, permission('gateway-credentials:read'), serviceSettingsController.worldpayDetails.get)
-
-// worldpay details
-simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.index, permission('gateway-credentials:read'), serviceSettingsController.worldpayDetails.get)
-simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.get)
-simplifiedAccount.post(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.post)
+const worldpayDetailsRouter = new Router({ mergeParams: true }).use(enforcePaymentProviderType(WORLDPAY))
+worldpayDetailsRouter.get(paths.simplifiedAccount.settings.worldpayDetails.index, permission('gateway-credentials:read'), serviceSettingsController.worldpayDetails.get)
+worldpayDetailsRouter.get(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.get)
+worldpayDetailsRouter.post(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated, permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.worldpayCredentials.post)
+simplifiedAccount.use(worldpayDetailsRouter)
 
 // card types
 simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permission('transactions:read'), serviceSettingsController.cardTypes.get)
