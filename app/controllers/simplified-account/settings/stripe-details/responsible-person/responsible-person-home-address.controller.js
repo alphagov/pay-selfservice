@@ -59,7 +59,7 @@ const postErrorResponse = (req, res, errors) => {
       homeAddressCity,
       homeAddressPostcode
     },
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.index, req.service.externalId, req.account.type),
+    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.index, req.service.externalId, req.account.type)
   })
 }
 

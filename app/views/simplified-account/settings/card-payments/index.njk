@@ -1,0 +1,100 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Card payments
+{% endblock %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">Card payments</h1>
+  <p class="govuk-body">GOV.UK Pay uses 3D Secure for all card payments. 3D Secure (3DS) adds an extra layer of
+    authentication to user payments.</p>
+
+
+{{ govukSummaryList({
+  classes: "govuk-!-margin-bottom-9",
+  rows: [
+    {
+      key: {
+        text: "Collect billing address"
+      },
+      value: {
+        text: collectBillingAddressEnabled | boolToOnOrOff
+      },
+      actions: {
+        items: [
+          {
+            href: collectBillingAddressLink,
+            text: "Change",
+            classes: "govuk-link--no-visited-state",
+            visuallyHiddenText: "collect billing address"
+          }
+        ]
+      }
+    },
+    {
+      key: {
+        text: "Default billing address country"
+      },
+      value: {
+        text: defaultBillingAddressCountry
+      },
+      actions: {
+        items: [
+          {
+            href: defaultBillingAddressCountryLink,
+            text: "Change",
+            classes: "govuk-link--no-visited-state",
+            visuallyHiddenText: "default billing address country"
+          }
+        ]
+      }
+    }
+  ]
+}) }}
+  <h3 class="govuk-heading-m">Digital wallets</h3>
+  <p class="govuk-body">Let users pay with Apple Pay and Google Pay.</p>
+
+
+{{ govukSummaryList({
+  classes: "govuk-!-margin-bottom-9",
+  rows: [
+    {
+      key: {
+        text: "Apple Pay"
+      },
+      value: {
+        text: applePayEnabled | boolToOnOrOff
+      },
+      actions: {
+        items: [
+          {
+            href: applePayAddressLink,
+            text: "Change",
+            classes: "govuk-link--no-visited-state",
+            visuallyHiddenText: "Apple Pay"
+          }
+        ]
+      }
+    },
+    {
+      key: {
+        text: "Google Pay"
+      },
+      value: {
+        text: googlePayEnabled | boolToOnOrOff
+      },
+      actions: {
+        items: [
+          {
+            href: googlePayAddressLink,
+            text: "Change",
+            classes: "govuk-link--no-visited-state",
+            visuallyHiddenText: "Google Pay"
+          }
+        ]
+      }
+    }
+  ]
+}) }}
+
+{% endblock %}

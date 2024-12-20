@@ -53,7 +53,7 @@ const postErrorResponse = (req, res, errors) => {
     errors,
     name: { firstName, lastName },
     dob: { dobDay, dobMonth, dobYear },
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type),
+    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type)
   })
 }
 

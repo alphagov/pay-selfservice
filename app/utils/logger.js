@@ -24,14 +24,8 @@ const logger = createLogger({
   ]
 })
 
-const nsDebugFormat = printf(({ level, message, timestamp, ...metadata }) => {
-  const metadataStr = Object.keys(metadata).length
-    ? JSON.stringify(metadata, null, 2)
-    : ''
-
-  return metadataStr
-    ? `${timestamp} [${level}]: ${message}\n${metadataStr}`
-    : `${timestamp} [${level}]: ${message}`
+const nsDebugFormat = printf(({ level, message, timestamp }) => {
+  return `${timestamp} [${level}]: ${message}`
 })
 
 const nsDebugLogger = createLogger({
@@ -56,9 +50,12 @@ const nsDebugLogger = createLogger({
   ]
 })
 
-const nsDebug = process.env.NS_DEBUG === 'true'
+const nsDebug = process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true'
 
 module.exports = (loggerName) => {
+  if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true') {
+    return console
+  }
   const childLogger = nsDebug
     ? nsDebugLogger.child({ logger_name: loggerName })
     : logger.child({ logger_name: loggerName })
