@@ -8,6 +8,7 @@ const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
 const GATEWAY_ACCOUNT_ID = 11
 const ACCOUNT_TYPE = 'test'
+const USER_EMAIL = 'potter@wand.com'
 
 const setupStubs = (role = 'admin', apiKeys = []) => {
   cy.task('setupStubs', [
@@ -16,6 +17,7 @@ const setupStubs = (role = 'admin', apiKeys = []) => {
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       serviceName: { en: 'My cool service' },
       serviceExternalId: SERVICE_EXTERNAL_ID,
+      email: USER_EMAIL,
       role: ROLES[role],
       features: 'degatewayaccountification' // TODO remove features once simplified accounts are live
     }),
@@ -123,12 +125,48 @@ describe('Settings - API keys', () => {
         verifySummaryCard(1, apiKeys[1])
       })
     })
+
+    describe('create an api key', () => {
+      const API_KEY_DESCRIPTION = 'api key description' // pragma: allowlist secret
+      const EXPECTED_TOKEN = 'api_test_123abc'
+
+      beforeEach(() => {
+        setupStubs()
+        cy.task('setupStubs', [
+          apiKeysStubs.createApiKey(GATEWAY_ACCOUNT_ID, USER_EMAIL, API_KEY_DESCRIPTION, EXPECTED_TOKEN)
+        ])
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
+      })
+
+      it('successfully', () => {
+        cy.contains('a', 'Create a new API key').click()
+        cy.contains('h1', 'API key name').should('exist')
+        cy.get('input[id="description"]').type(API_KEY_DESCRIPTION)
+        cy.contains('button', 'Continue').click()
+        cy.contains('h1', 'New API key').should('exist')
+        cy.contains('h2', API_KEY_DESCRIPTION).should('exist')
+        cy.get('#apiKey').should('have.text', EXPECTED_TOKEN)
+        cy.get('#generate-button').should('have.attr', 'data-copy-text', 'true')
+        cy.get('#generate-button').should('have.attr', 'data-target', 'copy-this-api-key')
+      })
+
+      it('unsuccessfully', () => {
+        cy.contains('a', 'Create a new API key').click()
+        cy.contains('h1', 'API key name').should('exist')
+        cy.contains('button', 'Continue').click()
+        cy.get('.govuk-error-summary__body').within(() => {
+          cy.contains('a', 'Name must not be empty').should('exist')
+          cy.get('a').should('have.attr', 'href', '#description')
+        })
+      })
+    })
   })
 
   describe('for a non-admin user', () => {
     beforeEach(() => {
       setupStubs('view-only')
     })
+
     it('should return forbidden when visiting the url directly', () => {
       cy.request({
         url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`,
@@ -141,6 +179,15 @@ describe('Settings - API keys', () => {
     it('should not show API keys link in the navigation panel', () => {
       cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings`)
       cy.get('#api-keys').should('not.exist')
+    })
+
+    it('should return forbidden when visiting the create api key url directly', () => {
+      cy.request({
+        url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/create`,
+        failOnStatusCode: false
+      }).then((response) => {
+        expect(response.status).to.eq(403)
+      })
     })
   })
 })
