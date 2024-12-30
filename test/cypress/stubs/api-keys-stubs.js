@@ -13,6 +13,30 @@ function getApiKeysForGatewayAccount (gatewayAccountId, tokens = []) {
   })
 }
 
+/**
+ * @param {number} gatewayAccountId
+ * @param {string} email
+ * @param {string} description
+ * @param {string} expectedToken
+ */
+function createApiKey (gatewayAccountId, email, description, expectedToken) {
+  const path = '/v1/frontend/auth'
+  return stubBuilder('POST', path, 200, {
+    request: {
+      account_id: gatewayAccountId,
+      created_by: email,
+      description,
+      token_account_type: 'test',
+      token_type: 'CARD',
+      type: 'API'
+    },
+    response: {
+      token: expectedToken
+    }
+  })
+}
+
 module.exports = {
+  createApiKey,
   getApiKeysForGatewayAccount
 }
