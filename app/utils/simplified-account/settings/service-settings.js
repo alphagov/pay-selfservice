@@ -70,7 +70,7 @@ module.exports = (account, service, currentUrl, permissions) => {
     .category('developers')
     .add({
       id: 'api-keys',
-      name: 'API keys',
+      name: account.type === 'test' ? 'Test API keys' : 'Live API keys',
       path: paths.simplifiedAccount.settings.apiKeys.index,
       permission: 'tokens_active_read',
       alwaysViewable: true
