@@ -3,6 +3,8 @@ const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const apiKeysStubs = require('@test/cypress/stubs/api-keys-stubs')
 const { Token } = require('@models/Token.class')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
+const paths = require('@root/paths')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
@@ -56,9 +58,12 @@ describe('Settings - API keys', () => {
 
     describe('when there are active API keys', () => {
       const apiKeys = [
-        new Token().withCreatedBy('system generated').withDescription('description').withIssuedDate('12 Dec 2024'),
-        new Token().withCreatedBy('algae bra').withDescription('mathematical clothes').withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024')
+        new Token().withCreatedBy('system generated').withDescription('description')
+          .withIssuedDate('12 Dec 2024').withTokenLink('token-link-1'),
+        new Token().withCreatedBy('algae bra').withDescription('mathematical clothes')
+          .withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024').withTokenLink('token-link-1')
       ]
+
       beforeEach(() => {
         setupStubs('admin', apiKeys)
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
@@ -91,7 +96,8 @@ describe('Settings - API keys', () => {
                 .within(() => {
                   cy.get('a')
                     .should('contain.text', 'Change name')
-                    .and('have.attr', 'href', '#')
+                    .and('have.attr', 'href', formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.changeName,
+                      SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, token.tokenLink))
                 })
 
               cy.get('.govuk-summary-card__action').eq(1)

@@ -77,6 +77,8 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permissi
 simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.index, permission('tokens-active:read'), serviceSettingsController.apiKeys.get)
 simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.create, permission('tokens:create'), serviceSettingsController.apiKeys.createApiKey.get)
 simplifiedAccount.post(paths.simplifiedAccount.settings.apiKeys.create, permission('tokens:create'), serviceSettingsController.apiKeys.createApiKey.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.changeName, permission('tokens:update'), serviceSettingsController.apiKeys.changeName.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.apiKeys.changeName, permission('tokens:update'), serviceSettingsController.apiKeys.changeName.post)
 
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails

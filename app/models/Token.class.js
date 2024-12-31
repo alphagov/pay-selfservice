@@ -19,11 +19,17 @@ class Token {
     return this
   }
 
+  withTokenLink (tokenLink) {
+    this.tokenLink = tokenLink
+    return this
+  }
+
   toJson () {
     return {
       ...this.description && { description: this.description },
       ...this.createdBy && { created_by: this.createdBy },
       ...this.issuedDate && { issued_date: this.issuedDate },
+      ...this.tokenLink && { token_link: this.tokenLink },
       ...this.lastUsed && { last_used: this.lastUsed }
     }
   }
@@ -37,6 +43,7 @@ class Token {
       .withCreatedBy(data?.created_by)
       .withIssuedDate(data?.issued_date)
       .withLastUsed(data?.last_used)
+      .withTokenLink(data?.token_link)
   }
 }
 

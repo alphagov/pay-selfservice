@@ -28,7 +28,7 @@ const {
   })
   .build()
 
-describe('Controller: settings/create-api-key', () => {
+describe('Controller: settings/api-keys/create', () => {
   describe('get', () => {
     before(() => {
       call('get')
