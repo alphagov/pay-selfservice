@@ -124,6 +124,20 @@
     <td class="govuk-table__cell govuk-!-font-size-16" id="date-created">{{updated}}</td>
   </tr>
 
+  {% if three_d_secure %}
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">3D Secure (3DS):</th>
+      <td class="govuk-table__cell govuk-!-font-size-16" id="three-d-secure">{{three_d_secure}}</td>
+    </tr> 
+  {% endif %}
+
+  {% if corporate_exemption_requested %}
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Corporate exemption requested:</th>
+      <td class="govuk-table__cell govuk-!-font-size-16" id="date-created">{{corporate_exemption_requested}}</td>
+    </tr>
+  {% endif %}
+
   <tr class="govuk-table__row">
     <th class="govuk-table__header govuk-!-width-one-third govuk-!-font-size-16" scope="row">Provider:</th>
     <td class="govuk-table__cell govuk-!-font-size-16" id="provider">{{payment_provider}}</td>
