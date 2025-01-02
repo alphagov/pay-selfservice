@@ -36,7 +36,18 @@ function createApiKey (gatewayAccountId, email, description, expectedToken) {
   })
 }
 
+function changeApiKeyName (tokenLink, description) {
+  const path = '/v1/frontend/auth'
+  return stubBuilder('PUT', path, 200, {
+    request: {
+      token_link: tokenLink,
+      description
+    }
+  })
+}
+
 module.exports = {
+  changeApiKeyName,
   createApiKey,
   getApiKeysForGatewayAccount
 }

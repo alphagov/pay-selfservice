@@ -1,12 +1,12 @@
-const { response } = require('@utils/response')
-const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
-const { TOKEN_SOURCE, createApiKey } = require('@services/api-keys.service')
 const { validationResult } = require('express-validator')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { response } = require('@utils/response')
+const { changeApiKeyName } = require('@services/api-keys.service')
 const DESCRIPTION_VALIDATION = require('@controllers/simplified-account/settings/api-keys/validations')
 
-async function get (req, res) {
+function get (req, res) {
   return response(req, res, 'simplified-account/settings/api-keys/api-key-name', {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, req.service.externalId, req.account.type)
   })
@@ -27,13 +27,10 @@ async function post (req, res) {
     })
   }
 
+  const tokenLink = req.params.tokenLink
   const description = req.body.description
-  const newApiKey = await createApiKey(req.account, description, req.user.email, TOKEN_SOURCE.API)
-  response(req, res, 'simplified-account/settings/api-keys/new-api-key-details', {
-    description,
-    apiKey: newApiKey,
-    backToApiKeysLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, req.service.externalId, req.account.type)
-  })
+  await changeApiKeyName(tokenLink, description)
+  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, req.service.externalId, req.account.type))
 }
 
 module.exports = { get, post }

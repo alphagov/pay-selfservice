@@ -38,7 +38,17 @@ const getActiveKeys = async (gatewayAccountId) => {
   return publicAuthData.tokens.map(tokenData => Token.fromJson(tokenData))
 }
 
+/**
+ * @param {string} tokenLink
+ * @param {string} name The new name/description
+ * @return {Promise<void>}
+ */
+const changeApiKeyName = async (tokenLink, name) => {
+  await publicAuthClient.updateToken({ payload: { token_link: tokenLink, description: name } })
+}
+
 module.exports = {
+  changeApiKeyName,
   createApiKey,
   getActiveKeys,
   TOKEN_SOURCE
