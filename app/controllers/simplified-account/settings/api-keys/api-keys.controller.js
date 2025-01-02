@@ -8,9 +8,11 @@ async function get (req, res) {
   return response(req, res, 'simplified-account/settings/api-keys/index', {
     accountType: req.account.type,
     activeKeys: activeKeys.map(activeKey => {
-      activeKey.changeNameLink = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.changeName,
-        req.service.externalId, req.account.type, activeKey.tokenLink)
-      return activeKey
+      return {
+        ...activeKey,
+        changeNameLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.changeName,
+          req.service.externalId, req.account.type, activeKey.tokenLink)
+      }
     }),
     createApiKeyLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.create,
       req.service.externalId, req.account.type),
