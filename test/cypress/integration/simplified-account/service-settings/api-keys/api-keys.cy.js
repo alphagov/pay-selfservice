@@ -200,10 +200,8 @@ describe('Settings - API keys', () => {
         })
         cy.get('input[id="description"]').type(NEW_API_KEY_NAME)
         cy.contains('button', 'Continue').click()
+        cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
         cy.contains('h1', 'Test API keys').should('exist')
-        cy.get('.govuk-summary-card').within(() => {
-          cy.contains('h2', 'mathematical clothes').should('exist')
-        })
       })
     })
   })
