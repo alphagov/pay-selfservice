@@ -61,13 +61,14 @@ describe('Settings - API keys', () => {
         new Token().withCreatedBy('system generated').withDescription('description')
           .withIssuedDate('12 Dec 2024').withTokenLink('token-link-1'),
         new Token().withCreatedBy('algae bra').withDescription('mathematical clothes')
-          .withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024').withTokenLink('token-link-1')
+          .withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024').withTokenLink('token-link-2')
       ]
 
       beforeEach(() => {
         setupStubs('admin', apiKeys)
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
+
       it('should show appropriate buttons and text', () => {
         cy.get('#api-keys').should('have.text', 'Test API keys')
         cy.get('.service-settings-pane')
@@ -163,6 +164,45 @@ describe('Settings - API keys', () => {
         cy.get('.govuk-error-summary__body').within(() => {
           cy.contains('a', 'Name must not be empty').should('exist')
           cy.get('a').should('have.attr', 'href', '#description')
+        })
+      })
+    })
+
+    describe('re-name an api key', () => {
+      const NEW_API_KEY_NAME = 'api key description' // pragma: allowlist secret
+      const TOKEN_LINK = 'token-link-1'
+
+      const apiKeys = [
+        new Token().withCreatedBy('algae bra').withDescription('mathematical clothes')
+          .withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024').withTokenLink(TOKEN_LINK)
+      ]
+
+      beforeEach(() => {
+        setupStubs('admin', apiKeys)
+        cy.task('setupStubs', [
+          apiKeysStubs.changeApiKeyName(TOKEN_LINK, NEW_API_KEY_NAME)
+        ])
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
+      })
+
+      it('show the API key name page', () => {
+        cy.get('.govuk-summary-card').within(() => {
+          cy.contains('h2', 'mathematical clothes').should('exist')
+          cy.contains('a', 'Change name').click()
+        })
+        cy.contains('h1', 'API key name').should('exist')
+      })
+
+      it('should re-name the api key successfully', () => {
+        cy.get('.govuk-summary-card').within(() => {
+          cy.contains('h2', 'mathematical clothes').should('exist')
+          cy.contains('a', 'Change name').click()
+        })
+        cy.get('input[id="description"]').type(NEW_API_KEY_NAME)
+        cy.contains('button', 'Continue').click()
+        cy.contains('h1', 'Test API keys').should('exist')
+        cy.get('.govuk-summary-card').within(() => {
+          cy.contains('h2', 'mathematical clothes').should('exist')
         })
       })
     })

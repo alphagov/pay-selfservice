@@ -1,10 +1,10 @@
-const { response } = require('@utils/response')
-const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
+const { validationResult } = require('express-validator')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
+const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { response } = require('@utils/response')
 const { changeApiKeyName } = require('@services/api-keys.service')
 const DESCRIPTION_VALIDATION = require('@controllers/simplified-account/settings/api-keys/validations')
-const { validationResult } = require('express-validator')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 
 function get (req, res) {
   return response(req, res, 'simplified-account/settings/api-keys/api-key-name', {
