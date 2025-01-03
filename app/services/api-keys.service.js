@@ -47,9 +47,32 @@ const changeApiKeyName = async (tokenLink, name) => {
   await publicAuthClient.updateToken({ payload: { token_link: tokenLink, description: name } })
 }
 
+/**
+ * @param {string} gatewayAccountId
+ * @param {string} tokenLink
+ * @return {Promise<*>}
+ */
+const getKeyByTokenLink = async (gatewayAccountId, tokenLink) => {
+  return await publicAuthClient.getKeyByTokenLink(gatewayAccountId, tokenLink)
+}
+
+/**
+ * @param {string} gatewayAccountId
+ * @param {string} tokenLink
+ * @return {Promise<*>}
+ */
+const revokeKey = async (gatewayAccountId, tokenLink) => {
+  await publicAuthClient.deleteTokenForAccount({
+    accountId: gatewayAccountId,
+    payload: { token_link: tokenLink }
+  })
+}
+
 module.exports = {
   changeApiKeyName,
   createApiKey,
   getActiveKeys,
+  getKeyByTokenLink,
+  revokeKey,
   TOKEN_SOURCE
 }
