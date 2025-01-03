@@ -1,0 +1,38 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  API keys - revoke key
+{% endblock %}
+
+{% block settingsContent %}
+  <form id="revoke-api-key" method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {{ govukRadios({
+      name: 'revokeApiKey',
+      fieldset: {
+        legend: {
+          text: 'Are you sure you want to revoke ' + description,
+          isPageHeading: true,
+          classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
+        }
+      },
+      hint: {
+        text: 'The key will stop working immediately. Any integration you’ve created will no longer work.'
+      },
+      items: [
+        {
+          value: 'Yes',
+          text: 'Yes'
+        },
+        {
+          value: 'No',
+          text: 'No'
+        }
+      ]
+    }) }}
+    {{ govukButton({
+      text: 'Save changes'
+    }) }}
+  </form>
+{% endblock %}

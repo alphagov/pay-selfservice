@@ -11,6 +11,8 @@ async function get (req, res) {
       return {
         ...activeKey,
         changeNameLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.changeName,
+          req.service.externalId, req.account.type, activeKey.tokenLink),
+        revokeKeyLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.revoke,
           req.service.externalId, req.account.type, activeKey.tokenLink)
       }
     }),
@@ -23,3 +25,4 @@ async function get (req, res) {
 module.exports = { get }
 module.exports.createApiKey = require('./create/create-api-key.controller')
 module.exports.changeName = require('./change-name/change-name.controller')
+module.exports.revoke = require('./revoke/revoke.controller')

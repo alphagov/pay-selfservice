@@ -105,7 +105,8 @@ describe('Settings - API keys', () => {
                 .within(() => {
                   cy.get('a')
                     .should('contain.text', 'Revoke')
-                    .and('have.attr', 'href', '#')
+                    .and('have.attr', 'href', formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.revoke,
+                      SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, token.tokenLink))
                 })
 
               cy.get('.govuk-summary-list__row').eq(0)

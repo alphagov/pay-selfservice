@@ -43,7 +43,8 @@ describe('Controller: settings/api-keys', () => {
         apiKeys.map(apiKey => {
           return {
             ...apiKey,
-            changeNameLink: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/change-name/${apiKeys[0].tokenLink}`
+            changeNameLink: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/change-name/${apiKeys[0].tokenLink}`,
+            revokeKeyLink: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoke/${apiKeys[0].tokenLink}`
           }
         }))
     })

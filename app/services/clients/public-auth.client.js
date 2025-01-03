@@ -118,8 +118,22 @@ async function revokeTokensForAccount (accountId) {
   await this.client.delete(url, 'revoke all tokens for gateway account')
 }
 
+/**
+ * @param {string} accountId
+ * @param {string} tokenLink
+ * @return {Promise<*>}
+ */
+async function getKeyByTokenLink (accountId, tokenLink) {
+  this.client = new Client(SERVICE_NAME)
+  const url = `${process.env.PUBLIC_AUTH_URL}/${accountId}/${tokenLink}`
+  configureClient(this.client, url)
+  const response = await this.client.get(url, 'get token by token link and account id')
+  return response.data
+}
+
 module.exports = {
   getActiveTokensForAccount,
+  getKeyByTokenLink,
   getRevokedTokensForAccount,
   createTokenForAccount,
   updateToken,
