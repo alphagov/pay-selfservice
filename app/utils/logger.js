@@ -24,11 +24,11 @@ const logger = createLogger({
   ]
 })
 
-const nsDebugFormat = printf(({ level, message, timestamp }) => {
+const simpleLoggingFormat = printf(({ level, message, timestamp, ...metadata }) => {
   return `${timestamp} [${level}]: ${message}`
 })
 
-const nsDebugLogger = createLogger({
+const simpleLogger = createLogger({
   format: combine(
     colorize({
       colors: {
@@ -41,7 +41,7 @@ const nsDebugLogger = createLogger({
     timestamp({
       format: 'YYYY-MM-DD HH:mm:ss'
     }),
-    nsDebugFormat
+    simpleLoggingFormat
   ),
   transports: [
     new transports.Console({
@@ -50,14 +50,9 @@ const nsDebugLogger = createLogger({
   ]
 })
 
-const nsDebug = process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true'
-
 module.exports = (loggerName) => {
   if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true') {
-    return console
+    return simpleLogger
   }
-  const childLogger = nsDebug
-    ? nsDebugLogger.child({ logger_name: loggerName })
-    : logger.child({ logger_name: loggerName })
-  return addSentryToErrorLevel(childLogger)
+  return addSentryToErrorLevel(logger.child({ logger_name: loggerName }))
 }
