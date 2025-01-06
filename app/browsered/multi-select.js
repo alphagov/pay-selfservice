@@ -1,9 +1,33 @@
 // TODO: we should probably do some browser testing in this project to prove this all works as intended
-
-const multiSelect = require('../views/includes/multi-select.njk')
-
 // Polyfills introduced as a temporary fix to make Smoketests pass. See PP-3489
 require('./polyfills')
+const nunjucks = require('nunjucks')
+
+const multiSelectTemplate = `
+<div id="{{ id }}__container" class="multi-select">
+  <button type="button"
+          class="multi-select__title"
+          id="{{ id }}" aria-expanded="false">
+    <div><span class="govuk-visually-hidden">Currently selected: </span><span
+        class="multi-select-current-selections"></span></div>
+  </button>
+  <div role="group" aria-labelledby="option-select-title-{{ name }}"
+       class="multi-select-dropdown"
+       id="list-of-sectors-{{ name }}"
+       style="visibility:hidden;">
+    <button type="button" class="govuk-button govuk-button--secondary multi-select-dropdown__close-button">Close</button>
+    <div class="multi-select-dropdown__inner-container govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+      {% for item in items %}
+        <div class="govuk-checkboxes__item">
+          <input class="govuk-checkboxes__input" name="{{ name }}" value="{{ item.value }}" id="{{ item.id }}"
+                 type="checkbox" {% if item.checked %}checked{% endif %}>
+          <label for="{{ item.id }}" class="govuk-label govuk-checkboxes__label">{{ item.text }}</label>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+`
 
 const MAXIMUM_VISIBLE_ITEMS = 8.5 // Maximum amount of items to show in dropdown
 const MINIMUM_VISIBLE_ITEMS = 3.5 // Minimum amount of items to show in dropdown (assuming total is larger than this value)
@@ -43,7 +67,7 @@ function progressivelyEnhanceSelects () {
         return { value, id, checked, text }
       })
     }
-    select.outerHTML = multiSelect(configuration)
+    select.outerHTML = nunjucks.renderString(multiSelectTemplate, configuration)
     const newMultiSelect = document.getElementById(`${configuration.id}__container`)
 
     const openButton = [...newMultiSelect.querySelectorAll(OPEN_BUTTON_SELECTOR)][0]
@@ -52,20 +76,6 @@ function progressivelyEnhanceSelects () {
 
     const dropdown = [...newMultiSelect.querySelectorAll(DROPDOWN_SELECTOR)][0]
     const scrollContainer = [...newMultiSelect.querySelectorAll(SCROLL_CONTAINER_SELECTOR)][0]
-
-    // close if user clicks outside the dropdown
-    document.addEventListener('click', (event) => {
-      const dropdowns = document.querySelectorAll(DROPDOWN_SELECTOR)
-      dropdowns.forEach(dropdown => {
-        if (!dropdown.contains(event.target) &&
-          !event.target.closest(OPEN_BUTTON_SELECTOR)) {
-          dropdown.style.visibility = 'hidden'
-          dropdown.closest(TOP_LEVEL_SELECTOR)
-            .querySelector(OPEN_BUTTON_SELECTOR)
-            .setAttribute('aria-expanded', false)
-        }
-      })
-    }, false)
 
     openButton.addEventListener('click', onOpenButtonClick, false)
     closeButton.addEventListener('click', onCloseButtonClick, false)
@@ -82,6 +92,7 @@ function progressivelyEnhanceSelects () {
   })
 
   closeMultiSelectOnEscapeKeypress()
+  closeMultiSelectOnOutOfBoundsClick()
 }
 
 const closeMultiSelectOnEscapeKeypress = function () {
@@ -100,6 +111,22 @@ const closeMultiSelectOnEscapeKeypress = function () {
       })
     }
   }
+}
+
+const closeMultiSelectOnOutOfBoundsClick = function () {
+  // close if user clicks outside the dropdown
+  document.addEventListener('click', (event) => {
+    const dropdowns = document.querySelectorAll(DROPDOWN_SELECTOR)
+    dropdowns.forEach(dropdown => {
+      if (!dropdown.contains(event.target) &&
+        !event.target.closest(OPEN_BUTTON_SELECTOR)) {
+        dropdown.style.visibility = 'hidden'
+        dropdown.closest(TOP_LEVEL_SELECTOR)
+          .querySelector(OPEN_BUTTON_SELECTOR)
+          .setAttribute('aria-expanded', false)
+      }
+    })
+  }, false)
 }
 
 const onCloseButtonClick = event => {

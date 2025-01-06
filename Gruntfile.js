@@ -105,15 +105,7 @@ module.exports = function (grunt) {
       options: {
         browserifyOptions: {
           standalone: 'module'
-        },
-        transform: [
-          [
-            'nunjucksify',
-            {
-              extension: '.njk'
-            }
-          ]
-        ]
+        }
       }
     },
 
