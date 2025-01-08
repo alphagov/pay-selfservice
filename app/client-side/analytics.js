@@ -1,6 +1,4 @@
-'use strict'
-
-function setupAnalytics () {
+const setupAnalytics = () => {
   const gtagScript = document.createElement('script')
   gtagScript.async = true
   gtagScript.setAttribute('src', 'https://www.googletagmanager.com/gtag/js?id=G-XE9K05CFFE')
@@ -8,9 +6,9 @@ function setupAnalytics () {
 
   window.dataLayer = window.dataLayer || []
 
-  // Disabling eslint as the Google snippet conflicts with the our linting rules
+  // Disabling eslint as the Google snippet conflicts with our linting rules
   /* eslint-disable */
-  function gtag () {
+  const gtag = () => {
     dataLayer.push(arguments)
   }
   /* eslint-enable */
@@ -21,10 +19,4 @@ function setupAnalytics () {
   }
 }
 
-module.exports.init = () => {
-  setupAnalytics()
-}
-
-module.exports.setupAnalytics = () => {
-  setupAnalytics()
-}
+export default setupAnalytics

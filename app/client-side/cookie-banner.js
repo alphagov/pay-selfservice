@@ -1,7 +1,5 @@
-'use strict'
-
-const analytics = require('./analytics')
-const cookieFunction = require('./cookie-functions')
+import setupAnalytics from './analytics'
+import * as cookieFunctions from './cookie-functions'
 
 const CookieBanner = function ($module) {
   this.$module = $module
@@ -39,13 +37,13 @@ CookieBanner.prototype.setupCookieMessage = function () {
 
 CookieBanner.prototype.showCookieMessage = function () {
   // Show the cookie banner if policy cookie not set
-  const hasCookiesPolicy = cookieFunction.getCookie(cookieFunction.GOV_UK_PAY_COOKIE_POLICY)
+  const hasCookiesPolicy = cookieFunctions.getCookie(cookieFunctions.GOV_UK_PAY_COOKIE_POLICY)
 
   if (this.$module) {
     if (!hasCookiesPolicy) {
       this.$module.style.display = 'block'
     } else {
-      const consentCookieObj = cookieFunction.getConsentCookie()
+      const consentCookieObj = cookieFunctions.getConsentCookie()
       if (consentCookieObj && consentCookieObj.analytics === true) {
         initialiseAnalytics(true)
       }
@@ -65,7 +63,7 @@ CookieBanner.prototype.hideCookieMessage = function (event) {
 }
 
 CookieBanner.prototype.setCookieConsent = function (analyticsConsent) {
-  cookieFunction.setConsentCookie({ analytics: analyticsConsent })
+  cookieFunctions.setConsentCookie({ analytics: analyticsConsent })
 
   this.$module.showConfirmationMessage(analyticsConsent)
   this.$module.cookieBannerConfirmationMessage.focus()
@@ -75,7 +73,7 @@ CookieBanner.prototype.setCookieConsent = function (analyticsConsent) {
 function initialiseAnalytics (analyticsConsent) {
   // analyticsTrackingId is configurable and set globally in head.njk
   // eslint-disable-next-line no-undef
-  if (analyticsConsent && analyticsTrackingId) { analytics.init() }
+  if (analyticsConsent && analyticsTrackingId) { setupAnalytics() }
 }
 
 CookieBanner.prototype.showConfirmationMessage = function (analyticsConsent) {
@@ -89,7 +87,7 @@ CookieBanner.prototype.showConfirmationMessage = function (analyticsConsent) {
   this.$module.cookieBannerConfirmationMessage.style.display = 'block'
 }
 
-module.exports.initCookieBanner = () => {
+const initCookieBanner = () => {
   const $cookieBanner = document.querySelector('.pay-cookie-banner')
   if ($cookieBanner) {
     const cookieBanner = new CookieBanner($cookieBanner)
@@ -97,3 +95,5 @@ module.exports.initCookieBanner = () => {
     return cookieBanner
   }
 }
+
+export default initCookieBanner

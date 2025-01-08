@@ -1,6 +1,6 @@
 .key-list-item-meta {
-  @include govuk-font($size: 16);
   margin-bottom: 1em;
+  @include govuk-font($size: 16);
 
   dl {
     margin: 0;

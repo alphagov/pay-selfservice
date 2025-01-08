@@ -1,14 +1,13 @@
 // One day `.currency-input` will be part of the design system - https://github.com/alphagov/temporary-event-notice-prototype/blob/master/app/assets/sass/patterns/currency-input.scss
-
 .currency-input {
   &__inner {
     position: relative;
 
     &__unit {
-      @include govuk-font($size: 19, $weight: bold);
       position: absolute;
       bottom: 6px;
       left: govuk-spacing(2);
+      @include govuk-font($size: 19, $weight: bold);
     }
   }
 

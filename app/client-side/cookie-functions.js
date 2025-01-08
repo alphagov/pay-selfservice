@@ -1,5 +1,3 @@
-'use strict'
-
 const DEFAULT_COOKIE_CONSENT = {
   analytics: false,
   SameSite: 'Lax'
@@ -170,7 +168,7 @@ function setCookie (name, value, options) {
   }
 }
 
-module.exports = {
+export {
   setConsentCookie,
   getConsentCookie,
   getCookie,

@@ -60,8 +60,8 @@
 }
 
 .datetime-separator {
-  @include govuk-font($size: 16);
   margin-bottom: govuk-spacing(2);
+  @include govuk-font($size: 16);
 
   @include govuk-media-query(tablet) {
     @include govuk-font($size: 14);

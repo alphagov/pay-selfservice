@@ -14,11 +14,10 @@
   }
 
   &__item {
-    @include govuk-font($size: 16);
-
     border-bottom: 1px $govuk-border-colour solid;
     display: block;
     padding: govuk-spacing(2) 0;
+    @include govuk-font($size: 16);
 
     a:link {
       text-decoration: none;

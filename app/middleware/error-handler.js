@@ -3,6 +3,7 @@
 const Sentry = require('@sentry/node')
 const { AxiosError } = require('axios')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
+const { CsrfError } = require('@govuk-pay/pay-js-commons/lib/utils/middleware/csrf.middleware')
 
 const logger = require('../utils/logger')(__filename)
 const {
@@ -28,6 +29,11 @@ const formatSimplifiedAccountPathsFor = require('../utils/simplified-account/for
 module.exports = function errorHandler (err, req, res, next) {
   if (res.headersSent) {
     return next(err)
+  }
+
+  if (err instanceof CsrfError) {
+    logger.info(`CsrfError handled: ${err.message}. Session likely expired. Logging out.`)
+    return res.redirect(paths.user.logOut)
   }
 
   if (err instanceof NotAuthenticatedError) {

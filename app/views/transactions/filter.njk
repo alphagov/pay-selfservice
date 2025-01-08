@@ -1,6 +1,5 @@
-
 <div class="transactions-filter govuk-grid-row">
-  <form class="govuk-clearfix" method="get" action="{{search_path}}" novalidate>
+  <form class="govuk-clearfix" method="get" action="{{search_path}}" novalidate autocomplete="off">
     <div class="govuk-grid-row govuk-!-padding-left-3 govuk-!-padding-right-3">
       <div class="govuk-grid-column-one-quarter inputs-less-margin">
         {{
@@ -37,9 +36,12 @@
             type: 'text',
             inputmode: 'email',
             spellcheck: false,
+
             attributes: {
               'autocapitalize': 'none',
-              'data-cy': 'email-filter'
+              'data-cy': 'email-filter',
+              'autocomplete': 'off',
+              'data-1p-ignore': ''
             },
             classes: 'govuk-!-font-size-16',
             label: {
@@ -61,6 +63,10 @@
             value: filters.cardholderName,
             spellcheck: false,
             classes: 'govuk-!-font-size-16',
+            attributes: {
+              'autocomplete': 'off',
+              'data-1p-ignore': ''
+            },
             label: {
               text: 'Name on card',
               classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
@@ -91,7 +97,8 @@
               "autocomplete": "off",
               "inputmode": "numeric",
               "pattern": "[0-9]*",
-              "maxlength": "4"
+              "maxlength": "4",
+              'data-1p-ignore': ''
             }
           })
         }}

@@ -2,7 +2,7 @@
   display: block;
 
   @include govuk-media-query($from: tablet) {
-    display: inline-block; 
+    display: inline-block;
   }
 
   &__select {
@@ -52,16 +52,16 @@
     }
 
     &__count {
-      @include govuk-font($size: 24);
       float: left;
       margin-left: 0;
+      @include govuk-font($size: 24);
     }
 
     &__amount {
-      @include govuk-font($size: 24);
       text-align: right;
       flex: 1;
       float: right;
+      @include govuk-font($size: 24);
     }
   }
   &-explainer {

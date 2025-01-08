@@ -1,9 +1,9 @@
 .service-switcher{
   &.live {
-    @include govuk-font($size: 19, $weight: bold);
     position: relative;
     margin-bottom: govuk-spacing(3);
     padding-left: 2rem;
+    @include govuk-font($size: 19, $weight: bold);
 
     &:before {
       content: "";

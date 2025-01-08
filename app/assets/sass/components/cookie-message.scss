@@ -1,9 +1,10 @@
+@use "sass:color";
 .cookie-banner {
   box-sizing: border-box;
   width: 100%;
 
   padding: govuk-spacing(3);
-  background-color: lighten(desaturate(govuk-colour("light-blue"), 8.46), 42.55);
+  background-color: color.adjust(color.adjust(govuk-colour("light-blue"), $saturation: -8.46%), $lightness: 42.55%);
 
   &--hide {
     display: none;
@@ -70,12 +71,11 @@
 }
 
 .pay-cookie-banner__link {
-  @include govuk-font(19);
   line-height: 1;
   display: block;
   width: 100%;
   padding: 9px 0px 6px;
-
+  @include govuk-font(19);
   @include govuk-media-query($from: tablet) {
     display: inline;
     width: auto;
@@ -113,7 +113,6 @@
 }
 
 .pay-cookie-banner__hide-button {
-  @include govuk-font($size: 19);
   color: $govuk-link-colour;
   outline: 0;
   border: 0;
@@ -124,6 +123,7 @@
   right: govuk-spacing(3);
   cursor: pointer;
 
+  @include govuk-font($size: 19);
   @include govuk-media-query($from: desktop) {
     margin-top: govuk-spacing(0);
     position: absolute;

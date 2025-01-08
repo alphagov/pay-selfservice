@@ -7,6 +7,7 @@
 config/dev-env.json
 .env
 public
+dist
 govuk_modules
 node_modules
 node_modules_local

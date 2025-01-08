@@ -1,12 +1,10 @@
-'use strict'
+import accessibleAutocomplete from 'accessible-autocomplete'
 
-const accessibleAutocomplete = require('accessible-autocomplete')
-
-module.exports = () => {
+const initAutocomplete = () => {
   const autocompleteContainer = document.querySelector('#service-filter-container')
 
   if (autocompleteContainer) {
-    const services = Array.prototype.slice.call(document.getElementsByClassName('service_list_item'))
+    const services = Array.from(document.getElementsByClassName('service_list_item'))
     const names = services.map(service => service.dataset.name)
 
     const jumpToService = selected => {
@@ -31,10 +29,12 @@ module.exports = () => {
 
     clearButton.addEventListener('click', () => {
       document.getElementById('service-filter').value = ''
-      const services = Array.prototype.slice.call(document.getElementsByClassName('service_list_item'))
+      const services = Array.from(document.getElementsByClassName('service_list_item'))
       services.forEach(service => {
         service.style.display = 'block'
       })
     })
   }
 }
+
+export default initAutocomplete

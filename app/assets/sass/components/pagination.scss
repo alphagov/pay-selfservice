@@ -5,8 +5,6 @@
     float: left;
 
     button {
-      @include govuk-font($size: 14);
-
       background: inherit;
       border: 1px solid $govuk-border-colour;
       border-right: none;
@@ -14,6 +12,7 @@
       vertical-align: middle;
       color: $govuk-link-colour;
       cursor: pointer;
+      @include govuk-font($size: 14);
 
       &:hover {
         color: $govuk-text-colour;

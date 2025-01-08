@@ -42,9 +42,9 @@
   }
 
   &--list-item {
-    @include govuk-font($size: 16);
     margin-top: govuk-spacing(2);
 
+    @include govuk-font($size: 16);
     @include govuk-media-query(tablet) {
       display: inline-block;
       margin: 0 govuk-spacing(6) 0 0;

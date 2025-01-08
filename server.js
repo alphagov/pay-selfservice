@@ -1,15 +1,13 @@
-require('module-alias/register')
+const path = require('path')
 const express = require('express')
 const metrics = require('@govuk-pay/pay-js-metrics')
+const { configureCsrfMiddleware } = require('@govuk-pay/pay-js-commons/lib/utils/middleware/csrf.middleware')
 const nunjucks = require('nunjucks')
-const favicon = require('serve-favicon')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const csrf = require('csurf')
 const argv = require('minimist')(process.argv.slice(2))
 const flash = require('connect-flash')
-const staticify = require('staticify')('./public')
-
+const staticify = require('staticify')(__dirname)
 const router = require('./app/routes')
 const cookieUtil = require('./app/utils/cookie')
 const noCache = require('./app/utils/no-cache')
@@ -35,7 +33,6 @@ const bindHost = (process.env.BIND_HOST || '127.0.0.1')
 const port = (process.env.PORT || 3000)
 const unconfiguredApp = express()
 const { NODE_ENV } = process.env
-const JAVASCRIPT_PATH = staticify.getVersionedPath('/js/application.min.js')
 const ANALYTICS_TRACKING_ID = process.env.ANALYTICS_TRACKING_ID || ''
 
 function warnIfAnalyticsNotSet () {
@@ -45,38 +42,23 @@ function warnIfAnalyticsNotSet () {
 }
 
 function addCsrfMiddleware (app) {
-  app.use(csrf({
-    value: function (req) {
-      // supports CSRF validation only through POST requests and ignores csrf tokens in headers/query strings.
-      return (req.body && req.body.csrfToken) || (req.query && req.query.csrfToken)
-    }
-  }))
-  // sets the csrf token on response local variable scoped to request, so token is available to the views
-  app.use(function (req, res, next) {
-    res.locals.csrf = req.csrfToken()
-    next()
-  })
+  const csrfMiddleware = configureCsrfMiddleware(logger, 'session', 'csrfSecret', 'csrfToken')
+  app.use(csrfMiddleware.setSecret, csrfMiddleware.checkToken, csrfMiddleware.generateToken)
 }
 
 function initialiseGlobalMiddleware (app) {
+  app.use(staticify.middleware)
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
 
   app.use(cookieParser())
   app.use(requestContextMiddleware)
-  logger.stream = {
-    write: function (message) {
-      logger.info(message)
-    }
-  }
   if (process.env.DISABLE_REQUEST_LOGGING !== 'true') {
-    app.use(/\/((?!public|favicon.ico).)*/, loggingMiddleware())
+    app.use(/\/((?!assets|favicon.ico).)*/, loggingMiddleware())
   }
-  app.use(favicon('node_modules/govuk-frontend/dist/govuk/assets/images/favicon.ico'))
-  app.use(staticify.middleware)
 
   app.use(function (req, res, next) {
-    res.locals.asset_path = '/public/'
+    res.locals.asset_path = '/assets/'
     res.locals.routes = router.paths
     res.locals.formatAccountPathsFor = formatAccountPathsFor
     res.locals.formatFutureStrategyAccountPathsFor = formatFutureStrategyAccountPathsFor
@@ -100,8 +82,7 @@ function initialiseTemplateEngine (app) {
   // Configure nunjucks
   // see https://mozilla.github.io/nunjucks/api.html#configure
   const nunjucksEnvironment = nunjucks.configure([
-    'node_modules/govuk-frontend/dist/',
-    'app/views'
+    path.join(__dirname, 'views')
   ], {
     express: app, // the express app that nunjucks should install to
     autoescape: true, // controls if output with dangerous characters are escaped automatically
@@ -117,8 +98,8 @@ function initialiseTemplateEngine (app) {
 
   // Version static assets on production for better caching
   // if it's not production we want to re-evaluate the assets on each file change
-  nunjucksEnvironment.addGlobal('css_path', staticify.getVersionedPath('/stylesheets/application.min.css'))
-  nunjucksEnvironment.addGlobal('js_path', NODE_ENV === 'production' ? JAVASCRIPT_PATH : staticify.getVersionedPath('/js/application.js'))
+  nunjucksEnvironment.addGlobal('css_path', staticify.getVersionedPath('/assets/stylesheets/application.css'))
+  nunjucksEnvironment.addGlobal('js_path', staticify.getVersionedPath('/assets/js/client.js'))
 
   // Load custom Nunjucks filters
   for (const name in nunjucksFilters) {
@@ -134,11 +115,6 @@ function initialiseTemplateEngine (app) {
   })
   nunjucksEnvironment.addFilter('boolToText', boolToText)
   nunjucksEnvironment.addFilter('boolToOnOrOff', boolToOnOrOff)
-}
-
-function initialisePublic (app) {
-  app.use('/public', express.static('public'))
-  app.use('/', express.static('node_modules/govuk-frontend/dist/govuk'))
 }
 
 function initialiseRoutes (app) {
@@ -182,7 +158,6 @@ function initialise () {
   }
 
   app.use(Sentry.Handlers.requestHandler())
-  initialisePublic(app)
   initialiseCookies(app)
   initialiseGlobalMiddleware(app)
   initialiseAuth(app)

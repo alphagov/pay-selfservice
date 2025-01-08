@@ -6,9 +6,9 @@
 }
 
 .display-size {
-  @include govuk-font($size: 19);
   float: right;
   margin-left: govuk-spacing(3);
+  @include govuk-font($size: 19);
 }
 
 .displaySizeForm:before {

@@ -1,9 +1,10 @@
 const dartSass = require('sass')
+const PUB_DIR = 'public-old'
 
 module.exports = function (grunt) {
   grunt.initConfig({
     // Clean
-    clean: ['public', 'govuk_modules'],
+    clean: [PUB_DIR, 'govuk_modules'],
 
     // Builds Sass
     sass: {
@@ -24,7 +25,7 @@ module.exports = function (grunt) {
             expand: true,
             cwd: 'app/assets/sass',
             src: ['*.scss'],
-            dest: 'public/stylesheets/',
+            dest: `${PUB_DIR}/stylesheets/`,
             ext: '.min.css'
           }
         ]
@@ -101,7 +102,7 @@ module.exports = function (grunt) {
     },
 
     browserify: {
-      'public/js/application.js': ['app/browsered.js'],
+      [`${PUB_DIR}/js/application.js`]: ['app/browsered.js'],
       options: {
         browserifyOptions: {
           standalone: 'module'
@@ -116,7 +117,7 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          'public/js/application.js': 'public/js/application.js'
+          [`${PUB_DIR}/js/application.js`]: `${PUB_DIR}/js/application.js`
         }
       }
     },
@@ -124,7 +125,7 @@ module.exports = function (grunt) {
     uglify: {
       my_target: {
         files: {
-          'public/js/application.min.js': ['public/js/application.js']
+          [`${PUB_DIR}/js/application.min.js`]: [`${PUB_DIR}/js/application.js`]
         }
       }
     }

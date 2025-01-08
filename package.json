@@ -36,10 +36,12 @@
     ]
   },
   "scripts": {
+    "dist": "node -r dotenv/config dist/application.js dotenv_config_path=./.env",
+    "build": "node build.mjs",
     "compile": "grunt generate-assets",
     "clean": "grunt clean",
     "start": "node start.js",
-    "start:dev": "nodemon -e js,njk -r dotenv/config start-dev.js",
+    "start:dev": "nodemon -e js,njk -r dotenv/config start.js",
     "watch": "chokidar app test *.js --initial -c 'npm run test'",
     "watch-live-reload": "grunt watch",
     "lint": "standard --fix",
@@ -51,8 +53,7 @@
     "cypress:test": "cypress run",
     "cypress:test-headed": "cypress open",
     "cypress:test-no-watch": "cypress open --config watchForFileChanges=false",
-    "publish-pacts": "./bin/publish-pacts.js",
-    "snyk-protect": "exit 0; #no-op for ci"
+    "publish-pacts": "./bin/publish-pacts.js"
   },
   "lint-staged": {
     "*.js": [
@@ -131,7 +132,6 @@
     "qrcode": "1.5.3",
     "qs": "6.11.2",
     "rfc822-validate": "1.0.0",
-    "serve-favicon": "2.5.0",
     "staticify": "5.0.0",
     "stripe": "^10.12.0",
     "throng": "5.0.x",
@@ -147,6 +147,7 @@
     "@govuk-pay/run-amock": "0.0.5",
     "@pact-foundation/pact": "^12.1.1",
     "@pact-foundation/pact-core": "^14.0.5",
+    "@types/jquery": "^3.5.32",
     "chai": "4.5.0",
     "chai-arrays": "2.2.0",
     "chai-as-promised": "7.1.2",
@@ -155,7 +156,11 @@
     "csrf": "^3.1.0",
     "cypress": "^13.8.0",
     "dotenv": "16.3.1",
+    "esbuild": "^0.24.2",
+    "esbuild-plugin-copy": "^2.1.1",
+    "esbuild-sass-plugin": "^3.3.1",
     "gaap-analytics": "3.1.0",
+    "glob": "^10.4.5",
     "grunt": "1.6.x",
     "grunt-babel": "8.0.0",
     "grunt-browserify": "6.0.0",
@@ -180,6 +185,8 @@
     "stylelint": "^15.10.3",
     "stylelint-config-gds": "^1.0.0",
     "stylelint-order": "^6.0.3",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "vite": "^6.0.7",
+    "vite-plugin-static-copy": "^2.2.0"
   }
 }

@@ -1,7 +1,5 @@
 .pay-button {
   &--as-link {
-    @include govuk-font($size: 16);
-
     display: inline;
     padding: 0;
     border: 0;
@@ -13,6 +11,7 @@
     -moz-appearance: none;
     appearance: none;
     cursor: pointer;
+    @include govuk-font($size: 16);
 
     &:hover {
     color: $govuk-link-hover-colour;
