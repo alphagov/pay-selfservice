@@ -40,7 +40,7 @@ jobs:
   cypress-tests:
     name: "Cypress"
     needs: [ install-and-compile ]
-    uses: alphagov/pay-ci/.github/workflows/_run-node-cypress-tests.yml@master
+    uses: alphagov/pay-ci/.github/workflows/_run-node-cypress-tests.yml@pp-12795-setup-job-percy-cicd
 
   pact-providers-contract-tests:
     name: "Provider tests"

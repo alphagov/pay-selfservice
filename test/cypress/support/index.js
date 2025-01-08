@@ -9,6 +9,8 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+import '@percy/cypress'
+
 Cypress.Commands.add('setEncryptedCookies', (userId, pageData = {}) => {
   cy.task('getCookies', {
     user_external_id: userId,

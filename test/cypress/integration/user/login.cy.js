@@ -34,8 +34,9 @@ describe('Login Page', () => {
     it('should have a link to the register page', () => {
       cy.contains('create one now').should('have.attr', 'href', '/register/email-address')
     })
-    it('should have a link to the forgotten password page', () => {
+    it.only('should have a link to the forgotten password page', () => {
       cy.contains('Forgot your password?').should('have.attr', 'href', '/reset-password')
+      cy.percySnapshot()
     })
   })
 
