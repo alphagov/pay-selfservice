@@ -36,14 +36,8 @@
     ]
   },
   "scripts": {
-    "dist": "node -r dotenv/config dist/application.js dotenv_config_path=./.env",
-    "build": "node build.mjs",
-    "compile": "grunt generate-assets",
-    "clean": "grunt clean",
-    "start": "node start.js",
-    "start:dev": "nodemon -e js,njk -r dotenv/config start.js",
-    "watch": "chokidar app test *.js --initial -c 'npm run test'",
-    "watch-live-reload": "grunt watch",
+    "dev": "NODE_ENV=development node dev-server.mjs",
+    "build": "NODE_ENV=production node esbuild.config.mjs",
     "lint": "standard --fix",
     "lint-sass": "stylelint '**/*.scss'",
     "test": "rm -rf ./pacts && NODE_ENV=test mocha '!(node_modules)/**/*.test'.js",
@@ -61,22 +55,9 @@
       "git add"
     ]
   },
-  "nodemonConfig": {
-    "ignore": [
-      "test/*",
-      "assets/*",
-      "browsered/*",
-      "Gruntfile.js",
-      "app/browsered.js",
-      "public/js/*"
-    ]
-  },
   "overrides": {
     "minimist": "1.2.6",
     "qrcode": {
-      "ansi-regex": "3.0.1"
-    },
-    "grunt-contrib-copy": {
       "ansi-regex": "3.0.1"
     },
     "cli-color": {
@@ -120,7 +101,6 @@
     "lodash": "4.17.21",
     "luhn-js": "^1.1.2",
     "luxon": "^3.5.0",
-    "minimist": "1.2.6",
     "module-alias": "^2.2.3",
     "moment-timezone": "0.5.43",
     "morgan": "1.10.0",
@@ -141,8 +121,6 @@
     "winston": "3.10.0"
   },
   "devDependencies": {
-    "@babel/core": "7.22.10",
-    "@babel/preset-env": "7.22.10",
     "@cypress/webpack-preprocessor": "^6.0.2",
     "@govuk-pay/run-amock": "0.0.5",
     "@pact-foundation/pact": "^12.1.1",
@@ -160,21 +138,10 @@
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-sass-plugin": "^3.3.1",
     "gaap-analytics": "3.1.0",
-    "glob": "^10.4.5",
-    "grunt": "1.6.x",
-    "grunt-babel": "8.0.0",
-    "grunt-browserify": "6.0.0",
-    "grunt-contrib-clean": "2.0.x",
-    "grunt-contrib-copy": "1.0.x",
-    "grunt-contrib-uglify": "5.2.2",
-    "grunt-contrib-watch": "1.1.x",
-    "grunt-sass": "3.1.0",
-    "html5shiv": "3.7.x",
     "jsdom": "^21.1.1",
     "lint-staged": "14.0.1",
     "mocha": "^10.2.0",
     "nock": "13.3.3",
-    "nodemon": "3.0.1",
     "notp": "2.0.3",
     "portfinder": "1.0.32",
     "proxyquire": "~2.1.0",
@@ -185,8 +152,6 @@
     "stylelint": "^15.10.3",
     "stylelint-config-gds": "^1.0.0",
     "stylelint-order": "^6.0.3",
-    "supertest": "^6.3.3",
-    "vite": "^6.0.7",
-    "vite-plugin-static-copy": "^2.2.0"
+    "supertest": "^6.3.3"
   }
 }

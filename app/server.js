@@ -5,28 +5,27 @@ const { configureCsrfMiddleware } = require('@govuk-pay/pay-js-commons/lib/utils
 const nunjucks = require('nunjucks')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const argv = require('minimist')(process.argv.slice(2))
 const flash = require('connect-flash')
 const staticify = require('staticify')(__dirname)
-const router = require('./app/routes')
-const cookieUtil = require('./app/utils/cookie')
-const noCache = require('./app/utils/no-cache')
-const auth = require('./app/services/auth.service')
-const middlewareUtils = require('./app/utils/middleware')
-const errorHandler = require('./app/middleware/error-handler')
+const router = require('@root/routes')
+const cookieUtil = require('@utils/cookie')
+const noCache = require('@utils/no-cache')
+const auth = require('@services/auth.service')
+const middlewareUtils = require('@utils/middleware')
+const errorHandler = require('@middleware/error-handler')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
-const logger = require('./app/utils/logger')(__filename)
-const loggingMiddleware = require('./app/middleware/logging-middleware')
-const { requestContextMiddleware } = require('./app/services/clients/base/request-context')
-const Sentry = require('./app/utils/sentry.js').initialiseSentry()
-const formatPSPname = require('./app/utils/format-PSP-name')
-const smartCaps = require('./app/utils/custom-nunjucks-filters/smart-caps')
-const govukDate = require('./app/utils/custom-nunjucks-filters/govuk-date')
-const formatAccountPathsFor = require('./app/utils/format-account-paths-for')
-const formatFutureStrategyAccountPathsFor = require('./app/utils/format-future-strategy-account-paths-for')
-const formatServicePathsFor = require('./app//utils/format-service-paths-for')
-const healthcheckController = require('./app/controllers/healthcheck.controller')
-const { healthcheck } = require('./app/paths.js')
+const logger = require('@utils/logger')(__filename)
+const loggingMiddleware = require('@middleware/logging-middleware')
+const { requestContextMiddleware } = require('@services/clients/base/request-context')
+const Sentry = require('@utils/sentry.js').initialiseSentry()
+const formatPSPName = require('@utils/format-PSP-name')
+const smartCaps = require('@utils/custom-nunjucks-filters/smart-caps')
+const govukDate = require('@utils/custom-nunjucks-filters/govuk-date')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const formatFutureStrategyAccountPathsFor = require('@utils/format-future-strategy-account-paths-for')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
+const healthcheckController = require('@controllers/healthcheck.controller')
+const { healthcheck } = require('@root/paths.js')
 const { boolToText, boolToOnOrOff } = require('@utils/bool-to-text')
 // Global constants
 const bindHost = (process.env.BIND_HOST || '127.0.0.1')
@@ -106,7 +105,7 @@ function initialiseTemplateEngine (app) {
     const filter = nunjucksFilters[name]
     nunjucksEnvironment.addFilter(name, filter)
   }
-  nunjucksEnvironment.addFilter('formatPSPname', formatPSPname)
+  nunjucksEnvironment.addFilter('formatPSPname', formatPSPName)
   nunjucksEnvironment.addFilter('isList', (n) => Array.isArray(n))
   nunjucksEnvironment.addFilter('smartCaps', smartCaps)
   nunjucksEnvironment.addFilter('govukDate', govukDate)
@@ -134,8 +133,7 @@ function initialiseErrorHandling (app) {
   app.use(errorHandler)
 }
 
-function listen () {
-  const app = initialise()
+function listen (app) {
   app.listen(port, bindHost)
   logger.info(`Listening on ${bindHost}:${port}`)
 }
@@ -169,16 +167,14 @@ function initialise () {
   return app
 }
 
-/**
- * Starts app after ensuring DB is up
- */
 function start () {
-  listen()
-}
-
-// immediately invoke start if -i flag set. Allows script to be run by task runner
-if (argv.i) {
-  start()
+  const app = initialise()
+  if (process.env.LOCAL_HTTPS === 'true') {
+    const { listenHttps } = require('./listen-https')
+    listenHttps(app)
+  } else {
+    listen(app)
+  }
 }
 
 module.exports = {

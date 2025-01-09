@@ -2,47 +2,57 @@
 GOV.UK Pay Self Service admin tool (Node.js)
 
 ## Prerequisites
-* This requires the [Pay CLI](https://github.com/alphagov/pay-infra/tree/master/cli), which is not publicly available at present.
-* You have [set up your local development environment](https://pay-team-manual.cloudapps.digital/manual/development-processes/setup-local-dev-environment.html)
-* Clone this repo locally.
+* [Pay CLI](https://www.npmjs.com/package/@govuk-pay/cli)
+* You have [set up your local development environment](https://manual.payments.service.gov.uk/manual/development-processes/setup-local-dev-environment.html)
 
 ### Running locally
 
 Start the backend services locally in docker, using the Pay CLI.
   
-  ```
-  pay local launch --cluster admin
-  ```
+```bash
+pay local up --cluster admin
+```
  
 Generate the environment variables file. This only needs to be done the first time you run locally.
   
-  ```
-  ./scripts/generate-dev-environment.sh local
-  ```
+```bash
+./scripts/generate-dev-environment.sh local
+```
 
 Check that you are using the right version of Node, which should match what specified in package.json for engines/node.
 
-```
+```bash
 node -v
 ```
 
 If the node version is not what specified in package.json, then you need to install it and set it, e.g. for 18.17.1:
 
-```
+```bash
 nvm install 18.17.1
 nvm use
 nvm alias default 18.17.1
 ```
 
-Run the following to build and start the app:
+Run the following in the project root to start the app:
 
-```
-npm run compile
-npm run start:dev
+```bash
+npm i
+npm run dev
  ```
 
-Open application in browser: 
+Open the application in browser: 
 - http://127.0.0.1:3000
+
+You'll probably want to create a user in order to use the app:
+
+```bash
+pay local user
+```
+
+Copy the generated username, password and OTP token, if you need to regenerate the token at any time you can run 
+```bash
+pay local otp YOUR_TOKEN_HERE
+```
 
 ##### Log output
 When using Docker, you can view log out with the following command:
@@ -53,7 +63,7 @@ docker logs -f selfservice
 #### Debug using Visual Studio Code
 * You need to make sure the app runs locally first using the steps in the [Running](#running) section.
 * In VSCode, go to the `Debug` view (on MacOS, use shortcut `CMD + shift + D`).
-* From the **Run** toolbar, select tne launch config `Self Service`.
+* From the **Run** toolbar, select the launch config `Self Service`.
 * Add breakpoints to any file you want to debug - click in the left hand column and a red dot will appear.
 * Press The `green play` button (`F5` MacOS):
     * This will run the app in debug mode.
@@ -118,7 +128,6 @@ You will then be able to click on individual specs and see the tests running in 
 | HTTP_PROXY                  |   |      | HTTP proxy url |
 | HTTPS_PROXY                 |   |      | HTTPS proxy url |
 | NO_PROXY                    |   |      | host:port(s) that need to be by passed by the proxy. Supports comma separated list |
-| NODE_WORKER_COUNT           |   | 1 | The number of worker threads started by node cluster when run in production mode |
     
 ## Architecture Decision Records
 
