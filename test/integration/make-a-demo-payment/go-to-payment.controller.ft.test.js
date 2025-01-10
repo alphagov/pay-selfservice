@@ -8,10 +8,10 @@ const csrf = require('csrf')
 
 const { getApp } = require('../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../test-helpers/mock-session')
-const paths = require('../../../app/paths')
-const { randomUuid } = require('../../../app/utils/random')
+const paths = require('../../../src/paths')
+const { randomUuid } = require('../../../src/utils/random')
 const { validCreateProductRequest, validProductResponse } = require('../../fixtures/product.fixtures')
-const formatAccountPathsFor = require('../../../app/utils/format-account-paths-for')
+const formatAccountPathsFor = require('../../../src/utils/format-account-paths-for')
 const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
 
 const { PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL } = process.env

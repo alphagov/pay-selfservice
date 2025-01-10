@@ -8,12 +8,12 @@ const csrf = require('csrf')
 require('../../test-helpers/serialize-mock.js')
 const { expect } = chai
 const getApp = require('../../../server.js').getApp
-const paths = require('../../../app/paths.js')
+const paths = require('../../../src/paths.js')
 const session = require('../../test-helpers/mock-session.js')
 const userCreator = require('../../test-helpers/user-creator.js')
 const cardFixtures = require('../../fixtures/card.fixtures')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const formatAccountPathsFor = require('../../../app/utils/format-account-paths-for')
+const formatAccountPathsFor = require('../../../src/utils/format-account-paths-for')
 
 const gatewayAccountId = '15486734'
 const gatewayAccountExternalId = 'account-external-id'

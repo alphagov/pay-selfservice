@@ -1,20 +1,8 @@
-cypress
-docs
-.gitignore
-.git
-.github
-.sass-lint.yml
-CONTRIBUTING.md
-env.sh
-node_modules
-node_modules_local
-Dockerfile
-Jenkinsfile
-.snyk
-build-local.sh
-pacts
-.settings
-.project
-*.log
-*.txt
-.env
+# exclude everything
+*
+# include following
+!src
+!esbuild.config.mjs
+!jsconfig.json
+!package.json
+!package-lock.json

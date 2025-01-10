@@ -3,7 +3,7 @@ require(path.join(__dirname, '/../test-helpers/serialize-mock.js'))
 const request = require('supertest')
 const nock = require('nock')
 const getApp = require(path.join(__dirname, '/../../server.js')).getApp
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const paths = require(path.join(__dirname, '/../../src/paths.js'))
 const mockSession = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
 const assert = require('assert')
 const { expect } = require('chai')

@@ -6,7 +6,7 @@ const chaiAsPromised = require('chai-as-promised')
 
 const path = require('path')
 const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
+const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const serviceFixtures = require('@test/fixtures/service.fixtures')
 const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
 const goLiveStage = require('@models/go-live-stage')

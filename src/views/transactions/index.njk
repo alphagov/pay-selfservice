@@ -1,0 +1,117 @@
+{% from "../macro/breadcrumbs.njk" import breadcrumbs %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% extends "../layout.njk" %}
+
+{% block pageTitle %}
+    {% if allServiceTransactions %}
+       Transactions for all services
+    {% else %}
+       Transactions - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+    {% endif %}
+{% endblock %}
+
+{% block classesOnBodyTag %}transactions index {% endblock %}
+
+{% block pageSpecificStyle %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.standalone.min.css" integrity="sha512-D5/oUZrMTZE/y4ldsD6UOeuPR4lwjLnfNMWkjC0pffPTCVlqzcHTNvkn3dhL7C0gYifHQJAIrRTASbMvLmpEug==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.14.1/jquery.timepicker.min.css" integrity="sha512-WlaNl0+Upj44uL9cq9cgIWSobsjEOD1H7GK1Ny1gmwl43sO0QAUxVpvX2x+5iQz/C60J3+bM7V07aC/CNWt/Yw==" crossorigin="anonymous" />
+{% endblock %}
+
+{% block pageSpecificJS %}
+<script src="https://unpkg.com/jquery@3.7.1/dist/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js" integrity="sha512-LsnSViqQyaXpD4mBBdRYeP6sRwJiJveh2ZIbW41EBrNmKxgr/LFZIiWT6yr+nycvhvauz8c2nYMhrP80YhG7Cw==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.14.1/jquery.timepicker.min.js" integrity="sha512-TYfUH4Mbt6NcWkJI7RS5MoMqFSkpBCChADy2EjAiFr5ckAdTjOUUjnTA3GH8PQAIa2Nz7eR/4PR9xXY3uhnu/A==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datepair.js/0.4.17/jquery.datepair.min.js" integrity="sha512-dY39OLVn61yY3H9Iboby9hTzf4HyP7SdTuqPvWJzBmHqu+zbVQKEUPm+HmZT5/Mh9G/UV52nQ2PfcmG/OoRQdQ==" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block beforeContent %}
+  {% if allServiceTransactions %}
+    {% set pageTitleBreadcrumbWithTag %}
+      <span>Transactions for all services</span>
+      <strong class="govuk-tag govuk-tag--grey service-info--tag ">{{ "Live" if filterLiveAccounts else "Test" }}</strong>
+    {% endset %}
+    {{ breadcrumbs([
+      { text: "My services", href: routes.serviceSwitcher.index },
+      { html: pageTitleBreadcrumbWithTag  }
+    ]) }}
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block mainContent %}
+<div class="govuk-grid-column-full">
+
+  {% if (isInvalidDateRange) %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      attributes: {
+        'data-cy': 'error-summary'
+      },
+      errorList: [
+        {
+          text: "End date must be after start date",
+          href: "#toDate"
+        }
+      ]
+    }) }}
+  {% endif %}
+
+  <h1 class="govuk-heading-l">
+    {% if allServiceTransactions %}
+       Transactions for all services
+       <strong class="govuk-tag govuk-tag--grey">{{ "Live" if filterLiveAccounts else "Test" }}</strong>
+    {% else %}
+       Transactions
+    {% endif %}
+  </h1>
+
+  {% if allServiceTransactions %}
+    {% if filterLiveAccounts %}
+      <p><a class="govuk-link govuk-link--no-visited-state" href="{{ routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') }}">Switch to test accounts</a></p>
+    {% else %}
+      {% if hasLiveAccounts %}
+        <p><a class="govuk-link govuk-link--no-visited-state" href="{{ routes.allServiceTransactions.index }}">Switch to live accounts</a></p>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+
+  {% include "transactions/filter.njk" %}
+
+  {% include "transactions/display-size.njk" %}
+
+  <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
+    {% if not allServicesTimeout %}
+      {% if totalOverLimit %}
+        Over {{maxLimitFormatted}} transactions
+      {% else %}
+        {{totalFormatted}} transactions
+      {% endif %}
+      {{ filtersDescription | safe }}
+    {% endif %}
+
+  </h3>
+
+  {% if allServiceTransactions or permissions.transactions_download_read %}
+
+    {% if (hasResults) %}
+      {% if (showCsvDownload) %}
+          <p id="csv-download" class="govuk-body">
+            <a href="{{downloadTransactionLink}}" id="download-transactions-link" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16"> Download all transaction details as a CSV file </a>
+          </p>
+      {% else %}
+          <p id="csv-download" class="govuk-body">
+              Filter results to download a CSV of transactions
+          </p>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+
+  {% include "transactions/paginator.njk" %}
+
+  {% include "transactions/list.njk" %}
+
+  {% include "transactions/paginator.njk" %}
+</div>
+{% endblock %}

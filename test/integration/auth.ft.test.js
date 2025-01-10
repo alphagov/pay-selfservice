@@ -1,8 +1,8 @@
 require('../test-helpers/serialize-mock.js')
 const request = require('supertest')
 const { getAppWithLoggedInUser, getUser, getAppWithSessionWithoutSecondFactor, getAppWithLoggedOutSession } = require('../test-helpers/mock-session.js')
-const paths = require('../../app/paths.js')
-const server = require('../../server.js')
+const paths = require('../../src/paths.js')
+const server = require('../../src/server.js')
 
 let app
 

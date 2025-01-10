@@ -8,7 +8,7 @@ const { Pact } = require('@pact-foundation/pact')
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
 const webhookFixtures = require('../../fixtures/webhooks.fixtures')
-const webhooksClient = require('../../../app/services/clients/webhooks.client')
+const webhooksClient = require('../../../src/services/clients/webhooks.client')
 
 const { expect } = chai
 chai.use(chaiAsPromised)

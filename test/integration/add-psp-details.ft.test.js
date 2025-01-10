@@ -1,19 +1,18 @@
-'use strict'
-
+require('@test/test-helpers/serialize-mock.js')
 const supertest = require('supertest')
 const nock = require('nock')
 const cheerio = require('cheerio')
 const { expect } = require('chai')
 
-const paths = require('../../app/paths')
-const { validGatewayAccountResponse } = require('../fixtures/gateway-account.fixtures')
-const { buildGetStripeAccountSetupResponse } = require('../fixtures/stripe-account-setup.fixtures')
+const paths = require('@root/paths')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
+const { buildGetStripeAccountSetupResponse } = require('@test/fixtures/stripe-account-setup.fixtures')
 
 const connectorMock = nock(process.env.CONNECTOR_URL)
 const GATEWAY_ACCOUNT_ID = '111'
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'a-valid-external-id'
-const { getApp } = require('../../server')
-const { getMockSession, createAppWithSession, getUser } = require('../test-helpers/mock-session')
+const { getApp } = require('@root/server')
+const { getMockSession, createAppWithSession, getUser } = require('@test/test-helpers/mock-session')
 
 describe('Add stripe psp details route', function () {
   describe('All setup steps complete', () => {

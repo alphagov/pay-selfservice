@@ -2,13 +2,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@root/*": ["app/*"],
-      "@controllers/*": ["app/controllers/*"],
-      "@middleware/*": ["app/middleware/*"],
-      "@models/*": ["app/models/*"],
-      "@services/*": ["app/services/*"],
-      "@utils/*": ["app/utils/*"],
-      "@views/*": ["app/views/*"],
+      "@root/*": ["src/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@middleware/*": ["src/middleware/*"],
+      "@models/*": ["src/models/*"],
+      "@services/*": ["src/services/*"],
+      "@utils/*": ["src/utils/*"],
+      "@views/*": ["src/views/*"],
       "@test/*": ["test/*"]
     }
   },

@@ -12,8 +12,8 @@ const API_RESOURCE = '/v1/api'
 let result, productExternalId, gatewayAccountId, productsClient
 
 function getProductsClient (baseUrl) {
-  return proxyquire('../../../../app/services/clients/products.client', {
-    '../../../config': {
+  return proxyquire('../../../../src/services/clients/products.client', {
+    '../../../../src/config': {
       PRODUCTS_URL: baseUrl
     }
   })

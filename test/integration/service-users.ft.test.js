@@ -14,9 +14,9 @@ const session = require('../test-helpers/mock-session.js')
 const { getApp } = require('../../server.js')
 const inviteFixtures = require('../fixtures/invite.fixtures')
 const userFixtures = require('../fixtures/user.fixtures')
-const paths = require('../../app/paths.js')
-const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
-const User = require('../../app/models/User.class')
+const paths = require('../../src/paths.js')
+const formatServicePathsFor = require('../../src/utils/format-service-paths-for')
+const User = require('../../src/models/User.class')
 
 // Local constants
 const adminusersMock = nock(process.env.ADMINUSERS_URL)

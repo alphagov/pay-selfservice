@@ -1,0 +1,106 @@
+.transactions-filter {
+  form {
+    margin: 0 govuk-spacing(3);
+    padding: govuk-spacing(3) 0;
+    background: govuk-colour("light-grey");
+  }
+
+  .govuk-hint {
+    color: $govuk-text-colour;
+  }
+}
+
+.datetime-filter {
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
+
+  @include govuk-media-query(tablet) {
+    width: 50%;
+  }
+
+  &__input-container {
+    float: left;
+
+    width: 50%;
+    box-sizing: border-box;
+
+
+    &--date-input,
+    .govuk-form-group--error &--date-input {
+      padding-right: govuk-spacing(1);
+      margin-bottom: govuk-spacing(2);
+    }
+
+    &--time-input,
+    .govuk-form-group--error &--time-input {
+      padding-right: govuk-spacing(1);
+    }
+  }
+}
+
+
+
+.datetime-filter-from {
+  padding-right: govuk-spacing(3);
+}
+
+.datetime-filter-to {
+  position: relative;
+  // padding-left: govuk-spacing(3);
+
+  @include govuk-media-query(tablet) {
+    padding-left: govuk-spacing(3);
+  }
+
+  &__container {
+    width: auto;
+    padding: 0;
+  }
+}
+
+.datetime-separator {
+  margin-bottom: govuk-spacing(2);
+  @include govuk-font($size: 16);
+
+  @include govuk-media-query(tablet) {
+    @include govuk-font($size: 14);
+    position: absolute;
+    left: -8px;
+    margin-top: govuk-spacing(7);
+  }
+}
+
+.inputs-less-margin .govuk-form-group {
+  margin-bottom: govuk-spacing(3);
+}
+
+.inputs-less-margin .govuk-button {
+  margin-bottom: govuk-spacing(1);
+}
+
+.clear-filter {
+  position: relative;
+  top: 12px;
+}
+
+// bootstrap datepicker overides
+.datepicker .datepicker-days table {
+  @include govuk-font($size: 14);
+}
+
+.ui-timepicker-list {
+  @include govuk-font($size: 14);
+}
+
+.datepicker .datepicker-days table tr td.day.focused,
+.datepicker .datepicker-days table tr td.day:hover {
+    background: govuk-colour("yellow");
+}
+
+.datepicker .datepicker-days table tr td.active:active,
+.datepicker .datepicker-days table tr td.active.highlighted:active,
+.datepicker .datepicker-days table tr td.active.active,
+.datepicker .datepicker-days table tr td.active.highlighted.active {
+  background: govuk-colour("blue");
+}
