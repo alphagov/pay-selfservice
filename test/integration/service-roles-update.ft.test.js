@@ -5,8 +5,8 @@ const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 const supertest = require('supertest')
 const csrf = require('csrf')
 const userFixtures = require(path.join(__dirname, '/../fixtures/user.fixtures'))
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
-const roles = require('../../app/utils/roles').roles
+const paths = require(path.join(__dirname, '/../../src/paths.js'))
+const roles = require('../../src/utils/roles').roles
 const chai = require('chai')
 const _ = require('lodash')
 const chaiAsPromised = require('chai-as-promised')
@@ -19,7 +19,7 @@ const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
 const USER_RESOURCE = '/v1/api/users'
 
-const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
+const formatServicePathsFor = require('../../src/utils/format-service-paths-for')
 
 describe('user permissions update controller', function () {
   const EXTERNAL_SERVICE_ID = '38745gf8y'

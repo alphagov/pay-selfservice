@@ -7,7 +7,7 @@ const nock = require('nock')
 
 const { getApp } = require('../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../test-helpers/mock-session')
-const paths = require('../../../app/paths')
+const paths = require('../../../src/paths')
 const ZENDESK_URL = 'https://govuk.zendesk.com/api/v2'
 const GATEWAY_ACCOUNT_ID = '929'
 const VALID_USER = getUser({

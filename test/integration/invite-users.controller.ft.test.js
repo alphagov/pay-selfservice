@@ -5,14 +5,14 @@ const supertest = require('supertest')
 const session = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
 const csrf = require('csrf')
 const chai = require('chai')
-const roles = require('../../app/utils/roles').roles
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const roles = require('../../src/utils/roles').roles
+const paths = require(path.join(__dirname, '/../../src/paths.js'))
 const inviteFixtures = require(path.join(__dirname, '/../fixtures/invite.fixtures'))
 
 const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
-const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
+const formatServicePathsFor = require('../../src/utils/format-service-paths-for')
 
 describe('invite user controller', function () {
   const userInSession = session.getUser({})

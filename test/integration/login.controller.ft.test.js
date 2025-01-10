@@ -14,9 +14,9 @@ require(path.join(__dirname, '/../test-helpers/serialize-mock.js'))
 const getApp = require(path.join(__dirname, '/../../server.js')).getApp
 const { buildGetStripeAccountSetupResponse } = require('../fixtures/stripe-account-setup.fixtures')
 const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
+const paths = require(path.join(__dirname, '/../../src/paths.js'))
 const mockSession = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
-const loginController = require(path.join(__dirname, '/../../app/controllers/login'))
+const loginController = require(path.join(__dirname, '/../../src/controllers/login'))
 const mockRes = require('../fixtures/response')
 
 const { CONNECTOR_URL } = process.env

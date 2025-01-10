@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [ "master" ]
     paths:
-      - 'app/**'
+      - 'src/**'
       - 'test/**'
   push:
     branches: [ "master" ]

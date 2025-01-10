@@ -42,7 +42,7 @@ describe('gateway credentials controller', () => {
       headers: {}
     }
     await credentialsController.update(req, expressResponseStub, next)
-    sinon.assert.calledWithMatch(patchAccountSpy, { credentials: { username: 'username', password: 'password', merchant_id: 'merchant-id' } })
+    sinon.assert.calledWithMatch(patchAccountSpy, { credentials: { username: 'username', password: 'password', merchant_id: 'merchant-id' } }) // pragma: allowlist secret
   })
 
   it('should remove leading and trailing whitespace from notification credentials when submitting them to the backend', async () => {

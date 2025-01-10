@@ -8,7 +8,7 @@ const cheerio = require('cheerio')
 const nock = require('nock')
 const moment = require('moment-timezone')
 
-const { getApp } = require('../../../server')
+const { getApp } = require('../../../src/server')
 const { getMockSession, createAppWithSession, getUser } = require('../../test-helpers/mock-session')
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
 const productFixtures = require('../../fixtures/product.fixtures')

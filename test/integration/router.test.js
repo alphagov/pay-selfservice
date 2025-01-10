@@ -1,7 +1,7 @@
 const path = require('path')
 require(path.join(__dirname, '/../test-helpers/html-assertions.js'))
 const assert = require('assert')
-const router = require(path.join(__dirname, '/../../app/routes.js'))
+const router = require(path.join(__dirname, '/../../src/routes.js'))
 
 describe('date format', function () {
   it('should return the correct generated url with no query string', function () {

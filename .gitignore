@@ -4,7 +4,6 @@
 .start.pid
 .project
 .settings
-config/dev-env.json
 .env
 public
 dist

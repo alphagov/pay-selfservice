@@ -1,4 +1,4 @@
-import { build, context } from 'esbuild'
+import { build } from 'esbuild'
 import { sassPlugin } from 'esbuild-sass-plugin'
 import { copy } from 'esbuild-plugin-copy'
 import { fileURLToPath } from 'node:url'
@@ -25,8 +25,8 @@ const buildOptions = {
 const clientBuild = {
   ...buildOptions,
   entryPoints: [
-    { out: 'assets/stylesheets/application', in: 'app/assets/sass/application.scss' },
-    { out: 'assets/js/client', in: 'app/client-side.js' }
+    { out: 'assets/stylesheets/application', in: 'src/assets/sass/application.scss' },
+    { out: 'assets/js/client', in: 'src/client-side.js' }
   ],
   format: 'iife',
   platform: 'browser',
@@ -46,11 +46,11 @@ const clientBuild = {
           to: ['dist/govuk-frontend-assets']
         },
         {
-          from: ['app/assets/images/**/*'],
+          from: ['src/assets/images/**/*'],
           to: ['dist/assets/images']
         },
         {
-          from: ['app/assets/csv/**/*'],
+          from: ['src/assets/csv/**/*'],
           to: ['dist/assets/csv']
         }
       ]
@@ -62,16 +62,16 @@ const clientBuild = {
 const serverBuild = {
   ...buildOptions,
   entryPoints: [
-    { out: 'application', in: 'app/start.js' },
+    { out: 'application', in: 'src/start.js' },
   ],
   alias: {
-    '@root': resolve(__dirname, 'app'),
-    '@controllers': resolve(__dirname, 'app/controllers'),
-    '@middleware': resolve(__dirname, 'app/middleware'),
-    '@models': resolve(__dirname, 'app/models'),
-    '@services': resolve(__dirname, 'app/services'),
-    '@utils': resolve(__dirname, 'app/utils'),
-    '@views': resolve(__dirname, 'app/views'),
+    '@root': resolve(__dirname, 'src'),
+    '@controllers': resolve(__dirname, 'src/controllers'),
+    '@middleware': resolve(__dirname, 'src/middleware'),
+    '@models': resolve(__dirname, 'src/models'),
+    '@services': resolve(__dirname, 'src/services'),
+    '@utils': resolve(__dirname, 'src/utils'),
+    '@views': resolve(__dirname, 'src/views'),
     '@test': resolve(__dirname, 'test')
   },
   platform: 'node',
@@ -83,7 +83,7 @@ const serverBuild = {
       resolveFrom: 'cwd',
       assets: [
         {
-          from: ['app/views/**/*.njk'],
+          from: ['src/views/**/*.njk'],
           to: ['dist/views'],
           watch: isDev
         },

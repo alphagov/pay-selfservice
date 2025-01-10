@@ -1,7 +1,7 @@
 'use strict'
 
 const axios = require('axios')
-const zendeskConfig = require('../../../config/zendesk')
+const zendeskConfig = require('@root/config/zendesk')
 const urlJoin = require('url-join')
 
 function createTicket (opts) {

@@ -6,7 +6,7 @@ module.exports = (req, res) => {
   if (res.locals.flash.hasOwnProperty('error')) {
     switch (res.locals.flash.error[0]) {
       case 'invalid':
-        errors = { username: 'Enter a valid email address', password: 'Enter a valid password' }
+        errors = { username: 'Enter a valid email address', password: 'Enter a valid password' } // pragma: allowlist secret
         break
       case 'empty_all':
         errors = { username: 'Enter an email address', password: 'Enter a password' } // pragma: allowlist secret

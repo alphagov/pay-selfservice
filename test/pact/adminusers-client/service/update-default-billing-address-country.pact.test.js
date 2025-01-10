@@ -5,7 +5,7 @@ const { expect } = require('chai')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
+const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const serviceFixtures = require('../../../fixtures/service.fixtures')
 const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 

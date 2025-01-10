@@ -8,13 +8,13 @@
     "node": "^18.20.4"
   },
   "_moduleAliases": {
-    "@root": "app",
-    "@controllers": "app/controllers",
-    "@middleware": "app/middleware",
-    "@models": "app/models",
-    "@services": "app/services",
-    "@utils": "app/utils",
-    "@views": "app/views",
+    "@root": "src",
+    "@controllers": "src/controllers",
+    "@middleware": "src/middleware",
+    "@models": "src/models",
+    "@services": "src/services",
+    "@utils": "src/utils",
+    "@views": "src/views",
     "@test": "test"
   },
   "standard": {
@@ -31,15 +31,15 @@
       "Cypress"
     ],
     "ignore": [
-      "app/assets/**/*.js",
+      "src/assets/**/*.js",
       "node_modules_local/**/*.*"
     ]
   },
   "scripts": {
     "dev": "NODE_ENV=development node dev-server.mjs",
-    "build": "NODE_ENV=production node esbuild.config.mjs",
+    "compile": "NODE_ENV=production node esbuild.config.mjs",
     "lint": "standard --fix",
-    "lint-sass": "stylelint '**/*.scss'",
+    "lint-sass": "stylelint 'src/assets/sass/**/*.scss'",
     "test": "rm -rf ./pacts && NODE_ENV=test mocha '!(node_modules)/**/*.test'.js",
     "test:no-pact": "rm -rf ./pacts && NODE_ENV=test mocha --exclude **/*.pact.test.js '!(node_modules)/**/*.test'.js",
     "test:pact": "rm -rf ./pacts && NODE_ENV=test mocha **/*.pact.test.js",
@@ -90,7 +90,6 @@
     "common-password": "0.1.2",
     "connect-flash": "0.1.1",
     "cookie-parser": "1.4.x",
-    "csurf": "^1.11.0",
     "express": "4.21.2",
     "express-validator": "^7.2.0",
     "google-libphonenumber": "3.2.33",

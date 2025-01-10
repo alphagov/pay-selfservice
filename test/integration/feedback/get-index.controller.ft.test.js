@@ -7,7 +7,7 @@ const nock = require('nock')
 
 const { getApp } = require('../../../server')
 const { getMockSession, createAppWithSession, getUser } = require('../../test-helpers/mock-session')
-const paths = require('../../../app/paths')
+const paths = require('../../../src/paths')
 
 describe('Feedback page GET', () => {
   let result, $, session
