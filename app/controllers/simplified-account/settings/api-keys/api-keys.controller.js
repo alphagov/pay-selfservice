@@ -5,7 +5,9 @@ const paths = require('@root/paths')
 
 async function get (req, res) {
   const activeKeys = await apiKeysService.getActiveKeys(req.account.id)
+  const messages = res.locals?.flash?.messages ?? []
   return response(req, res, 'simplified-account/settings/api-keys/index', {
+    messages,
     accountType: req.account.type,
     activeKeys: activeKeys.map(activeKey => {
       return {

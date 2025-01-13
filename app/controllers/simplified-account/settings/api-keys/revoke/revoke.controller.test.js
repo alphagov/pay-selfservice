@@ -68,6 +68,39 @@ describe('Controller: settings/api-keys/revoke', () => {
   })
 
   describe('post', () => {
+    describe('when nothing is selected', () => {
+      before(() => {
+        nextRequest({
+          body: {
+            apiKeyName: `${token.description}`
+          },
+          params: {
+            tokenLink: TOKEN_LINK
+          }
+        })
+        call('post')
+      })
+
+      it('should pass req, res, template path and context to the response method', () => {
+        expect(mockResponse).to.have.been.calledWith(
+          {
+            ...req,
+            body: { apiKeyName: 'token description' }, // pragma: allowlist secret
+            params: { tokenLink: TOKEN_LINK }
+          },
+          res,
+          'simplified-account/settings/api-keys/revoke',
+          {
+            errors: {
+              summary: [{ text: `Confirm if you want to revoke ${token.description}`, href: '#revokeApiKey' }],
+              formErrors: { revokeApiKey: `Confirm if you want to revoke ${token.description}` } // pragma: allowlist secret
+            },
+            description: token.description,
+            backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, SERVICE_ID, ACCOUNT_TYPE)
+          })
+      })
+    })
+
     describe('when No is selected', () => {
       before(() => {
         nextRequest({

@@ -7,9 +7,11 @@
 {% block settingsContent %}
   <form id="revoke-api-key" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    <input id="apiKeyName" name="apiKeyName" type="hidden" value="{{ description }}"/>
 
     {{ govukRadios({
       name: 'revokeApiKey',
+      errorMessage: { text: errors.formErrors['revokeApiKey'] } if errors.formErrors['revokeApiKey'] else false,
       fieldset: {
         legend: {
           text: 'Are you sure you want to revoke ' + description,
