@@ -1,0 +1,56 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Revoked API keys
+{% endblock %}
+
+{% block settingsContent %}
+
+  <h1 class="govuk-heading-l page-title">
+    Revoked API keys ({{ tokens.length }})
+  </h1>
+
+  {% for key in tokens %}
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: key.description
+        }
+      },
+      rows: [
+        {
+          key: {
+            text: 'Created by'
+          },
+          value: {
+            text: key.createdBy
+          }
+        },
+        {
+          key: {
+            text: 'Date created'
+          },
+          value: {
+            text: key.issuedDate
+          }
+        },
+        {
+          key: {
+            text: 'Last used'
+          },
+          value: {
+            text: key.lastUsed
+          }
+        },
+        {
+          key: {
+            text: 'Date revoked'
+          },
+          value: {
+            text: key.revokedDate
+          }
+        }
+      ]
+    }) }}
+  {% endfor %}
+{% endblock %}

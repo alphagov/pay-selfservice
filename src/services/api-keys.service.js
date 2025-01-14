@@ -27,15 +27,26 @@ const createApiKey = async (gatewayAccount, description, email, tokenSource) => 
 }
 
 /**
+ * Gets the list of revoked api keys for a gateway account
+ * @param {string} gatewayAccountId
+ * @returns {[Token]}
+ */
+const getRevokedKeys = async (gatewayAccountId) => {
+  const response = await publicAuthClient.getRevokedTokensForAccount({ accountId: gatewayAccountId })
+  const revokedTokens = response.tokens || []
+  return revokedTokens.map(tokenData => Token.fromJson(tokenData))
+}
+
+/**
  * Gets the list of active api keys for a gateway account
  * @param {string} gatewayAccountId
  * @returns {[Token]}
  */
 const getActiveKeys = async (gatewayAccountId) => {
-  const publicAuthData = await publicAuthClient.getActiveTokensForAccount({
+  const response = await publicAuthClient.getActiveTokensForAccount({
     accountId: gatewayAccountId
   })
-  return publicAuthData.tokens.map(tokenData => Token.fromJson(tokenData))
+  return response.tokens.map(tokenData => Token.fromJson(tokenData))
 }
 
 /**
@@ -73,6 +84,7 @@ module.exports = {
   createApiKey,
   getActiveKeys,
   getKeyByTokenLink,
+  getRevokedKeys,
   revokeKey,
   TOKEN_SOURCE
 }

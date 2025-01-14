@@ -231,7 +231,8 @@ module.exports = {
         index: '/settings/api-keys',
         create: '/settings/api-keys/create',
         changeName: '/settings/api-keys/change-name/:tokenLink',
-        revoke: '/settings/api-keys/revoke/:tokenLink'
+        revoke: '/settings/api-keys/revoke/:tokenLink',
+        revokedKeys: '/settings/api-keys/revoked'
       },
       webhooks: {
         index: '/settings/webhooks'

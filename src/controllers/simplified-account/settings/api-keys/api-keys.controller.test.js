@@ -7,7 +7,8 @@ const SERVICE_ID = 'service-id-123abc'
 const mockResponse = sinon.spy()
 const apiKeys = [{ description: 'my token', createdBy: 'system generated', issuedDate: '12 Dec 2024', tokenLink: '123-345' }]
 const apiKeysService = {
-  getActiveKeys: sinon.stub().resolves(apiKeys)
+  getActiveKeys: sinon.stub().resolves(apiKeys),
+  getRevokedKeys: sinon.stub().resolves([])
 }
 
 const {
@@ -47,6 +48,13 @@ describe('Controller: settings/api-keys', () => {
             revokeKeyLink: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoke/${apiKeys[0].tokenLink}`
           }
         }))
+      expect(mockResponse.args[0][3]).to.have.property('createApiKeyLink').to.equal(
+        `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/create`
+      )
+      expect(mockResponse.args[0][3]).to.have.property('revokedKeysLink').to.equal(
+        `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoked`
+      )
+      expect(mockResponse.args[0][3]).to.have.property('showRevokedKeysLink').to.equal(false)
     })
   })
 })
