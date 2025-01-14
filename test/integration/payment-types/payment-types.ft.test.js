@@ -1,15 +1,14 @@
-require('@test/test-helpers/serialize-mock.js')
+require('@test/test-helpers/serialize-mock')
 const request = require('supertest')
 const nock = require('nock')
 const chai = require('chai')
 const csrf = require('csrf')
 
-require('@test/test-helpers/serialize-mock.js')
 const { expect } = chai
-const getApp = require('@root/server.js').getApp
-const paths = require('@root/paths.js')
-const session = require('@test/test-helpers/mock-session.js')
-const userCreator = require('@test/test-helpers/user-creator.js')
+const getApp = require('@root/server').getApp
+const paths = require('@root/paths')
+const session = require('@test/test-helpers/mock-session')
+const userCreator = require('@test/test-helpers/user-creator')
 const cardFixtures = require('@test/fixtures/card.fixtures')
 const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
