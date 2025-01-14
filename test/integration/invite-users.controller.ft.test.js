@@ -1,18 +1,19 @@
+require('@test/test-helpers/serialize-mock.js')
 const path = require('path')
 const nock = require('nock')
-const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const getApp = require('@root/server').getApp
 const supertest = require('supertest')
 const session = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
 const csrf = require('csrf')
 const chai = require('chai')
-const roles = require('../../app/utils/roles').roles
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
-const inviteFixtures = require(path.join(__dirname, '/../fixtures/invite.fixtures'))
+const roles = require('@utils/roles').roles
+const paths = require('@root/paths')
+const inviteFixtures = require('@test/fixtures/invite.fixtures')
 
 const expect = chai.expect
 const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
-const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
 
 describe('invite user controller', function () {
   const userInSession = session.getUser({})

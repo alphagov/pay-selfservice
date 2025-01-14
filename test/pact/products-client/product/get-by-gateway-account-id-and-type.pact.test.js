@@ -14,8 +14,8 @@ const API_RESOURCE = '/v1/api'
 let result, productsClient
 
 function getProductsClient (baseUrl) {
-  return proxyquire('../../../../app/services/clients/products.client', {
-    '../../../config': {
+  return proxyquire('@services/clients/products.client', {
+    '@root/config': {
       PRODUCTS_URL: baseUrl
     }
   })

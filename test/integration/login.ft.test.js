@@ -1,10 +1,9 @@
-const path = require('path')
-require(path.join(__dirname, '/../test-helpers/serialize-mock.js'))
+require('@test/test-helpers/serialize-mock.js')
 const request = require('supertest')
 const nock = require('nock')
-const getApp = require(path.join(__dirname, '/../../server.js')).getApp
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
-const mockSession = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
+const getApp = require('@root/server').getApp
+const paths = require('@root/paths')
+const mockSession = require('@test/test-helpers/mock-session')
 const assert = require('assert')
 const { expect } = require('chai')
 const adminusersMock = nock(process.env.ADMINUSERS_URL)

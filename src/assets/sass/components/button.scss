@@ -1,0 +1,20 @@
+.pay-button {
+  &--as-link {
+    display: inline;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    text-decoration: underline;
+    color: $govuk-link-colour;
+    text-align: left;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    @include govuk-font($size: 16);
+
+    &:hover {
+    color: $govuk-link-hover-colour;
+    }
+  }
+}

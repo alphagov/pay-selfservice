@@ -1,7 +1,8 @@
+require('@test/test-helpers/serialize-mock.js')
 const request = require('supertest')
 
-const { getApp } = require('../../server')
-const session = require('../test-helpers/mock-session.js')
+const { getApp } = require('@root/server')
+const session = require('@test/test-helpers/mock-session.js')
 
 describe('URL redirecting from old ones', () => {
   it('sends user to my services page when using old url', () => {

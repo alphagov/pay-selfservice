@@ -19,8 +19,8 @@ chai.use(chaiAsPromised)
 let publicAuthClient
 
 function getPublicAuthClient (baseUrl) {
-  return proxyquire('../../../app/services/clients/public-auth.client', {
-    '../../../config': {
+  return proxyquire('@services/clients/public-auth.client', {
+    '@root/config': {
       PUBLIC_AUTH_URL: baseUrl
     }
   })

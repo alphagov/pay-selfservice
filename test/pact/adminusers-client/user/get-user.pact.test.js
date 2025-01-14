@@ -7,7 +7,7 @@ const { expect } = chai
 const chaiAsPromised = require('chai-as-promised')
 
 const userFixtures = require('../../../fixtures/user.fixtures')
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
+const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
 

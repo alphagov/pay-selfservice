@@ -1,0 +1,21 @@
+.transactions-list-table {
+  background-color: govuk-colour("white");
+  table-layout: fixed;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.display-size {
+  float: right;
+  margin-left: govuk-spacing(3);
+  @include govuk-font($size: 19);
+}
+
+.displaySizeForm:before {
+  content: '|';
+  margin: 0 govuk-spacing(1);
+}
+
+.capitalize {
+  text-transform: capitalize;
+}

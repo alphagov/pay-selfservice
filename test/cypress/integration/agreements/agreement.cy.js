@@ -79,7 +79,7 @@ describe('Agreement detail page', () => {
     cy.get('#payment-instrument-list').find('dt').eq(0).contains('Type')
     cy.get('#payment-instrument-list').find('dd').eq(0).contains('Card')
     cy.get('#payment-instrument-list').find('dt').eq(1).contains('Card')
-    cy.get('#payment-instrument-list').find('dd').eq(1).find('img').should('have.attr', 'src', '/public/images/card_visa.png')
+    cy.get('#payment-instrument-list').find('dd').eq(1).find('img').should('have.attr', 'src', '/assets/images/card_visa.png')
     cy.get('#payment-instrument-list').find('dd').eq(1).get('[alt="Card brand Visa"]').should('exist')
     cy.get('#payment-instrument-list').find('dt').eq(2).contains('Name on card')
     cy.get('#payment-instrument-list').find('dd').eq(2).contains('Test User')

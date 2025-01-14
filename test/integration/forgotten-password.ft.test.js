@@ -1,25 +1,24 @@
-'use strict'
-
+require('@test/test-helpers/serialize-mock.js')
 const nock = require('nock')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const reqFixtures = require('../fixtures/browser/forgotten-password.fixtures')
-const resFixtures = require('../fixtures/response')
-const userFixtures = require('../fixtures/user.fixtures')
+const reqFixtures = require('@test/fixtures/browser/forgotten-password.fixtures')
+const resFixtures = require('@test/fixtures/response')
+const userFixtures = require('@test/fixtures/user.fixtures')
 
 const alwaysValidPassword = function (password) {
   return false // common-password returns false if password is not one of the common passwords (which would be invalid)
 }
 
 const userService = function (commonPasswordMock) {
-  return proxyquire('../../app/services/user.service.js', {
+  return proxyquire('@services/user.service.js', {
     'common-password': commonPasswordMock || alwaysValidPassword
   })
 }
 
 const forgottenPassword = function (commonPasswordMock) {
-  return proxyquire('../../app/controllers/forgotten-password.controller.js', {
-    '../services/user.service.js': userService(commonPasswordMock)
+  return proxyquire('@controllers/forgotten-password.controller.js', {
+    '@services/user.service.js': userService(commonPasswordMock)
   })
 }
 

@@ -16,8 +16,8 @@ let result, productsClient
 const randomPrice = () => Math.round(Math.random() * 10000) + 1
 
 function getProductsClient (baseUrl) {
-  return proxyquire('../../../../app/services/clients/products.client', {
-    '../../../config': {
+  return proxyquire('@services/clients/products.client', {
+    '@root/config': {
       PRODUCTS_URL: baseUrl
     }
   })

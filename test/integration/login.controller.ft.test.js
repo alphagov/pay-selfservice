@@ -1,6 +1,4 @@
-'use strict'
-
-const path = require('path')
+require('@test/test-helpers/serialize-mock.js')
 const request = require('supertest')
 const nock = require('nock')
 const assert = require('assert')
@@ -10,14 +8,13 @@ const _ = require('lodash')
 const sinon = require('sinon')
 const chaiAsPromised = require('chai-as-promised')
 
-require(path.join(__dirname, '/../test-helpers/serialize-mock.js'))
-const getApp = require(path.join(__dirname, '/../../server.js')).getApp
-const { buildGetStripeAccountSetupResponse } = require('../fixtures/stripe-account-setup.fixtures')
-const gatewayAccountFixtures = require('../fixtures/gateway-account.fixtures')
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
-const mockSession = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
-const loginController = require(path.join(__dirname, '/../../app/controllers/login'))
-const mockRes = require('../fixtures/response')
+const getApp = require('@root/server').getApp
+const { buildGetStripeAccountSetupResponse } = require('@test/fixtures/stripe-account-setup.fixtures')
+const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
+const paths = require('@root/paths')
+const mockSession = require('@test/test-helpers/mock-session')
+const loginController = require('@controllers/login')
+const mockRes = require('@test/fixtures/response')
 
 const { CONNECTOR_URL } = process.env
 const { LEDGER_URL } = process.env
@@ -269,22 +266,22 @@ describe('login post endpoint', function () {
     done()
   })
 
-  it('should display an error if csrf token does not exist for the login post', function (done) {
+  it('should redirect to logout if csrf token does not exist for the login post', function (done) {
     request(getApp())
       .post(paths.user.logIn)
       .set('Accept', 'application/json')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({})
       .expect(res => {
-        expect(res.status).to.equal(400)
-        expect(res.body.message).to.equal('There is a problem with the payments platform. Please contact the support team')
+        expect(res.status).to.equal(302)
+        expect('Location', paths.user.logOut)
       })
       .end(done)
   })
 })
 
 describe('otp login post endpoint', function () {
-  it('should display an error if csrf token does not exist for the login post', function (done) {
+  it('should redirect to logout if csrf token does not exist for the otp login post', function (done) {
     const user = mockSession.getUser()
     const session = mockSession.getMockSession(user)
     delete session.csrfSecret
@@ -297,15 +294,15 @@ describe('otp login post endpoint', function () {
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({ code: notp.totp.gen('12345') })
       .expect(res => {
-        expect(res.status).to.equal(400)
-        expect(res.body.message).to.equal('There is a problem with the payments platform. Please contact the support team')
+        expect(res.status).to.equal(302)
+        expect('Location', paths.user.logOut)
       })
       .end(done)
   })
 })
 
 describe('otp send again post endpoint', function () {
-  it('should display an error if csrf token does not exist for the send again post', function (done) {
+  it('should redirect to logout if csrf token does not exist for the send again post', function (done) {
     const user = mockSession.getUser()
     const session = mockSession.getMockSession(user)
     delete session.csrfSecret
@@ -318,8 +315,8 @@ describe('otp send again post endpoint', function () {
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({})
       .expect(res => {
-        expect(res.status).to.equal(400)
-        expect(res.body.message).to.equal('There is a problem with the payments platform. Please contact the support team')
+        expect(res.status).to.equal(302)
+        expect('Location', paths.user.logOut)
       })
       .end(done)
   })

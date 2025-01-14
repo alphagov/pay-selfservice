@@ -41,6 +41,8 @@ jobs:
     name: "Cypress"
     needs: [ install-and-compile ]
     uses: alphagov/pay-ci/.github/workflows/_run-node-cypress-tests.yml@master
+    with:
+      LIBGL_ALWAYS_SOFTWARE: "1"
 
   pact-providers-contract-tests:
     name: "Provider tests"

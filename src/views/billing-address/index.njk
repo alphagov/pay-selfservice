@@ -1,0 +1,87 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  Billing address - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
+{% endblock %}
+
+{% block sideNavigation %}
+  {% include "includes/side-navigation.njk" %}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    {% if not permissions.toggle_billing_address_update %}
+      {% include "../includes/settings-read-only.njk" %}
+    {% endif %}
+
+    <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Billing address</h1>
+    <p class="govuk-body-l">Payment service providers (PSPs) use the billing address to carry out fraud checks.</p>
+
+    {% if collectBillingAddress %}
+      <p class="govuk-body govuk-!-font-weight-bold">If you turn off the billing address:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>your payment service provider (PSP) or your users’ banks may decline more payments — if you’re unsure, check with your PSP</li>
+        <li>your GOV.UK Pay integration may stop working correctly — if you’re unsure, check with your technical team</li>
+      </ul>
+    {% else %}
+      {% set detailsHTML %}
+      <p class="govuk-body">Turning on the billing address adds the billing address section to the payment page.</p>
+
+      <img width="100%" src="/assets/images/remove-address.png">
+      {% endset %}
+
+      {{
+        govukDetails({
+          summaryText: "See an example payment page",
+          html: detailsHTML,
+          id: "billing-address-add-section-message"
+        })
+      }}
+    {% endif %}
+
+    <form class="permission-main" method="post" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      {{
+        govukRadios({
+          name: "billing-address-toggle",
+          fieldset: {
+            legend: {
+              text: "Billing address",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            {
+              value: "on",
+              text: "On",
+              checked: collectBillingAddress,
+              disabled: true if not permissions.toggle_billing_address_update
+            },
+            {
+              value: "off",
+              text: "Off",
+              checked: true if not collectBillingAddress,
+              disabled: true if not permissions.toggle_billing_address_update
+            }
+          ]
+        })
+      }}
+
+      {{
+        govukButton({
+          text: "Save changes",
+          classes: "govuk-!-margin-bottom-4",
+          attributes: {
+            id:"billing-address-toggle-button"
+          },
+          disabled: true if not permissions.toggle_billing_address_update
+        })
+      }}
+      <p class="govuk-body">
+        <a href="{{ formatAccountPathsFor(routes.account.settings.index, currentGatewayAccount.external_id) }}" class="govuk-link govuk-link--no-visited-state">
+          Cancel
+        </a>
+      </p>
+    </form>
+  </div>
+{% endblock %}

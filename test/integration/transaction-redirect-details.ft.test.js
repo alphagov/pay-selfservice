@@ -1,16 +1,15 @@
-'use strict'
+require('@test/test-helpers/serialize-mock')
 
 const request = require('supertest')
 const nock = require('nock')
 
-require('../test-helpers/serialize-mock.js')
-const userCreator = require('../test-helpers/user-creator.js')
-const getApp = require('../../server.js').getApp
-const paths = require('../../app/paths.js')
-const session = require('../test-helpers/mock-session.js')
+const userCreator = require('@test/test-helpers/user-creator')
+const getApp = require('@root/server').getApp
+const paths = require('@root/paths')
+const session = require('@test/test-helpers/mock-session')
 const gatewayAccountId = '15486734'
-const { validTransactionDetailsResponse } = require('../fixtures/ledger-transaction.fixtures')
-const { validGatewayAccountResponse } = require('../fixtures/gateway-account.fixtures')
+const { validTransactionDetailsResponse } = require('@test/fixtures/ledger-transaction.fixtures')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
 
 let app
 
