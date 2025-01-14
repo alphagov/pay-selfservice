@@ -182,7 +182,21 @@ describe('Settings - API keys', () => {
         ])
       })
 
-      it('should revoke the api key successfully', () => {
+      it('should show validation errors if nothing is selected', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
+        cy.get('.govuk-summary-card').within(() => {
+          cy.contains('h2', DESCRIPTION).should('exist')
+          cy.contains('a', 'Revoke').click()
+        })
+        cy.contains('button', 'Save changes').click()
+        cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoke/${TOKEN_LINK}`)
+        cy.get('.govuk-error-summary').within(() => {
+          cy.contains('h2', 'There is a problem').should('exist')
+          cy.contains('a', `Confirm if you want to revoke ${DESCRIPTION}`).should('exist')
+        })
+      })
+
+      it('should revoke the api key successfully when Yes is selected', () => {
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
         cy.get('.govuk-summary-card').within(() => {
           cy.contains('h2', DESCRIPTION).should('exist')
@@ -195,7 +209,7 @@ describe('Settings - API keys', () => {
         cy.contains('p.govuk-notification-banner__heading', `${DESCRIPTION} was successfully revoked`).should('exist')
       })
 
-      it('should not revoke the api key successfully', () => {
+      it('should not revoke the api key when No is selected', () => {
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
         cy.get('.govuk-summary-card').within(() => {
           cy.contains('h2', DESCRIPTION).should('exist')
