@@ -47,7 +47,7 @@ Open the application in browser:
 
 The local development server (`npm run dev`) will watch for any changes to files in the `src` directory and rebuild the bundles automatically.
 
-Any changes to the server code will restart the app, changes to client side assets (SCSS/JS) and Nunjucks views will be reloaded automatically without a restart.
+Any changes to the server code will restart the app; changes to client side assets (SCSS/JS) and Nunjucks views will be reloaded automatically without a restart.
 
 ### Running via Pay CLI
 
