@@ -55,14 +55,20 @@ async function startDevServer() {
 
 await rm('dist', { recursive: true, force: true }, async () => {
   console.log('✅ [dist] cleared')
-  await access('/.dockerenv', constants.R_OK, (err) => {
-    if (err) {
-      console.log('🔩 using local .env')
-      args.unshift('-r', 'dotenv/config')
-    } else {
-      console.log('🐳 using docker env')
-    }
-  })
+  if (process.env.NODE_ENV === 'test') {
+    console.log('🧪 [cypress/test.env] loaded environment')
+    args.unshift('-r', 'dotenv/config')
+    args.push('dotenv_config_path=test/cypress/test.env')
+  } else {
+    await access('/.dockerenv', constants.R_OK, (err) => {
+      if (err) {
+        console.log('🔩 [.env] loaded environment')
+        args.unshift('-r', 'dotenv/config')
+      } else {
+        console.log('🐳 docker environment')
+      }
+    })
+  }
   startDevServer().then(() => {
     console.log('⚡️ dev server going up')
   }).catch(err => {

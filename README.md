@@ -80,6 +80,11 @@ npm run cypress:test
 npm run cypress:test-headed
 ```
 
+#### Debugging Cypress tests
+
+You can start the Cypress server with in-line source maps and auto reload enabled by running `npm run cypress:dev-server`. 
+This will allow you to set breakpoints and step through the source when running a spec.
+
 ## Key environment variables
 
 | Variable               | required |  default value  | Description                                                                                                                                           |
