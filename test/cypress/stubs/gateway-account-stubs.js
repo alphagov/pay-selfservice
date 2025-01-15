@@ -287,6 +287,16 @@ function postCheckWorldpayCredentials (opts) {
   })
 }
 
+function postCheckWorldpayCredentialsByServiceExternalIdAndType (serviceExternalId, accountType, payload) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}/worldpay/check-credentials`
+  return stubBuilder('POST', path, 200, {
+    request: payload,
+    response: {
+      result: 'valid'
+    }
+  })
+}
+
 function postCheckWorldpay3dsFlexCredentialsWithBadResult (opts) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-3ds-flex-config`
   return stubBuilder('POST', path, 200, {
@@ -306,6 +316,11 @@ function postUpdateWorldpay3dsFlexCredentials (opts) {
 
 function patchUpdateCredentialsSuccess (gatewayAccountId, credentialId) {
   const path = `/v1/api/accounts/${gatewayAccountId}/credentials/${credentialId}`
+  return stubBuilder('PATCH', path, 200)
+}
+
+function patchUpdateCredentialsSuccessByServiceExternalIdAndType (serviceExternalId, accountType, credentialId) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}/credentials/${credentialId}`
   return stubBuilder('PATCH', path, 200)
 }
 
@@ -374,8 +389,10 @@ module.exports = {
   postCheckWorldpay3dsFlexCredentials,
   postCheckWorldpay3dsFlexCredentialsWithBadResult,
   postCheckWorldpayCredentials,
+  postCheckWorldpayCredentialsByServiceExternalIdAndType,
   postUpdateWorldpay3dsFlexCredentials,
   patchUpdateCredentialsSuccess,
+  patchUpdateCredentialsSuccessByServiceExternalIdAndType,
   patchUpdateWorldpayOneOffCredentialsSuccess,
   postSwitchPspSuccess,
   patchAccountUpdateApplePaySuccess,
