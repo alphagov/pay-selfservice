@@ -166,6 +166,63 @@ describe('Settings - API keys', () => {
       })
     })
 
+    describe('revoke an api key', () => {
+      const TOKEN_LINK = 'token-link-2'
+      const DESCRIPTION = 'my api key'
+      const apiKeys = [
+        new Token().withCreatedBy('joe bloggs').withDescription(DESCRIPTION)
+          .withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024').withTokenLink(TOKEN_LINK)
+      ]
+
+      beforeEach(() => {
+        setupStubs('admin', apiKeys)
+        cy.task('setupStubs', [
+          apiKeysStubs.getKeyByTokenLink(GATEWAY_ACCOUNT_ID, TOKEN_LINK, DESCRIPTION),
+          apiKeysStubs.revokeKey(GATEWAY_ACCOUNT_ID, TOKEN_LINK)
+        ])
+      })
+
+      it('should show validation errors if nothing is selected', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
+        cy.get('.govuk-summary-card').within(() => {
+          cy.contains('h2', DESCRIPTION).should('exist')
+          cy.contains('a', 'Revoke').click()
+        })
+        cy.contains('button', 'Save changes').click()
+        cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoke/${TOKEN_LINK}`)
+        cy.get('.govuk-error-summary').within(() => {
+          cy.contains('h2', 'There is a problem').should('exist')
+          cy.contains('a', `Confirm if you want to revoke ${DESCRIPTION}`).should('exist')
+        })
+      })
+
+      it('should revoke the api key successfully when Yes is selected', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
+        cy.get('.govuk-summary-card').within(() => {
+          cy.contains('h2', DESCRIPTION).should('exist')
+          cy.contains('a', 'Revoke').click()
+        })
+        cy.get('input[type="radio"][value="Yes"]').check()
+        cy.contains('button', 'Save changes').click()
+        cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
+        cy.contains('h1', 'Test API keys').should('exist')
+        cy.contains('p.govuk-notification-banner__heading', `${DESCRIPTION} was successfully revoked`).should('exist')
+      })
+
+      it('should not revoke the api key when No is selected', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
+        cy.get('.govuk-summary-card').within(() => {
+          cy.contains('h2', DESCRIPTION).should('exist')
+          cy.contains('a', 'Revoke').click()
+        })
+        cy.get('input[type="radio"][value="No"]').check()
+        cy.contains('button', 'Save changes').click()
+        cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
+        cy.contains('h1', 'Test API keys').should('exist')
+        cy.contains('p.govuk-notification-banner__heading', `${DESCRIPTION} was successfully revoked`).should('not.exist')
+      })
+    })
+
     describe('re-name an api key', () => {
       const NEW_API_KEY_NAME = 'api key description' // pragma: allowlist secret
       const TOKEN_LINK = 'token-link-1'

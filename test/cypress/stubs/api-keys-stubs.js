@@ -46,8 +46,28 @@ function changeApiKeyName (tokenLink, description) {
   })
 }
 
+function getKeyByTokenLink (gatewayAccountId, tokenLink, description) {
+  const path = `/v1/frontend/auth/${gatewayAccountId}/${tokenLink}`
+  return stubBuilder('GET', path, 200, {
+    response: {
+      description
+    }
+  })
+}
+
+function revokeKey (gatewayAccountId, tokenLink) {
+  const path = `/v1/frontend/auth/${gatewayAccountId}`
+  return stubBuilder('DELETE', path, 200, {
+    request: {
+      token_link: tokenLink
+    }
+  })
+}
+
 module.exports = {
   changeApiKeyName,
   createApiKey,
-  getApiKeysForGatewayAccount
+  getApiKeysForGatewayAccount,
+  getKeyByTokenLink,
+  revokeKey
 }
