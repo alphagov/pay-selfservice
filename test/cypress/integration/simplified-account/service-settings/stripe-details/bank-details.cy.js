@@ -51,7 +51,7 @@ describe('Stripe details settings', () => {
         setStubs({
           role: 'view-and-refund'
         })
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account', { failOnStatusCode: false })
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-details', { failOnStatusCode: false })
       })
       it('should show not found page', () => {
         cy.title().should('eq', 'Page not found - GOV.UK Pay')
@@ -63,7 +63,7 @@ describe('Stripe details settings', () => {
         setStubs({
           paymentProvider: WORLDPAY
         })
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account', { failOnStatusCode: false })
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-details', { failOnStatusCode: false })
       })
       it('should show not found page', () => {
         cy.title().should('eq', 'Page not found - GOV.UK Pay')
@@ -79,7 +79,7 @@ describe('Stripe details settings', () => {
             bankAccount: true
           })
         ])
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-details')
       })
       it('should show the task already completed page', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
@@ -94,7 +94,7 @@ describe('Stripe details settings', () => {
             accountType: LIVE_ACCOUNT_TYPE
           })
         ])
-        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
+        cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-details')
       })
       describe('The settings navigation', () => {
         it('should show stripe details', () => {
@@ -124,7 +124,7 @@ describe('Stripe details settings', () => {
               accountType: LIVE_ACCOUNT_TYPE
             })
           ])
-          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
+          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-details')
         })
 
         it('should format sort code with dashes when javascript is enabled', () => {
@@ -216,7 +216,7 @@ describe('Stripe details settings', () => {
               bankAccount: true
             })
           ])
-          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-account')
+          cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/bank-details')
         })
 
         it('should redirect to the task summary page on success', () => {
@@ -231,7 +231,7 @@ describe('Stripe details settings', () => {
           cy.get('#bank-account-submit').click()
           cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
           cy.get('h1').should('contain', 'Stripe details')
-          cy.location('pathname').should('not.contain', '/bank-account')
+          cy.location('pathname').should('not.contain', '/bank-details')
           cy.get('.govuk-task-list__item')
             .contains('Organisation\'s bank details')
             .parent()

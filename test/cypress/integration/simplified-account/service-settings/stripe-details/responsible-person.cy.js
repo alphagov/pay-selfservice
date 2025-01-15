@@ -242,8 +242,9 @@ describe('Stripe details settings', () => {
             stripePspStubs.listPersons({
               stripeAccountId: STRIPE_ACCOUNT_ID
             }),
-            stripePspStubs.createOrUpdatePerson({
-              stripeAccountId: STRIPE_ACCOUNT_ID
+            stripePspStubs.createPerson({
+              stripeAccountId: STRIPE_ACCOUNT_ID,
+              representative: true
             }),
             stripePspStubs.updateAccount({
               stripeAccountId: STRIPE_ACCOUNT_ID

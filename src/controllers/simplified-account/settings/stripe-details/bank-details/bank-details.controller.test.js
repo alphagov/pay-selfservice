@@ -8,25 +8,25 @@ const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
 
 const STRIPE_DETAILS_INDEX_PATH = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, SERVICE_ID, ACCOUNT_TYPE)
-const STRIPE_DETAILS_BANK_ACCOUNT_PATH = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.bankAccount, SERVICE_ID, ACCOUNT_TYPE)
+const STRIPE_DETAILS_BANK_ACCOUNT_PATH = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.bankDetails, SERVICE_ID, ACCOUNT_TYPE)
 
-let req, res, next, responseStub, updateStripeDetailsBankAccountStub, bankAccountController
+let req, res, next, responseStub, updateStripeDetailsBankDetailsStub, bankDetailsController
 
 const getController = (stubs = {}) => {
-  return proxyquire('./bank-account.controller', {
+  return proxyquire('./bank-details.controller', {
     '@utils/response': { response: stubs.response },
     '@services/stripe-details.service': {
-      updateStripeDetailsBankAccount: stubs.updateStripeDetailsBankAccount
+      updateStripeDetailsBankDetails: stubs.updateStripeDetailsBankDetails
     }
   })
 }
 
 const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
   responseStub = sinon.spy()
-  updateStripeDetailsBankAccountStub = sinon.stub().resolves()
-  bankAccountController = getController({
+  updateStripeDetailsBankDetailsStub = sinon.stub().resolves()
+  bankDetailsController = getController({
     response: responseStub,
-    updateStripeDetailsBankAccount: updateStripeDetailsBankAccountStub,
+    updateStripeDetailsBankDetails: updateStripeDetailsBankDetailsStub,
     ...additionalStubs
   })
   res = {
@@ -43,10 +43,10 @@ const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additi
     ...additionalReqProps
   }
   next = sinon.spy()
-  bankAccountController[method][1](req, res, next)
+  bankDetailsController[method][1](req, res, next)
 }
 
-describe('Controller: settings/stripe-details/bank-account', () => {
+describe('Controller: settings/stripe-details/bank-details', () => {
   describe('get', () => {
     before(() => setupTest('get'))
 
@@ -78,7 +78,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
       }))
 
       it('should submit bank details to the stripe details service', () => {
-        expect(updateStripeDetailsBankAccountStub.calledWith(req.service, req.account, VALID_SORT_CODE, VALID_ACCOUNT_NUMBER)).to.be.true // eslint-disable-line
+        expect(updateStripeDetailsBankDetailsStub.calledWith(req.service, req.account, VALID_SORT_CODE, VALID_ACCOUNT_NUMBER)).to.be.true // eslint-disable-line
       })
 
       it('should redirect to the stripe details index page', () => {
@@ -181,7 +181,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
       describe('for unusable bank account', () => {
         before(() => {
           setupTest('post',
-            { updateStripeDetailsBankAccount: sinon.stub().rejects({ code: 'bank_account_unusable' }) },
+            { updateStripeDetailsBankDetails: sinon.stub().rejects({ code: 'bank_account_unusable' }) },
             {},
             { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
           )
@@ -199,7 +199,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
       describe('for invalid sort code', () => {
         before(() => {
           setupTest('post',
-            { updateStripeDetailsBankAccount: sinon.stub().rejects({ code: 'routing_number_invalid' }) },
+            { updateStripeDetailsBankDetails: sinon.stub().rejects({ code: 'routing_number_invalid' }) },
             {},
             { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
           )
@@ -218,7 +218,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
       describe('for invalid account number', () => {
         before(() => {
           setupTest('post',
-            { updateStripeDetailsBankAccount: sinon.stub().rejects({ code: 'account_number_invalid' }) },
+            { updateStripeDetailsBankDetails: sinon.stub().rejects({ code: 'account_number_invalid' }) },
             {},
             { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
           )
@@ -237,7 +237,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
       describe('for unhandled errors with codes', () => {
         before(() => {
           setupTest('post',
-            { updateStripeDetailsBankAccount: sinon.stub().rejects({ code: 'unhandled_error' }) },
+            { updateStripeDetailsBankDetails: sinon.stub().rejects({ code: 'unhandled_error' }) },
             {},
             { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
           )
@@ -252,7 +252,7 @@ describe('Controller: settings/stripe-details/bank-account', () => {
       describe('for any other errors', () => {
         before(() => {
           setupTest('post',
-            { updateStripeDetailsBankAccount: sinon.stub().rejects({ foo: 'bar' }) },
+            { updateStripeDetailsBankDetails: sinon.stub().rejects({ foo: 'bar' }) },
             {},
             { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
           )

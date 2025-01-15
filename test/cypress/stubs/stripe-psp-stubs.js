@@ -56,8 +56,17 @@ function updateListPerson (opts) {
   })
 }
 
+// TODO: bin me once simplified accounts are live
 function createOrUpdatePerson (opts) {
   const path = `/v1/accounts/${opts.stripeAccountId}/persons/person_1234`
+  const fixtureOpts = parseStripePersonOptions(opts)
+  return stubBuilder('POST', path, 200, {
+    response: stripePspFixtures.validStripePerson(fixtureOpts)
+  })
+}
+
+function createPerson (opts) {
+  const path = `/v1/accounts/${opts.stripeAccountId}/persons`
   const fixtureOpts = parseStripePersonOptions(opts)
   return stubBuilder('POST', path, 200, {
     response: stripePspFixtures.validStripePerson(fixtureOpts)
@@ -110,6 +119,7 @@ module.exports = {
   retrieveAccountDetails,
   updateListPerson,
   createOrUpdatePerson,
+  createPerson,
   updateCompany,
   updateAccount,
   uploadFile

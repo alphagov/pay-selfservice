@@ -38,11 +38,13 @@ async function post (req, res) {
   }
   const isCorrect = req.body.confirmOrgDetails === 'true'
   if (isCorrect) {
-    await updateConnectorStripeProgress(req.service, req.account, 'organisation_details')
+    updateConnectorStripeProgress(req.service, req.account, 'organisation_details')
+      .then(() => {
+        res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+      })
   } else {
     res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.organisationDetails.update, req.service.externalId, req.account.type))
   }
-  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
 }
 
 const postErrorResponse = (req, res, errors) => {

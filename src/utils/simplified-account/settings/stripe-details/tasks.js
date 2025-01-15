@@ -6,7 +6,7 @@ const stripeDetailsTasks = Object.freeze({
   bankAccount: {
     name: 'bankAccount',
     friendlyName: 'Organisation\'s bank details',
-    path: paths.simplifiedAccount.settings.stripeDetails.bankAccount
+    path: paths.simplifiedAccount.settings.stripeDetails.bankDetails
   },
   responsiblePerson: {
     name: 'responsiblePerson',
