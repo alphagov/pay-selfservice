@@ -55,8 +55,10 @@ async function post (req, res) {
     ...(addressLine2 && { address_line2: addressLine2 })
   }
 
-  await updateStripeDetailsOrganisationNameAndAddress(req.service, req.account, newOrgDetails)
-  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+  updateStripeDetailsOrganisationNameAndAddress(req.service, req.account, newOrgDetails)
+    .then(() => {
+      res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+    })
 }
 
 const postErrorResponse = (req, res, errors) => {

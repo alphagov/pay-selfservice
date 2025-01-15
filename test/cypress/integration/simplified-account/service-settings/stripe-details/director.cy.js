@@ -182,6 +182,13 @@ describe('Stripe details settings', () => {
                 stripeAccountId: STRIPE_ACCOUNT_ID
               }
             ),
+            stripePspStubs.listPersons({
+              stripeAccountId: STRIPE_ACCOUNT_ID
+            }),
+            stripePspStubs.createPerson({
+              stripeAccountId: STRIPE_ACCOUNT_ID,
+              director: true
+            }),
             stripePspStubs.updateAccount({
               stripeAccountId: STRIPE_ACCOUNT_ID
             }),

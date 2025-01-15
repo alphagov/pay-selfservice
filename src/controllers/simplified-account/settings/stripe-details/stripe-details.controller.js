@@ -25,7 +25,7 @@ async function get (req, res) {
 }
 
 module.exports.get = get
-module.exports.bankAccount = require('./bank-account/bank-account.controller')
+module.exports.bankDetails = require('./bank-details/bank-details.controller')
 module.exports.companyNumber = require('./company-number/company-number.controller')
 module.exports.director = require('./director/director.controller')
 module.exports.governmentEntityDocument = require('./government-entity-document/government-entity-document.controller')

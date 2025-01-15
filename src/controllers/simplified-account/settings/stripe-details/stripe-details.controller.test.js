@@ -67,7 +67,7 @@ describe('Controller: settings/stripe-details', () => {
         expect(stripeDetailsTasks).to.have.all.keys('bankAccount', 'vatNumber', 'governmentEntityDocument')
         expect(stripeDetailsTasks.bankAccount).to.deep.equal({
           friendlyName: 'Organisation\'s bank details',
-          href: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/bank-account`,
+          href: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/bank-details`,
           status: true
         })
         expect(stripeDetailsTasks.vatNumber).to.deep.equal({

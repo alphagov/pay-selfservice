@@ -40,19 +40,20 @@ async function post (req, res, next) {
     }
   }
 
-  try {
-    await updateStripeDetailsVatNumber(req.service, req.account, hasVatNumber
-      ? req.body.vatNumber.replace(/\s/g, '').toUpperCase()
-      : false)
-  } catch (err) {
-    if (err.type === 'StripeInvalidRequestError') {
-      return postErrorResponse(req, res, {
-        summary: [{ text: 'There is a problem with your VAT number. Please check your answer and try again.' }]
-      })
-    }
-    next(err)
-  }
-  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+  updateStripeDetailsVatNumber(req.service, req.account, hasVatNumber
+    ? req.body.vatNumber.replace(/\s/g, '').toUpperCase()
+    : false)
+    .then(() => {
+      res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+    })
+    .catch((err) => {
+      if (err.type === 'StripeInvalidRequestError') {
+        return postErrorResponse(req, res, {
+          summary: [{ text: 'There is a problem with your VAT number. Please check your answer and try again.' }]
+        })
+      }
+      next(err)
+    })
 }
 
 const postErrorResponse = (req, res, errors) => {

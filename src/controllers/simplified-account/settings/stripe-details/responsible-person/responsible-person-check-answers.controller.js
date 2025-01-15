@@ -44,25 +44,26 @@ async function post (req, res, next) {
     address_postcode: address.homeAddressPostcode,
     ...(address.homeAddressLine2 && { address_line2: address.homeAddressLine2 })
   }
-  try {
-    await updateStripeDetailsResponsiblePerson(req.service, req.account, responsiblePerson)
-  } catch (err) {
-    if (err.type === 'StripeInvalidRequestError') {
-      switch (err.param) {
-        case 'phone':
-          return postErrorResponse(req, res, {
-            summary: [{ text: 'There is a problem with your telephone number. Please check your answer and try again.' }]
-          })
-        default:
-          return postErrorResponse(req, res, {
-            summary: [{ text: 'There is a problem with the information you\'ve submitted. We\'ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.' }]
-          })
+  updateStripeDetailsResponsiblePerson(req.service, req.account, responsiblePerson)
+    .then(() => {
+      _.unset(req, FORM_STATE_KEY)
+      res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+    })
+    .catch((err) => {
+      if (err.type === 'StripeInvalidRequestError') {
+        switch (err.param) {
+          case 'phone':
+            return postErrorResponse(req, res, {
+              summary: [{ text: 'There is a problem with your telephone number. Please check your answer and try again.' }]
+            })
+          default:
+            return postErrorResponse(req, res, {
+              summary: [{ text: 'There is a problem with the information you\'ve submitted. We\'ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.' }]
+            })
+        }
       }
-    }
-    next(err)
-  }
-  _.unset(req, FORM_STATE_KEY)
-  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+      next(err)
+    })
 }
 
 const postErrorResponse = (req, res, errors) => {

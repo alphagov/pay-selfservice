@@ -4,7 +4,7 @@ const formatValidationErrors = require('@utils/simplified-account/format/format-
 const { checkTaskCompletion } = require('@middleware/simplified-account')
 const { response } = require('@utils/response')
 const { body, validationResult } = require('express-validator')
-const { updateStripeDetailsBankAccount } = require('@services/stripe-details.service')
+const { updateStripeDetailsBankDetails } = require('@services/stripe-details.service')
 const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 
 const ACCT_NUMBER_ERR_MSG = 'Enter a valid account number like 00733445'
@@ -12,7 +12,7 @@ const ACCT_NUMBER_ERR_MSG = 'Enter a valid account number like 00733445'
 async function get (req, res) {
   return response(req, res, 'simplified-account/settings/stripe-details/bank-account/index', {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type),
-    submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.bankAccount, req.service.externalId, req.account.type)
+    submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.bankDetails, req.service.externalId, req.account.type)
   })
 }
 
@@ -32,38 +32,37 @@ async function post (req, res, next) {
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)
     return postErrorResponse(req, res, {
-      summary: formattedErrors.errorSummary,
-      formErrors: formattedErrors.formErrors
+      summary: formattedErrors.errorSummary, formErrors: formattedErrors.formErrors
     })
   }
 
   const sortCode = req.body.sortCode.replace(/\D/g, '')
   const accountNumber = req.body.accountNumber.replace(/\D/g, '')
 
-  try {
-    await updateStripeDetailsBankAccount(req.service, req.account, sortCode, accountNumber)
-    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
-  } catch (error) {
-    // handle Stripe API errors
-    switch (error.code) {
-      case 'bank_account_unusable':
-        return postErrorResponse(req, res, {
-          summary: [{ text: 'The bank account provided cannot be used. Contact GOV.UK Pay for assistance.' }]
-        })
-      case 'routing_number_invalid':
-        return postErrorResponse(req, res, {
-          summary: [{ text: 'Invalid sort code', href: '#sort-code' }],
-          formErrors: { sortCode: 'The sort code provided is invalid' }
-        })
-      case 'account_number_invalid':
-        return postErrorResponse(req, res, {
-          summary: [{ text: 'Invalid account number', href: '#account-number' }],
-          formErrors: { accountNumber: 'The account number provided is invalid' }
-        })
-      default:
-        next(error)
-    }
-  }
+  updateStripeDetailsBankDetails(req.service, req.account, sortCode, accountNumber)
+    .then(() => {
+      res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+    })
+    .catch((err) => {
+      switch (err.code) {
+        case 'bank_account_unusable':
+          return postErrorResponse(req, res, {
+            summary: [{ text: 'The bank account provided cannot be used. Contact GOV.UK Pay for assistance.' }]
+          })
+        case 'routing_number_invalid':
+          return postErrorResponse(req, res, {
+            summary: [{ text: 'Invalid sort code', href: '#sort-code' }],
+            formErrors: { sortCode: 'The sort code provided is invalid' }
+          })
+        case 'account_number_invalid':
+          return postErrorResponse(req, res, {
+            summary: [{ text: 'Invalid account number', href: '#account-number' }],
+            formErrors: { accountNumber: 'The account number provided is invalid' }
+          })
+        default:
+          next(err)
+      }
+    })
 }
 
 const postErrorResponse = (req, res, errors) => {
@@ -72,7 +71,7 @@ const postErrorResponse = (req, res, errors) => {
     sortCode: req.body.sortCode,
     accountNumber: req.body.accountNumber,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type),
-    submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.bankAccount, req.service.externalId, req.account.type)
+    submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.bankDetails, req.service.externalId, req.account.type)
   })
 }
 

@@ -33,17 +33,18 @@ async function post (req, res, next) {
     email: req.body.workEmail.trim()
   }
 
-  try {
-    await updateStripeDetailsDirector(req.service, req.account, director)
-  } catch (err) {
-    if (err.type === 'StripeInvalidRequestError') {
-      return postErrorResponse(req, res, {
-        summary: [{ text: 'There is a problem with the information you\'ve submitted. We\'ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.' }]
-      })
-    }
-    next(err)
-  }
-  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+  updateStripeDetailsDirector(req.service, req.account, director)
+    .then(() => {
+      res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+    })
+    .catch((err) => {
+      if (err.type === 'StripeInvalidRequestError') {
+        return postErrorResponse(req, res, {
+          summary: [{ text: 'There is a problem with the information you\'ve submitted. We\'ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.' }]
+        })
+      }
+      next(err)
+    })
 }
 
 const postErrorResponse = (req, res, errors) => {

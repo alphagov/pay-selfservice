@@ -43,19 +43,29 @@ async function post (req, res, next) {
       formErrors: formattedErrors.formErrors
     })
   }
-  try {
-    const file = req.file
-    await updateStripeDetailsUploadEntityDocument(req.service, req.account, file)
-  } catch (err) {
-    if (err.type === 'StripeInvalidRequestError' && err.param === 'file') {
-      return postErrorResponse(req, res, {
-        summary: [{ text: 'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png', href: '#government-entity-document' }]
+
+  const file = req.file
+  updateStripeDetailsUploadEntityDocument(req.service, req.account, file)
+    .then(() => {
+      req.flash('messages', {
+        state: 'success',
+        icon: '&check;',
+        heading: 'Service connected to Stripe',
+        body: 'This service can now take payments'
       })
-    }
-    return next(err)
-  }
-  req.flash('messages', { state: 'success', icon: '&check;', heading: 'Service connected to Stripe', body: 'This service can now take payments' })
-  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+      res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+    })
+    .catch((err) => {
+      if (err.type === 'StripeInvalidRequestError' && err.param === 'file') {
+        return postErrorResponse(req, res, {
+          summary: [{
+            text: 'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png',
+            href: '#government-entity-document'
+          }]
+        })
+      }
+      next(err)
+    })
 }
 
 const postErrorResponse = (req, res, errors) => {

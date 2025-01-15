@@ -17,7 +17,7 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
  * @param {string} sortCode
  * @param {string} accountNumber
  */
-const updateStripeDetailsBankAccount = async (service, account, sortCode, accountNumber) => {
+const updateStripeDetailsBankDetails = async (service, account, sortCode, accountNumber) => {
   const stripeAccount = await connector.getStripeAccountByServiceIdAndAccountType(service.externalId, account.type)
   await updateBankAccount(stripeAccount.stripeAccountId, {
     bank_account_sort_code: sortCode,
@@ -218,7 +218,7 @@ const getStripeAccountOnboardingDetails = async (service, account) => {
 }
 
 module.exports = {
-  updateStripeDetailsBankAccount,
+  updateStripeDetailsBankDetails,
   updateStripeDetailsResponsiblePerson,
   updateStripeDetailsDirector,
   updateStripeDetailsCompanyNumber,

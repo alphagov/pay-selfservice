@@ -88,8 +88,8 @@ const stripeDetailsRouter = new Router({ mergeParams: true })
   .use(enforceLiveAccountOnly, enforcePaymentProviderType(STRIPE), permission('stripe-account-details:update'))
 stripeDetailsRouter.get(stripeDetailsPath.index, serviceSettingsController.stripeDetails.get)
 
-stripeDetailsRouter.get(stripeDetailsPath.bankAccount, serviceSettingsController.stripeDetails.bankAccount.get)
-stripeDetailsRouter.post(stripeDetailsPath.bankAccount, serviceSettingsController.stripeDetails.bankAccount.post)
+stripeDetailsRouter.get(stripeDetailsPath.bankDetails, serviceSettingsController.stripeDetails.bankDetails.get)
+stripeDetailsRouter.post(stripeDetailsPath.bankDetails, serviceSettingsController.stripeDetails.bankDetails.post)
 
 stripeDetailsRouter.get(stripeDetailsPath.companyNumber, serviceSettingsController.stripeDetails.companyNumber.get)
 stripeDetailsRouter.post(stripeDetailsPath.companyNumber, serviceSettingsController.stripeDetails.companyNumber.post)
