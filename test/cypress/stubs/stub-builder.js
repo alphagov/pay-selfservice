@@ -32,7 +32,12 @@ function stubBuilder (method, path, responseCode, additionalParams = {}) {
     predicates: [predicate],
     responses: [{
       is: response
-    }]
+    }],
+    options: {}
+  }
+
+  if (additionalParams.responseIndex) {
+    stub.options.responseIndex = additionalParams.responseIndex
   }
 
   return stub
