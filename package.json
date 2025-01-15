@@ -43,7 +43,8 @@
     "test": "rm -rf ./pacts && NODE_ENV=test mocha '!(node_modules)/**/*.test'.js",
     "test:no-pact": "rm -rf ./pacts && NODE_ENV=test mocha --exclude **/*.pact.test.js '!(node_modules)/**/*.test'.js",
     "test:pact": "rm -rf ./pacts && NODE_ENV=test mocha **/*.pact.test.js",
-    "cypress:server": "run-amock --port=8000 | node --inspect -r dotenv/config dist/application.js dotenv_config_path=test/cypress/test.env",
+    "cypress:server": "run-amock --port=8000 | node -r dotenv/config dist/application.js dotenv_config_path=test/cypress/test.env",
+    "cypress:dev-server": "run-amock --port=8000 | NODE_ENV=test node dev-server.mjs",
     "cypress:test": "cypress run",
     "cypress:test-headed": "cypress open",
     "publish-pacts": "./bin/publish-pacts.js"
