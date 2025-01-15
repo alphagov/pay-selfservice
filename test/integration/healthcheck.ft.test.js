@@ -1,7 +1,6 @@
-const path = require('path')
-require(path.join(__dirname, '/../test-helpers/serialize-mock.js'))
+require('@test/test-helpers/serialize-mock.js')
 const request = require('supertest')
-const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const getApp = require('@root/server').getApp
 
 describe('The /healthcheck endpoint returned json', function () {
   it('should return 200', function (done) {

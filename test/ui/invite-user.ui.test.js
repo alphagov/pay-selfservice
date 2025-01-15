@@ -1,8 +1,7 @@
-const path = require('path')
-const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
-const paths = require('../../app/paths.js')
+const renderTemplate = require('@test/test-helpers/html-assertions').render
+const paths = require('@root/paths')
 
-const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
+const formatServicePathsFor = require('../../src/utils/format-service-paths-for')
 
 describe('Invite a team member view', function () {
   it('should render the standard invite team member view', function () {

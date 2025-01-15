@@ -1,18 +1,17 @@
-'use strict'
-
+require('@test/test-helpers/serialize-mock.js')
 const supertest = require('supertest')
 const nock = require('nock')
 const csrf = require('csrf')
 const cheerio = require('cheerio')
 const { expect } = require('chai')
 
-const { getApp } = require('../../../server')
-const { getMockSession, getUser, createAppWithSession } = require('../../test-helpers/mock-session')
-const paths = require('../../../app/paths')
-const { randomUuid } = require('../../../app/utils/random')
-const { validCreateProductRequest, validProductResponse } = require('../../fixtures/product.fixtures')
-const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
-const formatAccountPathsFor = require('../../../app/utils/format-account-paths-for')
+const { getApp } = require('@root/server')
+const { getMockSession, getUser, createAppWithSession } = require('@test/test-helpers/mock-session')
+const paths = require('@root/paths')
+const { randomUuid } = require('@utils/random')
+const { validCreateProductRequest, validProductResponse } = require('@test/fixtures/product.fixtures')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const { PUBLIC_AUTH_URL, PRODUCTS_URL, CONNECTOR_URL } = process.env
 const EXTERNAL_GATEWAY_ACCOUNT_ID = 'an-external-id'

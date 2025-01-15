@@ -1,6 +1,5 @@
-const path = require('path')
-const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
-const secondFactorMethod = require('../../app/models/second-factor-method')
+const renderTemplate = require('@test/test-helpers/html-assertions').render
+const secondFactorMethod = require('@models/second-factor-method')
 
 describe('The team member details view', function () {
   it('should render team member details', function () {

@@ -1,0 +1,7 @@
+@use "sass:color";
+.pay-info-warning-box {
+  @extend .govuk-inset-text;
+
+  border-left-color: govuk-colour("yellow");
+  background-color: color.adjust(govuk-colour("yellow"), $alpha: -.75);
+}

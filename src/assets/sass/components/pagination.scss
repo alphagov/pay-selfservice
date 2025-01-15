@@ -1,0 +1,58 @@
+.pagination {
+  margin-bottom: govuk-spacing(3);
+
+  .paginationForm {
+    float: left;
+
+    button {
+      background: inherit;
+      border: 1px solid $govuk-border-colour;
+      border-right: none;
+      padding: govuk-spacing(1) govuk-spacing(2);
+      vertical-align: middle;
+      color: $govuk-link-colour;
+      cursor: pointer;
+      @include govuk-font($size: 14);
+
+      &:hover {
+        color: $govuk-text-colour;
+        background-color: $govuk-focus-colour;
+      }
+
+      &.active {
+        background-color: govuk-colour("blue");
+        border-color: govuk-colour("blue");
+        color: govuk-colour("white");
+
+        &:active {
+          color: govuk-colour("white");
+        }
+      }
+    }
+
+    &:last-child button {
+      border: 1px solid $govuk-border-colour;
+    }
+
+    /* Buttons for the next or previous set or either end of the whole lot */
+    &.first button:before {
+      content:"\00AB";
+      margin-right: 0.25em;
+    }
+
+    &.previous button:before {
+      content:"\2039";
+      margin-right: 0.25em;
+    }
+
+    &.next button:after {
+      content:"\203A";
+      margin-left: 0.25em;
+    }
+
+    &.last button:after {
+      content:"\00BB";
+      margin-left: 0.25em;
+    }
+  }
+}

@@ -4,14 +4,12 @@
 .start.pid
 .project
 .settings
-config/dev-env.json
 .env
 public
-govuk_modules
+dist
+local-certs
 node_modules
-node_modules_local
-*/node_modules/*
-pacts/
+pacts
 *.txt
 *.log
 *.pid

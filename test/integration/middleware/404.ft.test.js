@@ -1,5 +1,6 @@
+require('@test/test-helpers/serialize-mock.js')
 const request = require('supertest')
-const app = require('../../../server.js').getApp()
+const app = require('@root/server.js').getApp()
 
 describe('Invalid pages redirect to 404 page', () => {
   it('should return 404', done => {
@@ -18,7 +19,7 @@ describe('Invalid pages redirect to 404 page', () => {
 
   it('should return 200 when static asset found', done => {
     request(app)
-      .get('/public/images/crown.png')
+      .get('/assets/images/crown.png')
       .expect(200)
       .end(done)
   })

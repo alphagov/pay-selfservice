@@ -1,8 +1,6 @@
 'use strict'
 
-const path = require('path')
-
-const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
+const renderTemplate = require('@test/test-helpers/html-assertions').render
 
 describe('The email body view', function () {
   it('should display the automatically generate email disclaimer', function () {

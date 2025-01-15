@@ -1,5 +1,4 @@
-const path = require('path')
-const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
+const renderTemplate = require('@test/test-helpers/html-assertions').render
 
 describe('Invite a team member view', function () {
   let templateData

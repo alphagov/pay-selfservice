@@ -1,16 +1,15 @@
-'use strict'
-
+require('@test/test-helpers/serialize-mock.js')
 const supertest = require('supertest')
 const { expect } = require('chai')
 const cheerio = require('cheerio')
 const nock = require('nock')
 const lodash = require('lodash')
 
-const { getApp } = require('../../../server')
+const { getApp } = require('@root/server')
 const { getMockSession, createAppWithSession, getUser } = require('../../test-helpers/mock-session')
-const paths = require('../../../app/paths')
-const formatAccountPathsFor = require('../../../app/utils/format-account-paths-for')
-const { validGatewayAccountResponse } = require('../../fixtures/gateway-account.fixtures')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
+const { validGatewayAccountResponse } = require('@test/fixtures/gateway-account.fixtures')
 
 const { CONNECTOR_URL } = process.env
 const GATEWAY_ACCOUNT_ID = '929'

@@ -3,14 +3,13 @@ const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const apiKeysStubs = require('@test/cypress/stubs/api-keys-stubs')
 const { Token } = require('@models/Token.class')
-const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
-const paths = require('@root/paths')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
 const GATEWAY_ACCOUNT_ID = 11
 const ACCOUNT_TYPE = 'test'
 const USER_EMAIL = 'potter@wand.com'
+const SERVICE_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`
 
 const setupStubs = (role = 'admin', apiKeys = []) => {
   cy.task('setupStubs', [
@@ -97,16 +96,14 @@ describe('Settings - API keys', () => {
                 .within(() => {
                   cy.get('a')
                     .should('contain.text', 'Change name')
-                    .and('have.attr', 'href', formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.changeName,
-                      SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, token.tokenLink))
+                    .and('have.attr', 'href', `${SERVICE_SETTINGS_URL}/change-name/${token.tokenLink}`)
                 })
 
               cy.get('.govuk-summary-card__action').eq(1)
                 .within(() => {
                   cy.get('a')
                     .should('contain.text', 'Revoke')
-                    .and('have.attr', 'href', formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.revoke,
-                      SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, token.tokenLink))
+                    .and('have.attr', 'href', `${SERVICE_SETTINGS_URL}/revoke/${token.tokenLink}`)
                 })
 
               cy.get('.govuk-summary-list__row').eq(0)

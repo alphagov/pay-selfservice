@@ -1,12 +1,12 @@
-const path = require('path')
+require('@test/test-helpers/serialize-mock.js')
 const nock = require('nock')
-const session = require(path.join(__dirname, '/../test-helpers/mock-session.js'))
-const getApp = require(path.join(__dirname, '/../../server.js')).getApp
+const session = require('@test/test-helpers/mock-session')
+const getApp = require('@root/server').getApp
 const supertest = require('supertest')
 const csrf = require('csrf')
-const userFixtures = require(path.join(__dirname, '/../fixtures/user.fixtures'))
-const paths = require(path.join(__dirname, '/../../app/paths.js'))
-const roles = require('../../app/utils/roles').roles
+const userFixtures = require('@test/fixtures/user.fixtures')
+const paths = require('@root/paths')
+const roles = require('@utils/roles').roles
 const chai = require('chai')
 const _ = require('lodash')
 const chaiAsPromised = require('chai-as-promised')
@@ -19,7 +19,7 @@ const adminusersMock = nock(process.env.ADMINUSERS_URL)
 
 const USER_RESOURCE = '/v1/api/users'
 
-const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
 
 describe('user permissions update controller', function () {
   const EXTERNAL_SERVICE_ID = '38745gf8y'

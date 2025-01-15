@@ -1,34 +1,19 @@
-FROM node:18.20.5-alpine3.20@sha256:162b79fedde05ef5d1dc1509561fcc9a21afb88585b9fed85b28d899b3f87637 AS builder
-
-RUN ["apk", "--no-cache", "add", "ca-certificates", "python3", "build-base", "bash", "ruby"]
+FROM node:18.20.5-alpine3.20@sha256:7e43a2d633d91e8655a6c0f45d2ed987aa4930f0792f6d9dd3bffc7496e44882 AS base
 
 WORKDIR /app
-COPY package.json .
-COPY package-lock.json .
-RUN npm ci --quiet
+RUN apk upgrade --no-cache \
+    && apk add --no-cache tini
+
+FROM base AS builder
 
 COPY . .
+RUN npm ci --quiet
 RUN npm run compile
 
-FROM node:18.20.5-alpine3.20@sha256:162b79fedde05ef5d1dc1509561fcc9a21afb88585b9fed85b28d899b3f87637 AS final
+FROM base AS final
 
-RUN ["apk", "--no-cache", "upgrade"]
-
-RUN ["apk", "add", "--no-cache", "tini"]
-
-WORKDIR /app
-COPY . .
-RUN rm -rf ./test
-
-# Copy in compile assets and deps from build container
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/govuk_modules ./govuk_modules
-COPY --from=builder /app/public ./public
-RUN npm prune --production
-
-ENV PORT 9000
+COPY --from=builder /app/dist .
+ENV PORT=9000
 EXPOSE 9000
-
 ENTRYPOINT ["tini", "--"]
-
-CMD ["npm", "start"]
+CMD ["node", "application.js"]

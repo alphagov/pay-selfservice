@@ -6,9 +6,9 @@ const chaiAsPromised = require('chai-as-promised')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
+const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const inviteFixtures = require('../../../fixtures/invite.fixtures')
-const secondFactorMethod = require('../../../../app/models/second-factor-method')
+const secondFactorMethod = require('../../../../src/models/second-factor-method')
 const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants

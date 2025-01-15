@@ -1,8 +1,6 @@
 'use strict'
 
-const path = require('path')
-
-const { render } = require(path.join(__dirname, '/../test-helpers/html-assertions'))
+const { render } = require('@test/test-helpers/html-assertions')
 
 describe('The digital wallet views', () => {
   it('should not display options if gateway does not support digital wallet', () => {

@@ -1,5 +1,4 @@
-'use strict'
-
+require('@test/test-helpers/serialize-mock.js')
 const proxyquire = require('proxyquire')
 const supertest = require('supertest')
 const { expect } = require('chai')
@@ -11,8 +10,8 @@ describe('express unhandled error handler', () => {
     let response, $
 
     before(done => {
-      const { getApp } = proxyquire('../../server', {
-        './app/routes': {
+      const { getApp } = proxyquire('@root/server', {
+        '@root/routes': {
           bind: (app) => {
             app.get(testPath, () => { throw Error('an unhandled error') })
           }

@@ -5,10 +5,10 @@ const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-const getAdminUsersClient = require('../../../../app/services/clients/adminusers.client')
+const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const User = require('../../../../app/models/User.class')
+const User = require('../../../../src/models/User.class')
 const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
 
 // Constants

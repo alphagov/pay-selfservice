@@ -2,8 +2,8 @@
 
 const _ = require('lodash')
 
-const { render } = require('../test-helpers/html-assertions.js')
-const formatServicePathsFor = require('../../app/utils/format-service-paths-for')
+const { render } = require('@test/test-helpers/html-assertions')
+const formatServicePathsFor = require('@utils/format-service-paths-for')
 
 // Assignments e.t.c.
 let body, templateData

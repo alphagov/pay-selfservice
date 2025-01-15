@@ -5,15 +5,14 @@ const chai = require('chai')
 chai.should()
 const nunjucks = require('nunjucks')
 
-const router = require('../../app/routes.js')
+const router = require('../../src/routes.js')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
-const formatPSPname = require('../../app/utils/format-PSP-name')
-const formatAccountPathsFor = require('../../app/utils/format-account-paths-for')
+const formatPSPname = require('../../src/utils/format-PSP-name')
+const formatAccountPathsFor = require('../../src/utils/format-account-paths-for')
 
 const environment = nunjucks.configure([
   './node_modules/govuk-frontend/dist/',
-  './app/views',
-  './govuk_modules/govuk_template/views/layouts'
+  './src/views'
 ], {
   trimBlocks: true, // automatically remove trailing newlines from a block/tag
   lstripBlocks: true // automatically remove leading whitespace from a block/tag

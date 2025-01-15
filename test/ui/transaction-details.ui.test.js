@@ -2,13 +2,12 @@
 
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const path = require('path')
 const cheerio = require('cheerio')
 
 chai.should()
 chai.use(chaiAsPromised)
 
-const renderTemplate = require(path.join(__dirname, '/../test-helpers/html-assertions.js')).render
+const renderTemplate = require('@test/test-helpers/html-assertions').render
 
 describe('The transaction details view', () => {
   it('should render transaction details when payment does not have card details', () => {
