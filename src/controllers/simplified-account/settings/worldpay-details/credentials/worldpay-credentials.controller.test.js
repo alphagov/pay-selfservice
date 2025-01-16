@@ -109,10 +109,10 @@ describe('Controller: settings/worldpay-details/credentials', () => {
             {
               errors: {
                 summary: [
-                  { text: 'Enter a MOTO merchant code. MOTO payments are enabled for the account', href: '#merchant-code' }
+                  { text: 'Enter a MOTO merchant code. MOTO payments are enabled for this account', href: '#merchant-code' }
                 ],
                 formErrors: {
-                  merchantCode: 'Enter a MOTO merchant code. MOTO payments are enabled for the account'
+                  merchantCode: 'Enter a MOTO merchant code. MOTO payments are enabled for this account'
                 }
               },
               merchantCode: 'invalid-merchant-code',
