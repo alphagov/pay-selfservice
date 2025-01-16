@@ -1,7 +1,7 @@
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
-const { WORLDPAY, STRIPE } = require('@models/payment-providers')
+const { WORLDPAY, SANDBOX } = require('@models/payment-providers')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
@@ -177,7 +177,7 @@ describe('Worldpay details settings', () => {
       beforeEach(() => {
         setupStubs({
           role: 'view-and-refund',
-          paymentProvider: STRIPE
+          paymentProvider: SANDBOX
         })
       })
 
@@ -186,6 +186,14 @@ describe('Worldpay details settings', () => {
           url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`,
           failOnStatusCode: false
         }).then(response => expect(response.status).to.eq(404))
+      })
+
+      it('should not show the Worldpay details link in the settings nav', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings`)
+
+        cy.get('.service-settings-nav')
+          .find('li')
+          .should('not.contain', 'Worldpay details')
       })
     })
   })
@@ -324,7 +332,7 @@ describe('Worldpay details settings', () => {
       beforeEach(() => {
         setupStubs({
           role: 'view-and-refund',
-          paymentProvider: STRIPE
+          paymentProvider: SANDBOX
         })
       })
 
