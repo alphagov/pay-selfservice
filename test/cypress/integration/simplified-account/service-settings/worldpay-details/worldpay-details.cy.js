@@ -1,15 +1,17 @@
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
-const { WORLDPAY, STRIPE } = require('@models/payment-providers')
+const { WORLDPAY, SANDBOX } = require('@models/payment-providers')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
 const GATEWAY_ACCOUNT_ID = 11
 const ACCOUNT_TYPE = 'test'
+const CREDENTIAL_EXTERNAL_ID = 'worldpay-credentials-xyz'
 
 const VALID_MOTO_MERCHANT_CODE = 'AVALIDMERCHANTCODEMOTO'
 const VALID_WORLDPAY_USERNAME = 'worldpay-user'
+const VALID_WORLDPAY_PASSWORD = 'worldpay-password' // pragma: allowlist secret
 
 const setupStubs = (opts = {}) => {
   const options = Object.assign({}, {
@@ -32,10 +34,17 @@ const setupStubs = (opts = {}) => {
       payment_provider: options.paymentProvider,
       gateway_account_credentials: [{
         payment_provider: options.paymentProvider,
-        credentials: options.credentials
+        credentials: options.credentials,
+        external_id: CREDENTIAL_EXTERNAL_ID
       }],
       allow_moto: true
-    })
+    }),
+    gatewayAccountStubs.postCheckWorldpayCredentialsByServiceExternalIdAndType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
+      merchant_code: VALID_MOTO_MERCHANT_CODE,
+      username: VALID_WORLDPAY_USERNAME,
+      password: VALID_WORLDPAY_PASSWORD
+    }),
+    gatewayAccountStubs.patchUpdateCredentialsSuccessByServiceExternalIdAndType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, CREDENTIAL_EXTERNAL_ID)
   ])
 }
 
@@ -168,13 +177,168 @@ describe('Worldpay details settings', () => {
       beforeEach(() => {
         setupStubs({
           role: 'view-and-refund',
-          paymentProvider: STRIPE
+          paymentProvider: SANDBOX
         })
       })
 
       it('should return a 404', () => {
         cy.request({
           url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`,
+          failOnStatusCode: false
+        }).then(response => expect(response.status).to.eq(404))
+      })
+
+      it('should not show the Worldpay details link in the settings nav', () => {
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings`)
+
+        cy.get('.service-settings-nav')
+          .find('li')
+          .should('not.contain', 'Worldpay details')
+      })
+    })
+  })
+
+  describe('Edit one-off-customer-initiated credentials', () => {
+    describe('for an admin user', () => {
+      describe('page layout', () => {
+        beforeEach(() => {
+          setupStubs()
+        })
+
+        it('should show the correct heading and title', () => {
+          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+
+          cy.get('h1').should('contain', 'Your Worldpay credentials')
+          cy.title().should('eq', 'Settings - Worldpay details - GOV.UK Pay')
+        })
+
+        it('should show worldpay settings in the settings navigation', () => {
+          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+
+          cy.get('.service-settings-nav')
+            .find('li')
+            .contains('Worldpay details')
+            .then(li => {
+              cy.wrap(li)
+                .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+                .parent().should('have.class', 'service-settings-nav__li--active')
+            })
+        })
+      })
+
+      describe('when there are validation errors', () => {
+        it('should return to the edit credentials page and show the validation errors', () => {
+          setupStubs()
+
+          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+
+          cy.get('input#merchantCode').type('this-is-not-a-valid-merchant-code')
+
+          cy.get('button#submitCredentials').click()
+
+          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+
+          cy.get('.govuk-error-summary')
+            .should('exist')
+            .should('contain.text', 'Enter a MOTO merchant code. MOTO payments are enabled for this account')
+            .should('contain', 'Enter your username')
+            .should('contain', 'Enter your password')
+
+          cy.get('#merchantCode-error').should('contain.text', 'Enter a MOTO merchant code. MOTO payments are enabled for this account')
+          cy.get('#username-error').should('contain.text', 'Enter your username')
+          cy.get('#password-error').should('contain.text', 'Enter your password')
+        })
+      })
+
+      describe('when credentials have not been set', () => {
+        it('should show the empty credentials form', () => {
+          setupStubs()
+
+          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+
+          cy.get('input#merchantCode').should('have.value', '')
+          cy.get('input#username').should('have.value', '')
+          cy.get('input#password').should('have.value', '')
+        })
+
+        it('should redirect to the worldpay details landing page on valid form submission', () => {
+          setupStubs()
+
+          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+
+          cy.get('input#merchantCode').type(VALID_MOTO_MERCHANT_CODE)
+          cy.get('input#username').type(VALID_WORLDPAY_USERNAME)
+          cy.get('input#password').type(VALID_WORLDPAY_PASSWORD)
+
+          cy.get('button#submitCredentials').click()
+
+          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+        })
+      })
+
+      describe('when credentials have been set', () => {
+        it('should populate the merchant code and username fields with the credentials', () => {
+          setupStubs({
+            credentials: {
+              one_off_customer_initiated: {
+                merchant_code: VALID_MOTO_MERCHANT_CODE,
+                username: VALID_WORLDPAY_USERNAME
+              }
+            }
+          })
+
+          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+
+          cy.get('input#merchantCode').should('have.value', VALID_MOTO_MERCHANT_CODE)
+          cy.get('input#username').should('have.value', VALID_WORLDPAY_USERNAME)
+        })
+
+        // the password should not be returned by connector
+        // but this tests that even if it is, it will not be displayed
+        it('should not populate the password field', () => {
+          setupStubs({
+            credentials: {
+              one_off_customer_initiated: {
+                merchant_code: VALID_MOTO_MERCHANT_CODE,
+                username: VALID_WORLDPAY_USERNAME,
+                password: VALID_WORLDPAY_PASSWORD
+              }
+            }
+          })
+
+          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+
+          cy.get('input#password').should('have.value', '')
+        })
+      })
+    })
+
+    describe('for a non-admin user', () => {
+      beforeEach(() => {
+        setupStubs({
+          role: 'view-and-refund'
+        })
+      })
+
+      it('should return a 403', () => {
+        cy.request({
+          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`,
+          failOnStatusCode: false
+        }).then(response => expect(response.status).to.eq(403))
+      })
+    })
+
+    describe('for a non-Worldpay account', () => {
+      beforeEach(() => {
+        setupStubs({
+          role: 'view-and-refund',
+          paymentProvider: SANDBOX
+        })
+      })
+
+      it('should return a 404', () => {
+        cy.request({
+          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`,
           failOnStatusCode: false
         }).then(response => expect(response.status).to.eq(404))
       })
