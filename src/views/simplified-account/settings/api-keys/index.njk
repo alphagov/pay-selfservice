@@ -89,9 +89,11 @@
     {% endfor %}
   {% endif %}
 
-  {{ govukButton({
-    href: showRevokedKeysLink,
-    text: 'Show revoked API keys',
-    classes: 'govuk-!-margin-top-2 govuk-button--secondary'
-  }) }}
+  {% if showRevokedKeysLink %}
+    {{ govukButton({
+      href: revokedKeysLink,
+      text: 'Show revoked API keys',
+      classes: 'govuk-!-margin-top-2 govuk-button--secondary'
+    }) }}
+  {% endif %}
 {% endblock %}

@@ -24,12 +24,18 @@ class Token {
     return this
   }
 
+  withRevokedDate (revokedDate) {
+    this.revokedDate = revokedDate
+    return this
+  }
+
   toJson () {
     return {
       ...this.description && { description: this.description },
       ...this.createdBy && { created_by: this.createdBy },
       ...this.issuedDate && { issued_date: this.issuedDate },
       ...this.tokenLink && { token_link: this.tokenLink },
+      ...this.revokedDate && { revoked: this.revokedDate },
       ...this.lastUsed && { last_used: this.lastUsed }
     }
   }
@@ -44,6 +50,7 @@ class Token {
       .withIssuedDate(data?.issued_date)
       .withLastUsed(data?.last_used)
       .withTokenLink(data?.token_link)
+      .withRevokedDate(data?.revoked)
   }
 }
 
