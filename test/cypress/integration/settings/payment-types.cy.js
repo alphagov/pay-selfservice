@@ -1,13 +1,15 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
+const stripeSetupStubs = require('../../stubs/stripe-account-setup-stub')
 
-function setupStubs (userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, type = 'test', requires3ds = false) {
+function setupStubs (userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, type = 'test', requires3ds = false, paymentProvider = 'stripe') {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
-    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type, requires3ds }),
+    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId, type, requires3ds, paymentProvider }),
     gatewayAccountStubs.getAcceptedCardTypesSuccess({ gatewayAccountId }),
     gatewayAccountStubs.getCardTypesSuccess(),
-    gatewayAccountStubs.postUpdateCardTypesSuccess(gatewayAccountId)
+    gatewayAccountStubs.postUpdateCardTypesSuccess(gatewayAccountId),
+    stripeSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId })
   ])
 }
 
@@ -53,7 +55,7 @@ describe('Payment types', () => {
       .should('contain', 'Accepted card types have been updated')
   })
 
-  context('when the account is test', () => {
+  context('when the account is a payment provider test account', () => {
     context('when 3DS is not enabled', () => {
       beforeEach(() => {
         setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, 'test')
@@ -92,9 +94,9 @@ describe('Payment types', () => {
     })
   })
 
-  context('when the account is sandbox', () => {
+  context('when the account is a sandbox test account', () => {
     beforeEach(() => {
-      setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, 'sandbox')
+      setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, 'test', false, 'sandbox')
       cy.visit(`/account/${gatewayAccountExternalId}/payment-types`)
     })
 
@@ -115,7 +117,7 @@ describe('Payment types', () => {
   context('when the account is live', () => {
     context('when 3DS is not enabled', () => {
       beforeEach(() => {
-        setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, 'live')
+        setupStubs(userExternalId, gatewayAccountId, gatewayAccountExternalId, serviceName, 'live', false, 'stripe')
         cy.visit(`/account/${gatewayAccountExternalId}/payment-types`)
       })
 

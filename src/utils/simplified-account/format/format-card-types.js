@@ -16,13 +16,13 @@ const createCardTypeChecklistItem = (card, acceptedCards) => {
   }
 }
 
-const disableCheckboxIf3dsRequiredButNotEnabled = (cardTypeChecklistItem, accountType, accountRequires3ds) => {
-  if (cardTypeChecklistItem.requires3ds && !accountRequires3ds) {
+const disableCheckboxIf3dsRequiredButNotEnabled = (cardTypeChecklistItem, account) => {
+  if (cardTypeChecklistItem.requires3ds && !account.requires3ds) {
     return {
       ...cardTypeChecklistItem,
       disabled: true,
       hint: {
-        html: accountType === 'test' ? `${cardTypeChecklistItem.text} is not available on test accounts` : `${cardTypeChecklistItem.text} cannot be used because 3D Secure is not available. Please contact support`
+        html: account.paymentProvider === 'sandbox' ? `${cardTypeChecklistItem.text} is not available on sandbox test accounts` : `${cardTypeChecklistItem.text} cannot be used because 3D Secure is not available. Please contact support`
       }
     }
   }
@@ -44,7 +44,7 @@ const addHintForAmexAndUnionpayIfWorldpay = (cardTypeChecklistItem, paymentProvi
 const formatCardTypesForAdminTemplate = (allCards, acceptedCards, account) => {
   const debitCardChecklistItems = allCards.filter(card => card.type === 'DEBIT')
     .map(card => createCardTypeChecklistItem(card, acceptedCards))
-    .map(cardTypeChecklistItem => disableCheckboxIf3dsRequiredButNotEnabled(cardTypeChecklistItem, account.type, account.requires3ds))
+    .map(cardTypeChecklistItem => disableCheckboxIf3dsRequiredButNotEnabled(cardTypeChecklistItem, account))
 
   const creditCardChecklistItems = allCards.filter(card => card.type === 'CREDIT')
     .map(card => createCardTypeChecklistItem(card, acceptedCards))

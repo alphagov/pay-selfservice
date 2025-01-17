@@ -75,13 +75,13 @@ describe('format-card-types for template', () => {
       expect(cards.creditCards[2]).to.deep.include({ text: 'JCB', checked: true })
     })
 
-    it('should set checkbox to disabled for requires3ds card types if 3ds not enabled for test account', () => {
+    it('should set checkbox to disabled for requires3ds card types if 3ds not enabled for sandbox account', () => {
       const acceptedCards = [...allCards]
-      const account = { requires3ds: false, type: 'test' }
+      const account = { requires3ds: false, type: 'test', paymentProvider: 'sandbox' }
       const cards = formatCardTypesForTemplate(allCards, acceptedCards, account, true)
       expect(cards.debitCards.filter(card => card.text === 'Maestro')[0]).to.have.property('disabled').to.be.true // eslint-disable-line no-unused-expressions
       expect(cards.debitCards.filter(card => card.text === 'Maestro')[0]).to.have.property('hint')
-        .to.deep.equal({ html: 'Maestro is not available on test accounts' })
+        .to.deep.equal({ html: 'Maestro is not available on sandbox test accounts' })
     })
 
     it('should set checkbox to disabled for requires3ds card types if 3ds not enabled for live account', () => {
