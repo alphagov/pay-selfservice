@@ -251,7 +251,9 @@ describe('Stripe details settings', () => {
             }),
             stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
-              accountType: LIVE_ACCOUNT_TYPE
+              accountType: LIVE_ACCOUNT_TYPE,
+              path: 'responsible_person',
+              value: true
             })
           ])
           cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/responsible-person')

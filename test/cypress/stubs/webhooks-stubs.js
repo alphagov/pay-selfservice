@@ -68,7 +68,7 @@ function getWebhookMessageAttempts (opts = {}) {
 
 function postCreateWebhookSuccess () {
   const path = '/v1/webhook'
-  return stubBuilder('POST', path, 200)
+  return stubBuilder('POST', path, 200, { deepMatchRequest: false })
 }
 
 function createWebhookViolatesBackend (opts = {}) {
@@ -77,13 +77,24 @@ function createWebhookViolatesBackend (opts = {}) {
     response: {
       error_identifier: 'CALLBACK_URL_NOT_ON_ALLOW_LIST',
       message: 'Callback url violated security constraints'
-    }
+    },
+    deepMatchRequest: false
   })
 }
 
-function patchUpdateWebhookSuccess (webhookExternalId) {
+function patchUpdateWebhookSuccess (webhookExternalId, opts = {}) {
   const path = `/v1/webhook/${webhookExternalId}`
-  return stubBuilder('PATCH', path, 200)
+  return stubBuilder('PATCH', path, 200, {
+    request: [{
+      op: 'replace',
+      path: opts.path,
+      value: opts.value
+    }],
+    query: {
+      service_id: opts.serviceExternalId,
+      gateway_account_id: opts.gatewayAccountId
+    }
+  })
 }
 
 module.exports = {

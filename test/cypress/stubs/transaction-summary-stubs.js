@@ -6,7 +6,8 @@ const { stubBuilder } = require('./stub-builder')
 function getDashboardStatistics (opts = {}) {
   const path = '/v1/report/transactions-summary'
   return stubBuilder('GET', path, 200, {
-    response: ledgerFixture.validTransactionSummaryDetails(opts)
+    response: ledgerFixture.validTransactionSummaryDetails(opts),
+    deepMatchRequest: false
   })
 }
 

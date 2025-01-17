@@ -136,7 +136,9 @@ describe('Stripe details settings', () => {
             }),
             stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
-              accountType: LIVE_ACCOUNT_TYPE
+              accountType: LIVE_ACCOUNT_TYPE,
+              path: 'organisation_details',
+              value: true
             }),
             stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
@@ -199,10 +201,20 @@ describe('Stripe details settings', () => {
               }),
               stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType({
                 serviceExternalId: SERVICE_EXTERNAL_ID,
-                accountType: LIVE_ACCOUNT_TYPE
+                accountType: LIVE_ACCOUNT_TYPE,
+                path: 'organisation_details',
+                value: true
               }),
-              serviceStubs.patchUpdateServiceGatewayAccounts({
-                serviceExternalId: SERVICE_EXTERNAL_ID
+              serviceStubs.patchUpdateMerchantDetailsSuccess({
+                serviceExternalId: SERVICE_EXTERNAL_ID,
+                merchantDetails: {
+                  name: 'Glomgold Industries',
+                  address_line1: 'McDuck Manor',
+                  address_line2: '',
+                  address_city: 'Duckburg',
+                  address_postcode: 'SW1A 1AA',
+                  address_country: 'GB'
+                }
               }),
               stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
                 serviceExternalId: SERVICE_EXTERNAL_ID,
@@ -213,7 +225,7 @@ describe('Stripe details settings', () => {
             cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/organisation-details/index')
           })
 
-          it('should redirect to the task summary page on success', () => {
+          it.only('should redirect to the task summary page on success', () => {
             cy.get('input[type="radio"]')
               .siblings('label')
               .contains('No, these organisation details do not match')

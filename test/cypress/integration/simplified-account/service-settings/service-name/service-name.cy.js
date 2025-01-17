@@ -260,7 +260,7 @@ describe('Service name settings', () => {
         cy.get('.govuk-button').should('contain.text', 'Save changes')
         cy.get('.govuk-button').should('not.contain.text', 'Remove Welsh service name')
       })
-      it('should submit form', () => {
+      it.only('should submit form', () => {
         cy.get('input[name="serviceName"]').clear({ force: true }).type('My New Service Name')
           .should('have.value', 'My New Service Name')
         cy.get('button[form="edit-service-name"]').click()

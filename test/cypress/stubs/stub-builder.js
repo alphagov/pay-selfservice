@@ -21,10 +21,11 @@ function stubBuilder (method, path, responseCode, additionalParams = {}) {
   }
 
   let predicate
-  if (!additionalParams.hasOwnProperty('deepMatchRequest') || additionalParams.deepMatchRequest) { // eslint-disable-line no-prototype-builtins
-    predicate = { deepEquals: request }
-  } else {
+  // cy.log(additionalParams?.deepMatchRequest)
+  if (additionalParams?.deepMatchRequest === false) { // eslint-disable-line no-prototype-builtins
     predicate = { equals: request }
+  } else {
+    predicate = { deepEquals: request }
   }
 
   const stub = {

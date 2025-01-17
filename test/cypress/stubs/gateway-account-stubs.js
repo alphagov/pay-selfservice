@@ -196,15 +196,17 @@ function patchAccountEmailCollectionModeSuccess (opts) {
 function patchAccountEmailCollectionModeSuccessByServiceIdAndAccountType (serviceId, accountType, emailCollectionMode = 'MANDATORY') {
   const path = `/v1/api/service/${serviceId}/account/${accountType}`
   return stubBuilder('PATCH', path, 200,
-    { op: 'replace', path: 'email_collection_mode', value: emailCollectionMode })
+    { request: { op: 'replace', path: 'email_collection_mode', value: emailCollectionMode } })
 }
 
 function setRefundEmailEnabledByServiceIdAndAccountType (serviceId, accountType, enabled) {
   const path = `/v1/api/service/${serviceId}/account/${accountType}/email-notification`
   const payload = {
-    op: 'replace',
-    path: '/refund_issued/enabled',
-    value: enabled
+    request: {
+      op: 'replace',
+      path: '/refund_issued/enabled',
+      value: enabled
+    }
   }
   return stubBuilder('PATCH', path, 200, payload)
 }
@@ -212,9 +214,11 @@ function setRefundEmailEnabledByServiceIdAndAccountType (serviceId, accountType,
 function patchCustomParagraphByServiceIdAndAccountType (serviceId, accountType, text) {
   const path = `/v1/api/service/${serviceId}/account/${accountType}/email-notification`
   const payload = {
-    op: 'replace',
-    path: '/payment_confirmed/template_body',
-    value: text
+    request: {
+      op: 'replace',
+      path: '/payment_confirmed/template_body',
+      value: text
+    }
   }
   return stubBuilder('PATCH', path, 200, payload)
 }
@@ -222,9 +226,11 @@ function patchCustomParagraphByServiceIdAndAccountType (serviceId, accountType, 
 function setPaymentConfirmationEmailEnabledByServiceIdAndAccountType (serviceId, accountType, enabled) {
   const path = `/v1/api/service/${serviceId}/account/${accountType}/email-notification`
   const payload = {
-    op: 'replace',
-    path: '/payment_confirmed/enabled',
-    value: enabled
+    request: {
+      op: 'replace',
+      path: '/payment_confirmed/enabled',
+      value: enabled
+    }
   }
   return stubBuilder('PATCH', path, 200, payload)
 }
@@ -246,7 +252,8 @@ function patchAccountUpdateGooglePaySuccess (gatewayAccountId, allowGooglePay) {
 function patchUpdateServiceNameSuccess (gatewayAccountId, serviceName) {
   const path = `/v1/frontend/accounts/${gatewayAccountId}/servicename`
   return stubBuilder('PATCH', path, 200, {
-    request: gatewayAccountFixtures.validPatchServiceNameRequest(serviceName)
+    request: gatewayAccountFixtures.validPatchServiceNameRequest(serviceName),
+    deepMatchRequest: true
   })
 }
 
@@ -312,7 +319,8 @@ function patchUpdateCredentialsSuccess (gatewayAccountId, credentialId) {
 function patchUpdateWorldpayOneOffCredentialsSuccess (opts = {}) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/credentials/${opts.credentialId}`
   return stubBuilder('PATCH', path, 200, {
-    request: gatewayAccountFixtures.validUpdateGatewayAccountCredentialsRequest(opts)
+    request: gatewayAccountFixtures.validUpdateGatewayAccountCredentialsRequest(opts),
+    deepMatchRequest: true
   })
 }
 

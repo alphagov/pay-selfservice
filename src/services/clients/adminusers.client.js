@@ -436,7 +436,7 @@ module.exports = function (clientOptions = {}) {
   async function provisionNewOtpKey (externalId) {
     const url = `${baseUrl}${userResource}/${externalId}/second-factor/provision`
     configureClient(client, url)
-    const response = await client.post(url, 'create a new 2FA provisional OTP key')
+    const response = await client.post(url, undefined, 'create a new 2FA provisional OTP key')
     return responseBodyToUserTransformer(response.data)
   }
 

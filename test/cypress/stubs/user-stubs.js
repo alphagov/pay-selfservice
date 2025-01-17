@@ -86,14 +86,23 @@ function postUserAuthenticateInvalidPassword (username, password) {
   })
 }
 
-function postSecondFactorSuccess (userExternalId) {
+function postSecondFactorSuccess (userExternalId, provisional = false) {
   const path = `/v1/api/users/${userExternalId}/second-factor`
-  return stubBuilder('POST', path, 200)
+  return stubBuilder('POST', path, 200, {
+    request: {
+      provisional
+    }
+  })
 }
 
-function postActivateSecondFactorSuccess (userExternalId) {
+function postActivateSecondFactorSuccess (userExternalId, opts = {}) {
   const path = `/v1/api/users/${userExternalId}/second-factor/activate`
-  return stubBuilder('POST', path, 200)
+  return stubBuilder('POST', path, 200, {
+    request: {
+      code: opts.code,
+      second_factor: opts.secondFactor
+    }
+  })
 }
 
 function postAuthenticateSecondFactorSuccess (userExternalId, code) {

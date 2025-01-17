@@ -88,14 +88,16 @@ function postValidateOtpSuccess (inviteCode, otpCode) {
 function patchUpdateInvitePasswordSuccess (inviteCode, password) {
   const path = `/v1/api/invites/${inviteCode}`
   return stubBuilder('PATCH', path, 200, {
-    request: inviteFixtures.validUpdateInvitePasswordRequest(password)
+    request: inviteFixtures.validUpdateInvitePasswordRequest(password),
+    deepMatchRequest: true
   })
 }
 
 function patchUpdateInvitePhoneNumberSuccess (inviteCode, phoneNumber) {
   const path = `/v1/api/invites/${inviteCode}`
   return stubBuilder('PATCH', path, 200, {
-    request: inviteFixtures.validUpdateInvitePhoneNumberRequest(phoneNumber)
+    request: inviteFixtures.validUpdateInvitePhoneNumberRequest(phoneNumber),
+    deepMatchRequest: true
   })
 }
 

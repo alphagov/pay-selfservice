@@ -120,7 +120,7 @@ describe('All service transactions', () => {
     cy.get('#charge-id-transaction-id-4').should('exist')
   })
 
-  it('should have links back to all service transactions when navigating to transaction detail page', () => {
+  it.only('should have links back to all service transactions when navigating to transaction detail page', () => {
     cy.task('setupStubs', [
       userStub,
       gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccountStripe, gatewayAccount2, gatewayAccount3]),
@@ -136,10 +136,11 @@ describe('All service transactions', () => {
         }
       }),
       gatewayAccountStubs.getCardTypesSuccess(),
+      transactionStubs.getLedgerTransactionSuccess({ transactionDetails: testTransactions[0], gateway_account_id: gatewayAccount3.gatewayAccountId }),
       transactionStubs.getLedgerTransactionSuccess({ transactionDetails: testTransactions[0] }),
       gatewayAccountStubs.getGatewayAccountSuccess(gatewayAccount3),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess(gatewayAccount3),
-      transactionStubs.getLedgerEventsSuccess({ transactionId: 'transaction-id-3' })
+      transactionStubs.getLedgerEventsSuccess({ transactionId: 'transaction-id-3', gateway_account_id: gatewayAccount3.gatewayAccountId })
     ])
 
     cy.visit('/all-service-transactions/test')

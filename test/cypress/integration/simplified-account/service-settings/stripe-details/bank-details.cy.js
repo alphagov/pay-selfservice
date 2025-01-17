@@ -208,7 +208,9 @@ describe('Stripe details settings', () => {
             }),
             stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
-              accountType: LIVE_ACCOUNT_TYPE
+              accountType: LIVE_ACCOUNT_TYPE,
+              path: 'bank_account',
+              value: true
             }),
             stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,

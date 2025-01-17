@@ -231,7 +231,9 @@ describe('Stripe details settings', () => {
             }),
             stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
-              accountType: LIVE_ACCOUNT_TYPE
+              accountType: LIVE_ACCOUNT_TYPE,
+              path: 'government_entity_document',
+              value: true
             }),
             stripePspStubs.retrieveAccountDetails({
               stripeAccountId: STRIPE_ACCOUNT_ID

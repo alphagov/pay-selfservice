@@ -4,6 +4,7 @@ const agreementStubs = require('../../stubs/agreement-stubs')
 const transactionStubs = require('../../stubs/transaction-stubs')
 
 const userExternalId = 'some-user-id'
+const userEmail = 'some-user-email@example.com'
 const gatewayAccountId = 10
 const gatewayAccountExternalId = 'gateway-account-id'
 const serviceExternalId = 'service-id'
@@ -14,7 +15,8 @@ const userAndGatewayAccountStubs = function (role) {
       userExternalId,
       serviceExternalId,
       gatewayAccountId,
-      role
+      role,
+      email: userEmail
     }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId,
@@ -129,9 +131,11 @@ describe('Agreement detail page', () => {
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs(),
-      agreementStubs.postConectorCancelAgreementSuccess({
+      agreementStubs.postConnectorCancelAgreementSuccess({
         gatewayAccountId,
-        external_id: 'a-valid-agreement-id'
+        external_id: 'a-valid-agreement-id',
+        user_email: userEmail,
+        user_external_id: userExternalId
       }),
       agreementStubs.getLedgerAgreementSuccess({
         service_id: serviceExternalId,
@@ -175,7 +179,7 @@ describe('Agreement detail page', () => {
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs(),
-      agreementStubs.postConectorCancelAgreementFailure({
+      agreementStubs.postConnectorCancelAgreementFailure({
         gatewayAccountId,
         external_id: 'a-valid-agreement-id'
       })

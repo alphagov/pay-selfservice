@@ -159,7 +159,7 @@ describe('Webhooks', () => {
   it('should toggle a webhook status', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      webhooksStubs.patchUpdateWebhookSuccess(webhookExternalId)
+      webhooksStubs.patchUpdateWebhookSuccess(webhookExternalId, { path: 'status', value: 'INACTIVE', serviceExternalId, gatewayAccountId })
     ])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
     cy.get('[data-action=update]').then((links) => links[0].click())

@@ -150,7 +150,13 @@ function patchUpdateStripeSetupSuccess (gatewayAccountId) {
 
 function patchStripeProgressByServiceExternalIdAndAccountType (opts) {
   const path = `/v1/api/service/${opts.serviceExternalId}/account/${opts.accountType}/stripe-setup`
-  return stubBuilder('PATCH', path, 200)
+  return stubBuilder('PATCH', path, 200, {
+    request: opts.patches || [{
+      op: 'replace',
+      path: opts.path,
+      value: opts.value
+    }]
+  })
 }
 
 module.exports = {

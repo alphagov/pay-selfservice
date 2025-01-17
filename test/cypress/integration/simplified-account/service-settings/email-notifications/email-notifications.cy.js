@@ -306,6 +306,7 @@ describe('Email notifications settings', () => {
 
     describe('for a non-admin user', () => {
       beforeEach(() => {
+        O
         setupStubs(NON_ADMIN_ROLE)
       })
       it('should show relevant tabs only', () => {
