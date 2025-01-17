@@ -22,7 +22,7 @@ const disableCheckboxIf3dsRequiredButNotEnabled = (cardTypeChecklistItem, accoun
       ...cardTypeChecklistItem,
       disabled: true,
       hint: {
-        html: account.paymentProvider === 'sandbox' ? `${cardTypeChecklistItem.text} is not available on sandbox test accounts` : `${cardTypeChecklistItem.text} cannot be used because 3D Secure is not available. Please contact support`
+        html: account.paymentProvider === 'sandbox' ? `${cardTypeChecklistItem.text} is not available on sandbox test accounts` : `${cardTypeChecklistItem.text} cannot be used because 3D Secure is switched off for this service`
       }
     }
   }

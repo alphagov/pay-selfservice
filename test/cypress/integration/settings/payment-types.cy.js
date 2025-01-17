@@ -72,7 +72,7 @@ describe('Payment types', () => {
         cy.get('#debit-3-item-hint').should('be.visible')
         cy.get('#debit-3-item-hint')
           .invoke('text')
-          .should('include', 'cannot be used because 3D Secure is not available. Please contact support')
+          .should('include', 'cannot be used because 3D Secure is switched off for this service')
       })
     })
 
@@ -126,7 +126,7 @@ describe('Payment types', () => {
         cy.get('#debit-3-item-hint').should('be.visible')
         cy.get('#debit-3-item-hint')
           .invoke('text')
-          .should('include', 'cannot be used because 3D Secure is not available. Please contact support')
+          .should('include', 'cannot be used because 3D Secure is switched off for this service')
       })
 
       it('should show debit cards that do not require 3DS as enabled and without hint', () => {
