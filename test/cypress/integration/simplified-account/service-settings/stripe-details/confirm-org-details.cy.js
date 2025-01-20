@@ -225,7 +225,7 @@ describe('Stripe details settings', () => {
             cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/organisation-details/index')
           })
 
-          it.only('should redirect to the task summary page on success', () => {
+          it('should redirect to the task summary page on success', () => {
             cy.get('input[type="radio"]')
               .siblings('label')
               .contains('No, these organisation details do not match')

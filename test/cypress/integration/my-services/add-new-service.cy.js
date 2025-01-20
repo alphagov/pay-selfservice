@@ -25,7 +25,7 @@ const assignUserRoleStub =
 
 describe('Add a new service', () => {
   describe('Add a new service without a Welsh name', () => {
-    it.only('should display the service dashboard', () => {
+    it('should display the service dashboard', () => {
       cy.task('setupStubs', [
         userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
         gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1' }),
@@ -106,7 +106,7 @@ describe('Add a new service', () => {
           gatewayAccountId: newGatewayAccountId,
           serviceName: { en: newServiceName, cy: newServiceWelshName }
         }),
-        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId }),
+        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId, gatewayAccountIds: [newGatewayAccountId] }),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
           gatewayAccountExternalId: 'a-valid-external-id',
           gatewayAccountId: '1'
