@@ -80,15 +80,14 @@ const transactions = async function transactions (gatewayAccountIds = [], filter
     url,
     'List transactions for a given gateway account ID',
     {
-      data: {
+      loggingMetadata: {
         gateway_account_ids: gatewayAccountIds,
         multiple_accounts: gatewayAccountIds.length > 1,
         filters: Object.keys(filters).sort().join(', ')
       }
     }
   )
-  const body = legacyConnectorTransactionsParity(response.data)
-  return body
+  return legacyConnectorTransactionsParity(response.data)
 }
 
 const transactionSummary = async function transactionSummary (gatewayAccountId, fromDate, toDate, options = {}) {

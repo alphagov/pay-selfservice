@@ -98,7 +98,7 @@ describe('Request to go live: agreement', () => {
       cy.task('clearStubs')
       cy.task('setupStubs', [
         ...getStubsForPageSubmission('CHOSEN_PSP_STRIPE', 'TERMS_AGREED_STRIPE'),
-        goLiveRequestStubs.postStripeAgreementIpAddress(serviceExternalId)
+        goLiveRequestStubs.postStripeAgreementIpAddress(serviceExternalId, '127.0.0.1')
       ])
 
       cy.get('#agreement').check()

@@ -56,7 +56,8 @@ function updateListPerson (opts) {
   const path = `/v1/accounts/${opts.stripeAccountId}/persons`
   const fixtureOpts = parseStripePersonOptions(opts)
   return stubBuilder('POST', path, 200, {
-    response: stripePspFixtures.validStripePerson(fixtureOpts)
+    response: stripePspFixtures.validStripePerson(fixtureOpts),
+    deepMatchRequest: false
   })
 }
 

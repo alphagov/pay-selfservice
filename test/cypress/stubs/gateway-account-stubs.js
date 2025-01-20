@@ -169,7 +169,9 @@ function getCardTypesSuccess () {
 
 function postUpdateCardTypesSuccess (gatewayAccountId) {
   const path = `/v1/frontend/accounts/${gatewayAccountId}/card-types`
-  return stubBuilder('POST', path, 200)
+  return stubBuilder('POST', path, 200, {
+    deepMatchRequest: false
+  })
 }
 
 function patchConfirmationEmailToggleSuccess (opts) {
@@ -311,22 +313,36 @@ function postUpdateWorldpay3dsFlexCredentials (opts) {
   })
 }
 
-function patchUpdateCredentialsSuccess (gatewayAccountId, credentialId) {
+function patchUpdateCredentialsSuccess (gatewayAccountId, credentialId, patchOpts = {}) {
   const path = `/v1/api/accounts/${gatewayAccountId}/credentials/${credentialId}`
-  return stubBuilder('PATCH', path, 200)
+  return stubBuilder('PATCH', path, 200, {
+    request: [{
+      op: 'replace',
+      path: patchOpts.path,
+      value: patchOpts.value
+    }, {
+      op: 'replace',
+      path: 'last_updated_by_user_external_id',
+      value: patchOpts.userExternalId
+    }]
+  })
 }
 
 function patchUpdateWorldpayOneOffCredentialsSuccess (opts = {}) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/credentials/${opts.credentialId}`
   return stubBuilder('PATCH', path, 200, {
-    request: gatewayAccountFixtures.validUpdateGatewayAccountCredentialsRequest(opts),
-    deepMatchRequest: true
+    request: gatewayAccountFixtures.validUpdateGatewayAccountCredentialsRequest(opts)
   })
 }
 
-function postSwitchPspSuccess (gatewayAccountId) {
+function postSwitchPspSuccess (gatewayAccountId, opts) {
   const path = `/v1/api/accounts/${gatewayAccountId}/switch-psp`
-  return stubBuilder('POST', path, 200)
+  return stubBuilder('POST', path, 200, {
+    request: {
+      user_external_id: opts.userExternalId,
+      gateway_account_credential_external_id: opts.credentialExternalId
+    }
+  })
 }
 
 function getAccountByServiceIdAndAccountType (serviceExternalId, accountType = 'test', opts = {}) {

@@ -136,11 +136,11 @@ describe('All service transactions', () => {
         }
       }),
       gatewayAccountStubs.getCardTypesSuccess(),
-      transactionStubs.getLedgerTransactionSuccess({ transactionDetails: testTransactions[0], gateway_account_id: gatewayAccount3.gatewayAccountId }),
+      transactionStubs.getLedgerTransactionSuccess({ transactionDetails: testTransactions[0], gatewayAccountId: gatewayAccount3.gatewayAccountId }),
       transactionStubs.getLedgerTransactionSuccess({ transactionDetails: testTransactions[0] }),
       gatewayAccountStubs.getGatewayAccountSuccess(gatewayAccount3),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess(gatewayAccount3),
-      transactionStubs.getLedgerEventsSuccess({ transactionId: 'transaction-id-3', gateway_account_id: gatewayAccount3.gatewayAccountId })
+      transactionStubs.getLedgerEventsSuccess({ transactionId: 'transaction-id-3', gatewayAccountId: gatewayAccount3.gatewayAccountId })
     ])
 
     cy.visit('/all-service-transactions/test')

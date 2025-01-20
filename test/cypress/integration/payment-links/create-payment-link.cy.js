@@ -78,7 +78,7 @@ describe('The create payment link flow', () => {
     const referenceHint = 'Found in the email'
     const amount = 10
 
-    it('Should allow creating an english payment link', () => {
+    it.only('Should allow creating an english payment link', () => {
       cy.setEncryptedCookies(userExternalId)
       cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
 

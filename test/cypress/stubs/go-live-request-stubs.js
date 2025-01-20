@@ -16,9 +16,13 @@ function postGovUkPayAgreement (opts) {
   })
 }
 
-function postStripeAgreementIpAddress (serviceExternalId) {
+function postStripeAgreementIpAddress (serviceExternalId, ipAddress) {
   const path = `/v1/api/services/${serviceExternalId}/stripe-agreement`
-  return stubBuilder('POST', path, 201)
+  return stubBuilder('POST', path, 201, {
+    request: {
+      ip_address: ipAddress
+    }
+  })
 }
 
 module.exports = {

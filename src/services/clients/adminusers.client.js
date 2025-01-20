@@ -250,14 +250,14 @@ module.exports = function (clientOptions = {}) {
   async function sendOtp (inviteCode) {
     const url = `${baseUrl}/v1/api/invites/${inviteCode}/send-otp`
     configureClient(client, url)
-    const response = await client.post(url, 'send OTP code')
+    const response = await client.post(url, undefined, 'send OTP code')
     return response.data
   }
 
   async function reprovisionOtp (inviteCode) {
     const url = `${baseUrl}/v1/api/invites/${inviteCode}/reprovision-otp`
     configureClient(client, url)
-    const response = await client.post(url, 're-provision OTP key')
+    const response = await client.post(url, undefined, 're-provision OTP key')
     return response.data
   }
 

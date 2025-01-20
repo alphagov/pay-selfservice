@@ -91,7 +91,8 @@ function patchUpdateServiceSuccessCatchAll (opts) {
       external_id: opts.serviceExternalId,
       current_go_live_stage: opts.currentGoLiveStage,
       takes_payments_over_phone: opts.takesPaymentsOverPhone
-    })
+    }),
+    deepMatchRequest: false
   })
 }
 

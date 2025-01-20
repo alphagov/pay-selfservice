@@ -25,7 +25,7 @@ const typedHomeAddress = '64 Zoo Lane Road'
 const typedPostcode = 'W89 1FZ'
 const typedPhoneNumber = '+44 0808 157 0192'
 
-function setupYourPspStubs (opts = {}) {
+function setupYourPspStubs (opts = {}, patchOpts) {
   const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName })
 
   const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
@@ -51,7 +51,7 @@ function setupYourPspStubs (opts = {}) {
     governmentEntityDocument: opts.governmentEntityDocument
   })
 
-  const updateStripeAccountSetupStub = stripeAccountSetupStubs.patchUpdateStripeSetupSuccess(gatewayAccountId)
+  const updateStripeAccountSetupStub = stripeAccountSetupStubs.patchUpdateStripeSetupSuccess(gatewayAccountId, patchOpts)
   const getStripeAccountStub = getStripeAccountSuccess(gatewayAccountId, stripeAccountId)
   const updateStripeAccountStub = updateAccount({ stripeAccountId })
   const getListPersonStub = listPersons({ stripeAccountId })
@@ -155,7 +155,7 @@ describe('Your PSP Stripe page', () => {
       cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'Complete')
     })
 
-    it('should autamatically show government document as cannot start yet and the rest of the tasks as not started', () => {
+    it('should automatically show government document as cannot start yet and the rest of the tasks as not started', () => {
       setupYourPspStubs()
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
@@ -171,7 +171,7 @@ describe('Your PSP Stripe page', () => {
 
   describe('Bank details task', () => {
     it('should click bank details task and redirect to task list when valid bank details is submitted', () => {
-      setupYourPspStubs()
+      setupYourPspStubs({}, { path: 'bank_account', value: true })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
@@ -196,7 +196,7 @@ describe('Your PSP Stripe page', () => {
 
   describe('VAT task', () => {
     it('should click VAT number task and redirect back to tasklist when valid VAT number is submitted', () => {
-      setupYourPspStubs()
+      setupYourPspStubs({}, { path: 'vat_number', value: true })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('[data-cy="task-vatNumber"]').contains('VAT registration number').click()
@@ -220,7 +220,7 @@ describe('Your PSP Stripe page', () => {
 
   describe('Company number task', () => {
     it('should click company registration task and redirect back to tasklist when valid company number is submitted', () => {
-      setupYourPspStubs()
+      setupYourPspStubs({}, { path: 'company_number', value: true })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('[data-cy="task-Company-number"]').contains('Company registration number').click()
@@ -244,7 +244,7 @@ describe('Your PSP Stripe page', () => {
 
   describe('Service director task', () => {
     it('should click on service director task and redirect back to tasklist when valid service director information is submitted', () => {
-      setupYourPspStubs()
+      setupYourPspStubs({}, { path: 'director', value: true })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('[data-cy="task-director"]').contains('Service director').click()
@@ -272,7 +272,7 @@ describe('Your PSP Stripe page', () => {
 
   describe('Responsible person task', () => {
     it('should click Responsible task and redirect back to tasklist when valid responsible information is submitted', () => {
-      setupYourPspStubs()
+      setupYourPspStubs({}, { path: 'responsible_person', value: true })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('[data-cy="task-sro"]').contains('Responsible person').click()
@@ -304,7 +304,7 @@ describe('Your PSP Stripe page', () => {
 
   describe('Confirm Organisation details task', () => {
     it('should click on Confirm organisation details task and redirect to tasklist page when organisation details are correct', () => {
-      setupYourPspStubs()
+      setupYourPspStubs({}, { path: 'organisation_details', value: true })
 
       cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
       cy.get('[data-cy="task-checkorganisation-details"]').contains('Confirm your organisation’s name and address match your government entity document').click()

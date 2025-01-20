@@ -6,19 +6,13 @@ const ledgerTransactionFixtures = require('../../fixtures/ledger-transaction.fix
 const refundFixtures = require('../../fixtures/refund.fixtures')
 const { stubBuilder } = require('./stub-builder')
 
-const filterNames = {
-  agreement_id: 'agreementId',
-  display_size: 'pageSize',
-  reference: 'reference'
-}
-
 function getLedgerTransactionSuccess (opts) {
   const path = `/v1/transaction/${opts.transactionDetails.transaction_id}`
   return stubBuilder('GET', path, 200, {
     response: ledgerTransactionFixtures.validTransactionDetailsResponse(opts.transactionDetails),
     query: {
-      ...opts.gateway_account_id && { account_id: opts.gateway_account_id },
-      ...!opts.gateway_account_id && { override_account_id_restriction: true }
+      ...opts.gatewayAccountId && { account_id: opts.gatewayAccountId },
+      ...!opts.gatewayAccountId && { override_account_id_restriction: true }
     }
   })
 }
@@ -42,7 +36,7 @@ function getLedgerEventsSuccess (opts) {
       payment_states: opts.events
     }),
     query: {
-      gateway_account_id: opts.gateway_account_id
+      gateway_account_id: opts.gatewayAccountId
     }
   })
 }
@@ -57,11 +51,6 @@ function getLedgerTransactionsSuccess (opts) {
       limit_total: true,
       limit_total_size: 5001
     }),
-    request: {
-      gateway_account_ids: opts.gatewayAccountIds ? opts.gatewayAccountIds : [opts.gatewayAccountId],
-      multiple_accounts: opts.gatewayAccountIds ? opts.gatewayAccountIds.length > 1 : false,
-      filters: Object.keys(opts.filters || {}).map(filter => filterNames[filter]).join(', ')
-    },
     response: ledgerTransactionFixtures.validTransactionSearchResponse({
       page: opts.page || 1,
       display_size: opts.displaySize,
@@ -105,7 +94,8 @@ function postRefundAmountNotAvailable (opts) {
 function getTransactionsSummarySuccess (opts) {
   const path = '/v1/report/transactions-summary'
   return stubBuilder('GET', path, 200, {
-    response: ledgerTransactionFixtures.validTransactionSummaryDetails(opts)
+    response: ledgerTransactionFixtures.validTransactionSummaryDetails(opts),
+    deepMatchRequest: false
   })
 }
 

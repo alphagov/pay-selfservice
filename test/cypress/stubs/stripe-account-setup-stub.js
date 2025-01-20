@@ -143,9 +143,15 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
   }
 }
 
-function patchUpdateStripeSetupSuccess (gatewayAccountId) {
+function patchUpdateStripeSetupSuccess (gatewayAccountId, opts = {}) {
   const path = `/v1/api/accounts/${gatewayAccountId}/stripe-setup`
-  return stubBuilder('PATCH', path, 200)
+  return stubBuilder('PATCH', path, 200, {
+    request: opts.patches || [{
+      op: 'replace',
+      path: opts.path,
+      value: opts.value
+    }]
+  })
 }
 
 function patchStripeProgressByServiceExternalIdAndAccountType (opts) {
