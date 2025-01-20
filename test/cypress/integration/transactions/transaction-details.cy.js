@@ -113,8 +113,8 @@ describe('Transaction details page', () => {
         paymentProvider: transactionDetails.payment_provider,
         allowMoto: additionalGatewayAccountOpts.allow_moto
       }),
-      transactionStubs.getLedgerTransactionSuccess({ transactionDetails }),
-      transactionStubs.getLedgerEventsSuccess({ transactionId, events: transactionDetails.events }),
+      transactionStubs.getLedgerTransactionSuccess({ transactionDetails, gatewayAccountId }),
+      transactionStubs.getLedgerEventsSuccess({ transactionId, events: transactionDetails.events, gatewayAccountId }),
       stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
         gatewayAccountId,
         bankAccount: true,

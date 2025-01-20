@@ -51,16 +51,22 @@ function getInviteSuccess (opts) {
   })
 }
 
-function completeInviteSuccess (inviteCode, userExternalId) {
+function completeInviteSuccess (inviteCode, userExternalId, secondFactor) {
   const path = `/v1/api/invites/${inviteCode}/complete`
   return stubBuilder('POST', path, 200, {
+    request: {
+      second_factor: secondFactor
+    },
     response: inviteFixtures.validInviteCompleteResponse({ user_external_id: userExternalId })
   })
 }
 
-function completeInviteToServiceSuccess (inviteCode, userExternalId, serviceExternalId) {
+function completeInviteToServiceSuccess (inviteCode, userExternalId, serviceExternalId, secondFactor) {
   const path = `/v1/api/invites/${inviteCode}/complete`
   return stubBuilder('POST', path, 200, {
+    request: {
+      second_factor: secondFactor
+    },
     response: inviteFixtures.validInviteCompleteResponse({
       user_external_id: userExternalId,
       service_external_id: serviceExternalId
@@ -82,20 +88,27 @@ function postSendOtpSuccess (inviteCode) {
 
 function postValidateOtpSuccess (inviteCode, otpCode) {
   const path = '/v2/api/invites/otp/validate'
-  return stubBuilder('POST', path, 200)
+  return stubBuilder('POST', path, 200, {
+    request: {
+      code: inviteCode,
+      otp: otpCode
+    }
+  })
 }
 
 function patchUpdateInvitePasswordSuccess (inviteCode, password) {
   const path = `/v1/api/invites/${inviteCode}`
   return stubBuilder('PATCH', path, 200, {
-    request: inviteFixtures.validUpdateInvitePasswordRequest(password)
+    request: inviteFixtures.validUpdateInvitePasswordRequest(password),
+    deepMatchRequest: true
   })
 }
 
 function patchUpdateInvitePhoneNumberSuccess (inviteCode, phoneNumber) {
   const path = `/v1/api/invites/${inviteCode}`
   return stubBuilder('PATCH', path, 200, {
-    request: inviteFixtures.validUpdateInvitePhoneNumberRequest(phoneNumber)
+    request: inviteFixtures.validUpdateInvitePhoneNumberRequest(phoneNumber),
+    deepMatchRequest: true
   })
 }
 

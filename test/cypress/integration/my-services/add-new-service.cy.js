@@ -17,7 +17,7 @@ const createGatewayAccountStub =
     serviceId: newServiceId,
     paymentProvider: 'sandbox',
     type: 'test',
-    gatewayAccountId: newGatewayAccountId
+    gatewayAccountId: `${newGatewayAccountId}`
   })
 
 const assignUserRoleStub =
@@ -33,10 +33,10 @@ describe('Add a new service', () => {
         assignUserRoleStub,
         serviceStubs.postCreateServiceSuccess({
           serviceExternalId: newServiceId,
-          gatewayAccountId: newGatewayAccountId,
+          gatewayAccountId: `${newGatewayAccountId}`,
           serviceName: { en: newServiceName }
         }),
-        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId }),
+        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId, gatewayAccountIds: [newGatewayAccountId] }),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
           gatewayAccountExternalId: 'a-valid-external-id',
           gatewayAccountId: '1'
@@ -106,7 +106,7 @@ describe('Add a new service', () => {
           gatewayAccountId: newGatewayAccountId,
           serviceName: { en: newServiceName, cy: newServiceWelshName }
         }),
-        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId }),
+        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId, gatewayAccountIds: [newGatewayAccountId] }),
         gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
           gatewayAccountExternalId: 'a-valid-external-id',
           gatewayAccountId: '1'

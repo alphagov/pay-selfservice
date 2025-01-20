@@ -50,7 +50,7 @@ module.exports = {
     return {
       op: 'add',
       path: 'gateway_account_ids',
-      value: gatewayAccountIds
+      value: gatewayAccountIds.map(id => `${id}`)
     }
   },
 

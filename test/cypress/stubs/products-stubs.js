@@ -38,6 +38,7 @@ function getProductsByGatewayAccountIdAndTypeFailure (gatewayAccountId, productT
 function postCreateProductSuccess () {
   const path = '/v1/api/products'
   return stubBuilder('POST', path, 200, {
+    deepMatchRequest: false,
     response: productFixtures.validAdhocProductResponse()
   })
 }

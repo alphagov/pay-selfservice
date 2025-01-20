@@ -68,7 +68,7 @@ function getWebhookMessageAttempts (opts = {}) {
 
 function postCreateWebhookSuccess () {
   const path = '/v1/webhook'
-  return stubBuilder('POST', path, 200)
+  return stubBuilder('POST', path, 200, { deepMatchRequest: false })
 }
 
 function createWebhookViolatesBackend (opts = {}) {
@@ -77,13 +77,57 @@ function createWebhookViolatesBackend (opts = {}) {
     response: {
       error_identifier: 'CALLBACK_URL_NOT_ON_ALLOW_LIST',
       message: 'Callback url violated security constraints'
+    },
+    deepMatchRequest: false
+  })
+}
+
+/**
+ *
+ * @param {Number | String} gatewayAccountId
+ * @param {String} serviceExternalId
+ * @param {String} webhookExternalId
+ * @param {{ path: String, value: String }} patchOpts
+ * @returns {{predicates: [{deepEquals: {path, method}}|{equals: {path, method}}], name: string, responses: [{is: {headers, statusCode: *}}]}}
+ */
+function patchUpdateWebhookSuccess (gatewayAccountId, serviceExternalId, webhookExternalId, patchOpts) {
+  const path = `/v1/webhook/${webhookExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: [{
+      op: 'replace',
+      path: patchOpts.path,
+      value: patchOpts.value
+    }],
+    query: {
+      service_id: serviceExternalId,
+      gateway_account_id: gatewayAccountId
     }
   })
 }
 
-function patchUpdateWebhookSuccess (webhookExternalId) {
+/**
+ *
+ * @param {Number | String} gatewayAccountId
+ * @param {String} serviceExternalId
+ * @param {String} webhookExternalId
+ * @param {[{ path: String, value: String | Array }]} patches
+ * @returns {{predicates: [{deepEquals: {path, method}}|{equals: {path, method}}], name: string, responses: [{is: {headers, statusCode: *}}]}}
+ */
+function patchBatchUpdateWebhookSuccess (gatewayAccountId, serviceExternalId, webhookExternalId, patches) {
   const path = `/v1/webhook/${webhookExternalId}`
-  return stubBuilder('PATCH', path, 200)
+  return stubBuilder('PATCH', path, 200, {
+    request: patches.map(patch => {
+      return {
+        op: 'replace',
+        path: patch.path,
+        value: patch.value
+      }
+    }),
+    query: {
+      service_id: serviceExternalId,
+      gateway_account_id: gatewayAccountId
+    }
+  })
 }
 
 module.exports = {
@@ -95,5 +139,6 @@ module.exports = {
   getWebhookMessageAttempts,
   postCreateWebhookSuccess,
   createWebhookViolatesBackend,
-  patchUpdateWebhookSuccess
+  patchUpdateWebhookSuccess,
+  patchBatchUpdateWebhookSuccess
 }

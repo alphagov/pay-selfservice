@@ -27,7 +27,7 @@ describe('Complete registration after following link in invite email', () => {
         }),
         inviteStubs.postSendOtpSuccess(inviteCode),
         inviteStubs.postValidateOtpSuccess(inviteCode, validOtpCode),
-        inviteStubs.completeInviteSuccess(inviteCode, createdUserExternalId),
+        inviteStubs.completeInviteSuccess(inviteCode, createdUserExternalId, 'SMS'),
         userStubs.getUserSuccess({ userExternalId: createdUserExternalId, gatewayAccountId: '1' }),
         gatewayAccountStubs.getGatewayAccountsSuccess({
           gatewayAccountId: '1'
@@ -204,7 +204,7 @@ describe('Complete registration after following link in invite email', () => {
           otp_key: otpKey
         }),
         inviteStubs.postValidateOtpSuccess(inviteCode, validOtpCode),
-        inviteStubs.completeInviteSuccess(inviteCode, createdUserExternalId),
+        inviteStubs.completeInviteSuccess(inviteCode, createdUserExternalId, 'APP'),
         userStubs.getUserSuccess({ userExternalId: createdUserExternalId, gatewayAccountId: '1' }),
         gatewayAccountStubs.getGatewayAccountsSuccess({
           gatewayAccountId: '1'

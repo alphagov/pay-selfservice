@@ -9,7 +9,11 @@ const { stubBuilder } = require('./stub-builder')
 function getLedgerTransactionSuccess (opts) {
   const path = `/v1/transaction/${opts.transactionDetails.transaction_id}`
   return stubBuilder('GET', path, 200, {
-    response: ledgerTransactionFixtures.validTransactionDetailsResponse(opts.transactionDetails)
+    response: ledgerTransactionFixtures.validTransactionDetailsResponse(opts.transactionDetails),
+    query: {
+      ...opts.gatewayAccountId && { account_id: opts.gatewayAccountId },
+      ...!opts.gatewayAccountId && { override_account_id_restriction: true }
+    }
   })
 }
 
@@ -30,7 +34,10 @@ function getLedgerEventsSuccess (opts) {
     response: ledgerTransactionFixtures.validTransactionEventsResponse({
       transaction_id: opts.transactionId,
       payment_states: opts.events
-    })
+    }),
+    query: {
+      gateway_account_id: opts.gatewayAccountId
+    }
   })
 }
 
@@ -87,7 +94,8 @@ function postRefundAmountNotAvailable (opts) {
 function getTransactionsSummarySuccess (opts) {
   const path = '/v1/report/transactions-summary'
   return stubBuilder('GET', path, 200, {
-    response: ledgerTransactionFixtures.validTransactionSummaryDetails(opts)
+    response: ledgerTransactionFixtures.validTransactionSummaryDetails(opts),
+    deepMatchRequest: false
   })
 }
 

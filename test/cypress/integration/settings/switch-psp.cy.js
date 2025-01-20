@@ -131,8 +131,14 @@ describe('Switch PSP settings page', () => {
               username,
               password
             }),
-            gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, switchingToCredentialId),
-            gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, 1)
+            gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, switchingToCredentialId, userExternalId, {
+              path: 'credentials/worldpay/one_off_customer_initiated',
+              value: {
+                merchant_code: merchantId,
+                username,
+                password
+              }
+            })
           ])
 
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
@@ -373,7 +379,10 @@ describe('Switch PSP settings page', () => {
               status: 'success',
               next_url: '/should_follow_to_payment_page'
             }),
-            gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, switchingToCredentialId)
+            gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, switchingToCredentialId, userExternalId, {
+              path: 'state',
+              value: 'VERIFIED_WITH_LIVE_PAYMENT'
+            })
           ])
 
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp`)
@@ -405,7 +414,10 @@ describe('Switch PSP settings page', () => {
           2)
           cy.task('setupStubs', [
             ...userAndAccountStubs,
-            gatewayAccountStubs.postSwitchPspSuccess(gatewayAccountId)
+            gatewayAccountStubs.postSwitchPspSuccess(gatewayAccountId, {
+              userExternalId,
+              credentialExternalId: switchingToCredentialExternalId
+            })
           ])
         })
 

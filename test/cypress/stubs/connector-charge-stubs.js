@@ -4,7 +4,8 @@ const { stubBuilder } = require('./stub-builder')
 function postCreateChargeSuccess (opts) {
   const path = `/v1/api/accounts/${opts.gateway_account_id}/charges`
   return stubBuilder('POST', path, 200, {
-    response: connectorChargeFixtures.validChargeResponse(opts)
+    response: connectorChargeFixtures.validChargeResponse(opts),
+    deepMatchRequest: false
   })
 }
 

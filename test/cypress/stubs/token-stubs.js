@@ -6,6 +6,7 @@ const { stubBuilder } = require('./stub-builder')
 function postCreateTokenForAccountSuccess (opts) {
   const path = '/v1/frontend/auth'
   return stubBuilder('POST', path, 200, {
+    deepMatchRequest: false,
     response: tokenFixtures.validCreateTokenForGatewayAccountResponse(opts)
   })
 }

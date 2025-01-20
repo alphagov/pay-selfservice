@@ -28,12 +28,17 @@ function getLedgerAgreementSuccess (opts = {}) {
   })
 }
 
-function postConectorCancelAgreementSuccess (opts = {}) {
+function postConnectorCancelAgreementSuccess (opts = {}) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/agreements/${opts.external_id}/cancel`
-  return stubBuilder('POST', path, 200)
+  return stubBuilder('POST', path, 200, {
+    request: {
+      user_email: opts.user_email,
+      user_external_id: opts.user_external_id
+    }
+  })
 }
 
-function postConectorCancelAgreementFailure (opts = {}) {
+function postConnectorCancelAgreementFailure (opts = {}) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/agreements/${opts.external_id}/cancel`
   return stubBuilder('POST', path, 500)
 }
@@ -41,6 +46,6 @@ function postConectorCancelAgreementFailure (opts = {}) {
 module.exports = {
   getLedgerAgreementsSuccess,
   getLedgerAgreementSuccess,
-  postConectorCancelAgreementSuccess,
-  postConectorCancelAgreementFailure
+  postConnectorCancelAgreementSuccess,
+  postConnectorCancelAgreementFailure
 }

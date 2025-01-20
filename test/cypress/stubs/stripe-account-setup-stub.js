@@ -143,14 +143,39 @@ function getGatewayAccountStripeSetupFlagForMultipleCalls (opts) {
   }
 }
 
-function patchUpdateStripeSetupSuccess (gatewayAccountId) {
+/**
+ *
+ * @param {String | Number} gatewayAccountId
+ * @param {{ path: String, value: boolean }} patchOpts
+ * @returns {{predicates: ({deepEquals: {path, method}}|{equals: {path, method}})[], name: string, responses: {is: {headers: (*|{'Content-Type': string}), statusCode}}[]}}
+ */
+function patchUpdateStripeSetupSuccess (gatewayAccountId, patchOpts = {}) {
   const path = `/v1/api/accounts/${gatewayAccountId}/stripe-setup`
-  return stubBuilder('PATCH', path, 200)
+  return stubBuilder('PATCH', path, 200, {
+    request: [{
+      op: 'replace',
+      path: patchOpts.path,
+      value: patchOpts.value
+    }]
+  })
 }
 
-function patchStripeProgressByServiceExternalIdAndAccountType (opts) {
-  const path = `/v1/api/service/${opts.serviceExternalId}/account/${opts.accountType}/stripe-setup`
-  return stubBuilder('PATCH', path, 200)
+/**
+ *
+ * @param {String} serviceExternalId
+ * @param {String} accountType
+ * @param {{ path: String, value: boolean }} patchOpts
+ * @returns {{predicates: ({deepEquals: {path, method}}|{equals: {path, method}})[], name: string, responses: {is: {headers: (*|{'Content-Type': string}), statusCode}}[]}}
+ */
+function patchStripeProgressByServiceExternalIdAndAccountType (serviceExternalId, accountType, patchOpts) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}/stripe-setup`
+  return stubBuilder('PATCH', path, 200, {
+    request: [{
+      op: 'replace',
+      path: patchOpts.path,
+      value: patchOpts.value
+    }]
+  })
 }
 
 module.exports = {

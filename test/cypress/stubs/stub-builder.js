@@ -1,5 +1,13 @@
 'use strict'
 
+/**
+ *
+ * @param {String} method
+ * @param {String} path
+ * @param {Number} responseCode
+ * @param additionalParams
+ * @returns {{predicates: ({deepEquals: {path, method}}|{equals: {path, method}})[], name: string, responses: [{is: {headers: (*|{'Content-Type': string}), statusCode}}]}}
+ */
 function stubBuilder (method, path, responseCode, additionalParams = {}) {
   const request = {
     method,
@@ -21,10 +29,10 @@ function stubBuilder (method, path, responseCode, additionalParams = {}) {
   }
 
   let predicate
-  if (!additionalParams.hasOwnProperty('deepMatchRequest') || additionalParams.deepMatchRequest) { // eslint-disable-line no-prototype-builtins
-    predicate = { deepEquals: request }
-  } else {
+  if (additionalParams?.deepMatchRequest === false) { // eslint-disable-line no-prototype-builtins
     predicate = { equals: request }
+  } else {
+    predicate = { deepEquals: request }
   }
 
   const stub = {

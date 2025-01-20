@@ -36,7 +36,11 @@ function listPersons (opts) {
 function listBankAccount (opts) {
   const path = `/v1/accounts/${opts.stripeAccountId}/external_accounts`
   return stubBuilder('GET', path, 200, {
-    response: stripePspFixtures.validBankAccount(opts)
+    response: stripePspFixtures.validBankAccount(opts),
+    query: {
+      object: 'bank_account',
+      limit: 1
+    }
   })
 }
 
@@ -52,7 +56,8 @@ function updateListPerson (opts) {
   const path = `/v1/accounts/${opts.stripeAccountId}/persons`
   const fixtureOpts = parseStripePersonOptions(opts)
   return stubBuilder('POST', path, 200, {
-    response: stripePspFixtures.validStripePerson(fixtureOpts)
+    response: stripePspFixtures.validStripePerson(fixtureOpts),
+    deepMatchRequest: false
   })
 }
 
@@ -61,7 +66,8 @@ function createOrUpdatePerson (opts) {
   const path = `/v1/accounts/${opts.stripeAccountId}/persons/person_1234`
   const fixtureOpts = parseStripePersonOptions(opts)
   return stubBuilder('POST', path, 200, {
-    response: stripePspFixtures.validStripePerson(fixtureOpts)
+    response: stripePspFixtures.validStripePerson(fixtureOpts),
+    deepMatchRequest: false
   })
 }
 
@@ -69,7 +75,8 @@ function createPerson (opts) {
   const path = `/v1/accounts/${opts.stripeAccountId}/persons`
   const fixtureOpts = parseStripePersonOptions(opts)
   return stubBuilder('POST', path, 200, {
-    response: stripePspFixtures.validStripePerson(fixtureOpts)
+    response: stripePspFixtures.validStripePerson(fixtureOpts),
+    deepMatchRequest: false
   })
 }
 
@@ -77,7 +84,8 @@ function updateCompany (opts) {
   const path = `/v1/accounts/${opts.stripeAccountId}`
   const fixtureOpts = parseStripeAccountOptions(opts)
   return stubBuilder('POST', path, 200, {
-    response: stripePspFixtures.validRetrieveStripeAccountDetails(fixtureOpts)
+    response: stripePspFixtures.validRetrieveStripeAccountDetails(fixtureOpts),
+    deepMatchRequest: false
   })
 }
 
@@ -85,7 +93,8 @@ function updateAccount (opts) {
   const path = `/v1/accounts/${opts.stripeAccountId}`
   const fixtureOpts = parseStripeAccountOptions(opts)
   return stubBuilder('POST', path, 200, {
-    response: stripePspFixtures.validRetrieveStripeAccountDetails(fixtureOpts)
+    response: stripePspFixtures.validRetrieveStripeAccountDetails(fixtureOpts),
+    deepMatchRequest: false
   })
 }
 
@@ -109,7 +118,8 @@ function uploadFile () {
       title: null,
       type: 'png',
       url: null
-    }
+    },
+    deepMatchRequest: false
   })
 }
 

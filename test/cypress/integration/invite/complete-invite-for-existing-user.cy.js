@@ -17,7 +17,7 @@ describe('Complete an invite for an existing user', () => {
         is_invite_to_join_service: true,
         email
       }),
-      inviteStubs.completeInviteToServiceSuccess(inviteCode, userExternalId, serviceExternalId),
+      inviteStubs.completeInviteToServiceSuccess(inviteCode, userExternalId, serviceExternalId, 'SMS'),
       userStubs.getUserSuccess({
         userExternalId,
         email,

@@ -19,7 +19,8 @@ function postCreateServiceSuccess (opts) {
   const path = '/v1/api/services'
   return stubBuilder('POST', path, 200, {
     request: serviceFixtures.validCreateServiceRequest(fixtureOpts),
-    response: serviceFixtures.validServiceResponse(fixtureOpts)
+    response: serviceFixtures.validServiceResponse(fixtureOpts),
+    deepMatchRequest: true
   })
 }
 
@@ -33,7 +34,8 @@ function patchUpdateServiceNameSuccess (opts) {
     response: serviceFixtures.validServiceResponse({
       external_id: opts.serviceExternalId,
       gateway_account_ids: [opts.gatewayAccountId]
-    })
+    }),
+    deepMatchRequest: true
   })
 }
 function patchUpdateServiceGoLiveStageSuccess (opts) {
@@ -77,7 +79,8 @@ function patchUpdateMerchantDetailsSuccess (opts) {
       gateway_account_ids: [opts.gatewayAccountId],
       current_go_live_stage: opts.currentGoLiveStage,
       merchant_details: merchantDetails
-    })
+    }),
+    deepMatchRequest: true
   })
 }
 
@@ -88,7 +91,8 @@ function patchUpdateServiceSuccessCatchAll (opts) {
       external_id: opts.serviceExternalId,
       current_go_live_stage: opts.currentGoLiveStage,
       takes_payments_over_phone: opts.takesPaymentsOverPhone
-    })
+    }),
+    deepMatchRequest: false
   })
 }
 
@@ -105,7 +109,9 @@ function patchGoLiveStageFailure (opts) {
 function patchUpdateServiceGatewayAccounts (opts) {
   const path = `/v1/api/services/${opts.serviceExternalId}`
   return stubBuilder('PATCH', path, 200, {
-    response: serviceFixtures.validServiceResponse()
+    request: serviceFixtures.addGatewayAccountsRequest(opts.gatewayAccountIds),
+    response: serviceFixtures.validServiceResponse(),
+    deepMatchRequest: true
   })
 }
 

@@ -85,8 +85,9 @@ ConnectorClient.prototype = {
    * @param type
    * @param serviceName
    * @param analyticsId
+   * @param serviceId
    *
-   * @returns {Promise}
+   * @returns {Promise<GatewayAccount>}
    */
   createGatewayAccount: async function (paymentProvider, type, serviceName, analyticsId, serviceId) {
     const payload = {
@@ -108,7 +109,7 @@ ConnectorClient.prototype = {
     const url = `${this.connectorUrl}/v1/api/accounts`
     configureClient(client, url)
     const response = await client.post(url, payload, 'create a gateway account')
-    return response.data
+    return new GatewayAccount(response.data)
   },
 
   patchAccountGatewayAccountCredentials: async function (params) {
