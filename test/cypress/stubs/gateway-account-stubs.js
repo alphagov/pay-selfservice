@@ -319,9 +319,19 @@ function patchUpdateCredentialsSuccess (gatewayAccountId, credentialId) {
   return stubBuilder('PATCH', path, 200)
 }
 
-function patchUpdateCredentialsSuccessByServiceExternalIdAndType (serviceExternalId, accountType, credentialId) {
+function patchUpdateCredentialsSuccessByServiceExternalIdAndType (serviceExternalId, accountType, credentialId, patchOpts) {
   const path = `/v1/api/service/${serviceExternalId}/account/${accountType}/credentials/${credentialId}`
-  return stubBuilder('PATCH', path, 200)
+  return stubBuilder('PATCH', path, 200, {
+    request: [{
+      op: 'replace',
+      path: patchOpts.path,
+      value: patchOpts.value
+    }, {
+      op: 'replace',
+      path: 'last_updated_by_user_external_id',
+      value: patchOpts.userExternalId
+    }]
+  })
 }
 
 function patchUpdateWorldpayOneOffCredentialsSuccess (opts = {}) {

@@ -5,6 +5,7 @@ const { body, validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const worldpayDetailsService = require('@services/worldpay-details.service')
 const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
+const { WorldpayTasks } = require('@models/WorldpayTasks.class')
 
 function get (req, res) {
   const existingCredentials = req.account.getCurrentCredential().credentials?.oneOffCustomerInitiated || {}
@@ -64,6 +65,21 @@ async function post (req, res) {
     credential
   )
 
+  // if this is the last task to be completed
+  // show a success banner
+  const previousTasks = new WorldpayTasks(req.account, req.service.externalId)
+  if (previousTasks.incompleteTasks) {
+    const recalculatedTasks = await WorldpayTasks.recalculate(req.service.externalId, req.account.type)
+    if (!recalculatedTasks.incompleteTasks) {
+      req.flash('messages', {
+        state: 'success',
+        icon: '&check;',
+        heading: 'Service connected to Worldpay',
+        body: 'This service can now take payments'
+      })
+    }
+  }
+
   return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
     req.service.externalId, req.account.type))
 }
@@ -71,9 +87,11 @@ async function post (req, res) {
 const errorResponse = (req, res, errors) => {
   return response(req, res, 'simplified-account/settings/worldpay-details/credentials', {
     errors,
-    merchantCode: req.body.merchantCode,
-    username: req.body.username,
-    password: req.body.password,
+    credentials: {
+      merchantCode: req.body.merchantCode,
+      username: req.body.username,
+      password: req.body.password
+    },
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
       req.service.externalId, req.account.type)
   })

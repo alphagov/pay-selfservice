@@ -86,9 +86,11 @@ describe('Controller: settings/worldpay-details/credentials', () => {
                   merchantCode: 'Enter your merchant code'
                 }
               },
-              merchantCode: '',
-              username: '',
-              password: '',
+              credentials: {
+                merchantCode: '',
+                username: '',
+                password: ''
+              },
               backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
             })
         })
@@ -115,9 +117,11 @@ describe('Controller: settings/worldpay-details/credentials', () => {
                   merchantCode: 'Enter a MOTO merchant code. MOTO payments are enabled for this account'
                 }
               },
-              merchantCode: 'invalid-merchant-code',
-              username: 'username',
-              password: 'password', // pragma: allowlist secret
+              credentials: {
+                merchantCode: 'invalid-merchant-code',
+                username: 'username',
+                password: 'password' // pragma: allowlist secret
+              },
               backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
             })
         })
