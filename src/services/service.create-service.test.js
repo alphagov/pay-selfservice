@@ -27,8 +27,8 @@ describe('service service', function () {
     }
 
     const createGatewayAccount = sinon.stub().resolves({
-      gateway_account_id: '1',
-      external_id: 'sandbox-external-id'
+      id: '1',
+      externalId: 'sandbox-external-id'
     })
     const requestStripeTestAccount = sinon.stub().resolves({
       gateway_account_id: '2',
