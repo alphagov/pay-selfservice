@@ -68,10 +68,8 @@ async function post (req, res) {
   // if this is the last task to be completed
   // show a success banner
   const previousTasks = new WorldpayTasks(req.account, req.service.externalId)
-  console.log(previousTasks)
   if (previousTasks.incompleteTasks) {
     const recalculatedTasks = await WorldpayTasks.recalculate(req.service.externalId, req.account.type)
-    console.log(recalculatedTasks)
     if (!recalculatedTasks.incompleteTasks) {
       req.flash('messages', {
         state: 'success',
