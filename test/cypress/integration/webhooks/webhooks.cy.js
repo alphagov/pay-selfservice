@@ -126,7 +126,20 @@ describe('Webhooks', () => {
   it('should update a webhook with valid properties', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      webhooksStubs.patchUpdateWebhookSuccess(webhookExternalId)
+      webhooksStubs.patchBatchUpdateWebhookSuccess(gatewayAccountId, serviceExternalId, webhookExternalId, [{
+        path: 'callback_url',
+        value: 'https://some-callback-url.test'
+      }, {
+        path: 'description',
+        value: 'a valid webhook description'
+      }, {
+        path: 'subscriptions',
+        value: [
+          'card_payment_succeeded',
+          'card_payment_captured',
+          'card_payment_refunded'
+        ]
+      }])
     ])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
 
@@ -141,6 +154,8 @@ describe('Webhooks', () => {
     cy.get('[value=card_payment_captured]').should('be.checked')
 
     cy.get('button').contains('Update webhook').click()
+
+    cy.location('pathname').should('eq', `/test/service/service-id/account/gateway-account-id/webhooks/${webhookExternalId}`)
   })
 
   it('should show a webhook signing secret', () => {
@@ -159,7 +174,7 @@ describe('Webhooks', () => {
   it('should toggle a webhook status', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      webhooksStubs.patchUpdateWebhookSuccess(webhookExternalId, { path: 'status', value: 'INACTIVE', serviceExternalId, gatewayAccountId })
+      webhooksStubs.patchUpdateWebhookSuccess(gatewayAccountId, serviceExternalId, webhookExternalId, { path: 'status', value: 'INACTIVE' })
     ])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
     cy.get('[data-action=update]').then((links) => links[0].click())
@@ -169,6 +184,8 @@ describe('Webhooks', () => {
 
     cy.get('#toggle-active-webhook').click()
     cy.get('.govuk-notification-banner__heading').contains('Webhook status updated')
+
+    cy.location('pathname').should('eq', `/test/service/service-id/account/gateway-account-id/webhooks/${webhookExternalId}`)
   })
 
   it('should browse to event detail page', () => {

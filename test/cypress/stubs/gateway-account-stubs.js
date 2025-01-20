@@ -313,7 +313,15 @@ function postUpdateWorldpay3dsFlexCredentials (opts) {
   })
 }
 
-function patchUpdateCredentialsSuccess (gatewayAccountId, credentialId, patchOpts = {}) {
+/**
+ *
+ * @param {Number | String} gatewayAccountId
+ * @param {Number | String} credentialId
+ * @param {String} updatedByUserExternalId
+ * @param {{ path: String, value: String }} patchOpts
+ * @returns {{predicates: [{deepEquals: {path, method}}|{equals: {path, method}}], name: string, responses: [{is: {headers, statusCode: *}}]}}
+ */
+function patchUpdateCredentialsSuccess (gatewayAccountId, credentialId, updatedByUserExternalId, patchOpts) {
   const path = `/v1/api/accounts/${gatewayAccountId}/credentials/${credentialId}`
   return stubBuilder('PATCH', path, 200, {
     request: [{
@@ -323,7 +331,7 @@ function patchUpdateCredentialsSuccess (gatewayAccountId, credentialId, patchOpt
     }, {
       op: 'replace',
       path: 'last_updated_by_user_external_id',
-      value: patchOpts.userExternalId
+      value: updatedByUserExternalId
     }]
   })
 }

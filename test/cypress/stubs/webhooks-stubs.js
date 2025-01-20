@@ -82,17 +82,50 @@ function createWebhookViolatesBackend (opts = {}) {
   })
 }
 
-function patchUpdateWebhookSuccess (webhookExternalId, opts = {}) {
+/**
+ *
+ * @param {Number | String} gatewayAccountId
+ * @param {String} serviceExternalId
+ * @param {String} webhookExternalId
+ * @param {{ path: String, value: String }} patchOpts
+ * @returns {{predicates: [{deepEquals: {path, method}}|{equals: {path, method}}], name: string, responses: [{is: {headers, statusCode: *}}]}}
+ */
+function patchUpdateWebhookSuccess (gatewayAccountId, serviceExternalId, webhookExternalId, patchOpts) {
   const path = `/v1/webhook/${webhookExternalId}`
   return stubBuilder('PATCH', path, 200, {
     request: [{
       op: 'replace',
-      path: opts.path,
-      value: opts.value
+      path: patchOpts.path,
+      value: patchOpts.value
     }],
     query: {
-      service_id: opts.serviceExternalId,
-      gateway_account_id: opts.gatewayAccountId
+      service_id: serviceExternalId,
+      gateway_account_id: gatewayAccountId
+    }
+  })
+}
+
+/**
+ *
+ * @param {Number | String} gatewayAccountId
+ * @param {String} serviceExternalId
+ * @param {String} webhookExternalId
+ * @param {[{ path: String, value: String | Array }]} patches
+ * @returns {{predicates: [{deepEquals: {path, method}}|{equals: {path, method}}], name: string, responses: [{is: {headers, statusCode: *}}]}}
+ */
+function patchBatchUpdateWebhookSuccess (gatewayAccountId, serviceExternalId, webhookExternalId, patches) {
+  const path = `/v1/webhook/${webhookExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: patches.map(patch => {
+      return {
+        op: 'replace',
+        path: patch.path,
+        value: patch.value
+      }
+    }),
+    query: {
+      service_id: serviceExternalId,
+      gateway_account_id: gatewayAccountId
     }
   })
 }
@@ -106,5 +139,6 @@ module.exports = {
   getWebhookMessageAttempts,
   postCreateWebhookSuccess,
   createWebhookViolatesBackend,
-  patchUpdateWebhookSuccess
+  patchUpdateWebhookSuccess,
+  patchBatchUpdateWebhookSuccess
 }

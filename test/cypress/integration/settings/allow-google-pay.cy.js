@@ -31,10 +31,9 @@ describe('Google Pay', () => {
   it('should allow us to enable and requires a gateway merchant ID for a Worldpay account', () => {
     cy.task('setupStubs', [
       ...getUserAndAccountStubs(false),
-      gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, credentialId, {
+      gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, credentialId, userExternalId, {
         path: 'credentials/gateway_merchant_id',
-        value: '111111111111111',
-        userExternalId
+        value: '111111111111111'
       }),
       gatewayAccountStubs.patchAccountUpdateGooglePaySuccess(gatewayAccountId, true)
     ])

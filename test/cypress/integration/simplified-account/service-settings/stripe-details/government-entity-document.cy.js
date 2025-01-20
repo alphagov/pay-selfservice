@@ -229,12 +229,11 @@ describe('Stripe details settings', () => {
             stripePspStubs.updateAccount({
               stripeAccountId: STRIPE_ACCOUNT_ID
             }),
-            stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType({
-              serviceExternalId: SERVICE_EXTERNAL_ID,
-              accountType: LIVE_ACCOUNT_TYPE,
-              path: 'government_entity_document',
-              value: true
-            }),
+            stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE,
+              {
+                path: 'government_entity_document',
+                value: true
+              }),
             stripePspStubs.retrieveAccountDetails({
               stripeAccountId: STRIPE_ACCOUNT_ID
             }),
