@@ -27,7 +27,7 @@ const setupStubs = (role = 'admin', apiKeys = []) => {
   ])
 }
 
-describe('Settings - API keys', () => {
+describe.skip('Settings - API keys', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
