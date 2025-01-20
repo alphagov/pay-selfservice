@@ -1,10 +1,25 @@
 {% extends "../settings-layout.njk" %}
 
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
 {% block settingsPageTitle %}
   Card payments
 {% endblock %}
 
 {% block settingsContent %}
+
+  {% if flash.update %}
+    {% set html %}
+      <h3 class="govuk-notification-banner__heading">
+        {{ flash.update }}
+      </h3>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      html: html,
+      type: "success"
+    }) }}
+  {% endif %}
   <h1 class="govuk-heading-l">Card payments</h1>
   <p class="govuk-body">GOV.UK Pay uses 3D Secure for all card payments. 3D Secure (3DS) adds an extra layer of
     authentication to user payments.</p>

@@ -1,0 +1,45 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Card payments
+{% endblock %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">Google Pay</h1>
+  <h2 class="govuk-heading-s">
+    If you turn on Google Pay:
+  </h2>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>your service will accept both credit and debit cards</li>
+    <li>corporate card fees cannot be applied to payments made with Google Pay</li>
+  </ul>
+
+  <form action="{{ formAction }}" method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{ govukRadios({
+      name: "googlePay",
+      fieldset: {
+        legend: {
+          text: "Google Pay",
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      value: currentState,
+      items: [
+        {
+          value: "on",
+          text: "On"
+        },
+        {
+          value: "off",
+          text: "Off"
+        }
+      ]
+    }) }}
+
+    {{ govukButton({
+      text: "Save changes"
+    }) }}
+  </form>
+
+{% endblock %}

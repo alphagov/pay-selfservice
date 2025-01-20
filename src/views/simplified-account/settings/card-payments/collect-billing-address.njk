@@ -1,0 +1,44 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Card payments
+{% endblock %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">Billing address</h1>
+  <p class="govuk-body">Payment service providers (PSPs) use the billing address to carry out fraud checks.</p>
+  <p class="govuk-body">If you turn off the billing address:</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>your payment service provider (PSP) or your users’ banks may decline more payments — if you’re unsure, check with your PSP</li>
+    <li>your GOV.UK Pay integration may stop working correctly — if you’re unsure, check with your technical team</li>
+  </ul>
+
+  <form action="{{ formAction }}" method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{ govukRadios({
+      name: "collectBillingAddress",
+      fieldset: {
+        legend: {
+          text: "Billing address",
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      value: currentState,
+      items: [
+        {
+          value: "on",
+          text: "On"
+        },
+        {
+          value: "off",
+          text: "Off"
+        }
+      ]
+    }) }}
+
+    {{ govukButton({
+      text: "Save changes"
+    }) }}
+  </form>
+
+{% endblock %}

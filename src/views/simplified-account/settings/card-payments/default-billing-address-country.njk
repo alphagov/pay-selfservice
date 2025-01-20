@@ -1,0 +1,34 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Card payments
+{% endblock %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">Set United Kingdom as the default billing address country</h1>
+  <p class="govuk-body">By default, the country field in the user's billing address will be automatically populated
+    with United Kingdom. If your service frequently takes payments from overseas users, you can turn this off.</p>
+
+  <form action="{{ formAction }}" method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{ govukRadios({
+      name: "collectBillingAddress",
+      value: currentState,
+      items: [
+        {
+          value: "on",
+          text: "On"
+        },
+        {
+          value: "off",
+          text: "Off"
+        }
+      ]
+    }) }}
+
+    {{ govukButton({
+      text: "Save changes"
+    }) }}
+  </form>
+
+{% endblock %}

@@ -1,8 +1,12 @@
 const { response } = require('@utils/response')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
+const collectBillingAddress = require('./collect-billing-address.controller')
+const defaultBillingAddressCountry = require('./default-billing-address-country.controller')
+const applePay = require('./apple-pay.controller')
+const googlePay = require('./google-pay.controller')
 
-const GB_COUNTRY_CODE = 'GB'
+const GB_COUNTRY_CODE = defaultBillingAddressCountry.GB_COUNTRY_CODE
 
 function get (req, res) {
   const serviceExternalId = req.service.externalId
@@ -10,10 +14,10 @@ function get (req, res) {
   const cardPaymentsPaths = paths.simplifiedAccount.settings.cardPayments
 
   const billing = req.service.collectBillingAddress
-  const country = req.service.defaultBillingAddressCountry === GB_COUNTRY_CODE ? 'United Kingdom' : req.service.defaultBillingAddressCountry
-  const raw = req.account?.rawResponse
-  const applePay = raw?.allow_apple_pay
-  const googlePay = raw?.allow_google_pay
+  const country = req.service.defaultBillingAddressCountry === GB_COUNTRY_CODE ? 'United Kingdom' : 'None'
+  const account = req.account
+  const applePay = account?.allowApplePay
+  const googlePay = account?.allowGooglePay
 
   response(req, res, 'simplified-account/settings/card-payments/index', {
     collectBillingAddressEnabled: billing,
@@ -28,5 +32,9 @@ function get (req, res) {
 }
 
 module.exports = {
-  get
+  get,
+  collectBillingAddress,
+  defaultBillingAddressCountry,
+  applePay,
+  googlePay
 }
