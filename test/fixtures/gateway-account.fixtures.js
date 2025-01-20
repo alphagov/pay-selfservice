@@ -395,7 +395,7 @@ function validPostAccountSwitchPSPRequest (opts = {}) {
 function requestStripeTestAccountResponse (opts = {}) {
   return {
     stripe_connect_account_id: 'acct_1234',
-    gateway_account_id: '2',
+    gateway_account_id: opts.gateway_account_id || '2',
     gateway_account_external_id: opts.gateway_account_external_id || 'a-gateway-account-external-id'
   }
 }

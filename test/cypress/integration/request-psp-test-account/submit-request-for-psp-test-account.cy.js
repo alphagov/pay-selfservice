@@ -6,6 +6,7 @@ const tokenStubs = require('../../stubs/token-stubs')
 describe('Request PSP test account: submit request', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const sandboxGatewayAccountId = 42
+  const stripeGatewayAccountId = 43
   const serviceExternalId = 'afe452323dd04d1898672bfaba25e3a6'
   const requestStripeTestAccountUrl = `/service/${serviceExternalId}/request-stripe-test-account`
   const stripeGatewayAccountExternalId = 'a-stripe-gw-external-id'
@@ -14,20 +15,21 @@ describe('Request PSP test account: submit request', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccessRespondDifferentlySecondTime(userExternalId,
         {
-          gatewayAccountId: sandboxGatewayAccountId,
+          gatewayAccountId: `${sandboxGatewayAccountId}`,
           serviceExternalId,
           pspTestAccountStage: pspTestAccountStageFirstResponse
         },
         {
-          gatewayAccountId: sandboxGatewayAccountId,
+          gatewayAccountId: `${sandboxGatewayAccountId}`,
           serviceExternalId,
           pspTestAccountStage: pspTestAccountStageSecondResponse
         }
       ),
-      gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, 'test', { gateway_account_id: sandboxGatewayAccountId }),
-      gatewayAccountStubs.requestStripeTestAccount(serviceExternalId, { gateway_account_external_id: stripeGatewayAccountExternalId }),
+      gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, 'test', { gateway_account_id: `${sandboxGatewayAccountId}` }),
+      gatewayAccountStubs.requestStripeTestAccount(serviceExternalId, { gateway_account_id: `${stripeGatewayAccountId}`, gateway_account_external_id: stripeGatewayAccountExternalId }),
       gatewayAccountStubs.addGatewayAccountsToService(serviceExternalId),
-      serviceStubs.patchUpdateServicePspTestAccountStage({ serviceExternalId, gatewayAccountId: sandboxGatewayAccountId, pspTestAccountStage: 'REQUEST_SUBMITTED' }),
+      serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId, gatewayAccountIds: [stripeGatewayAccountId] }),
+      serviceStubs.patchUpdateServicePspTestAccountStage({ serviceExternalId, gatewayAccountId: `${sandboxGatewayAccountId}`, pspTestAccountStage: 'CREATED' }),
       tokenStubs.revokeTokensForAccount(sandboxGatewayAccountId)
     ])
   }
