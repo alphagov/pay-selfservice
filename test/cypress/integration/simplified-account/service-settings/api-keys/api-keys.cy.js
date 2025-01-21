@@ -11,7 +11,7 @@ const ACCOUNT_TYPE = 'test'
 const USER_EMAIL = 'potter@wand.com'
 const SERVICE_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`
 
-const setupStubs = (role = 'admin', apiKeys = []) => {
+const setupStubs = (role = 'admin', activeApiKeys = [], revokedApiKeys = []) => {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
       userExternalId: USER_EXTERNAL_ID,
@@ -23,7 +23,8 @@ const setupStubs = (role = 'admin', apiKeys = []) => {
       features: 'degatewayaccountification' // TODO remove features once simplified accounts are live
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, { gateway_account_id: GATEWAY_ACCOUNT_ID }),
-    apiKeysStubs.getApiKeysForGatewayAccount(GATEWAY_ACCOUNT_ID, apiKeys)
+    apiKeysStubs.getActiveApiKeysForGatewayAccount(GATEWAY_ACCOUNT_ID, activeApiKeys),
+    apiKeysStubs.getRevokedApiKeysForGatewayAccount(GATEWAY_ACCOUNT_ID, revokedApiKeys)
   ])
 }
 
@@ -33,6 +34,87 @@ describe('Settings - API keys', () => {
   })
 
   describe('for an admin user', () => {
+    describe('view the Revoked API keys page', () => {
+      describe('when there are revoked keys', () => {
+        const revokedKeys = [
+          new Token().withCreatedBy('Mr Smith').withDescription('description1')
+            .withIssuedDate('12 Dec 2024').withTokenLink('token-link-1')
+            .withRevokedDate('12 Jan 2025'),
+          new Token().withCreatedBy('Mrs Smith').withDescription('description2')
+            .withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024').withTokenLink('token-link-2')
+            .withRevokedDate('10 Jan 2025')
+        ]
+
+        beforeEach(() => {
+          setupStubs('admin', [], revokedKeys)
+          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
+        })
+
+        it('should show the "Show revoked API keys" button on the index page', () => {
+          cy.contains('a.govuk-button', 'Show revoked API keys').should('exist')
+        })
+
+        it('should show the list of revoked keys', () => {
+          cy.contains('a', 'Show revoked API keys').click()
+          cy.contains('h1', 'Revoked API keys (2)').should('exist')
+
+          verifySummaryCard(0, revokedKeys[0])
+          verifySummaryCard(1, revokedKeys[1])
+        })
+
+        function verifySummaryCard (pos, token) {
+          cy.get('div.govuk-summary-card').eq(pos)
+            .within(() => {
+              cy.get('.govuk-summary-card__title').should('contain', token.description)
+
+              cy.get('.govuk-summary-list__row').eq(0)
+                .within(() => {
+                  cy.get('.govuk-summary-list__key').should('contain', 'Created by')
+                  cy.get('.govuk-summary-list__value').should('contain', token.createdBy)
+                })
+
+              cy.get('.govuk-summary-list__row').eq(1)
+                .within(() => {
+                  cy.get('.govuk-summary-list__key').should('contain', 'Date created')
+                  cy.get('.govuk-summary-list__value').should('contain', token.issuedDate)
+                })
+
+              cy.get('.govuk-summary-list__row').eq(2)
+                .within(() => {
+                  cy.get('.govuk-summary-list__key').should('contain', 'Last used')
+                  cy.get('.govuk-summary-list__value').should('contain', token.lastUsed || '')
+                })
+
+              cy.get('.govuk-summary-list__row').eq(3)
+                .within(() => {
+                  cy.get('.govuk-summary-list__key').should('contain', 'Date revoked')
+                  cy.get('.govuk-summary-list__value').should('contain', token.revokedDate || '')
+                })
+            })
+        }
+      })
+
+      describe('when there are no revoked keys', () => {
+        beforeEach(() => {
+          setupStubs()
+        })
+
+        it('should not show the "Show revoked API keys" button on the index page', () => {
+          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
+          cy.contains('a.govuk-button', 'Show revoked API keys').should('not.exist')
+        })
+
+        it('should return a 404 when trying to access the revoke page directly', () => {
+          cy.request({
+            url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoked`,
+            failOnStatusCode: false
+          }).then((response) => {
+            expect(response.status).to.eq(404)
+          })
+        })
+      })
+    })
+
     describe('when there are no active API keys', () => {
       beforeEach(() => {
         setupStubs()
@@ -82,7 +164,7 @@ describe('Settings - API keys', () => {
         cy.get('.service-settings-pane')
           .find('a')
           .contains('Show revoked API keys')
-          .should('exist')
+          .should('not.exist')
       })
 
       it('should list the api keys', () => {

@@ -81,7 +81,7 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.changeName, permi
 simplifiedAccount.post(paths.simplifiedAccount.settings.apiKeys.changeName, permission('tokens:update'), serviceSettingsController.apiKeys.changeName.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.revoke, permission('tokens:delete'), serviceSettingsController.apiKeys.revoke.get)
 simplifiedAccount.post(paths.simplifiedAccount.settings.apiKeys.revoke, permission('tokens:delete'), serviceSettingsController.apiKeys.revoke.post)
-simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.revokedKeys, permission('tokens:delete'), serviceSettingsController.apiKeys.revokedKeys.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.revokedKeys, permission('tokens-revoked:read'), serviceSettingsController.apiKeys.revokedKeys.get)
 
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
