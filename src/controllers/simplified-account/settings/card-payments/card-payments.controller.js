@@ -14,6 +14,7 @@ function get (req, res) {
   const cardPaymentsPaths = paths.simplifiedAccount.settings.cardPayments
 
   const billing = req.service.collectBillingAddress
+  console.log("defaultBillingAddressCountry ", req.service.defaultBillingAddressCountry)
   const country = req.service.defaultBillingAddressCountry === GB_COUNTRY_CODE ? 'United Kingdom' : 'None'
   const account = req.account
   const applePay = account?.allowApplePay
