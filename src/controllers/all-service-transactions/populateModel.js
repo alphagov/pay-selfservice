@@ -8,9 +8,10 @@ const client = new ConnectorClient(process.env.CONNECTOR_URL)
 
 async function populateModel (req, searchResultOutput, filters, downloadRoute, filterLiveAccounts, userPermittedAccountsSummary) {
   const cardTypes = await client.getAllCardTypes()
-  const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, filters.dateRangeState, downloadRoute, req.session.backPath)
+  const searchPath = filterLiveAccounts ? paths.allServiceTransactions.index : paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'test')
+  const model = buildPaymentList(searchResultOutput, cardTypes, null, filters.result, filters.dateRangeState, downloadRoute, req.session.backPath, searchPath)
   delete req.session.backPath
-  model.search_path = filterLiveAccounts ? paths.allServiceTransactions.index : paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'test')
+  model.search_path = searchPath
   model.filtersDescription = describeFilters(filters.result)
   model.eventStates = states.allDisplayStateSelectorObjects(userPermittedAccountsSummary.hasStripeAccount)
     .map(state => {

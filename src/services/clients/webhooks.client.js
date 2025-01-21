@@ -76,6 +76,49 @@ async function messages (id, options = {}) {
   return response.data
 }
 
+async function getPaginationData(id, options = {}) {
+  let page = "1"
+  let allMessages = []
+  let hasMoreMessages = true
+
+  while (hasMoreMessages) {
+    try {
+      const messageBatch = await messages(id, { ...options, page })
+
+      if (messageBatch?.results?.length > 0) {
+        allMessages = allMessages.concat(messageBatch.results)
+        page = (parseInt(page) + 1).toString()
+      } else {
+        hasMoreMessages = false
+      }
+    } catch (error) {
+      throw error
+    }
+  }
+
+  const resultsPerPage = 10
+  const totalResults = allMessages.length
+  const totalNumberOfPages = Math.ceil(totalResults / resultsPerPage)
+
+  const allPaginationLinks = Array.from({ length: totalNumberOfPages }, (_, index) => {
+    const updatedOptions = { ...options, page: (index + 1).toString() };
+    return createFullUrl(id, updatedOptions);
+  });
+  
+  return {
+    totalNumberOfPages,
+    allPaginationLinks,
+  }
+}
+
+function createFullUrl(id, options) {
+  let fullUrl = `/${id}?page=${options.page}`
+  if (options.status) {
+    fullUrl = `${fullUrl}&status=${options.status.toUpperCase()}`
+  }
+  return fullUrl
+}
+
 async function createWebhook (serviceId, gatewayAccountId, isLive, options = {}) {
   const body = {
     service_id: serviceId,
@@ -126,5 +169,6 @@ module.exports = {
   messages,
   message,
   attempts,
-  resendWebhookMessage
+  resendWebhookMessage,
+  getPaginationData
 }

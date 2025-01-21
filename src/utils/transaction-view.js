@@ -20,7 +20,7 @@ const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
 module.exports = {
   /** prepares the transaction list view */
-  buildPaymentList: function (connectorData, allCards, gatewayAccountExternalId, filtersResult, filtersDateRangeState, route, backPath) {
+  buildPaymentList: function (connectorData, allCards, gatewayAccountExternalId, filtersResult, filtersDateRangeState, route, backPath, searchPath) {
     connectorData.filters = filtersResult
     connectorData.hasFilters = Object.keys(filtersResult).length !== 0
     connectorData.hasResults = connectorData.results.length !== 0
@@ -33,6 +33,9 @@ module.exports = {
     connectorData.hasPaginationLinks = !!getPaginationLinks(connectorData)
     connectorData.hasPageSizeLinks = hasPageSizeLinks(connectorData)
     connectorData.pageSizeLinks = getPageSizeLinks(connectorData)
+    connectorData.nextPage = getNextPage(connectorData, gatewayAccountExternalId, filtersResult, searchPath)
+    connectorData.previousPage = getPreviousPage(connectorData, gatewayAccountExternalId, filtersResult, searchPath)
+    connectorData.getAllLinks = getAllLinks(connectorData, gatewayAccountExternalId, filtersResult, searchPath)
 
     if (filtersDateRangeState) {
       connectorData.isInvalidDateRange = filtersDateRangeState.isInvalidDateRange === true
@@ -174,6 +177,50 @@ module.exports = {
     delete chargeData.return_url
     return chargeData
   }
+}
+
+function getNextPage (connectorData, gatewayAccountExternalId, filtersResult, searchPath) {
+  return getPageLink(connectorData, gatewayAccountExternalId, filtersResult, 1, searchPath)
+}
+
+function getPreviousPage (connectorData, gatewayAccountExternalId, filtersResult, searchPath) {
+  return getPageLink(connectorData, gatewayAccountExternalId, filtersResult, -1, searchPath)
+}
+
+function getPageLink (connectorData, gatewayAccountExternalId, filtersResult, pageOffset, searchPath) {
+  const totalPageNum = getTotalPageCount(connectorData)
+  const currentPage = Number(filtersResult.page || connectorData.page || 1)
+  const newPage = currentPage + pageOffset
+  if (newPage < 1 || newPage > totalPageNum) {
+    return
+  }
+  return buildUrl(gatewayAccountExternalId, { ...filtersResult, page: newPage.toString() }, searchPath)
+}
+
+function getTotalPageCount (connectorData) {
+  const paginator = new Paginator(connectorData.total, getCurrentPageSize(connectorData), getCurrentPageNumber(connectorData))
+  return paginator.getLast()
+}
+
+function getAllLinks (connectorData, gatewayAccountExternalId, filtersResult, searchPath) {
+  const totalPageCount = getTotalPageCount(connectorData)
+  const links = []
+  for (let i = 1; i <= totalPageCount; i++) {
+    links.push(buildUrl(gatewayAccountExternalId, { ...filtersResult, page: i.toString() }, searchPath))
+  }
+  return links
+}
+
+function buildUrl (gatewayAccountExternalId, updatedFilters, searchPath) {
+  const basePath = gatewayAccountExternalId
+    ? `/account/${gatewayAccountExternalId}/transactions`
+    : searchPath
+  return `${basePath}?${urlBuilder(updatedFilters)}`
+}
+
+function urlBuilder (filtersResult) {
+  const queryParams = new URLSearchParams(filtersResult)
+  return queryParams.toString()
 }
 
 function formatFirstSixDigitsCardNumber (number) {
