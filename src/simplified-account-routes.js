@@ -83,6 +83,9 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.revoke, permissio
 simplifiedAccount.post(paths.simplifiedAccount.settings.apiKeys.revoke, permission('tokens:delete'), serviceSettingsController.apiKeys.revoke.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.revokedKeys, permission('tokens-revoked:read'), serviceSettingsController.apiKeys.revokedKeys.get)
 
+// webhooks
+simplifiedAccount.get(paths.simplifiedAccount.settings.webhooks.index, permission('webhooks:read'), serviceSettingsController.webhooks.get)
+
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
 const stripeDetailsRouter = new Router({ mergeParams: true })
