@@ -1,7 +1,126 @@
+{% from "./_webhook_status.njk" import webhookStatusTag %}
 {% extends "../settings-layout.njk" %}
 
 {% set settingsPageTitle = "Webhooks" %}
 
+{% macro webhookSubscriptions(webhook) %}
+  <ul class="govuk-list">
+    {% for subscription in webhook.subscriptions | sort %}
+      {% set key = subscription | upper %}
+      <li>{{ eventTypes[key] }}</li>
+    {% endfor %}
+  </ul>
+{% endmacro %}
+
 {% block settingsContent %}
-<h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+  <p class="govuk-body">Use webhooks to send a message to your application when a payment is processed.</p>
+  <p class="govuk-body">Find out more about
+    <a class="govuk-link" href="https://docs.payments.service.gov.uk/webhooks/">setting up webhooks in your application</a>.
+  </p>
+
+  {{ govukButton({
+    text: "Create a new webhook",
+    classes: "govuk-button",
+    href: createWebhookLink
+  }) }}
+
+  {% if (activeWebhooks.length + deactivatedWebhooks.length) == 0 %}
+    <h2 class="govuk-heading-m">There are no configured webhooks</h2>
+  {% else %}
+
+    {% if activeWebhooks.length > 0 %}
+      <h2 class="govuk-heading-m">Active webhooks ({{ activeWebhooks.length }})</h2>
+
+      {% for webhook in activeWebhooks %}
+        {% set webhookDescriptionWithTag = webhook.description + '&nbsp&nbsp&nbsp' + webhookStatusTag(webhook.status) %}
+        {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
+        {{ govukSummaryList({
+          classes: "webhooks-summary-card",
+          card: {
+            title: {
+              html: webhookDescriptionWithTag
+            },
+            actions: {
+              items: [
+                {
+                  href: '',
+                  text: 'View'
+                },
+                {
+                  href: '',
+                  text: 'Update'
+                }
+              ]
+            }
+          },
+          rows: [
+            {
+              key: {
+              text: 'Callback URL'
+            },
+              value: {
+              text: webhook.callback_url
+            }
+            },
+            {
+              key: {
+              text: 'Payment events sent by this webhook'
+            },
+              value: {
+              html: webhookSubscriptionsList
+            }
+            }
+          ]
+        }) }}
+      {% endfor %}
+    {% endif %}
+
+    {% if deactivatedWebhooks.length > 0 %}
+      <h2 class="govuk-heading-m">Deactivated webhooks ({{ deactivatedWebhooks.length }})</h2>
+
+      {% for webhook in deactivatedWebhooks %}
+        {% set webhookDescriptionWithTag = webhook.description + '&nbsp&nbsp&nbsp' + webhookStatusTag(webhook.status) %}
+        {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
+        {{ govukSummaryList({
+          classes: "webhooks-summary-card",
+          card: {
+            title: {
+              html: webhookDescriptionWithTag
+            },
+            actions: {
+              items: [
+                {
+                  href: '',
+                  text: 'View'
+                },
+                {
+                  href: '',
+                  text: 'Update'
+                }
+              ]
+            }
+          },
+          rows: [
+            {
+              key: {
+              text: 'Callback URL'
+            },
+              value: {
+              text: webhook.callback_url
+            }
+            },
+            {
+              key: {
+              text: 'Payment events sent by this webhook'
+            },
+              value: {
+              html: webhookSubscriptionsList
+            }
+            }
+          ]
+        }) }}
+      {% endfor %}
+    {% endif %}
+  {% endif %}
 {% endblock %}

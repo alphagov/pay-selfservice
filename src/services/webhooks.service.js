@@ -1,7 +1,7 @@
 'use strict'
 
-const webhooksClient = require('./../../services/clients/webhooks.client')
-const Paginator = require('../../utils/paginator')
+const webhooksClient = require('./clients/webhooks.client')
+const Paginator = require('@utils/paginator')
 
 const PAGE_SIZE = 10
 
