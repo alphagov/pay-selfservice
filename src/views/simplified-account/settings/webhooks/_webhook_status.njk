@@ -1,0 +1,14 @@
+{% set statusStyleMap = {
+"ACTIVE": "govuk-tag--blue",
+"INACTIVE": "govuk-tag--yellow",
+"DISABLED": "govuk-tag--red"
+} %}
+{% set statusTextMap = {
+"ACTIVE": "Active",
+"INACTIVE": "Inactive",
+"DISABLED": "Disabled"
+} %}
+
+{% macro webhookStatusTag(status) %}
+<strong class="govuk-tag {{ statusStyleMap[status] }}">{{ statusTextMap[status] }}</strong>
+{% endmacro %}

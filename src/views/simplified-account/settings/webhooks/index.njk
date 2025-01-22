@@ -1,3 +1,4 @@
+{% from "./_webhook_status.njk" import webhookStatusTag %}
 {% extends "../settings-layout.njk" %}
 
 {% block settingsPageTitle %}
@@ -5,5 +6,59 @@
 {% endblock %}
 
 {% block settingsContent %}
-<h1 class="govuk-heading-l">Webhooks</h1>
+  <h1 class="govuk-heading-l">Webhooks</h1>
+  <p class="govuk-body">Use webhooks to send a message to your application when a payment is processed.</p>
+  <p class="govuk-body">Find out more about
+    <a class="govuk-link" href="https://docs.payments.service.gov.uk/webhooks/">setting up webhooks in your application</a>.
+  </p>
+
+
+  {{ govukButton({
+    text: "Create a new webhook",
+    classes: "govuk-button",
+    href: createWebhookLink
+  }) }}
+
+  {% for webhook in webhooks %}
+    {% set webhookDescriptionWithTag = webhook.description + ' ' + webhookStatusTag(webhook.status) %}
+    {{ govukSummaryList({
+      card: {
+        title: {
+          html: webhookDescriptionWithTag
+        },
+        actions: {
+          items: [
+            {
+              href: '',
+              text: 'View'
+            },
+            {
+              href: '',
+              text: 'Update'
+            }
+          ]
+        }
+      },
+      rows: [
+        {
+          key: {
+          text: 'Callback URL'
+        },
+          value: {
+          text: webhook.callback_url
+        }
+        },
+        {
+          key: {
+          text: 'Payment events sent by this webhook'
+        },
+          value: {
+          text: webhook.subscriptions
+        }
+        }
+      ]
+    }) }}
+  {% endfor %}
+
+
 {% endblock %}
