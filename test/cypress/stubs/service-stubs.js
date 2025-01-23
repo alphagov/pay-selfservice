@@ -115,6 +115,18 @@ function patchUpdateServiceGatewayAccounts (opts) {
   })
 }
 
+function patchUpdateCollectBillingAddressSuccess (opts) {
+  const path = `/v1/api/services/${opts.serviceExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: serviceFixtures.validCollectBillingAddressToggleRequest({ enabled: opts.collectBillingAddress }),
+    response: serviceFixtures.validServiceResponse({
+      external_id: opts.serviceExternalId,
+      gateway_account_ids: [opts.gatewayAccountId],
+      collect_billing_address: opts.collectBillingAddress
+    })
+  })
+}
+
 function patchUpdateDefaultBillingAddressCountrySuccess (opts) {
   const path = `/v1/api/services/${opts.serviceExternalId}`
   return stubBuilder('PATCH', path, 200, {
@@ -136,5 +148,6 @@ module.exports = {
   patchGoLiveStageFailure,
   patchUpdateServicePspTestAccountStage,
   patchUpdateServiceGatewayAccounts,
+  patchUpdateCollectBillingAddressSuccess,
   patchUpdateDefaultBillingAddressCountrySuccess
 }

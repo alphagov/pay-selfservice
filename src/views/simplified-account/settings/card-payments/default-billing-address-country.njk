@@ -12,7 +12,7 @@
   <form action="{{ formAction }}" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {{ govukRadios({
-      name: "collectBillingAddress",
+      name: "defaultBillingAddress",
       value: currentState,
       items: [
         {

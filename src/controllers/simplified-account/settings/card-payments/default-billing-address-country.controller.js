@@ -15,7 +15,7 @@ function get (req, res) {
 }
 
 async function post (req, res) {
-  const userPreference = onOrOffToBool(req.body.collectBillingAddress)
+  const userPreference = onOrOffToBool(req.body.defaultBillingAddress)
   const serviceExternalId = req.service.externalId
   await adminUsersClient.updateDefaultBillingAddressCountry(serviceExternalId, userPreference ? 'GB' : null)
   req.flash('update', `Default billing address country successfully ${userPreference ? 'enabled' : 'disabled'}`)
