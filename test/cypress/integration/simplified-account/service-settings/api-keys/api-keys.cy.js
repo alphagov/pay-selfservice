@@ -82,13 +82,13 @@ describe('Settings - API keys', () => {
               cy.get('.govuk-summary-list__row').eq(2)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Last used')
-                  cy.get('.govuk-summary-list__value').should('contain', token.lastUsed || '')
+                  cy.get('.govuk-summary-list__value').should('contain', token.lastUsed || 'Not used yet')
                 })
 
               cy.get('.govuk-summary-list__row').eq(3)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Date revoked')
-                  cy.get('.govuk-summary-list__value').should('contain', token.revokedDate || '')
+                  cy.get('.govuk-summary-list__value').should('contain', token.revokedDate)
                 })
             })
         }
@@ -204,7 +204,7 @@ describe('Settings - API keys', () => {
               cy.get('.govuk-summary-list__row').eq(2)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Last used')
-                  cy.get('.govuk-summary-list__value').should('contain', token.lastUsed || '')
+                  cy.get('.govuk-summary-list__value').should('contain', token.lastUsed || 'Not used yet')
                 })
             })
         }

@@ -478,6 +478,7 @@ module.exports.bind = function (app) {
   futureAccountStrategy.get(agreements.detail, permission('agreements:read'), agreementsController.agreementDetail)
   futureAccountStrategy.post(agreements.cancel, permission('agreements:update'), agreementsController.cancelAgreement)
 
+  // Webhook settings
   futureAccountStrategy.get(webhooks.index, permission('webhooks:read'), webhooksController.listWebhooksPage)
   futureAccountStrategy.get(webhooks.create, permission('webhooks:update'), webhooksController.createWebhookPage)
   futureAccountStrategy.post(webhooks.create, permission('webhooks:update'), webhooksController.createWebhook)
