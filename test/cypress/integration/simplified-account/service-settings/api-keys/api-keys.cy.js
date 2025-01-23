@@ -82,7 +82,11 @@ describe('Settings - API keys', () => {
               cy.get('.govuk-summary-list__row').eq(2)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Last used')
-                  cy.get('.govuk-summary-list__value').should('contain', token.lastUsed || 'Not used yet')
+                  if (token.lastUsed === undefined) {
+                    cy.get('.govuk-summary-list__value').should('contain', 'Not used yet')
+                  } else {
+                    cy.get('.govuk-summary-list__value').should('contain', token.lastUsed)
+                  }
                 })
 
               cy.get('.govuk-summary-list__row').eq(3)
@@ -204,7 +208,11 @@ describe('Settings - API keys', () => {
               cy.get('.govuk-summary-list__row').eq(2)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Last used')
-                  cy.get('.govuk-summary-list__value').should('contain', token.lastUsed || 'Not used yet')
+                  if (token.lastUsed === undefined) {
+                    cy.get('.govuk-summary-list__value').should('contain', 'Not used yet')
+                  } else {
+                    cy.get('.govuk-summary-list__value').should('contain', token.lastUsed)
+                  }
                 })
             })
         }
