@@ -12,7 +12,6 @@
  */
 class Service {
   constructor (serviceData) {
-    console.log('Service data', serviceData)
     this.id = serviceData.id
     this.externalId = serviceData.external_id
     this.name = serviceData.name

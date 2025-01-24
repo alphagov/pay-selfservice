@@ -25,6 +25,7 @@ describe('Card payments page', () => {
 
       it('should display the provided card payment details (version 1 - everything on)', () => {
         setupStubs({
+          role: 'admin',
           collectBillingAddress: true,
           isDefaultBillingAddressCountryUK: true,
           allowApplePay: true,
@@ -32,6 +33,80 @@ describe('Card payments page', () => {
           serviceName: 'version 1'
         })
         cy.visit(pageUrl)
+        cy.get('.govuk-summary-list').eq(0).within(() => {
+          cy.get('.govuk-summary-list__row').eq(0).within(() => {
+            cy.get('.govuk-summary-list__key').should('contain', 'Collect billing address')
+            cy.get('.govuk-summary-list__value').should('contain', 'On')
+            cy.get('.govuk-summary-list__actions').should('contain', 'Change')
+          })
+          cy.get('.govuk-summary-list__row').eq(1).within(() => {
+            cy.get('.govuk-summary-list__key').should('contain', 'Default billing address country')
+            cy.get('.govuk-summary-list__value').should('contain', 'United Kingdom')
+            cy.get('.govuk-summary-list__actions').should('contain', 'Change')
+          })
+        })
+        cy.get('.govuk-summary-list').eq(1).within(() => {
+          cy.get('.govuk-summary-list__row').eq(0).within(() => {
+            cy.get('.govuk-summary-list__key').should('contain', 'Apple Pay')
+            cy.get('.govuk-summary-list__value').should('contain', 'On')
+            cy.get('.govuk-summary-list__actions').should('contain', 'Change')
+          })
+          cy.get('.govuk-summary-list__row').eq(1).within(() => {
+            cy.get('.govuk-summary-list__key').should('contain', 'Google Pay')
+            cy.get('.govuk-summary-list__value').should('contain', 'On')
+            cy.get('.govuk-summary-list__actions').should('contain', 'Change')
+          })
+        })
+      })
+
+      it('should display the provided card payment details (version 2 - everything off)', () => {
+        setupStubs({
+          role: 'admin',
+          collectBillingAddress: false,
+          isDefaultBillingAddressCountryUK: false,
+          allowApplePay: false,
+          allowGooglePay: false,
+          serviceName: 'version 2'
+        })
+
+        cy.visit(pageUrl)
+        cy.get('.govuk-summary-list').eq(0).within(() => {
+          cy.get('.govuk-summary-list__row').eq(0).within(() => {
+            cy.get('.govuk-summary-list__key').should('contain', 'Collect billing address')
+            cy.get('.govuk-summary-list__value').should('contain', 'Off')
+            cy.get('.govuk-summary-list__actions').should('contain', 'Change')
+          })
+          cy.get('.govuk-summary-list__row').eq(1).within(() => {
+            cy.get('.govuk-summary-list__key').should('contain', 'Default billing address country')
+            cy.get('.govuk-summary-list__value').should('contain', 'None')
+            cy.get('.govuk-summary-list__actions').should('contain', 'Change')
+          })
+        })
+        cy.get('.govuk-summary-list').eq(1).within(() => {
+          cy.get('.govuk-summary-list__row').eq(0).within(() => {
+            cy.get('.govuk-summary-list__key').should('contain', 'Apple Pay')
+            cy.get('.govuk-summary-list__value').should('contain', 'Off')
+            cy.get('.govuk-summary-list__actions').should('contain', 'Change')
+          })
+          cy.get('.govuk-summary-list__row').eq(1).within(() => {
+            cy.get('.govuk-summary-list__key').should('contain', 'Google Pay')
+            cy.get('.govuk-summary-list__value').should('contain', 'Off')
+            cy.get('.govuk-summary-list__actions').should('contain', 'Change')
+          })
+        })
+      })
+
+      it('should handle view only users', () => {
+        setupStubs({
+          role: 'view-only',
+          collectBillingAddress: true,
+          isDefaultBillingAddressCountryUK: true,
+          allowApplePay: true,
+          allowGooglePay: true,
+          serviceName: 'version 1'
+        })
+        cy.visit(pageUrl)
+        cy.get('.govuk-summary-list__actions').should('not.exist')
         cy.get('.govuk-summary-list').eq(0).within(() => {
           cy.get('.govuk-summary-list__row').eq(0).within(() => {
             cy.get('.govuk-summary-list__key').should('contain', 'Collect billing address')
@@ -54,37 +129,6 @@ describe('Card payments page', () => {
         })
       })
 
-      it('should display the provided card payment details (version 2 - everything off)', () => {
-        setupStubs({
-          collectBillingAddress: false,
-          isDefaultBillingAddressCountryUK: false,
-          allowApplePay: false,
-          allowGooglePay: false,
-          serviceName: 'version 2'
-        })
-
-        cy.visit(pageUrl)
-        cy.get('.govuk-summary-list').eq(0).within(() => {
-          cy.get('.govuk-summary-list__row').eq(0).within(() => {
-            cy.get('.govuk-summary-list__key').should('contain', 'Collect billing address')
-            cy.get('.govuk-summary-list__value').should('contain', 'Off')
-          })
-          cy.get('.govuk-summary-list__row').eq(1).within(() => {
-            cy.get('.govuk-summary-list__key').should('contain', 'Default billing address country')
-            cy.get('.govuk-summary-list__value').should('contain', 'None')
-          })
-        })
-        cy.get('.govuk-summary-list').eq(1).within(() => {
-          cy.get('.govuk-summary-list__row').eq(0).within(() => {
-            cy.get('.govuk-summary-list__key').should('contain', 'Apple Pay')
-            cy.get('.govuk-summary-list__value').should('contain', 'Off')
-          })
-          cy.get('.govuk-summary-list__row').eq(1).within(() => {
-            cy.get('.govuk-summary-list__key').should('contain', 'Google Pay')
-            cy.get('.govuk-summary-list__value').should('contain', 'Off')
-          })
-        })
-      })
     })
   })
 })

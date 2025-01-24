@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block settingsContent %}
+  {% if isReadOnly %}
+    {% include "includes/settings-read-only.njk" %}
+  {% endif %}
   <h1 class="govuk-heading-l">Google Pay</h1>
   <h2 class="govuk-heading-s">
     If you turn on Google Pay:

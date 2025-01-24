@@ -7,7 +7,9 @@
 {% endblock %}
 
 {% block settingsContent %}
-
+  {% if not userCanUpdatePaymentTypes %}
+    {% include "simplified-account/settings/partials/read-only-message.njk" %}
+  {% endif %}
   {% if flash.update %}
     {% set html %}
       <h3 class="govuk-notification-banner__heading">
@@ -44,7 +46,7 @@
             visuallyHiddenText: "collect billing address"
           }
         ]
-      }
+      } if userCanUpdatePaymentTypes
     },
     {
       key: {
@@ -62,7 +64,7 @@
             visuallyHiddenText: "default billing address country"
           }
         ]
-      }
+      } if userCanUpdatePaymentTypes
     }
   ]
 }) }}
@@ -89,7 +91,7 @@
             visuallyHiddenText: "Apple Pay"
           }
         ]
-      }
+      } if userCanUpdatePaymentTypes
     },
     {
       key: {
@@ -107,7 +109,7 @@
             visuallyHiddenText: "Google Pay"
           }
         ]
-      }
+      } if userCanUpdatePaymentTypes
     }
   ]
 }) }}

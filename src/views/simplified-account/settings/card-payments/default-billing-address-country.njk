@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block settingsContent %}
+  {% if isReadOnly %}
+    {% include "includes/settings-read-only.njk" %}
+  {% endif %}
   <h1 class="govuk-heading-l">Set United Kingdom as the default billing address country</h1>
   <p class="govuk-body">By default, the country field in the user's billing address will be automatically populated
     with United Kingdom. If your service frequently takes payments from overseas users, you can turn this off.</p>

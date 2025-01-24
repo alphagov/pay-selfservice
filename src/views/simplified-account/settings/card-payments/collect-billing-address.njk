@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block settingsContent %}
+  {% if isReadOnly %}
+    {% include "includes/settings-read-only.njk" %}
+  {% endif %}
   <h1 class="govuk-heading-l">Billing address</h1>
   <p class="govuk-body">Payment service providers (PSPs) use the billing address to carry out fraud checks.</p>
   <p class="govuk-body">If you turn off the billing address:</p>

@@ -14,11 +14,12 @@ function get (req, res) {
   const cardPaymentsPaths = paths.simplifiedAccount.settings.cardPayments
 
   const billing = req.service.collectBillingAddress
-  console.log("defaultBillingAddressCountry ", req.service.defaultBillingAddressCountry)
   const country = req.service.defaultBillingAddressCountry === GB_COUNTRY_CODE ? 'United Kingdom' : 'None'
   const account = req.account
   const applePay = account?.allowApplePay
   const googlePay = account?.allowGooglePay
+
+  const userCanUpdatePaymentTypes = req.user.hasPermission(serviceExternalId, 'payment-types:update')
 
   response(req, res, 'simplified-account/settings/card-payments/index', {
     collectBillingAddressEnabled: billing,
@@ -28,7 +29,8 @@ function get (req, res) {
     applePayEnabled: applePay,
     applePayAddressLink: formatSimplifiedAccountPathsFor(cardPaymentsPaths.applePay, serviceExternalId, accountType),
     googlePayEnabled: googlePay,
-    googlePayAddressLink: formatSimplifiedAccountPathsFor(cardPaymentsPaths.googlePay, serviceExternalId, accountType)
+    googlePayAddressLink: formatSimplifiedAccountPathsFor(cardPaymentsPaths.googlePay, serviceExternalId, accountType),
+    userCanUpdatePaymentTypes
   })
 }
 
