@@ -1,7 +1,6 @@
 const { response } = require('@utils/response')
 
-async function get (req, res, next) {
-  console.log(req.account)
+async function get (req, res) {
   response(req, res, 'simplified-account/settings/webhooks/create', {})
 }
 

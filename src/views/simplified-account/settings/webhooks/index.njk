@@ -1,6 +1,15 @@
 {% from "./_webhook_status.njk" import webhookStatusTag %}
 {% extends "../settings-layout.njk" %}
 
+{% macro webhookSubscriptions(webhook) %}
+  <ul class="govuk-list">
+    {% for subscription in webhook.subscriptions | sort %}
+      {% set key = subscription | upper %}
+      <li>{{ eventTypes[key] }}</li>
+    {% endfor %}
+  </ul>
+{% endmacro %}
+
 {% block settingsPageTitle %}
   Webhooks
 {% endblock %}
@@ -20,8 +29,10 @@
   }) }}
 
   {% for webhook in webhooks %}
-    {% set webhookDescriptionWithTag = webhook.description + ' ' + webhookStatusTag(webhook.status) %}
+    {% set webhookDescriptionWithTag = webhook.description + '&nbsp&nbsp&nbsp' + webhookStatusTag(webhook.status) %}
+    {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
     {{ govukSummaryList({
+      classes: "webhooks-summary-card",
       card: {
         title: {
           html: webhookDescriptionWithTag
@@ -53,7 +64,7 @@
           text: 'Payment events sent by this webhook'
         },
           value: {
-          text: webhook.subscriptions
+          html: webhookSubscriptionsList
         }
         }
       ]
