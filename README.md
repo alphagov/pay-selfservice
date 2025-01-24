@@ -76,8 +76,8 @@ _This runs both the Cypress server and @govuk-pay/run-amock which is the mock se
 You can run Cypress tests headless or in a locally installed browser
 
 ```bash
-npm run cypress:test
-npm run cypress:test-headed
+npm run cypress:test # headless
+npm run cypress:test-headed # in a browser
 ```
 
 #### Debugging Cypress tests

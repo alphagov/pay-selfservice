@@ -160,6 +160,22 @@ function getAcceptedCardTypesSuccess (opts) {
   return stubBuilder('GET', path, 200, { response })
 }
 
+function getAcceptedCardTypesByServiceExternalIdAndAccountType (opts) {
+  const path = `/v1/frontend/service/${opts.serviceExternalId}/account/${opts.accountType}/card-types`
+  const response = cardFixtures.validAcceptedCardTypesResponse({
+    account_id: opts.gatewayAccountId,
+    updated: opts.updated,
+    maestro: opts.maestro || '',
+    toggleAmex: opts.toggleAmex || false
+  })
+  return stubBuilder('GET', path, 200, { response })
+}
+
+function postAcceptedCardTypesByServiceExternalIdAndAccountType (opts) {
+  const path = `/v1/frontend/service/${opts.serviceExternalId}/account/${opts.accountType}/card-types`
+  return stubBuilder('POST', path, 200)
+}
+
 function getCardTypesSuccess () {
   const path = '/v1/api/card-types'
   return stubBuilder('GET', path, 200, {
@@ -441,5 +457,7 @@ module.exports = {
   patchAccountUpdateGooglePaySuccess,
   requestStripeTestAccount,
   setPaymentConfirmationEmailEnabledByServiceIdAndAccountType,
-  setRefundEmailEnabledByServiceIdAndAccountType
+  setRefundEmailEnabledByServiceIdAndAccountType,
+  getAcceptedCardTypesByServiceExternalIdAndAccountType,
+  postAcceptedCardTypesByServiceExternalIdAndAccountType
 }
