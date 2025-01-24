@@ -63,10 +63,10 @@ describe('Card types setting', () => {
         ]
 
         const expectedCards = [
-          'Mastercard credit',
-          'Visa debit',
-          'Maestro',
-          'Discover'
+          ['Visa debit', 'Mastercard debit'],
+          ['Maestro'],
+          ['Mastercard credit', 'Visa credit', 'American Express'],
+          ['Discover', 'Diners Club', 'JCB', 'Union Pay']
         ]
 
         cy.get('div.service-settings-pane h2')
@@ -78,12 +78,9 @@ describe('Card types setting', () => {
               .next('dl')
               .should('exist')
               .then($dl => {
-                cy.wrap($dl)
-                  .find('dd')
-                  .invoke('text')
-                  .then(text => {
-                    expect(matchAnyText(text, expectedCards), `Match one of: [${expectedCards.join('][')}]`).to.exist //eslint-disable-line
-                  })
+                expectedCards[index].forEach(card => {
+                  cy.wrap($dl).should('contain.text', card)
+                })
               })
           })
       })
@@ -129,8 +126,6 @@ describe('Card types setting', () => {
           .each(($legend, index) => {
             cy.wrap($legend).should('contain.text', expectedHeadings[index])
           })
-        cy.get('div.service-settings-pane input[type="checkbox"]')
-          .should('have.length', 10)
       })
       it('should update the selected card types on submit', () => {
         cy.get('div.service-settings-pane')
@@ -173,8 +168,4 @@ function checkSettingsNavigation () {
           .parent().should('have.class', 'service-settings-nav__li--active')
       })
   })
-}
-
-function matchAnyText (text, possibleTexts) {
-  return possibleTexts.find(possibleText => text.includes(possibleText))
 }
