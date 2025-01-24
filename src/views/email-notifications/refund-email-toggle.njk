@@ -11,12 +11,12 @@
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
   {% if permissions.email_notification_toggle_update %}
-    {% set isReadyOnly = false %}
+    {% set isReadOnly = false %}
   {% else %}
-    {% set isReadyOnly = true %}
+    {% set isReadOnly = true %}
   {% endif %}
 
-  {% if isReadyOnly %}
+  {% if isReadOnly %}
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
 
@@ -34,7 +34,7 @@
         </div>
         <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="email-confirmation-yes-input" name="email-refund-enabled" type="radio" value="true" {{'checked' if refundEmailEnabled === true else ''}} {{'disabled' if isReadyOnly === true else ''}} data-aria-controls="conditional-email-refund-yes-input">
+            <input class="govuk-radios__input" id="email-confirmation-yes-input" name="email-refund-enabled" type="radio" value="true" {{'checked' if refundEmailEnabled === true else ''}} {{'disabled' if isReadOnly === true else ''}} data-aria-controls="conditional-email-refund-yes-input">
             <label class="govuk-label govuk-radios__label" for="email-refund-yes-input">
               Yes
             </label>
@@ -59,7 +59,7 @@
             </div>
           {% endif %}
           <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="email-refund-no-input" name="email-refund-enabled" type="radio" value="false" {{'checked' if refundEmailEnabled === false else ''}} {{'disabled' if isReadyOnly === true else ''}}>
+            <input class="govuk-radios__input" id="email-refund-no-input" name="email-refund-enabled" type="radio" value="false" {{'checked' if refundEmailEnabled === false else ''}} {{'disabled' if isReadOnly === true else ''}}>
             <label class="govuk-label govuk-radios__label" for="email-refund-no-input">
               No
             </label>
@@ -68,7 +68,7 @@
       </fieldset>
     </div>
 
-    {% if not isReadyOnly %}
+    {% if not isReadOnly %}
       {{
         govukButton({
           text: 'Save changes'
@@ -77,7 +77,7 @@
     {% endif %}
     <p class="govuk-body">
         <a class="govuk-link govuk-link--no-visited-state"href="{{ formatAccountPathsFor(routes.account.settings.index, currentGatewayAccount.external_id) }}">
-        {{ 'Go back' if isReadyOnly else 'Cancel' }}
+        {{ 'Go back' if isReadOnly else 'Cancel' }}
       </a>
     </p>
   </form>
