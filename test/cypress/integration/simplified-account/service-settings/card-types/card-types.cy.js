@@ -116,7 +116,7 @@ describe('Card types setting', () => {
     describe('the settings nav', () => {
       checkSettingsNavigation()
     })
-    describe.only('the page', () => {
+    describe('the page', () => {
       checkTitleAndHeading()
       it('should show the all card types as toggle-able checkboxes', () => {
         cy.get('div.service-settings-pane input[type="checkbox"]').should('have.length', 10)
