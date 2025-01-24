@@ -173,7 +173,9 @@ function getAcceptedCardTypesByServiceExternalIdAndAccountType (opts) {
 
 function postAcceptedCardTypesByServiceExternalIdAndAccountType (opts) {
   const path = `/v1/frontend/service/${opts.serviceExternalId}/account/${opts.accountType}/card-types`
-  return stubBuilder('POST', path, 200)
+  return stubBuilder('POST', path, 200, {
+    deepMatchRequest: false
+  })
 }
 
 function getCardTypesSuccess () {
