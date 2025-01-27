@@ -24,7 +24,7 @@
             text: "Not yet started",
             classes: "govuk-tag--blue"
           }
-        } if task.complete == false else (
+        } if not (task.complete == true) else (
           {
             tag: {
               text: "Completed",
