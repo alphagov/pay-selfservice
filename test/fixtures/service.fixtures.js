@@ -154,7 +154,7 @@ module.exports = {
 
     if (opts.default_billing_address_country !== null) {
       service.default_billing_address_country = opts.default_billing_address_country === undefined
-        ? 'GB2 - ' + JSON.stringify(opts.default_billing_address_country)
+        ? 'GB'
         : opts.default_billing_address_country
     }
 
