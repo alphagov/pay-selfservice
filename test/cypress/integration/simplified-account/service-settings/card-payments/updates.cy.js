@@ -31,7 +31,7 @@ describe('Card payment updates', () => {
       })
     ])
     cy.visit(baseUrl + '/collect-billing-address')
-    cy.get('h1').should('contain.text', 'Billing address')
+    cy.get('h1').should('contain.text', 'Collect billing address')
     cy.get('input#collect-billing-address-off').click()
     cy.contains('button', 'Save changes').click()
     cy.get('#govuk-notification-banner-title').should('contain.text', 'Success')
@@ -49,11 +49,30 @@ describe('Card payment updates', () => {
       })
     ])
     cy.visit(baseUrl + '/default-billing-address-country')
-    cy.get('h1').should('contain.text', 'Set United Kingdom as the default billing address country')
+    cy.get('h1').should('contain.text', 'Default billing address country')
     cy.get('input#default-billing-address-on').click()
     cy.contains('button', 'Save changes').click()
     cy.get('#govuk-notification-banner-title').should('contain.text', 'Success')
   })
+
+  // Waiting for Run Amock Release
+  // it('should allow update of Default billing address country', () => {
+  //   setupStubs({
+  //     isDefaultBillingAddressCountryUK: true
+  //   })
+  //   cy.task('setupStubs', [
+  //     patchUpdateDefaultBillingAddressCountrySuccess({
+  //       gatewayAccountId: GATEWAY_ACCOUNT_ID,
+  //       serviceExternalId: SERVICE_EXTERNAL_ID,
+  //       country: null
+  //     })
+  //   ])
+  //   cy.visit(baseUrl + '/default-billing-address-country')
+  //   cy.get('h1').should('contain.text', 'Default billing address country')
+  //   cy.get('input#default-billing-address-off').click()
+  //   cy.contains('button', 'Save changes').click()
+  //   cy.get('#govuk-notification-banner-title').should('contain.text', 'Success')
+  // })
 
   it('should allow update of Apple Pay', () => {
     setupStubs({
