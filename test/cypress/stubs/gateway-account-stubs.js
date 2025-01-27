@@ -262,10 +262,24 @@ function patchAccountUpdateApplePaySuccess (gatewayAccountId, allowApplePay) {
   })
 }
 
+function patchAccountByServiceIdUpdateApplePaySuccess (serviceExternalId, accountType, allowApplePay) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validUpdateToggleApplePayRequest(allowApplePay)
+  })
+}
+
 function patchAccountUpdateGooglePaySuccess (gatewayAccountId, allowGooglePay) {
   const path = `/v1/api/accounts/${gatewayAccountId}`
   return stubBuilder('PATCH', path, 200, {
     request: gatewayAccountFixtures.validUpdateToggleGooglePayRequest(allowGooglePay)
+  })
+}
+
+function patchAccountByServiceIdUpdateGooglePaySuccess (serviceExternalId, accountType, allowApplePay) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validUpdateToggleGooglePayRequest(allowApplePay)
   })
 }
 
@@ -456,7 +470,9 @@ module.exports = {
   patchUpdateWorldpayOneOffCredentialsSuccess,
   postSwitchPspSuccess,
   patchAccountUpdateApplePaySuccess,
+  patchAccountByServiceIdUpdateApplePaySuccess,
   patchAccountUpdateGooglePaySuccess,
+  patchAccountByServiceIdUpdateGooglePaySuccess,
   requestStripeTestAccount,
   setPaymentConfirmationEmailEnabledByServiceIdAndAccountType,
   setRefundEmailEnabledByServiceIdAndAccountType,

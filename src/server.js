@@ -26,7 +26,7 @@ const formatFutureStrategyAccountPathsFor = require('@utils/format-future-strate
 const formatServicePathsFor = require('@utils/format-service-paths-for')
 const healthcheckController = require('@controllers/healthcheck.controller')
 const { healthcheck } = require('@root/paths.js')
-const { boolToText, boolToOnOrOff } = require('@utils/bool-to-text')
+const { boolToText, boolToOnOrOff } = require('@utils/on-or-off')
 // Global constants
 const bindHost = (process.env.BIND_HOST || '127.0.0.1')
 const port = (process.env.PORT || 3000)
