@@ -101,6 +101,10 @@ module.exports = {
       }]
     }
 
+    if (opts.toggleAmex) {
+      data.card_types.pop()
+    }
+
     if (opts.maestro) {
       data.card_types.push({
         id: '778e32ef-5314-4a42-897d-d06986bc9465',
