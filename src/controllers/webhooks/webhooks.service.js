@@ -52,6 +52,11 @@ async function getWebhookMessages (id, options = {}) {
   return formatPages(searchResponse)
 }
 
+async function getPaginationData(id, options = {}) {
+  const searchResponse = await webhooksClient.getPaginationData(id, options)
+  return searchResponse
+}
+
 function getSigningSecret (webhookId, serviceId, gatewayAccountId) {
   return webhooksClient.signingSecret(webhookId, serviceId, gatewayAccountId)
 }
@@ -80,5 +85,6 @@ module.exports = {
   getWebhookMessages,
   getWebhookMessage,
   getWebhookMessageAttempts,
-  resendWebhookMessage
+  resendWebhookMessage,
+  getPaginationData
 }
