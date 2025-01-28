@@ -1,8 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Revoked API keys
-{% endblock %}
+{% set settingsPageTitle = "Revoked " + ("test" if accountType === 'test' else "live") + " API keys" %}
 
 {% block settingsContent %}
 

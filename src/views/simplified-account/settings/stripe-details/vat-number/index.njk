@@ -1,11 +1,9 @@
 {% extends "../../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Stripe details - VAT registration number
-{% endblock %}
+{% set settingsPageTitle = "VAT registration number" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">VAT registration number</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
   <form id="vat-number-form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>

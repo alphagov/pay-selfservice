@@ -1,8 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Email notifications - {{ currentService.name }} {{ currentGatewayAccount.full_type }}
-{% endblock %}
+{% set settingsPageTitle = "Email templates" %}
 
 {% block settingsContent %}
   {% if not isAdminUser %}
@@ -13,7 +11,7 @@
     }) }}
   {% endif %}
 
-  <h1 class="govuk-heading-l">Email templates</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
   <p class="govuk-body govuk-!-margin-bottom-6">
     GOV.UK Pay can send notifications to users.

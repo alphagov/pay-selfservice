@@ -111,7 +111,7 @@ describe('Stripe details settings', () => {
       })
       describe('The task page', () => {
         it('should show the correct title', () => {
-          cy.title().should('eq', 'Settings - Stripe details - Organisation details - GOV.UK Pay')
+          cy.title().should('eq', 'Check organisation details - Settings - McDuck Enterprises - GOV.UK Pay')
         })
         it('should show the correct heading', () => {
           cy.get('h1').should('contain', 'Organisation details')
@@ -168,7 +168,7 @@ describe('Stripe details settings', () => {
             .check()
 
           cy.get('#confirm-org-details-form button[type="submit"]').click()
-          cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
+          cy.title().should('eq', 'Stripe details - Settings - McDuck Enterprises - GOV.UK Pay')
           cy.get('h1').should('contain', 'Stripe details')
           cy.location('pathname').should('not.contain', '/organisation-details/index')
           cy.get('.govuk-task-list__item')
@@ -248,7 +248,7 @@ describe('Stripe details settings', () => {
               .type('Glomgold Industries')
 
             cy.get('#update-organisation-details-submit').click()
-            cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
+            cy.title().should('eq', 'Stripe details - Settings - McDuck Enterprises - GOV.UK Pay')
             cy.get('h1').should('contain', 'Stripe details')
             cy.location('pathname').should('not.contain', '/organisation-details')
             cy.get('.govuk-task-list__item')

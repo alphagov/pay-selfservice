@@ -1,12 +1,10 @@
 {% extends "../../settings-layout.njk" %}
 {% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
 
-{% block settingsPageTitle %}
-  Stripe details - Government entity document
-{% endblock %}
+{% set settingsPageTitle = "Upload a government entity document" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Upload a government entity document</h1>
+  <h1 class="govuk-heading-l govuk-!-margin-bottom-6">{{ settingsPageTitle }}</h1>
 
   <p class="govuk-body">For Stripe to verify that your organisation is a ‘government entity’, you need to upload one
     of these documents:</p>

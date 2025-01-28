@@ -1,8 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Email notifications - {{ currentService.name }} {{ currentGatewayAccount.full_type }}
-{% endblock %}
+{% set settingsPageTitle = "Ask users for their email address" %}
 
 {% block settingsContent %}
   <form id="email-collection-mode" method="post" novalidate>

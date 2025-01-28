@@ -1,11 +1,9 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Organisation details
-{% endblock %}
+{% set settingsPageTitle = "Change organisation details" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Organisation details</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
   <p class="govuk-body govuk-!-margin-bottom-6">Payment card schemes require the details of the organisation taking
     payment to be shown on payment pages.</p>

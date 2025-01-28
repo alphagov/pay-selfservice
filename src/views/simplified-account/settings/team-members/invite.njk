@@ -1,11 +1,9 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Team members - Invite a team member
-{% endblock %}
+{% set settingsPageTitle = "Invite a team member" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Invite a team member</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   <form method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 

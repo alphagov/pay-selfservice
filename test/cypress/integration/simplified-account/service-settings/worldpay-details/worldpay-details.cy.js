@@ -89,7 +89,7 @@ describe('Worldpay details settings', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
           cy.get('h1').should('contain', 'Worldpay details')
-          cy.title().should('eq', 'Settings - Worldpay details - GOV.UK Pay')
+          cy.title().should('eq', 'Worldpay details - Settings - My cool service - GOV.UK Pay')
         })
 
         it('should show worldpay settings in the settings navigation', () => {
@@ -134,7 +134,7 @@ describe('Worldpay details settings', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
           cy.get('h1').should('contain', 'Worldpay details')
-          cy.title().should('eq', 'Settings - Worldpay details - GOV.UK Pay')
+          cy.title().should('eq', 'Worldpay details - Settings - My cool service - GOV.UK Pay')
         })
 
         it('should show the completed task cards', () => {
@@ -234,7 +234,7 @@ describe('Worldpay details settings', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('h1').should('contain', 'Your Worldpay credentials')
-          cy.title().should('eq', 'Settings - Worldpay details - GOV.UK Pay')
+          cy.title().should('eq', 'Your Worldpay credentials - Settings - My cool service - GOV.UK Pay')
         })
 
         it('should show worldpay settings in the settings navigation', () => {

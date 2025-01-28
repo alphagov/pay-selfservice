@@ -110,7 +110,7 @@ describe('Stripe details settings', () => {
       })
       describe('The task page', () => {
         it('should show the correct title', () => {
-          cy.title().should('eq', 'Settings - Stripe details - Organisation\'s bank details - GOV.UK Pay')
+          cy.title().should('eq', 'Organisation’s bank details - Settings - McDuck Enterprises - GOV.UK Pay')
         })
         it('should show the correct heading', () => {
           cy.get('h1').should('contain', 'Organisation\'s bank details')
@@ -230,7 +230,7 @@ describe('Stripe details settings', () => {
             .type('00012345')
 
           cy.get('#bank-account-submit').click()
-          cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
+          cy.title().should('eq', 'Stripe details - Settings - McDuck Enterprises - GOV.UK Pay')
           cy.get('h1').should('contain', 'Stripe details')
           cy.location('pathname').should('not.contain', '/bank-details')
           cy.get('.govuk-task-list__item')

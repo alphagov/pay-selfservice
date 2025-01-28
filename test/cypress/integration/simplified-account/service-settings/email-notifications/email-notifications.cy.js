@@ -1,5 +1,5 @@
-const userStubs = require('../../../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../../../stubs/gateway-account-stubs')
+const userStubs = require('@test/cypress/stubs/user-stubs')
+const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
@@ -73,7 +73,7 @@ describe('Email notifications settings', () => {
       it('should show the correct heading and title', () => {
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         cy.get('h1').should('contain', 'Email notifications')
-        cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
+        cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
       })
 
       it('should show links to change email settings', () => {
@@ -137,7 +137,7 @@ describe('Email notifications settings', () => {
     })
 
     it('should navigate to the collect email mode page', () => {
-      cy.title().should('contains', 'Settings - Email notifications')
+      cy.title().should('eq', 'Ask users for their email address - Settings - My cool service - GOV.UK Pay')
       cy.url().should('include', '/settings/email-notifications/email-collection-mode')
       cy.get('.govuk-fieldset__heading').first().should('contain', 'Ask users for their email address')
       cy.get('.govuk-radios').within(() => {
@@ -151,13 +151,13 @@ describe('Email notifications settings', () => {
       cy.get('input[type="radio"][value="OFF"]').check()
       cy.get('.govuk-button').contains('Save changes').click()
       cy.get('h1').should('contain', 'Email notifications')
-      cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
+      cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
     })
 
     it('should navigate to the email notifications landing page after "Back" is clicked', () => {
       cy.get('.govuk-back-link').click()
       cy.get('h1').should('contain', 'Email notifications')
-      cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
+      cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
     })
   })
 
@@ -221,7 +221,7 @@ describe('Email notifications settings', () => {
             cy.get('.govuk-summary-list__actions a').eq(1).click()
           })
 
-          cy.title().should('contains', 'Settings - Email notifications')
+          cy.title().should('eq', 'Send payment confirmation emails - Settings - My cool service - GOV.UK Pay')
           cy.url().should('include', '/settings/email-notifications/payment-confirmation-email-toggle')
           cy.get('.govuk-fieldset__heading').first().should('contain', 'Send payment confirmation emails')
 
@@ -234,7 +234,7 @@ describe('Email notifications settings', () => {
           cy.get('input[type="radio"][value="false"]').check()
           cy.get('.govuk-button').contains('Save changes').click()
           cy.get('h1').should('contain', 'Email notifications')
-          cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
+          cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
         })
       })
     })
@@ -256,7 +256,7 @@ describe('Email notifications settings', () => {
             cy.get('.govuk-summary-list__actions a').eq(2).click()
           })
 
-          cy.title().should('contains', 'Settings - Email notifications')
+          cy.title().should('eq', 'Send refund emails - Settings - My cool service - GOV.UK Pay')
           cy.url().should('include', '/settings/email-notifications/refund-email-toggle')
           cy.get('.govuk-fieldset__heading').first().should('contain', 'Send refund emails')
 
@@ -269,7 +269,7 @@ describe('Email notifications settings', () => {
           cy.get('input[type="radio"][value="false"]').check()
           cy.get('.govuk-button').contains('Save changes').click()
           cy.get('h1').should('contain', 'Email notifications')
-          cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
+          cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
         })
       })
     })
@@ -300,7 +300,7 @@ describe('Email notifications settings', () => {
         cy.get('#continue').click()
         cy.get('h1').should('contain', 'Email templates')
         cy.get('.govuk-notification-banner__heading').should('contain', 'Custom paragraph updated')
-        cy.title().should('contain', 'Settings - Email notifications')
+        cy.title().should('eq', 'Email templates - Settings - My cool service - GOV.UK Pay')
       })
     })
 

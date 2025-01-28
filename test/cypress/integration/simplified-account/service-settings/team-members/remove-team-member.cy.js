@@ -51,7 +51,7 @@ describe('Team members settings', () => {
 
     it('should show the show the correct heading, title and form with correct elements', () => {
       cy.get('h1').should('contain', 'Are you sure you want to remove view-only-user@example.com?')
-      cy.title().should('eq', 'Settings - Team members - Remove user - GOV.UK Pay')
+      cy.title().should('eq', 'Remove team member - Settings - My cool service - GOV.UK Pay')
       cy.get('input[type="radio"][value="yes"]').should('not.be.checked')
       cy.get('input[type="radio"][value="no"]').should('not.be.checked')
       cy.get('button').should('contain.text', 'Save changes')
@@ -68,7 +68,7 @@ describe('Team members settings', () => {
       cy.get('input[type="radio"][value="no"]').click()
       cy.get('button').contains('Save changes').click()
       cy.get('h1').should('contain', 'Team members')
-      cy.title().should('eq', 'Settings - Team members - GOV.UK Pay')
+      cy.title().should('eq', 'Team members - Settings - My cool service - GOV.UK Pay')
       cy.get('[data-module=govuk-notification-banner]').should('not.exist')
     })
 
@@ -76,7 +76,7 @@ describe('Team members settings', () => {
       cy.get('input[type="radio"][value="yes"]').click()
       cy.get('button').contains('Save changes').click()
       cy.get('h1').should('contain', 'Team members')
-      cy.title().should('eq', 'Settings - Team members - GOV.UK Pay')
+      cy.title().should('eq', 'Team members - Settings - My cool service - GOV.UK Pay')
       cy.get('[data-module=govuk-notification-banner]').should('contain.text', 'Successfully removed view-only-user@example.com')
     })
   })

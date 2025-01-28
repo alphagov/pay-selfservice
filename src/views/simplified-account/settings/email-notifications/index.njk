@@ -1,8 +1,7 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Email notifications
-{% endblock %}
+{% set settingsPageTitle = "Email notifications" %}
+
 
 {% block settingsContent %}
   {% if not isAdminUser %}
@@ -13,7 +12,7 @@
     }) }}
   {% endif %}
 
-  <h1 class="govuk-heading-l">Email notifications</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
   {{ govukSummaryList({
     rows: [

@@ -1,9 +1,7 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Webhooks
-{% endblock %}
+{% set settingsPageTitle = "Webhooks" %}
 
 {% block settingsContent %}
-<h1 class="govuk-heading-l">Webhooks</h1>
+<h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 {% endblock %}

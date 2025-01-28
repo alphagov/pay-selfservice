@@ -1,11 +1,9 @@
 {% extends "../../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Stripe details - Service director
-{% endblock %}
+{% set settingsPageTitle = "Service director" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Service director</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
   <p class="govuk-body">We need the details of the director of the service or someone at director level in your
     organisation. They could be the same as your responsible person. The details will be used by Stripe to run

@@ -51,7 +51,7 @@ const checkServiceNameEditActionNavigation = (options) => {
   cy.get('h1').should('contain.text', expectedHeader)
   cy.get('.govuk-back-link').click()
   cy.url().should('not.contain', expectedUrl)
-  cy.title().should('eq', 'Settings - Service name - GOV.UK Pay')
+  cy.title().should('eq', 'Service name - Settings - My Cool Service - GOV.UK Pay')
 }
 
 module.exports = {

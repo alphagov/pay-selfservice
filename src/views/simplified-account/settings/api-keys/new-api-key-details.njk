@@ -1,8 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  New API key
-{% endblock %}
+{% set settingsPageTitle = "New API key" %}
 
 {% block settingsContent %}
 
@@ -11,7 +9,7 @@
     href: backToApiKeysLink
   }) }}
 
-  <h1 class="govuk-heading-l page-title">New API key</h1>
+  <h1 class="govuk-heading-l page-title">{{ settingsPageTitle }}</h1>
 
   {% set html %}
     <p class="govuk-body">

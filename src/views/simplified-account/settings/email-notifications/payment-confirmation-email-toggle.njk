@@ -1,8 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Email notifications - {{ currentService.name }} {{ currentGatewayAccount.full_type }}
-{% endblock %}
+{% set settingsPageTitle = "Send payment confirmation emails" %}
 
 {% block settingsContent %}
   <form id="payment-confirmation-email-toggle" method="post" novalidate>

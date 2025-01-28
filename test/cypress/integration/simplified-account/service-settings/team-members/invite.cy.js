@@ -50,7 +50,7 @@ describe('Team members settings', () => {
 
     it('should show the show the correct heading, title and form with correct elements', () => {
       cy.get('h1').should('contain', 'Invite a team member')
-      cy.title().should('eq', 'Settings - Team members - Invite a team member - GOV.UK Pay')
+      cy.title().should('eq', 'Invite a team member - Settings - My cool service - GOV.UK Pay')
       cy.get('input[type="radio"][value="admin"]').should('not.be.checked')
       cy.get('input[type="radio"][value="view-and-refund"]').should('not.be.checked')
       cy.get('input[type="radio"][value="view-only"]').should('not.be.checked')
@@ -71,7 +71,7 @@ describe('Team members settings', () => {
       cy.get('input[type="email"]').type('invited_user@users.gov.uk')
       cy.get('button').contains('Send invitation email').click()
       cy.get('h1').should('contain', 'Team members')
-      cy.title().should('eq', 'Settings - Team members - GOV.UK Pay')
+      cy.title().should('eq', 'Team members - Settings - My cool service - GOV.UK Pay')
       cy.get('[data-module=govuk-notification-banner]').should('contain.text', 'Team member invitation sent to invited_user@users.gov.uk')
     })
   })

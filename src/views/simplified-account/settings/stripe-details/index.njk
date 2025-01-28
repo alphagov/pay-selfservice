@@ -1,8 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Stripe details
-{% endblock %}
+{% set settingsPageTitle = "Stripe details" %}
 
 {% block settingsContent %}
   {% if providerSwitchEnabled %}
@@ -11,7 +9,7 @@
       classes: "service-settings-inset-text--grey"
     }) }}
   {% endif %}
-  <h1 class="govuk-heading-l">Stripe details</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   {% if incompleteTasks %}
     <p class="govuk-body govuk-!-font-weight-bold">Add your organisation's details</p>
 
