@@ -236,7 +236,8 @@ module.exports = {
         revokedKeys: '/settings/api-keys/revoked'
       },
       webhooks: {
-        index: '/settings/webhooks'
+        index: '/settings/webhooks',
+        create: '/settings/webhooks/create'
       }
     }
   },
