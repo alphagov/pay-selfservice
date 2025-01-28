@@ -78,7 +78,7 @@ describe('Organisation details settings', () => {
         it('should show the correct heading and title', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
           cy.get('h1').should('contain', 'Organisation details')
-          cy.title().should('eq', 'Settings - Organisation details - GOV.UK Pay')
+          cy.title().should('eq', 'Organisation details - Settings - My cool service - GOV.UK Pay')
         })
 
         it('should display the organisation details', () => {
@@ -170,8 +170,8 @@ describe('Organisation details settings', () => {
 
         it('should show the correct heading and title', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
-          cy.get('h1').should('contain', 'Organisation details')
-          cy.title().should('eq', 'Settings - Organisation details - GOV.UK Pay')
+          cy.get('h1').should('contain', 'Change organisation details')
+          cy.title().should('eq', 'Change organisation details - Settings - My cool service - GOV.UK Pay')
         })
 
         it('should not show the back link to the organisation details landing page', () => {

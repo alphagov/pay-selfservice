@@ -58,7 +58,7 @@ describe('Stripe details settings', () => {
         cy.visit(SERVICE_SETTINGS_URL + '/stripe-details')
       })
       it('should show the correct title', () => {
-        cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
+        cy.title().should('eq', 'Stripe details - Settings - McDuck Enterprises - GOV.UK Pay')
       })
       it('should show the correct heading', () => {
         cy.get('h1').should('contain', 'Stripe details')

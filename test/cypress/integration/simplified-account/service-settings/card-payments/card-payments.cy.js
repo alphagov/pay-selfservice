@@ -49,7 +49,7 @@ describe('Card payments page', () => {
         cy.visit(pageUrl)
 
         cy.get('h1').should('contain.text', 'Card payments')
-        cy.title().should('eq', 'Settings - Card payments - GOV.UK Pay')
+        cy.title().should('eq', 'Card payments - Settings - My card payment service - GOV.UK Pay')
       })
 
       it('should display the provided card payment details (version 1 - everything on)', () => {

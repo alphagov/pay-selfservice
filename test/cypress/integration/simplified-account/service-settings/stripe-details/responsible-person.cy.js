@@ -110,7 +110,7 @@ describe('Stripe details settings', () => {
       })
       describe('The task page', () => {
         it('should show the correct title', () => {
-          cy.title().should('eq', 'Settings - Stripe details - Responsible person - GOV.UK Pay')
+          cy.title().should('eq', 'Responsible person - Settings - McDuck Enterprises - GOV.UK Pay')
         })
         it('should show the correct heading', () => {
           cy.get('h1').should('contain', 'Responsible person')
@@ -327,7 +327,7 @@ describe('Stripe details settings', () => {
 
           cy.get('#responsible-person-check-your-answers-form button[type="submit"]').click()
 
-          cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
+          cy.title().should('eq', 'Stripe details - Settings - McDuck Enterprises - GOV.UK Pay')
           cy.get('h1').should('contain', 'Stripe details')
           cy.location('pathname').should('not.contain', '/responsible-person')
           cy.get('.govuk-task-list__item')

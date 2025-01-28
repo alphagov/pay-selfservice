@@ -44,7 +44,7 @@ describe('Service name settings', () => {
         cy.visit(SERVICE_SETTINGS_URL)
       })
       it('should be Service name', () => {
-        cy.title().should('eq', 'Settings - Service name - GOV.UK Pay')
+        cy.title().should('eq', 'Service name - Settings - My Cool Service - GOV.UK Pay')
       })
       it('should show the correct heading', () => {
         cy.get('h1').should('contain', 'Service name')
@@ -77,7 +77,7 @@ describe('Service name settings', () => {
         cy.visit(SERVICE_SETTINGS_URL)
       })
       it('should be Email notifications', () => {
-        cy.title().should('eq', 'Settings - Email notifications - GOV.UK Pay')
+        cy.title().should('eq', 'Email notifications - Settings - My Cool Service - GOV.UK Pay')
       })
       it('should show the correct heading', () => {
         cy.get('h1').should('contain', 'Email notifications')
@@ -124,7 +124,7 @@ describe('Service name settings', () => {
         checkServiceNameEditActionNavigation({
           selector: '[data-cy="edit-english-name"]',
           expectedUrl: 'service-name/edit',
-          expectedPageTitle: 'Settings - Edit English service name - GOV.UK Pay',
+          expectedPageTitle: 'English service name - Settings - My Cool Service - GOV.UK Pay',
           expectedHeader: 'Service name (English)'
         })
       })
@@ -133,7 +133,7 @@ describe('Service name settings', () => {
         checkServiceNameEditActionNavigation({
           selector: '[data-cy="edit-welsh-name"]',
           expectedUrl: 'service-name/edit?cy=true',
-          expectedPageTitle: 'Settings - Edit Welsh service name - GOV.UK Pay',
+          expectedPageTitle: 'Welsh service name - Settings - My Cool Service - GOV.UK Pay',
           expectedHeader: 'Welsh service name (Cymraeg)'
         })
       })
@@ -171,7 +171,7 @@ describe('Service name settings', () => {
         checkServiceNameEditActionNavigation({
           selector: '[data-cy="edit-english-name"]',
           expectedUrl: 'service-name/edit',
-          expectedPageTitle: 'Settings - Edit English service name - GOV.UK Pay',
+          expectedPageTitle: 'English service name - Settings - My Cool Service - GOV.UK Pay',
           expectedHeader: 'Service name (English)'
         })
       })
@@ -180,7 +180,7 @@ describe('Service name settings', () => {
         checkServiceNameEditActionNavigation({
           selector: '[data-cy="add-welsh-name"]',
           expectedUrl: 'service-name/edit?cy=true',
-          expectedPageTitle: 'Settings - Edit Welsh service name - GOV.UK Pay',
+          expectedPageTitle: 'Welsh service name - Settings - My Cool Service - GOV.UK Pay',
           expectedHeader: 'Welsh service name (Cymraeg)'
         })
       })
@@ -264,7 +264,7 @@ describe('Service name settings', () => {
         cy.get('input[name="serviceName"]').clear({ force: true }).type('My New Service Name')
           .should('have.value', 'My New Service Name')
         cy.get('button[form="edit-service-name"]').click()
-        cy.title().should('eq', 'Settings - Service name - GOV.UK Pay')
+        cy.title().should('eq', 'Service name - Settings - My Cool Service - GOV.UK Pay')
       })
     })
     describe('Welsh service name', () => {
@@ -296,7 +296,7 @@ describe('Service name settings', () => {
           cy.get('input[name="serviceName"]').clear({ force: true }).type('Fy Enw Gwasanaeth Newydd')
             .should('have.value', 'Fy Enw Gwasanaeth Newydd')
           cy.get('button[form="edit-service-name"]').click()
-          cy.title().should('eq', 'Settings - Service name - GOV.UK Pay')
+          cy.title().should('eq', 'Service name - Settings - My Cool Service - GOV.UK Pay')
         })
       })
       describe('When removing the Welsh name', () => {
@@ -325,7 +325,7 @@ describe('Service name settings', () => {
         })
         it('should submit form', () => {
           cy.get('button[form="remove-welsh-service-name"]').click()
-          cy.title().should('eq', 'Settings - Service name - GOV.UK Pay')
+          cy.title().should('eq', 'Service name - Settings - My Cool Service - GOV.UK Pay')
         })
       })
       describe('When Welsh service name is not set', () => {
@@ -359,7 +359,7 @@ describe('Service name settings', () => {
         })
         it('should submit form', () => {
           cy.get('button[form="edit-service-name"]').click()
-          cy.title().should('eq', 'Settings - Service name - GOV.UK Pay')
+          cy.title().should('eq', 'Service name - Settings - My Cool Service - GOV.UK Pay')
         })
       })
     })

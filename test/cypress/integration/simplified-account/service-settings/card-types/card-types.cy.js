@@ -152,7 +152,7 @@ describe('Card types setting', () => {
 
 function checkTitleAndHeading () {
   it('should have the correct title and heading', () => {
-    cy.title().should('eq', 'Settings - Card types - GOV.UK Pay')
+    cy.title().should('eq', 'Card types - Settings - McDuck Enterprises - GOV.UK Pay')
     cy.get('h1').should('have.text', 'Card types')
   })
 }

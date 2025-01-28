@@ -110,7 +110,7 @@ describe('Stripe details settings', () => {
       })
       describe('The task page', () => {
         it('should show the correct title', () => {
-          cy.title().should('eq', 'Settings - Stripe details - Service director - GOV.UK Pay')
+          cy.title().should('eq', 'Service director - Settings - McDuck Enterprises - GOV.UK Pay')
         })
         it('should show the correct heading', () => {
           cy.get('h1').should('contain', 'Service director')
@@ -227,7 +227,7 @@ describe('Stripe details settings', () => {
             .type('atotallyrealemailaddress@example.com')
 
           cy.get('#director-submit').click()
-          cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
+          cy.title().should('eq', 'Stripe details - Settings - McDuck Enterprises - GOV.UK Pay')
           cy.get('h1').should('contain', 'Stripe details')
           cy.location('pathname').should('not.contain', '/vat-number')
           cy.get('.govuk-task-list__item')

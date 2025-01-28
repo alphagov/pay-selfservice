@@ -1,11 +1,11 @@
 {% extends "../settings-layout.njk" %}
 
-{% set settingsPageTitle = "Revoked " + ("test" if accountType === 'test' else "live") + " API key" %}
+{% set settingsPageTitle = "Revoked " + ("test" if accountType === 'test' else "live") + " API keys" %}
 
 {% block settingsContent %}
 
   <h1 class="govuk-heading-l page-title">
-    {{ settingsPageTitle }} ({{ tokens.length }})
+    Revoked API keys ({{ tokens.length }})
   </h1>
 
   {% for key in tokens %}

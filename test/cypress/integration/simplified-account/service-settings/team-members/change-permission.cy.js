@@ -57,7 +57,7 @@ describe('Team members settings', () => {
 
     it('should show the show the correct heading, title and form with correct elements', () => {
       cy.get('h1').should('contain', 'Change permission for view-only-user@example.com')
-      cy.title().should('eq', 'Settings - Team members - Change permission - GOV.UK Pay')
+      cy.title().should('eq', 'Change permission - Settings - My cool service - GOV.UK Pay')
       cy.get('input[type="radio"][value="admin"]').should('not.be.checked')
       cy.get('input[type="radio"][value="view-and-refund"]').should('not.be.checked')
       cy.get('input[type="radio"][value="view-only"]').should('be.checked')
@@ -67,7 +67,7 @@ describe('Team members settings', () => {
     it('should return to team members page and not show notification banner when selected role is the same as current role', () => {
       cy.get('button').contains('Save changes').click()
       cy.get('h1').should('contain', 'Team members')
-      cy.title().should('eq', 'Settings - Team members - GOV.UK Pay')
+      cy.title().should('eq', 'Team members - Settings - My cool service - GOV.UK Pay')
       cy.get('[data-module=govuk-notification-banner]').should('not.exist')
     })
 
@@ -75,7 +75,7 @@ describe('Team members settings', () => {
       cy.get('input[type="radio"][value="view-and-refund"]').click()
       cy.get('button').contains('Save changes').click()
       cy.get('h1').should('contain', 'Team members')
-      cy.title().should('eq', 'Settings - Team members - GOV.UK Pay')
+      cy.title().should('eq', 'Team members - Settings - My cool service - GOV.UK Pay')
       cy.get('[data-module=govuk-notification-banner]').should('contain.text', 'Permissions have been updated')
     })
   })

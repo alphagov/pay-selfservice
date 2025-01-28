@@ -111,7 +111,7 @@ describe('Stripe details settings', () => {
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document')
       })
       it('should redirect to the task summary', () => {
-        cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
+        cy.title().should('eq', 'Stripe details - Settings - McDuck Enterprises - GOV.UK Pay')
         cy.get('h1').should('contain', 'Stripe details')
         cy.location('pathname').should('not.contain', '/government-entity-document')
       })
@@ -147,7 +147,7 @@ describe('Stripe details settings', () => {
       })
       describe('The task page', () => {
         it('should show the correct title', () => {
-          cy.title().should('eq', 'Settings - Stripe details - Government entity document - GOV.UK Pay')
+          cy.title().should('eq', 'Upload a government entity document - Settings - McDuck Enterprises - GOV.UK Pay')
         })
         it('should show the correct heading', () => {
           cy.get('h1').should('contain', 'Upload a government entity document')
@@ -276,7 +276,7 @@ describe('Stripe details settings', () => {
 
           cy.get('#government-entity-document-submit').click()
 
-          cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
+          cy.title().should('eq', 'Stripe details - Settings - McDuck Enterprises - GOV.UK Pay')
           cy.get('h1').should('contain', 'Stripe details')
           cy.location('pathname').should('not.contain', '/government-entity-document')
           cy.get('.govuk-notification-banner')

@@ -110,7 +110,7 @@ describe('Stripe details settings', () => {
       })
       describe('The task page', () => {
         it('should show the correct title', () => {
-          cy.title().should('eq', 'Settings - Stripe details - VAT registration number - GOV.UK Pay')
+          cy.title().should('eq', 'VAT registration number - Settings - McDuck Enterprises - GOV.UK Pay')
         })
         it('should show the correct heading', () => {
           cy.get('h1').should('contain', 'VAT registration number')
@@ -192,7 +192,7 @@ describe('Stripe details settings', () => {
             .type('GB123456789')
 
           cy.get('#vat-number-submit').click()
-          cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
+          cy.title().should('eq', 'Stripe details - Settings - McDuck Enterprises - GOV.UK Pay')
           cy.get('h1').should('contain', 'Stripe details')
           cy.location('pathname').should('not.contain', '/vat-number')
           cy.get('.govuk-task-list__item')
@@ -242,7 +242,7 @@ describe('Stripe details settings', () => {
           cy.get('input[name="vatNumber"]').should('not.be.visible')
 
           cy.get('#vat-number-submit').click()
-          cy.title().should('eq', 'Settings - Stripe details - GOV.UK Pay')
+          cy.title().should('eq', 'Stripe details - Settings - McDuck Enterprises - GOV.UK Pay')
           cy.get('h1').should('contain', 'Stripe details')
           cy.location('pathname').should('not.contain', '/vat-number')
           cy.get('.govuk-task-list__item')
