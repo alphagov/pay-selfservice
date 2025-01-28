@@ -1,13 +1,9 @@
 {% extends "../../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Stripe details - Responsible person
-{% endblock %}
-
-
+{% set settingsPageTitle = "Responsible person" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Responsible person</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   <p class="govuk-body">We need details of a <a class="govuk-link"
                                                 href="https://www.payments.service.gov.uk/required-responsible-person-and-director-information/">responsible
       person</a> so that Stripe can run anti-money laundering checks. Liability stays at an organisational and not

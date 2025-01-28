@@ -1,13 +1,11 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  {% if accountType === 'test' %}Test{% else %}Live{% endif %} API keys
-{% endblock %}
+{% set settingsPageTitle = ("Test" if accountType === 'test' else "Live") + " API keys" %}
 
 {% block settingsContent %}
 
   <h1 class="govuk-heading-l page-title">
-    {% if accountType === 'test' %}Test{% else %}Live{% endif %} API keys
+    {{ settingsPageTitle }}
   </h1>
 
   {{ govukWarningText(

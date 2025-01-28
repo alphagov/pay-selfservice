@@ -1,11 +1,9 @@
 {% extends "../../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Stripe details - Responsible person - Contact details
-{% endblock %}
+{% set settingsPageTitle = "Responsible person contact details" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Responsible person contact details</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
   <form id="responsible-person-contact-details-form" method="post" class="govuk-!-margin-top-4" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>

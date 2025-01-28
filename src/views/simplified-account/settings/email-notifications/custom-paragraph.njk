@@ -1,11 +1,9 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Email notifications - {{ currentService.name }} {{ currentGatewayAccount.full_type }}
-{% endblock %}
+{% set settingsPageTitle = "Add a custom paragraph" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Add a custom paragraph</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
   <p class="govuk-body">
     You can add a custom paragraph to give users more information about your service. For example, you can tell users:

@@ -1,8 +1,6 @@
 {% extends "../../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Stripe details - Organisation's bank details
-{% endblock %}
+{% set settingsPageTitle = "Organisation’s bank details" %}
 
 {% block settingsContent %}
   <form id="bank-account-form" autocomplete="off" method="post" action="{{ submitLink }}">

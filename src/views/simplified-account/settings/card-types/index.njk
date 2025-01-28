@@ -1,8 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Card types
-{% endblock %}
+{% set settingsPageTitle = "Card types" %}
 
 {% block settingsContent %}
   {% if not isAdminUser %}
@@ -13,7 +11,7 @@
     }) }}
   {% endif %}
 
-  <h1 class="govuk-heading-l">Card types</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
   {% if isAdminUser %}
     <p class="govuk-body">Choose which credit and debit cards you want to accept.</p>

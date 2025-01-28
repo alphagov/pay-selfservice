@@ -8,9 +8,7 @@
   </h1>
 {% endset %}
 
-{% block settingsPageTitle %}
-  Edit {% if editCy %}Welsh{% else %}English{% endif %} service name
-{% endblock %}
+{% set settingsPageTitle = ("Welsh" if editCy else "English") + " service name" %}
 
 {% block settingsContent %}
   <form id="edit-service-name" method="post" action="{{ submitLink }}" novalidate>

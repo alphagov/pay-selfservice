@@ -4,12 +4,10 @@
   <p class="govuk-body">{{ email }}{% if isCurrent %} (me){% endif %}</p>
 {% endmacro %}
 
-{% block settingsPageTitle %}
-  Team members
-{% endblock %}
+{% set settingsPageTitle = "Team members" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Team members</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   {% if isServiceAdmin %}
     <p class="govuk-body govuk-!-margin-bottom-6">Team member changes affect both live and test environments.</p>
   {% else %}

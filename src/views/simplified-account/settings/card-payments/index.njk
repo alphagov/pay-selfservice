@@ -1,11 +1,9 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Card payments
-{% endblock %}
+{% set settingsPageTitle = "Card payments" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Card payments</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   <p class="govuk-body">GOV.UK Pay uses 3D Secure for all card payments. 3D Secure (3DS) adds an extra layer of
     authentication to user payments.</p>
 

@@ -1,11 +1,9 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Worldpay details
-{% endblock %}
+{% set settingsPageTitle = "Worldpay details" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Worldpay details</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
   {% if incompleteTasks %}
     <p class="govuk-body govuk-!-margin-bottom-6">

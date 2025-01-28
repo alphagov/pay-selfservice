@@ -1,12 +1,10 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  API key name
-{% endblock %}
+{% set settingsPageTitle = "API key name" %}
 
 {% block settingsContent %}
 
-  <h1 class="govuk-heading-l page-title">API key name</h1>
+  <h1 class="govuk-heading-l page-title">{{ settingsPageTitle }}</h1>
 
   <form id="api-key-name" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>

@@ -1,11 +1,9 @@
 {% extends "../../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Stripe details - Company registration number
-{% endblock %}
+{% set settingsPageTitle = "Company registration number" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Company registration number</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
   <form id="company-number-form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>

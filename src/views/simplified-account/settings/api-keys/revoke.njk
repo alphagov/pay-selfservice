@@ -1,8 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  API keys - revoke key
-{% endblock %}
+{% set settingsPageTitle = "Revoke " + ("test" if accountType === 'test' else "live") + " API key" %}
 
 {% block settingsContent %}
   <form id="revoke-api-key" method="post" novalidate>

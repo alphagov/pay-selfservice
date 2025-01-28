@@ -3,7 +3,7 @@
 {% from "govuk/components/task-list/macro.njk" import govukTaskList %}
 
 {% block pageTitle %}
-  Settings - {% block settingsPageTitle %}{% endblock %} - GOV.UK Pay
+  {{ settingsPageTitle }} - Settings - {{  currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block sideNavigation %}
