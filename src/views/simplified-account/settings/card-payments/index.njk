@@ -8,18 +8,6 @@
   {% if not userCanUpdatePaymentTypes %}
     {% include "simplified-account/settings/partials/read-only-message.njk" %}
   {% endif %}
-  {% if flash.update %}
-    {% set html %}
-      <h3 class="govuk-notification-banner__heading">
-        {{ flash.update }}
-      </h3>
-    {% endset %}
-
-    {{ govukNotificationBanner({
-      html: html,
-      type: "success"
-    }) }}
-  {% endif %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   <p class="govuk-body">GOV.UK Pay uses 3D Secure for all card payments. 3D Secure (3DS) adds an extra layer of
     authentication to user payments.</p>

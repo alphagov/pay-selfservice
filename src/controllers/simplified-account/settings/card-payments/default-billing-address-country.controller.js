@@ -2,8 +2,8 @@ const { response } = require('@utils/response')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 const { onOrOffToBool } = require('@utils/on-or-off')
 const paths = require('@root/paths')
-const getAdminUsersClient = require('@root/services/clients/adminusers.client')
-const adminUsersClient = getAdminUsersClient()
+const { updateDefaultBillingAddressCountry } = require('@services/card-payments.service')
+const flashSuccess = require('@utils/flash-success')
 const GB_COUNTRY_CODE = 'GB'
 
 function get (req, res) {
@@ -18,8 +18,8 @@ function get (req, res) {
 async function post (req, res) {
   const userPreference = onOrOffToBool(req.body.defaultBillingAddress)
   const serviceExternalId = req.service.externalId
-  await adminUsersClient.updateDefaultBillingAddressCountry(serviceExternalId, userPreference ? 'GB' : null)
-  req.flash('update', `Default billing address country successfully ${userPreference ? 'enabled' : 'disabled'}`)
+  await updateDefaultBillingAddressCountry(serviceExternalId, userPreference ? 'GB' : null)
+  flashSuccess(req, `Default billing address country successfully ${userPreference ? 'enabled' : 'disabled'}`)
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.index, serviceExternalId, req.account.type))
 }
 

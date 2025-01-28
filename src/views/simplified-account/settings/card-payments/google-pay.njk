@@ -8,7 +8,7 @@
   {% if isReadOnly %}
     {% include "includes/settings-read-only.njk" %}
   {% endif %}
-  <form action="{{ formAction }}" method="post">
+  <form method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {{ govukRadios({
       name: "googlePay",

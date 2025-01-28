@@ -1,10 +1,9 @@
 const { response } = require('@utils/response')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
-const { ConnectorClient } = require('@services/clients/connector.client')
 const { onOrOffToBool } = require('@utils/on-or-off')
 const paths = require('@root/paths')
-
-const connector = new ConnectorClient(process.env.CONNECTOR_URL)
+const { toggleApplePay } = require('@services/card-payments.service')
+const flashSuccess = require('@utils/flash-success')
 
 function get (req, res) {
   const url = req.originalUrl.split('?')[0]
@@ -20,8 +19,8 @@ async function post (req, res) {
   const userPreference = onOrOffToBool(req.body.applePay)
   const serviceExternalId = req.service.externalId
   const gatewayAccountId = req.account.id
-  await connector.toggleApplePay(gatewayAccountId, userPreference)
-  req.flash('update', `Apple Pay successfully ${userPreference ? 'enabled' : 'disabled'}`)
+  await toggleApplePay(gatewayAccountId, userPreference)
+  flashSuccess(req, `Apple Pay successfully ${userPreference ? 'enabled' : 'disabled'}`)
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.index, serviceExternalId, req.account.type))
 }
 

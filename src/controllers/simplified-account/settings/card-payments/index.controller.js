@@ -17,8 +17,8 @@ function get (req, res) {
   const googlePay = account?.allowGooglePay
 
   const userCanUpdatePaymentTypes = req.user.hasPermission(serviceExternalId, 'payment-types:update')
-
   response(req, res, 'simplified-account/settings/card-payments/index', {
+    messages: res.locals?.flash?.messages ?? [],
     collectBillingAddressEnabled: billing,
     collectBillingAddressLink: formatSimplifiedAccountPathsFor(cardPaymentsPaths.collectBillingAddress, serviceExternalId, accountType),
     defaultBillingAddressCountry: country,

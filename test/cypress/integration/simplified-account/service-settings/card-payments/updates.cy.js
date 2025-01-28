@@ -34,7 +34,7 @@ describe('Card payment updates', () => {
     cy.get('h1').should('contain.text', 'Collect billing address')
     cy.get('input#collect-billing-address-off').click()
     cy.contains('button', 'Save changes').click()
-    cy.get('#govuk-notification-banner-title').should('contain.text', 'Success')
+    cy.get('.system-message__text').should('contain.text', 'Collect billing address successfully')
   })
 
   it('should allow update of Default billing address country', () => {
@@ -52,7 +52,7 @@ describe('Card payment updates', () => {
     cy.get('h1').should('contain.text', 'Default billing address country')
     cy.get('input#default-billing-address-on').click()
     cy.contains('button', 'Save changes').click()
-    cy.get('#govuk-notification-banner-title').should('contain.text', 'Success')
+    cy.get('.system-message__text').should('contain.text', 'Default billing address country successfully')
   })
 
   it('should allow update of Default billing address country', () => {
@@ -70,7 +70,7 @@ describe('Card payment updates', () => {
     cy.get('h1').should('contain.text', 'Default billing address country')
     cy.get('input#default-billing-address-off').click()
     cy.contains('button', 'Save changes').click()
-    cy.get('#govuk-notification-banner-title').should('contain.text', 'Success')
+    cy.get('.system-message__text').should('contain.text', 'Default billing address country successfully')
   })
 
   it('should allow update of Apple Pay', () => {
@@ -84,7 +84,7 @@ describe('Card payment updates', () => {
     cy.get('h1').should('contain.text', 'Apple Pay')
     cy.get('input#apple-pay-on').click()
     cy.contains('button', 'Save changes').click()
-    cy.get('#govuk-notification-banner-title').should('contain.text', 'Success')
+    cy.get('.system-message__text').should('contain.text', 'Apple Pay successfully')
   })
 
   it('should allow update of Google Pay', () => {
@@ -98,6 +98,6 @@ describe('Card payment updates', () => {
     cy.get('h1').should('contain.text', 'Google Pay')
     cy.get('input#google-pay-on').click()
     cy.contains('button', 'Save changes').click()
-    cy.get('#govuk-notification-banner-title').should('contain.text', 'Success')
+    cy.get('.system-message__text').should('contain.text', 'Google Pay successfully')
   })
 })
