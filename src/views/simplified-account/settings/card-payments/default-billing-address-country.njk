@@ -1,0 +1,45 @@
+{% extends "../settings-layout.njk" %}
+
+{% block settingsPageTitle %}
+  Card payments
+{% endblock %}
+
+{% block settingsContent %}
+  {% if isReadOnly %}
+    {% include "includes/settings-read-only.njk" %}
+  {% endif %}
+  <form method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{ govukRadios({
+      name: "defaultBillingAddress",
+      value: currentState,
+        fieldset: {
+        legend: {
+          text: 'Default billing address country',
+          classes: 'govuk-fieldset__legend--l',
+          isPageHeading: true
+        }
+      },
+      hint: {
+        text: 'By default, the country field in the user’s billing address will be automatically set to United Kingdom. If your service frequently takes payments from overseas users, you can turn this off.'
+      },
+      items: [
+        {
+          value: "on",
+          text: "On",
+          id: "default-billing-address-on"
+        },
+        {
+          value: "off",
+          text: "Off",
+          id: "default-billing-address-off"
+        }
+      ]
+    }) }}
+
+    {{ govukButton({
+      text: "Save changes"
+    }) }}
+  </form>
+
+{% endblock %}

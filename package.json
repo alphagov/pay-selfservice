@@ -121,7 +121,7 @@
   },
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^6.0.2",
-    "@govuk-pay/run-amock": "0.0.7",
+    "@govuk-pay/run-amock": "0.0.8",
     "@pact-foundation/pact": "^12.1.1",
     "@pact-foundation/pact-core": "^14.0.5",
     "@types/jquery": "^3.5.32",
