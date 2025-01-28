@@ -93,7 +93,7 @@ describe('Webhooks', () => {
     cy.get('#callback_url-error').should('be.visible')
   })
 
-  it('should create a webhook with valid properties', () => {
+  it.only('should create a webhook with valid properties', () => {
     const callbackUrl = 'https://some-valid-callback-url.test'
     const description = 'A valid Webhook description'
 
@@ -102,6 +102,10 @@ describe('Webhooks', () => {
       webhooksStubs.postCreateWebhookSuccess(),
       webhooksStubs.getWebhookMessagesListSuccess({ service_id: serviceExternalId, external_id: webhookExternalId, messages: [{ status: 'FAILED' }], status: 'FAILED' })
     ])
+
+    userAndGatewayAccountStubs.forEach((stub, index) => {
+      console.log(`Stub #${index + 1}:`, stub);
+    });
 
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
     cy.get('[data-action=create').contains('Create a new webhook').click()
