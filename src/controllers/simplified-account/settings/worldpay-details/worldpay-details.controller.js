@@ -12,5 +12,8 @@ function get (req, res) {
   return response(req, res, 'simplified-account/settings/worldpay-details/index', context)
 }
 
-module.exports.get = get
-module.exports.worldpayCredentials = require('./credentials/worldpay-credentials.controller')
+module.exports = {
+  get,
+  oneOffCustomerInitiatedCredentials: require('./credentials/worldpay-credentials.controller'),
+  flexCredentials: require('./flex-credentials/worldpay-flex-credentials.controller')
+}
