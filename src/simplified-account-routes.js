@@ -86,6 +86,7 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.revokedKeys, perm
 
 // webhooks
 simplifiedAccount.get(paths.simplifiedAccount.settings.webhooks.index, permission('webhooks:read'), serviceSettingsController.webhooks.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.webhooks.create, permission('webhooks:read'), serviceSettingsController.webhooks.create.get)
 
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails

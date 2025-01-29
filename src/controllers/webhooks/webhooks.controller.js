@@ -6,7 +6,7 @@ const { response } = require('../../utils/response.js')
 const paths = require('../../paths')
 const formatFutureStrategyAccountPathsFor = require('../../utils/format-future-strategy-account-paths-for')
 
-const webhooksService = require('./webhooks.service')
+const webhooksService = require('@services/webhooks.service')
 const logger = require('../../utils/logger.js')(__filename)
 const { WebhooksForm } = require('./webhooks-form')
 

@@ -73,3 +73,9 @@
     border-top: 1px solid govuk-colour("mid-grey");
   }
 }
+
+.webhooks-summary-card {
+  .govuk-summary-list__key {
+    width: 180px;
+  }
+}
