@@ -60,7 +60,6 @@ describe('Controller: settings/team-members', () => {
     it('should call the response method', () => {
       expect(mockGetServiceUsers.called).to.be.true // eslint-disable-line
       expect(mockResponse.called).to.be.true // eslint-disable-line
-      expect(mockResponse.called).to.be.true // eslint-disable-line
     })
 
     it('should pass req, res and template path to the response method', () => {

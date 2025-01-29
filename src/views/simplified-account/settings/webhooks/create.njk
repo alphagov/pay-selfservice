@@ -1,10 +1,68 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Create a webhook
-{% endblock %}
+{% set settingsPageTitle = "Webhook details" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Webhook details</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+  <form method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
+    {% set subscriptionItems = [] %}
+    {% for key, name in eventTypes %}
+      {% set normalisedKey = key | lower %}
+      {% set subscriptionItems = (subscriptionItems.push({ value: normalisedKey, text: name }), subscriptionItems) %}
+    {% endfor %}
+
+    {{ govukInput({
+      label: {
+        text: "Callback URL",
+        classes: "govuk-label--s"
+      },
+      hint: { text: "The HTTPS URL GOV.UK Pay will send webhook messages to" },
+      id: "callback_url",
+      name: "callback_url",
+      value: form.values.callback_url,
+      type: "url",
+      spellcheck: false,
+      errorMessage: form.errors.callback_url and {
+        text: form.errors.callback_url
+      }
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "Description",
+        classes: "govuk-label--s"
+      },
+      hint: { text: "Short summary of what this webhook will be used for" },
+      id: "description",
+      name: "description",
+      value: form.values.description,
+      spellcheck: true,
+      errorMessage: form.errors.description and {
+        text: form.errors.description
+      }
+    }) }}
+
+    {{ govukCheckboxes({
+      idPrefix: "subscriptions",
+      name: "subscriptions",
+      fieldset: {
+        legend: {
+          text: "Which payment events should we send?",
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      items: subscriptionItems,
+      errorMessage: form.errors.subscriptions and {
+        text: form.errors.subscriptions
+      }
+    }) }}
+
+    {{ govukButton({
+      text: "Save",
+      type: "submit"
+    }) }}
+
+  </form>
 {% endblock %}
