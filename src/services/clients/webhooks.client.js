@@ -81,7 +81,7 @@ async function createWebhook (serviceId, gatewayAccountId, isLive, options = {})
     service_id: serviceId,
     gateway_account_id: gatewayAccountId,
     live: isLive,
-    callback_url: options.callback_url,
+    callback_url: options.callbackUrl || options.callback_url,
     subscriptions: options.subscriptions,
     description: options.description
   }

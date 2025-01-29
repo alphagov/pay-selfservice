@@ -10,7 +10,10 @@
     {% set subscriptionItems = [] %}
     {% for key, name in eventTypes %}
       {% set normalisedKey = key | lower %}
-      {% set subscriptionItems = (subscriptionItems.push({ value: normalisedKey, text: name }), subscriptionItems) %}
+      {% if form.subscriptions %}
+        {% set checked = normalisedKey in form.subscriptions %}
+      {% endif %}
+      {% set subscriptionItems = (subscriptionItems.push({ value: normalisedKey, text: name, checked: checked}), subscriptionItems) %}
     {% endfor %}
 
     {{ govukInput({
@@ -21,6 +24,7 @@
       hint: { text: "The HTTPS URL GOV.UK Pay will send webhook messages to" },
       id: "callback_url",
       name: "callbackUrl",
+      value: form.callbackUrl,
       type: "url",
       spellcheck: false
     }) }}
@@ -33,6 +37,7 @@
       hint: { text: "Short summary of what this webhook will be used for" },
       id: "description",
       name: "description",
+      value: form.description,
       spellcheck: true
     }) }}
 
