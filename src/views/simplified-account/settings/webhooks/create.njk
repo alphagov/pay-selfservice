@@ -20,13 +20,9 @@
       },
       hint: { text: "The HTTPS URL GOV.UK Pay will send webhook messages to" },
       id: "callback_url",
-      name: "callback_url",
-      value: form.values.callback_url,
+      name: "callbackUrl",
       type: "url",
-      spellcheck: false,
-      errorMessage: form.errors.callback_url and {
-        text: form.errors.callback_url
-      }
+      spellcheck: false
     }) }}
 
     {{ govukInput({
@@ -37,11 +33,7 @@
       hint: { text: "Short summary of what this webhook will be used for" },
       id: "description",
       name: "description",
-      value: form.values.description,
-      spellcheck: true,
-      errorMessage: form.errors.description and {
-        text: form.errors.description
-      }
+      spellcheck: true
     }) }}
 
     {{ govukCheckboxes({
@@ -53,10 +45,7 @@
           classes: "govuk-fieldset__legend--m"
         }
       },
-      items: subscriptionItems,
-      errorMessage: form.errors.subscriptions and {
-        text: form.errors.subscriptions
-      }
+      items: subscriptionItems
     }) }}
 
     {{ govukButton({
