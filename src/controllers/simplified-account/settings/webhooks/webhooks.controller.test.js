@@ -37,7 +37,6 @@ describe('Controller: settings/webhooks', () => {
     it('should call the response method', () => {
       expect(mockListWebhooks.calledWith(SERVICE_ID, GATEWAY_ACCOUNT_ID, false)).to.be.true // eslint-disable-line
       expect(mockResponse.called).to.be.true // eslint-disable-line
-      expect(mockResponse.called).to.be.true // eslint-disable-line
     })
 
     it('should pass req, res and template path to the response method', () => {
