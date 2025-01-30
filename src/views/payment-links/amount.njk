@@ -42,7 +42,7 @@
           <span class="govuk-visually-hidden">in &pound;</span>
           {% if errors.amount %}
           <p class="govuk-error-message">
-            Choose an amount in pounds and pence using digits and a decimal point. For example “10.50”
+            {{ errors.amount }}
           </p>
           {% endif %}
         </label>
