@@ -9,7 +9,7 @@ const {
   patchUpdateDefaultBillingAddressCountrySuccess,
   patchUpdateCollectBillingAddressSuccess
 } = require('@test/cypress/stubs/service-stubs')
-const { patchAccountUpdateApplePaySuccess, patchAccountUpdateGooglePaySuccess } = require('@test/cypress/stubs/gateway-account-stubs')
+const { patchAccountByServiceIdUpdateApplePaySuccess, patchAccountByServiceIdUpdateGooglePaySuccess } = require('@test/cypress/stubs/gateway-account-stubs')
 
 const baseUrl = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/card-payments`
 
@@ -34,7 +34,7 @@ describe('Card payment updates', () => {
     cy.get('h1').should('contain.text', 'Collect billing address')
     cy.get('input#collect-billing-address-off').click()
     cy.contains('button', 'Save changes').click()
-    cy.get('.system-message__text').should('contain.text', 'Collect billing address successfully')
+    cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
   })
 
   it('should allow update of Default billing address country', () => {
@@ -52,7 +52,7 @@ describe('Card payment updates', () => {
     cy.get('h1').should('contain.text', 'Default billing address country')
     cy.get('input#default-billing-address-on').click()
     cy.contains('button', 'Save changes').click()
-    cy.get('.system-message__text').should('contain.text', 'Default billing address country successfully')
+    cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
   })
 
   it('should allow update of Default billing address country', () => {
@@ -70,7 +70,7 @@ describe('Card payment updates', () => {
     cy.get('h1').should('contain.text', 'Default billing address country')
     cy.get('input#default-billing-address-off').click()
     cy.contains('button', 'Save changes').click()
-    cy.get('.system-message__text').should('contain.text', 'Default billing address country successfully')
+    cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
   })
 
   it('should allow update of Apple Pay', () => {
@@ -78,13 +78,13 @@ describe('Card payment updates', () => {
       allowApplePay: false
     })
     cy.task('setupStubs', [
-      patchAccountUpdateApplePaySuccess(GATEWAY_ACCOUNT_ID, true)
+      patchAccountByServiceIdUpdateApplePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
     ])
     cy.visit(baseUrl + '/apple-pay')
     cy.get('h1').should('contain.text', 'Apple Pay')
     cy.get('input#apple-pay-on').click()
     cy.contains('button', 'Save changes').click()
-    cy.get('.system-message__text').should('contain.text', 'Apple Pay successfully')
+    cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
   })
 
   it('should allow update of Google Pay', () => {
@@ -92,12 +92,12 @@ describe('Card payment updates', () => {
       allowGooglePay: false
     })
     cy.task('setupStubs', [
-      patchAccountUpdateGooglePaySuccess(GATEWAY_ACCOUNT_ID, true)
+      patchAccountByServiceIdUpdateGooglePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
     ])
     cy.visit(baseUrl + '/google-pay')
     cy.get('h1').should('contain.text', 'Google Pay')
     cy.get('input#google-pay-on').click()
     cy.contains('button', 'Save changes').click()
-    cy.get('.system-message__text').should('contain.text', 'Google Pay successfully')
+    cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
   })
 })

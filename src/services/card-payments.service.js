@@ -4,8 +4,8 @@ const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const adminUsersClient = getAdminUsersClient()
 
 module.exports = {
-  toggleApplePay: connectorClient.toggleApplePay.bind(connectorClient),
-  toggleGooglePay: connectorClient.toggleGooglePay.bind(connectorClient),
+  updateApplePay: connectorClient.updateAllowApplePay.bind(connectorClient),
+  updateGooglePay: connectorClient.updateAllowGooglePay.bind(connectorClient),
   updateCollectBillingAddress: adminUsersClient.updateCollectBillingAddress,
   updateDefaultBillingAddressCountry: adminUsersClient.updateDefaultBillingAddressCountry
 }
