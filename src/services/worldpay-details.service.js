@@ -1,6 +1,5 @@
 const { ConnectorClient } = require('./clients/connector.client')
 const GatewayAccountCredentialUpdateRequest = require('@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class')
-const { flexCredentials } = require('@controllers/simplified-account/settings/worldpay-details/worldpay-details.controller')
 const GatewayAccountUpdateRequest = require('@models/gateway-account/GatewayAccountUpdateRequest.class')
 const logger = require('../utils/logger')(__filename)
 
