@@ -3,6 +3,10 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const paths = require('@root/paths')
 const { body, validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
+const worldpayDetailsService = require('@services/worldpay-details.service')
+
+const INTEGRATION_VERSION_3DS = 2
 
 function get (req, res) {
   return response(req, res, 'simplified-account/settings/worldpay-details/flex-credentials', {
@@ -35,6 +39,27 @@ async function post (req, res) {
       formErrors: formattedErrors.formErrors
     })
   }
+
+  const flexCredential = new Worldpay3dsFlexCredential()
+    .withOrganisationalUnitId(req.body.organisationalUnitId)
+    .withIssuer(req.body.issuer)
+    .withJwtMacKey(req.body.jwtMacKey)
+
+  const isValid = await worldpayDetailsService.check3dsFlexCredential(req.service.externalId, req.account.type, flexCredential)
+  if (!isValid) {
+    return errorResponse(req, res, {
+      summary: [
+        {
+          text: 'Check your 3DS credentials, failed to link your account to Worldpay with credentials provided',
+          href: '#organisational-unit-id'
+        }
+      ]
+    })
+  }
+
+  await worldpayDetailsService.update3dsFlexCredentials(req.service.externalId, req.account.type, flexCredential)
+
+  await worldpayDetailsService.updateIntegrationVersion3ds(req.service.externalId, req.account.type, INTEGRATION_VERSION_3DS)
 
   return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
     req.service.externalId, req.account.type))

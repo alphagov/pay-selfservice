@@ -257,7 +257,7 @@ describe('Worldpay details settings', () => {
 
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
-          cy.get('input#merchantCode').type('this-is-not-a-valid-merchant-code')
+          cy.get('input#merchant-code').type('this-is-not-a-valid-merchant-code')
 
           cy.get('button#submitCredentials').click()
 
@@ -269,7 +269,7 @@ describe('Worldpay details settings', () => {
             .should('contain', 'Enter your username')
             .should('contain', 'Enter your password')
 
-          cy.get('#merchantCode-error').should('contain.text', 'Enter a MOTO merchant code. MOTO payments are enabled for this account')
+          cy.get('#merchant-code-error').should('contain.text', 'Enter a MOTO merchant code. MOTO payments are enabled for this account')
           cy.get('#username-error').should('contain.text', 'Enter your username')
           cy.get('#password-error').should('contain.text', 'Enter your password')
         })
@@ -281,7 +281,7 @@ describe('Worldpay details settings', () => {
 
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
-          cy.get('input#merchantCode').should('have.value', '')
+          cy.get('input#merchant-code').should('have.value', '')
           cy.get('input#username').should('have.value', '')
           cy.get('input#password').should('have.value', '')
         })
@@ -291,7 +291,7 @@ describe('Worldpay details settings', () => {
 
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
-          cy.get('input#merchantCode').type(VALID_MOTO_MERCHANT_CODE)
+          cy.get('input#merchant-code').type(VALID_MOTO_MERCHANT_CODE)
           cy.get('input#username').type(VALID_WORLDPAY_USERNAME)
           cy.get('input#password').type(VALID_WORLDPAY_PASSWORD)
 
@@ -305,7 +305,7 @@ describe('Worldpay details settings', () => {
 
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
-          cy.get('input#merchantCode').clear().type(VALID_MOTO_MERCHANT_CODE)
+          cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE)
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME)
           cy.get('input#password').clear().type(VALID_WORLDPAY_PASSWORD)
 
@@ -344,7 +344,7 @@ describe('Worldpay details settings', () => {
 
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
-          cy.get('input#merchantCode').clear().type(VALID_MOTO_MERCHANT_CODE)
+          cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE)
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME)
           cy.get('input#password').clear().type(VALID_WORLDPAY_PASSWORD)
 
@@ -370,7 +370,7 @@ describe('Worldpay details settings', () => {
 
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
-          cy.get('input#merchantCode').should('have.value', VALID_MOTO_MERCHANT_CODE)
+          cy.get('input#merchant-code').should('have.value', VALID_MOTO_MERCHANT_CODE)
           cy.get('input#username').should('have.value', VALID_WORLDPAY_USERNAME)
         })
 
@@ -404,7 +404,7 @@ describe('Worldpay details settings', () => {
 
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
-          cy.get('input#merchantCode').clear().type(VALID_MOTO_MERCHANT_CODE)
+          cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE)
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME_2)
           cy.get('input#password').clear().type(VALID_WORLDPAY_PASSWORD_2)
 
