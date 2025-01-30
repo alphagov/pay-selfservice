@@ -290,7 +290,7 @@ ConnectorClient.prototype = {
    * @param {String} serviceExternalId
    * @param {String} accountType
    * @param {Worldpay3dsFlexCredential} flexCredential
-   * @returns {Promise}
+   * @returns {Promise<undefined>}
    */
   put3dsFlexAccountCredentialsByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, flexCredential) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/3ds-flex-credentials`
