@@ -90,6 +90,9 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.webhooks.index, permissio
 simplifiedAccount.get(paths.simplifiedAccount.settings.webhooks.create, permission('webhooks:read'), serviceSettingsController.webhooks.create.get)
 simplifiedAccount.post(paths.simplifiedAccount.settings.webhooks.create, permission('webhooks:update'), serviceSettingsController.webhooks.create.post)
 
+// switch psp
+simplifiedAccount.get(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, permission('gateway-credentials:update'), serviceSettingsController.switchPsp.switchToWorldpay.get)
+
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
 const stripeDetailsRouter = new Router({ mergeParams: true })

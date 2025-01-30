@@ -45,12 +45,17 @@ module.exports = (account, service, currentUrl, permissions) => {
       path: paths.simplifiedAccount.settings.stripeDetails.index,
       permission: account.paymentProvider === 'stripe' && account.type === 'live' && Boolean(permissions?.stripe_account_details_update)
     })
-    .category('payment provider')
     .add({
       id: 'worldpay-details',
       name: 'worldpay details',
       path: paths.simplifiedAccount.settings.worldpayDetails.index,
       permission: account.paymentProvider === 'worldpay' && 'gateway_credentials_read'
+    })
+    .add({
+      id: 'switch-to-worldpay',
+      name: 'switch to Worldpay',
+      path: paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
+      permission: account.paymentProvider === 'stripe' && account.providerSwitchEnabled && 'gateway_credentials_update'
     })
     .category('payments')
     .add({
@@ -70,7 +75,7 @@ module.exports = (account, service, currentUrl, permissions) => {
     .category('developers')
     .add({
       id: 'api-keys',
-      name: account.type === 'test' ? 'Test API keys' : 'Live API keys',
+      name: 'API keys',
       path: paths.simplifiedAccount.settings.apiKeys.index,
       permission: 'tokens_active_read',
       alwaysViewable: true

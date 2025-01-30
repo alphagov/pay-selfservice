@@ -238,6 +238,13 @@ module.exports = {
       webhooks: {
         index: '/settings/webhooks',
         create: '/settings/webhooks/create'
+      },
+      switchPsp: {
+        switchToWorldpay: {
+          index: '/settings/switch-psp/switch-to-worldpay',
+          linkCredentials: '/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated',
+          makeTestPayment: '/settings/switch-psp/switch-to-worldpay/worldpay-details/test-payment'
+        }
       }
     }
   },

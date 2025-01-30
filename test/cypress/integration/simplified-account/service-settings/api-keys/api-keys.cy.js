@@ -125,7 +125,7 @@ describe('Settings - API keys', () => {
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
       it('should show appropriate buttons and text', () => {
-        cy.get('#api-keys').should('have.text', 'Test API keys')
+        cy.get('#api-keys').should('have.text', 'API keys')
         cy.get('.service-settings-pane')
           .find('a')
           .contains('Create a new API key')
@@ -151,7 +151,7 @@ describe('Settings - API keys', () => {
       })
 
       it('should show appropriate buttons and text', () => {
-        cy.get('#api-keys').should('have.text', 'Test API keys')
+        cy.get('#api-keys').should('have.text', 'API keys')
         cy.get('.service-settings-pane')
           .find('a')
           .contains('Create a new API key')

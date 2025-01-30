@@ -22,6 +22,7 @@ module.exports = class SettingsBuilder {
       throw new Error('Cannot add setting without category, use .category(name) first.')
     }
 
+    const urlParts = ['simplified', 'settings', `${id}`]
     const setting = {
       id,
       name,
@@ -30,7 +31,7 @@ module.exports = class SettingsBuilder {
         this.service.externalId,
         this.account.type
       ),
-      current: this.currentUrl.includes('simplified') && this.currentUrl.includes(`settings/${id}`),
+      current: urlParts.every(part => this.currentUrl.includes(part)),
       permitted: typeof permission === 'boolean' ? permission : this.permissions[permission],
       alwaysViewable // when true, this setting will appear on all account types
     }
