@@ -26,7 +26,8 @@
       name: "callbackUrl",
       value: form.callbackUrl,
       type: "url",
-      spellcheck: false
+      spellcheck: false,
+      errorMessage: { text: errors.formErrors['callbackUrl'] } if errors.formErrors['callbackUrl'] else false
     }) }}
 
     {{ govukInput({
@@ -38,7 +39,8 @@
       id: "description",
       name: "description",
       value: form.description,
-      spellcheck: true
+      spellcheck: true,
+      errorMessage: { text: errors.formErrors['description'] } if errors.formErrors['description'] else false
     }) }}
 
     {{ govukCheckboxes({
@@ -50,7 +52,8 @@
           classes: "govuk-fieldset__legend--m"
         }
       },
-      items: subscriptionItems
+      items: subscriptionItems,
+      errorMessage: { text: errors.formErrors['subscriptions'] } if errors.formErrors['subscriptions'] else false
     }) }}
 
     {{ govukButton({
