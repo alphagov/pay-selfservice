@@ -1,0 +1,41 @@
+{% extends "../settings-layout.njk" %}
+
+{% set settingsPageTitle = "Apple Pay" %}
+
+{% block settingsContent %}
+  <form method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{ govukRadios({
+      name: "applePay",
+      fieldset: {
+        legend: {
+          text: settingsPageTitle,
+          classes: "govuk-fieldset__legend--l",
+          isPageHeading: true
+        }
+      },
+      hint: {
+        text: "Corporate card fees cannot be charged to payments made with Apple Pay.",
+        classes: "govuk-body"
+      },
+      value: currentState,
+      items: [
+        {
+          value: "on",
+          text: "On",
+          id: "apple-pay-on"
+        },
+        {
+          value: "off",
+          text: "Off",
+          id: "apple-pay-off"
+        }
+      ]
+    }) }}
+
+    {{ govukButton({
+      text: "Save changes"
+    }) }}
+  </form>
+
+{% endblock %}

@@ -64,6 +64,14 @@ simplifiedAccount.post(paths.simplifiedAccount.settings.cardTypes.index, permiss
 
 // card payments
 simplifiedAccount.get(paths.simplifiedAccount.settings.cardPayments.index, permission('payment-types:read'), serviceSettingsController.cardPayments.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.cardPayments.collectBillingAddress, permission('payment-types:update'), serviceSettingsController.cardPayments.collectBillingAddress.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.cardPayments.collectBillingAddress, permission('payment-types:update'), serviceSettingsController.cardPayments.collectBillingAddress.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.cardPayments.defaultBillingAddressCountry, permission('payment-types:update'), serviceSettingsController.cardPayments.defaultBillingAddressCountry.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.cardPayments.defaultBillingAddressCountry, permission('payment-types:update'), serviceSettingsController.cardPayments.defaultBillingAddressCountry.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.cardPayments.applePay, permission('payment-types:update'), serviceSettingsController.cardPayments.applePay.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.cardPayments.applePay, permission('payment-types:update'), serviceSettingsController.cardPayments.applePay.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.cardPayments.googlePay, permission('payment-types:update'), serviceSettingsController.cardPayments.googlePay.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.cardPayments.googlePay, permission('payment-types:update'), serviceSettingsController.cardPayments.googlePay.post)
 
 // worldpay details
 simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.index, enforcePaymentProviderType(WORLDPAY), permission('gateway-credentials:read'), serviceSettingsController.worldpayDetails.get)

@@ -11,6 +11,8 @@ const { GatewayAccountCredential, CREDENTIAL_STATE } = require('@models/gateway-
  * @property {boolean} toggle3ds - whether 3DS is enabled or not on this gateway account
  * @property {[GatewayAccountCredential]} gatewayAccountCredentials - available credentials for gateway account
  * @property {GatewayAccountCredential} [activeCredential] - the active credential for the gateway account
+ * @property {bool} allowApplePay - whether the gateway has Apple Pay enabled or not
+ * @property {bool} allowGooglePay - whether the gateway has Google Pay enabled or not
  * @property {Object} rawResponse - raw 'gateway account' object
  */
 class GatewayAccount {
@@ -49,6 +51,8 @@ class GatewayAccount {
     this.supports3ds = ['worldpay', 'stripe'].includes(gatewayAccountData.payment_provider)
     this.disableToggle3ds = gatewayAccountData.payment_provider === 'stripe'
     this.requires3ds = gatewayAccountData.requires3ds
+    this.allowGooglePay = gatewayAccountData.allow_google_pay
+    this.allowApplePay = gatewayAccountData.allow_apple_pay
     /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
      * you should instead add any rawResponse data as part of the constructor */
     this.rawResponse = gatewayAccountData

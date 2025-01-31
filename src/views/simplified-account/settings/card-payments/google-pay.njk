@@ -1,0 +1,40 @@
+{% extends "../settings-layout.njk" %}
+
+{% set settingsPageTitle = "Google Pay" %}
+
+{% block settingsContent %}
+  <form method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{ govukRadios({
+      name: "googlePay",
+      fieldset: {
+        legend: {
+          text: settingsPageTitle,
+          classes: "govuk-fieldset__legend--l",
+          isPageHeading: true
+        }
+      },
+      hint: {
+        text: 'If you turn on Google Pay, your service will accept both credit and debit cards. Corporate card fees cannot be applied to payments made with Google Pay.'
+      },
+      value: currentState,
+      items: [
+        {
+          value: "on",
+          text: "On",
+          id: "google-pay-on"
+        },
+        {
+          value: "off",
+          text: "Off",
+          id: "google-pay-off"
+        }
+      ]
+    }) }}
+
+    {{ govukButton({
+      text: "Save changes"
+    }) }}
+  </form>
+
+{% endblock %}
