@@ -6,12 +6,11 @@ const setupAnalytics = () => {
 
   window.dataLayer = window.dataLayer || []
 
-  // Disabling eslint as the Google snippet conflicts with our linting rules
-  /* eslint-disable */
-  const gtag = () => {
+  // needs to be a regular function to maintain access to the arguments object
+  function gtag () {
+    // eslint-disable-next-line no-undef
     dataLayer.push(arguments)
   }
-  /* eslint-enable */
 
   gtagScript.onload = function () {
     gtag('js', new Date())
