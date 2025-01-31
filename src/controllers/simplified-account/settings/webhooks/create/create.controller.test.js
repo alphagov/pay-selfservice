@@ -61,11 +61,6 @@ describe('Controller: settings/webhooks', () => {
       })
 
       it('should redirect to the webhooks index page', () => {
-        sinon.assert.calledWith(req.flash, 'messages', {
-          state: 'success',
-          icon: '&check;',
-          heading: 'Successfully created webhook'
-        })
         expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.webhooks.index)
       })

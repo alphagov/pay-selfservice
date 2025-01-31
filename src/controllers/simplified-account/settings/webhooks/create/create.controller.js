@@ -29,7 +29,6 @@ async function post (req, res, next) {
   }
   try {
     await webhooksService.createWebhook(req.service.externalId, req.account.id, accountIsLive, req.body)
-    req.flash('messages', { state: 'success', icon: '&check;', heading: 'Successfully created webhook' })
     res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.index, req.service.externalId, req.account.type))
   } catch (createWebhookError) {
     if (createWebhookError.errorIdentifier in webhookErrorIdentifiers) {
