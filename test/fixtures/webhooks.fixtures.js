@@ -65,16 +65,7 @@ function webhookMessageSearchResponse (options = {}) {
   return {
     count: messages.length,
     page: options.page || 1,
-    results: messages.map(validWebhookMessage),
-    hasPaginationLinks: true,
-    getAllLinks: [
-      '/test/service/service-id/account/gateway-account-id/webhooks/webhook-id?page=1',
-      '/test/service/service-id/account/gateway-account-id/webhooks/webhook-id?page=2',
-      '/test/service/service-id/account/gateway-account-id/webhooks/webhook-id?page=3',
-    ],
-    filters: { page: 1 },
-    nextPage: '/test/service/service-id/account/gateway-account-id/webhooks/webhook-id?page=2',
-    previousPage: null
+    results: messages.map(validWebhookMessage)
   }
 }
 
