@@ -22,7 +22,7 @@ module.exports = class SettingsBuilder {
       throw new Error('Cannot add setting without category, use .category(name) first.')
     }
 
-    const urlParts = ['simplified', 'settings', `${id}`]
+    const urlParts = ['simplified', 'settings', `/${id}`]
     const setting = {
       id,
       name,
