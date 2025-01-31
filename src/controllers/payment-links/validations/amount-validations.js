@@ -6,10 +6,10 @@ const NAXSI_NOT_ALLOWED_CHARACTERS = ['<', '>', '|']
 
 module.exports = [
   body('amount-type-group')
-    .not().isEmpty().withMessage('Is the payment for a fixed amount?').bail(),
+    .notEmpty().withMessage('Is the payment for a fixed amount?').bail(),
   body('payment-amount')
     .if(body('amount-type-group').equals('fixed'))
-    .not().isEmpty().withMessage('Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”').bail()
+    .notEmpty().withMessage('Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”').bail()
     .isNumeric().withMessage('Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”').bail()
     .if((amount, { req }) => req.account.payment_provider === 'stripe')
     .custom((amount) => safeConvertPoundsStringToPence(amount) >= 30).withMessage('Amount must be £0.30 or more').bail(),
