@@ -1,5 +1,6 @@
 'use strict'
 
+const GatewayAccountUpdateRequest = require('@models/gateway-account/GatewayAccountUpdateRequest.class')
 const logger = require('../utils/logger')(__filename)
 const ConnectorClient = require('./clients/connector.client.js').ConnectorClient
 
@@ -46,7 +47,9 @@ async function setEmailCollectionMode (accountID, collectionMode) {
 
 async function setEmailCollectionModeByServiceIdAndAccountType (serviceExternalId, accountType, collectionMode) {
   try {
-    await connectorClient.updateEmailCollectionModeByServiceId(serviceExternalId, accountType, collectionMode)
+    const updateEmailCollectionModeRequest = new GatewayAccountUpdateRequest()
+      .replace().emailCollectionMode(collectionMode)
+    await connectorClient.patchGatewayAccountByServiceExternalIdAndAccountType(serviceExternalId, accountType, updateEmailCollectionModeRequest)
   } catch (err) {
     clientFailure(err, 'PATCH', false)
   }

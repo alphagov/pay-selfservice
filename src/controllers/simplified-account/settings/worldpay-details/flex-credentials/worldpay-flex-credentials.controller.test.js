@@ -5,13 +5,25 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
+const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
 
 const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
 
 const mockResponse = sinon.spy()
 
-const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/worldpay-details/flex-credentials/worldpay-flex-credentials.controller')
+const worldpayDetailsServiceStubs = {
+  check3dsFlexCredential: sinon.stub().returns(true),
+  update3dsFlexCredentials: sinon.spy(),
+  updateIntegrationVersion3ds: sinon.spy()
+}
+
+const validFlexCredential = new Worldpay3dsFlexCredential()
+  .withOrganisationalUnitId('5bd9b55e4444761ac0af1c80') // pragma: allowlist secret
+  .withIssuer('5bd9e0e4444dce15fed8c940') // pragma: allowlist secret
+  .withJwtMacKey('fa2daee2-1fbb-45ff-4444-52805d5cd9e0') // pragma: allowlist secret
+
+const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/worldpay-details/flex-credentials/worldpay-flex-credentials.controller')
   .withService(new Service({
     external_id: SERVICE_ID
   }))
@@ -29,7 +41,8 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/
     }]
   }))
   .withStubs({
-    '@utils/response': { response: mockResponse }
+    '@utils/response': { response: mockResponse },
+    '@services/worldpay-details.service': worldpayDetailsServiceStubs
   })
   .build()
 
@@ -131,7 +144,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
       })
 
       describe('when submitting valid data', () => {
-        it('should call the redirect method with the worldpay details index path on success', async () => {
+        beforeEach(() => {
           nextRequest({
             body: {
               organisationalUnitId: '5bd9b55e4444761ac0af1c80', // pragma: allowlist secret
@@ -139,6 +152,65 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
               jwtMacKey: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e0' // pragma: allowlist secret
             }
           })
+        })
+        describe('when the worldpay credential check fails', () => {
+          beforeEach(() => {
+            nextStubs({
+              '@services/worldpay-details.service': {
+                check3dsFlexCredential: sinon.stub().returns(false),
+                update3dsFlexCredentials: sinon.spy(),
+                updateIntegrationVersion3ds: sinon.spy()
+              }
+            })
+          })
+
+          it('should render the form with an error', async () => {
+            await call('post')
+
+            mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+            mockResponse.should.have.been.calledWith(
+              sinon.match.any,
+              sinon.match.any,
+              'simplified-account/settings/worldpay-details/flex-credentials',
+              {
+                errors: {
+                  summary: [
+                    { text: 'Check your 3DS credentials, failed to link your account to Worldpay with credentials provided', href: '#organisational-unit-id' }
+                  ]
+                },
+                credentials: {
+                  organisationalUnitId: '5bd9b55e4444761ac0af1c80', // pragma: allowlist secret
+                  issuer: '5bd9e0e4444dce15fed8c940', // pragma: allowlist secret
+                  jwtMacKey: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e0' // pragma: allowlist secret
+                },
+                backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+              })
+          })
+        })
+
+        describe('when the worldpay credential check passes', () => {
+          beforeEach(() => {
+            nextStubs({
+              '@services/worldpay-details.service': worldpayDetailsServiceStubs
+            })
+          })
+
+          it('should call the worldpay details service to update the 3ds flex credentials', async () => {
+            await call('post')
+
+            worldpayDetailsServiceStubs.update3dsFlexCredentials.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+            worldpayDetailsServiceStubs.update3dsFlexCredentials.should.have.been.calledWith(SERVICE_ID, ACCOUNT_TYPE, validFlexCredential)
+          })
+        })
+
+        it('should call the worldpay details service to update the 3ds integration version', async () => {
+          await call('post')
+
+          worldpayDetailsServiceStubs.updateIntegrationVersion3ds.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+          worldpayDetailsServiceStubs.updateIntegrationVersion3ds.should.have.been.calledWith(SERVICE_ID, ACCOUNT_TYPE, 2)
+        })
+
+        it('should call the redirect method with the worldpay details index path on success', async () => {
           await call('post')
 
           res.redirect.should.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE))

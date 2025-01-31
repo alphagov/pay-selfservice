@@ -51,7 +51,7 @@ async function post (req, res) {
       summary: [
         {
           text: 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided',
-          href: '#merchantCode'
+          href: '#merchant-code'
         }
       ]
     })

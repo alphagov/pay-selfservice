@@ -256,6 +256,23 @@ ConnectorClient.prototype = {
   },
 
   /**
+   * Checks Worldpay 3DS Flex credentials
+   *
+   * @param {String} serviceExternalId
+   * @param {String} accountType
+   * @param {Worldpay3dsFlexCredential} flexCredential
+   * @returns {Promise<ValidationResult>}
+   */
+  postCheckWorldpay3dsFlexCredentialByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, flexCredential) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/worldpay/check-3ds-flex-config`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    configureClient(client, url)
+    const response = await client.post(url, flexCredential.toJson(), 'Check Worldpay 3DS Flex credentials')
+    return ValidationResult.fromJson(response.data)
+  },
+
+  /**
    *
    * @param {Object} params
    * @returns {Promise}
@@ -265,6 +282,22 @@ ConnectorClient.prototype = {
       .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
     configureClient(client, url)
     const response = await client.post(url, params.payload, 'Update 3DS Flex credentials')
+    return response.data
+  },
+
+  /**
+   *
+   * @param {String} serviceExternalId
+   * @param {String} accountType
+   * @param {Worldpay3dsFlexCredential} flexCredential
+   * @returns {Promise<undefined>}
+   */
+  put3dsFlexAccountCredentialsByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, flexCredential) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/3ds-flex-credentials`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    configureClient(client, url)
+    const response = await client.put(url, flexCredential.toJson(), 'Update 3DS Flex credentials')
     return response.data
   },
 
@@ -505,20 +538,6 @@ ConnectorClient.prototype = {
     return response.data
   },
 
-  updateEmailCollectionModeByServiceId: async function (serviceId, accountType, emailCollectionMode) {
-    const url = `${this.connectorUrl}/v1/api/service/{serviceId}/account/{accountType}`
-      .replace('{serviceId}', encodeURIComponent(serviceId))
-      .replace('{accountType}', encodeURIComponent(accountType))
-    const payload = {
-      op: 'replace',
-      path: 'email_collection_mode',
-      value: emailCollectionMode
-    }
-    configureClient(client, url)
-    const response = await client.patch(url, payload, 'update email collection mode')
-    return response.data
-  },
-
   updateRefundEmailEnabled: async function (params) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/email-notification`
       .replace('{accountId}', encodeURIComponent(params.gatewayAccountId))
@@ -542,6 +561,21 @@ ConnectorClient.prototype = {
     }
     configureClient(client, url)
     const response = await client.patch(url, body, 'Set the 3DS integration version to use when authorising with the gateway')
+    return response.data
+  },
+
+  /**
+   * @param serviceExternalId {string}
+   * @param accountType {string}
+   * @param patchRequest {GatewayAccountUpdateRequest}
+   * @returns {Promise<undefined>}
+   */
+  patchGatewayAccountByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, patchRequest) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    configureClient(client, url)
+    const response = await client.patch(url, patchRequest.toJson(), 'Patch Gateway account by service external ID and account type with operation: ' + patchRequest.description)
     return response.data
   },
 
@@ -629,11 +663,12 @@ ConnectorClient.prototype = {
 
   /**
    * Returns an object of account ids for the newly created Stripe test gateway account
-   * @param serviceId
+   * @param {String} serviceExternalId
    * @returns {Promise<{stripe_connect_account_id: string, gateway_account_id: string, gateway_account_external_id: string}>}
    */
-  requestStripeTestAccount: async function (serviceId) {
-    const url = `${this.connectorUrl}/v1/api/service/${encodeURIComponent(serviceId)}/request-stripe-test-account`
+  requestStripeTestAccount: async function (serviceExternalId) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/request-stripe-test-account`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
     configureClient(client, url)
     const response = await client.post(url)
     return response.data
