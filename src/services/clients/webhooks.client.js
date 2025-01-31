@@ -76,12 +76,13 @@ async function messages (id, options = {}) {
   return response.data
 }
 
+// TODO refactor to explicitly pass all params in the method once old webhooks controller code is deleted
 async function createWebhook (serviceId, gatewayAccountId, isLive, options = {}) {
   const body = {
     service_id: serviceId,
     gateway_account_id: gatewayAccountId,
     live: isLive,
-    callback_url: options.callback_url,
+    callback_url: options.callbackUrl || options.callback_url,
     subscriptions: options.subscriptions,
     description: options.description
   }

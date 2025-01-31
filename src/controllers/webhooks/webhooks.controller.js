@@ -102,7 +102,6 @@ async function createWebhook (req, res, next) {
       await webhooksService.createWebhook(req.service.externalId, req.account.gateway_account_id, req.isLive, req.body)
     } catch (createWebhookError) {
       form = webhooksFormSchema.parseResponse(createWebhookError, req.body)
-
       if (form.errorSummaryList.length) {
         response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, form })
       } else {
