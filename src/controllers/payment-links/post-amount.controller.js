@@ -27,6 +27,8 @@ module.exports = function postAmount (req, res, next) {
     amountInPence = safeConvertPoundsStringToPence(amount)
     if (amount === '' || amountInPence === null) {
       errors.amount = 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”'
+    } else if (req.account.payment_provider === 'stripe' && amountInPence < 30) {
+      errors.amount = 'Amount must be £0.30 or more'
     }
   } else {
     const validateHintResult = validateOptionalField(hint, HINT_MAX_LENGTH, 'hint text', true)

@@ -1,7 +1,8 @@
-const userStubs = require('../../stubs/user-stubs')
-const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
-const tokenStubs = require('../../stubs/token-stubs')
-const productStubs = require('../../stubs/products-stubs')
+const userStubs = require('@test/cypress/stubs/user-stubs')
+const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
+const tokenStubs = require('@test/cypress/stubs/token-stubs')
+const productStubs = require('@test/cypress/stubs/products-stubs')
+const stripeAccountSetupStubs = require('@test/cypress/stubs/stripe-account-setup-stub')
 const userExternalId = 'a-user-id'
 const gatewayAccountId = 42
 const gatewayAccountExternalId = 'a-valid-account-id'
@@ -395,5 +396,52 @@ describe('The create payment link flow', () => {
       cy.get('input#payment-link-title').should('be.empty')
       cy.get('textarea#payment-link-description').should('be.empty')
     })
+  })
+})
+
+describe('Create payment link validation errors', () => {
+  beforeEach(() => {
+    cy.task('setupStubs', [
+      userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId, serviceName }),
+      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+        gatewayAccountId,
+        gatewayAccountExternalId,
+        type: 'test',
+        paymentProvider: 'stripe'
+      }),
+      stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId })
+    ])
+    cy.setEncryptedCookies(userExternalId)
+  })
+
+  function navigateToAmountPage () {
+    cy.visit(`/account/${gatewayAccountExternalId}/create-payment-link`)
+    cy.get('a#create-payment-link').click()
+    cy.get('input#payment-link-title').type('A payment')
+    cy.get('button').contains('Continue').click()
+    cy.get('input[type=radio]#reference-type-standard').click()
+    cy.get('button').contains('Continue').click()
+  }
+
+  it('should fail if non-numeric value provided', () => {
+    navigateToAmountPage()
+    cy.get('input[type=radio]#amount-type-fixed').click()
+    cy.get('input#payment-amount').type('asdf')
+    cy.get('button').contains('Continue').click()
+
+    const expectedText = 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”'
+    cy.contains('a[href="#payment-amount"]', expectedText).should('exist')
+    cy.contains('p.govuk-error-message', expectedText).should('exist')
+  })
+
+  it('should fail if amount if less than 30p', () => { // applicable for a Stripe gateway account which is specified in the test setup
+    navigateToAmountPage()
+    cy.get('input[type=radio]#amount-type-fixed').click()
+    cy.get('input#payment-amount').type('0.29')
+    cy.get('button').contains('Continue').click()
+
+    const expectedText = 'Amount must be £0.30 or more'
+    cy.contains('a[href="#payment-amount"]', expectedText).should('exist')
+    cy.contains('p.govuk-error-message', expectedText).should('exist')
   })
 })
