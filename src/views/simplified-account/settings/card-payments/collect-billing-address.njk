@@ -1,5 +1,7 @@
 {% extends "../settings-layout.njk" %}
 
+{% set settingsPageTitle = "Collect billing address" %}
+
 {% block settingsPageTitle %}
   Card payments
 {% endblock %}
@@ -11,7 +13,7 @@
       name: "collectBillingAddress",
       fieldset: {
         legend: {
-          text: "Collect billing address",
+          text: settingsPageTitle,
           classes: "govuk-fieldset__legend--l",
           isPageHeading: true
         }

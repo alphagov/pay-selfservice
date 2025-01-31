@@ -1,8 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Card payments
-{% endblock %}
+{% set settingsPageTitle = "Apple Pay" %}
 
 {% block settingsContent %}
   <form method="post">
@@ -11,7 +9,7 @@
       name: "applePay",
       fieldset: {
         legend: {
-          text: "Apple Pay",
+          text: settingsPageTitle,
           classes: "govuk-fieldset__legend--l",
           isPageHeading: true
         }

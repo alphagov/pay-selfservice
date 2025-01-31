@@ -1,8 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% block settingsPageTitle %}
-  Card payments
-{% endblock %}
+{% set settingsPageTitle = "Default billing address country" %}
 
 {% block settingsContent %}
   <form method="post">
@@ -12,7 +10,7 @@
       value: currentState,
         fieldset: {
         legend: {
-          text: 'Default billing address country',
+          text: settingsPageTitle,
           classes: 'govuk-fieldset__legend--l',
           isPageHeading: true
         }
