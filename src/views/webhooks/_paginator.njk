@@ -1,39 +1,15 @@
-{% if hasPaginationLinks %}
-<div class="pagination">
-  {% from "govuk/components/pagination/macro.njk" import govukPagination %}
+{% set links = messages.links %}
+{% if links and links.length %}
+<div class="pagination" id="pagination">
+  {% for paginationLink in links %}
+    <form class="paginationForm page-{{paginationLink.pageName}}" method="GET" novalidate>
+      <input type="hidden" name="page" value="{{paginationLink.pageNumber}}"/>
+      <input type="hidden" name="status" value="{{status}}"/>
 
-  {% set items = [] %}
-  {% set firstPage = 1 %}
-  {% set lastPage = getAllLinks.length %}
-  {% set currentPage = (filters.page | default(1)) | int %}
-  {% set showPreviousEllipsis = false %}
-  {% set showNextEllipsis = false %}
-
-  {% for i in range(1, getAllLinks.length + 1) %}
-    {% if i == firstPage or i == lastPage or (i >= currentPage - 1 and i <= currentPage + 1) %}
-      {% set item = {
-        number: i,
-        href: getAllLinks[i - 1],
-        current: i == currentPage
-      } %}
-      {% set items = items.concat(item) %}
-    {% elseif i < currentPage - 1 and not showPreviousEllipsis %}
-      {% set items = items.concat({ ellipsis: true }) %}
-      {% set showPreviousEllipsis = true %}
-    {% elseif i > currentPage + 1 and not showNextEllipsis %}
-      {% set items = items.concat({ ellipsis: true }) %}
-      {% set showNextEllipsis = true %}
-    {% endif %}
+      <button class="pagination {{paginationLink.pageName}} {% if paginationLink.activePage %}active{% endif %}" {% if paginationLink.disabled %} disabled {% endif %}  type="submit">
+        <span class="govuk-visually-hidden">Results page </span>{{paginationLink.pageName}}
+      </button>
+    </form>
   {% endfor %}
-
-  {{ govukPagination({
-    previous: {
-      href: previousPage
-    },
-    next: {
-      href: nextPage
-    },
-    items: items
-  }) }}
 </div>
 {% endif %}

@@ -15,40 +15,17 @@ const webhooksFormSchema = new WebhooksForm()
 async function webhookDetailPage (req, res, next) {
   const status = req.query.status
   const page = req.query.page || 1
-  const currentPage = page - 1
 
   try {
-    const accountPath = formatFutureStrategyAccountPathsFor(
-      paths.futureAccountStrategy.webhooks.index, 
-      req.account.type, 
-      req.service.externalId, 
-      req.account.external_id
-    )
-
     const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId, req.account.gateway_account_id)
     const messages = await webhooksService.getWebhookMessages(req.params.webhookId, { page, ...status && { status } })
-    const paginationData = await webhooksService.getPaginationData(
-      req.params.webhookId, 
-      { page, ...status && { status }, 
-    })
 
-    const hasPaginationLinks = paginationData.allPaginationLinks.length > 0
-    let getAllLinks = []
-    paginationData.allPaginationLinks.forEach(link => {
-      getAllLinks.push(accountPath+link)
-    })
-  
     response(req, res, 'webhooks/detail', {
       eventTypes: constants.webhooks.humanReadableSubscriptions,
       webhook,
       messages,
       status,
-      page,
-      hasPaginationLinks,
-      getAllLinks,
-      filters: { page },
-      nextPage: getAllLinks[currentPage + 1] ? getAllLinks[currentPage + 1] : '',
-      previousPage: getAllLinks[currentPage - 1] ? getAllLinks[currentPage - 1] : ''
+      page
     })
   } catch (error) {
     next(error)
