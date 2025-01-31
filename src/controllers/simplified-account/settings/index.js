@@ -9,3 +9,4 @@ module.exports.cardPayments = require('./card-payments/card-payments.controller'
 module.exports.worldpayDetails = require('./worldpay-details/worldpay-details.controller')
 module.exports.apiKeys = require('./api-keys/api-keys.controller')
 module.exports.webhooks = require('./webhooks/webhooks.controller')
+module.exports.switchPsp = require('./switch-psp')
