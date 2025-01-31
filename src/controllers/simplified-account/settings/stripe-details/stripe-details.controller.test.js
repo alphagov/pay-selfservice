@@ -28,6 +28,21 @@ const {
   .build()
 
 describe('Controller: settings/stripe-details', () => {
+  describe('getAccountDetails', () => {
+    describe('when requesting account details', () => {
+      before(() => {
+        call('getAccountDetails')
+      })
+      it('should return a json object', () => {
+        sinon.assert.calledOnce(mockStripeDetailsService.getStripeAccountOnboardingDetails)
+        sinon.assert.calledWith(mockStripeDetailsService.getStripeAccountOnboardingDetails, req.service)
+        sinon.assert.calledWith(res.json, {
+          foo: 'bar'
+        })
+      })
+    })
+  })
+
   describe('get', () => {
     describe('when there are outstanding tasks', () => {
       before(() => {
@@ -109,6 +124,9 @@ describe('Controller: settings/stripe-details', () => {
               vatNumber: true,
               governmentEntityDocument: true
             }
+          },
+          query: {
+            noscript: 'true'
           }
         })
         call('get')

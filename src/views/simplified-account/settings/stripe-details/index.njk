@@ -1,4 +1,6 @@
 {% extends "../settings-layout.njk" %}
+{% from "includes/spinner.njk" import spinner %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% set settingsPageTitle = "Stripe details" %}
 
@@ -12,37 +14,7 @@
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   {% if incompleteTasks %}
     <p class="govuk-body govuk-!-font-weight-bold">Add your organisation's details</p>
-
-    {% set taskList = [] %}
-    {% for key, value in stripeDetailsTasks %}
-      {% set taskList = (taskList.push({
-        title: {
-          text: value.friendlyName
-        },
-        href: value.href if value.status == false else undefined,
-        status: {
-          tag: {
-            text: "Not yet started",
-            classes: "govuk-tag--blue"
-          }
-        } if value.status == false else (
-          {
-            tag: {
-              text: "Cannot start yet",
-              classes: "govuk-tag--grey"
-            }
-          } if value.status == 'disabled' else {
-            text: "Completed"
-          }
-        )
-      }), taskList) %}
-    {% endfor %}
-
-    {{ govukTaskList({
-      idPrefix: "stripe-details",
-      items: taskList,
-      classes: "task-list"
-    }) }}
+    {% include "./_task-list.njk" %}
   {% else %}
     <p class="govuk-body">This information has been sent to Stripe so that your service can take payments. For
       security
@@ -51,92 +23,93 @@
     <p class="govuk-body">If you need to change these details or upload another Government Entity document, <a
         class="govuk-link govuk-link--no-visited-state"
         href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk?subject=Change request - Stripe details [service external id: {{ serviceExternalId }}]">contact
-        GOV.UK Pay</a></p>
+        GOV.UK Pay</a>
+    </p>
 
-    {{ govukSummaryList({
-      card: {
-        title: {
-          text: "Organisation bank details"
-        }
-      },
-      rows: [
-        {
-          key: {
-          text: "Sort code"
-        },
-          value: {
-          text: answers.bankAccount.sortCode
-        }
-        },
-        {
-          key: {
-          text: "Account number"
-        },
-          value: {
-          text: answers.bankAccount.accountNumber
-        }
-        }
-      ]
-    }) }}
+    {% if javascriptUnavailable %}
+      {% for section, content in answers %}
+        {% set rows = [] %}
+        {% for key, value in content.rows %}
+          {% set rows = (rows.push({
+            key: {
+              text: key
+            },
+            value: {
+              text: value
+            }
+          }), rows) %}
+        {% endfor %}
+        {{ govukSummaryList({
+          card: {
+            title: {
+              text: content.title
+            }
+          },
+          rows: rows
+        }) }}
+      {% endfor %}
+    {% else %}
+      <noscript>
+        <meta http-equiv="refresh" content="0; url=?noscript=true">
+        <p class="govuk-body">You are being redirected, please wait...
+          If you are not redirected, <a class="govuk-body govuk-link--no-visited-state" href="?noscript=true">click
+            here</a>.</p>
+      </noscript>
 
-    {{ govukSummaryList({
-      card: {
-        title: {
-          text: "Organisation contact"
-        }
-      },
-      rows: [
-        {
-          key: {
-          text: "Responsible person"
-        },
-          value: {
-          text: answers.responsiblePerson
-        }
-        },
-        {
-          key: {
-          text: "Service director"
-        },
-          value: {
-          text: answers.director
-        }
-        }
-      ]
-    }) }}
+      <div id="spinner-container">
+        {{ spinner({
+          text: "Loading account details..."
+        }) }}
+      </div>
 
-    {{ govukSummaryList({
-      card: {
-        title: {
-          text: "Company registration details"
-        }
-      },
-      rows: [
-        {
-          key: {
-          text: "VAT registration number"
-        },
-          value: {
-          text: answers.company.vatNumber
-        }
-        },
-        {
-          key: {
-          text: "Company registration number"
-        },
-          value: {
-          text: answers.company.companyNumber
-        }
-        },
-        {
-          key: {
-          text: "Government entity document"
-        },
-          value: {
-          text: answers.company.entityDocument
-        }
-        }
-      ]
-    }) }}
+      <div id="loaded-content-container" style="display: none;">
+      </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+          try {
+            const response = await fetch('{{ accountDetailsPath }}')
+            const data = await response.json()
+            document.getElementById('spinner-container').style.display = 'none'
+            const contentContainer = document.getElementById('loaded-content-container')
+
+            contentContainer.innerHTML = ''
+
+            for (const [_, content] of Object.entries(data)) {
+              const html = `
+              <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                  <h2 class="govuk-summary-card__title">${content.title}</h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                  <dl class="govuk-summary-list">
+                    ${Object.entries(content.rows).map(([key, value]) => `
+                      <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">${key}</dt>
+                        <dd class="govuk-summary-list__value">${value}</dd>
+                      </div>
+                    `).join('')}
+                  </dl>
+                </div>
+              </div>
+              `
+              contentContainer.insertAdjacentHTML('beforeend', html)
+            }
+            contentContainer.style.display = 'block'
+          } catch (err) {
+            console.log(err)
+            document.getElementById('spinner-container').innerHTML = `
+            <div class="govuk-warning-text">
+              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+              <strong class="govuk-warning-text__text">
+                <span class="govuk-visually-hidden">Warning</span>
+                There was a problem fetching data from Stripe, try again later.
+              </strong>
+            </div>
+          `
+          }
+        })
+      </script>
+    {% endif %}
   {% endif %}
 {% endblock %}

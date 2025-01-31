@@ -7,7 +7,7 @@ const {
 } = require('@services/clients/stripe/stripe.client')
 const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
 const { updateService } = require('@services/service.service')
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 /**
@@ -197,19 +197,30 @@ const getStripeAccountOnboardingDetails = async (service, account) => {
     const director = persons.data.find(person => person.relationship?.director)
 
     return {
-      company: {
-        vatNumber: connectAccount.company?.vat_id_provided ? 'Provided' : 'Not provided',
-        companyNumber: connectAccount.company?.tax_id_provided ? 'Provided' : 'Not provided',
-        entityDocument: connectAccount.company?.verification?.document ? 'Provided' : 'Not provided'
-      },
       bankAccount: {
-        sortCode: bankAccount.data[0]?.routing_number,
-        accountNumber: bankAccount.data[0]?.last4
-          ? `●●●●${bankAccount.data[0].last4}`
-          : ''
+        title: 'Organisation bank details',
+        rows: {
+          'Sort code': bankAccount.data[0]?.routing_number,
+          'Account number': bankAccount.data[0]?.last4
+            ? `●●●●${bankAccount.data[0].last4}`
+            : ''
+        }
       },
-      responsiblePerson: responsiblePerson ? `${responsiblePerson.first_name} ${responsiblePerson.last_name}` : '',
-      director: director ? `${director.first_name} ${director.last_name}` : ''
+      contact: {
+        title: 'Organisation contact',
+        rows: {
+          'Responsible person': responsiblePerson ? `${responsiblePerson.first_name} ${responsiblePerson.last_name}` : '',
+          'Service director': director ? `${director.first_name} ${director.last_name}` : ''
+        }
+      },
+      company: {
+        title: 'Company registration details',
+        rows: {
+          'VAT registration number': connectAccount.company?.vat_id_provided ? 'Provided' : 'Not provided',
+          'Company registration number': connectAccount.company?.tax_id_provided ? 'Provided' : 'Not provided',
+          'Government entity document': connectAccount.company?.verification?.document ? 'Provided' : 'Not provided'
+        }
+      }
     }
   } catch (error) {
     logger.error(error.message)
