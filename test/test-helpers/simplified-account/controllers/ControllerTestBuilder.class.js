@@ -9,10 +9,12 @@ module.exports = class ControllerTestBuilder {
     this.req = {
       service: {},
       account: {},
+      query: {},
       flash: sinon.spy()
     }
     this.res = {
-      redirect: sinon.spy()
+      redirect: sinon.spy(),
+      json: sinon.spy()
     }
     this.nextReq = null
     this.nextRes = null

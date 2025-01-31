@@ -95,6 +95,7 @@ const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
 const stripeDetailsRouter = new Router({ mergeParams: true })
   .use(enforceLiveAccountOnly, enforcePaymentProviderType(STRIPE), permission('stripe-account-details:update'))
 stripeDetailsRouter.get(stripeDetailsPath.index, serviceSettingsController.stripeDetails.get)
+stripeDetailsRouter.get(stripeDetailsPath.accountDetails, serviceSettingsController.stripeDetails.getAccountDetails)
 
 stripeDetailsRouter.get(stripeDetailsPath.bankDetails, serviceSettingsController.stripeDetails.bankDetails.get)
 stripeDetailsRouter.post(stripeDetailsPath.bankDetails, serviceSettingsController.stripeDetails.bankDetails.post)

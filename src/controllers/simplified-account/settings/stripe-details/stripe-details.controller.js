@@ -1,20 +1,37 @@
 const { response } = require('@utils/response')
 const { friendlyStripeTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const { getStripeAccountOnboardingDetails } = require('@services/stripe-details.service')
+const paths = require('@root/paths')
+const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
+
+async function getAccountDetails (req, res) {
+  const account = req.account
+  const service = req.service
+  getStripeAccountOnboardingDetails(service, account)
+    .then((result) => {
+      res.json({
+        ...result
+      })
+    })
+}
 
 async function get (req, res) {
+  const javascriptUnavailable = req.query.noscript === 'true'
   const account = req.account
   const service = req.service
   const stripeDetailsTasks = friendlyStripeTasks(account, service)
   const incompleteTasks = Object.values(stripeDetailsTasks).some(task => task.status === false)
   let answers = {}
-  if (!incompleteTasks) {
+  // load account onboarding details synchronously if javascript is unavailable
+  if (!incompleteTasks && javascriptUnavailable) {
     const stripeAccountOnboardingDetails = await getStripeAccountOnboardingDetails(service, account)
     answers = {
       ...stripeAccountOnboardingDetails
     }
   }
   return response(req, res, 'simplified-account/settings/stripe-details/index', {
+    javascriptUnavailable,
+    accountDetailsPath: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.accountDetails, service.externalId, account.type),
     messages: res.locals?.flash?.messages ?? [],
     stripeDetailsTasks,
     incompleteTasks,
@@ -25,6 +42,7 @@ async function get (req, res) {
 }
 
 module.exports.get = get
+module.exports.getAccountDetails = getAccountDetails
 module.exports.bankDetails = require('./bank-details/bank-details.controller')
 module.exports.companyNumber = require('./company-number/company-number.controller')
 module.exports.director = require('./director/director.controller')

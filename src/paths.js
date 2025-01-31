@@ -197,6 +197,7 @@ module.exports = {
       },
       stripeDetails: {
         index: '/settings/stripe-details',
+        accountDetails: '/settings/stripe-details/account',
         bankDetails: '/settings/stripe-details/bank-details',
         responsiblePerson: {
           index: '/settings/stripe-details/responsible-person',
