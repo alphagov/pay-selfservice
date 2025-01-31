@@ -34,7 +34,7 @@ module.exports = async function postAmount (req, res, next) {
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.amount, req.account && req.account.external_id))
   }
 
-  sessionData.paymentLinkAmount = safeConvertPoundsStringToPence(amount)
+  sessionData.paymentLinkAmount = req.body['amount-type-group'] === 'fixed' ? safeConvertPoundsStringToPence(amount) : ''
   sessionData.paymentAmountType = type
   sessionData.amountHint = hint
 

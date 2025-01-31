@@ -37,7 +37,7 @@ module.exports = async function postEditAmount (req, res) {
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.editAmount, req.account && req.account.external_id, productExternalId))
   }
 
-  sessionData.price = safeConvertPoundsStringToPence(amount)
+  sessionData.price = req.body['amount-type-group'] === 'fixed' ? safeConvertPoundsStringToPence(amount) : ''
   sessionData.amountHint = hint
   lodash.set(req, 'session.editPaymentLinkData', sessionData)
 
