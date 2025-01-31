@@ -5,11 +5,11 @@ const lodash = require('lodash')
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
-const { validateOptionalField } = require('../../utils/validation/server-side-form-validations')
+const { validationResult } = require('express-validator')
+const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const amountValidations = require('./validations/amount-validations')
 
-const HINT_MAX_LENGTH = 255
-
-module.exports = function postAmount (req, res, next) {
+module.exports = async function postAmount (req, res, next) {
   const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
   if (!sessionData) {
     return next(new Error('Payment link data not found in session cookie'))
@@ -19,34 +19,22 @@ module.exports = function postAmount (req, res, next) {
   const amount = req.body['payment-amount']
   const hint = req.body['amount-hint-text'] && req.body['amount-hint-text'].trim()
 
-  let amountInPence = ''
-  const errors = {}
-  if (!type) {
-    errors.type = 'Is the payment for a fixed amount?'
-  } else if (type === 'fixed') {
-    amountInPence = safeConvertPoundsStringToPence(amount)
-    if (amount === '' || amountInPence === null) {
-      errors.amount = 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”'
-    } else if (req.account.payment_provider === 'stripe' && amountInPence < 30) {
-      errors.amount = 'Amount must be £0.30 or more'
-    }
-  } else {
-    const validateHintResult = validateOptionalField(hint, HINT_MAX_LENGTH, 'hint text', true)
-    if (!validateHintResult.valid) {
-      errors.hint = validateHintResult.message
-    }
-  }
-
-  if (!lodash.isEmpty(errors)) {
+  await Promise.all(amountValidations.map(validation => validation.run(req)))
+  const validationErrors = validationResult(req)
+  if (!validationErrors.isEmpty()) {
+    const formattedErrors = formatValidationErrors(validationErrors)
     sessionData.amountPageRecovered = {
-      errors,
+      errors: {
+        summary: formattedErrors.errorSummary,
+        formErrors: formattedErrors.formErrors
+      },
       type,
       hint
     }
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.amount, req.account && req.account.external_id))
   }
 
-  sessionData.paymentLinkAmount = amountInPence
+  sessionData.paymentLinkAmount = req.body['amount-type-group'] === 'fixed' ? safeConvertPoundsStringToPence(amount) : ''
   sessionData.paymentAmountType = type
   sessionData.amountHint = hint
 

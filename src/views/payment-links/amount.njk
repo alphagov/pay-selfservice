@@ -16,14 +16,12 @@
 
 {% block mainContent %}
 <section class="govuk-grid-column-two-thirds">
-  {{ errorSummary ({
-    errors: errors,
-    hrefs: {
-      type: "#amount-type-fixed",
-      amount: "#payment-amount",
-      hint: "#amount-hint-text"
-    }
-  }) }}
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errors.summary
+    }) }}
+  {% endif %}
 
   <form class="form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
@@ -36,20 +34,20 @@
     {% endif %}
 
     {% set fixedAmountHTML %}
-      <div class="currency-input govuk-form-group{% if errors.amount %} govuk-form-group--error{% endif %}">
+      <div class="currency-input govuk-form-group{% if errors.formErrors['payment-amount'] %} govuk-form-group--error{% endif %}">
         <label class="govuk-label" for="payment-amount">
           Enter the amount
           <span class="govuk-visually-hidden">in &pound;</span>
-          {% if errors.amount %}
+          {% if errors.formErrors['payment-amount'] %}
           <p class="govuk-error-message">
-            {{ errors.amount }}
+            {{ errors.formErrors['payment-amount'] }}
           </p>
           {% endif %}
         </label>
         <div class="currency-input__inner">
           <span class="currency-input__inner__unit">&pound;</span>
           <input
-            class="govuk-input govuk-input--width-10{% if errors.amount %} govuk-input--error{% endif %}"
+            class="govuk-input govuk-input--width-10{% if errors.formErrors['payment-amount'] %} govuk-input--error{% endif %}"
             aria-label="Enter amount in pounds"
             name="payment-amount"
             autofocus
