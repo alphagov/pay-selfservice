@@ -33,7 +33,7 @@ class WorldpayTasks {
       this.tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount.type, gatewayAccount.worldpay3dsFlex, this.tasks.filter(t => t.id === 'worldpay-credentials')[0]?.status === TASK_STATUS.COMPLETED))
     }
 
-    this.incompleteTasks = this.tasks.filter(t => t.complete !== true).length > 0
+    this.incompleteTasks = this.tasks.filter(t => t.status !== TASK_STATUS.COMPLETED).length > 0
   }
 
   static async recalculate (serviceExternalId, accountType) {
