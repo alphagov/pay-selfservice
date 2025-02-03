@@ -12,24 +12,32 @@
 
     {% set taskList = [] %}
     {% for task in tasks %}
-      {% set taskList = (taskList.push({
-        title: {
-          text: task.linkText
-        },
-        href: task.href,
-        status: {
+      {% if task.status == 'CANNOT_START' %}
+        {% set taskStatusTag = {
+          tag: {
+            text: "Cannot start yet",
+            classes: "govuk-tag--grey"
+          }
+        } %}
+      {% elseif task.status == 'COMPLETED' %}
+        {% set taskStatusTag = {
+          text: "Completed"
+        } %}
+      {% else %}
+        {% set taskStatusTag = {
           tag: {
             text: "Not yet started",
             classes: "govuk-tag--blue"
           }
-        } if not (task.complete == true) else (
-          {
-            tag: {
-              text: "Completed",
-              classes: "govuk-tag--grey"
-            }
-          }
-        )
+        } %}
+      {% endif %}
+
+      {% set taskList = (taskList.push({
+        title: {
+          text: task.linkText
+        },
+        href: task.href if task.status != 'CANNOT_START',
+        status: taskStatusTag
       }), taskList) %}
     {% endfor %}
 

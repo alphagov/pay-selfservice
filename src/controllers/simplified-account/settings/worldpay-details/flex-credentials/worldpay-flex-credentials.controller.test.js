@@ -62,6 +62,10 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
 
     it('should pass context data to the response method', () => {
       mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
+        credentials: {
+          organisationalUnitId: undefined,
+          issuer: undefined
+        },
         backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
       })
     })
