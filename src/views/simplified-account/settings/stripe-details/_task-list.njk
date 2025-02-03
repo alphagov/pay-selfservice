@@ -1,0 +1,30 @@
+{% set taskList = [] %}
+{% for key, value in stripeDetailsTasks %}
+  {% set taskList = (taskList.push({
+    title: {
+      text: value.friendlyName
+    },
+    href: value.href if value.status == false else undefined,
+    status: {
+      tag: {
+        text: "Not yet started",
+        classes: "govuk-tag--blue"
+      }
+    } if value.status == false else (
+      {
+        tag: {
+        text: "Cannot start yet",
+        classes: "govuk-tag--grey"
+      }
+      } if value.status == 'disabled' else {
+        text: "Completed"
+      }
+    )
+  }), taskList) %}
+{% endfor %}
+
+{{ govukTaskList({
+  idPrefix: "stripe-details",
+  items: taskList,
+  classes: "task-list"
+}) }}
