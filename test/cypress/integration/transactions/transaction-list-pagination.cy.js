@@ -31,8 +31,8 @@ describe('Transactions list pagination', () => {
       transactionLength: transactionLength || 50,
       displaySize: displaySize || 5,
       page: page || 1,
-      transactionCount: 3,
-      transactions: generateTransactions(2),
+      transactionCount: 5,
+      transactions: generateTransactions(5),
       filters,
       links: links || {}
     }
@@ -64,16 +64,48 @@ describe('Transactions list pagination', () => {
         cy.visit(transactionsUrl + '?pageSize=5&page=')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
-        cy.get('form.paginationForm.page-Previous').should('have.length', 2).first().within(() => {
-          cy.get('input[name="page"]').should('have.value', '')
-        })
-        cy.get('button.pagination.Previous').should('exist')
-        cy.get('button.pagination.Previous').should('be.disabled')
+        cy.get('div.pagination').should('exist').should('have.length', 2)
 
-        cy.get('form.paginationForm.page-Next').should('have.length', 2).first().within(() => {
-          cy.get('input[name="page"]').should('have.value', '2')
+        cy.get('nav.govuk-pagination')
+          .should('exist')
+          .and('have.attr', 'aria-label', 'Pagination')
+
+        cy.get('ul.govuk-pagination__list')
+          .first()
+          .children('li.govuk-pagination__item')
+          .should('have.length', 4)
+
+        cy.get('ul.govuk-pagination__list').first().within((el) => {
+          cy.get('a')
+            .first()
+            .should('exist')
+            .and('have.attr', 'href', '/account/a-valid-external-id/transactions?pageSize=5&page=1')
+            .and('contain.text', '1')
         })
-        cy.get('button.pagination.Next').should('exist')
+
+        cy.get('li.govuk-pagination__item')
+          .find('a.govuk-link.govuk-pagination__link')
+          .should('have.attr', 'href', '/account/a-valid-external-id/transactions?pageSize=5&page=1')
+          .and('have.attr', 'aria-label', 'Page 1')
+          .and('contain.text', '1')
+
+        cy.get('ul.govuk-pagination__list li.govuk-pagination__item')
+          .eq(1) // Get the second list item (Page 2)
+          .find('a.govuk-link.govuk-pagination__link')
+          .should('have.attr', 'href', '/account/a-valid-external-id/transactions?pageSize=5&page=2')
+          .and('contain.text', '2')
+
+        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+          .should('have.attr', 'href', '/account/a-valid-external-id/transactions?pageSize=5&page=2')
+          .and('have.attr', 'rel', 'next')
+
+        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+          .first()
+          .within(() => {
+            cy.get('span.govuk-pagination__link-title').should('contain.text', ' Next')
+          })
+
+        cy.get('div.govuk-pagination__next svg.govuk-pagination__icon--next').should('exist')
       })
 
       it('should have both next and previous pagination links enabled, when ledger return both links ', () => {
@@ -88,49 +120,63 @@ describe('Transactions list pagination', () => {
         cy.visit(transactionsUrl + '?pageSize=5&page=3')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
-        cy.get('form.paginationForm.page-Previous').should('have.length', 2).first().within(() => {
-          cy.get('input[name="page"]').should('have.value', '2')
-        })
-        cy.get('button.pagination.Previous').should('exist')
+        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+          .should('have.attr', 'href', '/account/a-valid-external-id/transactions?pageSize=5&page=4')
+          .and('have.attr', 'rel', 'next')
 
-        cy.get('form.paginationForm.page-Next').should('have.length', 2).first().within(() => {
-          cy.get('input[name="page"]').should('have.value', '4')
-        })
-        cy.get('button.pagination.Next').should('exist')
+        cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
+          .should('have.attr', 'href', '/account/a-valid-external-id/transactions?pageSize=5&page=2')
+          .and('have.attr', 'rel', 'prev')
+
+        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link').should('have.length', 2)
+          .first()
+          .within(() => {
+            cy.get('span.govuk-pagination__link-title').should('contain.text', ' Next')
+          })
+
+        cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link').should('have.length', 2)
+          .first()
+          .within(() => {
+            cy.get('span.govuk-pagination__link-title').should('contain.text', ' Previous')
+          })
       })
 
       it('should display the next page as disabled, when ledger does not return next page', () => {
-        const opts = transactionSearchResultOpts(30, 5, 3, {},
+        const opts = transactionSearchResultOpts(30, 5, 6, {},
           {
             self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
             prev_page: { href: '/v1/transactions?&page=1&display_size=5&state=' }
           })
 
         cy.task('setupStubs', getStubs(opts))
-        cy.visit(transactionsUrl + '?pageSize=5&page=3')
+        cy.visit(transactionsUrl + '?pageSize=5&page=6')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
-        cy.get('form.paginationForm.page-Previous').should('have.length', 2).first().within(() => {
-          cy.get('input[name="page"]').should('have.value', '2')
-        })
-        cy.get('button.pagination.Previous').should('exist')
+        cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
+          .should('have.attr', 'href', '/account/a-valid-external-id/transactions?pageSize=5&page=5')
+          .and('have.attr', 'rel', 'prev')
 
-        cy.get('form.paginationForm.page-Next').should('have.length', 2).first().within(() => {
-          cy.get('input[name="page"]').should('have.value', '')
-        })
-        cy.get('button.pagination.Next').should('exist')
-        cy.get('button.pagination.Next').should('be.disabled')
+        cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link').should('have.length', 2)
+          .first()
+          .within(() => {
+            cy.get('span.govuk-pagination__link-title').should('contain.text', ' Previous')
+          })
+
+        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+          .should('not.exist')
       })
 
       it('should not display pagination links, when ledger does not provide both next and previous links', () => {
-        const opts = transactionSearchResultOpts(30, 5, '', {},
-          { self: { href: '/v1/transactions?&page=2&display_size=5&state=' } })
+        const opts = transactionSearchResultOpts(5, 5, '', {}, {})
 
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=')
 
-        cy.get('form.paginationForm.page-Previous').should('not.exist')
-        cy.get('form.paginationForm.page-Next').should('not.exist')
+        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+          .should('not.exist')
+
+        cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
+          .should('not.exist')
       })
 
       it('should navigate to next page correctly with all filters intact', () => {
@@ -159,7 +205,7 @@ describe('Transactions list pagination', () => {
         cy.task('setupStubs', stubs)
         cy.visit(transactionsUrl + '?pageSize=5&page=1&reference=ref123&email=gds4&cardholderName=doe&lastDigitsCardNumber=4242&fromDate=03%2F05%2F2018&fromTime=1%3A00%3A00&toDate=04%2F05%2F2018&toTime=1%3A00%3A00&brand=visa&brand=master-card&state=Success')
 
-        cy.get('.page-Next').first().click()
+        cy.get('.govuk-pagination__next').first().click()
 
         cy.get('#reference').invoke('val').should('contain', 'ref123')
         cy.get('#fromDate').invoke('val').should('contain', '03/05/2018')
@@ -193,6 +239,7 @@ describe('Transactions list pagination', () => {
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=100&page=1')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
+
         cy.get('#displaySize').should('contain', 'Results per page:')
         cy.get('#displaySize').should('contain', '100')
         cy.get('.displaySizeForm').should('exist').within(() => {
