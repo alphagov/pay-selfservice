@@ -9,7 +9,8 @@ function getActiveApiKeysForGatewayAccount (gatewayAccountId, tokens = []) {
   return stubBuilder('GET', path, 200, {
     response: {
       tokens: tokens.map(t => t.toJson())
-    }
+    },
+    query: {}
   })
 }
 
