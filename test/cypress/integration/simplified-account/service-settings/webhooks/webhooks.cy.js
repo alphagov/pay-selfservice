@@ -10,25 +10,28 @@ const SERVICE_NAME = {
 }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
-const WEBHOOK_EXTERNAL_ID = 'webhook-123'
-const CALLBACK_URL = 'https://www.callback.gov.uk'
-const DESCRIPTION = 'My first webhook'
-const SUBSCRIPTIONS = ['card_payment_succeeded', 'card_payment_captured']
-
 const WEBHOOKS_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/webhooks`
 
 const EXISTING_WEBHOOKS = [
   {
-    external_id: WEBHOOK_EXTERNAL_ID,
-    callback_url: CALLBACK_URL,
-    description: DESCRIPTION,
-    subscriptions: SUBSCRIPTIONS,
+    external_id: 'webhook-id-1',
+    callback_url: 'https://www.callback.gov.uk',
+    description: 'My first webhook',
+    subscriptions: ['card_payment_succeeded', 'card_payment_captured'],
     status: 'ACTIVE'
   },
   {
+    external_id: 'webhook-id-2',
+    callback_url: 'https://www.another-callback.gov.uk',
+    description: 'My second webhook',
+    subscriptions: ['card_payment_failed'],
     status: 'ACTIVE'
   },
   {
+    external_id: 'webhook-id-3',
+    callback_url: 'https://www.inactive-callback.gov.uk',
+    description: 'My third webhook',
+    subscriptions: ['card_payment_succeeded', 'card_payment_captured'],
     status: 'INACTIVE'
   }
 ]
@@ -82,14 +85,48 @@ describe('for an admin', () => {
 
   it('should show webhooks as summary cards', () => {
     cy.get('div.govuk-summary-card').should('have.length', 3)
-    cy.get('div.govuk-summary-card').first().find('h2').first().contains(DESCRIPTION).get('strong.govuk-tag--blue').contains('Active')
-    cy.get('div.govuk-summary-card').first().find('a').first().contains('View')
-    cy.get('div.govuk-summary-card').first().find('a').eq(1).contains('Update')
-    cy.get('div.govuk-summary-card').first().find('dd').first().contains(CALLBACK_URL)
-    cy.get('div.govuk-summary-card').first().find('dd').eq(1).contains('Payment succeeded')
-    cy.get('div.govuk-summary-card').first().find('dd').eq(1).contains('Payment captured')
-    cy.get('div.govuk-summary-card').eq(1).find('h2').first().get('strong.govuk-tag--blue').contains('Active')
-    cy.get('div.govuk-summary-card').eq(2).find('h2').first().get('strong.govuk-tag--yellow').contains('Inactive')
+    cy.get('div.govuk-summary-card').first().find('h2').first()
+      .should('contain.text', 'My first webhook')
+      .get('strong.govuk-tag--blue')
+      .should('contain.text', 'Active')
+    cy.get('div.govuk-summary-card').first().find('a').first()
+      .should('contain.text', 'View')
+    cy.get('div.govuk-summary-card').first().find('a').eq(1)
+      .should('contain.text', 'Update')
+    cy.get('div.govuk-summary-card').first().find('dd').first()
+      .should('contain.text', 'https://www.callback.gov.uk')
+    cy.get('div.govuk-summary-card').first().find('dd').eq(1)
+      .should('contain.text', 'Payment succeeded')
+    cy.get('div.govuk-summary-card').first().find('dd').eq(1)
+      .should('contain.text', 'Payment captured')
+
+    cy.get('div.govuk-summary-card').eq(1).find('h2').first()
+      .should('contain.text', 'My second webhook')
+      .get('strong.govuk-tag--blue')
+      .should('contain.text', 'Active')
+    cy.get('div.govuk-summary-card').eq(1).find('a').first()
+      .should('contain.text', 'View')
+    cy.get('div.govuk-summary-card').eq(1).find('a').eq(1)
+      .should('contain.text', 'Update')
+    cy.get('div.govuk-summary-card').eq(1).find('dd').first()
+      .should('contain.text', 'https://www.another-callback.gov.uk')
+    cy.get('div.govuk-summary-card').eq(1).find('dd').eq(1)
+      .should('contain.text', 'Payment failed')
+
+    cy.get('div.govuk-summary-card').eq(2).find('h2').first()
+      .should('contain.text', 'My third webhook')
+      .get('strong.govuk-tag--yellow')
+      .should('contain.text', 'Inactive')
+    cy.get('div.govuk-summary-card').eq(2).find('a').first()
+      .should('contain.text', 'View')
+    cy.get('div.govuk-summary-card').eq(2).find('a').eq(1)
+      .should('contain.text', 'Update')
+    cy.get('div.govuk-summary-card').eq(2).find('dd').first()
+      .should('contain.text', 'https://www.inactive-callback.gov.uk')
+    cy.get('div.govuk-summary-card').eq(2).find('dd').eq(1)
+      .should('contain.text', 'Payment succeeded')
+    cy.get('div.govuk-summary-card').eq(2).find('dd').eq(1)
+      .should('contain.text', 'Payment captured')
   })
 })
 
