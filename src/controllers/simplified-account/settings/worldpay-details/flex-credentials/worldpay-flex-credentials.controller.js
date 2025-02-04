@@ -21,15 +21,15 @@ function get (req, res) {
 
 const worldpayCredentialsValidations = [
   body('organisationalUnitId')
-    .not().isEmpty().withMessage('Enter your organisational unit ID').bail()
+    .notEmpty().withMessage('Enter your organisational unit ID').bail()
     .isHexadecimal().withMessage('Enter your organisational unit ID in the format you received it').bail()
     .isLength({ min: 24, max: 24 }).withMessage('Enter your organisational unit ID in the format you received it').bail(),
   body('issuer')
-    .not().isEmpty().withMessage('Enter your issuer').bail()
+    .notEmpty().withMessage('Enter your issuer').bail()
     .isHexadecimal().withMessage('Enter your issuer in the format you received it').bail()
     .isLength({ min: 24, max: 24 }).withMessage('Enter your issuer in the format you received it').bail(),
   body('jwtMacKey')
-    .not().isEmpty().withMessage('Enter your JWT MAC key').bail()
+    .notEmpty().withMessage('Enter your JWT MAC key').bail()
     .isUUID().withMessage('Enter your JWT MAC key in the format you received it').bail()
 ]
 
