@@ -26,6 +26,7 @@ describe('Login Page', () => {
 
   describe('Page content', () => {
     it('should have the page title \'Sign in to GOV.UK Pay\'', () => {
+      cy.percySnapshot()
       cy.title().should('eq', 'Sign in to GOV.UK Pay')
     })
     it('should redirect to the login page', () => {
