@@ -49,32 +49,71 @@
 
   {% else %}
 
-    {% set taskList = [] %}
-    {% for task in tasks %}
-      {% set taskCardRows = [] %}
-        {% for row in task.completedCard.rows %}
-          {% set taskCardRows = (taskCardRows.push({
-              key: { text: row.keyText },
-              value: { text: row.valueText }
-          }), taskCardRows) %}
-        {% endfor %}
+{#    {% set taskList = [] %}#}
+{#    {% for task in tasks %}#}
+{#      {% set taskCardRows = [] %}#}
+{#        {% for row in task.completedCard.rows %}#}
+{#          {% set taskCardRows = (taskCardRows.push({#}
+{#              key: { text: row.keyText },#}
+{#              value: { text: row.valueText }#}
+{#          }), taskCardRows) %}#}
+{#        {% endfor %}#}
 
       {{ govukSummaryList({
         card: {
           title: {
-            text: task.completedCard.title
+            text: 'Account credentials'
           },
           actions: {
             items: [{
-              href: task.href,
-              text: 'Change'
+              href: answers.oneOffCustomerInitiated.href,
+              text: 'Change',
+              classes: 'govuk-link--no-visited-state'
             }]
           }
         },
-        rows: taskCardRows
+        rows: [{
+          key: { text: 'Merchant code' },
+          value: { text: answers.oneOffCustomerInitiated.merchantCode }
+        }, {
+          key: { text: 'Username' },
+          value: { text: answers.oneOffCustomerInitiated.username }
+        }, {
+          key: { text: 'Password' },
+          value: { text: '●●●●●●●●' }
+        }]
       }) }}
 
-    {% endfor %}
+    {% if answers.worldpay3dsFlex %}
+
+      {{ govukSummaryList({
+        card: {
+          title: {
+            text: '3DS Flex credentials'
+          },
+          actions: {
+            items: [{
+              href: answers.worldpay3dsFlex.href,
+              text: 'Change',
+              classes: 'govuk-link--no-visited-state'
+            }]
+          }
+        },
+        rows: [{
+          key: { text: 'Organisational Unit ID' },
+          value: { text: answers.worldpay3dsFlex.organisationalUnitId }
+        }, {
+          key: { text: 'Issuer (API ID)' },
+          value: { text: answers.worldpay3dsFlex.issuer }
+        }, {
+          key: { text: 'JWT Mac Key (API key)' },
+          value: { text: '●●●●●●●●' }
+        }]
+      }) }}
+
+      {% endif %}
+
+{#    {% endfor %}#}
 
   {% endif %}
 

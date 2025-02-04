@@ -30,10 +30,19 @@ class WorldpayTasks {
     this.tasks.push(WorldpayTask.oneOffCustomerInitiatedCredentialsTask(serviceExternalId, gatewayAccount.type, credential))
 
     if (!gatewayAccount.allowMoto) {
-      this.tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount.type, gatewayAccount.worldpay3dsFlex, this.tasks.filter(t => t.id === 'worldpay-credentials')[0]?.status === TASK_STATUS.COMPLETED))
+      this.tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount.type, gatewayAccount.worldpay3dsFlex, this.findTask('worldpay-credentials')?.status === TASK_STATUS.COMPLETED))
     }
 
     this.incompleteTasks = this.tasks.filter(t => t.status !== TASK_STATUS.COMPLETED).length > 0
+  }
+
+  /**
+   *
+   * @param {String} taskId
+   * @returns {WorldpayTask}
+   */
+  findTask (taskId) {
+    return this.tasks.filter(t => t.id === taskId)[0]
   }
 
   static async recalculate (serviceExternalId, accountType) {
@@ -58,10 +67,6 @@ class WorldpayTask {
     this.status = status
   }
 
-  setCompletedCard (card) {
-    this.completedCard = card
-  }
-
   /**
    * @param {String} serviceExternalId
    * @param {String} accountType
@@ -79,19 +84,6 @@ class WorldpayTask {
 
     if (worldpay3dsFlexCredential) {
       task.setStatus(TASK_STATUS.COMPLETED)
-      task.setCompletedCard({
-        title: '3DS Flex Credentials',
-        rows: [{
-          keyText: 'Organisational Unit ID',
-          valueText: worldpay3dsFlexCredential.organisationalUnitId
-        }, {
-          keyText: 'Issuer (API ID)',
-          valueText: worldpay3dsFlexCredential.issuer
-        }, {
-          keyText: 'JWT MAC Key',
-          valueText: '●●●●●●●●'
-        }]
-      })
     } else if (ableToStart) {
       task.setStatus(TASK_STATUS.NOT_STARTED)
     } else {
@@ -118,19 +110,6 @@ class WorldpayTask {
       task.setStatus(TASK_STATUS.NOT_STARTED)
     } else {
       task.setStatus(TASK_STATUS.COMPLETED)
-      task.setCompletedCard({
-        title: 'Account credentials',
-        rows: [{
-          keyText: 'Merchant code',
-          valueText: credential.credentials?.oneOffCustomerInitiated?.merchantCode
-        }, {
-          keyText: 'Username',
-          valueText: credential.credentials?.oneOffCustomerInitiated?.username
-        }, {
-          keyText: 'Password',
-          valueText: '●●●●●●●●'
-        }]
-      })
     }
 
     return task
