@@ -2,6 +2,7 @@ const { expect } = require('chai')
 const { friendlyStripeTasks } = require('./tasks')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
+const { COMPLETED_CANNOT_START, CANNOT_START, NOT_STARTED } = require('@models/task-status')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
@@ -14,9 +15,9 @@ describe('friendlyStripeTasks', () => {
     externalId: SERVICE_EXTERNAL_ID
   }
 
-  it('should return empty object when connectorGatewayAccountStripeProgress is not present', () => {
+  it('should return empty array when connectorGatewayAccountStripeProgress is not present', () => {
     const result = friendlyStripeTasks(account, service)
-    expect(result).to.be.an('object')
+    expect(result).to.be.an('array')
     expect(result).to.be.empty // eslint-disable-line
   })
 
@@ -36,12 +37,11 @@ describe('friendlyStripeTasks', () => {
 
     const result = friendlyStripeTasks(accountWithProgress, service)
 
-    expect(result).to.be.an('object')
-    expect(Object.keys(result)).to.have.lengthOf(7)
-
-    expect(result.governmentEntityDocument).to.deep.include({
-      friendlyName: 'Government entity document',
-      status: true
+    expect(result).to.be.an('array')
+    expect(result).to.have.lengthOf(7)
+    expect(result[result.length - 1]).to.deep.include({
+      linkText: 'Government entity document',
+      status: COMPLETED_CANNOT_START
     })
   })
 
@@ -60,12 +60,16 @@ describe('friendlyStripeTasks', () => {
     }
 
     const result = friendlyStripeTasks(accountWithMixedProgress, service)
-    const resultKeys = Object.keys(result)
-
-    const bankAccountIndex = resultKeys.indexOf('bankAccount')
-    const governmentEntityDocumentIndex = resultKeys.indexOf('governmentEntityDocument')
-    expect(bankAccountIndex).to.equal(0) // bankAccount should be the first task
-    expect(governmentEntityDocumentIndex).to.equal(resultKeys.length - 1) // governmentEntityDocument should be the last task
+    expect(result[0]).to.deep.include({
+      linkText: 'Organisation\'s bank details', // bankAccount should be the first task
+      complete: true,
+      status: COMPLETED_CANNOT_START
+    })
+    expect(result[result.length - 1]).to.deep.include({
+      linkText: 'Government entity document', // governmentEntityDocument should be the last task
+      complete: false,
+      status: CANNOT_START
+    })
   })
 
   it('should format paths correctly for task', () => {
@@ -78,8 +82,7 @@ describe('friendlyStripeTasks', () => {
 
     const result = friendlyStripeTasks(accountWithSingleTask, service)
 
-    expect(result.director.href)
-      .to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.director, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
+    expect(result[0].href).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.director, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
   })
 
   it('should handle status values correctly', () => {
@@ -94,9 +97,9 @@ describe('friendlyStripeTasks', () => {
 
     const result = friendlyStripeTasks(accountWithMixedStatus, service)
 
-    expect(result.vatNumber.status).to.be.true // eslint-disable-line
-    expect(result.companyNumber.status).to.be.false // eslint-disable-line
-    expect(result.governmentEntityDocument.status).to.equal('disabled')
+    expect(result[0].status).to.equal(COMPLETED_CANNOT_START) // eslint-disable-line
+    expect(result[1].status).to.equal(NOT_STARTED) // eslint-disable-line
+    expect(result[2].status).to.equal(CANNOT_START)
   })
 
   it('should handle empty progress object', () => {
@@ -106,7 +109,7 @@ describe('friendlyStripeTasks', () => {
     }
 
     const result = friendlyStripeTasks(accountWithEmptyProgress, service)
-    expect(result).to.be.an('object')
+    expect(result).to.be.an('array')
     expect(result).to.be.empty // eslint-disable-line
   })
 })

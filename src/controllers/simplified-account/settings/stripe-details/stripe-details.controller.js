@@ -20,7 +20,7 @@ async function get (req, res) {
   const account = req.account
   const service = req.service
   const stripeDetailsTasks = friendlyStripeTasks(account, service)
-  const incompleteTasks = Object.values(stripeDetailsTasks).some(task => task.status === false)
+  const incompleteTasks = Object.values(stripeDetailsTasks).some(task => task.complete === false)
   let answers = {}
   // load account onboarding details synchronously if javascript is unavailable
   if (!incompleteTasks && javascriptUnavailable) {
@@ -33,7 +33,7 @@ async function get (req, res) {
     javascriptUnavailable,
     accountDetailsPath: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.accountDetails, service.externalId, account.type),
     messages: res.locals?.flash?.messages ?? [],
-    stripeDetailsTasks,
+    tasks: stripeDetailsTasks,
     incompleteTasks,
     serviceExternalId: service.externalId,
     answers,
