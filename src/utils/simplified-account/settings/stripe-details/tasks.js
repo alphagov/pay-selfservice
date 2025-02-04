@@ -72,10 +72,10 @@ const getStripeTaskStatus = (task, complete, govEntityDocTaskUnavailable) => {
 
 /**
  * @typedef {Object} StripeTask
- * @property {string} linkText - formatted path for task
+ * @property {string} linkText - human-readable task name
  * @property {string} href - formatted path for task
- * @property {boolean} complete - formatted path for task
- * @property {string} status - true, false or 'disabled' in the case of gov entity document (if any other tasks are 'false')
+ * @property {boolean} complete
+ * @property {TASK_STATUS} status - flag determining if task can be started
  */
 
 /**
