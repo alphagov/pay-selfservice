@@ -61,22 +61,29 @@ describe('for an admin', () => {
     ])
     cy.visit(WEBHOOKS_SETTINGS_URL)
   })
-  describe('the settings nav', () => {
+
+  it('should show the settings nav correctly', () => {
     checkSettingsNavigation()
   })
-  describe('the page', () => {
+
+  it.only('should show title, heading and create Webhook button', () => {
     checkTitleAndHeading()
-    it.only('should show webhooks as summary cards', () => {
-      cy.get('div.govuk-summary-card').should('have.length', 3)
-      cy.get('div.govuk-summary-card').first().find('h2').first().contains(DESCRIPTION).get('strong.govuk-tag--blue').contains('Active')
-      cy.get('div.govuk-summary-card').first().find('a').first().contains('View')
-      cy.get('div.govuk-summary-card').first().find('a').eq(1).contains('Update')
-      cy.get('div.govuk-summary-card').first().find('dd').first().contains(CALLBACK_URL)
-      cy.get('div.govuk-summary-card').first().find('dd').eq(1).contains('Payment succeeded')
-      cy.get('div.govuk-summary-card').first().find('dd').eq(1).contains('Payment captured')
-      cy.get('div.govuk-summary-card').eq(1).find('h2').first().get('strong.govuk-tag--blue').contains('Active')
-      cy.get('div.govuk-summary-card').eq(2).find('h2').first().get('strong.govuk-tag--yellow').contains('Inactive')
-    })
+    cy.get('div.service-settings-pane')
+      .find('a')
+      .contains('Create a new webhook')
+      .should('have.attr', 'href', `${WEBHOOKS_SETTINGS_URL}/create`)
+  })
+
+  it('should show webhooks as summary cards', () => {
+    cy.get('div.govuk-summary-card').should('have.length', 3)
+    cy.get('div.govuk-summary-card').first().find('h2').first().contains(DESCRIPTION).get('strong.govuk-tag--blue').contains('Active')
+    cy.get('div.govuk-summary-card').first().find('a').first().contains('View')
+    cy.get('div.govuk-summary-card').first().find('a').eq(1).contains('Update')
+    cy.get('div.govuk-summary-card').first().find('dd').first().contains(CALLBACK_URL)
+    cy.get('div.govuk-summary-card').first().find('dd').eq(1).contains('Payment succeeded')
+    cy.get('div.govuk-summary-card').first().find('dd').eq(1).contains('Payment captured')
+    cy.get('div.govuk-summary-card').eq(1).find('h2').first().get('strong.govuk-tag--blue').contains('Active')
+    cy.get('div.govuk-summary-card').eq(2).find('h2').first().get('strong.govuk-tag--yellow').contains('Inactive')
   })
 })
 
