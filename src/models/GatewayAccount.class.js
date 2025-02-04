@@ -1,4 +1,5 @@
 const { GatewayAccountCredential, CREDENTIAL_STATE } = require('@models/gateway-account-credential/GatewayAccountCredential.class')
+const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
 
 /**
  * @class GatewayAccount
@@ -29,6 +30,7 @@ class GatewayAccount {
    * @param {boolean} gatewayAccountData.provider_switch_enabled - indicates that the gateway is transitioning psp
    * @param {boolean} gatewayAccountData.recurring_enabled - whether recurring card payments are enabled on this account
    * @param {[{Object}]} gatewayAccountData.gateway_account_credentials - whether recurring card payments are enabled on this account
+   * @param {Object} [gatewayAccountData.worldpay_3ds_flex] - 3ds flex credentials and metadata for Worldpay
    **/
   constructor (gatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
@@ -45,6 +47,9 @@ class GatewayAccount {
     if (gatewayAccountData?.gateway_account_credentials) {
       this.gatewayAccountCredentials = gatewayAccountData?.gateway_account_credentials
         .map(credentialData => GatewayAccountCredential.fromJson(credentialData))
+    }
+    if (gatewayAccountData?.worldpay_3ds_flex) {
+      this.worldpay3dsFlex = Worldpay3dsFlexCredential.fromJson(gatewayAccountData.worldpay_3ds_flex)
     }
     this.supports3ds = ['worldpay', 'stripe'].includes(gatewayAccountData.payment_provider)
     this.disableToggle3ds = gatewayAccountData.payment_provider === 'stripe'

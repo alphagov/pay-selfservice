@@ -10,6 +10,10 @@ const INTEGRATION_VERSION_3DS = 2
 
 function get (req, res) {
   return response(req, res, 'simplified-account/settings/worldpay-details/flex-credentials', {
+    credentials: {
+      organisationalUnitId: req.account?.worldpay3dsFlex?.organisationalUnitId,
+      issuer: req.account?.worldpay3dsFlex?.issuer
+    },
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
       req.service.externalId, req.account.type)
   })

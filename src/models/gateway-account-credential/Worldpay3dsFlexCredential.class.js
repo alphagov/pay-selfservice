@@ -14,6 +14,18 @@ class Worldpay3dsFlexCredential {
     return this
   }
 
+  // additional metadata returned by Connector - not included in POST body to update credentials
+  withExemptionEngineEnabled (exemptionEngineEnabled) {
+    this.exemptionEngineEnabled = exemptionEngineEnabled
+    return this
+  }
+
+  // additional metadata returned by Connector - not included in POST body to update credentials
+  withCorporateExemptionsEnabled (corporateExemptionsEnabled) {
+    this.corporateExemptionsEnabled = corporateExemptionsEnabled
+    return this
+  }
+
   toJson () {
     return {
       organisational_unit_id: this.organisationalUnitId,
@@ -26,7 +38,8 @@ class Worldpay3dsFlexCredential {
     return new Worldpay3dsFlexCredential()
       .withOrganisationalUnitId(data?.organisational_unit_id)
       .withIssuer(data?.issuer)
-      .withJwtMacKey(data?.jwt_mac_key)
+      .withExemptionEngineEnabled(data?.exemption_engine_enabled ?? false)
+      .withCorporateExemptionsEnabled(data?.corporate_exemptions_enabled ?? false)
   }
 }
 

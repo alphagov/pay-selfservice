@@ -55,7 +55,7 @@ describe('Controller: settings/worldpay-details', () => {
           SERVICE_ID, ACCOUNT_TYPE),
         id: 'worldpay-credentials',
         linkText: 'Link your Worldpay account with GOV.UK Pay',
-        complete: false
+        status: 'NOT_STARTED'
       }]
       expect(mockResponse.args[0][3]).to.have.property('tasks').to.deep.equal(tasks)
       expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(true)
