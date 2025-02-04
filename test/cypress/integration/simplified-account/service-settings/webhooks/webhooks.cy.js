@@ -33,8 +33,6 @@ const EXISTING_WEBHOOKS = [
   }
 ]
 
-
-
 const setStubs = (opts = {}, additionalStubs = []) => {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
@@ -62,12 +60,20 @@ describe('for an admin', () => {
     cy.visit(WEBHOOKS_SETTINGS_URL)
   })
 
-  it('should show the settings nav correctly', () => {
-    checkSettingsNavigation()
+  it('should show webhooks in the setting navigation', () => {
+    cy.get('.service-settings-nav')
+      .find('li')
+      .contains('Webhooks')
+      .then(li => {
+        cy.wrap(li)
+          .should('have.attr', 'href', WEBHOOKS_SETTINGS_URL)
+          .parent().should('have.class', 'service-settings-nav__li--active')
+      })
   })
 
-  it.only('should show title, heading and create Webhook button', () => {
-    checkTitleAndHeading()
+  it('should show title, heading and create Webhook button', () => {
+    cy.title().should('eq', 'Webhooks - Settings - McDuck Enterprises - GOV.UK Pay')
+    cy.get('h1').should('have.text', 'Webhooks')
     cy.get('div.service-settings-pane')
       .find('a')
       .contains('Create a new webhook')
@@ -116,23 +122,3 @@ describe('for a non-admin user', () => {
     })
   })
 })
-
-function checkTitleAndHeading () {
-  it('should have the correct title and heading', () => {
-    cy.title().should('eq', 'Webhooks - Settings - McDuck Enterprises - GOV.UK Pay')
-    cy.get('h1').should('have.text', 'Webhooks')
-  })
-}
-
-function checkSettingsNavigation () {
-  it('should show active webhooks link', () => {
-    cy.get('.service-settings-nav')
-      .find('li')
-      .contains('Webhooks')
-      .then(li => {
-        cy.wrap(li)
-          .should('have.attr', 'href', WEBHOOKS_SETTINGS_URL)
-          .parent().should('have.class', 'service-settings-nav__li--active')
-      })
-  })
-}
