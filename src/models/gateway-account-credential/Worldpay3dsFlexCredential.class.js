@@ -38,8 +38,8 @@ class Worldpay3dsFlexCredential {
     return new Worldpay3dsFlexCredential()
       .withOrganisationalUnitId(data?.organisational_unit_id)
       .withIssuer(data?.issuer)
-      .withExemptionEngineEnabled(data?.exemption_engine_enabled)
-      .withCorporateExemptionsEnabled(data?.corporate_exemptions_enabled)
+      .withExemptionEngineEnabled(data?.exemption_engine_enabled ?? false)
+      .withCorporateExemptionsEnabled(data?.corporate_exemptions_enabled ?? false)
   }
 }
 

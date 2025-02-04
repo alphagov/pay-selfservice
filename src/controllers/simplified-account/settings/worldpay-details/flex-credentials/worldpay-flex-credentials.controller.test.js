@@ -48,25 +48,51 @@ const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@c
 
 describe('Controller: settings/worldpay-details/flex-credentials', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
+    describe('when no credentials have yet been set', () => {
+      beforeEach(() => {
+        call('get')
+      })
+
+      it('should call the response method', () => {
+        expect(mockResponse.called).to.be.true // eslint-disable-line
+      })
+
+      it('should pass req, res and template path to the response method', () => {
+        mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/worldpay-details/flex-credentials')
+      })
+
+      it('should pass context data with no credentials to the response method', () => {
+        mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
+          credentials: {
+            organisationalUnitId: undefined,
+            issuer: undefined
+          },
+          backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+        })
+      })
     })
 
-    it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
-    })
+    describe('when credentials have already been set', () => {
+      beforeEach(() => {
+        nextRequest({
+          account: {
+            worldpay3dsFlex: {
+              organisationalUnitId: '5bd9b55e4444761ac0af1c80', // pragma: allowlist secret
+              issuer: '5bd9e0e4444dce15fed8c940' // pragma: allowlist secret
+            }
+          }
+        })
+        call('get')
+      })
 
-    it('should pass req, res and template path to the response method', () => {
-      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/worldpay-details/flex-credentials')
-    })
-
-    it('should pass context data to the response method', () => {
-      mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
-        credentials: {
-          organisationalUnitId: undefined,
-          issuer: undefined
-        },
-        backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+      it('should pass context data with credentials to the response method', () => {
+        mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
+          credentials: {
+            organisationalUnitId: '5bd9b55e4444761ac0af1c80', // pragma: allowlist secret
+            issuer: '5bd9e0e4444dce15fed8c940' // pragma: allowlist secret
+          },
+          backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+        })
       })
     })
   })
