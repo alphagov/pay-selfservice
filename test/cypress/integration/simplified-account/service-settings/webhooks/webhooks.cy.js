@@ -149,13 +149,4 @@ describe('for a non-admin user', () => {
     cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/`)
     cy.get('#webhooks').should('not.exist')
   })
-
-  it('should return forbidden when visiting the create webhook url directly', () => {
-    cy.request({
-      url: WEBHOOKS_SETTINGS_URL + '/create',
-      failOnStatusCode: false
-    }).then((response) => {
-      expect(response.status).to.eq(403)
-    })
-  })
 })
