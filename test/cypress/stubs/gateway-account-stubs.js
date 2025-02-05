@@ -324,6 +324,16 @@ function postCheckWorldpayCredentialsByServiceExternalIdAndType (serviceExternal
   })
 }
 
+function postCheckWorldpay3dsFlexByServiceExternalIdAndType (serviceExternalId, accountType, payload, result = 'valid') {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}/worldpay/check-3ds-flex-config`
+  return stubBuilder('POST', path, 200, {
+    request: payload,
+    response: {
+      result
+    }
+  })
+}
+
 function postCheckWorldpay3dsFlexCredentialsWithBadResult (opts) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/worldpay/check-3ds-flex-config`
   return stubBuilder('POST', path, 200, {
@@ -338,6 +348,38 @@ function postUpdateWorldpay3dsFlexCredentials (opts) {
   const path = `/v1/api/accounts/${opts.gatewayAccountId}/3ds-flex-credentials`
   return stubBuilder('POST', path, 200, {
     request: worldpay3dsFlexCredentialsFixtures.validUpdateWorldpay3dsCredentialsRequest(opts)
+  })
+}
+
+/**
+ *
+ * @param {String} serviceExternalId
+ * @param {String} accountType
+ * @param payload
+ * @returns {{predicates: ({deepEquals: {path, method}}|{equals: {path, method}})[], name: string, responses: {is: {headers: (*|{'Content-Type': string}), statusCode}}[]}}
+ */
+function putWorldpay3dsFlexByServiceExternalIdAndType (serviceExternalId, accountType, payload) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}/3ds-flex-credentials`
+  return stubBuilder('PUT', path, 200, {
+    request: payload
+  })
+}
+
+/**
+ *
+ * @param {String} serviceExternalId
+ * @param {String} accountType
+ * @param {integer} version
+ * @returns {{predicates: ({deepEquals: {path, method}}|{equals: {path, method}})[], name: string, responses: {is: {headers: (*|{'Content-Type': string}), statusCode}}[]}}
+ */
+function patchUpdate3dsVersionByServiceExternalIdAndAccountType (serviceExternalId, accountType, version) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
+  return stubBuilder('PATCH', path, 200, {
+    request: {
+      op: 'replace',
+      path: 'integration_version_3ds',
+      value: version
+    }
   })
 }
 
@@ -448,9 +490,12 @@ module.exports = {
   patchUpdate3dsVersionSuccess,
   postCheckWorldpay3dsFlexCredentials,
   postCheckWorldpay3dsFlexCredentialsWithBadResult,
+  postCheckWorldpay3dsFlexByServiceExternalIdAndType,
   postCheckWorldpayCredentials,
   postCheckWorldpayCredentialsByServiceExternalIdAndType,
   postUpdateWorldpay3dsFlexCredentials,
+  putWorldpay3dsFlexByServiceExternalIdAndType,
+  patchUpdate3dsVersionByServiceExternalIdAndAccountType,
   patchUpdateCredentialsSuccess,
   patchUpdateCredentialsSuccessByServiceExternalIdAndType,
   patchUpdateWorldpayOneOffCredentialsSuccess,

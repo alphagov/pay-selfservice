@@ -76,8 +76,8 @@ module.exports = (on, config) => {
   return config
 }
 
-function generateEncryptedSessionCookie (sessionEncyptionKey, userExternalId, pageData = {}) {
-  const encryptedSessionCookie = cookieMonster.getCookie('session', sessionEncyptionKey,
+function generateEncryptedSessionCookie (sessionEncryptionKey, userExternalId, pageData = {}) {
+  const encryptedSessionCookie = cookieMonster.getCookie('session', sessionEncryptionKey,
     {
       passport: { user: userExternalId },
       secondFactor: 'totp',
