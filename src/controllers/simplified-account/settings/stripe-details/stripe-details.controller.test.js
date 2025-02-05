@@ -1,6 +1,7 @@
 const sinon = require('sinon')
 const { expect } = require('chai')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
+const { COMPLETED_CANNOT_START, NOT_STARTED, CANNOT_START } = require('@models/task-status')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
@@ -78,22 +79,24 @@ describe('Controller: settings/stripe-details', () => {
       })
 
       it('should pass Stripe details tasks to the response method', () => {
-        const stripeDetailsTasks = mockResponse.args[0][3].stripeDetailsTasks
-        expect(stripeDetailsTasks).to.have.all.keys('bankAccount', 'vatNumber', 'governmentEntityDocument')
-        expect(stripeDetailsTasks.bankAccount).to.deep.equal({
-          friendlyName: 'Organisation\'s bank details',
+        const stripeDetailsTasks = mockResponse.args[0][3].tasks
+        expect(stripeDetailsTasks[0]).to.deep.equal({
+          linkText: 'Organisation\'s bank details',
           href: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/bank-details`,
-          status: true
+          complete: true,
+          status: COMPLETED_CANNOT_START
         })
-        expect(stripeDetailsTasks.vatNumber).to.deep.equal({
-          friendlyName: 'VAT registration number',
+        expect(stripeDetailsTasks[1]).to.deep.equal({
+          linkText: 'VAT registration number',
           href: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/vat-number`,
-          status: false
+          complete: false,
+          status: NOT_STARTED
         })
-        expect(stripeDetailsTasks.governmentEntityDocument).to.deep.equal({
-          friendlyName: 'Government entity document',
+        expect(stripeDetailsTasks[2]).to.deep.equal({
+          linkText: 'Government entity document',
           href: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/government-entity-document`,
-          status: 'disabled'
+          complete: false,
+          status: CANNOT_START
         })
       })
     })

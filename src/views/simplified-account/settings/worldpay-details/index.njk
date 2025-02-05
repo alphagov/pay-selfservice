@@ -1,5 +1,5 @@
 {% extends "../settings-layout.njk" %}
-
+{% from "macro/task-list.njk" import taskList %}
 {% set settingsPageTitle = "Worldpay details" %}
 
 {% block settingsContent %}
@@ -10,43 +10,10 @@
       You need to link your Worldpay account to GOV.UK Pay.
     </p>
 
-    {% set taskList = [] %}
-    {% for task in tasks %}
-      {% if task.status == 'CANNOT_START' %}
-        {% set taskStatusTag = {
-          tag: {
-            text: "Cannot start yet",
-            classes: "govuk-tag--grey"
-          }
-        } %}
-      {% elseif task.status == 'COMPLETED' %}
-        {% set taskStatusTag = {
-          text: "Completed"
-        } %}
-      {% else %}
-        {% set taskStatusTag = {
-          tag: {
-            text: "Not yet started",
-            classes: "govuk-tag--blue"
-          }
-        } %}
-      {% endif %}
-
-      {% set taskList = (taskList.push({
-        title: {
-          text: task.linkText
-        },
-        href: task.href if task.status != 'CANNOT_START',
-        status: taskStatusTag
-      }), taskList) %}
-    {% endfor %}
-
-    {{ govukTaskList({
-      idPrefix: "worldpay-tasks",
-      items: taskList,
-      classes: "task-list"
+    {{ taskList({
+      tasks: tasks,
+      idPrefix: 'worldpay-tasks'
     }) }}
-
   {% else %}
 
       {{ govukSummaryList({

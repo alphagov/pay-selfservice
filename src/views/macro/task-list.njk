@@ -1,0 +1,34 @@
+{% from "govuk/components/task-list/macro.njk" import govukTaskList %}
+
+{% macro taskList(params) %}
+  {% set taskList = [] %}
+  {% for task in params.tasks %}
+    {% set taskList = (taskList.push({
+      title: {
+        text: task.linkText
+      },
+      href: task.href if (task.status == 'NOT_STARTED' or task.status == 'COMPLETED') else undefined,
+      status: {
+        tag: {
+          text: "Cannot start yet",
+          classes: "govuk-tag--grey"
+        }
+      } if (task.status == 'CANNOT_START') else (
+        {
+          tag: {
+            text: "Not yet started",
+            classes: "govuk-tag--blue"
+          }
+        } if (task.status == 'NOT_STARTED') else {
+          text: "Completed"
+        }
+      )
+    }), taskList) %}
+  {% endfor %}
+
+  {{ govukTaskList({
+    idPrefix: params.idPrefix,
+    items: taskList,
+    classes: "task-list"
+  }) }}
+{% endmacro %}

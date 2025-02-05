@@ -1,5 +1,6 @@
 {% extends "../settings-layout.njk" %}
-{% from "includes/spinner.njk" import spinner %}
+{% from "macro/spinner.njk" import spinner %}
+{% from "macro/task-list.njk" import taskList %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% set settingsPageTitle = "Stripe details" %}
@@ -14,7 +15,10 @@
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   {% if incompleteTasks %}
     <p class="govuk-body govuk-!-font-weight-bold">Add your organisation's details</p>
-    {% include "./_task-list.njk" %}
+    {{ taskList({
+      tasks: tasks,
+      idPrefix: 'stripe-details'
+    }) }}
   {% else %}
     <p class="govuk-body">This information has been sent to Stripe so that your service can take payments. For
       security

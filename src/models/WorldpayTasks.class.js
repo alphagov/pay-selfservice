@@ -3,18 +3,8 @@
 const formatSimplifiedAccountPathsFor = require('../utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const { ConnectorClient } = require('@services/clients/connector.client')
+const TASK_STATUS = require('@models/task-status')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
-
-/**
- *
- * @readonly
- * @enum {String}
- */
-const TASK_STATUS = {
-  NOT_STARTED: 'NOT_STARTED',
-  COMPLETED: 'COMPLETED',
-  CANNOT_START: 'CANNOT_START'
-}
 
 class WorldpayTasks {
   /**
@@ -114,6 +104,23 @@ class WorldpayTask {
 
     return task
   }
+
+  /**
+   * @param {String} serviceExternalId
+   * @param {String} accountType
+   * @param {GatewayAccountCredential} credential
+   * @returns {WorldpayTask}
+   */
+  static makeALivePaymentTask (serviceExternalId, accountType, credential) {
+    const task = new WorldpayTask(
+      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
+        serviceExternalId, accountType),
+      'make-a-live-payment',
+      'Make a live payment to test your Worldpay PSP'
+    )
+    task.setStatus(TASK_STATUS.CANNOT_START)
+    return task
+  }
 }
 
-module.exports = { WorldpayTasks }
+module.exports = { WorldpayTasks, WorldpayTask }
