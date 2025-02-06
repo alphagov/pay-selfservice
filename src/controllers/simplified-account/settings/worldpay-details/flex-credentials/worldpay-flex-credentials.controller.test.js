@@ -29,7 +29,7 @@ const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@c
   }))
   .withAccount(new GatewayAccount({
     type: ACCOUNT_TYPE,
-    allow_moto: true,
+    allow_moto: false,
     gateway_account_id: 1,
     gateway_account_credentials: [{
       external_id: 'creds-id',
@@ -37,7 +37,7 @@ const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@c
       state: 'CREATED',
       created_date: '2024-11-29T11:58:36.214Z',
       gateway_account_id: 1,
-      credentials: {}
+      credentials: { one_off_customer_initiated: {} }
     }]
   }))
   .withStubs({

@@ -5,10 +5,17 @@ const { body, validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
 const worldpayDetailsService = require('@services/worldpay-details.service')
+const { WorldpayTasks } = require('@models/WorldpayTasks.class')
 
 const INTEGRATION_VERSION_3DS = 2
 
 function get (req, res) {
+  const worldpayTasks = new WorldpayTasks(req.account, req.service.externalId)
+  if (worldpayTasks.findTask('worldpay-credentials')?.status !== 'COMPLETED') {
+    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
+      req.service.externalId, req.account.type))
+  }
+
   return response(req, res, 'simplified-account/settings/worldpay-details/flex-credentials', {
     credentials: {
       organisationalUnitId: req.account?.worldpay3dsFlex?.organisationalUnitId,
@@ -34,6 +41,12 @@ const worldpayCredentialsValidations = [
 ]
 
 async function post (req, res) {
+  const worldpayTasks = new WorldpayTasks(req.account, req.service.externalId)
+  if (worldpayTasks.findTask('worldpay-credentials')?.status !== 'COMPLETED') {
+    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
+      req.service.externalId, req.account.type))
+  }
+
   await Promise.all(worldpayCredentialsValidations.map(validation => validation.run(req)))
   const validationErrors = validationResult(req)
   if (!validationErrors.isEmpty()) {
@@ -64,6 +77,18 @@ async function post (req, res) {
   await worldpayDetailsService.update3dsFlexCredentials(req.service.externalId, req.account.type, flexCredential)
 
   await worldpayDetailsService.updateIntegrationVersion3ds(req.service.externalId, req.account.type, INTEGRATION_VERSION_3DS)
+
+  if (worldpayTasks.incompleteTasks) {
+    const recalculatedTasks = await WorldpayTasks.recalculate(req.service.externalId, req.account.type)
+    if (!recalculatedTasks.incompleteTasks) {
+      req.flash('messages', {
+        state: 'success',
+        icon: '&check;',
+        heading: 'Service connected to Worldpay',
+        body: 'This service can now take payments'
+      })
+    }
+  }
 
   return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
     req.service.externalId, req.account.type))
