@@ -21,10 +21,9 @@ module.exports = class SettingsBuilder {
     if (!this.currentCategory) {
       throw new Error('Cannot add setting without category, use .category(name) first.')
     }
-
-    const urlParts = ['simplified', 'settings', `/${id}`]
+    const urlParts = ['simplified', Array.isArray(id) ? `settings/${id.join('/')}` : `settings/${id}`]
     const setting = {
-      id,
+      id: Array.isArray(id) ? id[id.length - 1] : id,
       name,
       url: this.pathFormatter(
         path,
