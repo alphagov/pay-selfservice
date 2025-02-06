@@ -52,7 +52,7 @@ module.exports = (account, service, currentUrl, permissions) => {
       permission: account.paymentProvider === 'worldpay' && 'gateway_credentials_read'
     })
     .add({
-      id: 'switch-to-worldpay',
+      id: ['switch-psp', 'switch-to-worldpay'], // sits under settings/switch-psp/switch-to-worldpay
       name: 'switch to Worldpay',
       path: paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
       permission: account.paymentProvider === 'stripe' && account.providerSwitchEnabled && 'gateway_credentials_update'
