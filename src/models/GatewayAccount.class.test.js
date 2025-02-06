@@ -33,7 +33,6 @@ describe('GatewayAccount', () => {
 
     it('should throw invalid configuration error if more than one pending credential is found', () => {
       const gatewayAccountData = {
-        gateway_account_id: 12,
         gateway_account_credentials: [
           ...gatewayAccountCredentials,
           ...Array(2).fill({
@@ -45,7 +44,7 @@ describe('GatewayAccount', () => {
         ]
       }
       const gatewayAccount = new GatewayAccount(gatewayAccountData)
-      expect(() => gatewayAccount.getSwitchingCredentialIfPresent()).to.throw(InvalidConfigurationError, 'Unexpected number of credentials in a pending state for gateway account [gateway_account_id: 12]')
+      expect(() => gatewayAccount.getSwitchingCredentialIfPresent()).to.throw(InvalidConfigurationError, 'Unexpected number of credentials in a pending state for gateway account [found 2]')
     })
 
     it('should return null if no switching credential is found', () => {
