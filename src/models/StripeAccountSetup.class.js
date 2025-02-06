@@ -1,5 +1,13 @@
-'use strict'
-
+/**
+ * @class StripeAccountSetup
+ * @property {boolean} bankAccount
+ * @property {boolean} responsiblePerson
+ * @property {boolean} vatNumber
+ * @property {boolean} companyNumber
+ * @property {boolean} director
+ * @property {boolean} governmentEntityDocument
+ * @property {boolean} organisationDetails
+ */
 class StripeAccountSetup {
   constructor (opts) {
     this.bankAccount = opts.bank_account

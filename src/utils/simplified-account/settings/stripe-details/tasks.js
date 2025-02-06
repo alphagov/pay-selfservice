@@ -80,19 +80,20 @@ const getStripeTaskStatus = (task, complete, govEntityDocTaskUnavailable) => {
 
 /**
  * Transforms connectorGatewayAccountStripeProgress into 'render-able' stripe tasks
- * @param account {GatewayAccount}
- * @param service {GOVUKPayService}
+ * @param stripeAccountSetup {StripeAccountSetup}
+ * @param accountType {string}
+ * @param serviceExternalId {string}
  * @returns {[StripeTask]|[]}
  */
-const friendlyStripeTasks = (account, service) => {
-  if (account.connectorGatewayAccountStripeProgress) {
-    const progress = orderTasks(account.connectorGatewayAccountStripeProgress)
+const friendlyStripeTasks = (stripeAccountSetup, accountType, serviceExternalId) => {
+  if (stripeAccountSetup) {
+    const progress = orderTasks(stripeAccountSetup)
     const govEntityDocTaskUnavailable = Object.entries(progress)
       .some(([task, completed]) => task !== stripeDetailsTasks.governmentEntityDocument.name && completed === false)
 
     return Object.entries(progress).reduce((acc, [task, complete]) => {
       const linkText = stripeDetailsTasks[task].friendlyName
-      const href = formatSimplifiedAccountPathsFor(stripeDetailsTasks[task].path, service.externalId, account.type)
+      const href = formatSimplifiedAccountPathsFor(stripeDetailsTasks[task].path, serviceExternalId, accountType)
       acc.push({
         linkText,
         href,
@@ -102,7 +103,7 @@ const friendlyStripeTasks = (account, service) => {
       return acc
     }, [])
   } else {
-    logger.error(`Expected Stripe account progress for gateway account but none was found [gateway_account_id: ${account.id}]`)
+    logger.error(`Expected Stripe account progress for gateway account but none was found [service_external_id: ${serviceExternalId}, account_type: ${accountType}]`)
     return []
   }
 }

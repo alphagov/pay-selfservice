@@ -11,6 +11,15 @@ const logger = require('@utils/logger')(__filename)
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
 /**
+ * @param {string} serviceExternalId
+ * @param {string} accountType
+ * @returns {Promise<StripeAccountSetup>}
+ */
+const getConnectorStripeAccountSetup = async (serviceExternalId, accountType) => {
+  return connector.getStripeAccountSetupByServiceExternalIdAndAccountType(serviceExternalId, accountType)
+}
+
+/**
  * Updates Stripe account bank details for the given service and account type
  * @param {GatewayAccount} account
  * @param {GOVUKPayService} service
@@ -237,5 +246,6 @@ module.exports = {
   updateStripeDetailsUploadEntityDocument,
   updateStripeDetailsOrganisationNameAndAddress,
   updateConnectorStripeProgress,
-  getStripeAccountOnboardingDetails
+  getStripeAccountOnboardingDetails,
+  getConnectorStripeAccountSetup
 }

@@ -8,7 +8,8 @@ const formatSimplifiedAccountPathsFor = require('./simplified-account/format/for
 const formatFutureStrategyAccountPathsFor = require('./format-future-strategy-account-paths-for')
 const pathLookup = require('./path-lookup')
 const formatPSPname = require('./format-PSP-name')
-const { getPSPPageLinks, CREDENTIAL_STATE } = require('./credentials')
+const { getPSPPageLinks } = require('./credentials')
+const CREDENTIAL_STATE = require('@models/credential-state')
 const flattenNestedValues = require('./flatten-nested-values')
 
 const mainSettingsPaths = [

@@ -48,12 +48,10 @@ describe('Controller: settings/stripe-details', () => {
     describe('when there are outstanding tasks', () => {
       before(() => {
         nextRequest({
-          account: {
-            connectorGatewayAccountStripeProgress: {
-              bankAccount: true,
-              vatNumber: false,
-              governmentEntityDocument: false
-            }
+          gatewayAccountStripeProgress: {
+            bankAccount: true,
+            vatNumber: false,
+            governmentEntityDocument: false
           }
         })
         call('get')
@@ -64,7 +62,7 @@ describe('Controller: settings/stripe-details', () => {
       })
 
       it('should pass req, res and template path to the response method', () => {
-        expect(mockResponse.args[0][0].account.connectorGatewayAccountStripeProgress).to.deep.equal({
+        expect(mockResponse.args[0][0].gatewayAccountStripeProgress).to.deep.equal({
           bankAccount: true,
           vatNumber: false,
           governmentEntityDocument: false

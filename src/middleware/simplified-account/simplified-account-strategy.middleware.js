@@ -2,7 +2,6 @@ const { NotFoundError } = require('@root/errors')
 const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE } = require('@root/paths').keys
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { addField } = require('@services/clients/base/request-context')
-const { getSwitchingCredentialIfExists } = require('@utils/credentials')
 const _ = require('lodash')
 const logger = require('@utils/logger')(__filename)
 const Connector = require('@services/clients/connector.client.js').ConnectorClient
@@ -28,19 +27,7 @@ async function getGatewayAccount (serviceExternalId, accountType) {
       serviceExternalId,
       accountType
     }
-    const gatewayAccount = await connectorClient.getAccountByServiceExternalIdAndAccountType(params)
-
-    const switchingCredential = getSwitchingCredentialIfExists(gatewayAccount)
-    const isSwitchingToStripe = switchingCredential && switchingCredential.payment_provider === 'stripe'
-
-    if (gatewayAccount.paymentProvider === 'stripe' || isSwitchingToStripe) {
-      const stripeAccountSetup = await connectorClient.getStripeAccountSetupByServiceExternalIdAndAccountType(serviceExternalId, accountType)
-      if (stripeAccountSetup) {
-        gatewayAccount.connectorGatewayAccountStripeProgress = stripeAccountSetup
-      }
-    }
-
-    return gatewayAccount
+    return await connectorClient.getAccountByServiceExternalIdAndAccountType(params)
   } catch (err) {
     const logContext = {
       error: err.message,
@@ -61,7 +48,7 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
     const accountType = req.params[ACCOUNT_TYPE]
 
     if (!serviceExternalId || !accountType) {
-      next(new NotFoundError('Could not resolve service external ID or gateway account type from request params'))
+      return next(new NotFoundError('Could not resolve service external ID or gateway account type from request params'))
     }
 
     const gatewayAccount = await getGatewayAccount(serviceExternalId, accountType)
@@ -70,14 +57,14 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
       addField(keys.GATEWAY_ACCOUNT_ID, gatewayAccount.id)
       addField(keys.GATEWAY_ACCOUNT_TYPE, gatewayAccount.type)
     } else {
-      next(new NotFoundError('Could not retrieve gateway account with provided parameters'))
+      return next(new NotFoundError('Could not retrieve gateway account with provided parameters'))
     }
     const service = getService(req.user, serviceExternalId, gatewayAccount.id)
     if (service) {
       req.service = service
       addField(keys.SERVICE_EXTERNAL_ID, service.externalId)
     } else {
-      next(new NotFoundError('Could not find role for user on service'))
+      return next(new NotFoundError('Could not find role for user on service'))
     }
     next()
   } catch (err) {

@@ -5,7 +5,7 @@ const { response } = require('../../utils/response')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const { getSwitchingCredential } = require('../../utils/credentials')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
-const { CREDENTIAL_STATE } = require('../../utils/credentials')
+const CREDENTIAL_STATE = require('@models/credential-state')
 const {
   VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY,
   filterNextUrl

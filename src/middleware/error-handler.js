@@ -77,7 +77,7 @@ module.exports = function errorHandler (err, req, res, next) {
   }
 
   if (err instanceof InvalidConfigurationError) {
-    logger.info(`InvalidConigurationError handled: ${err.message}. Rendering error page`)
+    logger.info(`InvalidConfigurationError handled: ${err.message}. Rendering error page`)
     return renderErrorView(req, res, 'This account is not configured to perform this action. Please contact the support team.', 400)
   }
 
