@@ -90,12 +90,18 @@ describe('Stripe details settings', () => {
         }
         setStubs({
           role
-        })
+        }, [
+          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
+            serviceExternalId: SERVICE_EXTERNAL_ID,
+            accountType: LIVE_ACCOUNT_TYPE
+          })
+        ])
         cy.visit(SERVICE_SETTINGS_URL + '/stripe-details', { failOnStatusCode: false })
       })
-      it('should show 404 page', () => {
-        cy.title().should('eq', 'Page not found - GOV.UK Pay')
-        cy.get('h1').should('contain.text', 'Page not found')
+      it('should show admin only error', () => {
+        cy.title().should('eq', 'An error occurred - GOV.UK Pay')
+        cy.get('h1').should('contain.text', 'An error occurred')
+        cy.get('#errorMsg').should('contain.text', 'You do not have the administrator rights to perform this operation.')
       })
     })
     describe('For non-stripe service', () => {
