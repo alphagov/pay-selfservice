@@ -15,11 +15,13 @@ async function get (req, res) {
     activeWebhooks,
     deactivatedWebhooks,
     eventTypes: constants.webhooks.humanReadableSubscriptions,
-    createWebhookLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.create, req.service.externalId, req.account.type)
+    createWebhookLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.create, req.service.externalId, req.account.type),
+    detailWebhookBaseUrl: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.index, req.service.externalId, req.account.type) + '/'
   })
 }
 
 module.exports = {
   get,
-  create: require('./create/create.controller')
+  create: require('./create/create.controller'),
+  detail: require('./detail/detail.controller')
 }
