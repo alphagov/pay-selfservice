@@ -7,7 +7,7 @@ const { ExpiredInviteError } = require('../../errors')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const { paths } = require('../../routes')
 const registrationController = require('./registration.controller')
-const { APP, SMS } = require('../../models/second-factor-method')
+const { APP, SMS } = require('@models/constants/second-factor-method')
 const lodash = require('lodash')
 
 const inviteCode = 'a-code'

@@ -12,7 +12,7 @@ const paths = require('../paths.js')
 const mockSession = require('../../test/test-helpers/mock-session.js')
 const userFixtures = require('../../test/fixtures/user.fixtures')
 const User = require('../models/User.class')
-const secondFactorMethod = require('../models/second-factor-method')
+const secondFactorMethod = require('@models/constants/second-factor-method')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 // Assignments and Variables

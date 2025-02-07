@@ -8,7 +8,7 @@ const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const productsClient = require('../../services/clients/products.client.js')
 const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
-const supportedLanguage = require('../../models/supported-language')
+const supportedLanguage = require('@models/constants/supported-language')
 
 module.exports = async function createPaymentLink (req, res) {
   const gatewayAccountId = req.account.gateway_account_id

@@ -4,7 +4,7 @@ const lodash = require('lodash')
 
 const { response } = require('../../utils/response')
 const productsClient = require('../../services/clients/products.client')
-const supportedLanguage = require('../../models/supported-language')
+const supportedLanguage = require('@models/constants/supported-language')
 const paths = require('../../paths')
 
 module.exports = async (req, res, next) => {

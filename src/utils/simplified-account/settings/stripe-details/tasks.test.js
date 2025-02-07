@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const { friendlyStripeTasks } = require('./tasks')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
-const { COMPLETED_CANNOT_START, CANNOT_START, NOT_STARTED } = require('@models/task-status')
+const { COMPLETED_CANNOT_START, CANNOT_START, NOT_STARTED } = require('@models/constants/task-status')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'

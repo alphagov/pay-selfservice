@@ -3,7 +3,7 @@
 const formatSimplifiedAccountPathsFor = require('../utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const { ConnectorClient } = require('@services/clients/connector.client')
-const TASK_STATUS = require('@models/task-status')
+const TASK_STATUS = require('@models/constants/task-status')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 class WorldpayTasks {

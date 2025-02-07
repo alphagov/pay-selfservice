@@ -1,5 +1,5 @@
 const GatewayAccount = require('@models/GatewayAccount.class')
-const { WORLDPAY } = require('@models/payment-providers')
+const { WORLDPAY } = require('@models/constants/payment-providers')
 const { expect } = require('chai')
 const { InvalidConfigurationError } = require('@root/errors')
 

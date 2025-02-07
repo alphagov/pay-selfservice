@@ -8,7 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const inviteFixtures = require('../../../fixtures/invite.fixtures')
-const secondFactorMethod = require('../../../../src/models/second-factor-method')
+const secondFactorMethod = require('@models/constants/second-factor-method')
 const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants

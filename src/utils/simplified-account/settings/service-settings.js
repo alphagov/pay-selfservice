@@ -1,7 +1,7 @@
 const paths = require('../../../paths')
 const formatSimplifiedAccountPathsFor = require('../format/format-simplified-account-paths-for')
 const SettingsBuilder = require('./SettingsBuilder.class')
-const { LIVE } = require('../../../models/go-live-stage')
+const { LIVE } = require('@models/constants/go-live-stage')
 
 /**
  * @param {GatewayAccount} account

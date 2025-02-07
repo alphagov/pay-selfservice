@@ -1,5 +1,5 @@
 const { GatewayAccountCredential } = require('@models/gateway-account-credential/GatewayAccountCredential.class')
-const CREDENTIAL_STATE = require('@models/credential-state')
+const CREDENTIAL_STATE = require('@models/constants/credential-state')
 const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
 const { InvalidConfigurationError } = require('@root/errors')
 const pendingCredentialStates = [CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED]

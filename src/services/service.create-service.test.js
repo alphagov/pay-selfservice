@@ -4,7 +4,7 @@ const proxyquire = require('proxyquire')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const sinon = require('sinon')
-const { CREATED } = require('../models/psp-test-account-stage')
+const { CREATED } = require('@models/constants/psp-test-account-stage')
 const expect = chai.expect
 chai.use(chaiAsPromised)
 

@@ -6,7 +6,7 @@ const proxyquire = require('proxyquire')
 const User = require('@models/User.class')
 const userFixtures = require('@test/fixtures/user.fixtures')
 const { expect } = require('chai')
-const { GOV_BANKING_MOTO_OPTION_COMPLETED } = require('@models/go-live-stage')
+const { GOV_BANKING_MOTO_OPTION_COMPLETED } = require('@models/constants/go-live-stage')
 
 let updateServiceMock, updateCurrentGoLiveStageMock
 let mockResponse

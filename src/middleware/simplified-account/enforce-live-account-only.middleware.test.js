@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const { NotFoundError } = require('@root/errors')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const { LIVE, NOT_STARTED } = require('@models/go-live-stage')
+const { LIVE, NOT_STARTED } = require('@models/constants/go-live-stage')
 
 describe('Middleware: enforceLiveAccountOnly', () => {
   let enforceLiveAccountOnly, req, res, next

@@ -2,7 +2,7 @@
 
 const lodash = require('lodash')
 
-const goLiveStage = require('../../../models/go-live-stage')
+const goLiveStage = require('@models/constants/go-live-stage')
 const response = require('../../../utils/response')
 
 const {

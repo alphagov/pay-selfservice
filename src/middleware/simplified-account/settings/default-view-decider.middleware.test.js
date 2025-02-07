@@ -1,5 +1,5 @@
 const sinon = require('sinon')
-const { NOT_STARTED, LIVE } = require('@models/go-live-stage')
+const { NOT_STARTED, LIVE } = require('@models/constants/go-live-stage')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const { expect } = require('chai')

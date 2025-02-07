@@ -6,7 +6,7 @@ const qrcode = require('qrcode')
 const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response.js')
 const paths = require('../../../paths')
-const secondFactorMethod = require('../../../models/second-factor-method')
+const secondFactorMethod = require('@models/constants/second-factor-method')
 
 module.exports = async function showConfigureSecondFactorMethod (req, res) {
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', secondFactorMethod.APP)

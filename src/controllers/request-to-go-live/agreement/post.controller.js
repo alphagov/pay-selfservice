@@ -3,7 +3,7 @@
 const lodash = require('lodash')
 
 const logger = require('../../../utils/logger')(__filename)
-const goLiveStage = require('../../../models/go-live-stage')
+const goLiveStage = require('@models/constants/go-live-stage')
 const { updateCurrentGoLiveStage } = require('../../../services/service.service')
 const { addGovUkAgreementEmailAddress, addStripeAgreementIpAddress } = require('../../../services/service.service')
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')

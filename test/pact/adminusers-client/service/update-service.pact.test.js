@@ -9,8 +9,8 @@ const PactInteractionBuilder = require('@test/test-helpers/pact/pact-interaction
 const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const serviceFixtures = require('@test/fixtures/service.fixtures')
 const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
-const goLiveStage = require('@models/go-live-stage')
-const pspTestAccountStage = require('@models/psp-test-account-stage')
+const goLiveStage = require('@models/constants/go-live-stage')
+const pspTestAccountStage = require('@models/constants/psp-test-account-stage')
 const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 // Constants

@@ -24,8 +24,8 @@ const {
   TERMS_AGREED_GOV_BANKING_WORLDPAY,
   LIVE,
   DENIED
-} = require('../../models/go-live-stage')
-const pspTestAccountStage = require('../../models/psp-test-account-stage')
+} = require('@models/constants/go-live-stage')
+const pspTestAccountStage = require('@models/constants/psp-test-account-stage')
 const serviceService = require('../../services/service.service')
 
 const links = {

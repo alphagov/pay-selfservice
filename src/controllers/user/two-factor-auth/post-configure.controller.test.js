@@ -6,7 +6,7 @@ const userFixtures = require('../../../../test/fixtures/user.fixtures')
 const User = require('../../../models/User.class')
 const paths = require('../../../paths')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
-const secondFactorMethod = require('../../../models/second-factor-method')
+const secondFactorMethod = require('@models/constants/second-factor-method')
 
 const userExternalId = 'user-id'
 const twoFactorAuthMethod = secondFactorMethod.SMS

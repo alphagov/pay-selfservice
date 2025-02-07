@@ -3,7 +3,7 @@
 const lodash = require('lodash')
 
 const { updateCurrentGoLiveStage, updateService } = require('@services/service.service')
-const goLiveStage = require('@models/go-live-stage')
+const goLiveStage = require('@models/constants/go-live-stage')
 const formatServicePathsFor = require('@utils/format-service-paths-for')
 const { response } = require('@utils/response')
 const { requestToGoLive } = require('@root/paths').service

@@ -1,7 +1,7 @@
 const { expect } = require('chai')
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
-const { STRIPE, SANDBOX } = require('@models/payment-providers')
+const { STRIPE, SANDBOX } = require('@models/constants/payment-providers')
 const { NotFoundError } = require('@root/errors')
 
 describe('Middleware: enforcePaymentProviderType', () => {

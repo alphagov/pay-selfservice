@@ -1,6 +1,6 @@
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
-const TASK_STATUS = require('@models/task-status')
+const TASK_STATUS = require('@models/constants/task-status')
 const logger = require('@utils/logger')(__filename)
 
 const stripeDetailsTasks = Object.freeze({

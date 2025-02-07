@@ -4,7 +4,7 @@ const logger = require('../utils/logger')(__filename)
 const adminusersClient = require('../services/clients/adminusers.client')()
 const paths = require('../paths')
 const { INVITE_SESSION_COOKIE_NAME } = require('../utils/constants')
-const { SMS } = require('../models/second-factor-method')
+const { SMS } = require('@models/constants/second-factor-method')
 const { ExpiredInviteError } = require('../errors')
 
 const subscribeService = async function subscribeService (req, res, next) {

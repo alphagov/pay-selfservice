@@ -1,7 +1,7 @@
 const sinon = require('sinon')
 const { expect } = require('chai')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const { COMPLETED_CANNOT_START, NOT_STARTED, CANNOT_START } = require('@models/task-status')
+const { COMPLETED_CANNOT_START, NOT_STARTED, CANNOT_START } = require('@models/constants/task-status')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'

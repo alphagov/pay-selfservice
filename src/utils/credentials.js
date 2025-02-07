@@ -2,7 +2,7 @@
 
 const paths = require('../paths')
 const { InvalidConfigurationError, NotFoundError } = require('../errors')
-const CREDENTIAL_STATE = require('@models/credential-state')
+const CREDENTIAL_STATE = require('@models/constants/credential-state')
 
 const pendingCredentialStates = [CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED]
 

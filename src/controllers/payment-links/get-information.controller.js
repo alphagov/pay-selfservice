@@ -3,7 +3,7 @@
 const lodash = require('lodash')
 
 const { response } = require('../../utils/response')
-const supportedLanguage = require('../../models/supported-language')
+const supportedLanguage = require('@models/constants/supported-language')
 
 module.exports = function showInformationPage (req, res) {
   // initialise session for create payment link journey if it doesn't exist
