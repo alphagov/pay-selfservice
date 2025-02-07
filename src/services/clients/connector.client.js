@@ -421,6 +421,27 @@ ConnectorClient.prototype = {
   },
 
   /**
+   * @param serviceExternalId {string}
+   * @param accountType {string}
+   * @param allowApplePay {boolean}
+   * @returns {Promise<Object>}
+   */
+  updateAllowApplePay: async function (serviceExternalId, accountType, allowApplePay) {
+    // const url = getServiceIdAccountTypeBaseUrl(serviceExternalId, accountType)
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    const body = {
+      op: 'replace',
+      path: 'allow_apple_pay',
+      value: allowApplePay
+    }
+    configureClient(client, url)
+    const response = await client.patch(url, body, 'update allow apple pay')
+    return response.data
+  },
+
+  /**
    * @param gatewayAccountId
    * @param allowGooglePay (boolean)
    * @returns {Promise<Object>}
@@ -435,6 +456,27 @@ ConnectorClient.prototype = {
     }
     configureClient(client, url)
     const response = await client.patch(url, body, 'toggle allow google pay')
+    return response.data
+  },
+
+  /**
+   * @param serviceExternalId {string}
+   * @param accountType {string}
+   * @param allowGooglePay {boolean}
+   * @returns {Promise<Object>}
+   */
+  updateAllowGooglePay: async function (serviceExternalId, accountType, allowGooglePay) {
+    // const url = getServiceIdAccountTypeBaseUrl(serviceExternalId, accountType)
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    const body = {
+      op: 'replace',
+      path: 'allow_google_pay',
+      value: allowGooglePay
+    }
+    configureClient(client, url)
+    const response = await client.patch(url, body, 'update allow google pay')
     return response.data
   },
 

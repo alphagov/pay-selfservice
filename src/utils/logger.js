@@ -54,5 +54,8 @@ module.exports = (loggerName) => {
   if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true') {
     return simpleLogger
   }
+  if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'console') {
+    return console // sometimes you just want console because it shows stack traces.
+  }
   return addSentryToErrorLevel(logger.child({ logger_name: loggerName }))
 }

@@ -1,0 +1,44 @@
+{% extends "../settings-layout.njk" %}
+
+{% set settingsPageTitle = "Collect billing address" %}
+
+{% block settingsPageTitle %}
+  Card payments
+{% endblock %}
+
+{% block settingsContent %}
+  <form method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    {{ govukRadios({
+      name: "collectBillingAddress",
+      fieldset: {
+        legend: {
+          text: settingsPageTitle,
+          classes: "govuk-fieldset__legend--l",
+          isPageHeading: true
+        }
+      },
+      hint: {
+        text: 'Your payment service provider (PSP) uses the billing address to carry out fraud checks. If you turn off billing address collection, your PSP or your users\' banks may decline more payments.'
+      },
+      value: currentState,
+      items: [
+        {
+          value: "on",
+          text: "On",
+          id: "collect-billing-address-on"
+        },
+        {
+          value: "off",
+          text: "Off",
+          id: "collect-billing-address-off"
+        }
+      ]
+    }) }}
+
+    {{ govukButton({
+      text: "Save changes"
+    }) }}
+  </form>
+
+{% endblock %}

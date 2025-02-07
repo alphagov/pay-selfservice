@@ -3,6 +3,9 @@
 {% set settingsPageTitle = "Card payments" %}
 
 {% block settingsContent %}
+  {% if not userCanUpdatePaymentTypes %}
+    {% include "simplified-account/settings/partials/read-only-message.njk" %}
+  {% endif %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   <p class="govuk-body">GOV.UK Pay uses 3D Secure for all card payments. 3D Secure (3DS) adds an extra layer of
     authentication to user payments.</p>
@@ -27,7 +30,7 @@
             visuallyHiddenText: "collect billing address"
           }
         ]
-      }
+      } if userCanUpdatePaymentTypes
     },
     {
       key: {
@@ -45,7 +48,7 @@
             visuallyHiddenText: "default billing address country"
           }
         ]
-      }
+      } if userCanUpdatePaymentTypes
     }
   ]
 }) }}
@@ -72,7 +75,7 @@
             visuallyHiddenText: "Apple Pay"
           }
         ]
-      }
+      } if userCanUpdatePaymentTypes
     },
     {
       key: {
@@ -90,7 +93,7 @@
             visuallyHiddenText: "Google Pay"
           }
         ]
-      }
+      } if userCanUpdatePaymentTypes
     }
   ]
 }) }}
