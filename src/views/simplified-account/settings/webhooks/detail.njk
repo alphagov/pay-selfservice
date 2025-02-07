@@ -1,7 +1,58 @@
 {% extends "../settings-layout.njk" %}
 
+{% macro webhookSubscriptions(webhook) %}
+  <ul class="govuk-list">
+    {% for subscription in webhook.subscriptions | sort %}
+      {% set key = subscription | upper %}
+      <li>{{ eventTypes[key] }}</li>
+    {% endfor %}
+  </ul>
+{% endmacro %}
+
+
 {% set settingsPageTitle = description %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">{{ description }}</h1>
+
+  {{ govukBackLink({
+    text: "Back to webhooks",
+    href: backToWebhooksLink
+  }) }}
+
+  <h1 class="govuk-heading-l">{{ webhook.description }}</h1>
+  {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
+
+  {{ govukSummaryList({
+    classes: "webhooks-summary-card",
+    card: {
+
+    },
+    rows: [
+      {
+        key: {
+          text: 'Callback URL'
+        },
+        value: {
+          text: webhook.callback_url
+        }
+      },
+      {
+        key: {
+          text: 'Payment events sent by this webhook'
+        },
+        value: {
+          html: webhookSubscriptionsList
+        }
+      },
+      {
+        key: {
+          text: 'Date created'
+        },
+        value: {
+          html: webhook.created_date
+        }
+      }
+    ]
+  }) }}
+
 {% endblock %}
