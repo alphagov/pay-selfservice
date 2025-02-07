@@ -109,6 +109,7 @@ describe('Middleware: getSimplifiedAccount', () => {
 
     const expectedError = sinon.match.instanceOf(NotFoundError)
       .and(sinon.match.has('message', 'Could not resolve service external ID or gateway account type from request params'))
+    sinon.assert.calledOnce(next)
     sinon.assert.calledWith(next, expectedError)
   })
   it('should error if gateway account lookup fails for account type', async () => {
@@ -122,6 +123,7 @@ describe('Middleware: getSimplifiedAccount', () => {
 
     const expectedError = sinon.match.instanceOf(NotFoundError)
       .and(sinon.match.has('message', 'Could not retrieve gateway account with provided parameters'))
+    sinon.assert.calledOnce(next)
     sinon.assert.calledWith(next, expectedError)
   })
   describe('extend gateway account data with disableToggle3ds field', () => {
@@ -176,34 +178,6 @@ describe('Middleware: getSimplifiedAccount', () => {
       await simplifiedAccountStrategy(req, res, next)
       expect(req.account.supports3ds).to.equal(false)
       expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
-    })
-  })
-  describe('extend gateway account data stripe setup', () => {
-    ['worldpay', 'sandbox'].forEach(function (paymentProvider) {
-      it('should not extend the account data with stripe setup if payment provider is ' + paymentProvider, async () => {
-        const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
-          gatewayAccountID: '1',
-          gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
-          paymentProvider,
-          serviceExternalId: A_SERVICE_EXTERNAL_ID,
-          accountType: 'test'
-        })
-        await simplifiedAccountStrategy(req, res, next)
-        expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
-        expect(req.account).to.not.have.property('connectorGatewayAccountStripeProgress')
-      })
-    })
-    it('should extend the account data with supports3ds set to false if payment provider is stripe', async () => {
-      const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
-        gatewayAccountID: '1',
-        gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
-        paymentProvider: 'stripe',
-        serviceExternalId: A_SERVICE_EXTERNAL_ID,
-        accountType: 'test'
-      })
-      await simplifiedAccountStrategy(req, res, next)
-      expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
-      expect(req.account).to.have.property('connectorGatewayAccountStripeProgress')
     })
   })
 })

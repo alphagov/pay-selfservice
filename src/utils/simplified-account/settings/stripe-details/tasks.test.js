@@ -15,27 +15,24 @@ describe('friendlyStripeTasks', () => {
     externalId: SERVICE_EXTERNAL_ID
   }
 
-  it('should return empty array when connectorGatewayAccountStripeProgress is not present', () => {
-    const result = friendlyStripeTasks(account, service)
+  it('should return empty array when stripeAccountSetup is not present', () => {
+    const result = friendlyStripeTasks(null, account.type, service.externalId)
     expect(result).to.be.an('array')
     expect(result).to.be.empty // eslint-disable-line
   })
 
   it('should transform stripe tasks with all tasks completed', () => {
-    const accountWithProgress = {
-      ...account,
-      connectorGatewayAccountStripeProgress: {
-        bankAccount: true,
-        responsiblePerson: true,
-        director: true,
-        vatNumber: true,
-        companyNumber: true,
-        organisationDetails: true,
-        governmentEntityDocument: true
-      }
+    const stripeAccountSetup = {
+      bankAccount: true,
+      responsiblePerson: true,
+      director: true,
+      vatNumber: true,
+      companyNumber: true,
+      organisationDetails: true,
+      governmentEntityDocument: true
     }
 
-    const result = friendlyStripeTasks(accountWithProgress, service)
+    const result = friendlyStripeTasks(stripeAccountSetup, account.type, service.externalId)
 
     expect(result).to.be.an('array')
     expect(result).to.have.lengthOf(7)
@@ -46,20 +43,17 @@ describe('friendlyStripeTasks', () => {
   })
 
   it('should set task order according to stripeDetailsTasks key order', () => {
-    const accountWithMixedProgress = {
-      ...account,
-      connectorGatewayAccountStripeProgress: {
-        governmentEntityDocument: false,
-        responsiblePerson: true,
-        organisationDetails: false,
-        director: false,
-        companyNumber: false,
-        bankAccount: true,
-        vatNumber: true
-      }
+    const setupObjectWithMixedProgress = {
+      governmentEntityDocument: false,
+      responsiblePerson: true,
+      organisationDetails: false,
+      director: false,
+      companyNumber: false,
+      bankAccount: true,
+      vatNumber: true
     }
 
-    const result = friendlyStripeTasks(accountWithMixedProgress, service)
+    const result = friendlyStripeTasks(setupObjectWithMixedProgress, account.type, service.externalId)
     expect(result[0]).to.deep.include({
       linkText: 'Organisation\'s bank details', // bankAccount should be the first task
       complete: true,
@@ -73,29 +67,23 @@ describe('friendlyStripeTasks', () => {
   })
 
   it('should format paths correctly for task', () => {
-    const accountWithSingleTask = {
-      ...account,
-      connectorGatewayAccountStripeProgress: {
-        director: true
-      }
+    const setupObjectWithSingleTask = {
+      director: true
     }
 
-    const result = friendlyStripeTasks(accountWithSingleTask, service)
+    const result = friendlyStripeTasks(setupObjectWithSingleTask, account.type, service.externalId)
 
     expect(result[0].href).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.director, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
   })
 
   it('should handle status values correctly', () => {
-    const accountWithMixedStatus = {
-      ...account,
-      connectorGatewayAccountStripeProgress: {
-        vatNumber: true,
-        companyNumber: false,
-        governmentEntityDocument: false
-      }
+    const setupObjectWithMixedStatus = {
+      vatNumber: true,
+      companyNumber: false,
+      governmentEntityDocument: false
     }
 
-    const result = friendlyStripeTasks(accountWithMixedStatus, service)
+    const result = friendlyStripeTasks(setupObjectWithMixedStatus, account.type, service.externalId)
 
     expect(result[0].status).to.equal(COMPLETED_CANNOT_START) // eslint-disable-line
     expect(result[1].status).to.equal(NOT_STARTED) // eslint-disable-line
@@ -103,12 +91,9 @@ describe('friendlyStripeTasks', () => {
   })
 
   it('should handle empty progress object', () => {
-    const accountWithEmptyProgress = {
-      ...account,
-      connectorGatewayAccountStripeProgress: {}
-    }
+    const emptySetupObject = {}
 
-    const result = friendlyStripeTasks(accountWithEmptyProgress, service)
+    const result = friendlyStripeTasks(emptySetupObject, account.type, service.externalId)
     expect(result).to.be.an('array')
     expect(result).to.be.empty // eslint-disable-line
   })

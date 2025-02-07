@@ -1,17 +1,20 @@
-const { GatewayAccountCredential, CREDENTIAL_STATE } = require('@models/gateway-account-credential/GatewayAccountCredential.class')
+const { GatewayAccountCredential } = require('@models/gateway-account-credential/GatewayAccountCredential.class')
+const CREDENTIAL_STATE = require('@models/credential-state')
 const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
+const { InvalidConfigurationError } = require('@root/errors')
+const pendingCredentialStates = [CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED]
 
 /**
  * @class GatewayAccount
  * @property {string} name - The name of the gateway account
  * @property {string} id - The id of the gateway account
  * @property {string} type - The type of the gateway account (e.g. test/live)
+ * @property {string} paymentProvider - The payment provider for the gateway account (e.g. stripe/worldpay)
  * @property {string} description - The description of the gateway account
  * @property {boolean} allowMoto - whether MOTO payments are enabled on the gateway account
  * @property {string} analyticsId - Google analyticsId of the gateway account
  * @property {boolean} toggle3ds - whether 3DS is enabled or not on this gateway account
  * @property {[GatewayAccountCredential]} gatewayAccountCredentials - available credentials for gateway account
- * @property {GatewayAccountCredential} [activeCredential] - the active credential for the gateway account
  * @property {bool} allowApplePay - whether the gateway has Apple Pay enabled or not
  * @property {bool} allowGooglePay - whether the gateway has Google Pay enabled or not
  * @property {Object} rawResponse - raw 'gateway account' object
@@ -31,7 +34,7 @@ class GatewayAccount {
    * @param {boolean} gatewayAccountData.toggle_3ds - whether 3DS is enabled or not on this gateway account
    * @param {boolean} gatewayAccountData.provider_switch_enabled - indicates that the gateway is transitioning psp
    * @param {boolean} gatewayAccountData.recurring_enabled - whether recurring card payments are enabled on this account
-   * @param {[{Object}]} gatewayAccountData.gateway_account_credentials - whether recurring card payments are enabled on this account
+   * @param {[{Object}]} gatewayAccountData.gateway_account_credentials - credentials present for the gateway account
    * @param {boolean} gatewayAccountData.allow_google_pay - whether google pay is enabled on this account
    * @param {boolean} gatewayAccountData.allow_apple_pay - whether apple pay is enabled on this account
    * @param {Object} [gatewayAccountData.worldpay_3ds_flex] - 3ds flex credentials and metadata for Worldpay
@@ -48,10 +51,9 @@ class GatewayAccount {
     this.toggle3ds = gatewayAccountData.toggle_3ds
     this.providerSwitchEnabled = gatewayAccountData.provider_switch_enabled
     this.recurringEnabled = gatewayAccountData.recurring_enabled
-    if (gatewayAccountData?.gateway_account_credentials) {
-      this.gatewayAccountCredentials = gatewayAccountData?.gateway_account_credentials
-        .map(credentialData => GatewayAccountCredential.fromJson(credentialData))
-    }
+    this.gatewayAccountCredentials = gatewayAccountData?.gateway_account_credentials?.map(
+      credentialData => GatewayAccountCredential.fromJson(credentialData)
+    ) ?? []
     if (gatewayAccountData?.worldpay_3ds_flex) {
       this.worldpay3dsFlex = Worldpay3dsFlexCredential.fromJson(gatewayAccountData.worldpay_3ds_flex)
     }
@@ -83,6 +85,26 @@ class GatewayAccount {
   getActiveCredential () {
     return this.gatewayAccountCredentials
       .filter((credential) => credential.state === CREDENTIAL_STATE.ACTIVE)[0] || null
+  }
+
+  /**
+   * @returns {GatewayAccountCredential}
+   */
+  getSwitchingCredentialIfPresent () {
+    // service must have an active credential to be 'switching' from
+    if (this.getActiveCredential()) {
+      const pendingCredentials = this.gatewayAccountCredentials
+        .filter((credential) => pendingCredentialStates.includes(credential.state))
+      // service must have exactly one credential in a pending state
+      if (pendingCredentials.length > 1) {
+        throw new InvalidConfigurationError(`Unexpected number of credentials in a pending state for gateway account [found ${pendingCredentials.length}]`)
+      }
+      if (pendingCredentials.length === 1) {
+        return pendingCredentials[0]
+      }
+      return null
+    }
+    return null
   }
 
   /**

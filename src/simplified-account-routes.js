@@ -3,6 +3,7 @@ const { Router } = require('express')
 const {
   simplifiedAccountStrategy,
   simplifiedAccountOptIn,
+  stripeAccountSetupStrategy,
   enforceEmailCollectionModeNotOff,
   enforceLiveAccountOnly,
   enforcePaymentProviderType,
@@ -105,7 +106,7 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.switchPsp.switchToWorldpa
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
 const stripeDetailsRouter = new Router({ mergeParams: true })
-  .use(enforceLiveAccountOnly, enforcePaymentProviderType(STRIPE), permission('stripe-account-details:update'))
+  .use(enforceLiveAccountOnly, enforcePaymentProviderType(STRIPE), permission('stripe-account-details:update'), stripeAccountSetupStrategy)
 stripeDetailsRouter.get(stripeDetailsPath.index, serviceSettingsController.stripeDetails.get)
 stripeDetailsRouter.get(stripeDetailsPath.accountDetails, serviceSettingsController.stripeDetails.getAccountDetails)
 

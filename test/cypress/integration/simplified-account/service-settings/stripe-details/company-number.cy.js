@@ -53,9 +53,10 @@ describe('Stripe details settings', () => {
         })
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/company-number', { failOnStatusCode: false })
       })
-      it('should show not found page', () => {
-        cy.title().should('eq', 'Page not found - GOV.UK Pay')
-        cy.get('h1').should('contain.text', 'Page not found')
+      it('should show admin only error', () => {
+        cy.title().should('eq', 'An error occurred - GOV.UK Pay')
+        cy.get('h1').should('contain.text', 'An error occurred')
+        cy.get('#errorMsg').should('contain.text', 'You do not have the administrator rights to perform this operation.')
       })
     })
     describe('For a non-stripe service', () => {
