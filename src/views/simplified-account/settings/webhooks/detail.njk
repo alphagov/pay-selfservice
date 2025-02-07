@@ -1,7 +1,106 @@
+{% from "./_webhook_status.njk" import webhookStatusTag %}
 {% extends "../settings-layout.njk" %}
+
+{% macro webhookSubscriptions(webhook) %}
+  <ul class="govuk-list">
+    {% for subscription in webhook.subscriptions | sort %}
+      {% set key = subscription | upper %}
+      <li>{{ eventTypes[key] }}</li>
+    {% endfor %}
+  </ul>
+{% endmacro %}
+
 
 {% set settingsPageTitle = description %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">{{ description }}</h1>
+
+  {{ govukBackLink({
+    text: "Back to webhooks",
+    href: backToWebhooksLink
+  }) }}
+
+  <h1 class="govuk-heading-l">{{ webhook.description }} {{ webhookStatusTag(webhook.status) }}</h1>
+
+  {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
+
+  {{ govukSummaryList({
+    classes: "webhooks-summary-card",
+    rows: [
+      {
+        key: {
+          text: 'Callback URL'
+        },
+        value: {
+          text: webhook.callback_url
+        }
+      },
+      {
+        key: {
+          text: 'Payment events sent by this webhook'
+        },
+        value: {
+          html: webhookSubscriptionsList
+        }
+      },
+      {
+        key: {
+          text: 'Date created'
+        },
+        value: {
+          html: webhook.created_date | datetime('datelong')
+        }
+      }
+    ]
+  }) }}
+
+  {{ govukButton({
+    href: updateWebhookLink,
+    text: 'Update webhook',
+    classes: 'govuk-!-margin-top-2 govuk-button--secondary'
+  }) }}
+
+  {% if webhook.status == 'ACTIVE' %}
+
+    {{ govukButton({
+      href: deactivateWebhookLink,
+      text: 'Deactivate webhook',
+      classes: 'govuk-!-margin-top-2 govuk-button--secondary'
+    }) }}
+
+  {% else %}
+
+    {{ govukButton({
+      href: activateWebhookLink,
+      text: 'Activate webhook',
+      classes: 'govuk-!-margin-top-2 govuk-button--secondary'
+    }) }}
+
+  {% endif %}
+
+
+  <h2 class="govuk-heading-m">Signing Secret</h2>
+
+  <p class="govuk-body">Webhook messages sent by GOV.UK Pay will include a signature. Only your application should store this secret to verify messages are from GOV.UK Pay.</p>
+
+  <div>
+    <span id="secret" class="code copy-target">this-is-a-placeholder--{{ signingSecret.signing_key }}</span>
+  </div>
+
+  {{
+  govukButton({
+    text: "Copy signing secret to clipboard",
+    classes: "govuk-button--secondary govuk-!-margin-top-4",
+    attributes: {
+      id: "copy-signing-secret",
+      "data-copy-text": true,
+      "data-target": "copy-target",
+      "data-success": "Webhook signing secret has been copied",
+      "data-notification-target": "copy-notification"
+    }
+  })
+  }}
+
+  <div class="copy-notification govuk-visually-hidden" aria-live="assertive"></div>
+
 {% endblock %}

@@ -85,6 +85,7 @@
       {% for webhook in deactivatedWebhooks %}
         {% set webhookDescriptionWithTag = webhook.description + '&nbsp&nbsp&nbsp' + webhookStatusTag(webhook.status) %}
         {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
+        {% set webhookDetailUrl = detailWebhookBaseUrl + webhook.external_id %}
         {{ govukSummaryList({
           classes: "webhooks-summary-card",
           card: {
@@ -94,12 +95,14 @@
             actions: {
               items: [
                 {
-                  href: '',
-                  text: 'View'
+                  href: webhookDetailUrl,
+                  text: 'View',
+                  classes: "govuk-link govuk-link--no-visited-state"
                 },
                 {
                   href: '',
-                  text: 'Update'
+                  text: 'Update',
+                  classes: "govuk-link govuk-link--no-visited-state"
                 }
               ]
             }
