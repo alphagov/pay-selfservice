@@ -3,7 +3,7 @@
 const userService = require('../../services/user.service')
 const paths = require('../../paths')
 const { renderErrorView } = require('../../utils/response')
-const secondFactorMethod = require('../../models/second-factor-method')
+const secondFactorMethod = require('@models/constants/second-factor-method')
 
 module.exports = async function resendOtp (req, res, next) {
   if (req.user.secondFactor === secondFactorMethod.SMS) {

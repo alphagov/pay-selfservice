@@ -5,7 +5,7 @@ const Payment = require('../../models/Payment.class')
 const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client')
 const { configureClient } = require('./base/config')
 const { PRODUCTS_URL } = require('@root/config')
-const supportedLanguage = require('../../models/supported-language')
+const supportedLanguage = require('@models/constants/supported-language')
 
 // Constants
 const SERVICE_NAME = 'products'

@@ -10,7 +10,7 @@ const Service = require('../models/Service.class')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const adminUsersClient = getAdminUsersClient()
 const { DEFAULT_SERVICE_NAME } = require('../utils/constants')
-const { CREATED } = require('../models/psp-test-account-stage')
+const { CREATED } = require('@models/constants/psp-test-account-stage')
 
 async function getGatewayAccounts (gatewayAccountIds) {
   const cardGatewayAccounts = await connectorClient.getAccounts({

@@ -18,7 +18,7 @@ const { isEmpty } = require('../../utils/validation/field-validation-checks')
 const { sanitiseSecurityCode } = require('../../utils/security-code-utils')
 const { validationErrors } = require('../../utils/validation/field-validation-checks')
 const { INVITE_SESSION_COOKIE_NAME } = require('../../utils/constants')
-const { APP, SMS } = require('../../models/second-factor-method')
+const { APP, SMS } = require('@models/constants/second-factor-method')
 const { USER_EXTERNAL_ID } = require('@govuk-pay/pay-js-commons/lib/logging/keys')
 
 const EMAIL_INPUT_FIELD_NAME = 'email'

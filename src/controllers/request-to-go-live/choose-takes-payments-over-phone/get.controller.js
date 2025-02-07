@@ -1,6 +1,6 @@
 'use strict'
 
-const goLiveStage = require('../../../models/go-live-stage')
+const goLiveStage = require('@models/constants/go-live-stage')
 const paths = require('../../../paths')
 const response = require('../../../utils/response')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')

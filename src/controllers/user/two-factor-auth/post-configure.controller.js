@@ -4,7 +4,7 @@ const lodash = require('lodash')
 
 const paths = require('../../../paths')
 const userService = require('../../../services/user.service.js')
-const secondFactorMethod = require('../../../models/second-factor-method')
+const secondFactorMethod = require('@models/constants/second-factor-method')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const { validateOtp } = require('../../../utils/validation/server-side-form-validations')
 const { validationErrors } = require('../../../utils/validation/field-validation-checks')

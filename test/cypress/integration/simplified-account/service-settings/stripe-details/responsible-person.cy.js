@@ -1,7 +1,7 @@
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('@test/cypress/stubs/stripe-account-setup-stub')
-const { STRIPE, WORLDPAY } = require('@models/payment-providers')
+const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const stripePspStubs = require('@test/cypress/stubs/stripe-psp-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 

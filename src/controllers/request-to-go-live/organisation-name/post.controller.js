@@ -3,7 +3,7 @@
 const lodash = require('lodash')
 
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
-const goLiveStage = require('@models/go-live-stage')
+const goLiveStage = require('@models/constants/go-live-stage')
 const paths = require('@root/paths')
 const { validateMandatoryField } = require('@utils/validation/server-side-form-validations')
 const { updateCurrentGoLiveStage, updateService } = require('@services/service.service')

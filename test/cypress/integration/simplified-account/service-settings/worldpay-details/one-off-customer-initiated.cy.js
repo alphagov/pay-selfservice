@@ -1,5 +1,5 @@
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
-const { SANDBOX, WORLDPAY } = require('@models/payment-providers')
+const { SANDBOX, WORLDPAY } = require('@models/constants/payment-providers')
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 

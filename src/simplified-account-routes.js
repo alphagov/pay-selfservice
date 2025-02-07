@@ -13,7 +13,7 @@ const userIsAuthorised = require('@middleware/user-is-authorised')
 const permission = require('@middleware/permission')
 const paths = require('./paths')
 const serviceSettingsController = require('@controllers/simplified-account/settings')
-const { STRIPE, WORLDPAY } = require('@models/payment-providers')
+const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const { GOV_ENTITY_DOC_FORM_FIELD_NAME } = require('@controllers/simplified-account/settings/stripe-details/government-entity-document/constants')
 
 const upload = multer({ storage: multer.memoryStorage() })

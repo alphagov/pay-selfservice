@@ -1,4 +1,4 @@
-const { LIVE } = require('@models/go-live-stage')
+const { LIVE } = require('@models/constants/go-live-stage')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 const paths = require('@root/paths')
 const serviceSettingsController = require('@controllers/simplified-account/settings')

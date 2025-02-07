@@ -1,8 +1,8 @@
 'use strict'
 
 const { response } = require('../../utils/response')
-const { NOT_STARTED, CREATED, REQUEST_SUBMITTED } = require('../../models/psp-test-account-stage')
-const goLiveStage = require('../../models/go-live-stage')
+const { NOT_STARTED, CREATED, REQUEST_SUBMITTED } = require('@models/constants/psp-test-account-stage')
+const goLiveStage = require('@models/constants/go-live-stage')
 
 module.exports = function getRequestPspTestAccount (req, res, next) {
   const service = req.service

@@ -1,7 +1,7 @@
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
-const { WORLDPAY } = require('@models/payment-providers')
+const { WORLDPAY } = require('@models/constants/payment-providers')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'

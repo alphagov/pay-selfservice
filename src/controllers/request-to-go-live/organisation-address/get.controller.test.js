@@ -4,7 +4,7 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
 
-const goLiveStage = require('../../../models/go-live-stage')
+const goLiveStage = require('@models/constants/go-live-stage')
 const Service = require('../../../models/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
 

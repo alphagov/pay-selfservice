@@ -4,7 +4,7 @@ const lodash = require('lodash')
 
 const logger = require('@utils/logger')(__filename)
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
-const goLiveStage = require('@models/go-live-stage')
+const goLiveStage = require('@models/constants/go-live-stage')
 const paths = require('@root/paths')
 const {
   validateMandatoryField,

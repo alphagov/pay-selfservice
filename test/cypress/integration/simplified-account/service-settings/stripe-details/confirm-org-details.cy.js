@@ -3,7 +3,7 @@ const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('@test/cypress/stubs/stripe-account-setup-stub')
 const stripePspStubs = require('@test/cypress/stubs/stripe-psp-stubs')
 const serviceStubs = require('@test/cypress/stubs/service-stubs')
-const { STRIPE, WORLDPAY } = require('@models/payment-providers')
+const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const ROLES = require('@test/fixtures/roles.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'

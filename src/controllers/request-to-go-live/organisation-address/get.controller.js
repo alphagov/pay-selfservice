@@ -2,7 +2,7 @@
 
 const lodash = require('lodash')
 
-const goLiveStage = require('../../../models/go-live-stage')
+const goLiveStage = require('@models/constants/go-live-stage')
 const paths = require('../../../paths')
 const { response } = require('../../../utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils

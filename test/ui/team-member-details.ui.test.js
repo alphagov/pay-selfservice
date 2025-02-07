@@ -1,5 +1,5 @@
 const renderTemplate = require('@test/test-helpers/html-assertions').render
-const secondFactorMethod = require('@models/second-factor-method')
+const secondFactorMethod = require('@models/constants/second-factor-method')
 
 describe('The team member details view', function () {
   it('should render team member details', function () {

@@ -1,6 +1,6 @@
 'use strict'
 
-const goLiveStage = require('../../models/go-live-stage')
+const goLiveStage = require('@models/constants/go-live-stage')
 const { requestToGoLive } = require('../../paths').service
 
 const goLiveStageToNextPagePathMap = {}

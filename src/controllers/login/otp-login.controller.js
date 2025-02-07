@@ -1,7 +1,7 @@
 'use strict'
 
 const userService = require('../../services/user.service')
-const secondFactorMethod = require('../../models/second-factor-method')
+const secondFactorMethod = require('@models/constants/second-factor-method')
 
 module.exports = async function showOtpLogin (req, res, next) {
   const pageData = { secondFactorMethod }
