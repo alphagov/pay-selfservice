@@ -216,8 +216,10 @@ module.exports = {
       },
       worldpayDetails: {
         index: '/settings/worldpay-details',
+        flexCredentials: '/settings/worldpay-details/flex-credentials',
         oneOffCustomerInitiated: '/settings/worldpay-details/one-off-customer-initiated',
-        flexCredentials: '/settings/worldpay-details/flex-credentials'
+        recurringCustomerInitiated: '/settings/worldpay-details/recurring-customer-initiated',
+        recurringMerchantInitiated: '/settings/worldpay-details/recurring-merchant-initiated'
       },
       cardPayments: {
         index: '/settings/card-payments',
