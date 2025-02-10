@@ -65,11 +65,11 @@ describe('Webhook Validation', () => {
 
     it('should fail when description is too long', async () => {
       const invalidReq = {
-        body: Object.assign({}, VALID_REQUEST.body, { description: 'This 41 character description is too long' })
+        body: Object.assign({}, VALID_REQUEST.body, { description: 'This description has 51 characters which is too big' })
       }
       await webhookSchema.description.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
-      expect(errors.array()[0].msg).to.equal('Description must be 40 characters or fewer')
+      expect(errors.array()[0].msg).to.equal('Description must be 50 characters or fewer')
     })
   })
 

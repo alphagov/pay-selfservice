@@ -1,6 +1,6 @@
 const { body } = require('express-validator')
 
-const WEBHOOK_DESCRIPTION_MAX_LENGTH = 40
+const WEBHOOK_DESCRIPTION_MAX_LENGTH = 50
 
 const webhookSchema = {
   callbackUrl: {
