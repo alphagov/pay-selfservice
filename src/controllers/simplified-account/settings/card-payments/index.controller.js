@@ -23,9 +23,9 @@ function get (req, res) {
     defaultBillingAddressCountry: country,
     defaultBillingAddressCountryLink: formatSimplifiedAccountPathsFor(cardPaymentsPaths.defaultBillingAddressCountry, serviceExternalId, accountType),
     applePayEnabled: applePay,
-    applePayAddressLink: formatSimplifiedAccountPathsFor(cardPaymentsPaths.applePay, serviceExternalId, accountType),
+    applePayLink: formatSimplifiedAccountPathsFor(cardPaymentsPaths.applePay, serviceExternalId, accountType),
     googlePayEnabled: googlePay,
-    googlePayAddressLink: formatSimplifiedAccountPathsFor(cardPaymentsPaths.googlePay, serviceExternalId, accountType),
+    googlePayLink: formatSimplifiedAccountPathsFor(cardPaymentsPaths.googlePay, serviceExternalId, accountType),
     userCanUpdatePaymentTypes
   })
 }

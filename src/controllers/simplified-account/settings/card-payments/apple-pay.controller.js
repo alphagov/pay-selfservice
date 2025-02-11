@@ -18,7 +18,7 @@ async function post (req, res) {
     const applePay = req.account?.allowApplePay
     return response(req, res, 'simplified-account/settings/card-payments/apple-pay', {
       currentState: applePay ? 'on' : 'off',
-      backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.index, req.service.externalId, req.account.type),
+      backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.index, req.service.externalId, req.account.type)
     })
   }
   const serviceExternalId = req.service.externalId
