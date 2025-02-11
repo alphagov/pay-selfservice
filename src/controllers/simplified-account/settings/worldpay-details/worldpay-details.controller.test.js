@@ -17,7 +17,7 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/
   }))
   .withAccount(new GatewayAccount({
     type: ACCOUNT_TYPE,
-    allow_moto: true,
+    allow_moto: false,
     gateway_account_id: 1,
     gateway_account_credentials: [{
       external_id: 'creds-id',
@@ -57,6 +57,44 @@ describe('Controller: settings/worldpay-details', () => {
           id: 'worldpay-credentials',
           linkText: 'Link your Worldpay account with GOV.UK Pay',
           status: 'NOT_STARTED'
+        }, {
+          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
+            SERVICE_ID, ACCOUNT_TYPE),
+          id: '3ds-flex-credentials',
+          linkText: 'Configure 3DS',
+          status: 'NOT_STARTED'
+        }]
+        expect(mockResponse.args[0][3]).to.have.property('tasks').to.deep.equal(tasks)
+        expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(true)
+      })
+    })
+
+    describe('for a moto-enabled gateway account', () => {
+      before(() => {
+        nextRequest({
+          account: {
+            allowMoto: true
+          }
+        })
+        call('get')
+      })
+      it('should call the response method', () => {
+        expect(mockResponse.called).to.be.true // eslint-disable-line
+      })
+
+      it('should pass req, res and template path to the response method', () => {
+        expect(mockResponse.args[0][0]).to.deep.equal(req)
+        expect(mockResponse.args[0][1]).to.deep.equal(res)
+        expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/worldpay-details/index')
+      })
+
+      it('should pass context data to the response method', () => {
+        const tasks = [{
+          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
+            SERVICE_ID, ACCOUNT_TYPE),
+          id: 'worldpay-credentials',
+          linkText: 'Link your Worldpay account with GOV.UK Pay',
+          status: 'NOT_STARTED'
         }]
         expect(mockResponse.args[0][3]).to.have.property('tasks').to.deep.equal(tasks)
         expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(true)
@@ -68,7 +106,7 @@ describe('Controller: settings/worldpay-details', () => {
         nextRequest({
           account: {
             recurringEnabled: true,
-            allow_moto: false
+            allowMoto: false
           }
         })
         call('get')
@@ -95,6 +133,12 @@ describe('Controller: settings/worldpay-details', () => {
             SERVICE_ID, ACCOUNT_TYPE),
           id: null,
           linkText: 'Recurring merchant initiated transaction (MIT) credentials',
+          status: 'NOT_STARTED'
+        }, {
+          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
+            SERVICE_ID, ACCOUNT_TYPE),
+          id: '3ds-flex-credentials',
+          linkText: 'Configure 3DS',
           status: 'NOT_STARTED'
         }]
         expect(mockResponse.args[0][3]).to.have.property('tasks').to.deep.equal(tasks)

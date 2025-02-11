@@ -190,12 +190,12 @@ describe('Worldpay details settings', () => {
 
             cy.get('.govuk-task-list').within(() => {
               cy.get('.govuk-task-list__item').eq(1).within(() => {
-                cy.get('a').should('not.exist')
+                cy.get('a').should('contain.text', 'Configure 3DS')
                 cy.get('.govuk-task-list__name-and-hint')
                   .should('contain.text', 'Configure 3DS')
                   .should('not.have.attr', 'href')
                 cy.get('.govuk-task-list__status').within(() => {
-                  cy.get('strong.govuk-tag.govuk-tag--grey').should('contain.text', 'Cannot start yet')
+                  cy.get('strong.govuk-tag.govuk-tag--blue').should('contain.text', 'Not yet started')
                 })
               })
             })

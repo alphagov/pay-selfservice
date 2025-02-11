@@ -25,7 +25,7 @@ class WorldpayTasks {
     }
 
     if (!gatewayAccount.allowMoto) {
-      this.tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount.type, gatewayAccount.worldpay3dsFlex, this.findTask('worldpay-credentials')?.status === TASK_STATUS.COMPLETED))
+      this.tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount.type, gatewayAccount.worldpay3dsFlex))
     }
 
     this.incompleteTasks = this.tasks.filter(t => t.status !== TASK_STATUS.COMPLETED).length > 0
@@ -66,10 +66,9 @@ class WorldpayTask {
    * @param {String} serviceExternalId
    * @param {String} accountType
    * @param {Worldpay3dsFlexCredential} worldpay3dsFlexCredential
-   * @param {Boolean} ableToStart // TODO delete
    * @returns {WorldpayTask}
    */
-  static flexCredentialsTask (serviceExternalId, accountType, worldpay3dsFlexCredential, ableToStart) {
+  static flexCredentialsTask (serviceExternalId, accountType, worldpay3dsFlexCredential) {
     const task = new WorldpayTask(
       formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
         serviceExternalId, accountType),
@@ -79,10 +78,8 @@ class WorldpayTask {
 
     if (worldpay3dsFlexCredential) {
       task.setStatus(TASK_STATUS.COMPLETED)
-    } else if (ableToStart) {
-      task.setStatus(TASK_STATUS.NOT_STARTED)
     } else {
-      task.setStatus(TASK_STATUS.CANNOT_START)
+      task.setStatus(TASK_STATUS.NOT_STARTED)
     }
 
     return task
