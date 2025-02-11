@@ -11,7 +11,7 @@ const mockResponse = sinon.spy()
 const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
 
-const { req, res, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/worldpay-details/worldpay-details.controller')
+const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/simplified-account/settings/worldpay-details/worldpay-details.controller')
   .withService(new Service({
     external_id: SERVICE_ID
   }))
@@ -39,26 +39,67 @@ describe('Controller: settings/worldpay-details', () => {
   })
 
   describe('get', () => {
-    it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+    describe('for one-off card payments gateway account', () => {
+      it('should call the response method', () => {
+        expect(mockResponse.called).to.be.true // eslint-disable-line
+      })
+
+      it('should pass req, res and template path to the response method', () => {
+        expect(mockResponse.args[0][0]).to.deep.equal(req)
+        expect(mockResponse.args[0][1]).to.deep.equal(res)
+        expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/worldpay-details/index')
+      })
+
+      it('should pass context data to the response method', () => {
+        const tasks = [{
+          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
+            SERVICE_ID, ACCOUNT_TYPE),
+          id: 'worldpay-credentials',
+          linkText: 'Link your Worldpay account with GOV.UK Pay',
+          status: 'NOT_STARTED'
+        }]
+        expect(mockResponse.args[0][3]).to.have.property('tasks').to.deep.equal(tasks)
+        expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(true)
+      })
     })
 
-    it('should pass req, res and template path to the response method', () => {
-      expect(mockResponse.args[0][0]).to.deep.equal(req)
-      expect(mockResponse.args[0][1]).to.deep.equal(res)
-      expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/worldpay-details/index')
-    })
+    describe('for a recurring card payments gateway account', () => {
+      before(() => {
+        nextRequest({
+          account: {
+            recurringEnabled: true,
+            allow_moto: false
+          }
+        })
+        call('get')
+      })
+      it('should call the response method', () => {
+        expect(mockResponse.called).to.be.true // eslint-disable-line
+      })
 
-    it('should pass context data to the response method', () => {
-      const tasks = [{
-        href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
-          SERVICE_ID, ACCOUNT_TYPE),
-        id: 'worldpay-credentials',
-        linkText: 'Link your Worldpay account with GOV.UK Pay',
-        status: 'NOT_STARTED'
-      }]
-      expect(mockResponse.args[0][3]).to.have.property('tasks').to.deep.equal(tasks)
-      expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(true)
+      it('should pass req, res and template path to the response method', () => {
+        expect(mockResponse.args[0][0]).to.deep.equal(req)
+        expect(mockResponse.args[0][1]).to.deep.equal(res)
+        expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/worldpay-details/index')
+      })
+
+      it('should pass context data to the response method', () => {
+        const tasks = [{
+          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
+            SERVICE_ID, ACCOUNT_TYPE),
+          id: null,
+          linkText: 'Recurring customer initiated transaction (CIT) credentials',
+          status: 'NOT_STARTED'
+        }, {
+          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated,
+            SERVICE_ID, ACCOUNT_TYPE),
+          id: null,
+          linkText: 'Recurring merchant initiated transaction (MIT) credentials',
+          status: 'NOT_STARTED'
+        }]
+        expect(mockResponse.args[0][3]).to.have.property('tasks').to.deep.equal(tasks)
+        expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(true)
+      })
     })
   })
 })

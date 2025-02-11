@@ -21,6 +21,26 @@ class Credential {
     return this
   }
 
+  /**
+   *
+   * @param {WorldpayCredential} recurringCustomerInitated
+   * @returns {Credential}
+   */
+  withRecurringCustomerInitiated (recurringCustomerInitated) {
+    this.recurringCustomerInitated = recurringCustomerInitated
+    return this
+  }
+
+  /**
+   *
+   * @param {WorldpayCredential} recurringMerchantInitated
+   * @returns {Credential}
+   */
+  withRecurringMerchantInitiated (recurringMerchantInitated) {
+    this.recurringMerchantInitated = recurringMerchantInitated
+    return this
+  }
+
   /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
    * you should instead add any rawResponse data as part of the constructor */
   withRawResponse (data) {
@@ -45,6 +65,12 @@ class Credential {
     }
     if (data?.one_off_customer_initiated) {
       credential.withOneOffCustomerInitiated(WorldpayCredential.fromJson(data.one_off_customer_initiated))
+    }
+    if (data?.recurring_customer_initiated) {
+      credential.withRecurringCustomerInitiated(WorldpayCredential.fromJson(data.recurring_customer_initiated))
+    }
+    if (data?.recurring_merchant_initiated) {
+      credential.withRecurringMerchantInitiated(WorldpayCredential.fromJson(data.recurring_customer_initiated))
     }
     return credential
   }

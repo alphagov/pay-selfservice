@@ -17,7 +17,12 @@ class WorldpayTasks {
 
     const credential = gatewayAccount.getCurrentCredential()
 
-    this.tasks.push(WorldpayTask.oneOffCustomerInitiatedCredentialsTask(serviceExternalId, gatewayAccount.type, credential))
+    if (gatewayAccount.recurringEnabled) {
+      this.tasks.push(WorldpayTask.recurringCustomerInitiatedCredentialsTask(serviceExternalId, gatewayAccount.type, credential))
+      this.tasks.push(WorldpayTask.recurringMerchantInitiatedCredentialsTask(serviceExternalId, gatewayAccount.type, credential))
+    } else {
+      this.tasks.push(WorldpayTask.oneOffCustomerInitiatedCredentialsTask(serviceExternalId, gatewayAccount.type, credential))
+    }
 
     if (!gatewayAccount.allowMoto) {
       this.tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount.type, gatewayAccount.worldpay3dsFlex, this.findTask('worldpay-credentials')?.status === TASK_STATUS.COMPLETED))
@@ -61,7 +66,7 @@ class WorldpayTask {
    * @param {String} serviceExternalId
    * @param {String} accountType
    * @param {Worldpay3dsFlexCredential} worldpay3dsFlexCredential
-   * @param {Boolean} ableToStart
+   * @param {Boolean} ableToStart // TODO delete
    * @returns {WorldpayTask}
    */
   static flexCredentialsTask (serviceExternalId, accountType, worldpay3dsFlexCredential, ableToStart) {
@@ -78,6 +83,50 @@ class WorldpayTask {
       task.setStatus(TASK_STATUS.NOT_STARTED)
     } else {
       task.setStatus(TASK_STATUS.CANNOT_START)
+    }
+
+    return task
+  }
+
+  /**
+   * @param {String} serviceExternalId
+   * @param {String} accountType
+   * @param {GatewayAccountCredential} credential
+   * @returns {WorldpayTask}
+   */
+  static recurringCustomerInitiatedCredentialsTask (serviceExternalId, accountType, credential) {
+    const task = new WorldpayTask(
+      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
+        serviceExternalId, accountType),
+      null,
+      'Recurring customer initiated transaction (CIT) credentials'
+    )
+    if (!credential || !credential.credentials.recurringCustomerInitated) {
+      task.setStatus(TASK_STATUS.NOT_STARTED)
+    } else {
+      task.setStatus(TASK_STATUS.COMPLETED)
+    }
+
+    return task
+  }
+
+  /**
+   * @param {String} serviceExternalId
+   * @param {String} accountType
+   * @param {GatewayAccountCredential} credential
+   * @returns {WorldpayTask}
+   */
+  static recurringMerchantInitiatedCredentialsTask (serviceExternalId, accountType, credential) {
+    const task = new WorldpayTask(
+      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated,
+        serviceExternalId, accountType),
+      null,
+      'Recurring merchant initiated transaction (MIT) credentials'
+    )
+    if (!credential || !credential.credentials.recurringMerchantInitated) {
+      task.setStatus(TASK_STATUS.NOT_STARTED)
+    } else {
+      task.setStatus(TASK_STATUS.COMPLETED)
     }
 
     return task
