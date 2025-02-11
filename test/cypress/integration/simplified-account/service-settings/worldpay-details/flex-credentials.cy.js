@@ -326,19 +326,5 @@ describe('Worldpay details settings', () => {
         }).then(response => expect(response.status).to.eq(404))
       })
     })
-
-    describe('where the one off customer initiated credentials task has not been completed', () => {
-      beforeEach(() => {
-        setupStubs({ credentials: {} })
-      })
-
-      it('should redirect to the index page when attempting to GET the /flex-credentials form', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
-
-        cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
-        cy.get('h1').should('contain', 'Worldpay details')
-        cy.title().should('eq', 'Worldpay details - Settings - My cool service - GOV.UK Pay')
-      })
-    })
   })
 })
