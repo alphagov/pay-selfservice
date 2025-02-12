@@ -20,7 +20,10 @@
     href: backToWebhooksLink
   }) }}
 
-  <h1 class="govuk-heading-l">{{ webhook.description }} {{ webhookStatusTag(webhook.status) }}</h1>
+  <div class="webhook-header-with-tag">
+    <h1 class="govuk-heading-l">{{ webhook.description }} </h1>
+    <span class="webhook-tag">{{ webhookStatusTag(webhook.status) }}</span>
+  </div>
 
   {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
 
@@ -84,7 +87,7 @@
   <p class="govuk-body">Webhook messages sent by GOV.UK Pay will include a signature. Only your application should store this secret to verify messages are from GOV.UK Pay.</p>
 
   <div>
-    <span id="secret" class="code copy-target">this-is-a-placeholder--{{ signingSecret.signing_key }}</span>
+    <span id="signing-secret" class="code copy-target">{{ signingSecret.signing_key }}</span>
   </div>
 
   {{
@@ -95,7 +98,7 @@
       id: "copy-signing-secret",
       "data-copy-text": true,
       "data-target": "copy-target",
-      "data-success": "Webhook signing secret has been copied",
+      "data-success": "Signing secret copied",
       "data-notification-target": "copy-notification"
     }
   })
