@@ -246,8 +246,12 @@ module.exports = {
       switchPsp: {
         switchToWorldpay: {
           index: '/settings/switch-psp/switch-to-worldpay',
-          linkCredentials: '/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated',
-          makeTestPayment: '/settings/switch-psp/switch-to-worldpay/worldpay-details/test-payment'
+          oneOffCustomerInitiated: '/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated',
+          flexCredentials: '/settings/switch-psp/switch-to-worldpay/worldpay-details/flex-credentials',
+          makeTestPayment: {
+            outbound: '/settings/switch-psp/switch-to-worldpay/worldpay-details/make-a-payment',
+            inbound: '/settings/switch-psp/switch-to-worldpay/worldpay-details/make-a-payment/verify'
+          }
         }
       }
     }

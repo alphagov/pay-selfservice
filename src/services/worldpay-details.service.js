@@ -50,7 +50,6 @@ async function check3dsFlexCredential (serviceExternalId, accountType, flexCrede
 }
 
 /**
- *
  * @param {String} serviceExternalId
  * @param {String} accountType
  * @param {String} credentialId
@@ -62,6 +61,20 @@ async function updateOneOffCustomerInitiatedCredentials (serviceExternalId, acco
   const patchRequest = new GatewayAccountCredentialUpdateRequest(userExternalId)
     .replace().credentials().oneOffCustomerInitiated(credential.toJson())
   return connectorClient.patchGatewayAccountCredentialsByServiceExternalIdAndAccountType(serviceExternalId, accountType, credentialId, patchRequest)
+}
+
+/**
+ * @param {String} serviceExternalId
+ * @param {String} accountType
+ * @param {String} credentialExternalId
+ * @param {String} userExternalId
+ * @param {String} credentialState
+ * @returns {Promise<GatewayAccountCredential>}
+ */
+async function updateCredentialState (serviceExternalId, accountType, credentialExternalId, userExternalId, credentialState) {
+  const patchRequest = new GatewayAccountCredentialUpdateRequest(userExternalId)
+    .replace().state(credentialState)
+  return connectorClient.patchGatewayAccountCredentialsByServiceExternalIdAndAccountType(serviceExternalId, accountType, credentialExternalId, patchRequest)
 }
 
 /**
@@ -106,6 +119,7 @@ async function updateIntegrationVersion3ds (serviceExternalId, accountType, inte
 module.exports = {
   checkCredential,
   updateOneOffCustomerInitiatedCredentials,
+  updateCredentialState,
   check3dsFlexCredential,
   update3dsFlexCredentials,
   updateIntegrationVersion3ds,

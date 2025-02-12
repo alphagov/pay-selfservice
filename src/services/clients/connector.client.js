@@ -31,7 +31,7 @@ ConnectorClient.prototype = {
       .replace('{serviceExternalId}', encodeURIComponent(params.serviceExternalId))
       .replace('{accountType}', encodeURIComponent(params.accountType))
     configureClient(client, url)
-    const response = await client.get(url, 'get gateway account by service Id and account type')
+    const response = await client.get(url, 'get gateway account by service external id and account type')
     return new GatewayAccount(response.data)
   },
 
@@ -632,7 +632,7 @@ ConnectorClient.prototype = {
   /**
    * @param serviceExternalId {string}
    * @param accountType {string}
-   * @returns {StripeAccountSetup}
+   * @returns {Promise<StripeAccountSetup>}
    */
   getStripeAccountSetupByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-setup`
@@ -692,7 +692,7 @@ ConnectorClient.prototype = {
    * Get Stripe account for the given service and account type
    * @param serviceExternalId {string}
    * @param accountType {string}
-   * @returns {StripeAccount}
+   * @returns {Promise<StripeAccount>}
    */
   getStripeAccountByServiceIdAndAccountType: async function (serviceExternalId, accountType) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-account`
@@ -724,6 +724,37 @@ ConnectorClient.prototype = {
     return response.data
   },
 
+  /**
+   * @param {String} serviceExternalId
+   * @param {String} accountType
+   * @param {ChargeRequest} chargeRequest
+   * @returns {Promise<{Object}>}
+   */
+  postChargeRequestByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, chargeRequest) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/charges`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    configureClient(client, url)
+    const response = await client.post(url, chargeRequest.toPayload(), 'create a charge')
+    return response.data
+  },
+
+  /**
+   * @param {String} serviceExternalId
+   * @param {String} accountType
+   * @param {String} chargeExternalId
+   * @returns {Promise<{Object}>}
+   */
+  getChargeByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, chargeExternalId) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/charges/{chargeExternalId}`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+      .replace('{chargeExternalId}', encodeURIComponent(chargeExternalId))
+    configureClient(client, url)
+    const response = await client.get(url, 'get a charge')
+    return response.data
+  },
+
   getCharge: async function (gatewayAccountId, chargeExternalId) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/charges/{chargeId}`
       .replace('{accountId}', encodeURIComponent(gatewayAccountId))
@@ -739,6 +770,20 @@ ConnectorClient.prototype = {
     configureClient(client, url)
     const response = await client.post(url, payload, 'switch account payment service provider')
     return response.data
+  },
+
+  /**
+   * @param {String} serviceExternalId
+   * @param {String} accountType
+   * @param {GatewayAccountSwitchPaymentProviderRequest} gatewayAccountSwitchProviderRequest
+   * @returns {Promise<{Object}>}
+   */
+  postSwitchPSPBByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, gatewayAccountSwitchProviderRequest) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/switch-psp`
+      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+      .replace('{accountType}', encodeURIComponent(accountType))
+    configureClient(client, url)
+    return client.post(url, gatewayAccountSwitchProviderRequest.toPayload(), 'switch account payment service provider')
   }
 }
 

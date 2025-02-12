@@ -9,6 +9,7 @@ const {
   enforcePaymentProviderType,
   defaultViewDecider
 } = require('@middleware/simplified-account')
+const restrictToSwitchingAccount = require('@middleware/restrict-to-switching-account')
 const userIsAuthorised = require('@middleware/user-is-authorised')
 const permission = require('@middleware/permission')
 const paths = require('./paths')
@@ -103,7 +104,14 @@ simplifiedAccount.post(paths.simplifiedAccount.settings.webhooks.create, permiss
 simplifiedAccount.get(paths.simplifiedAccount.settings.webhooks.detail, permission('webhooks:read'), serviceSettingsController.webhooks.detail.get)
 
 // switch psp
-simplifiedAccount.get(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, permission('gateway-credentials:update'), serviceSettingsController.switchPsp.switchToWorldpay.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, restrictToSwitchingAccount, permission('gateway-credentials:update'), serviceSettingsController.switchPsp.switchToWorldpay.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, restrictToSwitchingAccount, permission('gateway-credentials:update'), serviceSettingsController.switchPsp.switchToWorldpay.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.oneOffCustomerInitiated, restrictToSwitchingAccount, permission('gateway-credentials:update'), serviceSettingsController.switchPsp.switchToWorldpay.oneOffCustomerInitiated.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.oneOffCustomerInitiated, restrictToSwitchingAccount, permission('gateway-credentials:update'), serviceSettingsController.switchPsp.switchToWorldpay.oneOffCustomerInitiated.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.flexCredentials, restrictToSwitchingAccount, permission('gateway-credentials:update'), serviceSettingsController.switchPsp.switchToWorldpay.flexCredentials.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.makeTestPayment.outbound, restrictToSwitchingAccount, permission('gateway-credentials:update'), serviceSettingsController.switchPsp.switchToWorldpay.makeTestPayment.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.makeTestPayment.outbound, restrictToSwitchingAccount, permission('gateway-credentials:update'), serviceSettingsController.switchPsp.switchToWorldpay.makeTestPayment.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.makeTestPayment.inbound, restrictToSwitchingAccount, permission('gateway-credentials:update'), serviceSettingsController.switchPsp.switchToWorldpay.makeTestPayment.getInbound)
 
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails

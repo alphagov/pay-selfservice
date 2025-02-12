@@ -1,7 +1,50 @@
-{% extends "../../settings-layout.njk" %}
+{% extends "simplified-account/settings/settings-layout.njk" %}
+{% from "macro/task-list.njk" import taskList %}
 
 {% set settingsPageTitle = "Switch to Worldpay" %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">Switch to Worldpay</h1>
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+
+  {% if incompleteTasks %}
+
+    <p class="govuk-body">
+      This service is taking payments with {{ currentPsp | smartCaps }}.
+    </p>
+
+    <p class="govuk-body">To prepare for the switch, you need:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>your Worldpay account credentials: Merchant code, username and password</li>
+      {% if isMoto == false %}
+        <li>your Worldpay 3DS Flex account credentials: Organisational unit ID, issuer and JWT MAC key</li>
+      {% endif %}
+      <li>a debit or credit card to make a nominal live payment (refundable)</li>
+    </ul>
+
+    <h3 class="govuk-heading-s">Get ready to switch PSP to Worldpay</h3>
+
+    {{ taskList({
+      tasks: tasks,
+      idPrefix: 'worldpay-tasks'
+    }) }}
+
+  {% else %}
+
+    <p class="govuk-body">Your payment was successful. The connection between Worldpay and GOV.UK Pay is working. You
+      can check the payment in <a class="govuk-link govuk-link--no-visited-state" href="{{ transactionsUrl }}">Transactions</a>
+      and refund the payment.</p>
+
+    {{ govukWarningText({
+      text: "Once you switch, Worldpay will immediately start taking payments. You can refund previous payments through GOV.UK Pay.",
+      iconFallbackText: "Warning"
+    }) }}
+
+    <form id="switch-psp" method="post">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      {{ govukButton({
+        text: "Switch to Worldpay"
+      }) }}
+    </form>
+  {% endif %}
 {% endblock %}

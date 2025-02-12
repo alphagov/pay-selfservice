@@ -4,31 +4,38 @@ const formatSimplifiedAccountPathsFor = require('../utils/simplified-account/for
 const paths = require('@root/paths')
 const { ConnectorClient } = require('@services/clients/connector.client')
 const TASK_STATUS = require('@models/constants/task-status')
+const { CREDENTIAL_STATE } = require('@utils/credentials')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 class WorldpayTasks {
   /**
    * @param {GatewayAccount} gatewayAccount
    * @param {String} serviceExternalId
+   * @param {Boolean} switchingPsp
    */
-  constructor (gatewayAccount, serviceExternalId) {
+  constructor (gatewayAccount, serviceExternalId, switchingPsp = false) {
     this.tasks = []
     this.incompleteTasks = true
 
-    const credential = gatewayAccount.getCurrentCredential()
+    const credential = switchingPsp ? gatewayAccount.getSwitchingCredential() : gatewayAccount.getCurrentCredential()
 
     if (gatewayAccount.recurringEnabled) {
       this.tasks.push(WorldpayTask.recurringCustomerInitiatedCredentialsTask(serviceExternalId, gatewayAccount.type, credential))
       this.tasks.push(WorldpayTask.recurringMerchantInitiatedCredentialsTask(serviceExternalId, gatewayAccount.type, credential))
     } else {
-      this.tasks.push(WorldpayTask.oneOffCustomerInitiatedCredentialsTask(serviceExternalId, gatewayAccount.type, credential))
+      this.tasks.push(WorldpayTask.oneOffCustomerInitiatedCredentialsTask(serviceExternalId, gatewayAccount.type, credential, switchingPsp))
     }
 
     if (!gatewayAccount.allowMoto) {
       this.tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount.type, gatewayAccount.worldpay3dsFlex))
     }
 
-    this.incompleteTasks = this.tasks.filter(t => t.status !== TASK_STATUS.COMPLETED).length > 0
+    if (switchingPsp) {
+      this.tasks.push(WorldpayTask.makeALivePaymentTask(serviceExternalId, gatewayAccount))
+    }
+
+    this.incompleteTasks = this.tasks.filter(task => task.status !== TASK_STATUS.COMPLETED_CANNOT_START &&
+      task.status !== TASK_STATUS.COMPLETED).length > 0
   }
 
   /**
@@ -41,7 +48,10 @@ class WorldpayTasks {
   }
 
   static async recalculate (serviceExternalId, accountType) {
-    const gatewayAccount = await connectorClient.getAccountByServiceExternalIdAndAccountType({ serviceExternalId, accountType })
+    const gatewayAccount = await connectorClient.getAccountByServiceExternalIdAndAccountType({
+      serviceExternalId,
+      accountType
+    })
     return new WorldpayTasks(gatewayAccount, serviceExternalId)
   }
 }
@@ -66,11 +76,15 @@ class WorldpayTask {
    * @param {String} serviceExternalId
    * @param {String} accountType
    * @param {Worldpay3dsFlexCredential} worldpay3dsFlexCredential
+   * @param {Boolean} isSwitchPspTask
    * @returns {WorldpayTask}
    */
-  static flexCredentialsTask (serviceExternalId, accountType, worldpay3dsFlexCredential) {
+  static flexCredentialsTask (serviceExternalId, accountType, worldpay3dsFlexCredential, isSwitchPspTask = false) {
     const task = new WorldpayTask(
-      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
+      formatSimplifiedAccountPathsFor(
+        isSwitchPspTask
+          ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.flexCredentials
+          : paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
         serviceExternalId, accountType),
       '3ds-flex-credentials',
       'Configure 3DS'
@@ -133,17 +147,23 @@ class WorldpayTask {
    * @param {String} serviceExternalId
    * @param {String} accountType
    * @param {GatewayAccountCredential} credential
+   * @param {Boolean} isSwitchPspTask
    * @returns {WorldpayTask}
    */
-  static oneOffCustomerInitiatedCredentialsTask (serviceExternalId, accountType, credential) {
+  static oneOffCustomerInitiatedCredentialsTask (serviceExternalId, accountType, credential, isSwitchPspTask = false) {
     const task = new WorldpayTask(
-      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
+      formatSimplifiedAccountPathsFor(
+        isSwitchPspTask
+          ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.oneOffCustomerInitiated
+          : paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
         serviceExternalId, accountType),
       'worldpay-credentials',
       'Link your Worldpay account with GOV.UK Pay'
     )
     if (!credential || !credential.credentials.oneOffCustomerInitiated) {
       task.setStatus(TASK_STATUS.NOT_STARTED)
+    } else if (credential.state === CREDENTIAL_STATE.VERIFIED) {
+      task.setStatus(TASK_STATUS.COMPLETED_CANNOT_START)
     } else {
       task.setStatus(TASK_STATUS.COMPLETED)
     }
@@ -153,20 +173,34 @@ class WorldpayTask {
 
   /**
    * @param {String} serviceExternalId
-   * @param {String} accountType
-   * @param {GatewayAccountCredential} credential
+   * @param {GatewayAccount} gatewayAccount
    * @returns {WorldpayTask}
    */
-  static makeALivePaymentTask (serviceExternalId, accountType, credential) {
+  static makeALivePaymentTask (serviceExternalId, gatewayAccount) {
     const task = new WorldpayTask(
-      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
-        serviceExternalId, accountType),
+      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.makeTestPayment.outbound,
+        serviceExternalId, gatewayAccount.type),
       'make-a-live-payment',
       'Make a live payment to test your Worldpay PSP'
     )
-    task.setStatus(TASK_STATUS.CANNOT_START)
+
+    const credential = gatewayAccount.getSwitchingCredential()
+
+    if (!credential || !credential.credentials.oneOffCustomerInitiated) {
+      task.setStatus(TASK_STATUS.CANNOT_START)
+    }
+
+    if (credential.state === CREDENTIAL_STATE.VERIFIED) {
+      task.setStatus(TASK_STATUS.COMPLETED_CANNOT_START)
+    }
+
+    // For non-MOTO accounts, require flex credentials to be set
+    if (!gatewayAccount.allowMoto && !gatewayAccount.worldpay3dsFlex) {
+      task.setStatus(TASK_STATUS.CANNOT_START)
+    }
+
     return task
   }
 }
 
-module.exports = { WorldpayTasks, WorldpayTask }
+module.exports = { WorldpayTasks }

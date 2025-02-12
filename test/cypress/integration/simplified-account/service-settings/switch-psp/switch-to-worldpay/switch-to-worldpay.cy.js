@@ -27,7 +27,21 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       type: LIVE_ACCOUNT_TYPE,
       payment_provider: STRIPE,
-      provider_switch_enabled: true
+      provider_switch_enabled: true,
+      allow_moto: true,
+      gateway_account_credentials: [
+        {
+          state: 'ACTIVE',
+          payment_provider: 'stripe',
+          credentials: {
+            stripe_account_id: 'acct_blahblahblah'
+          }
+        },
+        {
+          state: 'CREATED',
+          payment_provider: 'worldpay'
+        }
+      ]
     }),
     stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
       serviceExternalId: SERVICE_EXTERNAL_ID,
