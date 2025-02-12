@@ -1,10 +1,8 @@
-'use strict'
-
 /**
  * @class GOVUKPayService
- * @property externalId {string} - The external id of the service
- * @property currentGoLiveStage {string} - Live stage of the service
- * @property name {string} - English name of service
+ * @property {string} externalId  - The external id of the service
+ * @property {string} currentGoLiveStage  - Live stage of the service
+ * @property {string} name  - English name of service
  * @property {{
  *   en: string,
  *   cy: string

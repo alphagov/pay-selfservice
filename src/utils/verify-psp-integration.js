@@ -1,5 +1,3 @@
-'use strict'
-
 const VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY = 'verify_psp_integration_charge_external_id'
 
 function filterNextUrl (charge = {}) {

@@ -6,6 +6,7 @@ const formatValidationErrors = require('@utils/simplified-account/format/format-
 const worldpayDetailsService = require('@services/worldpay-details.service')
 const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
 const { WorldpayTasks } = require('@models/WorldpayTasks.class')
+const { oneOffCustomerInitiatedSchema } = require('@utils/simplified-account/validation/worldpay/one-off-customer-initiated.schema')
 
 function get (req, res) {
   const existingCredentials = req.account.getCurrentCredential().credentials?.oneOffCustomerInitiated || {}
@@ -18,15 +19,9 @@ function get (req, res) {
 }
 
 const worldpayCredentialsValidations = [
-  body('merchantCode').not().isEmpty().withMessage('Enter your merchant code').bail()
-    .custom((value, { req }) => {
-      if (req.account.allowMoto && !value.endsWith('MOTO') && !value.endsWith('MOTOGBP')) {
-        throw new Error('Enter a MOTO merchant code. MOTO payments are enabled for this account')
-      }
-      return true
-    }),
-  body('username').not().isEmpty().withMessage('Enter your username'),
-  body('password').not().isEmpty().withMessage('Enter your password')
+  oneOffCustomerInitiatedSchema.merchantCode.validate,
+  oneOffCustomerInitiatedSchema.username.validate,
+  oneOffCustomerInitiatedSchema.password.validate
 ]
 
 async function post (req, res) {
@@ -57,7 +52,7 @@ async function post (req, res) {
     })
   }
 
-  await worldpayDetailsService.updateCredentials(
+  await worldpayDetailsService.updateOneOffCustomerInitiatedCredential(
     req.service.externalId,
     req.account.type,
     req.account.getCurrentCredential().externalId,
