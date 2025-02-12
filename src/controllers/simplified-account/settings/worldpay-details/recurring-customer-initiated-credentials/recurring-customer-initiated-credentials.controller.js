@@ -8,7 +8,7 @@ const worldpayDetailsService = require('@services/worldpay-details.service')
 const { WorldpayTasks } = require('@models/WorldpayTasks.class')
 
 function get (req, res) {
-  const existingCredentials = req.account.getCurrentCredential().credentials?.recurringMerchantInitiated || {}
+  const existingCredentials = req.account.getCurrentCredential().credentials?.recurringCustomerInitiated || {}
 
   return response(req, res, 'simplified-account/settings/worldpay-details/recurring-customer-initiated-credentials', {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
