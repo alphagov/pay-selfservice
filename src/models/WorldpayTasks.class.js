@@ -98,7 +98,7 @@ class WorldpayTask {
       null,
       'Recurring customer initiated transaction (CIT) credentials'
     )
-    if (!credential || !credential.credentials.recurringCustomerInitated) {
+    if (!credential || !credential.credentials.recurringCustomerInitiated) {
       task.setStatus(TASK_STATUS.NOT_STARTED)
     } else {
       task.setStatus(TASK_STATUS.COMPLETED)

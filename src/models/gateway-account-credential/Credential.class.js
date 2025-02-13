@@ -23,11 +23,11 @@ class Credential {
 
   /**
    *
-   * @param {WorldpayCredential} recurringCustomerInitated
+   * @param {WorldpayCredential} recurringCustomerInitiated
    * @returns {Credential}
    */
-  withRecurringCustomerInitiated (recurringCustomerInitated) {
-    this.recurringCustomerInitated = recurringCustomerInitated
+  withRecurringCustomerInitiated (recurringCustomerInitiated) {
+    this.recurringCustomerInitiated = recurringCustomerInitiated
     return this
   }
 
@@ -70,7 +70,7 @@ class Credential {
       credential.withRecurringCustomerInitiated(WorldpayCredential.fromJson(data.recurring_customer_initiated))
     }
     if (data?.recurring_merchant_initiated) {
-      credential.withRecurringMerchantInitiated(WorldpayCredential.fromJson(data.recurring_customer_initiated))
+      credential.withRecurringMerchantInitiated(WorldpayCredential.fromJson(data.recurring_merchant_initiated))
     }
     return credential
   }

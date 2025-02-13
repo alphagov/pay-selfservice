@@ -9,6 +9,7 @@ module.exports = class ControllerTestBuilder {
     this.req = {
       service: {},
       account: {},
+      user: {},
       query: {},
       flash: sinon.spy()
     }
@@ -23,6 +24,11 @@ module.exports = class ControllerTestBuilder {
 
   withAccountType (type) {
     this.req.account.type = type
+    return this
+  }
+
+  withUser (user) {
+    this.req.user = user
     return this
   }
 
