@@ -79,3 +79,13 @@
     width: 180px;
   }
 }
+
+.webhook-header-with-tag {
+  display: flex;
+  align-items: flex-start;
+  .webhook-tag {
+    white-space: nowrap;
+    padding: 4px 12px;
+    margin-top: 0.3em;
+  }
+}
