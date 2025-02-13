@@ -11,7 +11,7 @@
 {% endmacro %}
 
 
-{% set settingsPageTitle = description %}
+{% set settingsPageTitle = webhook.description %}
 
 {% block settingsContent %}
 
@@ -21,7 +21,7 @@
   }) }}
 
   <div class="webhook-header-with-tag">
-    <h1 class="govuk-heading-l">{{ webhook.description }} </h1>
+    <h1 class="govuk-heading-l">{{ webhook.description }}</h1>
     <span class="webhook-tag">{{ webhookStatusTag(webhook.status) }}</span>
   </div>
 
