@@ -52,6 +52,8 @@ describe('Controller: settings/webhooks', () => {
       expect(mockResponse.args[0][3]).to.have.property('eventTypes').to.have.property('CARD_PAYMENT_SUCCEEDED').to.equal('Payment succeeded')
       expect(mockResponse.args[0][3]).to.have.property('createWebhookLink')
         .to.equal('/simplified/service/service-id-123abc/account/test/settings/webhooks/create')
+      expect(mockResponse.args[0][3]).to.have.property('detailWebhookBaseUrl')
+        .to.equal('/simplified/service/service-id-123abc/account/test/settings/webhooks/')
     })
   })
 })
