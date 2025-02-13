@@ -10,7 +10,7 @@ const { WorldpayTasks } = require('@models/WorldpayTasks.class')
 function get (req, res) {
   const existingCredentials = req.account.getCurrentCredential().credentials?.oneOffCustomerInitiated || {}
 
-  return response(req, res, 'simplified-account/settings/worldpay-details/credentials', {
+  return response(req, res, 'simplified-account/settings/worldpay-details/one-off-customer-initiated-credentials', {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
       req.service.externalId, req.account.type),
     credentials: existingCredentials
@@ -57,7 +57,7 @@ async function post (req, res) {
     })
   }
 
-  await worldpayDetailsService.updateCredentials(
+  await worldpayDetailsService.updateOneOffCustomerInitiatedCredentials(
     req.service.externalId,
     req.account.type,
     req.account.getCurrentCredential().externalId,
@@ -85,7 +85,7 @@ async function post (req, res) {
 }
 
 const errorResponse = (req, res, errors) => {
-  return response(req, res, 'simplified-account/settings/worldpay-details/credentials', {
+  return response(req, res, 'simplified-account/settings/worldpay-details/one-off-customer-initiated-credentials', {
     errors,
     credentials: {
       merchantCode: req.body.merchantCode,

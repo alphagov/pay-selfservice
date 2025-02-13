@@ -46,7 +46,7 @@ describe('Controller: settings/worldpay-details/credentials', () => {
     it('should pass req, res and template path to the response method', () => {
       expect(mockResponse.args[0][0]).to.deep.equal(req)
       expect(mockResponse.args[0][1]).to.deep.equal(res)
-      expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/worldpay-details/credentials')
+      expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/worldpay-details/one-off-customer-initiated-credentials')
     })
 
     it('should pass context data to the response method', () => {
@@ -72,7 +72,7 @@ describe('Controller: settings/worldpay-details/credentials', () => {
           expect(mockResponse).to.have.been.calledWith(
             sinon.match.any,
             sinon.match.any,
-            'simplified-account/settings/worldpay-details/credentials',
+            'simplified-account/settings/worldpay-details/one-off-customer-initiated-credentials',
             {
               errors: {
                 summary: [
@@ -107,7 +107,7 @@ describe('Controller: settings/worldpay-details/credentials', () => {
           expect(mockResponse).to.have.been.calledWith(
             sinon.match.any,
             sinon.match.any,
-            'simplified-account/settings/worldpay-details/credentials',
+            'simplified-account/settings/worldpay-details/one-off-customer-initiated-credentials',
             {
               errors: {
                 summary: [
