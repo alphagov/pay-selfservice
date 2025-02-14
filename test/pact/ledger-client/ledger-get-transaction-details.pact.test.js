@@ -156,4 +156,97 @@ describe('ledger client', function () {
         })
     })
   })
+
+  describe('get transaction details with honoured corporate exemption', () => {
+    const params = {
+      account_id: existingGatewayAccountId,
+      transaction_id: defaultTransactionId
+    }
+    const validTransactionDetailsResponse = transactionDetailsFixtures.validTransactionCreatedDetailsResponse({
+      transaction_id: params.transaction_id,
+      amount: 1000,
+      refund_summary_available: 1000,
+      type: 'payment',
+      exemption: {
+        requested: true,
+        type: 'corporate',
+        outcome: {
+          result: 'honoured'
+        }
+      }
+    })
+
+    before(() => {
+      return pactTestProvider.addInteraction(
+        new PactInteractionBuilder(`${TRANSACTION_RESOURCE}/${params.transaction_id}`)
+          .withQuery('account_id', params.account_id)
+          .withQuery('transaction_type', 'PAYMENT')
+          .withUponReceiving('a transaction with honoured corporate exemption exists')
+          .withState('a transaction with honoured corporate exemption exists')
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactify(validTransactionDetailsResponse))
+          .build()
+      )
+    })
+
+    afterEach(() => pactTestProvider.verify())
+
+    it('should get transaction with honoured corporate exemption', function () {
+      const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validTransactionDetailsResponse)
+      return ledgerClient.transaction(params.transaction_id, params.account_id, {
+        baseUrl: ledgerUrl,
+        transaction_type: 'PAYMENT'
+      })
+        .then((ledgerResponse) => {
+          expect(ledgerResponse).to.deep.equal(getTransactionDetails)
+        })
+    })
+  })
+
+  describe('get transaction details with honoured corporate exemption', () => {
+    const params = {
+      account_id: existingGatewayAccountId,
+      transaction_id: defaultTransactionId
+    }
+    const validTransactionDetailsResponse = transactionDetailsFixtures.validTransactionCreatedDetailsResponse({
+      transaction_id: params.transaction_id,
+      amount: 1000,
+      refund_summary_available: 1000,
+      type: 'payment',
+      authorisation_summary: {
+        three_d_secure: {
+          required: true,
+          version: '2.1.0'
+        }
+      }
+    })
+
+    before(() => {
+      return pactTestProvider.addInteraction(
+        new PactInteractionBuilder(`${TRANSACTION_RESOURCE}/${params.transaction_id}`)
+          .withQuery('account_id', params.account_id)
+          .withQuery('transaction_type', 'PAYMENT')
+          .withUponReceiving('a transaction with 3ds version exists')
+          .withState('a transaction with 3ds version exists')
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactify(validTransactionDetailsResponse))
+          .build()
+      )
+    })
+
+    afterEach(() => pactTestProvider.verify())
+
+    it('should get transaction with 3ds version', function () {
+      const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validTransactionDetailsResponse)
+      return ledgerClient.transaction(params.transaction_id, params.account_id, {
+        baseUrl: ledgerUrl,
+        transaction_type: 'PAYMENT'
+      })
+        .then((ledgerResponse) => {
+          expect(ledgerResponse).to.deep.equal(getTransactionDetails)
+        })
+    })
+  })
 })
