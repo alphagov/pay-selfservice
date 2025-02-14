@@ -32,6 +32,9 @@ describe('Card payment updates', () => {
     ])
     cy.visit(baseUrl + '/collect-billing-address')
     cy.get('h1').should('contain.text', 'Collect billing address')
+    cy.get('.service-settings-nav__li--active').within(() => {
+      cy.get('#card-payments').should('contain.text', 'Card payments')
+    })
     cy.get('input#collect-billing-address-on').click()
     cy.contains('button', 'Save changes').click()
     cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
@@ -68,6 +71,9 @@ describe('Card payment updates', () => {
     ])
     cy.visit(baseUrl + '/default-billing-address-country')
     cy.get('h1').should('contain.text', 'Default billing address country')
+    cy.get('.service-settings-nav__li--active').within(() => {
+      cy.get('#card-payments').should('contain.text', 'Card payments')
+    })
     cy.get('input#default-billing-address-on').click()
     cy.contains('button', 'Save changes').click()
     cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
@@ -100,6 +106,9 @@ describe('Card payment updates', () => {
     ])
     cy.visit(baseUrl + '/apple-pay')
     cy.get('h1').should('contain.text', 'Apple Pay')
+    cy.get('.service-settings-nav__li--active').within(() => {
+      cy.get('#card-payments').should('contain.text', 'Card payments')
+    })
     cy.get('input#apple-pay-on').click()
     cy.contains('button', 'Save changes').click()
     cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
@@ -114,6 +123,9 @@ describe('Card payment updates', () => {
     ])
     cy.visit(baseUrl + '/google-pay')
     cy.get('h1').should('contain.text', 'Google Pay')
+    cy.get('.service-settings-nav__li--active').within(() => {
+      cy.get('#card-payments').should('contain.text', 'Card payments')
+    })
     cy.get('input#google-pay-on').click()
     cy.contains('button', 'Save changes').click()
     cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
