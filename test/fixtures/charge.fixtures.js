@@ -60,8 +60,27 @@ function validGetChargeResponse (opts = {}) {
   }
 }
 
+function validGetChargeResponseWithExemption (opts = {}) {
+  return {
+    state: opts.state || { status: 'started', finished: false },
+    charge_id: opts.chargeId || 'ch_123abc456def',
+    exemption: opts.exemption || { requested: true, type: 'corporate', outcome: { result: 'honoured' }},
+    authorisation_summary: opts.authorisation_summary || { three_d_secure: { required: true, version: '2.1.0' }}
+  }
+}
+
+function validGetChargeResponseWithAuthSummary (opts = {}) {
+  return {
+    state: opts.state || { status: 'started', finished: false },
+    charge_id: opts.chargeId || 'ch_123abc456def',
+    authorisation_summary: opts.authorisation_summary || { three_d_secure: { required: true, version: '2.1.0' }}
+  }
+}
+
 module.exports = {
   validPostChargeRequestRequest,
   validPostChargeRequestResponse,
-  validGetChargeResponse
+  validGetChargeResponse,
+  validGetChargeResponseWithExemption,
+  validGetChargeResponseWithAuthSummary
 }
