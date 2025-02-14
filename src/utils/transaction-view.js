@@ -18,6 +18,38 @@ const DATA_UNAVAILABLE = 'Data unavailable'
 const REDACTED_PII_FIELD_VALUE = '<DELETED>'
 const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
+function append3dSecureData (data) {
+  if (data?.authorisation_summary?.three_d_security?.required === true) {
+    return 'Required'
+  } else if (data?.authorisation_summary?.three_d_security?.required === false) {
+    return 'Not required'
+  }
+}
+
+function appendCorporateExemptionsData (chargeData, isCorporateExemptionsEnabled) {
+  const exemptionJson = chargeData?.exemption
+
+  const NOT_REQUESTED = 'Not requested'
+
+  if (!exemptionJson) {
+    return
+  }
+
+  if (exemptionJson?.requested === true) {
+    if (exemptionJson?.type === 'corporate') {
+      if (chargeData.exemption.outcome?.result) {
+        return changeCase.sentenceCase(chargeData.exemption.outcome.result)
+      }
+    } else if (isCorporateExemptionsEnabled === true) {
+      return NOT_REQUESTED
+    }
+  } else if (exemptionJson?.requested === false) {
+    if (isCorporateExemptionsEnabled === true) {
+      return NOT_REQUESTED
+    }
+  }
+}
+
 module.exports = {
   /** prepares the transaction list view */
   buildPaymentList: function (connectorData, allCards, gatewayAccountExternalId, filtersResult, filtersDateRangeState, route, backPath, searchPath) {
@@ -106,7 +138,7 @@ module.exports = {
     return connectorData
   },
 
-  buildPaymentView: function (chargeData, eventsData, disputeTransactionData, users = []) {
+  buildPaymentView: function (chargeData, eventsData, disputeTransactionData, isCorporateExemptionsEnabled, users = []) {
     chargeData.state_friendly = states.getDisplayNameForConnectorState(chargeData.state, chargeData.transaction_type)
     chargeData.refund_summary = chargeData.refund_summary || {}
 
@@ -173,8 +205,12 @@ module.exports = {
       chargeData.dispute = new DisputeTransaction(disputeTransactionData)
     }
 
+    chargeData.three_d_secure = append3dSecureData(chargeData)
+    chargeData.corporate_exemption_requested = appendCorporateExemptionsData(chargeData, isCorporateExemptionsEnabled)
+
     delete chargeData.links
     delete chargeData.return_url
+
     return chargeData
   }
 }

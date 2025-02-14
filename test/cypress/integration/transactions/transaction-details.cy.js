@@ -111,7 +111,8 @@ describe('Transaction details page', () => {
         gatewayAccountId,
         gatewayAccountExternalId,
         paymentProvider: transactionDetails.payment_provider,
-        allowMoto: additionalGatewayAccountOpts.allow_moto
+        allowMoto: additionalGatewayAccountOpts.allow_moto,
+        worldpay3dsFlex: additionalGatewayAccountOpts.worldpay_3ds_flex
       }),
       transactionStubs.getLedgerTransactionSuccess({ transactionDetails, gatewayAccountId }),
       transactionStubs.getLedgerEventsSuccess({ transactionId, events: transactionDetails.events, gatewayAccountId }),
@@ -150,7 +151,28 @@ describe('Transaction details page', () => {
       transactionDetails.corporate_card_surcharge = 250
       transactionDetails.total_amount = 1250
 
-      cy.task('setupStubs', getStubs(transactionDetails, { allow_moto: true }))
+      transactionDetails.authorisation_summary = {
+        three_d_security: {
+          required: true
+        }
+      }
+
+      transactionDetails.exemption = {
+        requested: true,
+        type: 'corporate',
+        outcome: {
+          result: 'honoured'
+        }
+      }
+
+      const gatewayAccountOptions = {
+        allow_moto: true,
+        worldpay_3ds_flex: {
+          corporate_exemptions_enabled: true
+        }
+      }
+
+      cy.task('setupStubs', getStubs(transactionDetails, gatewayAccountOptions))
       cy.visit(`${transactionsUrl}/${transactionDetails.transaction_id}`)
 
       // Reference number
@@ -174,37 +196,43 @@ describe('Transaction details page', () => {
       // Date created
       cy.get('.transaction-details tbody').find('tr').eq(7).find('td').first().should('contain',
         formatDate(new Date(transactionDetails.events[0].timestamp)))
-      // Provider
+      // 3D Secure
       cy.get('.transaction-details tbody').find('tr').eq(8).find('td').first().should('have.text',
+        'Required')
+      // Corporate exemption requested
+      cy.get('.transaction-details tbody').find('tr').eq(9).find('td').first().should('have.text',
+        capitalise(transactionDetails.exemption.outcome.result))
+      // Provider
+      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').first().should('have.text',
         capitalise(transactionDetails.payment_provider))
       // Provider ID
-      cy.get('.transaction-details tbody').find('tr').eq(9).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(11).find('td').first().should('have.text',
         transactionDetails.gateway_transaction_id)
       // GOVUK Payment ID
-      cy.get('.transaction-details tbody').find('tr').eq(10).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(12).find('td').first().should('have.text',
         transactionDetails.transaction_id)
       // Delayed capture
-      cy.get('.transaction-details tbody').find('tr').eq(11).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
         'On')
       // Moto
-      cy.get('.transaction-details tbody').find('tr').eq(12).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(14).find('td').first().should('have.text',
         'Yes')
       // Payment method
-      cy.get('.transaction-details tbody').find('tr').eq(13).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(15).find('td').first().should('have.text',
         transactionDetails.card_brand)
       // Name on card
-      cy.get('.transaction-details tbody').find('tr').eq(14).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(16).find('td').first().should('have.text',
         transactionDetails.cardholder_name)
       // Card number
-      cy.get('.transaction-details tbody').find('tr').eq(15).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(17).find('td').first().should('have.text',
         `**** **** **** ${transactionDetails.last_digits_card_number}`)
       // Card expiry date
-      cy.get('.transaction-details tbody').find('tr').eq(16).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(18).find('td').first().should('have.text',
         transactionDetails.expiry_date)
       // Wallett type
-      cy.get('.transaction-details tbody').find('tr').eq(17).find('td').first().should('have.text', 'Apple Pay')
+      cy.get('.transaction-details tbody').find('tr').eq(19).find('td').first().should('have.text', 'Apple Pay')
       // Email
-      cy.get('.transaction-details tbody').find('tr').eq(18).find('td').first().should('have.text',
+      cy.get('.transaction-details tbody').find('tr').eq(20).find('td').first().should('have.text',
         transactionDetails.email)
       // Metadata
       cy.get('h2').should('contain', 'Metadata')

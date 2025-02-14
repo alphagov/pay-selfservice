@@ -81,4 +81,186 @@ describe('Transaction view utilities', () => {
     expect(paymentView.email).to.equal('test@example.org')
     expect(paymentView.card_details.cardholder_name).to.equal('Jane D')
   })
+
+  describe('3D secure data', () => {
+    it('should not set `three_d_Secure` field if no 3D secure object', () => {
+      const transaction = transactionFixtures.validTransactionDetailsResponse({})
+
+      const events = transactionFixtures.validTransactionEventsResponse()
+      const paymentView = buildPaymentView(transaction, events)
+
+      expect(paymentView.three_d_secure).equal(undefined)
+    })
+
+    it('should correctly set `three_d_Secure` field to required', () => {
+      const transaction = transactionFixtures.validTransactionDetailsResponse({
+        authorisation_summary: {
+          three_d_security: {
+            required: true
+          }
+        }
+      })
+
+      const events = transactionFixtures.validTransactionEventsResponse()
+      const paymentView = buildPaymentView(transaction, events)
+
+      expect(paymentView.three_d_secure).equal('Required')
+    })
+
+    it('should correctly set `three_d_Secure` field to not required', () => {
+      const transaction = transactionFixtures.validTransactionDetailsResponse({
+        authorisation_summary: {
+          three_d_security: {
+            required: false
+          }
+        }
+      })
+
+      const events = transactionFixtures.validTransactionEventsResponse()
+      const paymentView = buildPaymentView(transaction, events)
+
+      expect(paymentView.three_d_secure).equal('Not required')
+    })
+  })
+
+  describe('Corporate exemption data', () => {
+    describe('when requested=true', () => {
+      describe('when type=corporate', () => {
+        it('should set to `honoured`', () => {
+          const transaction = transactionFixtures.validTransactionDetailsResponse({
+            exemption: {
+              requested: true,
+              type: 'corporate',
+              outcome: {
+                result: 'honoured'
+              }
+            }
+          })
+
+          const events = transactionFixtures.validTransactionEventsResponse()
+          const paymentView = buildPaymentView(transaction, events)
+
+          expect(paymentView.corporate_exemption_requested).to.equal('Honoured')
+        })
+
+        it('should set to `rejected`', () => {
+          const transaction = transactionFixtures.validTransactionDetailsResponse({
+            exemption: {
+              requested: true,
+              type: 'corporate',
+              outcome: {
+                result: 'rejected'
+              }
+            }
+          })
+
+          const events = transactionFixtures.validTransactionEventsResponse()
+          const paymentView = buildPaymentView(transaction, events)
+
+          expect(paymentView.corporate_exemption_requested).to.equal('Rejected')
+        })
+
+        it('should set to `out of scope`', async () => {
+          const transaction = transactionFixtures.validTransactionDetailsResponse({
+            exemption: {
+              requested: true,
+              type: 'corporate',
+              outcome: {
+                result: 'out of scope'
+              }
+            }
+          })
+
+          const events = transactionFixtures.validTransactionEventsResponse()
+          const paymentView = buildPaymentView(transaction, events)
+
+          expect(paymentView.corporate_exemption_requested).to.equal('Out of scope')
+        })
+
+        it('should not set a value when there is no `outcome` row', async () => {
+          const transaction = transactionFixtures.validTransactionDetailsResponse({
+            exemption: {
+              requested: true,
+              type: 'corporate'
+            }
+          })
+
+          const events = transactionFixtures.validTransactionEventsResponse()
+          const paymentView = buildPaymentView(transaction, events)
+
+          expect(paymentView.corporate_exemption_requested).to.equal(undefined)
+        })
+      })
+
+      describe('when type NOT equal to corporate', () => {
+        describe('when corporate exemptions are disabled on the account', () => {
+          it('should not set the field', () => {
+            const transaction = transactionFixtures.validTransactionDetailsResponse({
+              exemption: {
+                requested: true,
+                outcome: {
+                  result: 'honoured'
+                }
+              }
+            })
+
+            const events = transactionFixtures.validTransactionEventsResponse()
+            const paymentView = buildPaymentView(transaction, events, null, false)
+
+            expect(paymentView.corporate_exemption_requested).to.equal(undefined)
+          })
+        })
+
+        describe('when corporate exemptions are enabled on the account', () => {
+          it('should set field to `not requested`', () => {
+            const transaction = transactionFixtures.validTransactionDetailsResponse({
+              exemption: {
+                requested: true,
+                outcome: {
+                  result: 'honoured'
+                }
+              }
+            })
+
+            const events = transactionFixtures.validTransactionEventsResponse()
+            const paymentView = buildPaymentView(transaction, events, null, true)
+
+            expect(paymentView.corporate_exemption_requested).to.equal('Not requested')
+          })
+        })
+      })
+    })
+
+    describe('when requested=false', () => {
+      describe('when corporate exemptions are disabled on the account', () => {
+        it('should not set the field', () => {
+          const transaction = transactionFixtures.validTransactionDetailsResponse({
+            exemption: {
+              requested: false
+            }
+          })
+
+          const events = transactionFixtures.validTransactionEventsResponse()
+          const paymentView = buildPaymentView(transaction, events, null, false)
+
+          expect(paymentView.corporate_exemption_requested).to.equal(undefined)
+        })
+      })
+
+      describe('when corporate exemptions are enabled on the account', () => {
+        it('should set the field to `not requested`', () => {
+          const transaction = transactionFixtures.validTransactionDetailsResponse({
+            exemption: {
+              requested: false
+            }
+          })
+
+          const events = transactionFixtures.validTransactionEventsResponse()
+          const paymentView = buildPaymentView(transaction, events, null, true)
+
+          expect(paymentView.corporate_exemption_requested).to.equal('Not requested')
+        })
+      })
+    })
+  })
 })
