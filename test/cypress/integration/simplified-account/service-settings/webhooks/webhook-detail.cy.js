@@ -10,8 +10,8 @@ const SERVICE_NAME = {
 }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
-const WEBHOOKS_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/webhooks`
 const WEBHOOK_ID = 'webhook-id-1'
+const WEBHOOK_DETAILS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_ID}`
 
 const setStubs = (opts = {}, additionalStubs = []) => {
   cy.task('setupStubs', [
@@ -40,7 +40,8 @@ const setStubs = (opts = {}, additionalStubs = []) => {
     webhooksStubs.getWebhookSigningSecret({
       service_id: SERVICE_EXTERNAL_ID,
       gateway_account_id: GATEWAY_ACCOUNT_ID,
-      external_id: WEBHOOK_ID
+      external_id: WEBHOOK_ID,
+      signing_key: '123-signing-secret-456'
     }),
     ...additionalStubs])
 }
@@ -49,7 +50,7 @@ describe('for an admin', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
     setStubs()
-    cy.visit(WEBHOOKS_SETTINGS_URL + '/' + WEBHOOK_ID)
+    cy.visit(WEBHOOK_DETAILS_URL)
   })
 
   it('should show title and heading', () => {
@@ -67,9 +68,28 @@ describe('for an admin', () => {
     cy.get('.govuk-summary-list').find('dd').eq(1).should('contain.text', 'Payment succeeded')
     cy.get('.govuk-summary-list').find('dt').eq(2).should('contain.text', 'Date created')
     cy.get('.govuk-summary-list').find('dd').eq(2).should('contain.text', '20 August 2024')
-    // TODO check for buttons
+    cy.get('div.service-settings-pane')
+      .find('button')
+      .contains('Update webhook')
+      .should('exist')
+    cy.get('div.service-settings-pane')
+      .find('button')
+      .contains('Deactivate webhook')
+      .should('exist')
   })
-  // TODO check for signing secret
+
+  it('should show signing secret and copy button', () => {
+    cy.get('#signing-secret')
+      .should('contain.text', '123-signing-secret-456')
+      .should('have.class', 'copy-target')
+    cy.get('#copy-signing-secret')
+      .should('contain.text', 'Copy signing secret to clipboard')
+      .should('have.attr', 'data-copy-text', 'true')
+      .should('have.attr', 'data-target', 'copy-target')
+      .click()
+    cy.get('#copy-signing-secret')
+      .should('contain.text', 'Signing secret copied')
+  })
 })
 
 describe('for a non-admin user', () => {
@@ -80,7 +100,7 @@ describe('for a non-admin user', () => {
 
   it('should return forbidden when visiting the url directly', () => {
     cy.request({
-      url: WEBHOOKS_SETTINGS_URL + '/' + WEBHOOK_ID,
+      url: WEBHOOK_DETAILS_URL,
       failOnStatusCode: false
     }).then((response) => {
       expect(response.status).to.eq(403)
