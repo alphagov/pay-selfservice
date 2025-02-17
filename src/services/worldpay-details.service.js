@@ -83,6 +83,21 @@ async function updateRecurringCustomerInitiatedCredentials (serviceExternalId, a
  *
  * @param {String} serviceExternalId
  * @param {String} accountType
+ * @param {String} credentialId
+ * @param {String} userExternalId
+ * @param {WorldpayCredential} credential
+ * @returns {Promise<GatewayAccountCredential>}
+ */
+async function updateRecurringMerchantInitiatedCredentials (serviceExternalId, accountType, credentialId, userExternalId, credential) {
+  const patchRequest = new GatewayAccountCredentialUpdateRequest(userExternalId)
+    .replace().credentials().recurringMerchantInitiated(credential.toJson())
+  return connectorClient.patchGatewayAccountCredentialsByServiceExternalIdAndAccountType(serviceExternalId, accountType, credentialId, patchRequest)
+}
+
+/**
+ *
+ * @param {String} serviceExternalId
+ * @param {String} accountType
  * @param {Worldpay3dsFlexCredential} flexCredential
  * @returns {Promise<undefined>}
  */
@@ -109,5 +124,6 @@ module.exports = {
   check3dsFlexCredential,
   update3dsFlexCredentials,
   updateIntegrationVersion3ds,
+  updateRecurringMerchantInitiatedCredentials,
   updateRecurringCustomerInitiatedCredentials
 }

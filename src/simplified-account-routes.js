@@ -82,6 +82,8 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.flexCrede
 simplifiedAccount.post(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials, enforcePaymentProviderType(WORLDPAY), permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.flexCredentials.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated, enforcePaymentProviderType(WORLDPAY), permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.recurringCustomerInitiatedCredentials.get)
 simplifiedAccount.post(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated, enforcePaymentProviderType(WORLDPAY), permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.recurringCustomerInitiatedCredentials.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated, enforcePaymentProviderType(WORLDPAY), permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.recurringMerchantInitiatedCredentials.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated, enforcePaymentProviderType(WORLDPAY), permission('gateway-credentials:update'), serviceSettingsController.worldpayDetails.recurringMerchantInitiatedCredentials.post)
 
 // card types
 simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permission('transactions:read'), serviceSettingsController.cardTypes.get)

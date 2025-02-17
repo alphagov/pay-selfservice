@@ -32,6 +32,10 @@ const safeOperation = (op, request) => {
         recurringCustomerInitiated: (value) => {
           request.updates.push({ op, path: 'credentials/worldpay/recurring_customer_initiated', value })
           return request
+        },
+        recurringMerchantInitiated: (value) => {
+          request.updates.push({ op, path: 'credentials/worldpay/recurring_merchant_initiated', value })
+          return request
         }
       }
     }
