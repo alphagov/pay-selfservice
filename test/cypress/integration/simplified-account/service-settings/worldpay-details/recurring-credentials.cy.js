@@ -1,6 +1,7 @@
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const { WORLDPAY } = require('@models/constants/payment-providers')
+const ROLES = require('@test/fixtures/roles.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
@@ -10,6 +11,7 @@ const CREDENTIAL_EXTERNAL_ID = 'worldpay-credentials-xyz'
 const VALID_CIT_MERCHANT_CODE = 'A-VALID-CIT-MERCHANT-CODE'
 const VALID_WORLDPAY_USERNAME = 'worldpay-user'
 const VALID_WORLDPAY_PASSWORD = 'worldpay-password' // pragma: allowlist secret
+const WORLDPAY_DETAILS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
 
 const setupStubs = (opts = {}) => {
   const options = Object.assign({}, {
@@ -24,7 +26,7 @@ const setupStubs = (opts = {}) => {
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       serviceName: { en: 'My cool service' },
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role: 'admin',
+      role: ROLES[options.role],
       features: 'degatewayaccountification' // TODO remove features once simplified accounts are live
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
@@ -59,54 +61,76 @@ describe('Worldpay details settings', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
-  describe('For a gateway account that does not have recurring payments enabled', () => {
+  describe('For an non-admin user', () => {
     beforeEach(() => {
-      setupStubs({ recurringEnabled: false })
-      cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+      setupStubs({ role: 'view-only' })
     })
-    it('should not show CIT and MIT credentials tasks', () => {
-      cy.contains('a.govuk-link', 'Recurring customer initiated transaction (CIT) credentials').should('not.exist')
-      cy.contains('a.govuk-link', 'Recurring merchant initiated transaction (MIT) credentials').should('not.exist')
+    it('should return a 403', () => {
+      cy.request({
+        url: `${WORLDPAY_DETAILS_URL}/recurring-customer-initiated`,
+        failOnStatusCode: false
+      }).then(response => expect(response.status).to.eq(403))
     })
   })
-
-  describe('For a gateway account that has recurring payments enabled', () => {
-    beforeEach(() => {
-      setupStubs({ recurringEnabled: true })
-      cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+  describe('For an admin user', () => {
+    describe('For a gateway account that does not have recurring payments enabled', () => {
+      beforeEach(() => {
+        setupStubs({ recurringEnabled: false })
+        cy.visit(WORLDPAY_DETAILS_URL)
+      })
+      it('should not show CIT and MIT credentials tasks', () => {
+        cy.contains('a.govuk-link', 'Recurring customer initiated transaction (CIT) credentials').should('not.exist')
+        cy.contains('a.govuk-link', 'Recurring merchant initiated transaction (MIT) credentials').should('not.exist')
+      })
     })
 
-    it('should show CIT and MIT credentials tasks', () => {
-      cy.contains('a.govuk-link', 'Recurring customer initiated transaction (CIT) credentials').should('exist')
-        .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-customer-initiated`)
-      cy.contains('a.govuk-link', 'Recurring merchant initiated transaction (MIT) credentials').should('exist')
-        .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-merchant-initiated`)
-      cy.contains('a.govuk-link', 'Link your Worldpay account with GOV.UK Pay').should('not.exist')
-      cy.contains('a.govuk-link', 'Configure 3DS').should('exist')
-    })
+    describe('For a gateway account that has recurring payments enabled', () => {
+      beforeEach(() => {
+        setupStubs({ recurringEnabled: true })
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+      })
 
-    it('should be able to provide CIT credentials', () => {
-      cy.contains('a', 'Recurring customer initiated transaction (CIT) credentials').click()
+      it('should show CIT and MIT credentials tasks', () => {
+        cy.contains('a.govuk-link', 'Recurring customer initiated transaction (CIT) credentials').should('exist')
+          .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-customer-initiated`)
+        cy.contains('a.govuk-link', 'Recurring merchant initiated transaction (MIT) credentials').should('exist')
+          .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-merchant-initiated`)
+        cy.contains('a.govuk-link', 'Link your Worldpay account with GOV.UK Pay').should('not.exist')
+        cy.contains('a.govuk-link', 'Configure 3DS').should('exist')
+      })
 
-      cy.get('input[name="merchantCode"]').type(VALID_CIT_MERCHANT_CODE)
-      cy.get('input[name="username"]').type(VALID_WORLDPAY_USERNAME)
-      cy.get('input[name="password"]').type(VALID_WORLDPAY_PASSWORD)
-
-      cy.get('#submitCredentials').click()
-      cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
-      cy.get('h1').should('contain', 'Worldpay details')
-    })
-
-    describe('when there are validation errors', () => {
-      it('should return to the edit credentials page and show the validation errors', () => {
+      it('should be able to provide CIT credentials', () => {
         cy.contains('a', 'Recurring customer initiated transaction (CIT) credentials').click()
+
+        cy.title().should('eq', 'Recurring customer initiated transaction (CIT) credentials - Settings - My cool service - GOV.UK Pay')
+        cy.get('h1').should('have.text', 'Recurring customer initiated transaction (CIT) credentials')
+
+        cy.get('input[name="merchantCode"]').type(VALID_CIT_MERCHANT_CODE)
+        cy.get('input[name="username"]').type(VALID_WORLDPAY_USERNAME)
+        cy.get('input[name="password"]').type(VALID_WORLDPAY_PASSWORD)
+
         cy.get('#submitCredentials').click()
-        cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-customer-initiated`)
-        cy.contains('h2', 'There is a problem').should('exist')
-        cy.get('.govuk-error-summary__body').within(() => {
-          cy.get('a').eq(0).should('have.attr', 'href', '#merchant-code')
-          cy.get('a').eq(1).should('have.attr', 'href', '#username')
-          cy.get('a').eq(2).should('have.attr', 'href', '#password')
+        cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+        cy.get('h1').should('contain', 'Worldpay details')
+      })
+
+      it('should link back to the Worldpay details page', () => {
+        cy.contains('a', 'Recurring customer initiated transaction (CIT) credentials').click()
+        cy.contains('a', 'Back').click()
+        cy.location('pathname').should('eq', WORLDPAY_DETAILS_URL)
+      })
+
+      describe('when there are validation errors', () => {
+        it('should return to the edit credentials page and show the validation errors', () => {
+          cy.contains('a', 'Recurring customer initiated transaction (CIT) credentials').click()
+          cy.get('#submitCredentials').click()
+          cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-customer-initiated`)
+          cy.contains('h2', 'There is a problem').should('exist')
+          cy.get('.govuk-error-summary__body').within(() => {
+            cy.get('a').eq(0).should('have.attr', 'href', '#merchant-code')
+            cy.get('a').eq(1).should('have.attr', 'href', '#username')
+            cy.get('a').eq(2).should('have.attr', 'href', '#password')
+          })
         })
       })
     })
