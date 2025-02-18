@@ -2,7 +2,6 @@ const { GatewayAccountCredential } = require('@models/gateway-account-credential
 const CREDENTIAL_STATE = require('@models/constants/credential-state')
 const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
 const { InvalidConfigurationError } = require('@root/errors')
-const logger = require('@utils/logger')(__filename)
 const pendingCredentialStates = [CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTERED, CREDENTIAL_STATE.VERIFIED]
 
 /**
@@ -83,8 +82,9 @@ class GatewayAccount {
    */
   getSwitchingCredential () {
     if (!this.providerSwitchEnabled || !this.getActiveCredential()) {
-      logger.warn(`Requested switching credential from incompatible gateway account [gateway_account_id: ${this.id}]`)
-      return null
+      throw new InvalidConfigurationError(
+        `Requested switching credential from incompatible gateway account [gateway_account_id: ${this.id}]`
+      )
     }
 
     const pendingCredentials = this.gatewayAccountCredentials

@@ -64,7 +64,7 @@ describe('GatewayAccount', () => {
         .to.throw(InvalidConfigurationError)
     })
 
-    it('should return null if no active credential found for gateway account', () => {
+    it('should throw invalid configuration error if no active credential found for gateway account', () => {
       const gatewayAccount = new GatewayAccount({
         gateway_account_id: 12,
         provider_switch_enabled: true,
@@ -77,18 +77,18 @@ describe('GatewayAccount', () => {
           }
         ]
       })
-      const switchingCredential = gatewayAccount.getSwitchingCredential()
-      expect(switchingCredential).to.be.null //eslint-disable-line
+      expect(() => gatewayAccount.getSwitchingCredential())
+        .to.throw(InvalidConfigurationError)
     })
 
-    it('should return null if provider switching is not enabled', () => {
+    it('should throw invalid configuration error if provider switching is not enabled', () => {
       const gatewayAccount = new GatewayAccount({
         gateway_account_id: 12,
         provider_switch_enabled: false,
         gateway_account_credentials: gatewayAccountCredentials
       })
-      const switchingCredential = gatewayAccount.getSwitchingCredential()
-      expect(switchingCredential).to.be.null //eslint-disable-line
+      expect(() => gatewayAccount.getSwitchingCredential())
+        .to.throw(InvalidConfigurationError)
     })
   })
 })

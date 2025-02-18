@@ -776,14 +776,13 @@ ConnectorClient.prototype = {
    * @param {String} serviceExternalId
    * @param {String} accountType
    * @param {GatewayAccountSwitchPaymentProviderRequest} gatewayAccountSwitchProviderRequest
-   * @returns {Promise<{Object}>}
    */
-  postSwitchPSPBByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, gatewayAccountSwitchProviderRequest) {
+  postSwitchPSPByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, gatewayAccountSwitchProviderRequest) {
     const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/switch-psp`
       .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
       .replace('{accountType}', encodeURIComponent(accountType))
     configureClient(client, url)
-    return client.post(url, gatewayAccountSwitchProviderRequest.toPayload(), 'switch account payment service provider')
+    await client.post(url, gatewayAccountSwitchProviderRequest.toPayload(), 'switch account payment service provider')
   }
 }
 

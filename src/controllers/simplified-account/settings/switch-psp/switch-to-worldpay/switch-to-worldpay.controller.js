@@ -32,7 +32,7 @@ function post (req, res, next) {
 
   if (worldpayTasks.incompleteTasks) {
     req.flash('messages', { state: 'error', heading: 'There is a problem', body: 'You cannot switch providers until all required tasks are completed' })
-    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, service.externalId, account.type))
+    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, service.externalId, account.type))
   }
 
   const switchProviderRequest = new GatewayAccountSwitchPaymentProviderRequest()
