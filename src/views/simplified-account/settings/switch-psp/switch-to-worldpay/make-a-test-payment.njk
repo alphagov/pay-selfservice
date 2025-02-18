@@ -1,0 +1,15 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+
+{% set settingsPageTitle = "Test the connection between Worldpay and GOV.UK Pay" %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+  <p class="govuk-body">Make a live payment of £2 with a debit or credit card to check that the connection with Worldpay
+    is working. You can refund the payment anytime.</p>
+  <form id="make-a-payment" method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    {{ govukButton({
+      text: "Continue to live payment"
+    }) }}
+  </form>
+{% endblock %}

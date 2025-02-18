@@ -34,6 +34,10 @@ const safeOperation = (op, request) => {
           return request
         }
       }
+    },
+    state: (value) => {
+      request.updates.push({ op, path: 'state', value })
+      return request
     }
   }
 }

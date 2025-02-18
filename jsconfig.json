@@ -1,16 +1,37 @@
 {
   "compilerOptions": {
+    "checkJs": true,
+    "module": "commonjs",
     "baseUrl": ".",
     "paths": {
-      "@root/*": ["src/*"],
-      "@controllers/*": ["src/controllers/*"],
-      "@middleware/*": ["src/middleware/*"],
-      "@models/*": ["src/models/*"],
-      "@services/*": ["src/services/*"],
-      "@utils/*": ["src/utils/*"],
-      "@views/*": ["src/views/*"],
-      "@test/*": ["test/*"]
+      "@controllers/*": [
+        "src/controllers/*"
+      ],
+      "@middleware/*": [
+        "src/middleware/*"
+      ],
+      "@models/*": [
+        "src/models/*"
+      ],
+      "@services/*": [
+        "src/services/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@views/*": [
+        "src/views/*"
+      ],
+      "@root/*": [
+        "src/*"
+      ],
+      "@test/*": [
+        "test/*"
+      ]
     }
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

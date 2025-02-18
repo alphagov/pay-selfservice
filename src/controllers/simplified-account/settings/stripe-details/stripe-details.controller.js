@@ -17,11 +17,8 @@ async function getAccountDetails (req, res) {
 
 async function get (req, res) {
   const javascriptUnavailable = req.query.noscript === 'true'
-  /** @type {GatewayAccount} */
   const account = req.account
-  /** @type {GOVUKPayService} */
   const service = req.service
-  /** @type {StripeAccountSetup} */
   const gatewayAccountStripeProgress = req.gatewayAccountStripeProgress
   const stripeDetailsTasks = friendlyStripeTasks(gatewayAccountStripeProgress, account.type, service.externalId)
   const incompleteTasks = Object.values(stripeDetailsTasks).some(task => task.complete === false)
