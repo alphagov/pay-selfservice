@@ -8,9 +8,7 @@ const worldpayDetailsService = require('@services/worldpay-details.service')
 const { oneOffCustomerInitiatedSchema } = require('@utils/simplified-account/validation/worldpay/one-off-customer-initiated.schema')
 
 function get(req, res) {
-  /** @type {GatewayAccount} */
   const account = req.account
-  /** @type {GOVUKPayService} */
   const service = req.service
   const existingCredentials = account.getSwitchingCredential().credentials?.oneOffCustomerInitiated || {}
   const context = {
@@ -22,9 +20,7 @@ function get(req, res) {
 }
 
 async function post(req, res, next) {
-  /** @type {GatewayAccount} */
   const account = req.account
-  /** @type {GOVUKPayService} */
   const service = req.service
   const validations = [
     oneOffCustomerInitiatedSchema.merchantCode.validate,
@@ -73,9 +69,7 @@ async function post(req, res, next) {
 }
 
 const postErrorResponse = (req, res, errors) => {
-  /** @type {GatewayAccount} */
   const account = req.account
-  /** @type {GOVUKPayService} */
   const service = req.service
   return response(req, res, 'simplified-account/settings/switch-psp/switch-to-worldpay/add-worldpay-credentials', {
     errors,

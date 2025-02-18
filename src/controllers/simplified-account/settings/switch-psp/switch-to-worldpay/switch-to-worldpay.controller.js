@@ -8,9 +8,7 @@ const formatPSPName = require('@utils/format-PSP-name')
 const gatewayAccountsService = require('@services/gateway-accounts.service')
 
 function get (req, res, next) {
-  /** @type {GatewayAccount} */
   const account = req.account
-  /** @type {GOVUKPayService} */
   const service = req.service
   const worldpayTasks = new WorldpayTasks(account, service.externalId, true)
 
@@ -26,11 +24,8 @@ function get (req, res, next) {
 }
 
 function post (req, res, next) {
-  /** @type {GatewayAccount} */
   const account = req.account
-  /** @type {GOVUKPayService} */
   const service = req.service
-  /** @type {User} */
   const user = req.user
   const targetCredential = account.getSwitchingCredential()
   const worldpayTasks = new WorldpayTasks(account, service.externalId, true)

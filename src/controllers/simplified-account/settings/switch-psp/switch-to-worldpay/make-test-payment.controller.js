@@ -11,9 +11,7 @@ const worldpayDetailsService = require('@services/worldpay-details.service')
 const SELFSERVICE_URL = process.env.SELFSERVICE_URL
 
 function get (req, res) {
-  /** @type {GatewayAccount} */
   const account = req.account
-  /** @type {GOVUKPayService} */
   const service = req.service
   const context = {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
@@ -23,9 +21,7 @@ function get (req, res) {
 }
 
 async function post (req, res, next) {
-  /** @type {GatewayAccount} */
   const account = req.account
-  /** @type {GOVUKPayService} */
   const service = req.service
   const targetCredential = account.getSwitchingCredential()
   const chargeRequest = new ChargeRequest()
@@ -48,11 +44,8 @@ async function post (req, res, next) {
 }
 
 async function getInbound (req, res, next) {
-  /** @type {GatewayAccount} */
   const account = req.account
-  /** @type {GOVUKPayService} */
   const service = req.service
-  /** @type {User} */
   const user = req.user
   const chargeExternalId = req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]
   delete req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]
