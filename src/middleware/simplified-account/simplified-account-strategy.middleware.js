@@ -71,3 +71,11 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
     next(err)
   }
 }
+
+/**
+ * An Express Request object extended with service, account, and user
+ * @typedef {Object} SimplifiedAccountRequest
+ * @property {GOVUKPayService} service
+ * @property {GatewayAccount} account
+ * @property {User} user
+ */
