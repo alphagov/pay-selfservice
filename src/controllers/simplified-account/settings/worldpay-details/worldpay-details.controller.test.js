@@ -125,13 +125,13 @@ describe('Controller: settings/worldpay-details', () => {
         const tasks = [{
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
             SERVICE_ID, ACCOUNT_TYPE),
-          id: null,
+          id: 'cit-credentials',
           linkText: 'Recurring customer initiated transaction (CIT) credentials',
           status: 'NOT_STARTED'
         }, {
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated,
             SERVICE_ID, ACCOUNT_TYPE),
-          id: null,
+          id: 'mit-credentials',
           linkText: 'Recurring merchant initiated transaction (MIT) credentials',
           status: 'NOT_STARTED'
         }, {

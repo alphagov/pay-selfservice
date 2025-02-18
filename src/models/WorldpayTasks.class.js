@@ -38,6 +38,10 @@ class WorldpayTasks {
       task.status !== TASK_STATUS.COMPLETED).length > 0
   }
 
+  hasRecurringTasks () {
+    return this.tasks.find(t => t.id === 'cit-credentials') && this.tasks.find(t => t.id === 'mit-credentials')
+  }
+
   /**
    *
    * @param {String} taskId
@@ -109,7 +113,7 @@ class WorldpayTask {
     const task = new WorldpayTask(
       formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
         serviceExternalId, accountType),
-      null,
+      'cit-credentials',
       'Recurring customer initiated transaction (CIT) credentials'
     )
     if (!credential || !credential.credentials.recurringCustomerInitiated) {
@@ -131,10 +135,10 @@ class WorldpayTask {
     const task = new WorldpayTask(
       formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated,
         serviceExternalId, accountType),
-      null,
+      'mit-credentials',
       'Recurring merchant initiated transaction (MIT) credentials'
     )
-    if (!credential || !credential.credentials.recurringMerchantInitated) {
+    if (!credential || !credential.credentials.recurringMerchantInitiated) {
       task.setStatus(TASK_STATUS.NOT_STARTED)
     } else {
       task.setStatus(TASK_STATUS.COMPLETED)

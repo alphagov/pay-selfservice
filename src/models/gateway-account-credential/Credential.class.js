@@ -33,11 +33,11 @@ class Credential {
 
   /**
    *
-   * @param {WorldpayCredential} recurringMerchantInitated
+   * @param {WorldpayCredential} recurringMerchantInitiated
    * @returns {Credential}
    */
-  withRecurringMerchantInitiated (recurringMerchantInitated) {
-    this.recurringMerchantInitated = recurringMerchantInitated
+  withRecurringMerchantInitiated (recurringMerchantInitiated) {
+    this.recurringMerchantInitiated = recurringMerchantInitiated
     return this
   }
 
