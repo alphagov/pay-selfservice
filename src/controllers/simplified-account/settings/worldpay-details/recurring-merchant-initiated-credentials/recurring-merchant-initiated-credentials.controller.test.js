@@ -26,11 +26,6 @@ const gatewayAccount = new GatewayAccount({
 })
 const worldpayTasks = new WorldpayTasks(gatewayAccount, SERVICE_ID)
 WorldpayTasks.recalculate = () => { return worldpayTasks }
-// const mockWorldpayTasks = {
-//   tasks: worldpayTasks.tasks,
-//   incompleteTasks: true,
-//   recalculate: () => { return worldpayTasks }
-// }
 
 const worldpayDetailsServiceStubs = {
   checkCredential: sinon.stub().returns(true),
