@@ -29,10 +29,10 @@ WorldpayTasks.recalculate = () => { return worldpayTasks }
 
 const worldpayDetailsServiceStubs = {
   checkCredential: sinon.stub().returns(true),
-  updateRecurringCustomerInitiatedCredentials: sinon.spy()
+  updateRecurringMerchantInitiatedCredentials: sinon.spy()
 }
 
-const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/worldpay-details/recurring-customer-initiated-credentials/recurring-customer-initiated-credentials.controller')
+const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/worldpay-details/recurring-merchant-initiated-credentials/recurring-merchant-initiated-credentials.controller')
   .withService(new Service({
     external_id: SERVICE_ID
   }))
@@ -45,7 +45,7 @@ const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@c
   })
   .build()
 
-describe('Controller: settings/worldpay-details/recurring-customer-initiated-credentials', () => {
+describe('Controller: settings/worldpay-details/recurring-merchant-initiated-credentials', () => {
   describe('get', () => {
     describe('when credentials do not exist', () => {
       before(() => {
@@ -57,7 +57,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
       })
 
       it('should pass req, res and template path to the response method', () => {
-        mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/worldpay-details/recurring-customer-initiated-credentials')
+        mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/worldpay-details/recurring-merchant-initiated-credentials')
       })
 
       it('should pass context data with no credentials to the response method', () => {
@@ -73,7 +73,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
           account: {
             gatewayAccountCredentials: [{
               credentials: {
-                recurringCustomerInitiated: {
+                recurringMerchantInitiated: {
                   merchantCode: 'a-merchant-code',
                   username: 'a-username'
                 }
@@ -88,7 +88,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
       })
 
       it('should pass req, res and template path to the response method', () => {
-        mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/worldpay-details/recurring-customer-initiated-credentials')
+        mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/worldpay-details/recurring-merchant-initiated-credentials')
       })
 
       it('should pass context data with no credentials to the response method', () => {
@@ -119,7 +119,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
         nextStubs({
           '@services/worldpay-details.service': {
             checkCredential: sinon.stub().returns(false),
-            updateRecurringCustomerInitiatedCredentials: sinon.spy()
+            updateRecurringMerchantInitiatedCredentials: sinon.spy()
           }
         })
         await call('post')
@@ -129,7 +129,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
         mockResponse.should.have.been.calledWith(
           sinon.match.any,
           sinon.match.any,
-          'simplified-account/settings/worldpay-details/recurring-customer-initiated-credentials',
+          'simplified-account/settings/worldpay-details/recurring-merchant-initiated-credentials',
           {
             errors: {
               summary: [
@@ -154,12 +154,12 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
         await call('post')
       })
       it('should call the worldpay details service to update the recurring customer initiated credentials', () => {
-        worldpayDetailsServiceStubs.updateRecurringCustomerInitiatedCredentials.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        worldpayDetailsServiceStubs.updateRecurringMerchantInitiatedCredentials.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
         const credential = new WorldpayCredential()
           .withMerchantCode('a-merchant-code')
           .withUsername('a-username')
           .withPassword('a-password') // pragma: allowlist secret
-        worldpayDetailsServiceStubs.updateRecurringCustomerInitiatedCredentials.should.have.been.calledWith(SERVICE_ID, ACCOUNT_TYPE, 'creds-id', 'a-user-external-id', credential)
+        worldpayDetailsServiceStubs.updateRecurringMerchantInitiatedCredentials.should.have.been.calledWith(SERVICE_ID, ACCOUNT_TYPE, 'creds-id', 'a-user-external-id', credential)
       })
       it('should call the redirect method with the worldpay details index path on success', () => {
         res.redirect.should.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE))

@@ -36,5 +36,6 @@ module.exports = {
   get,
   oneOffCustomerInitiatedCredentials: require('./credentials/worldpay-credentials.controller'),
   flexCredentials: require('./flex-credentials/worldpay-flex-credentials.controller'),
-  recurringCustomerInitiatedCredentials: require('./recurring-customer-initiated-credentials/recurring-customer-initiated-credentials.controller')
+  recurringCustomerInitiatedCredentials: require('./recurring-customer-initiated-credentials/recurring-customer-initiated-credentials.controller'),
+  recurringMerchantInitiatedCredentials: require('./recurring-merchant-initiated-credentials/recurring-merchant-initiated-credentials.controller')
 }
