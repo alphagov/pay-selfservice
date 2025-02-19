@@ -21,6 +21,7 @@ const setupStubs = (opts = {}, additionalStubs = []) => {
     paymentProvider: WORLDPAY,
     credentials: {},
     allowMoto: false,
+    recurringEnabled: false,
     worldpay3dsFlex: undefined
   }, opts)
 
@@ -36,6 +37,7 @@ const setupStubs = (opts = {}, additionalStubs = []) => {
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       payment_provider: options.paymentProvider,
+      recurring_enabled: opts.recurringEnabled,
       gateway_account_credentials: [{
         payment_provider: options.paymentProvider,
         credentials: options.credentials,
@@ -54,6 +56,25 @@ describe('Worldpay details settings', () => {
   })
 
   describe('Worldpay details landing page', () => {
+    function assert3DSFlexCredentials () {
+      cy.get('.govuk-summary-card__title-wrapper > h2').should('contain', '3DS Flex credentials')
+
+      cy.get('.govuk-summary-list__row').eq(0).within(() => {
+        cy.get('dt').should('contain.text', 'Organisational Unit ID')
+        cy.get('dd').should('contain.text', '5bd9b55e4444761ac0af1c80') // pragma: allowlist secret
+      })
+
+      cy.get('.govuk-summary-list__row').eq(1).within(() => {
+        cy.get('dt').should('contain.text', 'Issuer (API ID)')
+        cy.get('dd').should('contain.text', '5bd9e0e4444dce15fed8c940') // pragma: allowlist secret
+      })
+
+      cy.get('.govuk-summary-list__row').eq(2).within(() => {
+        cy.get('dt').should('contain.text', 'JWT MAC Key (API key)')
+        cy.get('dd').should('contain.text', '●●●●●●●●')
+      })
+    }
+
     describe('for an admin user', () => {
       describe('for a MOTO service', () => {
         describe('when some tasks are incomplete', () => {
@@ -164,7 +185,116 @@ describe('Worldpay details settings', () => {
         })
       })
 
-      describe('for a non-MOTO service', () => {
+      describe('for a recurring card payments service', () => {
+        const worldpayDetailsUrl = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
+        describe('when none of the tasks are complete', () => {
+          beforeEach(() => {
+            setupStubs({ recurringEnabled: true })
+            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          })
+          it('should show all recurring related tasks as "Not yet started"', () => {
+            cy.get('.govuk-task-list').within(() => {
+              [
+                {
+                  index: 0,
+                  text: 'Recurring customer initiated transaction (CIT) credentials',
+                  href: `${worldpayDetailsUrl}/recurring-customer-initiated`
+                },
+                {
+                  index: 1,
+                  text: 'Recurring merchant initiated transaction (MIT) credentials',
+                  href: `${worldpayDetailsUrl}/recurring-merchant-initiated`
+                },
+                {
+                  index: 2,
+                  text: 'Configure 3DS',
+                  href: `${worldpayDetailsUrl}/flex-credentials`
+                }
+              ].forEach((value) => {
+                cy.get('.govuk-task-list__item').eq(value.index).within(() => {
+                  cy.get('a')
+                    .should('contain.text', value.text)
+                    .should('have.attr', 'href', value.href)
+                  cy.get('.govuk-task-list__status').within(() => {
+                    cy.get('strong.govuk-tag.govuk-tag--blue').should('contain.text', 'Not yet started')
+                  })
+                })
+              })
+            })
+          })
+          it('should not show the "Link your Worldpay account" task', () => {
+            cy.contains('a', 'Link your Worldpay account with GOV.UK Pay').should('not.exist')
+          })
+        })
+        describe('when all of the tasks are complete', () => {
+          beforeEach(() => {
+            setupStubs(
+              {
+                recurringEnabled: true,
+                credentials: {
+                  recurring_customer_initiated: {
+                    merchant_code: VALID_MERCHANT_CODE,
+                    username: VALID_WORLDPAY_USERNAME
+                  },
+                  recurring_merchant_initiated: {
+                    merchant_code: VALID_MERCHANT_CODE,
+                    username: VALID_WORLDPAY_USERNAME
+                  }
+                },
+                worldpay3dsFlex: {
+                  organisational_unit_id: VALID_ORGANISATIONAL_UNIT_ID,
+                  issuer: VALID_ISSUER
+                }
+              }
+            )
+            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          })
+
+          it('should show all recurring related tasks as complete', () => {
+            [
+              {
+                index: 0,
+                text: 'Recurring customer initiated transaction (CIT) credentials',
+                href: `${worldpayDetailsUrl}/recurring-customer-initiated`
+              },
+              {
+                index: 1,
+                text: 'Recurring merchant initiated transaction (MIT) credentials',
+                href: `${worldpayDetailsUrl}/recurring-merchant-initiated`
+              }
+            ].forEach((value) => {
+              cy.get('.govuk-summary-card').eq(value.index).within(() => {
+                cy.contains('h2', value.text).should('exist')
+
+                cy.get('a')
+                  .should('contain.text', 'Change')
+                  .should('have.attr', 'href', value.href)
+
+                cy.get('.govuk-summary-list__row').eq(0).within(() => {
+                  cy.get('dt').should('contain.text', 'Merchant code')
+                  cy.get('dd').should('contain.text', 'AVALIDMERCHANTCODE')
+                })
+
+                cy.get('.govuk-summary-list__row').eq(1).within(() => {
+                  cy.get('dt').should('contain.text', 'Username')
+                  cy.get('dd').should('contain.text', 'worldpay-user')
+                })
+
+                cy.get('.govuk-summary-list__row').eq(2).within(() => {
+                  cy.get('dt').should('contain.text', 'Password')
+                  cy.get('dd').should('contain.text', '●●●●●●●●')
+                })
+              })
+            })
+
+            cy.get('.govuk-summary-card').eq(2).within(() => {
+              assert3DSFlexCredentials()
+            })
+          })
+        })
+      })
+
+      describe('for a one-off card payments service', () => {
         describe('when the "Link your Worldpay account" task is incomplete', () => {
           beforeEach(() => {
             setupStubs()
@@ -185,7 +315,7 @@ describe('Worldpay details settings', () => {
             })
           })
 
-          it('should show the "Configure 3DS" task as "Cannot start yet"', () => {
+          it('should show the "Configure 3DS" task as "Not yet started"', () => {
             cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('.govuk-task-list').within(() => {
@@ -287,22 +417,7 @@ describe('Worldpay details settings', () => {
               })
 
               cy.get('.govuk-summary-card').eq(1).within(() => {
-                cy.get('.govuk-summary-card__title-wrapper > h2').should('contain', '3DS Flex credentials')
-
-                cy.get('.govuk-summary-list__row').eq(0).within(() => {
-                  cy.get('dt').should('contain.text', 'Organisational Unit ID')
-                  cy.get('dd').should('contain.text', '5bd9b55e4444761ac0af1c80') // pragma: allowlist secret
-                })
-
-                cy.get('.govuk-summary-list__row').eq(1).within(() => {
-                  cy.get('dt').should('contain.text', 'Issuer (API ID)')
-                  cy.get('dd').should('contain.text', '5bd9e0e4444dce15fed8c940') // pragma: allowlist secret
-                })
-
-                cy.get('.govuk-summary-list__row').eq(2).within(() => {
-                  cy.get('dt').should('contain.text', 'JWT MAC Key (API key)')
-                  cy.get('dd').should('contain.text', '●●●●●●●●')
-                })
+                assert3DSFlexCredentials()
               })
             })
 
