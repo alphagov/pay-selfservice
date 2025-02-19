@@ -14,18 +14,35 @@ function get (req, res) {
 
   if (!worldpayTasks.incompleteTasks) {
     context.answers = {
-      oneOffCustomerInitiated: {
-        href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
-          req.service.externalId, req.account.type),
-        merchantCode: req.account.getCurrentCredential().credentials.oneOffCustomerInitiated.merchantCode,
-        username: req.account.getCurrentCredential().credentials.oneOffCustomerInitiated.username
-      },
       worldpay3dsFlex: worldpayTasks.findTask('3ds-flex-credentials') && {
         href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
           req.service.externalId, req.account.type),
         organisationalUnitId: req.account.worldpay3dsFlex.organisationalUnitId,
         issuer: req.account.worldpay3dsFlex.issuer
       }
+    }
+    if (worldpayTasks.hasRecurringTasks()) {
+      context.answers.tasksWithMerchantCodeAndUsername = [{
+        title: 'Recurring customer initiated transaction (CIT) credentials',
+        href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
+          req.service.externalId, req.account.type),
+        merchantCode: req.account.getCurrentCredential().credentials.recurringCustomerInitiated.merchantCode,
+        username: req.account.getCurrentCredential().credentials.recurringCustomerInitiated.username
+      }, {
+        title: 'Recurring merchant initiated transaction (MIT) credentials',
+        href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated,
+          req.service.externalId, req.account.type),
+        merchantCode: req.account.getCurrentCredential().credentials.recurringMerchantInitiated.merchantCode,
+        username: req.account.getCurrentCredential().credentials.recurringMerchantInitiated.username
+      }]
+    } else {
+      context.answers.tasksWithMerchantCodeAndUsername = [{
+        title: 'Account credentials',
+        href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
+          req.service.externalId, req.account.type),
+        merchantCode: req.account.getCurrentCredential().credentials.oneOffCustomerInitiated.merchantCode,
+        username: req.account.getCurrentCredential().credentials.oneOffCustomerInitiated.username
+      }]
     }
   }
 
