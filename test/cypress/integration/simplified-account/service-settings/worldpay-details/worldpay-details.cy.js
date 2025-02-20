@@ -37,7 +37,7 @@ const setupStubs = (opts = {}, additionalStubs = []) => {
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       payment_provider: options.paymentProvider,
-      recurring_enabled: opts.recurringEnabled,
+      recurring_enabled: options.recurringEnabled,
       gateway_account_credentials: [{
         payment_provider: options.paymentProvider,
         credentials: options.credentials,
