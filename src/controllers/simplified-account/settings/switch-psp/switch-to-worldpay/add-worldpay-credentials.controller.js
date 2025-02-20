@@ -7,7 +7,7 @@ const WorldpayCredential = require('@models/gateway-account-credential/WorldpayC
 const worldpayDetailsService = require('@services/worldpay-details.service')
 const { oneOffCustomerInitiatedSchema } = require('@utils/simplified-account/validation/worldpay/one-off-customer-initiated.schema')
 
-function get(req, res) {
+function get (req, res) {
   const account = req.account
   const service = req.service
   const existingCredentials = account.getSwitchingCredential().credentials?.oneOffCustomerInitiated || {}
@@ -19,9 +19,11 @@ function get(req, res) {
   return response(req, res, 'simplified-account/settings/switch-psp/switch-to-worldpay/add-worldpay-credentials', context)
 }
 
-async function post(req, res, next) {
+async function post (req, res, next) {
   const account = req.account
   const service = req.service
+  const user = req.user
+  const switchingCredential = account.getSwitchingCredential()
   const validations = [
     oneOffCustomerInitiatedSchema.merchantCode.validate,
     oneOffCustomerInitiatedSchema.username.validate,
@@ -38,34 +40,34 @@ async function post(req, res, next) {
     })
   }
 
-  const credential = new WorldpayCredential()
+  const newOneOffCustomerInitiatedCredential = new WorldpayCredential()
     .withMerchantCode(req.body.merchantCode)
     .withUsername(req.body.username)
     .withPassword(req.body.password)
 
-  const isValid = await worldpayDetailsService.checkCredential(req.service.externalId, req.account.type, credential)
-  if (!isValid) {
-    return postErrorResponse(req, res, {
-      summary: [
-        {
-          text: 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided',
-          href: '#merchant-code'
-        }
-      ]
-    })
-  }
-
-  const switchingCredential = account.getSwitchingCredential()
-
-  worldpayDetailsService.updateOneOffCustomerInitiatedCredentials(
-    service.externalId,
-    account.type,
-    switchingCredential.externalId,
-    req.user.externalId,
-    credential
-  ).then(() => {
+  try {
+    const isValid = await worldpayDetailsService.checkCredential(req.service.externalId, req.account.type, newOneOffCustomerInitiatedCredential)
+    if (!isValid) {
+      return postErrorResponse(req, res, {
+        summary: [
+          {
+            text: 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided',
+            href: '#merchant-code'
+          }
+        ]
+      })
+    }
+    await worldpayDetailsService.updateOneOffCustomerInitiatedCredentials(
+      service.externalId,
+      account.type,
+      switchingCredential.externalId,
+      user.externalId,
+      newOneOffCustomerInitiatedCredential
+    )
     res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, service.externalId, account.type))
-  }).catch((err) => next(err))
+  } catch (err) {
+    return next(err)
+  }
 }
 
 const postErrorResponse = (req, res, errors) => {

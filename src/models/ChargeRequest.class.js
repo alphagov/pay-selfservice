@@ -32,10 +32,10 @@ class ChargeRequest {
   }
 
   /**
-   * @param {string} credentialId
+   * @param {string} credentialExternalId
    */
-  withCredentialId (credentialId) {
-    this.credentialId = credentialId
+  withCredentialExternalId (credentialExternalId) {
+    this.credentialExternalId = credentialExternalId
     return this
   }
 
@@ -56,7 +56,7 @@ class ChargeRequest {
       description: this.description,
       reference: this.reference,
       return_url: this.returnUrl,
-      credential_id: this.credentialId,
+      credential_id: this.credentialExternalId,
       moto: this.moto
     }
   }

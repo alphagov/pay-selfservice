@@ -88,7 +88,10 @@ module.exports = function errorHandler (err, req, res, next) {
 
   if (err instanceof TaskAccessedOutOfSequenceError) {
     logger.info(`TaskAccessedOutOfSequenceError handled: ${err.message}. Redirecting`)
-    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
+    if (err.redirect) {
+      return res.redirect(err.redirect)
+    }
+    return renderErrorView(req, res, 'You can\'t start this task yet, go back and try again.', 428)
   }
 
   if (err instanceof TaskAlreadyCompletedError) {

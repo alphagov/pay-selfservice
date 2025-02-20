@@ -11,7 +11,8 @@ module.exports = class ControllerTestBuilder {
       account: {},
       user: {},
       query: {},
-      flash: sinon.spy()
+      flash: sinon.spy(),
+      session: {}
     }
     this.res = {
       redirect: sinon.spy(),

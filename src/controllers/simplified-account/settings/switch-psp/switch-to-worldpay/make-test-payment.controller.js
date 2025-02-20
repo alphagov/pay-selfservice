@@ -8,11 +8,15 @@ const ChargeRequest = require('@models/ChargeRequest.class')
 const urljoin = require('url-join')
 const CREDENTIAL_STATE = require('@models/constants/credential-state')
 const worldpayDetailsService = require('@services/worldpay-details.service')
+const { WorldpayTasks } = require('@models/WorldpayTasks.class')
+const TASK_STATUS = require('@models/constants/task-status')
+const { TaskAccessedOutOfSequenceError } = require('@root/errors')
 const SELFSERVICE_URL = process.env.SELFSERVICE_URL
 
-function get (req, res) {
+function get (req, res, next) {
   const account = req.account
   const service = req.service
+  canStartTask(account, service)
   const context = {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
       service.externalId, account.type)
@@ -23,6 +27,7 @@ function get (req, res) {
 async function post (req, res, next) {
   const account = req.account
   const service = req.service
+  canStartTask(account, service)
   const targetCredential = account.getSwitchingCredential()
   const chargeRequest = new ChargeRequest()
     .withAmount(200)
@@ -30,7 +35,7 @@ async function post (req, res, next) {
     .withReference('VERIFY_PSP_INTEGRATION')
     .withReturnUrl(urljoin(SELFSERVICE_URL, formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.makeTestPayment.inbound,
       service.externalId, account.type)))
-    .withCredentialId(targetCredential.externalId)
+    .withCredentialExternalId(targetCredential.externalId)
     .withMoto(account.allowMoto)
 
   chargeService.createCharge(service.externalId, account.type, chargeRequest)
@@ -46,6 +51,7 @@ async function post (req, res, next) {
 async function getInbound (req, res, next) {
   const account = req.account
   const service = req.service
+  canStartTask(account, service)
   const user = req.user
   const chargeExternalId = req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]
   delete req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]
@@ -57,14 +63,35 @@ async function getInbound (req, res, next) {
     .then(async (charge) => {
       if (charge.state.status === 'success') {
         await worldpayDetailsService.updateCredentialState(service.externalId, account.type, targetCredential.externalId, user.externalId, CREDENTIAL_STATE.VERIFIED)
-        req.flash('messages', { state: 'success', icon: '&check;', heading: 'Payment verified', body: `This service is ready to switch to ${formatPSPName(targetCredential.paymentProvider)}` })
+        req.flash('messages', {
+          state: 'success',
+          icon: '&check;',
+          heading: 'Payment verified',
+          body: `This service is ready to switch to ${formatPSPName(targetCredential.paymentProvider)}`
+        })
       } else {
-        req.flash('messages', { state: 'error', heading: 'There is a problem', body: 'The payment has failed. Check your Worldpay credentials and try again. If you need help, contact govuk-pay-support@digital.cabinet-office.gov.uk' })
+        req.flash('messages', {
+          state: 'error',
+          heading: 'There is a problem',
+          body: 'The payment has failed. Check your Worldpay credentials and try again. If you need help, contact govuk-pay-support@digital.cabinet-office.gov.uk'
+        })
       }
       res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
         service.externalId, account.type))
     })
     .catch(err => next(err))
+}
+
+function canStartTask (account, service) {
+  const worldpayTasks = new WorldpayTasks(account, service.externalId, true)
+  const thisTask = worldpayTasks.findTask('make-a-live-payment')
+  if (thisTask.status === TASK_STATUS.CANNOT_START) {
+    throw new TaskAccessedOutOfSequenceError(
+      `Attempted to access task page before completing requisite tasks [task: ${thisTask.id}, serviceExternalId: ${service.externalId}]`,
+      formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
+        service.externalId, account.type)
+    )
+  }
 }
 
 module.exports = {

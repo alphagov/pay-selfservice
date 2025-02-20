@@ -100,6 +100,10 @@ class TaskAlreadyCompletedError extends DomainError {
  * Thrown when trying to visit a task page when the requisite tasks have not been completed
  */
 class TaskAccessedOutOfSequenceError extends DomainError {
+  constructor (message, redirect) {
+    super(message)
+    this.redirect = redirect
+  }
 }
 
 module.exports = {
