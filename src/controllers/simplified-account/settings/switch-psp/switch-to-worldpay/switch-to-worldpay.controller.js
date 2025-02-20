@@ -7,7 +7,7 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const formatPSPName = require('@utils/format-PSP-name')
 const gatewayAccountsService = require('@services/gateway-accounts.service')
 
-function get (req, res, next) {
+function get (req, res) {
   const account = req.account
   const service = req.service
   const worldpayTasks = new WorldpayTasks(account, service.externalId, true)
