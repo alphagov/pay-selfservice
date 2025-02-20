@@ -34,7 +34,7 @@ describe('Controller: settings/webhooks', () => {
     it('should pass req, res and template path to the response method', () => {
       expect(mockResponse.args[0]).to.include(req)
       expect(mockResponse.args[0]).to.include(res)
-      expect(mockResponse.args[0]).to.include('simplified-account/settings/webhooks/create')
+      expect(mockResponse.args[0]).to.include('simplified-account/settings/webhooks/edit')
     })
 
     it('should pass context data to the response method', () => {

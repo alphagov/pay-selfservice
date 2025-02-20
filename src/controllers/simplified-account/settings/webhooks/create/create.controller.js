@@ -8,7 +8,7 @@ const formatValidationErrors = require('@utils/simplified-account/format/format-
 const webhooksService = require('@services/webhooks.service')
 
 async function get (req, res) {
-  response(req, res, 'simplified-account/settings/webhooks/create', {
+  response(req, res, 'simplified-account/settings/webhooks/edit', {
     eventTypes: constants.webhooks.humanReadableSubscriptions,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.index, req.service.externalId, req.account.type)
   })

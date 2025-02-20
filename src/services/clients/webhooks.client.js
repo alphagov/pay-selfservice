@@ -3,6 +3,7 @@
 const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client')
 const { configureClient } = require('./base/config')
 const urlJoin = require('url-join')
+const { Webhook } = require('@models/Webhook.class')
 
 const defaultRequestOptions = {
   baseUrl: process.env.WEBHOOKS_URL,
@@ -39,13 +40,22 @@ async function resetSigningSecret (webhookId, serviceId, gatewayAccountId, optio
   return response.data
 }
 
+/**
+ *
+ * @param serviceId
+ * @param gatewayAccountId
+ * @param isLive
+ * @param options
+ * @returns {Promise<[Webhook]>}
+ */
 async function webhooks (serviceId, gatewayAccountId, isLive, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook')
   const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}&live=${isLive}`
   configureClient(client, fullUrl)
   const response = await client.get(fullUrl, 'List webhooks for service')
-  return response.data
+  console.log(response.data)
+  return response.data.map(webhookData => Webhook.fromJson(webhookData))
 }
 
 async function message (id, webhookId, options = {}) {

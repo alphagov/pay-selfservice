@@ -12,7 +12,7 @@ class MockClient {
   }
 
   async get (url, description) {
-    const dataResponse = {}
+    const dataResponse = []
     return Promise.resolve({ data: dataResponse })
   }
 

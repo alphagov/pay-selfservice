@@ -20,6 +20,9 @@ module.exports = function (options = {}) {
   }
 
   const pactify = (object) => {
+    if (object instanceof Array) {
+      return object.map(o => pactify(o))
+    }
     const pactified = {}
     _.forIn(object, (value, key) => {
       if (value === null) {
