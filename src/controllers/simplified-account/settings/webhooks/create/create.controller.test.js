@@ -85,7 +85,7 @@ describe('Controller: settings/webhooks', () => {
       it('should respond with error message', () => {
         expect(mockCreateWebhookDomainNotAllowed.called).to.be.true // eslint-disable-line
         expect(mockResponse.calledOnce).to.be.true // eslint-disable-line
-        expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/webhooks/create')
+        expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/webhooks/edit')
         expect(mockResponse.args[0][3]).to.have.property('errors').to.deep.equal({
           summary: [{ text: 'Callback URL must be approved. Please contact support', href: '#callback-url' }],
           formErrors: { callbackUrl: 'Callback URL must be approved. Please contact support' }

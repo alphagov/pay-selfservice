@@ -84,7 +84,6 @@
       {% for webhook in deactivatedWebhooks %}
         {% set webhookDescriptionWithTag = webhook.description + '&nbsp&nbsp&nbsp' + webhookStatusTag(webhook.status) %}
         {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
-        {% set webhookDetailUrl = detailWebhookBaseUrl + webhook.external_id %}
         {{ govukSummaryList({
           classes: "webhooks-summary-card",
           card: {
@@ -94,7 +93,7 @@
             actions: {
               items: [
                 {
-                  href: webhookDetailUrl,
+                  href: webhook.detailUrl,
                   text: 'View',
                   classes: "govuk-link govuk-link--no-visited-state"
                 },
@@ -112,7 +111,7 @@
               text: 'Callback URL'
             },
               value: {
-              text: webhook.callback_url
+              text: webhook.callbackUrl
             }
             },
             {
