@@ -9,8 +9,23 @@ function postCreateChargeSuccess (opts) {
   })
 }
 
+function postChargeRequestSuccessByServiceExternalIdAndAccountType (opts) {
+  const path = `/v1/api/service/${opts.serviceExternalId}/account/${opts.accountType}/charges`
+  return stubBuilder('POST', path, 200, {
+    response: connectorChargeFixtures.validChargeResponse(opts),
+    deepMatchRequest: false
+  })
+}
+
 function getChargeSuccess (opts) {
-  const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.charge_id}`
+  const path = `/v1/api/accounts/${opts.gateway_account_id}/charges/${opts.chargeExternalId}`
+  return stubBuilder('GET', path, 200, {
+    response: connectorChargeFixtures.validChargeResponse(opts)
+  })
+}
+
+function getChargeSuccessByServiceExternalIdAndAccountType (opts) {
+  const path = `/v1/api/service/${opts.serviceExternalId}/account/${opts.accountType}/charges/${opts.chargeExternalId}`
   return stubBuilder('GET', path, 200, {
     response: connectorChargeFixtures.validChargeResponse(opts)
   })
@@ -23,6 +38,8 @@ function postCreateRefundSuccess (gatewayAccountId, chargeId) {
 
 module.exports = {
   postCreateChargeSuccess,
+  postChargeRequestSuccessByServiceExternalIdAndAccountType,
   getChargeSuccess,
+  getChargeSuccessByServiceExternalIdAndAccountType,
   postCreateRefundSuccess
 }

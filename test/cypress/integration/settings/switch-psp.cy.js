@@ -301,8 +301,8 @@ describe('Switch PSP settings page', () => {
             2),
             connectorChargeStubs.postCreateChargeSuccess({
               gateway_account_id: gatewayAccountId,
-              charge_id: 'a-valid-charge-external-id',
-              next_url: '/should_follow_to_payment_page'
+              chargeExternalId: 'a-valid-charge-external-id',
+              nextUrl: '/should_follow_to_payment_page'
             })
           ])
 
@@ -338,9 +338,9 @@ describe('Switch PSP settings page', () => {
             2),
             connectorChargeStubs.getChargeSuccess({
               gateway_account_id: gatewayAccountId,
-              charge_id: 'a-valid-charge-external-id',
+              chargeExternalId: 'a-valid-charge-external-id',
               status: 'cancelled',
-              next_url: '/should_follow_to_payment_page'
+              nextUrl: '/should_follow_to_payment_page'
             })
           ])
           cy.visit(`/account/${gatewayAccountExternalId}/switch-psp/verify-psp-integration/callback`)
@@ -370,14 +370,14 @@ describe('Switch PSP settings page', () => {
             2),
             connectorChargeStubs.postCreateChargeSuccess({
               gateway_account_id: gatewayAccountId,
-              charge_id: 'a-valid-charge-external-id',
-              next_url: '/should_follow_to_payment_page'
+              chargeExternalId: 'a-valid-charge-external-id',
+              nextUrl: '/should_follow_to_payment_page'
             }),
             connectorChargeStubs.getChargeSuccess({
               gateway_account_id: gatewayAccountId,
-              charge_id: 'a-valid-charge-external-id',
+              chargeExternalId: 'a-valid-charge-external-id',
               status: 'success',
-              next_url: '/should_follow_to_payment_page'
+              nextUrl: '/should_follow_to_payment_page'
             }),
             gatewayAccountStubs.patchUpdateCredentialsSuccess(gatewayAccountId, switchingToCredentialId, userExternalId, {
               path: 'state',

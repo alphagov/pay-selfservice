@@ -452,6 +452,16 @@ function postSwitchPspSuccess (gatewayAccountId, opts) {
   })
 }
 
+function postSwitchPspSuccessByServiceExternalIdAndAccountType (opts) {
+  const path = `/v1/api/service/${opts.serviceExternalId}/account/${opts.accountType}/switch-psp`
+  return stubBuilder('POST', path, 200, {
+    request: {
+      user_external_id: opts.userExternalId,
+      gateway_account_credential_external_id: opts.credentialExternalId
+    }
+  })
+}
+
 function getAccountByServiceIdAndAccountType (serviceExternalId, accountType = 'test', opts = {}) {
   const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
   return stubBuilder('GET', path, 200, {
@@ -514,6 +524,7 @@ module.exports = {
   patchUpdateCredentialsSuccessByServiceExternalIdAndType,
   patchUpdateWorldpayOneOffCredentialsSuccess,
   postSwitchPspSuccess,
+  postSwitchPspSuccessByServiceExternalIdAndAccountType,
   patchAccountUpdateApplePaySuccess,
   patchAccountByServiceIdUpdateApplePaySuccess,
   patchAccountUpdateGooglePaySuccess,

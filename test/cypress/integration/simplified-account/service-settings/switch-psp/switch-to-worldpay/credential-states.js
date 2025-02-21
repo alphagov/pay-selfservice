@@ -1,4 +1,4 @@
-const { ACTIVE, CREATED, ENTERED } = require('@models/constants/credential-state')
+const { ACTIVE, CREATED, ENTERED, VERIFIED } = require('@models/constants/credential-state')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 
 const CREDENTIAL_EXTERNAL_ID = 'credential-456-def'
@@ -34,8 +34,36 @@ const WORLDPAY_CREDENTIAL_IN_ENTERED_STATE = {
   }
 }
 
+const WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE = {
+  state: VERIFIED,
+  payment_provider: WORLDPAY,
+  external_id: CREDENTIAL_EXTERNAL_ID,
+  credentials: {
+    one_off_customer_initiated: {
+      merchant_code: VALID_MOTO_MERCHANT_CODE,
+      username: VALID_WORLDPAY_USERNAME,
+      password: VALID_WORLDPAY_PASSWORD
+    }
+  }
+}
+
+const WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE = {
+  state: ACTIVE,
+  payment_provider: WORLDPAY,
+  external_id: CREDENTIAL_EXTERNAL_ID,
+  credentials: {
+    one_off_customer_initiated: {
+      merchant_code: VALID_MOTO_MERCHANT_CODE,
+      username: VALID_WORLDPAY_USERNAME,
+      password: VALID_WORLDPAY_PASSWORD
+    }
+  }
+}
+
 module.exports = {
   STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
   WORLDPAY_CREDENTIAL_IN_CREATED_STATE,
-  WORLDPAY_CREDENTIAL_IN_ENTERED_STATE
+  WORLDPAY_CREDENTIAL_IN_ENTERED_STATE,
+  WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE,
+  WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE
 }

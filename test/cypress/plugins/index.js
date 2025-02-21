@@ -83,7 +83,7 @@ function generateEncryptedSessionCookie (sessionEncryptionKey, userExternalId, p
       secondFactor: 'totp',
       version: 0,
       icamefrom: 'cypress.io',
-      pageData
+      ...pageData
     })
   return encryptedSessionCookie
 }

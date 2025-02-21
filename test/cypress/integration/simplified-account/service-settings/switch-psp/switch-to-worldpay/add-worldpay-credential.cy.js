@@ -54,14 +54,18 @@ describe('Add Worldpay credential task', () => {
       setStubs({}, [])
       cy.visit(SWITCH_TO_WORLDPAY_ADD_CREDENTIAL_TASK_SETTINGS_URL)
     })
-    checkSettingsNavigation('Switch to Worldpay', SWITCH_TO_WORLDPAY_SETTINGS_URL)
+    it('should show active "Switch to Worldpay" link', () => {
+      checkSettingsNavigation('Switch to Worldpay', SWITCH_TO_WORLDPAY_SETTINGS_URL)
+    })
   })
   describe('The page', () => {
     beforeEach(() => {
       setStubs({}, [])
       cy.visit(SWITCH_TO_WORLDPAY_ADD_CREDENTIAL_TASK_SETTINGS_URL)
     })
-    checkTitleAndHeading('Your Worldpay credentials', SERVICE_NAME.en)
+    it('should have the correct title and heading', () => {
+      checkTitleAndHeading('Your Worldpay credentials', SERVICE_NAME.en)
+    })
   })
   describe('For a non-admin', () => {
     beforeEach(() => {
