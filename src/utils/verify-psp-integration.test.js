@@ -5,7 +5,7 @@ const { filterNextUrl } = require('./verify-psp-integration')
 describe('verify psp integration utility', () => {
   it('gets the next url for a valid charge', () => {
     const charge = connectorChargeFixtures.validChargeResponse({
-      next_url: 'some/next/url'
+      nextUrl: 'some/next/url'
     })
     expect(filterNextUrl(charge)).to.equal('some/next/url')
   })
