@@ -54,7 +54,6 @@ async function webhooks (serviceId, gatewayAccountId, isLive, options = {}) {
   const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}&live=${isLive}`
   configureClient(client, fullUrl)
   const response = await client.get(fullUrl, 'List webhooks for service')
-  console.log(response.data)
   return response.data.map(webhookData => Webhook.fromJson(webhookData))
 }
 
