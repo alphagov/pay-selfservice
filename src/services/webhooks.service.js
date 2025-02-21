@@ -20,6 +20,13 @@ function formatPages (searchResponse) {
   }
 }
 
+/**
+ *
+ * @param serviceId
+ * @param gatewayAccountId
+ * @param isLive
+ * @returns {Promise<Webhook[]>}
+ */
 async function listWebhooks (serviceId, gatewayAccountId, isLive) {
   const webhooks = await webhooksClient.webhooks(serviceId, gatewayAccountId, isLive)
   return webhooks.sort(sortByActiveStatus)

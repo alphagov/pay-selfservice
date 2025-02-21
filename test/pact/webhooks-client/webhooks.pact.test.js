@@ -61,7 +61,7 @@ describe('webhooks client', function () {
       return webhooksClient.webhooks(serviceId, gatewayAccountId, isLive, { baseUrl: webhooksUrl })
         .then((response) => {
           // asserts that the client has correctly formatted the request to match the stubbed fixture provider
-          expect(response[0].external_id).to.equal(webhookId)
+          expect(response[0].externalId).to.equal(webhookId)
         })
     })
   })

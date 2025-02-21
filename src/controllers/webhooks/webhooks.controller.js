@@ -34,7 +34,7 @@ async function webhookDetailPage (req, res, next) {
 
 async function listWebhooksPage (req, res, next) {
   try {
-    const webhooks = await webhooksService.listWebhooks(req.service.externalId, req.account.gateway_account_id, req.isLive)
+    const webhooks = (await webhooksService.listWebhooks(req.service.externalId, req.account.gateway_account_id, req.isLive)).map(webhook => webhook.rawResponse)
     response(req, res, 'webhooks/list', { webhooks })
   } catch (error) {
     next(error)
