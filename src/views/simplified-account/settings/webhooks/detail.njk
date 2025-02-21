@@ -1,4 +1,5 @@
 {% from "./_webhook_status.njk" import webhookStatusTag %}
+{% from "./_message_status.njk" import messageStatusTag %}
 {% extends "../settings-layout.njk" %}
 
 {% macro webhookSubscriptions(webhook) %}
@@ -9,7 +10,6 @@
     {% endfor %}
   </ul>
 {% endmacro %}
-
 
 {% set settingsPageTitle = webhook.description %}
 
@@ -121,14 +121,44 @@
         value: "failed",
         text: "Failed"
       }
-    ]
+    ],
+    formGroup: {
+      afterInput: {
+          html: '<button type="submit" class="govuk-button govuk-button" data-module="govuk-button" data-govuk-button-init="">Update</button>'
+      }
+    }
   }) }}
 
-  {{
-  govukButton({
-    text: "Update",
-    classes: "govuk-button"
-  })
-  }}
+  {% set eventRows = [] %}
+  {% for event in webhookEvents %}
+    {% set eventTypeX = event.eventType | upper %}
+    {% set eventRow = [
+      {text: event.resourceId},
+      {html: eventTypes[event.eventType | upper] + '<br><a href="'+event.eventDetailUrl+'">View details<a/>'},
+      {html: messageStatusTag(event.lastDeliveryStatus)},
+      {text: event.eventDate | datetime('datelong')}
+    ] %}
+    {% set eventRows = (eventRows.push(eventRow), eventRows) %}
+  {% endfor %}
+
+  {{ govukTable({
+    firstCellIsHeader: false,
+    head: [
+      {
+        text: "GOV.UK payment ID"
+      },
+      {
+        text: "Event name"
+      },
+      {
+        text: "Delivery status"
+      },
+      {
+        text: "Event date"
+      }
+    ],
+    rows: eventRows
+
+  }) }}
 
 {% endblock %}

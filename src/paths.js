@@ -242,7 +242,8 @@ module.exports = {
         index: '/settings/webhooks',
         create: '/settings/webhooks/create',
         detail: '/settings/webhooks/:webhookId',
-        update: '/settings/webhooks/:webhookId/update'
+        update: '/settings/webhooks/:webhookId/update',
+        event: '/settings/webhooks/:webhookId/event/:eventId'
       },
       switchPsp: {
         switchToWorldpay: {
