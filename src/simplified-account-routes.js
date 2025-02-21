@@ -104,6 +104,8 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.webhooks.index, permissio
 simplifiedAccount.get(paths.simplifiedAccount.settings.webhooks.create, permission('webhooks:update'), serviceSettingsController.webhooks.create.get)
 simplifiedAccount.post(paths.simplifiedAccount.settings.webhooks.create, permission('webhooks:update'), serviceSettingsController.webhooks.create.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.webhooks.detail, permission('webhooks:read'), serviceSettingsController.webhooks.detail.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.webhooks.update, permission('webhooks:update'), serviceSettingsController.webhooks.update.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.webhooks.update, permission('webhooks:update'), serviceSettingsController.webhooks.update.post)
 
 // switch psp
 simplifiedAccount.get(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, restrictToSwitchingAccount, permission('gateway-credentials:update'), serviceSettingsController.switchPsp.switchToWorldpay.get)

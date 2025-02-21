@@ -1,5 +1,5 @@
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
-const { paths } = require('@root/routes')
+const paths = require('@root/paths')
 const { response } = require('@utils/response')
 const { constants } = require('@govuk-pay/pay-js-commons')
 
