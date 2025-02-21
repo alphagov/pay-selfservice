@@ -1,9 +1,17 @@
 {% extends "layout.njk" %}
 {% from "macro/system-messages.njk" import systemMessages %}
 {% from "govuk/components/task-list/macro.njk" import govukTaskList %}
+{% from "govuk/components/skip-link/macro.njk" import govukSkipLink %}
 
 {% block pageTitle %}
-  {{ settingsPageTitle }} - Settings - {{  currentService.name }} - GOV.UK Pay
+  {{ settingsPageTitle }} - Settings - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block skipLink %}
+  {{ govukSkipLink({
+    text: "Skip to main content",
+    href: "#service-settings-content"
+  }) }}
 {% endblock %}
 
 {% block sideNavigation %}
@@ -28,7 +36,10 @@
           errorList: errors.summary
         }) }}
       {% endif %}
-      {% block settingsContent %}{% endblock %}
+      <div id="service-settings-content">
+        {% block settingsContent %}
+        {% endblock %}
+      </div>
     </div>
   </div>
 {% endblock %}
