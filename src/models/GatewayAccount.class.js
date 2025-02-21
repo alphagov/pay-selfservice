@@ -99,6 +99,15 @@ class GatewayAccount {
     return pendingCredentials[0]
   }
 
+  isSwitchingToProvider (paymentProvider) {
+    try {
+      const switchingCredential = this.getSwitchingCredential()
+      return switchingCredential.paymentProvider === paymentProvider
+    } catch {
+      return false
+    }
+  }
+
   /**
    * Returns a minimal representation of the gateway account
    * @returns {Object} A minimal representation of the gateway account
