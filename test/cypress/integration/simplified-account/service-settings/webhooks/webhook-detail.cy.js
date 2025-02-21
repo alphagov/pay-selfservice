@@ -43,6 +43,9 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       external_id: WEBHOOK_ID,
       signing_key: '123-signing-secret-456'
     }),
+    webhooksStubs.getWebhookMessagesListSuccess({
+      external_id: WEBHOOK_ID
+    }),
     ...additionalStubs])
 }
 

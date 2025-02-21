@@ -18,6 +18,7 @@ const signingSecret = { signing_key: '123-signing-key-456'}
 const mockResponse = sinon.spy()
 const mockGetWebhook = sinon.stub().resolves(webhook)
 const mockGetSigningSecret = sinon.stub().resolves(signingSecret)
+const mockGetWebhookMessages = sinon.stub().resolves({ results: [] })
 
 const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/webhooks/detail/detail.controller')
   .withServiceExternalId(SERVICE_ID)
@@ -26,7 +27,7 @@ const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simpl
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/webhooks.service':
-      { getWebhook: mockGetWebhook, getSigningSecret: mockGetSigningSecret }
+      { getWebhook: mockGetWebhook, getSigningSecret: mockGetSigningSecret, getWebhookMessages: mockGetWebhookMessages }
   })
   .build()
 
@@ -41,6 +42,7 @@ describe('Controller: settings/webhooks/detail', () => {
 
     it('should call the response method', () => {
       expect(mockGetWebhook.calledWith(WEBHOOK_ID, SERVICE_ID, GATEWAY_ACCOUNT_ID)).to.be.true // eslint-disable-line
+      expect(mockGetWebhookMessages.calledWith(WEBHOOK_ID)).to.be.true // eslint-disable-line
       expect(mockGetSigningSecret.calledWith(WEBHOOK_ID, SERVICE_ID, GATEWAY_ACCOUNT_ID)).to.be.true // eslint-disable-line
       expect(mockResponse.called).to.be.true // eslint-disable-line
     })
