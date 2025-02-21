@@ -1,5 +1,5 @@
 const GatewayAccount = require('@models/GatewayAccount.class')
-const { WORLDPAY } = require('@models/constants/payment-providers')
+const { WORLDPAY, STRIPE, SANDBOX } = require('@models/constants/payment-providers')
 const { expect } = require('chai')
 const { InvalidConfigurationError } = require('@root/errors')
 const { CREDENTIAL_STATE } = require('@utils/credentials')
@@ -14,6 +14,58 @@ const gatewayAccountCredentials = [
 ]
 
 describe('GatewayAccount', () => {
+  describe('isSwitchingToProvider', () => {
+    const testCases = [
+      { pendingCredentialProvider: WORLDPAY, queriedProvider: WORLDPAY, expectedOutcome: true },
+      { pendingCredentialProvider: STRIPE, queriedProvider: WORLDPAY, expectedOutcome: false },
+      { pendingCredentialProvider: WORLDPAY, queriedProvider: SANDBOX, expectedOutcome: false },
+      { pendingCredentialProvider: STRIPE, queriedProvider: STRIPE, expectedOutcome: true }
+    ]
+    testCases.forEach(({ pendingCredentialProvider, queriedProvider, expectedOutcome }) => {
+      it(`should return ${expectedOutcome} for ${queriedProvider} when gateway account has pending ${pendingCredentialProvider} credential`, () => {
+        const gatewayAccountData = {
+          gateway_account_id: 12,
+          provider_switch_enabled: true,
+          gateway_account_credentials: [
+            ...gatewayAccountCredentials,
+            {
+              external_id: '9bda702de8a44b99901236d1fdd438da',
+              payment_provider: pendingCredentialProvider,
+              state: 'CREATED',
+              gateway_account_id: 12
+            }
+          ]
+        }
+        const gatewayAccount = new GatewayAccount(gatewayAccountData)
+        expect(gatewayAccount.isSwitchingToProvider(queriedProvider)).to.equal(expectedOutcome)
+      })
+    })
+
+    it('should return false when gateway account has no switching credential', () => {
+      const gatewayAccountData = {
+        gateway_account_id: 12,
+        provider_switch_enabled: true,
+        gateway_account_credentials: [
+          ...gatewayAccountCredentials
+        ]
+      }
+      const gatewayAccount = new GatewayAccount(gatewayAccountData)
+      expect(gatewayAccount.isSwitchingToProvider(WORLDPAY)).to.equal(false)
+    })
+
+    it('should return false when gateway account is not provider switch enabled', () => {
+      const gatewayAccountData = {
+        gateway_account_id: 12,
+        provider_switch_enabled: false,
+        gateway_account_credentials: [
+          ...gatewayAccountCredentials
+        ]
+      }
+      const gatewayAccount = new GatewayAccount(gatewayAccountData)
+      expect(gatewayAccount.isSwitchingToProvider(WORLDPAY)).to.equal(false)
+    })
+  })
+
   describe('getSwitchingCredential', () => {
     it('should return a credential if one exists', () => {
       const gatewayAccountData = {

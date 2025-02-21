@@ -2,6 +2,7 @@ const paths = require('../../../paths')
 const formatSimplifiedAccountPathsFor = require('../format/format-simplified-account-paths-for')
 const SettingsBuilder = require('./SettingsBuilder.class')
 const { LIVE } = require('@models/constants/go-live-stage')
+const { WORLDPAY } = require('@models/constants/payment-providers')
 
 /**
  * @param {GatewayAccount} account
@@ -55,7 +56,7 @@ module.exports = (account, service, currentUrl, permissions) => {
       id: ['switch-psp', 'switch-to-worldpay'], // sits under settings/switch-psp/switch-to-worldpay
       name: 'switch to Worldpay',
       path: paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
-      permission: account.paymentProvider === 'stripe' && account.providerSwitchEnabled && 'gateway_credentials_update'
+      permission: account.isSwitchingToProvider(WORLDPAY) && 'gateway_credentials_update'
     })
     .category('payments')
     .add({
