@@ -5,7 +5,9 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const { constants } = require('@govuk-pay/pay-js-commons')
 
 async function get (req, res) {
-  const status = req.query.status
+  const status = (req.query.deliveryStatus === 'successful' || req.query.deliveryStatus === 'failed')
+    ? req.query.deliveryStatus
+    : undefined
   const page = req.query.page || 1
   const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId, req.account.id)
   const messages = await webhooksService.getWebhookMessages(req.params.webhookId, { page, ...status && { status } })
@@ -21,6 +23,7 @@ async function get (req, res) {
   response(req, res, 'simplified-account/settings/webhooks/detail', {
     webhook,
     signingSecret,
+    deliveryStatus: status || 'all',
     eventTypes: constants.webhooks.humanReadableSubscriptions,
     backToWebhooksLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.index, req.service.externalId, req.account.type),
     webhookEvents
