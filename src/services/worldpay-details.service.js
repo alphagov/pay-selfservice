@@ -125,7 +125,7 @@ async function update3dsFlexCredentials (serviceExternalId, accountType, flexCre
  * @param {Number} integrationVersion3ds
  * @returns {Promise<undefined>}
  */
-async function updateIntegrationVersion3ds (serviceExternalId, accountType, integrationVersion3ds) {
+async function updateIntegrationVersion3ds (serviceExternalId, accountType, integrationVersion3ds = 2) {
   const updateIntegrationVersion3dsRequest = new GatewayAccountUpdateRequest()
     .replace().integrationVersion3ds(integrationVersion3ds)
   return connectorClient.patchGatewayAccountByServiceExternalIdAndAccountType(serviceExternalId, accountType, updateIntegrationVersion3dsRequest)

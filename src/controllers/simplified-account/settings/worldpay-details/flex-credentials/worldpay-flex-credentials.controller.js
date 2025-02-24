@@ -1,13 +1,12 @@
 const { response } = require('@utils/response')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
-const { body, validationResult } = require('express-validator')
+const { validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
 const worldpayDetailsService = require('@services/worldpay-details.service')
 const { WorldpayTasks } = require('@models/WorldpayTasks.class')
-
-const INTEGRATION_VERSION_3DS = 2
+const { THREE_DS_FLEX_VALIDATION } = require('@utils/simplified-account/validation/worldpay/validations.schema')
 
 function get (req, res) {
   return response(req, res, 'simplified-account/settings/worldpay-details/flex-credentials', {
@@ -20,24 +19,10 @@ function get (req, res) {
   })
 }
 
-const worldpayCredentialsValidations = [
-  body('organisationalUnitId')
-    .notEmpty().withMessage('Enter your organisational unit ID').bail()
-    .isHexadecimal().withMessage('Enter your organisational unit ID in the format you received it').bail()
-    .isLength({ min: 24, max: 24 }).withMessage('Enter your organisational unit ID in the format you received it').bail(),
-  body('issuer')
-    .notEmpty().withMessage('Enter your issuer').bail()
-    .isHexadecimal().withMessage('Enter your issuer in the format you received it').bail()
-    .isLength({ min: 24, max: 24 }).withMessage('Enter your issuer in the format you received it').bail(),
-  body('jwtMacKey')
-    .notEmpty().withMessage('Enter your JWT MAC key').bail()
-    .isUUID().withMessage('Enter your JWT MAC key in the format you received it').bail()
-]
-
 async function post (req, res) {
   const worldpayTasks = new WorldpayTasks(req.account, req.service.externalId)
 
-  await Promise.all(worldpayCredentialsValidations.map(validation => validation.run(req)))
+  await Promise.all(THREE_DS_FLEX_VALIDATION.map(validation => validation.run(req)))
   const validationErrors = validationResult(req)
   if (!validationErrors.isEmpty()) {
     const formattedErrors = formatValidationErrors(validationErrors)
@@ -66,7 +51,7 @@ async function post (req, res) {
 
   await worldpayDetailsService.update3dsFlexCredentials(req.service.externalId, req.account.type, flexCredential)
 
-  await worldpayDetailsService.updateIntegrationVersion3ds(req.service.externalId, req.account.type, INTEGRATION_VERSION_3DS)
+  await worldpayDetailsService.updateIntegrationVersion3ds(req.service.externalId, req.account.type)
 
   if (worldpayTasks.incompleteTasks) {
     const recalculatedTasks = await WorldpayTasks.recalculate(req.service.externalId, req.account.type)

@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const { oneOffCustomerInitiatedSchema } = require('./one-off-customer-initiated.schema')
+const { ONE_OFF_CUSTOMER_INITIATED_SCHEMA } = require('./validations.schema')
 const { validationResult } = require('express-validator')
 
 describe('One Off Customer Initiated Credentials Validation', () => {
@@ -17,13 +17,13 @@ describe('One Off Customer Initiated Credentials Validation', () => {
 
     it('should pass with valid merchant code', async () => {
       req.body.merchantCode = 'MCDUCKENTPROD'
-      await oneOffCustomerInitiatedSchema.merchantCode.validate.run(req)
+      await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.merchantCode.validate.run(req)
       expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
     })
 
     it('should fail when merchant code is empty', async () => {
       req.body.merchantCode = ''
-      await oneOffCustomerInitiatedSchema.merchantCode.validate.run(req)
+      await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.merchantCode.validate.run(req)
       const errors = validationResult(req)
       expect(errors.array()[0].msg).to.equal('Enter your merchant code')
     })
@@ -47,21 +47,21 @@ describe('One Off Customer Initiated Credentials Validation', () => {
     validTestCases.forEach(({ merchantCode, desc }) => {
       it(`should pass with valid ${desc}`, async () => {
         req.body.merchantCode = merchantCode
-        await oneOffCustomerInitiatedSchema.merchantCode.validate.run(req)
+        await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.merchantCode.validate.run(req)
         expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
       })
     })
 
     it('should fail when merchant code does not end with MOTO|MOTOGBP', async () => {
       req.body.merchantCode = 'hello'
-      await oneOffCustomerInitiatedSchema.merchantCode.validate.run(req)
+      await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.merchantCode.validate.run(req)
       const errors = validationResult(req)
       expect(errors.array()[0].msg).to.equal('Enter a MOTO merchant code. MOTO payments are enabled for this account')
     })
 
     it('should fail when merchant code is empty', async () => {
       req.body.merchantCode = ''
-      await oneOffCustomerInitiatedSchema.merchantCode.validate.run(req)
+      await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.merchantCode.validate.run(req)
       const errors = validationResult(req)
       expect(errors.array()[0].msg).to.equal('Enter your merchant code')
     })
@@ -79,13 +79,13 @@ describe('One Off Customer Initiated Credentials Validation', () => {
 
     it('should pass with valid username', async () => {
       req.body.username = 's-mcduck'
-      await oneOffCustomerInitiatedSchema.username.validate.run(req)
+      await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.username.validate.run(req)
       expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
     })
 
     it('should fail when username is empty', async () => {
       req.body.username = ''
-      await oneOffCustomerInitiatedSchema.username.validate.run(req)
+      await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.username.validate.run(req)
       const errors = validationResult(req)
       expect(errors.array()[0].msg).to.equal('Enter your username')
     })
@@ -103,13 +103,13 @@ describe('One Off Customer Initiated Credentials Validation', () => {
 
     it('should pass with valid password', async () => {
       req.body.password = 'topsecret!!!1' // pragma: allowlist secret
-      await oneOffCustomerInitiatedSchema.password.validate.run(req)
+      await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.password.validate.run(req)
       expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
     })
 
     it('should fail when password is empty', async () => {
       req.body.username = ''
-      await oneOffCustomerInitiatedSchema.password.validate.run(req)
+      await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.password.validate.run(req)
       const errors = validationResult(req)
       expect(errors.array()[0].msg).to.equal('Enter your password')
     })
