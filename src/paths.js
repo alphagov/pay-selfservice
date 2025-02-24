@@ -319,6 +319,13 @@ module.exports = {
       }
     }
   },
+  services: {
+    index: '/simplified/services',
+    create: {
+      index: '/simplified/services/create',
+      selectOrgType: '/simplified/services/create/select-org-type'
+    }
+  },
   serviceSwitcher: {
     index: '/my-services',
     switch: '/my-services/switch',

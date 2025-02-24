@@ -7,6 +7,7 @@
  *   en: string,
  *   cy: string
  * }} serviceName - object containing english and welsh service names
+ * @property {[string]} gatewayAccountIds - gateway account ids associated with service
  */
 class Service {
   constructor (serviceData) {

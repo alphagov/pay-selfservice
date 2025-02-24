@@ -14,7 +14,7 @@ const DEGATEWAY_FLAG = process.env.DEGATEWAY_FLAG === 'true'
  * @property {number} sessionVersion - The user's current session version
  * @property {string} otpKey - The user's OTP key
  * @property {string} telephoneNumber - The user's telephone number
- * @property {boolean} disabled - Whether or not the user is disabled
+ * @property {boolean} disabled - Whether the user is disabled
  * @property {ServiceRole[]} serviceRoles - An array of the user's serviceRoles
  * @property {boolean} internalUser - Whether the user is internal
  * @property {number} numberOfLiveServices - number of live services user is associated with
@@ -28,7 +28,7 @@ class User {
    * @param {string} userData.email - The user's email address
    * @param {string} userData.otp_key - The user's OTP key
    * @param {string} userData.telephone_number - The user's telephone number
-   * @param {boolean} userData.disabled - Whether or not the user's account is locked
+   * @param {boolean} userData.disabled - Whether the user's account is locked
    * @param {number} userData.session_version - The user's current session version
    * @param {Object[]} userData.service_roles - An array of the user's serviceRoles
    * @param {Object} userData.service_roles[].service - A raw service object see {@link Service.constructor}
@@ -92,6 +92,7 @@ class User {
 
   /**
    * @method hasPermission
+   * @param {String} serviceExternalId
    * @param {String} permissionName name of permission
    * @returns {boolean} Whether or not the user has the given permission
    */

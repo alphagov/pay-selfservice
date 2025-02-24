@@ -92,6 +92,7 @@ const registrationController = require('./controllers/registration/registration.
 const privacyController = require('./controllers/privacy/privacy.controller')
 
 const simplifiedAccountRoutes = require('./simplified-account-routes')
+const { simplifiedAccountOptIn } = require('@middleware/simplified-account')
 
 // Assignments
 const {
@@ -495,6 +496,15 @@ module.exports.bind = function (app) {
   app.use(paths.service.root, service)
   app.use(paths.futureAccountStrategy.root, futureAccountStrategy)
   app.use(paths.simplifiedAccount.root, simplifiedAccountRoutes)
+
+  // NS DEBUG
+  const servicesController = require('src/controllers/simplified-account/services')
+  app.get(paths.services.index, simplifiedAccountOptIn, userIsAuthorised, servicesController.servicesOverview.get)
+  app.get(paths.services.create.index, userIsAuthorised, createServiceController.get)
+  app.post(paths.services.create.index, userIsAuthorised, createServiceController.post)
+  app.get(paths.services.create.selectOrgType, userIsAuthorised, selectOrgTypeController.get)
+  app.post(paths.services.create.selectOrgType, userIsAuthorised, selectOrgTypeController.post)
+  // ----
 
   // security.txt — https://gds-way.cloudapps.digital/standards/vulnerability-disclosure.html
   const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'
