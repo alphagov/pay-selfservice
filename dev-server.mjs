@@ -3,7 +3,7 @@ import { spawn } from 'child_process'
 import { clientBuild, serverBuild } from './esbuild.config.mjs'
 import { rm, access, constants } from 'node:fs'
 
-const args = ['dist/application.js']
+const args = ['--enable-source-maps', 'dist/application.js']
 let server
 
 const startServer = async () => {
@@ -53,14 +53,14 @@ async function startDevServer() {
   process.on('SIGTERM', cleanup)
 }
 
-await rm('dist', { recursive: true, force: true }, async () => {
+rm('dist', { recursive: true, force: true }, async () => {
   console.log('✅ [dist] cleared')
   if (process.env.NODE_ENV === 'test') {
     console.log('🧪 [cypress/test.env] loaded environment')
     args.unshift('-r', 'dotenv/config')
     args.push('dotenv_config_path=test/cypress/test.env')
   } else {
-    await access('/.dockerenv', constants.R_OK, (err) => {
+    access('/.dockerenv', constants.R_OK, (err) => {
       if (err) {
         console.log('🔩 [.env] loaded environment')
         args.unshift('-r', 'dotenv/config')
