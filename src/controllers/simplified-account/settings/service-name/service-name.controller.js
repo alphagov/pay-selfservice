@@ -6,6 +6,11 @@ const { SERVICE_NAME_MAX_LENGTH } = require('@utils/validation/server-side-form-
 const { response } = require('@utils/response')
 const { updateServiceName } = require('@services/service.service')
 
+/**
+ *
+ * @param {SimplifiedAccountRequest} req
+ * @param res
+ */
 function get (req, res) {
   const context = {
     messages: res.locals?.flash?.messages ?? [],
@@ -17,6 +22,11 @@ function get (req, res) {
   return response(req, res, 'simplified-account/settings/service-name/index', context)
 }
 
+/**
+ *
+ * @param {SimplifiedAccountRequest} req
+ * @param res
+ */
 function getEditServiceName (req, res) {
   const editCy = req.query.cy === 'true'
   const context = {
@@ -33,6 +43,11 @@ function getEditServiceName (req, res) {
   return response(req, res, 'simplified-account/settings/service-name/edit-service-name', context)
 }
 
+/**
+ *
+ * @param {SimplifiedAccountRequest} req
+ * @param res
+ */
 async function postEditServiceName (req, res) {
   const editCy = req.body.cy === 'true'
   const validations = [
