@@ -386,7 +386,7 @@ function putWorldpay3dsFlexByServiceExternalIdAndType (serviceExternalId, accoun
  * @param {integer} version
  * @returns {{predicates: ({deepEquals: {path, method}}|{equals: {path, method}})[], name: string, responses: {is: {headers: (*|{'Content-Type': string}), statusCode}}[]}}
  */
-function patchUpdate3dsVersionByServiceExternalIdAndAccountType (serviceExternalId, accountType, version) {
+function patchUpdate3dsVersionByServiceExternalIdAndAccountType (serviceExternalId, accountType, version = 2) {
   const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
   return stubBuilder('PATCH', path, 200, {
     request: {

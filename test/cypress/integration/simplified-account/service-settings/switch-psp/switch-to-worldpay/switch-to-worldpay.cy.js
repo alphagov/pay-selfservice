@@ -37,6 +37,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       payment_provider: STRIPE,
       provider_switch_enabled: true,
       allow_moto: opts.moto || false,
+      worldpay_3ds_flex: opts.worldpay_3ds_flex || undefined,
       gateway_account_credentials: [
         STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
         pendingCredential
@@ -83,6 +84,108 @@ describe('Switch to Worldpay setting', () => {
   })
 
   describe('For an admin', () => {
+    describe('For a non-MOTO service', () => {
+      describe('When no tasks have been completed', () => {
+        beforeEach(() => {
+          setStubs()
+          cy.visit(SWITCH_TO_WORLDPAY_SETTINGS_URL)
+        })
+        it('The task list should have the tasks required for a service to switch to Worldpay', () => {
+          checkDisplayedTasks([
+            {
+              name: 'Link your Worldpay account with GOV.UK Pay',
+              status: taskStatus.NOT_STARTED,
+              tagClass: 'govuk-tag govuk-tag--blue'
+            },
+            {
+              name: 'Configure 3DS',
+              status: taskStatus.NOT_STARTED,
+              tagClass: 'govuk-tag govuk-tag--blue'
+            },
+            {
+              name: 'Make a live payment to test your Worldpay PSP',
+              status: taskStatus.CANNOT_START,
+              tagClass: 'govuk-tag govuk-tag--grey'
+            }
+          ])
+        })
+      })
+      describe('When worldpay credentials and 3DS flex tasks have been completed', () => {
+        beforeEach(() => {
+          setStubs({
+            moto: false,
+            worldpay_3ds_flex: {
+              organisational_unit_id: '5bd9b55e4444761ac0af1c80',
+              issuer: '5bd9e0e4444dce15fed8c940', // pragma: allowlist secret
+              jwt_mac_key: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e0'
+            },
+            pendingCredential: WORLDPAY_CREDENTIAL_IN_ENTERED_STATE
+          })
+          cy.visit(SWITCH_TO_WORLDPAY_SETTINGS_URL)
+        })
+        it('The task list should show the "Live Payment" task as available', () => {
+          checkDisplayedTasks([
+            {
+              name: 'Link your Worldpay account with GOV.UK Pay',
+              status: taskStatus.COMPLETE,
+              tagClass: 'govuk-tag'
+            },
+            {
+              name: 'Configure 3DS',
+              status: taskStatus.COMPLETE,
+              tagClass: 'govuk-tag'
+            },
+            {
+              name: 'Make a live payment to test your Worldpay PSP',
+              status: taskStatus.NOT_STARTED,
+              tagClass: 'govuk-tag govuk-tag--blue'
+            }
+          ])
+        })
+        it('all tasks should be navigable', () => {
+          checkTaskNavigation([
+            {
+              name: 'Link your Worldpay account with GOV.UK Pay',
+              heading: 'Your Worldpay credentials'
+            },
+            {
+              name: 'Configure 3DS',
+              heading: 'Your Worldpay 3DS Flex credentials'
+            },
+            {
+              name: 'Make a live payment to test your Worldpay PSP',
+              heading: 'Test the connection between Worldpay and GOV.UK Pay'
+            }
+          ])
+        })
+      })
+      describe('When all tasks have been completed', () => {
+        beforeEach(() => {
+          setupStubsForAllTasksCompleted()
+          cy.visit(SWITCH_TO_WORLDPAY_SETTINGS_URL)
+        })
+        it('The task list should not be present', () => {
+          it('should not be present', () => {
+            cy.get('.govuk-task-list')
+              .should('not.exist')
+          })
+        })
+        describe('Clicking the "Switch to Worldpay" button', () => {
+          it('should be redirected to the worldpay details settings page with success message', () => {
+            cy.get('#switch-psp button[type=submit]')
+              .click()
+            cy.get('.govuk-notification-banner')
+              .should('have.class', 'govuk-notification-banner--success')
+              .should('have.class', 'system-messages')
+              .contains('Service connected to Worldpay')
+              .parent()
+              .contains('This service can now take payments')
+            checkTitleAndHeading('Worldpay details', SERVICE_NAME.en)
+            checkSettingsNavigation('Worldpay details', WORLDPAY_DETAILS_SETTINGS_URL)
+          })
+        })
+      })
+    })
     describe('For a MOTO service', () => {
       describe('When no tasks have been completed', () => {
         beforeEach(() => {
@@ -149,38 +252,7 @@ describe('Switch to Worldpay setting', () => {
       })
       describe('When all tasks have been completed', () => {
         beforeEach(() => {
-          setStubs({
-            moto: true,
-            pendingCredential: WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE
-          }, [
-            gatewayAccountStubs.postSwitchPspSuccessByServiceExternalIdAndAccountType({
-              serviceExternalId: SERVICE_EXTERNAL_ID,
-              accountType: LIVE_ACCOUNT_TYPE,
-              userExternalId: USER_EXTERNAL_ID,
-              credentialExternalId: SWITCHING_CREDENTIAL_EXTERNAL_ID
-            }),
-            gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
-              gateway_account_id: GATEWAY_ACCOUNT_ID,
-              type: LIVE_ACCOUNT_TYPE,
-              payment_provider: STRIPE,
-              provider_switch_enabled: true,
-              allow_moto: true,
-              gateway_account_credentials: [
-                STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
-                WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE
-              ]
-            }),
-            gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
-              gateway_account_id: GATEWAY_ACCOUNT_ID,
-              type: LIVE_ACCOUNT_TYPE,
-              payment_provider: WORLDPAY,
-              provider_switch_enabled: false,
-              allow_moto: true,
-              gateway_account_credentials: [
-                WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE
-              ]
-            })
-          ])
+          setupStubsForAllTasksCompleted()
           cy.visit(SWITCH_TO_WORLDPAY_SETTINGS_URL)
         })
         describe('The task list', () => {
@@ -205,6 +277,41 @@ describe('Switch to Worldpay setting', () => {
         })
       })
     })
+
+    function setupStubsForAllTasksCompleted () {
+      setStubs({
+        moto: true,
+        pendingCredential: WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE
+      }, [
+        gatewayAccountStubs.postSwitchPspSuccessByServiceExternalIdAndAccountType({
+          serviceExternalId: SERVICE_EXTERNAL_ID,
+          accountType: LIVE_ACCOUNT_TYPE,
+          userExternalId: USER_EXTERNAL_ID,
+          credentialExternalId: SWITCHING_CREDENTIAL_EXTERNAL_ID
+        }),
+        gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
+          gateway_account_id: GATEWAY_ACCOUNT_ID,
+          type: LIVE_ACCOUNT_TYPE,
+          payment_provider: STRIPE,
+          provider_switch_enabled: true,
+          allow_moto: true,
+          gateway_account_credentials: [
+            STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
+            WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE
+          ]
+        }),
+        gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
+          gateway_account_id: GATEWAY_ACCOUNT_ID,
+          type: LIVE_ACCOUNT_TYPE,
+          payment_provider: WORLDPAY,
+          provider_switch_enabled: false,
+          allow_moto: true,
+          gateway_account_credentials: [
+            WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE
+          ]
+        })
+      ])
+    }
   })
 })
 
