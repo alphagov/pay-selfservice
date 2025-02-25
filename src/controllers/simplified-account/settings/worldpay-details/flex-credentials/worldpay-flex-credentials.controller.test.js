@@ -237,7 +237,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
           await call('post')
 
           worldpayDetailsServiceStubs.updateIntegrationVersion3ds.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
-          worldpayDetailsServiceStubs.updateIntegrationVersion3ds.should.have.been.calledWith(SERVICE_ID, ACCOUNT_TYPE, 2)
+          worldpayDetailsServiceStubs.updateIntegrationVersion3ds.should.have.been.calledWith(SERVICE_ID, ACCOUNT_TYPE)
         })
 
         it('should call the redirect method with the worldpay details index path on success', async () => {

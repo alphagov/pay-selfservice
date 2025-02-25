@@ -27,7 +27,7 @@ class WorldpayTasks {
     }
 
     if (!gatewayAccount.allowMoto) {
-      this.tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount.type, gatewayAccount.worldpay3dsFlex))
+      this.tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount.type, gatewayAccount.worldpay3dsFlex, switchingPsp))
     }
 
     if (switchingPsp) {

@@ -5,7 +5,7 @@ const { validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
 const worldpayDetailsService = require('@services/worldpay-details.service')
-const { oneOffCustomerInitiatedSchema } = require('@utils/simplified-account/validation/worldpay/one-off-customer-initiated.schema')
+const { ONE_OFF_CUSTOMER_INITIATED_SCHEMA } = require('@utils/simplified-account/validation/worldpay/validations.schema')
 
 function get (req, res) {
   const account = req.account
@@ -25,9 +25,9 @@ async function post (req, res, next) {
   const user = req.user
   const switchingCredential = account.getSwitchingCredential()
   const validations = [
-    oneOffCustomerInitiatedSchema.merchantCode.validate,
-    oneOffCustomerInitiatedSchema.username.validate,
-    oneOffCustomerInitiatedSchema.password.validate
+    ONE_OFF_CUSTOMER_INITIATED_SCHEMA.merchantCode.validate,
+    ONE_OFF_CUSTOMER_INITIATED_SCHEMA.username.validate,
+    ONE_OFF_CUSTOMER_INITIATED_SCHEMA.password.validate
   ]
 
   await Promise.all(validations.map(validation => validation.run(req)))
