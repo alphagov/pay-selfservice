@@ -4,20 +4,26 @@ const webhooksService = require('@services/webhooks.service')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const { constants } = require('@govuk-pay/pay-js-commons')
 
+/**
+ *
+ * @param req {SimplifiedAccountRequest}
+ * @param res
+ * @returns {Promise<void>}
+ */
 async function get (req, res) {
-  const baseUrl = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.detail, req.service.externalId, req.account.type, req.params.webhookId)
+  const baseUrl = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.detail, req.service.externalId, req.account.type, req.params.webhookExternalId)
   const page = parseInt(req.query.page || 1)
   if (Number.isNaN(page) || page < 1) {
-    res.redirect(baseUrl)
+    return res.redirect(baseUrl)
   }
 
   const deliveryStatus = (req.query.deliveryStatus === 'successful' || req.query.deliveryStatus === 'failed') ? req.query.deliveryStatus : 'all'
-  const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId, req.account.id)
-  const signingSecret = await webhooksService.getSigningSecret(req.params.webhookId, req.service.externalId, req.account.id)
-  const webhookMessages = await webhooksService.getWebhookMessages(req.params.webhookId, { page, ...deliveryStatus && { status: deliveryStatus } })
+  const webhook = await webhooksService.getWebhook(req.params.webhookExternalId, req.service.externalId, req.account.id)
+  const signingSecret = await webhooksService.getSigningSecret(req.params.webhookExternalId, req.service.externalId, req.account.id)
+  const webhookMessages = await webhooksService.getWebhookMessages(req.params.webhookExternalId, { page, ...deliveryStatus && { status: deliveryStatus } })
   const totalPages = Math.ceil(webhookMessages.total / 10)
   if (totalPages > 0 && page > totalPages) {
-    res.redirect(baseUrl)
+    return res.redirect(baseUrl)
   }
 
   const webhookEvents = webhookMessages.results.map(result => ({
@@ -25,10 +31,9 @@ async function get (req, res) {
     eventType: result.event_type,
     lastDeliveryStatus: result.last_delivery_status,
     eventDate: result.event_date,
-    eventDetailUrl: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.event, req.service.externalId, req.account.type, webhook.external_id, result.external_id)
+    eventDetailUrl: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.event, req.service.externalId, req.account.type, webhook.externalId, result.external_id)
   }))
   const paginationDetails = getPaginationDetails(page, webhookMessages.total, baseUrl, deliveryStatus)
-
   response(req, res, 'simplified-account/settings/webhooks/detail', {
     webhook,
     signingSecret,

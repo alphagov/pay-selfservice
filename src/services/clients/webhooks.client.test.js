@@ -3,6 +3,7 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
+const WebhookUpdateRequest = require('@models/webhooks/WebhookUpdateRequest.class')
 
 const configureSpy = sinon.spy()
 
@@ -196,7 +197,7 @@ describe('Webhook client', () => {
     it('should use default base URL when base URL has not been set', async () => {
       const webhooksClient = getWebhooksClient()
 
-      await webhooksClient.updateWebhook('id', 'a-service-id', 'a-gateway-account-id', {})
+      await webhooksClient.updateWebhook('id', 'a-service-id', 'a-gateway-account-id', new WebhookUpdateRequest())
 
       expect(configureSpy.getCall(0).args[0]).to.equal('http://127.0.0.1:8008/v1/webhook/id?service_id=a-service-id&gateway_account_id=a-gateway-account-id')
     })
@@ -204,7 +205,7 @@ describe('Webhook client', () => {
     it('should use configured base url', async () => {
       const webhooksClient = getWebhooksClient()
 
-      await webhooksClient.updateWebhook('id', 'a-service-id', 'a-gateway-account-id', { baseUrl: 'https://example.com' })
+      await webhooksClient.updateWebhook('id', 'a-service-id', 'a-gateway-account-id', new WebhookUpdateRequest(), { baseUrl: 'https://example.com' })
 
       expect(configureSpy.getCall(0).args[0]).to.equal('https://example.com/v1/webhook/id?service_id=a-service-id&gateway_account_id=a-gateway-account-id')
     })

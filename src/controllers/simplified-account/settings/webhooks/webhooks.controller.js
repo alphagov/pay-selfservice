@@ -3,7 +3,7 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const paths = require('@root/paths')
 const webhooksService = require('@services/webhooks.service')
 const { constants } = require('@govuk-pay/pay-js-commons')
-const { WebhookStatus } = require('@models/Webhook.class')
+const { WebhookStatus } = require('@models/webhooks/Webhook.class')
 
 async function get (req, res) {
   const accountIsLive = req.account.type === 'live'

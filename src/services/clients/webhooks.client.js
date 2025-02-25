@@ -3,7 +3,7 @@
 const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client')
 const { configureClient } = require('./base/config')
 const urlJoin = require('url-join')
-const { Webhook } = require('@models/Webhook.class')
+const { Webhook } = require('@models/webhooks/Webhook.class')
 
 const defaultRequestOptions = {
   baseUrl: process.env.WEBHOOKS_URL,
@@ -13,13 +13,21 @@ const defaultRequestOptions = {
 
 const client = new Client(defaultRequestOptions.service)
 
-async function webhook (id, serviceId, gatewayAccountId, options = {}) {
+/**
+ *
+ * @param webhookExternalId {String}
+ * @param serviceExternalId {String}
+ * @param gatewayAccountId {String}
+ * @param options {{ baseUrl: String }}
+ * @returns {Promise<Webhook>}
+ */
+async function webhook (webhookExternalId, serviceExternalId, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
-  const url = urlJoin(baseUrl, '/v1/webhook', id)
-  const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}`
+  const url = urlJoin(baseUrl, '/v1/webhook', webhookExternalId)
+  const fullUrl = `${url}?service_id=${serviceExternalId}&gateway_account_id=${gatewayAccountId}`
   configureClient(client, fullUrl)
   const response = await client.get(fullUrl, 'Get one webhook')
-  return response.data
+  return Webhook.fromJson(response.data)
 }
 
 async function signingSecret (webhookId, serviceId, gatewayAccountId, options = {}) {
@@ -42,16 +50,16 @@ async function resetSigningSecret (webhookId, serviceId, gatewayAccountId, optio
 
 /**
  *
- * @param serviceId
- * @param gatewayAccountId
- * @param isLive
- * @param options
+ * @param serviceExternalId {String}
+ * @param gatewayAccountId {String}
+ * @param isLive {boolean}
+ * @param options {{ baseUrl: String }}
  * @returns {Promise<[Webhook]>}
  */
-async function webhooks (serviceId, gatewayAccountId, isLive, options = {}) {
+async function webhooks (serviceExternalId, gatewayAccountId, isLive, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook')
-  const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}&live=${isLive}`
+  const fullUrl = `${url}?service_id=${serviceExternalId}&gateway_account_id=${gatewayAccountId}&live=${isLive}`
   configureClient(client, fullUrl)
   const response = await client.get(fullUrl, 'List webhooks for service')
   return response.data.map(webhookData => Webhook.fromJson(webhookData))
@@ -102,19 +110,25 @@ async function createWebhook (serviceId, gatewayAccountId, isLive, options = {})
   return response.data
 }
 
-async function updateWebhook (id, serviceId, gatewayAccountId, options = {}) {
-  const paths = ['callback_url', 'subscriptions', 'description', 'status']
-  const body = []
-  paths.forEach((path) => {
-    if (options[path]) {
-      body.push({ op: 'replace', path, value: options[path] })
-    }
-  })
+/**
+ *
+ * @param webhookExternalId {String}
+ * @param serviceExternalId {String}
+ * @param gatewayAccountId {String}
+ * @param patchRequest {WebhookUpdateRequest}
+ * @returns {Promise<*>}
+ */
+async function updateWebhook (webhookExternalId, serviceExternalId, gatewayAccountId, patchRequest, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
-  const url = urlJoin(baseUrl, '/v1/webhook', id)
-  const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}`
+  const url = urlJoin(baseUrl, '/v1/webhook', webhookExternalId)
+  const fullUrl = `${url}?service_id=${serviceExternalId}&gateway_account_id=${gatewayAccountId}`
   configureClient(client, fullUrl)
-  const response = await client.patch(fullUrl, body, 'Create a Webhook')
+  console.log(patchRequest.toJson())
+  const response = await client.patch(fullUrl, patchRequest.toJson(), 'Update webhook')
+    .catch(e => {
+      console.log(e)
+      throw e
+    })
   return response.data
 }
 
