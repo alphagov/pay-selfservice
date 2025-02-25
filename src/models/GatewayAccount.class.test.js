@@ -1,4 +1,4 @@
-const GatewayAccount = require('@models/GatewayAccount.class')
+const GatewayAccount = require('@models/webhooks/GatewayAccount.class')
 const { WORLDPAY, STRIPE, SANDBOX } = require('@models/constants/payment-providers')
 const { expect } = require('chai')
 const { InvalidConfigurationError } = require('@root/errors')

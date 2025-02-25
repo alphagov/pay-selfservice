@@ -1,7 +1,7 @@
 const sinon = require('sinon')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const Service = require('@models/Service.class')
-const GatewayAccount = require('@models/GatewayAccount.class')
+const GatewayAccount = require('@models/webhooks/GatewayAccount.class')
 const { expect } = require('chai')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')

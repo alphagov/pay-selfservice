@@ -4,6 +4,7 @@ const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 
 const webhooksFixture = require('@test/fixtures/webhooks.fixtures')
+const WebhookUpdateRequest = require('@models/webhooks/WebhookUpdateRequest.class')
 
 describe('webhooks service', () => {
   describe('list webhooks', () => {
@@ -39,13 +40,13 @@ describe('webhooks service', () => {
       const spy = sinon.spy(async () => {})
       const service = getWebhooksServiceWithStub({ updateWebhook: spy })
       service.toggleStatus('webhook-id', 'service-id', 'some-gateway-account-id', 'ACTIVE')
-      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', 'some-gateway-account-id', { status: 'INACTIVE' })
+      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', 'some-gateway-account-id', new WebhookUpdateRequest().replace().status('INACTIVE'))
     })
     it('should active given an inactive webhook', () => {
       const spy = sinon.spy(async () => {})
       const service = getWebhooksServiceWithStub({ updateWebhook: spy })
       service.toggleStatus('webhook-id', 'service-id', 'some-gateway-account-id', 'INACTIVE')
-      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', 'some-gateway-account-id', { status: 'ACTIVE' })
+      sinon.assert.calledWith(spy, 'webhook-id', 'service-id', 'some-gateway-account-id', new WebhookUpdateRequest().replace().status('ACTIVE'))
     })
   })
   describe('List webhook messages', () => {
