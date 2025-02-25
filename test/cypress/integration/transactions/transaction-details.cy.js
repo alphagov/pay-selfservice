@@ -152,7 +152,7 @@ describe('Transaction details page', () => {
       transactionDetails.total_amount = 1250
 
       transactionDetails.authorisation_summary = {
-        three_d_security: {
+        three_d_secure: {
           required: true
         }
       }
