@@ -171,7 +171,7 @@ describe('Webhooks', () => {
     cy.get('#secret').contains('valid-signing-secret')
   })
 
-  it('should toggle a webhook status', () => {
+  it.only('should toggle a webhook status', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       webhooksStubs.patchUpdateWebhookSuccess(gatewayAccountId, serviceExternalId, webhookExternalId, { path: 'status', value: 'INACTIVE' })

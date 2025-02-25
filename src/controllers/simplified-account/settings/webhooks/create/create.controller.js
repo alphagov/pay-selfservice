@@ -59,5 +59,6 @@ const responseWithErrors = (req, res, errors) => {
 
 module.exports = {
   get,
-  post
+  post,
+  responseWithErrors
 }

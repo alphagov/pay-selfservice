@@ -9,6 +9,7 @@ const formatFutureStrategyAccountPathsFor = require('../../utils/format-future-s
 const webhooksService = require('@services/webhooks.service')
 const logger = require('../../utils/logger.js')(__filename)
 const { WebhooksForm } = require('./webhooks-form')
+const WebhookUpdateRequest = require('@models/webhooks/WebhookUpdateRequest.class')
 
 const webhooksFormSchema = new WebhooksForm()
 
@@ -22,7 +23,7 @@ async function webhookDetailPage (req, res, next) {
 
     response(req, res, 'webhooks/detail', {
       eventTypes: constants.webhooks.humanReadableSubscriptions,
-      webhook,
+      webhook: webhook.rawResponse,
       messages,
       status,
       page
@@ -48,8 +49,8 @@ async function createWebhookPage (req, res, next) {
 async function updateWebhookPage (req, res, next) {
   try {
     const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId, req.account.gateway_account_id)
-    const form = webhooksFormSchema.from(webhook)
-    response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, isEditing: true, webhook, form })
+    const form = webhooksFormSchema.from(webhook.rawResponse)
+    response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, isEditing: true, webhook: webhook.rawResponse, form })
   } catch (error) {
     next(error)
   }
@@ -65,7 +66,7 @@ async function signingSecretPage (req, res, next) {
     } catch (error) {
       logger.warn('Unable to fetch signing secret for Webhook')
     }
-    response(req, res, 'webhooks/signing_secret', { webhook, signingSecret })
+    response(req, res, 'webhooks/signing_secret', { webhook: webhook.rawResponse, signingSecret })
   } catch (error) {
     next(error)
   }
@@ -74,7 +75,7 @@ async function signingSecretPage (req, res, next) {
 async function toggleActivePage (req, res, next) {
   try {
     const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId, req.account.gateway_account_id)
-    response(req, res, 'webhooks/toggle_active', { webhook })
+    response(req, res, 'webhooks/toggle_active', { webhook: webhook.rawResponse })
   } catch (error) {
     next(error)
   }
@@ -85,7 +86,7 @@ async function webhookMessageDetailPage (req, res, next) {
     const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId, req.account.gateway_account_id)
     const message = await webhooksService.getWebhookMessage(req.params.messageId, req.params.webhookId)
     const attempts = await webhooksService.getWebhookMessageAttempts(req.params.messageId, req.params.webhookId)
-    response(req, res, 'webhooks/message', { webhook, message, attempts, eventTypes: constants.webhooks.humanReadableSubscriptions })
+    response(req, res, 'webhooks/message', { webhook: webhook.rawResponse, message, attempts, eventTypes: constants.webhooks.humanReadableSubscriptions })
   } catch (error) {
     next(error)
   }
@@ -120,17 +121,22 @@ async function updateWebhook (req, res, next) {
     const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId, req.account.gateway_account_id)
     let form = webhooksFormSchema.validate(req.body)
     if (form.errorSummaryList.length) {
-      response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, isEditing: true, webhook, form })
+      response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, isEditing: true, webhook: webhook.rawResponse, form })
       return
     }
 
+    const webhookUpdateRequest = new WebhookUpdateRequest()
+      .replace().description(req.body.description)
+      .replace().callbackUrl(req.body.callback_url)
+      .replace().subscriptions(typeof (req.body.subscriptions) === 'string' ? [req.body.subscriptions] : req.body.subscriptions)
+
     try {
-      await webhooksService.updateWebhook(req.params.webhookId, req.service.externalId, req.account.gateway_account_id, req.body)
+      await webhooksService.updateWebhook(req.params.webhookId, req.service.externalId, req.account.gateway_account_id, webhookUpdateRequest)
     } catch (updateWebhookError) {
       form = webhooksFormSchema.parseResponse(updateWebhookError, req.body)
 
       if (form.errorSummaryList.length) {
-        response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, isEditing: true, webhook, form })
+        response(req, res, 'webhooks/edit', { eventTypes: constants.webhooks.humanReadableSubscriptions, isEditing: true, webhook: webhook.rawResponse, form })
       } else {
         next(updateWebhookError)
       }
@@ -146,7 +152,7 @@ async function toggleActiveWebhook (req, res, next) {
   try {
     const webhook = await webhooksService.getWebhook(req.params.webhookId, req.service.externalId, req.account.gateway_account_id)
 
-    await webhooksService.toggleStatus(req.params.webhookId, req.service.externalId, req.account.gateway_account_id, webhook.status)
+    await webhooksService.toggleStatus(req.params.webhookId, req.service.externalId, req.account.gateway_account_id, webhook.rawResponse.status)
 
     req.flash('generic', 'Webhook status updated')
     res.redirect(formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.webhooks.detail, req.account.type, req.service.externalId, req.account.external_id, req.params.webhookId))

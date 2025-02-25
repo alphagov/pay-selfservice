@@ -6,7 +6,7 @@ const sinon = require('sinon')
 const User = require('../../models/User.class')
 const userFixtures = require('../../../test/fixtures/user.fixtures')
 const stripeAccountSetupFixture = require('../../../test/fixtures/stripe-account-setup.fixtures')
-const GatewayAccount = require('@models/GatewayAccount.class')
+const GatewayAccount = require('@models/webhooks/GatewayAccount.class')
 
 const A_GATEWAY_EXTERNAL_ID = 'a-gateway-external-id'
 const A_SERVICE_EXTERNAL_ID = 'a-service-external-id'
