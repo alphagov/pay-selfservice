@@ -100,14 +100,15 @@
 
   <h2 class="govuk-heading-m">Events</h2>
   <p class="govuk-body">Events sent to your webhook are stored for 7 days.</p>
-
+  <form>
   {{ govukSelect({
     id: "filter-events",
-    name: "Filter events",
+    name: "deliveryStatus",
     label: {
-      text: "Filter events",
+      text: "Filter Events",
       classes: "govuk-label--s"
     },
+    value: deliveryStatus,
     items: [
       {
         value: "all",
@@ -128,6 +129,7 @@
       }
     }
   }) }}
+  </form>
 
   {% set eventRows = [] %}
   {% for event in webhookEvents %}
@@ -160,5 +162,9 @@
     rows: eventRows
 
   }) }}
+
+  {% from "govuk/components/pagination/macro.njk" import govukPagination %}
+
+  {{ govukPagination( paginationDetails ) }}
 
 {% endblock %}
