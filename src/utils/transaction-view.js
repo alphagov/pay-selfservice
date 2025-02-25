@@ -19,9 +19,9 @@ const REDACTED_PII_FIELD_VALUE = '<DELETED>'
 const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
 function append3dSecureData (data) {
-  if (data?.authorisation_summary?.three_d_security?.required === true) {
+  if (data?.authorisation_summary?.three_d_secure?.required === true) {
     return 'Required'
-  } else if (data?.authorisation_summary?.three_d_security?.required === false) {
+  } else if (data?.authorisation_summary?.three_d_secure?.required === false) {
     return 'Not required'
   }
 }

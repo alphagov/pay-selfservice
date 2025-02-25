@@ -95,7 +95,7 @@ describe('Transaction view utilities', () => {
     it('should correctly set `three_d_Secure` field to required', () => {
       const transaction = transactionFixtures.validTransactionDetailsResponse({
         authorisation_summary: {
-          three_d_security: {
+          three_d_secure: {
             required: true
           }
         }
@@ -110,7 +110,7 @@ describe('Transaction view utilities', () => {
     it('should correctly set `three_d_Secure` field to not required', () => {
       const transaction = transactionFixtures.validTransactionDetailsResponse({
         authorisation_summary: {
-          three_d_security: {
+          three_d_secure: {
             required: false
           }
         }
