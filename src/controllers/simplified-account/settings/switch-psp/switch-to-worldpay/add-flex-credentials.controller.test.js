@@ -30,7 +30,6 @@ const {
     providerSwitchEnabled: true,
     paymentProvider: STRIPE,
     allowMoto: true
-    // getSwitchingCredential: getSwitchingCredentialStub
   })
   .withUser({
     externalId: USER_EXTERNAL_ID
