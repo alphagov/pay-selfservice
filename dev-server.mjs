@@ -3,17 +3,18 @@ import { spawn } from 'child_process'
 import { clientBuild, serverBuild } from './esbuild.config.mjs'
 import { rm, access, constants } from 'node:fs'
 
-const args = ['--enable-source-maps', 'dist/application.js']
+const args = ['--enable-source-maps', '--inspect', 'dist/application.js']
 let server
 
 const startServer = async () => {
   if (server) server.kill()
+  console.log(`🔎 node ${args.join(' ')}`)
   server = spawn('node', args, {
     stdio: 'inherit'
   })
 }
 
-async function startDevServer() {
+async function startDevServer () {
   const clientCtx = await context(clientBuild)
 
   const serverCtx = await context({
@@ -22,7 +23,7 @@ async function startDevServer() {
       ...serverBuild.plugins,
       {
         name: 'server-rebuild',
-        setup(build) {
+        setup (build) {
           build.onEnd(async result => {
             if (result.errors.length === 0) {
               await startServer()
@@ -35,7 +36,7 @@ async function startDevServer() {
 
   await Promise.all([
     clientCtx.watch(),
-    serverCtx.watch(),
+    serverCtx.watch()
   ])
 
   const cleanup = async () => {

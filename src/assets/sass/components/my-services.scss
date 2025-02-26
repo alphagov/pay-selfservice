@@ -1,7 +1,8 @@
-.service-switcher{
+.service-switcher, .service-dashboard--link {
+  @include govuk-font($size: 16);
+
   &.live {
     position: relative;
-    margin-bottom: govuk-spacing(3);
     padding-left: 2rem;
     @include govuk-font($size: 19, $weight: bold);
 
@@ -10,10 +11,6 @@
       position: absolute;
       top: 50%;
       left: 0;
-      -webkit-transform:translate(0, -50%);
-      -moz-transform:translate(0, -50%);
-      -ms-transform:translate(0, -50%);
-      -o-transform:translate(0, -50%);
       transform:translate(0, -50%);
       width: 1.5rem;
       height: 1.5rem;
@@ -22,6 +19,13 @@
     }
   }
 }
+
+.govuk-list {
+  .service--live {
+    margin-bottom: govuk-spacing(3);
+  }
+}
+
 
 .reports {
   margin-top: govuk-spacing(2);

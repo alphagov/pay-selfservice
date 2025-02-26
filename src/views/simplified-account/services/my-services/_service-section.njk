@@ -6,10 +6,9 @@
     <h3 class="govuk-heading-s service-name">
       {{ service.name }}
       {% if service.isWorldpayTestService %}
-        {{ govukTag({
-          text: "Worldpay test service",
-          classes: "govuk-tag--grey"
-        }) }}
+        <strong class="govuk-tag govuk-tag--grey" style="max-width: 200px;">
+          Worldpay test service
+        </strong>
       {% endif %}
       {% if service.permissions.service_name_update %}
         <a href="{{ (service.gatewayAccounts | first).links.editServiceNameLink }}"
@@ -24,7 +23,7 @@
       <ul class="govuk-list">
         {% for account in service.gatewayAccounts %}
           <li class="service--{{ account.type }}">
-            <a href="{{ account.links.dashboardLink }}" class="govuk-link govuk-link--no-visited-state {% if account.type === 'live' %} govuk-!-font-weight-bold govuk-!-font-size-19 {% else %} govuk-!-font-size-16 {% endif %}">
+            <a href="{{ account.links.dashboardLink }}" class="govuk-link govuk-link--no-visited-state service-dashboard--link {{ account.type }}">
               {{ account.type | title }}
               {% if account.type === 'live' %}
                 card account
@@ -32,13 +31,12 @@
                 account ({{ account.paymentProvider }})
               {% endif %}
             </a>
-            {% if account.providerSwitchEnabled %}
+            {% if account.providerSwitchEnabled and service.userIsAdminForService %}
               <strong class="govuk-tag govuk-tag--blue service-info--tag">Switch PSP</strong>
             {% endif %}
             {% if account.allowMoto %}
-              <strong class="govuk-tag govuk-tag--purple service-info--tag">MOTO</strong>
+              <strong class="govuk-tag govuk-tag--turquoise service-info--tag">MOTO</strong>
             {% endif %}
-{#            {% if account.providerSwitchEnabled and service.isAdminUser %}#}
           </li>
         {% endfor %}
       </ul>

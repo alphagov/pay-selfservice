@@ -3,7 +3,7 @@
     <a href="#proposition-links" class="js-header-toggle menu">Menu</a>
     <nav id="proposition-menu" aria-label="Top Level Navigation" aria-hidden="true" data-click-events data-click-category="Header" data-click-action="Navigation link clicked">
       <ul id="proposition-links">
-        <li><a {% if services %}class="active"{% endif %} href="{{ routes.serviceSwitcher.index }}" title="My services" id="my-services">My services</a></li>
+        <li><a {% if services %}class="active"{% endif %} href="{{ routes.services.index }}" title="My services" id="my-services">My services</a></li>
         <li><a href="{{ routes.user.profile.index }}" title="My profile" id="my-profile">My profile</a></li>
         <li><a href="https://docs.payments.service.gov.uk" title="Read the GOV.UK Pay Documentation">Documentation</a></li>
         <li><a href="/logout" title="Log me out" id="logout" class="content logout">Sign out</a></li>

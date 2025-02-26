@@ -39,7 +39,6 @@ const apiKeysController = require('./controllers/api-keys')
 const digitalWalletController = require('./controllers/digital-wallet')
 const emailNotificationsController = require('./controllers/email-notifications/email-notifications.controller')
 const forgotPasswordController = require('./controllers/forgotten-password.controller')
-const myServicesController = require('./controllers/my-services')
 const editServiceNameController = require('./controllers/edit-service-name/edit-service-name.controller')
 const serviceUsersController = require('./controllers/service-users.controller')
 const organisationDetailsController = require('./controllers/organisation-details.controller')
@@ -90,9 +89,9 @@ const agreementsController = require('./controllers/agreements/agreements.contro
 const organisationUrlController = require('./controllers/switch-psp/organisation-url')
 const registrationController = require('./controllers/registration/registration.controller')
 const privacyController = require('./controllers/privacy/privacy.controller')
+const servicesController = require('src/controllers/simplified-account/services')
 
 const simplifiedAccountRoutes = require('./simplified-account-routes')
-const { simplifiedAccountOptIn } = require('@middleware/simplified-account')
 
 // Assignments
 const {
@@ -104,7 +103,7 @@ const {
   policyPage,
   payouts,
   register,
-  serviceSwitcher,
+  services,
   staticPaths,
   user
 } = paths
@@ -222,13 +221,12 @@ module.exports.bind = function (app) {
   // OUTSIDE OF SERVICE ROUTES
   // -------------------------
 
-  // Service switcher
-  app.get(serviceSwitcher.index, userIsAuthorised, myServicesController.getIndex)
-  app.post(serviceSwitcher.switch, userIsAuthorised, myServicesController.postIndex)
-  app.get(serviceSwitcher.create.index, userIsAuthorised, createServiceController.get)
-  app.post(serviceSwitcher.create.index, userIsAuthorised, createServiceController.post)
-  app.post(serviceSwitcher.create.selectOrgType, userIsAuthorised, selectOrgTypeController.post)
-  app.get(serviceSwitcher.create.selectOrgType, userIsAuthorised, selectOrgTypeController.get)
+  // My services
+  app.get(services.index, userIsAuthorised, servicesController.myServices.get)
+  app.get(services.create.index, userIsAuthorised, createServiceController.get)
+  app.post(services.create.index, userIsAuthorised, createServiceController.post)
+  app.post(services.create.selectOrgType, userIsAuthorised, selectOrgTypeController.post)
+  app.get(services.create.selectOrgType, userIsAuthorised, selectOrgTypeController.get)
 
   // All service transactions
   app.get(allServiceTransactions.index, userIsAuthorised, allTransactionsController.getController)
@@ -497,15 +495,6 @@ module.exports.bind = function (app) {
   app.use(paths.futureAccountStrategy.root, futureAccountStrategy)
   app.use(paths.simplifiedAccount.root, simplifiedAccountRoutes)
 
-  // NS DEBUG
-  const servicesController = require('src/controllers/simplified-account/services')
-  app.get(paths.services.index, simplifiedAccountOptIn, userIsAuthorised, servicesController.servicesOverview.get)
-  app.get(paths.services.create.index, userIsAuthorised, createServiceController.get)
-  app.post(paths.services.create.index, userIsAuthorised, createServiceController.post)
-  app.get(paths.services.create.selectOrgType, userIsAuthorised, selectOrgTypeController.get)
-  app.post(paths.services.create.selectOrgType, userIsAuthorised, selectOrgTypeController.post)
-  // ----
-
   // security.txt — https://gds-way.cloudapps.digital/standards/vulnerability-disclosure.html
   const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'
   app.get('/.well-known/security.txt', (req, res) => res.redirect(securitytxt))
@@ -525,7 +514,7 @@ module.exports.bind = function (app) {
         return
       }
 
-      res.redirect(serviceSwitcher.index)
+      res.redirect(services.index)
       return
     }
     logger.info('Page not found', {

@@ -26,17 +26,18 @@ const buildUser = (serviceExternalId, gatewayAccountIds) => {
 
 const setupSimplifiedAccountStrategyTest = function (options) {
   const {
-    gatewayAccountID,
+    gatewayAccountId,
     gatewayAccountExternalId,
     paymentProvider,
     serviceExternalId,
+    serviceGatewayAccountIds,
     accountType,
     errorCode
   } = options
 
   req = {
     params: { serviceExternalId, accountType },
-    user: buildUser(serviceExternalId, [`${gatewayAccountID}`])
+    user: buildUser(serviceExternalId, serviceGatewayAccountIds || [`${gatewayAccountId}`])
   }
   next = sinon.spy()
 
@@ -45,7 +46,7 @@ const setupSimplifiedAccountStrategyTest = function (options) {
     connectorGetAccountMock = sinon.stub().rejects({ errorCode })
   } else {
     connectorGetAccountMock = sinon.stub().resolves(new GatewayAccount({
-      gateway_account_id: gatewayAccountID,
+      gateway_account_id: gatewayAccountId,
       external_id: gatewayAccountExternalId,
       payment_provider: paymentProvider
     }))
@@ -76,7 +77,7 @@ const setupSimplifiedAccountStrategyTest = function (options) {
 describe('Middleware: getSimplifiedAccount', () => {
   it('should set gateway account and service on request object', async () => {
     const { simplifiedAccountStrategy, connectorGetAccountMock } = setupSimplifiedAccountStrategyTest({
-      gatewayAccountID: '1',
+      gatewayAccountId: '1',
       gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
       paymentProvider: 'worldpay',
       serviceExternalId: A_SERVICE_EXTERNAL_ID,
@@ -96,7 +97,7 @@ describe('Middleware: getSimplifiedAccount', () => {
   })
   it('should error if service external ID or gateway account type cannot be resolved from request parameters', async () => {
     const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
-      gatewayAccountID: '1',
+      gatewayAccountId: '1',
       gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
       paymentProvider: 'worldpay',
       serviceExternalId: A_SERVICE_EXTERNAL_ID,
@@ -114,7 +115,7 @@ describe('Middleware: getSimplifiedAccount', () => {
   })
   it('should error if gateway account lookup fails for account type', async () => {
     const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
-      gatewayAccountID: '1',
+      gatewayAccountId: '1',
       serviceExternalId: A_SERVICE_EXTERNAL_ID,
       accountType: 'test',
       errorCode: '404'
@@ -126,10 +127,22 @@ describe('Middleware: getSimplifiedAccount', () => {
     sinon.assert.calledOnce(next)
     sinon.assert.calledWith(next, expectedError)
   })
+  it('should warn if gateway account id is not present on service', async () => {
+    const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
+      gatewayAccountId: '1',
+      serviceGatewayAccountIds: ['2', '3'],
+      serviceExternalId: A_SERVICE_EXTERNAL_ID,
+      accountType: 'test'
+    })
+    await simplifiedAccountStrategy(req, res, next)
+
+    expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
+    expect(req.service.externalId).to.equal(A_SERVICE_EXTERNAL_ID)
+  })
   describe('extend gateway account data with disableToggle3ds field', () => {
     it('should extend the account data with disableToggle3ds set to false if payment provider is worldpay', async () => {
       const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
-        gatewayAccountID: '1',
+        gatewayAccountId: '1',
         gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
         paymentProvider: 'worldpay',
         serviceExternalId: A_SERVICE_EXTERNAL_ID,
@@ -141,7 +154,7 @@ describe('Middleware: getSimplifiedAccount', () => {
     })
     it('should extend the account data with disableToggle3ds set to true if payment provider is stripe', async () => {
       const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
-        gatewayAccountID: '1',
+        gatewayAccountId: '1',
         gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
         paymentProvider: 'stripe',
         serviceExternalId: A_SERVICE_EXTERNAL_ID,
@@ -156,7 +169,7 @@ describe('Middleware: getSimplifiedAccount', () => {
     ['worldpay', 'stripe'].forEach(function (paymentProvider) {
       it('should extend the account data with supports3ds set to true if payment provider is ' + paymentProvider, async () => {
         const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
-          gatewayAccountID: '1',
+          gatewayAccountId: '1',
           gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
           paymentProvider,
           serviceExternalId: A_SERVICE_EXTERNAL_ID,
@@ -169,7 +182,7 @@ describe('Middleware: getSimplifiedAccount', () => {
     })
     it('should extend the account data with supports3ds set to false if payment provider is sandbox', async () => {
       const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
-        gatewayAccountID: '1',
+        gatewayAccountId: '1',
         gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
         paymentProvider: 'sandbox',
         serviceExternalId: A_SERVICE_EXTERNAL_ID,

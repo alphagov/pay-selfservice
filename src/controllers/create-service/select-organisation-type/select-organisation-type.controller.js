@@ -12,12 +12,12 @@ function get (req, res) {
   const createServiceState = _.get(req, 'session.pageData.createService', {})
   if (!createServiceState.current_name) {
     logger.info('Page accessed out of sequence, redirecting to my-services/create')
-    return res.redirect(paths.serviceSwitcher.create.index)
+    return res.redirect(paths.services.create.index)
   }
   const context = {
     ...createServiceState,
-    back_link: paths.serviceSwitcher.create.index,
-    submit_link: paths.serviceSwitcher.create.index
+    back_link: paths.services.create.index,
+    submit_link: paths.services.create.index
   }
   _.unset(req, 'session.pageData.createService.errors')
   return response(req, res, 'services/select-org-type', context)
@@ -32,11 +32,11 @@ function post (req, res) {
   const errors = validateServiceName(req.body['service-name'], req.body['service-name-cy'])
   if (!_.isEmpty(errors)) {
     _.set(req, 'session.pageData.createService.errors', errors)
-    return res.redirect(paths.serviceSwitcher.create.index)
+    return res.redirect(paths.services.create.index)
   }
   const context = {
-    back_link: paths.serviceSwitcher.create.index,
-    submit_link: paths.serviceSwitcher.create.index
+    back_link: paths.services.create.index,
+    submit_link: paths.services.create.index
   }
   return response(req, res, 'services/select-org-type', context)
 }

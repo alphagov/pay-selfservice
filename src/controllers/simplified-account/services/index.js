@@ -1,1 +1,1 @@
-module.exports.servicesOverview = require('@controllers/simplified-account/services/services-overview.controller')
+module.exports.myServices = require('@controllers/simplified-account/services/my-services.controller')

@@ -11,7 +11,7 @@ Payments to your bank account - GOV.UK Pay
       <strong class="govuk-tag govuk-tag--grey service-info--tag">{{ "Live" if filterLiveAccounts else "Test" }}</strong>
   {% endset %}
   {{ breadcrumbs([
-    { text: "My services", href: routes.serviceSwitcher.index },
+    { text: "My services", href: routes.services.index },
     { html: pageTitleBreadcrumbWithTag  }
   ]) }}
 {% endblock %}
