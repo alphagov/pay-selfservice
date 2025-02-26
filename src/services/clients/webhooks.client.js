@@ -77,7 +77,7 @@ async function messages (id, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook', id, 'message')
   let fullUrl = `${url}?page=${options.page}`
-  if (options.status) {
+  if (options.status && options.status !== 'all') {
     fullUrl = `${fullUrl}&status=${options.status.toUpperCase()}`
   }
   configureClient(client, fullUrl)
