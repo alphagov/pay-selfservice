@@ -1,48 +1,13 @@
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
+const ROLES = require('@test/fixtures/roles.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
 const GATEWAY_ACCOUNT_ID = 11
-const ADMIN_ROLE = {
-  description: 'Administrator',
-  name: 'admin',
-  permissions: [
-    {
-      description: 'Viewtransactionslist',
-      name: 'transactions:read'
-    },
-    {
-      description: 'Viewemailnotificationstemplate',
-      name: 'email-notification-template:read'
-    },
-    {
-      description: 'Turnemailnotificationson/off',
-      name: 'email-notification-toggle:update'
-    },
-    {
-      description: 'Editemailnotificationsparagraph',
-      name: 'email-notification-paragraph:update'
-    }
-  ]
-}
-const NON_ADMIN_ROLE = {
-  description: 'View only',
-  name: 'view-only',
-  permissions: [
-    {
-      description: 'Viewtransactionslist',
-      name: 'transactions:read'
-    },
-    {
-      description: 'Viewemailnotificationstemplate',
-      name: 'email-notification-template:read'
-    }
-  ]
-}
 const ACCOUNT_TYPE = 'test'
 
-const setupStubs = (role = ADMIN_ROLE, emailCollectionMode = 'MANDATORY') => {
+const setupStubs = (role = 'admin', emailCollectionMode = 'MANDATORY') => {
   let opts = { gateway_account_id: GATEWAY_ACCOUNT_ID }
   if (emailCollectionMode) {
     opts = { ...opts, ...{ email_collection_mode: emailCollectionMode } }
@@ -53,7 +18,7 @@ const setupStubs = (role = ADMIN_ROLE, emailCollectionMode = 'MANDATORY') => {
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       serviceName: { en: 'My cool service' },
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role,
+      role: ROLES[role],
       features: 'degatewayaccountification' // TODO remove features once simplified accounts are live
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, opts)
@@ -99,7 +64,7 @@ describe('Email notifications settings', () => {
 
     describe('for a non admin user', () => {
       beforeEach(() => {
-        setupStubs(NON_ADMIN_ROLE)
+        setupStubs('view-only')
       })
       it('should not show links to change email settings', () => {
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
@@ -125,45 +90,61 @@ describe('Email notifications settings', () => {
   })
 
   describe('Edit collect email mode', () => {
-    beforeEach(() => {
-      setupStubs()
-      cy.task('setupStubs', [
-        gatewayAccountStubs.patchAccountEmailCollectionModeSuccessByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'OFF')
-      ])
-      cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
-      cy.get('.govuk-summary-list').within(() => {
-        cy.get('.govuk-summary-list__actions a').eq(0).click()
+    describe('for an admin user', () => {
+      beforeEach(() => {
+        setupStubs()
+        cy.task('setupStubs', [
+          gatewayAccountStubs.patchAccountEmailCollectionModeSuccessByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'OFF')
+        ])
+        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
+        cy.get('.govuk-summary-list').within(() => {
+          cy.get('.govuk-summary-list__actions a').eq(0).click()
+        })
+      })
+
+      it('should navigate to the email collection mode page', () => {
+        cy.title().should('eq', 'Ask users for their email address - Settings - My cool service - GOV.UK Pay')
+        cy.url().should('include', '/settings/email-notifications/email-collection-mode')
+        cy.get('.govuk-fieldset__heading').first().should('contain', 'Ask users for their email address')
+        cy.get('.govuk-radios').within(() => {
+          cy.get('.govuk-radios__item').eq(0).should('contain', 'On – as a mandatory field')
+          cy.get('.govuk-radios__item').eq(1).should('contain', 'On – as an optional field')
+          cy.get('.govuk-radios__item').eq(2).should('contain', 'Off')
+        })
+      })
+
+      it('should navigate to the email notifications landing page after "Save changes" is clicked', () => {
+        cy.get('input[type="radio"][value="OFF"]').check()
+        cy.get('.govuk-button').contains('Save changes').click()
+        cy.get('h1').should('contain', 'Email notifications')
+        cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
+      })
+
+      it('should navigate to the email notifications landing page after "Back" is clicked', () => {
+        cy.get('.govuk-back-link').click()
+        cy.get('h1').should('contain', 'Email notifications')
+        cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
       })
     })
 
-    it('should navigate to the collect email mode page', () => {
-      cy.title().should('eq', 'Ask users for their email address - Settings - My cool service - GOV.UK Pay')
-      cy.url().should('include', '/settings/email-notifications/email-collection-mode')
-      cy.get('.govuk-fieldset__heading').first().should('contain', 'Ask users for their email address')
-      cy.get('.govuk-radios').within(() => {
-        cy.get('.govuk-radios__item').eq(0).should('contain', 'On – as a mandatory field')
-        cy.get('.govuk-radios__item').eq(1).should('contain', 'On – as an optional field')
-        cy.get('.govuk-radios__item').eq(2).should('contain', 'Off')
+    describe('for a non-admin user', () => {
+      beforeEach(() => {
+        setupStubs('view-only')
       })
-    })
-
-    it('should navigate to the email notifications landing page after "Save changes" is clicked', () => {
-      cy.get('input[type="radio"][value="OFF"]').check()
-      cy.get('.govuk-button').contains('Save changes').click()
-      cy.get('h1').should('contain', 'Email notifications')
-      cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
-    })
-
-    it('should navigate to the email notifications landing page after "Back" is clicked', () => {
-      cy.get('.govuk-back-link').click()
-      cy.get('h1').should('contain', 'Email notifications')
-      cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
+      it('should return 403 when navigating directly to the email collection mode page', () => {
+        cy.request({
+          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/email-collection-mode`,
+          failOnStatusCode: false
+        }).then((response) => {
+          expect(response.status).to.eq(403)
+        })
+      })
     })
   })
 
   describe('When email collection mode is OFF', () => {
     beforeEach(() => {
-      setupStubs(ADMIN_ROLE, 'OFF')
+      setupStubs('admin', 'OFF')
     })
     it('there should be no "Change" link on the Payment confirmation emails and Refund emails rows', () => {
       cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
@@ -215,7 +196,7 @@ describe('Email notifications settings', () => {
 
       it('should navigate to the payment confirmation email toggle page', () => {
         ['MANDATORY', 'OPTIONAL'].forEach(mode => {
-          setupStubs(ADMIN_ROLE, mode)
+          setupStubs('admin', mode)
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
           cy.get('.govuk-summary-list').within(() => {
             cy.get('.govuk-summary-list__actions a').eq(1).click()
@@ -250,7 +231,7 @@ describe('Email notifications settings', () => {
 
       it('should navigate to the refund email toggle page', () => {
         ['MANDATORY', 'OPTIONAL'].forEach(mode => {
-          setupStubs(ADMIN_ROLE, mode)
+          setupStubs('admin', mode)
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
           cy.get('.govuk-summary-list').within(() => {
             cy.get('.govuk-summary-list__actions a').eq(2).click()
@@ -306,7 +287,7 @@ describe('Email notifications settings', () => {
 
     describe('for a non-admin user', () => {
       beforeEach(() => {
-        setupStubs(NON_ADMIN_ROLE)
+        setupStubs('view-only')
       })
       it('should show relevant tabs only', () => {
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
