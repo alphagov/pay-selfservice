@@ -2,7 +2,7 @@ const paths = require('@root/paths')
 const { response } = require('@utils/response')
 const { constants } = require('@govuk-pay/pay-js-commons')
 const { validationResult } = require('express-validator')
-const { webhookSchema, webhookErrorIdentifiers } = require('@utils/simplified-account/validation/webhook.schema')
+const { webhookErrorIdentifiers, CREATE_AND_UPDATE_WEBHOOK_VALIDATIONS } = require('@utils/simplified-account/validation/webhook.schema')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const webhooksService = require('@services/webhooks.service')
@@ -16,12 +16,7 @@ async function get (req, res) {
 
 async function post (req, res, next) {
   const accountIsLive = req.account.type === 'live'
-  const validations = [
-    webhookSchema.callbackUrl.validate,
-    webhookSchema.description.validate,
-    webhookSchema.subscriptions.validate
-  ]
-  await Promise.all(validations.map(validation => validation.run(req)))
+  await Promise.all(CREATE_AND_UPDATE_WEBHOOK_VALIDATIONS.map(validation => validation.run(req)))
   const validationErrors = validationResult(req)
   if (!validationErrors.isEmpty()) {
     const formattedValidationErrors = formatValidationErrors(validationErrors)

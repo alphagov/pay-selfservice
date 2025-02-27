@@ -74,18 +74,18 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
 
 /**
  * An Express Request object extended with service, account, and user
- * @typedef {Object} SimplifiedAccountRequest
+ * @typedef {Object} SimplifiedAccountRequest // TODO rename this when simplified accounts are live
  * @property {GOVUKPayService} service
  * @property {GatewayAccount} account
  * @property {User} user
- * @property {SimplifiedAccountRequestParams} params
+ * @property {SimplifiedAccountRequestParams} params // TODO rename this when simplified accounts are live
  * @property {Object} body
  */
 
 /**
  *
  * URL Params for Request object
- @typedef {Object} SimplifiedAccountRequestParams
+ @typedef {Object} SimplifiedAccountRequestParams // TODO rename this when simplified accounts are live
  @property {String} serviceExternalId
  @property {String} accountType
  @property {String} [webhookExternalId]
