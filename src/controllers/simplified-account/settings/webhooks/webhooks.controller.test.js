@@ -1,7 +1,7 @@
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const { expect } = require('chai')
 const sinon = require('sinon')
-const { Webhook, WebhookStatus } = require('@models/Webhook.class')
+const { Webhook, WebhookStatus } = require('@models/webhooks/Webhook.class')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'

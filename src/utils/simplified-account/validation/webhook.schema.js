@@ -36,5 +36,10 @@ const webhookErrorIdentifiers = {
 
 module.exports = {
   webhookSchema,
-  webhookErrorIdentifiers
+  webhookErrorIdentifiers,
+  CREATE_AND_UPDATE_WEBHOOK_VALIDATIONS: [
+    webhookSchema.callbackUrl.validate,
+    webhookSchema.description.validate,
+    webhookSchema.subscriptions.validate
+  ]
 }
