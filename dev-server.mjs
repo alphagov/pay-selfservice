@@ -8,7 +8,7 @@ let server
 
 const startServer = async () => {
   if (server) server.kill()
-  console.log(`🔎 node ${args.join(' ')}`)
+  console.log(`💻\x1b[32m node\x1b[0m\x1b[33m ${args.join(' ')}\x1b[0m`)
   server = spawn('node', args, {
     stdio: 'inherit'
   })

@@ -89,7 +89,7 @@ const agreementsController = require('./controllers/agreements/agreements.contro
 const organisationUrlController = require('./controllers/switch-psp/organisation-url')
 const registrationController = require('./controllers/registration/registration.controller')
 const privacyController = require('./controllers/privacy/privacy.controller')
-const servicesController = require('src/controllers/simplified-account/services')
+const servicesController = require('./controllers/simplified-account/services')
 
 const simplifiedAccountRoutes = require('./simplified-account-routes')
 

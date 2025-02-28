@@ -26,7 +26,7 @@ const {
   DENIED
 } = require('@models/constants/go-live-stage')
 const pspTestAccountStage = require('@models/constants/psp-test-account-stage')
-const serviceService = require('../../services/service.service')
+const { WORLDPAY } = require('@models/constants/payment-providers')
 
 const links = {
   demoPayment: 0,
@@ -102,11 +102,11 @@ const displayRequestTestStripeAccountLink = (service, account, user) => {
     user.hasPermission(service.externalId, 'psp-test-account-stage:update')
 }
 
-async function isWorldpayTestService (gatewayAccountIds) {
-  const gatewayAccounts = await serviceService.getGatewayAccounts(gatewayAccountIds)
-  logger.info(`returned gateway accounts: ${JSON.stringify(gatewayAccounts)}`)
-  return gatewayAccounts.length === 1 && gatewayAccounts[0].type === 'test' &&
-    gatewayAccounts[0].payment_provider.toUpperCase() === 'WORLDPAY'
+async function isWorldpayTestService (service, account) {
+  return service.gatewayAccountIds.length === 1 &&
+    parseInt(account.gateway_account_id) === parseInt(service.gatewayAccountIds[0]) &&
+    account.type === 'test' &&
+    account.payment_provider === WORLDPAY
 }
 
 module.exports = async (req, res) => {
@@ -114,7 +114,7 @@ module.exports = async (req, res) => {
   const messages = res.locals.flash.messages
   const period = _.get(req, 'query.period', 'today')
   const telephonePaymentLink = await getTelephonePaymentLink(req.user, req.service, gatewayAccountId)
-  const worldpayTestService = await isWorldpayTestService(req.service.gatewayAccountIds)
+  const worldpayTestService = await isWorldpayTestService(req.service, req.account)
   const linksToDisplay = getLinksToDisplay(req.service, req.account, req.user, telephonePaymentLink)
   const model = {
     serviceId: req.service.externalId,

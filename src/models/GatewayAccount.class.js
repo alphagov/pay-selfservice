@@ -107,23 +107,6 @@ class GatewayAccount {
       return false
     }
   }
-
-  /**
-   * Returns a minimal representation of the gateway account
-   * @returns {Object} A minimal representation of the gateway account
-   */
-  toMinimalJson () {
-    // until we have external ids for card accounts, the external id is the internal one
-    return {
-      id: this.id,
-      external_id: this.externalId,
-      payment_provider: this.paymentProvider,
-      service_name: this.name,
-      type: this.type,
-      provider_switch_enabled: this.providerSwitchEnabled,
-      recurring_enabled: this.recurringEnabled
-    }
-  }
 }
 
 module.exports = GatewayAccount

@@ -5,7 +5,7 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const getHeldPermissions = require('@utils/get-held-permissions')
 const logger = require('@utils/logger')(__filename)
-const serviceService = require('@services/service.service')
+const gatewayAccountsService = require('@services/gateway-accounts.service')
 const { DEFAULT_SERVICE_NAME } = require('@utils/constants')
 const formatServicePathsFor = require('@utils/format-service-paths-for')
 const { formattedPathFor } = require('@root/paths')
@@ -17,7 +17,7 @@ async function get (req, res) {
   }
 
   if (res.locals?.flash?.inviteSuccessServiceId?.[0]) {
-    flags.recentlyInvitedServiceExternalId = res.locals?.flash?.inviteSuccessServiceId[0]
+    flags.recentlyInvitedServiceExternalId = res.locals.flash.inviteSuccessServiceId[0]
   }
 
   const gatewayAccountIds = userServiceRoles.flatMap(role => {
@@ -27,9 +27,12 @@ async function get (req, res) {
     return []
   })
 
-  const gatewayAccounts = await serviceService.getGatewayAccountsByIds(gatewayAccountIds)
-  const services = mergeServicesWithGatewayAccounts(userServiceRoles, gatewayAccounts, flags)
-    .sort((a, b) => sortServicesByLiveThenName(a, b))
+  let services = []
+  if (gatewayAccountIds.length > 0) {
+    const gatewayAccounts = await gatewayAccountsService.getGatewayAccountsByIds(gatewayAccountIds)
+    services = mergeServicesWithGatewayAccounts(userServiceRoles, gatewayAccounts, flags)
+      .sort((a, b) => sortServicesByLiveThenName(a, b))
+  }
 
   const pathFilter = flags.hasLiveAccount ? 'live' : 'test'
 
@@ -50,51 +53,42 @@ const mergeServicesWithGatewayAccounts = (services, gatewayAccounts, flags) => {
       flags.recentlyInvitedServiceName = service.name
     }
 
-    const associatedGatewayAccounts = service.gatewayAccountIds
-      .map(accountId => gatewayAccounts[accountId])
+    const mappedGatewayAccounts = service.gatewayAccountIds
+      .map(id => gatewayAccounts[id])
       .filter(account => account !== undefined)
-      .filter((account, _, accounts) => {
-        if (account.type === 'live') {
-          flags.hasLiveAccount = true
-          return true
-        }
-        // PP-13525 return exactly one test account. PSP preference: Stripe -> Sandbox -> Worldpay
-        const testAccounts = accounts.filter(acc => acc.type === 'test')
-        if (testAccounts.length === 0) {
-          logger.warn(`Service has no associated test gateway [service_external_id: ${service.externalId}]`)
-          return false
-        }
-        if (testAccounts.length === 1) {
-          if ([STRIPE, SANDBOX, WORLDPAY].includes(testAccounts[0].paymentProvider)) return true
-          logger.warn(`Resolved test account is not of supported type [service_external_id: ${service.externalId}, payment_provider: ${testAccounts[0].paymentProvider}]`)
-          return false
-        }
-        for (const provider of [STRIPE, SANDBOX, WORLDPAY]) {
-          const testAccountsByProvider = testAccounts.filter(testAccount => testAccount.paymentProvider === provider)
-          if (testAccountsByProvider.length > 1) {
-            logger.warn(`Multiple ${provider} test accounts found for service [external_id: ${service.externalId}]`)
-            // if for some reason there is more than one test account with the same provider, use the ID to work out the newest one
-            testAccountsByProvider.sort((a, b) => parseInt(b.id) - parseInt(a.id))
-            return account.id === testAccountsByProvider[0].id
-          }
-        }
-        return false
-      })
-      .map(account => {
-        if (account.paymentProvider === STRIPE) {
-          flags.hasAccountWithPayouts = true
-        }
-        return {
-          id: account.id,
-          externalId: account.externalId,
-          type: account.type,
-          paymentProvider: account.paymentProvider,
-          allowMoto: account.allowMoto,
-          providerSwitchEnabled: account.providerSwitchEnabled,
-          recurringEnabled: account.recurringEnabled,
-          links: linksGenerator(account, service, flags)
-        }
-      })
+
+    const mappedLiveGatewayAccounts = mappedGatewayAccounts
+      .filter(account => account.type === 'live')
+
+    let mappedTestGatewayAccounts = mappedGatewayAccounts
+      .filter(account => account.type === 'test')
+
+    if (flags.userIsDegatewayed) {
+      mappedTestGatewayAccounts = filterTestGatewaysDegatewayView(mappedTestGatewayAccounts, service)
+    }
+
+    if (mappedLiveGatewayAccounts.length > 0) {
+      flags.hasLiveAccount = true
+    }
+
+    const associatedGatewayAccounts = [
+      ...mappedLiveGatewayAccounts,
+      ...mappedTestGatewayAccounts
+    ].map(account => {
+      if (account.paymentProvider === STRIPE) {
+        flags.hasAccountWithPayouts = true
+      }
+      return {
+        id: account.id,
+        externalId: account.externalId,
+        type: account.type,
+        paymentProvider: account.paymentProvider,
+        allowMoto: account.allowMoto,
+        providerSwitchEnabled: account.providerSwitchEnabled,
+        recurringEnabled: account.recurringEnabled,
+        links: linksGenerator(account, service, flags)
+      }
+    })
       .sort((a, b) => {
         // ensure live gateway is first in array
         if (a.type === 'live') return -1
@@ -113,6 +107,32 @@ const mergeServicesWithGatewayAccounts = (services, gatewayAccounts, flags) => {
       gatewayAccounts: associatedGatewayAccounts
     }
   })
+}
+
+const filterTestGatewaysDegatewayView = (testGatewayAccounts, service) => {
+  return testGatewayAccounts
+    .filter((account, _, accounts) => {
+      // PP-13525 return exactly one test account. PSP preference: Stripe -> Sandbox -> Worldpay
+      if (accounts.length === 0) {
+        logger.warn(`Service has no associated test gateway [service_external_id: ${service.externalId}]`)
+        return false
+      }
+      if (accounts.length === 1) {
+        if ([STRIPE, SANDBOX, WORLDPAY].includes(accounts[0].paymentProvider)) return true
+        logger.warn(`Resolved test account is not of supported type [service_external_id: ${service.externalId}, payment_provider: ${accounts[0].paymentProvider}]`)
+        return false
+      }
+      for (const provider of [STRIPE, SANDBOX, WORLDPAY]) {
+        const testAccountsByProvider = accounts.filter(testAccount => testAccount.paymentProvider === provider)
+        if (testAccountsByProvider.length > 1) {
+          logger.warn(`Multiple ${provider} test accounts found for service [external_id: ${service.externalId}]`)
+          // if for some reason there is more than one test account with the same provider, use the ID to work out the newest one
+          testAccountsByProvider.sort((a, b) => parseInt(b.id) - parseInt(a.id))
+          return account.id === testAccountsByProvider[0].id
+        }
+      }
+      return false
+    })
 }
 
 const sortServicesByLiveThenName = (a, b) => {
