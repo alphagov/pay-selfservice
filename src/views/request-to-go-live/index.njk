@@ -69,7 +69,7 @@
           {% endif %}
       {% endif %}
 
-      <p class="govuk-body"><a href="{{routes.serviceSwitcher.index}}" class="govuk-link">Go to My services</a></p>
+      <p class="govuk-body"><a href="{{routes.services.index}}" class="govuk-link">Go to My services</a></p>
     </div>
   {% elif denied %}
     <div class="govuk-grid-column-full">
@@ -99,7 +99,7 @@
               {{ govukTag({
                 text: "In progress",
                 classes: "govuk-tag--grey"
-              }) }} 
+              }) }}
             {% endif %}
           </li>
           <li>Tell us which payment service provider you will use.

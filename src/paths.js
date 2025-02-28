@@ -288,6 +288,13 @@ module.exports = {
       invite: '/team-members/invite'
     }
   },
+  services: {
+    index: '/my-services',
+    create: {
+      index: '/services/create',
+      selectOrgType: '/services/create/select-org-type'
+    }
+  },
   index: '/',
   allServiceTransactions: {
     index: '/all-service-transactions',
@@ -317,14 +324,6 @@ module.exports = {
         configure: '/my-profile/two-factor-auth/configure',
         resend: '/my-profile/two-factor-auth/resend'
       }
-    }
-  },
-  serviceSwitcher: {
-    index: '/my-services',
-    switch: '/my-services/switch',
-    create: {
-      index: '/my-services/create',
-      selectOrgType: '/my-services/create/select-org-type'
     }
   },
   invite: {

@@ -125,8 +125,8 @@ function addUserFieldsToLogContext (req, res, next) {
 }
 
 function initialise (app) {
-  app.use(passport.initialize())
-  app.use(passport.session())
+  app.use(passport.initialize({}))
+  app.use(passport.session({}))
   passport.use('local', new LocalStrategy({ usernameField: 'username', passReqToCallback: true }, localStrategyAuth))
   passport.use('local2Fa', new CustomStrategy(localStrategy2Fa))
   passport.use('localStrategyLoginDirectAfterRegistration', new CustomStrategy(localStrategyLoginDirectAfterRegistration))
@@ -147,5 +147,5 @@ function deserializeUser (req, externalId, done) {
 }
 
 function serializeUser (user, done) {
-  done(null, user && user.externalId)
+  done(null, user?.externalId)
 }

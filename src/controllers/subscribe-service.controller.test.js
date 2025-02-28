@@ -83,7 +83,7 @@ describe('Subscribe service controller', () => {
         const controller = getController(completeInviteSuccessStub)
         await controller.subscribeService(req, res, next)
         sinon.assert.notCalled(completeInviteSuccessStub)
-        sinon.assert.calledWith(res.redirect, 303, paths.serviceSwitcher.index)
+        sinon.assert.calledWith(res.redirect, 303, paths.services.index)
       })
     })
 

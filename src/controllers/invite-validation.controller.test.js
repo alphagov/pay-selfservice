@@ -72,7 +72,7 @@ describe('Invite validation controller', function () {
     await controller.validateInvite(req, res, next)
 
     sinon.assert.calledWith(getValidatedInviteSpy, code)
-    sinon.assert.calledWith(res.redirect, paths.serviceSwitcher.index)
+    sinon.assert.calledWith(res.redirect, paths.services.index)
     sinon.assert.notCalled(next)
   })
 

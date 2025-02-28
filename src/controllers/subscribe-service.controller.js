@@ -16,13 +16,13 @@ const subscribeService = async function subscribeService (req, res, next) {
     logger.info('Attempt to accept invite for a different user', {
       invite_code: inviteCode
     })
-    return res.redirect(303, paths.serviceSwitcher.index)
+    return res.redirect(303, paths.services.index)
   }
 
   try {
     const completeResponse = await adminusersClient.completeInvite(inviteCode, SMS)
     req.flash('inviteSuccessServiceId', completeResponse.service_external_id)
-    return res.redirect(303, paths.serviceSwitcher.index)
+    return res.redirect(303, paths.services.index)
   } catch (err) {
     if (err.errorCode === 410) {
       return next(new ExpiredInviteError(`Invite with code ${sessionData.code} has expired`))

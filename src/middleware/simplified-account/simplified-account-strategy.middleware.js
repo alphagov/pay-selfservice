@@ -9,13 +9,25 @@ const connectorClient = new Connector(process.env.CONNECTOR_URL)
 
 function getService (user, serviceExternalId, gatewayAccountId) {
   let service
+  let matchedByExternalId
   const serviceRoles = _.get(user, 'serviceRoles', [])
 
   if (serviceRoles.length > 0 && serviceExternalId) {
     service = _.get(serviceRoles.find(serviceRole => {
-      return (serviceRole.service.externalId === serviceExternalId &&
-        (!gatewayAccountId || serviceRole.service.gatewayAccountIds.includes(String(gatewayAccountId))))
-    }), 'service')
+      const externalIdMatch = serviceRole.service.externalId === serviceExternalId
+      if (externalIdMatch) {
+        matchedByExternalId = serviceRole
+        if (gatewayAccountId && !serviceRole.service.gatewayAccountIds.includes(`${gatewayAccountId}`)) {
+          /*
+          if you're here debugging this error message, it means that connector returned a gateway account for the
+          serviceExtId/account type that adminusers does not know about and probably needs relinking
+          */
+          logger.warn(`Resolved gateway account is not present on service [service_external_id: ${serviceExternalId}, gateway_account_id: ${gatewayAccountId}]`)
+          return false
+        }
+      }
+      return externalIdMatch
+    }) || matchedByExternalId, 'service')
   }
 
   return service
