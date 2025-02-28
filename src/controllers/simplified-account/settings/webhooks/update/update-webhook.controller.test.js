@@ -1,10 +1,7 @@
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const { expect } = require('chai')
 const sinon = require('sinon')
-const paths = require('@root/paths')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const { constants } = require('@govuk-pay/pay-js-commons')
-const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 const { Webhook } = require('@models/webhooks/Webhook.class')
 
 const ACCOUNT_TYPE = 'test'
