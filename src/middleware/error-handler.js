@@ -25,6 +25,8 @@ const {
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
 const formatSimplifiedAccountPathsFor = require('../utils/simplified-account/format/format-simplified-account-paths-for')
+const { ValidationError } = require('@root/errors')
+const { formatValidationErrors } = require('@utils/simplified-account/format')
 
 module.exports = function errorHandler (err, req, res, next) {
   if (res.headersSent) {
@@ -133,6 +135,13 @@ module.exports = function errorHandler (err, req, res, next) {
     return renderErrorView(req, res, err.message, 504, {
       allServicesTimeout: true,
       allServiceTransactionsNoSearchPath
+    })
+  }
+
+  if (err instanceof ValidationError) {
+    return response(req, res, err.template, {
+      errors: formatValidationErrors(err.validationErrors),
+      ...err.errorContext
     })
   }
 

@@ -5,10 +5,10 @@ const { countries } = require('@govuk-pay/pay-js-commons').utils
 const { response } = require('@utils/response')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 const paths = require('@root/paths')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const { organisationDetailsSchema } = require('@utils/simplified-account/validation/organisation-details.schema')
 const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
 const { updateService } = require('@services/service.service')
+const { ValidationError } = require('@root/errors')
 
 function get (req, res) {
   const organisationDetails = {
@@ -24,7 +24,6 @@ function get (req, res) {
   const context = {
     messages: res.locals?.flash?.messages ?? [],
     organisationDetails,
-    submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, req.service.externalId, req.account.type),
     countries: countries.govukFrontendFormatted(organisationDetails.addressCountry),
     backLink: req.service?.merchantDetails && formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, req.service.externalId, req.account.type)
   }
@@ -34,14 +33,8 @@ function get (req, res) {
 async function post (req, res) {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    const formattedErrors = formatValidationErrors(errors)
-    return response(req, res, 'simplified-account/settings/organisation-details/edit-organisation-details', {
-      errors: {
-        summary: formattedErrors.errorSummary,
-        formErrors: formattedErrors.formErrors
-      },
+    throw new ValidationError('simplified-account/settings/organisation-details/edit-organisation-details', errors, {
       organisationDetails: _.pick(req.body, ['organisationName', 'addressLine1', 'addressLine2', 'addressCity', 'addressPostcode', 'telephoneNumber', 'organisationUrl']),
-      submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, req.service.externalId, req.account.type),
       countries: countries.govukFrontendFormatted(req.body.addressCountry),
       backLink: req.service?.merchantDetails && formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, req.service.externalId, req.account.type)
     })

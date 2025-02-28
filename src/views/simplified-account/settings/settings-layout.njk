@@ -33,7 +33,7 @@
       {% if errors %}
         {{ govukErrorSummary({
           titleText: "There is a problem",
-          errorList: errors.summary
+          errorList: errors.errorSummary
         }) }}
       {% endif %}
       <div id="service-settings-content">

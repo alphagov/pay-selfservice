@@ -3,8 +3,8 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const paths = require('@root/paths')
 const { TOKEN_SOURCE, createApiKey } = require('@services/api-keys.service')
 const { validationResult } = require('express-validator')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
-const DESCRIPTION_VALIDATION = require('@controllers/simplified-account/settings/api-keys/validations')
+const { DESCRIPTION_VALIDATION } = require('@controllers/simplified-account/settings/api-keys/validations')
+const { ValidationError } = require('@root/errors')
 
 async function get (req, res) {
   return response(req, res, 'simplified-account/settings/api-keys/api-key-name', {
@@ -17,12 +17,7 @@ async function post (req, res) {
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    const formattedErrors = formatValidationErrors(errors)
-    return response(req, res, 'simplified-account/settings/api-keys/api-key-name', {
-      errors: {
-        summary: formattedErrors.errorSummary,
-        formErrors: formattedErrors.formErrors
-      },
+    throw new ValidationError('simplified-account/settings/api-keys/api-key-name', errors, {
       backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, req.service.externalId, req.account.type)
     })
   }

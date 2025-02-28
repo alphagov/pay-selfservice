@@ -8,6 +8,7 @@ const { validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const { responseWithErrors } = require('@controllers/simplified-account/settings/webhooks/create/create.controller')
 const WebhookUpdateRequest = require('@models/webhooks/WebhookUpdateRequest.class')
+const { ValidationError } = require('@root/errors')
 
 /**
  *
