@@ -12,8 +12,8 @@ function get (req, res) {
   const createServiceState = _.get(req, 'session.pageData.createService', {})
   const context = {
     ...createServiceState,
-    back_link: paths.serviceSwitcher.index,
-    submit_link: paths.serviceSwitcher.create.selectOrgType
+    back_link: paths.services.index,
+    submit_link: paths.services.create.selectOrgType
   }
   _.unset(req, 'session.pageData.createService')
   return response(req, res, 'services/add-service', context)
@@ -28,7 +28,7 @@ async function post (req, res, next) {
     _.set(req, 'session.pageData.createService.errors', {
       organisation_type: 'Organisation type is required'
     })
-    return res.redirect(paths.serviceSwitcher.create.selectOrgType)
+    return res.redirect(paths.services.create.selectOrgType)
   }
 
   try {

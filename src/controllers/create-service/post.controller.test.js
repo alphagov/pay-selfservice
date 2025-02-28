@@ -157,7 +157,7 @@ describe('Controller: createService, Method: post', () => {
     })
 
     it('should redirect back to select org type', () => {
-      sinon.assert.calledWith(res.redirect, paths.serviceSwitcher.create.selectOrgType)
+      sinon.assert.calledWith(res.redirect, paths.services.create.selectOrgType)
     })
 
     it('should set error information on the session', () => {

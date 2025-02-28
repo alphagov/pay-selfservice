@@ -5,21 +5,11 @@ const lodash = require('lodash')
 const logger = require('../utils/logger')(__filename)
 const getAdminUsersClient = require('./clients/adminusers.client')
 const { ConnectorClient } = require('./clients/connector.client')
-const CardGatewayAccount = require('@models/GatewayAccount.class')
-const Service = require('../models/Service.class')
+const Service = require('@models/Service.class')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const adminUsersClient = getAdminUsersClient()
-const { DEFAULT_SERVICE_NAME } = require('../utils/constants')
+const { DEFAULT_SERVICE_NAME } = require('@utils/constants')
 const { CREATED } = require('@models/constants/psp-test-account-stage')
-
-async function getGatewayAccounts (gatewayAccountIds) {
-  const cardGatewayAccounts = await connectorClient.getAccounts({
-    gatewayAccountIds
-  })
-
-  return cardGatewayAccounts.accounts
-    .map(gatewayAccount => new CardGatewayAccount(gatewayAccount).toMinimalJson())
-}
 
 async function updateServiceName (serviceExternalId, serviceName, serviceNameCy) {
   if (!serviceExternalId) {
@@ -96,7 +86,6 @@ function addGovUkAgreementEmailAddress (serviceExternalId, userExternalId) {
 }
 
 module.exports = {
-  getGatewayAccounts,
   updateService,
   updateServiceName,
   createService,

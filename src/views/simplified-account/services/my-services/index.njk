@@ -1,4 +1,4 @@
-{% extends "../layout.njk" %}
+{% extends "layout.njk" %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% block pageTitle %}
@@ -13,10 +13,10 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-    {% if new_service_name %}
+    {% if flags.recentlyInvitedServiceName %}
       {% set html %}
         <p class="govuk-notification-banner__heading">
-          You have been added to {{ new_service_name }}
+          You have been added to {{ flags.recentlyInvitedServiceName }}
         </p>
       {% endset %}
       {{ govukNotificationBanner({
@@ -28,17 +28,14 @@
   </div>
   {% if services.length %}
     <div class="govuk-grid-column-two-thirds reports" data-cy="reports-section">
-      {% set allServiceTransactionsPath = routes.allServiceTransactions.index if has_live_account else
-        routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') %}
       <p class="govuk-body">
         <a href="{{ allServiceTransactionsPath }}"
            class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
           Transactions for all services
         </a>
       </p>
-      {% set payoutsPath = routes.payouts.list if has_live_account else
-        routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') %}
-      {% if has_account_with_payouts %}
+
+      {% if flags.hasAccountWithPayouts %}
         <p class="govuk-body">
           <a href="{{ payoutsPath }}"
              class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
@@ -52,7 +49,7 @@
     {{ govukButton({
       classes: "govuk-button--secondary",
       text: "Add a new service",
-      href: routes.serviceSwitcher.create.index
+      href: createServicePath
     }) }}
     {% if services.length %}
       {% if services.length > 7 %}
@@ -74,7 +71,7 @@
     {% else %}
       <p class="govuk-body">
         You do not have any services set up at the moment. Either
-        <a href="{{ routes.serviceSwitcher.create }}" class="govuk-link govuk-link--no-visited-state">create a new
+        <a href="{{ createServicePath }}" class="govuk-link govuk-link--no-visited-state">create a new
           one</a>
         or contact an administrator of an existing service to be added to it.
       </p>

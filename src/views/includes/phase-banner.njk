@@ -1,6 +1,6 @@
 {% from "../macro/breadcrumbs.njk" import breadcrumbs %}
 {% set accountLabelWithTag %}
-  <strong>{{currentService.name}}</strong>
+  <strong>{{ currentService.name }}</strong>
   {% if currentGatewayAccount %}
     {% set paymentProvider = currentGatewayAccount.payment_provider or currentGatewayAccount.paymentProvider %}
     {% set normalisedPaymentProvider = paymentProvider.toLowerCase() %}
@@ -32,7 +32,7 @@
         - information needed
       {% endif %}
       {% if isAdminUser and (currentGatewayAccount.provider_switch_enabled or currentGatewayAccount.providerSwitchEnabled) %}
-      - switch psp
+        - switch psp
       {% endif %}
     {% endset %}
     <strong class="govuk-tag service-info--tag {{ tagModifierClass }}">{{ tagText }}</strong>
@@ -40,31 +40,30 @@
 {% endset %}
 
 {% set breadcrumbItems = [
-  { text: "My services", href: routes.serviceSwitcher.index }
+  { text: "My services", href: routes.services.index }
 ] %}
 
 {% if not hideServiceHeader and currentService.name %}
-{% set breadcrumbItems = (breadcrumbItems.push({
-  html: accountLabelWithTag
-}), breadcrumbItems) %}
+  {% set breadcrumbItems = (breadcrumbItems.push({
+    html: accountLabelWithTag
+  }), breadcrumbItems) %}
 {% endif %}
 
 {{ breadcrumbs(breadcrumbItems) }}
 
 {% if not hideServiceNav and not hideServiceHeader %}
-<div class="govuk-phase-banner govuk-clearfix pay-top-navigation" data-cy="service-nav">
-  <nav role="navigation" class="service-navigation" data-cy="account-sub-nav">
-    <ul class="service-navigation--list">
-      {% for item in serviceNavigationItems %}
-        {% if item.permissions %}
-          {% if item.current %}
-            <li class="service-navigation--list-item service-navigation--list-item-active"><a id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
-          {% else %}
-            <li class="service-navigation--list-item"><a id="{{item.id}}" href="{{item.url}}">{{item.name}}</a></li>
+  <div class="govuk-phase-banner govuk-clearfix pay-top-navigation" data-cy="service-nav">
+    <nav role="navigation" class="service-navigation" data-cy="account-sub-nav">
+      <ul class="service-navigation--list">
+        {% for item in serviceNavigationItems %}
+          {% if item.permissions %}
+            <li
+              class="service-navigation--list-item {% if item.current %} service-navigation--list-item-active {% endif %}">
+              <a id="{{ item.id }}" href="{{ item.url }}">{{ item.name }}</a>
+            </li>
           {% endif %}
-        {% endif %}
-      {% endfor %}
-    </ul>
-  </nav>
-</div>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
 {% endif %}

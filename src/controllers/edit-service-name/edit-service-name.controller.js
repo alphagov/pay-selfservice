@@ -23,7 +23,7 @@ function getServiceName (req, res) {
   }
 
   pageData.submit_link = formatServicePathsFor(paths.service.editServiceName.update, req.service.externalId)
-  pageData.my_services = paths.serviceSwitcher.index
+  pageData.my_services = paths.services.index
 
   return responses.response(req, res, 'services/edit-service-name', pageData)
 }
@@ -56,7 +56,7 @@ async function postEditServiceName (req, res, next) {
   } else {
     try {
       await serviceService.updateServiceName(serviceExternalId, serviceName, serviceNameCy)
-      res.redirect(paths.serviceSwitcher.index)
+      res.redirect(paths.services.index)
     } catch (err) {
       next(err)
     }

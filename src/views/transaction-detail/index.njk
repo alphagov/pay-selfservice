@@ -15,7 +15,7 @@
       <strong class="govuk-tag govuk-tag--grey service-info--tag">{{ "Live" if live else "Test" }}</strong>
     {% endset %}
     {{ breadcrumbs([
-      { text: "My services", href: routes.serviceSwitcher.index },
+      { text: "My services", href: routes.services.index },
       { html: pageTitleBreadcrumbWithTag  }
     ]) }}
 

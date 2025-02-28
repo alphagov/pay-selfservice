@@ -12,7 +12,7 @@ const _ = require('lodash')
 async function get (req, res) {
   const { name, dob, address, contact } = _.get(req, FORM_STATE_KEY, {})
   if (!Object.values({ name, dob, address, contact }).every(Boolean)) {
-    res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.index, req.service.externalId, req.account.type))
+    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.index, req.service.externalId, req.account.type))
   }
   return response(req, res, 'simplified-account/settings/stripe-details/responsible-person/check-your-answers', {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.contactDetails, req.service.externalId, req.account.type),

@@ -22,7 +22,7 @@ describe('Complete an invite for an existing user', () => {
         userExternalId,
         email,
         serviceExternalId,
-        serviceName: 'Cake service',
+        serviceName: { en: 'Cake service' },
         gatewayAccountId
       }),
       gatewayAccountStubs.getGatewayAccountsSuccess({
