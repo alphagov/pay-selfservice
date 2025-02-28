@@ -13,10 +13,10 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-    {% if recentlyInvitedServiceName %}
+    {% if flags.recentlyInvitedServiceName %}
       {% set html %}
         <p class="govuk-notification-banner__heading">
-          You have been added to {{ recentlyInvitedServiceName }}
+          You have been added to {{ flags.recentlyInvitedServiceName }}
         </p>
       {% endset %}
       {{ govukNotificationBanner({

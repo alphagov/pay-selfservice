@@ -1,12 +1,12 @@
 {% from "govuk/components/tag/macro.njk" import govukTag %}
 
-<div class="govuk-grid-row service_list_item" data-name="{{ service.name }}">
-  <div class="govuk-grid-column-full">
+<div class="govuk-grid-row" data-name="{{ service.name }}">
+  <div class="govuk-grid-column-full service-section">
     <hr/>
-    <h3 class="govuk-heading-s service-name">
+    <h3 class="govuk-heading-s">
       {{ service.name }}
       {% if service.isWorldpayTestService %}
-        <strong class="govuk-tag govuk-tag--grey" style="max-width: 200px;">
+        <strong class="govuk-tag govuk-tag--grey govuk-tag--worldpay-test-service">
           Worldpay test service
         </strong>
       {% endif %}
@@ -22,8 +22,8 @@
     {% if service.gatewayAccounts.length %}
       <ul class="govuk-list">
         {% for account in service.gatewayAccounts %}
-          <li class="service--{{ account.type }}">
-            <a href="{{ account.links.dashboardLink }}" class="govuk-link govuk-link--no-visited-state service-dashboard--link {{ account.type }}">
+          <li class="service-section__links">
+            <a href="{{ account.links.dashboardLink }}" class="govuk-link govuk-link--no-visited-state service-section__link {% if account.type === 'live' %}service-section__link--live{% endif %}">
               {{ account.type | title }}
               {% if account.type === 'live' %}
                 card account
@@ -42,7 +42,7 @@
       </ul>
     {% endif %}
   </div>
-  <div id="team-members" class="govuk-grid-column-one-third">
+  <div class="govuk-grid-column-one-third">
     <ul class="govuk-list">
       <li>
         {% if service.permissions.users_service_create %}
