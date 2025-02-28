@@ -12,7 +12,8 @@ module.exports = class ControllerTestBuilder {
       user: {},
       query: {},
       flash: sinon.spy(),
-      session: {}
+      session: {},
+      params: {}
     }
     this.res = {
       redirect: sinon.spy(),
@@ -50,6 +51,11 @@ module.exports = class ControllerTestBuilder {
 
   withStubs (stubs) {
     this.stubs = stubs
+    return this
+  }
+
+  withParams (params) {
+    this.params = params
     return this
   }
 
