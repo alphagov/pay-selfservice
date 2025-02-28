@@ -5,7 +5,6 @@ const { constants } = require('@govuk-pay/pay-js-commons')
 const webhooksService = require('@services/webhooks.service')
 const { webhookErrorIdentifiers, CREATE_AND_UPDATE_WEBHOOK_VALIDATIONS } = require('@utils/simplified-account/validation/webhook.schema')
 const { validationResult } = require('express-validator')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const { responseWithErrors } = require('@controllers/simplified-account/settings/webhooks/create/create.controller')
 const WebhookUpdateRequest = require('@models/webhooks/WebhookUpdateRequest.class')
 const { ValidationError } = require('@root/errors')
@@ -38,9 +37,15 @@ async function get (req, res) {
 async function post (req, res, next) {
   await Promise.all(CREATE_AND_UPDATE_WEBHOOK_VALIDATIONS.map(validation => validation.run(req)))
   const validationErrors = validationResult(req)
+  const subscriptions = typeof req.body.subscriptions === 'string' ? [req.body.subscriptions] : req.body.subscriptions
+
   if (!validationErrors.isEmpty()) {
-    const formattedValidationErrors = formatValidationErrors(validationErrors)
-    return responseWithErrors(req, res, formattedValidationErrors)
+    // const subscriptions = typeof req.body.subscriptions === 'string' ? [req.body.subscriptions] : req.body.subscriptions
+    throw new ValidationError('simplified-account/settings/webhooks/edit', validationErrors, {
+      form: { callbackUrl: req.body.callbackUrl, description: req.body.description, subscriptions },
+      eventTypes: constants.webhooks.humanReadableSubscriptions,
+      backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.index, req.service.externalId, req.account.type)
+    })
   }
 
   const webhookUpdateRequest = new WebhookUpdateRequest()
@@ -52,12 +57,11 @@ async function post (req, res, next) {
     await webhooksService.updateWebhook(req.params.webhookExternalId, req.service.externalId, req.account.id, webhookUpdateRequest)
   } catch (updateWebhookError) {
     if (updateWebhookError.errorIdentifier in webhookErrorIdentifiers) {
-      const callbackErrorMessage = webhookErrorIdentifiers[updateWebhookError.errorIdentifier]
-      const callbackUrlError = {
-        errorSummary: [{ text: callbackErrorMessage, href: '#callback-url' }],
-        formErrors: { callbackUrl: callbackErrorMessage }
-      }
-      return responseWithErrors(req, res, callbackUrlError)
+      throw new ValidationError('simplified-account/settings/webhooks/edit', [{ msg: webhookErrorIdentifiers[updateWebhookError.errorIdentifier], path: 'callbackUrl' }], {
+        form: { callbackUrl: req.body.callbackUrl, description: req.body.description, subscriptions },
+        eventTypes: constants.webhooks.humanReadableSubscriptions,
+        backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.index, req.service.externalId, req.account.type)
+      })
     } else {
       return next(updateWebhookError)
     }

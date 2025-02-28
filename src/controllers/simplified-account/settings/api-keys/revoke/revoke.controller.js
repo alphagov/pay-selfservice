@@ -26,16 +26,6 @@ async function post (req, res) {
   }
 
   const description = req.body.apiKeyName
-  // if (req.body.revokeApiKey === undefined) {
-  //   return response(req, res, 'simplified-account/settings/api-keys/revoke', {
-  //     errors: {
-  //       summary: [{ text: `Confirm if you want to revoke ${description}`, href: '#revokeApiKey' }],
-  //       formErrors: { revokeApiKey: `Confirm if you want to revoke ${description}` } // pragma: allowlist secret
-  //     },
-  //     description,
-  //     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, req.service.externalId, req.account.type)
-  //   })
-  // }
 
   if (req.body.revokeApiKey === 'Yes') { // pragma: allowlist secret
     req.flash('messages', { state: 'success', icon: '&check;', heading: `${description} was successfully revoked` })
