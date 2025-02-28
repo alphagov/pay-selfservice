@@ -1,4 +1,5 @@
 const { body } = require('express-validator')
+const { constants } = require('@govuk-pay/pay-js-commons')
 
 const WEBHOOK_DESCRIPTION_MAX_LENGTH = 50
 
@@ -24,6 +25,9 @@ const webhookSchema = {
     validate: body('subscriptions')
       .notEmpty()
       .withMessage('Select at least one payment event')
+      .bail()
+      .isIn(Object.values(constants.webhooks.humanReadableSubscriptions))
+      .withMessage('Please select from the list of payment events')
   }
 }
 

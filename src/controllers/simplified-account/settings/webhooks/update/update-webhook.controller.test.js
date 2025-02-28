@@ -50,7 +50,7 @@ describe('Controller: settings/webhooks/update', () => {
   })
 
   describe('post', () => {
-    describe('success', () => {
+    describe('when the updates are valid', () => {
       before(async () => {
         nextRequest({
           body: {
@@ -72,7 +72,35 @@ describe('Controller: settings/webhooks/update', () => {
       })
     })
 
-    describe('failure - domain not in allow list', () => {
+    describe('when there are validation errors', () => {
+      before(async () => {
+        nextRequest({
+          body: {
+            callbackUrl: 'not-a-valid-url',
+            description: 'this is a really long webhook description that exceeds the maximum fifty character limit',
+            subscriptions: 'not a valid payment event'
+          }
+        })
+        nextStubs({
+          '@controllers/simplified-account/settings/webhooks/create/create.controller': { responseWithErrors: mockResponse }
+        })
+        await call('post')
+      })
+
+      it('should respond with error message', () => {
+        mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, {
+          errorSummary: [
+            { text: 'Please select from the list of payment events', href: '#subscriptions' },
+            { text: 'Enter a valid callback url beginning with https://', href: '#callback-url' },
+            { text: 'Description must be 50 characters or fewer', href: '#description' }
+          ],
+          formErrors: { subscriptions: 'Please select from the list of payment events', callbackUrl: 'Enter a valid callback url beginning with https://', description: 'Description must be 50 characters or fewer' }
+        })
+      })
+    })
+
+    describe('when the domain not in the allow list', () => {
       before(async () => {
         nextRequest({
           body: {
