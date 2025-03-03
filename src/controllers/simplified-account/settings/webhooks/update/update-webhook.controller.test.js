@@ -125,5 +125,29 @@ describe('Controller: settings/webhooks/update', () => {
         })
       })
     })
+
+    describe('when the callback URL is not https', () => {
+      before(async () => {
+        nextRequest({
+          body: {
+            callbackUrl: 'http://www.gov.uk',
+            description: 'Webhook description',
+            subscriptions: 'card_payment_succeeded'
+          }
+        })
+        nextStubs({
+          '@controllers/simplified-account/settings/webhooks/create/create.controller': { responseWithErrors: mockResponse }
+        })
+        await call('post')
+      })
+
+      it('should respond with error message', () => {
+        mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, {
+          errorSummary: [{ text: 'Enter a valid callback url beginning with https://', href: '#callback-url' }],
+          formErrors: { callbackUrl: 'Enter a valid callback url beginning with https://' }
+        })
+      })
+    })
   })
 })
