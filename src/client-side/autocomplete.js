@@ -4,7 +4,7 @@ const initAutocomplete = () => {
   const autocompleteContainer = document.querySelector('#service-filter-container')
 
   if (autocompleteContainer) {
-    const services = Array.from(document.getElementsByClassName('service_list_item'))
+    const services = Array.from(document.getElementsByClassName('service-section'))
     const names = services.map(service => service.dataset.name)
 
     const jumpToService = selected => {
@@ -29,7 +29,7 @@ const initAutocomplete = () => {
 
     clearButton.addEventListener('click', () => {
       document.getElementById('service-filter').value = ''
-      const services = Array.from(document.getElementsByClassName('service_list_item'))
+      const services = Array.from(document.getElementsByClassName('service-section'))
       services.forEach(service => {
         service.style.display = 'block'
       })
