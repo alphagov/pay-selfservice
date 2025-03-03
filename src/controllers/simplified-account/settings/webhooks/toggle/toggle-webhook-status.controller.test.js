@@ -15,7 +15,7 @@ const mockResponse = sinon.spy()
 const mockToggleWebhookStatus = sinon.stub().resolves({})
 const mockGetWebhook = sinon.stub().resolves(testWebhook)
 
-const { req, res, call, nextRequest, nextStubs } = new ControllerTestBuilder('@controllers/simplified-account/settings/webhooks/toggle/toggle-webhook-status.controller')
+const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/simplified-account/settings/webhooks/toggle/toggle-webhook-status.controller')
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount({
     id: GATEWAY_ACCOUNT_ID,
