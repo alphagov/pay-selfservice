@@ -3,7 +3,6 @@ const { response } = require('@utils/response')
 const webhooksService = require('@services/webhooks.service')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const { constants } = require('@govuk-pay/pay-js-commons')
-const { WebhookStatus } = require('@models/webhooks/Webhook.class')
 
 /**
  *
