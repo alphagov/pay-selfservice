@@ -116,6 +116,7 @@ async function createWebhook (serviceId, gatewayAccountId, isLive, options = {})
  * @param serviceExternalId {String}
  * @param gatewayAccountId {String}
  * @param patchRequest {WebhookUpdateRequest}
+ * @param options {{ baseUrl: String }}
  * @returns {Promise<*>}
  */
 async function updateWebhook (webhookExternalId, serviceExternalId, gatewayAccountId, patchRequest, options = {}) {
@@ -123,10 +124,8 @@ async function updateWebhook (webhookExternalId, serviceExternalId, gatewayAccou
   const url = urlJoin(baseUrl, '/v1/webhook', webhookExternalId)
   const fullUrl = `${url}?service_id=${serviceExternalId}&gateway_account_id=${gatewayAccountId}`
   configureClient(client, fullUrl)
-  console.log(patchRequest.toJson())
   const response = await client.patch(fullUrl, patchRequest.toJson(), 'Update webhook')
     .catch(e => {
-      console.log(e)
       throw e
     })
   return response.data
