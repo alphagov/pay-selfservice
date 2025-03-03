@@ -187,70 +187,102 @@ describe('Email notifications settings', () => {
   })
 
   describe('Payment confirmation email settings', () => {
-    describe('When email collection mode is MANDATORY or OPTIONAL', () => {
-      beforeEach(() => {
-        cy.task('setupStubs', [
-          gatewayAccountStubs.setPaymentConfirmationEmailEnabledByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'false')
-        ])
+    describe('for an admin user', () => {
+      describe('When email collection mode is MANDATORY or OPTIONAL', () => {
+        beforeEach(() => {
+          cy.task('setupStubs', [
+            gatewayAccountStubs.setPaymentConfirmationEmailEnabledByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'false')
+          ])
+        })
+
+        it('should navigate to the payment confirmation email toggle page', () => {
+          ['MANDATORY', 'OPTIONAL'].forEach(mode => {
+            setupStubs('admin', mode)
+            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
+            cy.get('.govuk-summary-list').within(() => {
+              cy.get('.govuk-summary-list__actions a').eq(1).click()
+            })
+
+            cy.title().should('eq', 'Send payment confirmation emails - Settings - My cool service - GOV.UK Pay')
+            cy.url().should('include', '/settings/email-notifications/payment-confirmation-email-toggle')
+            cy.get('.govuk-fieldset__heading').first().should('contain', 'Send payment confirmation emails')
+
+            cy.get('.govuk-radios').within(() => {
+              cy.get('.govuk-radios__item').eq(0).should('contain', 'On')
+              cy.get('.govuk-radios__item').eq(1).should('contain', 'Off')
+            })
+
+            // navigate back to email notifications page
+            cy.get('input[type="radio"][value="false"]').check()
+            cy.get('.govuk-button').contains('Save changes').click()
+            cy.get('h1').should('contain', 'Email notifications')
+            cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
+          })
+        })
       })
+    })
 
-      it('should navigate to the payment confirmation email toggle page', () => {
-        ['MANDATORY', 'OPTIONAL'].forEach(mode => {
-          setupStubs('admin', mode)
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
-          cy.get('.govuk-summary-list').within(() => {
-            cy.get('.govuk-summary-list__actions a').eq(1).click()
-          })
-
-          cy.title().should('eq', 'Send payment confirmation emails - Settings - My cool service - GOV.UK Pay')
-          cy.url().should('include', '/settings/email-notifications/payment-confirmation-email-toggle')
-          cy.get('.govuk-fieldset__heading').first().should('contain', 'Send payment confirmation emails')
-
-          cy.get('.govuk-radios').within(() => {
-            cy.get('.govuk-radios__item').eq(0).should('contain', 'On')
-            cy.get('.govuk-radios__item').eq(1).should('contain', 'Off')
-          })
-
-          // navigate back to email notifications page
-          cy.get('input[type="radio"][value="false"]').check()
-          cy.get('.govuk-button').contains('Save changes').click()
-          cy.get('h1').should('contain', 'Email notifications')
-          cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
+    describe('for a non-admin user', () => {
+      beforeEach(() => {
+        setupStubs('view-only')
+      })
+      it('should return 403 when navigating directly to the email collection mode page', () => {
+        cy.request({
+          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/payment-confirmation-email-toggle`,
+          failOnStatusCode: false
+        }).then((response) => {
+          expect(response.status).to.eq(403)
         })
       })
     })
   })
 
   describe('Refund email settings', () => {
-    describe('When email collection mode is MANDATORY or OPTIONAL', () => {
-      beforeEach(() => {
-        cy.task('setupStubs', [
-          gatewayAccountStubs.setRefundEmailEnabledByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'false')
-        ])
+    describe('for an admin user', () => {
+      describe('When email collection mode is MANDATORY or OPTIONAL', () => {
+        beforeEach(() => {
+          cy.task('setupStubs', [
+            gatewayAccountStubs.setRefundEmailEnabledByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'false')
+          ])
+        })
+
+        it('should navigate to the refund email toggle page', () => {
+          ['MANDATORY', 'OPTIONAL'].forEach(mode => {
+            setupStubs('admin', mode)
+            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
+            cy.get('.govuk-summary-list').within(() => {
+              cy.get('.govuk-summary-list__actions a').eq(2).click()
+            })
+
+            cy.title().should('eq', 'Send refund emails - Settings - My cool service - GOV.UK Pay')
+            cy.url().should('include', '/settings/email-notifications/refund-email-toggle')
+            cy.get('.govuk-fieldset__heading').first().should('contain', 'Send refund emails')
+
+            cy.get('.govuk-radios').within(() => {
+              cy.get('.govuk-radios__item').eq(0).should('contain', 'On')
+              cy.get('.govuk-radios__item').eq(1).should('contain', 'Off')
+            })
+
+            // navigate back to email notifications page
+            cy.get('input[type="radio"][value="false"]').check()
+            cy.get('.govuk-button').contains('Save changes').click()
+            cy.get('h1').should('contain', 'Email notifications')
+            cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
+          })
+        })
       })
+    })
 
-      it('should navigate to the refund email toggle page', () => {
-        ['MANDATORY', 'OPTIONAL'].forEach(mode => {
-          setupStubs('admin', mode)
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
-          cy.get('.govuk-summary-list').within(() => {
-            cy.get('.govuk-summary-list__actions a').eq(2).click()
-          })
-
-          cy.title().should('eq', 'Send refund emails - Settings - My cool service - GOV.UK Pay')
-          cy.url().should('include', '/settings/email-notifications/refund-email-toggle')
-          cy.get('.govuk-fieldset__heading').first().should('contain', 'Send refund emails')
-
-          cy.get('.govuk-radios').within(() => {
-            cy.get('.govuk-radios__item').eq(0).should('contain', 'On')
-            cy.get('.govuk-radios__item').eq(1).should('contain', 'Off')
-          })
-
-          // navigate back to email notifications page
-          cy.get('input[type="radio"][value="false"]').check()
-          cy.get('.govuk-button').contains('Save changes').click()
-          cy.get('h1').should('contain', 'Email notifications')
-          cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
+    describe('for a non-admin user', () => {
+      beforeEach(() => {
+        setupStubs('view-only')
+      })
+      it('should return 403 when navigating directly to the email collection mode page', () => {
+        cy.request({
+          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`,
+          failOnStatusCode: false
+        }).then((response) => {
+          expect(response.status).to.eq(403)
         })
       })
     })
