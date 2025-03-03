@@ -50,7 +50,7 @@ describe('Controller: settings/webhooks', () => {
           body: {
             callbackUrl: 'https://www.gov.uk',
             description: 'Webhook description',
-            subscriptions: 'Payment created'
+            subscriptions: 'card_payment_succeeded'
           }
         })
         call('post')
@@ -72,7 +72,7 @@ describe('Controller: settings/webhooks', () => {
           body: {
             callbackUrl: 'https://www.gov.uk',
             description: 'Webhook description',
-            subscriptions: 'Payment created'
+            subscriptions: 'card_payment_succeeded'
           }
         })
         nextStubs({

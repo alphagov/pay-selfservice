@@ -56,7 +56,7 @@ describe('Controller: settings/webhooks/update', () => {
           body: {
             callbackUrl: 'https://www.compuglobalhypermeganet.example.com',
             description: 'Webhook description',
-            subscriptions: 'Payment created'
+            subscriptions: 'card_payment_succeeded'
           }
         })
         await call('post')
@@ -106,7 +106,7 @@ describe('Controller: settings/webhooks/update', () => {
           body: {
             callbackUrl: 'https://www.gov.uk',
             description: 'Webhook description',
-            subscriptions: 'Payment created'
+            subscriptions: 'card_payment_succeeded'
           }
         })
         nextStubs({

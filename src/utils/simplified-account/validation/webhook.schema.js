@@ -1,5 +1,6 @@
 const { body } = require('express-validator')
 const { constants } = require('@govuk-pay/pay-js-commons')
+const { suppressValue } = require('nunjucks/src/runtime')
 
 const WEBHOOK_DESCRIPTION_MAX_LENGTH = 50
 
@@ -26,7 +27,7 @@ const webhookSchema = {
       .notEmpty()
       .withMessage('Select at least one payment event')
       .bail()
-      .isIn(Object.values(constants.webhooks.humanReadableSubscriptions))
+      .isIn(Object.keys(constants.webhooks.humanReadableSubscriptions).map(subscription => subscription.toLowerCase()))
       .withMessage('Please select from the list of payment events')
   }
 }
