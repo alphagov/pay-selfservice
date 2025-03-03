@@ -5,6 +5,7 @@ const webhooksService = require('@services/webhooks.service')
 const { WebhookStatus } = require('@models/webhooks/Webhook.class')
 const { validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { webhookSchema } = require('@utils/simplified-account/validation/webhook.schema')
 
 /**
  *
