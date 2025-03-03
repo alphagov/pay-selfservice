@@ -23,9 +23,7 @@ const simplifiedAccount = new Router({ mergeParams: true })
 simplifiedAccount.use(simplifiedAccountOptIn, simplifiedAccountStrategy, userIsAuthorised)
 
 // settings index
-simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider, (req, res) => {
-  req.selectedController(req, res)
-})
+simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)
 
 // service name
 simplifiedAccount.get(paths.simplifiedAccount.settings.serviceName.index, enforceLiveAccountOnly, permission('service-name:update'), serviceSettingsController.serviceName.get)

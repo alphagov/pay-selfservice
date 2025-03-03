@@ -25,7 +25,7 @@ describe('Controller: selectOrganisationType, Method: get', () => {
         redirect: sinon.spy()
       }
       selectOrganisationTypeController.get(req, res)
-      sinon.assert.calledWith(res.redirect, paths.serviceSwitcher.create.index)
+      sinon.assert.calledWith(res.redirect, paths.services.create.index)
     })
   })
 
@@ -60,8 +60,8 @@ describe('Controller: selectOrganisationType, Method: get', () => {
       expect(responseContext).to.have.property('errors').to.deep.equal({
         organisation_type: 'Organisation type is required'
       })
-      expect(responseContext).to.have.property('back_link').to.equal(paths.serviceSwitcher.create.index)
-      expect(responseContext).to.have.property('submit_link').to.equal(paths.serviceSwitcher.create.index)
+      expect(responseContext).to.have.property('back_link').to.equal(paths.services.create.index)
+      expect(responseContext).to.have.property('submit_link').to.equal(paths.services.create.index)
     })
 
     it('should remove errors pageData from the session', () => {
@@ -93,8 +93,8 @@ describe('Controller: selectOrganisationType, Method: post', () => {
       expect(createServiceState).to.have.property('current_name_cy').to.equal(WELSH_SERVICE_NAME)
       expect(createServiceState).to.have.property('service_selected_cy').to.equal(true)
       const responseContext = mockResponse.response.args[0][3]
-      expect(responseContext).to.have.property('back_link').to.equal(paths.serviceSwitcher.create.index)
-      expect(responseContext).to.have.property('submit_link').to.equal(paths.serviceSwitcher.create.index)
+      expect(responseContext).to.have.property('back_link').to.equal(paths.services.create.index)
+      expect(responseContext).to.have.property('submit_link').to.equal(paths.services.create.index)
     })
   })
   describe('when request fails validation', () => {
@@ -116,7 +116,7 @@ describe('Controller: selectOrganisationType, Method: post', () => {
 
     it('should redirect to the create service controller and set the session data', () => {
       expect(mockResponse.response.called).to.equal(false)
-      sinon.assert.calledWith(res.redirect, paths.serviceSwitcher.create.index)
+      sinon.assert.calledWith(res.redirect, paths.services.create.index)
       const expectedErrors = req.session.pageData.createService.errors
       expect(expectedErrors).to.have.property('service_name').to.equal('Service name must be 50 characters or fewer')
       expect(expectedErrors).to.have.property('service_name_cy').to.equal('Welsh service name must be 50 characters or fewer')

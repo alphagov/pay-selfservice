@@ -33,7 +33,7 @@ async function validateInvite (req, res, next) {
       if (invite.is_invite_to_join_service) {
         res.redirect(paths.invite.subscribeService)
       } else {
-        res.redirect(paths.serviceSwitcher.index)
+        res.redirect(paths.services.index)
       }
     } else {
       res.redirect(paths.register.password)

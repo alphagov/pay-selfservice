@@ -35,6 +35,7 @@ describe('Controller: Dashboard activity', () => {
       req = {
         account,
         service: {
+          gatewayAccountIds: serviceGatewayAccountIds,
           currentGoLiveStage: null
         },
         user

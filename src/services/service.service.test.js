@@ -1,60 +1,16 @@
-'use strict'
-
-const _ = require('lodash')
 const proxyquire = require('proxyquire')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 const sinon = require('sinon')
 
-const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')
-
 const expect = chai.expect
-
-const gatewayAccountId1 = '1'
-const gatewayAccountId2 = '2'
-const nonExistentId = '3'
 
 let connectorClientStub
 let adminusersClientStub
 let serviceService
 
-const getGatewayAccounts = function () {
-  return {
-    getAccounts: function (obj) {
-      return new Promise(function (resolve) {
-        resolve({
-          accounts: obj.gatewayAccountIds.filter(fil => fil !== nonExistentId).map(iter => gatewayAccountFixtures.validGatewayAccountResponse({
-            gateway_account_id: iter,
-            service_name: `account ${iter}`,
-            type: _.sample(['test', 'live'])
-          }))
-        })
-      })
-    }
-  }
-}
-
 describe('service service', function () {
-  describe('when getting gateway accounts', function () {
-    it('should return card gateway accounts only for the valid ids', async function () {
-      connectorClientStub = {
-        ConnectorClient: getGatewayAccounts
-      }
-
-      serviceService = proxyquire('./service.service',
-        {
-          '../services/clients/connector.client': connectorClientStub
-        })
-
-      const gatewayAccounts = await serviceService.getGatewayAccounts([gatewayAccountId1, gatewayAccountId2, nonExistentId])
-
-      expect(gatewayAccounts).to.have.lengthOf(2)
-      expect(gatewayAccounts.map(accountObj => accountObj.id || accountObj.gateway_account_external_id))
-        .to.have.all.members(['1', '2'])
-    })
-  })
-
   describe('when editing service name', function () {
     it('should update service name', async function () {
       const externalServiceId = 'sdfjksdnfkjn'

@@ -3,17 +3,18 @@ import { spawn } from 'child_process'
 import { clientBuild, serverBuild } from './esbuild.config.mjs'
 import { rm, access, constants } from 'node:fs'
 
-const args = ['dist/application.js']
+const args = ['--enable-source-maps', '--inspect', 'dist/application.js']
 let server
 
 const startServer = async () => {
   if (server) server.kill()
+  console.log(`💻\x1b[32m node\x1b[0m\x1b[33m ${args.join(' ')}\x1b[0m`)
   server = spawn('node', args, {
     stdio: 'inherit'
   })
 }
 
-async function startDevServer() {
+async function startDevServer () {
   const clientCtx = await context(clientBuild)
 
   const serverCtx = await context({
@@ -22,7 +23,7 @@ async function startDevServer() {
       ...serverBuild.plugins,
       {
         name: 'server-rebuild',
-        setup(build) {
+        setup (build) {
           build.onEnd(async result => {
             if (result.errors.length === 0) {
               await startServer()
@@ -35,7 +36,7 @@ async function startDevServer() {
 
   await Promise.all([
     clientCtx.watch(),
-    serverCtx.watch(),
+    serverCtx.watch()
   ])
 
   const cleanup = async () => {
@@ -53,14 +54,14 @@ async function startDevServer() {
   process.on('SIGTERM', cleanup)
 }
 
-await rm('dist', { recursive: true, force: true }, async () => {
+rm('dist', { recursive: true, force: true }, async () => {
   console.log('✅ [dist] cleared')
   if (process.env.NODE_ENV === 'test') {
     console.log('🧪 [cypress/test.env] loaded environment')
     args.unshift('-r', 'dotenv/config')
     args.push('dotenv_config_path=test/cypress/test.env')
   } else {
-    await access('/.dockerenv', constants.R_OK, (err) => {
+    access('/.dockerenv', constants.R_OK, (err) => {
       if (err) {
         console.log('🔩 [.env] loaded environment')
         args.unshift('-r', 'dotenv/config')

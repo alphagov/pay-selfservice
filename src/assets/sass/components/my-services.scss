@@ -1,28 +1,3 @@
-.service-switcher{
-  &.live {
-    position: relative;
-    margin-bottom: govuk-spacing(3);
-    padding-left: 2rem;
-    @include govuk-font($size: 19, $weight: bold);
-
-    &:before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 0;
-      -webkit-transform:translate(0, -50%);
-      -moz-transform:translate(0, -50%);
-      -ms-transform:translate(0, -50%);
-      -o-transform:translate(0, -50%);
-      transform:translate(0, -50%);
-      width: 1.5rem;
-      height: 1.5rem;
-      border-radius: 100%;
-      background-color: govuk-colour("green");
-    }
-  }
-}
-
 .reports {
   margin-top: govuk-spacing(2);
   margin-bottom: govuk-spacing(4);
@@ -32,7 +7,8 @@
   margin-bottom: govuk-spacing(6);
 }
 
-.service_list_item {
+.service-section {
+  margin-top: govuk-spacing(1);
   hr {
     border: none;
     border-top: 1px solid $govuk-border-colour;
@@ -41,6 +17,39 @@
   }
 }
 
-.service_list_item {
-  margin-top: govuk-spacing(1);
+.govuk-tag--worldpay-test-service {
+  max-width: 200px;
+}
+
+.service-section__links {
+  margin-bottom: govuk-spacing(4);
+  li:first-child {
+    margin-top: 0;
+    margin-bottom: govuk-spacing(4);
+  }
+  li {
+    margin-bottom: govuk-spacing(1);
+  }
+}
+
+.service-section__link--test {
+  @include govuk-font($size: 16);
+}
+
+.service-section__link--live {
+  position: relative;
+  padding-left: 2rem;
+  @include govuk-font($size: 19, $weight: bold);
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background-color: govuk-colour("green");
+  }
 }

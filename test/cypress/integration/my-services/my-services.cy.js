@@ -1,5 +1,3 @@
-'use strict'
-
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const userStubs = require('../../stubs/user-stubs')
 const payoutStubs = require('../../stubs/payout-stubs')
@@ -21,7 +19,7 @@ describe('User has access to Worldpay services', () => {
   it('should display WORLDPAY TEST SERVICE label on the Worldpay Test Service only', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccessWithMultipleServices(authenticatedUserId, [
-        { serviceName: 'Service with a Worldpay test account only', gatewayAccountIds: ['10'] }
+        { serviceName: { en: 'Service with a Worldpay test account only' }, gatewayAccountIds: ['10'] }
       ]),
       gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '10', type: 'test', paymentProvider: 'worldpay' })
     ])
@@ -34,7 +32,7 @@ describe('User has access to Worldpay services', () => {
   it('should not display WORLDPAY TEST SERVICE label where there is a Worldpay Live account', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccessWithMultipleServices(authenticatedUserId, [
-        { serviceName: 'Service with a Worldpay test account only', gatewayAccountIds: ['13'] }
+        { serviceName: { en: 'Service with a Worldpay live account only' }, gatewayAccountIds: ['13'] }
       ]),
       gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '13', type: 'live', paymentProvider: 'worldpay' })
     ])
@@ -47,7 +45,7 @@ describe('User has access to Worldpay services', () => {
   it('should not display WORLDPAY TEST SERVICE label where there are Worldpay and sandbox accounts', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccessWithMultipleServices(authenticatedUserId, [
-        { serviceName: 'Old service with Worldpay and Sandbox test accounts', gatewayAccountIds: ['11', '12'] }
+        { serviceName: { en: 'Old service with Worldpay and Sandbox test accounts' }, gatewayAccountIds: ['11', '12'] }
       ]),
       gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([
         { gatewayAccountId: '11', type: 'test', paymentProvider: 'sandbox' },
@@ -81,14 +79,14 @@ describe('The user has 8 services', () => {
   it('should show the services filter', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccessWithMultipleServices(authenticatedUserId, [
-        { serviceName: 'Service 1', gatewayAccountIds: ['1'] },
-        { serviceName: 'Service 2', gatewayAccountIds: ['2'] },
-        { serviceName: 'Service 3', gatewayAccountIds: ['3'] },
-        { serviceName: 'Service 4', gatewayAccountIds: ['4'] },
-        { serviceName: 'Service 5', gatewayAccountIds: ['5'] },
-        { serviceName: 'Service 6', gatewayAccountIds: ['6'] },
-        { serviceName: 'Service 7', gatewayAccountIds: ['7'] },
-        { serviceName: 'Service 8', gatewayAccountIds: ['8'] }
+        { serviceName: { en: 'Service 1' }, gatewayAccountIds: ['1'] },
+        { serviceName: { en: 'Service 2' }, gatewayAccountIds: ['2'] },
+        { serviceName: { en: 'Service 3' }, gatewayAccountIds: ['3'] },
+        { serviceName: { en: 'Service 4' }, gatewayAccountIds: ['4'] },
+        { serviceName: { en: 'Service 5' }, gatewayAccountIds: ['5'] },
+        { serviceName: { en: 'Service 6' }, gatewayAccountIds: ['6'] },
+        { serviceName: { en: 'Service 7' }, gatewayAccountIds: ['7'] },
+        { serviceName: { en: 'Service 8' }, gatewayAccountIds: ['8'] }
       ]),
       gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([
         { gatewayAccountId: 1 },

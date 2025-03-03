@@ -57,7 +57,8 @@ function getUserAndGatewayAccountByExternalIdStubs (serviceRole, paymentProvider
     userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId: variables.gatewayAccountId,
-      gatewayAccountExternalId: variables.gatewayAccountExternalId
+      gatewayAccountExternalId: variables.gatewayAccountExternalId,
+      paymentProvider: paymentProvider || 'sandbox'
     }),
     gatewayAccountStubs.getGatewayAccountsSuccess(
       {
