@@ -1,6 +1,5 @@
 const { body } = require('express-validator')
 const { constants } = require('@govuk-pay/pay-js-commons')
-const { suppressValue } = require('nunjucks/src/runtime')
 
 const WEBHOOK_DESCRIPTION_MAX_LENGTH = 50
 
