@@ -55,7 +55,7 @@ module.exports = class ControllerTestBuilder {
   }
 
   withParams (params) {
-    this.params = params
+    this.req.params = params
     return this
   }
 

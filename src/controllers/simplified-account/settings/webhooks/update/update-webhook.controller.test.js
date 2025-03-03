@@ -5,7 +5,8 @@ const { constants } = require('@govuk-pay/pay-js-commons')
 const { Webhook } = require('@models/webhooks/Webhook.class')
 
 const ACCOUNT_TYPE = 'test'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
+const GATEWAY_ACCOUNT_ID = '100'
 
 const testWebhook = new Webhook()
   .withCallbackUrl('https://www.globexcorporation.example.com')
@@ -15,8 +16,11 @@ const mockGetWebhook = sinon.stub().resolves(testWebhook)
 const mockUpdateWebhookDomainNotAllowed = sinon.stub().rejects(new RESTClientError(null, 'webhooks', 400, 'CALLBACK_URL_NOT_ON_ALLOW_LIST'))
 
 const { req, res, call, nextRequest, nextStubs } = new ControllerTestBuilder('@controllers/simplified-account/settings/webhooks/update/update-webhook.controller')
-  .withServiceExternalId(SERVICE_ID)
-  .withAccountType(ACCOUNT_TYPE)
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
+  .withAccount({
+    id: GATEWAY_ACCOUNT_ID,
+    type: ACCOUNT_TYPE
+  })
   .withParams({ webhookExternalId: 'webhook-external-id' })
   .withStubs({
     '@utils/response': { response: mockResponse },
@@ -46,6 +50,11 @@ describe('Controller: settings/webhooks/update', () => {
         eventTypes: constants.webhooks.humanReadableSubscriptions,
         backLink: '/simplified/service/service-id-123abc/account/test/settings/webhooks'
       })
+    })
+
+    it('should call the webhooks service to find the webhook', () => {
+      mockGetWebhook.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+      mockGetWebhook.should.have.been.calledWith('webhook-external-id', SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID)
     })
   })
 
