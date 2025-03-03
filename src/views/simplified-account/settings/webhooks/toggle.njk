@@ -3,12 +3,12 @@
 {% set settingsPageTitle =  ("Activate" if webhook.status === 'INACTIVE' else 'Deactivate') + "webhook" %}
 
 {% block settingsContent %}
-  <form id="revoke-api-key" method="post" novalidate>
+  <form id="toggle-webhook-status" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
     {{ govukRadios({
-      name: 'revokeApiKey',
-      errorMessage: { text: errors.formErrors['revokeApiKey'] } if errors.formErrors['revokeApiKey'] else false,
+      name: 'toggleActive',
+      errorMessage: { text: errors.formErrors['toggleActive'] } if errors.formErrors['toggleActive'] else false,
       fieldset: {
         legend: {
           text: 'Are you sure you want to ' + ('activate ' if webhook.status === 'INACTIVE' else 'deactivate ') + webhook.callbackUrl + '?',

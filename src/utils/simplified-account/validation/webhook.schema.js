@@ -1,5 +1,6 @@
 const { body } = require('express-validator')
 const { constants } = require('@govuk-pay/pay-js-commons')
+const { WebhookStatus } = require('@models/webhooks/Webhook.class')
 
 const WEBHOOK_DESCRIPTION_MAX_LENGTH = 50
 const VALID_WEBHOOK_SUBSCRIPTIONS = Object.keys(constants.webhooks.humanReadableSubscriptions).map(subscription => subscription.toLowerCase())
@@ -29,6 +30,12 @@ const webhookSchema = {
       .bail()
       .isIn(VALID_WEBHOOK_SUBSCRIPTIONS)
       .withMessage('Select from the list of payment events')
+  },
+  toggleActive: {
+    validate: (webhook) => body('toggleActive')
+      .toLowerCase()
+      .isIn(['yes', 'no'])
+      .withMessage(`Confirm if you want to ${webhook.status === WebhookStatus.INACTIVE ? 'activate' : 'deactivate'} ${webhook.callbackUrl}`)
   }
 }
 
