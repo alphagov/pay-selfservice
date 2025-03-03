@@ -64,7 +64,7 @@ const clientBuild = {
 const serverBuild = {
   ...buildOptions,
   entryPoints: [
-    { out: 'application', in: 'src/start.js' },
+    { out: 'application', in: 'src/start.js' }
   ],
   alias: {
     '@root': resolve(__dirname, 'src'),
