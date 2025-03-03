@@ -38,7 +38,8 @@
   "scripts": {
     "dev": "NODE_ENV=development node dev-server.mjs",
     "compile": "NODE_ENV=production node esbuild.config.mjs",
-    "lint": "standard --fix",
+    "lint": "standard",
+    "lint-fix": "standard --fix",
     "lint-sass": "stylelint 'src/assets/sass/**/*.scss'",
     "test": "rm -rf ./pacts && NODE_ENV=test mocha '!(node_modules)/**/*.test'.js",
     "test:no-pact": "rm -rf ./pacts && NODE_ENV=test mocha --exclude **/*.pact.test.js '!(node_modules)/**/*.test'.js",
