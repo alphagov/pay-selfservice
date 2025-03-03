@@ -3,6 +3,7 @@ const { response } = require('@utils/response')
 const webhooksService = require('@services/webhooks.service')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const { constants } = require('@govuk-pay/pay-js-commons')
+const { WebhookStatus } = require('@models/webhooks/Webhook.class')
 
 /**
  *
@@ -41,7 +42,12 @@ async function get (req, res) {
     webhookEvents,
     paginationDetails,
     eventTypes: constants.webhooks.humanReadableSubscriptions,
-    backToWebhooksLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.index, req.service.externalId, req.account.type)
+    backToWebhooksLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.index, req.service.externalId, req.account.type),
+    updateWebhookLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.update, req.service.externalId, req.account.type, req.params.webhookExternalId),
+    ...{
+      activateWebhookLink: webhook.status === WebhookStatus.INACTIVE && formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.activate, req.service.externalId, req.account.type, req.params.webhookExternalId),
+      deactivateWebhookLink: webhook.status === WebhookStatus.ACTIVE && formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.deactivate, req.service.externalId, req.account.type, req.params.webhookExternalId)
+    }
   })
 }
 

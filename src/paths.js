@@ -243,6 +243,8 @@ module.exports = {
         create: '/settings/webhooks/create',
         detail: '/settings/webhooks/:webhookExternalId',
         update: '/settings/webhooks/:webhookExternalId/update',
+        activate: '/settings/webhooks/:webhookExternalId/activate',
+        deactivate: '/settings/webhooks/:webhookExternalId/deactivate',
         event: '/settings/webhooks/:webhookExternalId/event/:eventId'
       },
       switchPsp: {

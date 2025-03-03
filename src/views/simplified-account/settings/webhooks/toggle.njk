@@ -1,0 +1,34 @@
+{% extends "../settings-layout.njk" %}
+
+{% set settingsPageTitle =  ("Activate" if webhook.status === 'INACTIVE' else 'Deactivate') + "webhook" %}
+
+{% block settingsContent %}
+  <form id="revoke-api-key" method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {{ govukRadios({
+      name: 'revokeApiKey',
+      errorMessage: { text: errors.formErrors['revokeApiKey'] } if errors.formErrors['revokeApiKey'] else false,
+      fieldset: {
+        legend: {
+          text: 'Are you sure you want to ' + ('activate ' if webhook.status === 'INACTIVE' else 'deactivate ') + webhook.callbackUrl + '?',
+          isPageHeading: true,
+          classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
+        }
+      },
+      items: [
+        {
+          value: 'yes',
+          text: 'Yes'
+        },
+        {
+          value: 'no',
+          text: 'No'
+        }
+      ]
+    }) }}
+    {{ govukButton({
+      text: 'Save changes'
+    }) }}
+  </form>
+{% endblock %}
