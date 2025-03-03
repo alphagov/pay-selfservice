@@ -29,6 +29,5 @@ module.exports = {
   create: require('./create/create.controller'),
   detail: require('./detail/detail.controller'),
   update: require('./update/update-webhook.controller'),
-  activate: require('./activate/activate-webhook.controller'),
-  deactivate: require('./deactivate/deactivate-webhook.controller')
+  toggle: require('./toggle/toggle-webhook-status.controller')
 }

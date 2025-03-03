@@ -50,11 +50,11 @@ const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simpl
 
 describe('Controller: settings/webhooks/detail', () => {
   describe('get', () => {
-    before(() => {
+    before(async () => {
       nextRequest({
         params: { webhookExternalId: WEBHOOK_EXTERNAL_ID }
       })
-      call('get')
+      await call('get')
     })
 
     it('should call the response method', () => {

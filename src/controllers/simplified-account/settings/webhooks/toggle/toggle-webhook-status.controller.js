@@ -2,7 +2,6 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const paths = require('@root/paths')
 const { response } = require('@utils/response')
 const webhooksService = require('@services/webhooks.service')
-const { WebhookStatus } = require('@models/webhooks/Webhook.class')
 const { validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const { webhookSchema } = require('@utils/simplified-account/validation/webhook.schema')
@@ -15,9 +14,6 @@ const { webhookSchema } = require('@utils/simplified-account/validation/webhook.
  */
 async function get (req, res) {
   const webhook = await webhooksService.getWebhook(req.params.webhookExternalId, req.service.externalId, req.account.id)
-  if (webhook.status !== WebhookStatus.INACTIVE) {
-    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.detail, req.service.externalId, req.account.type, req.params.webhookExternalId))
-  }
 
   return response(req, res, 'simplified-account/settings/webhooks/toggle', {
     webhook
@@ -32,9 +28,6 @@ async function get (req, res) {
  */
 async function post (req, res) {
   const webhook = await webhooksService.getWebhook(req.params.webhookExternalId, req.service.externalId, req.account.id)
-  if (webhook.status !== WebhookStatus.INACTIVE) {
-    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.detail, req.service.externalId, req.account.type, req.params.webhookExternalId))
-  }
 
   await Promise.all([webhookSchema.toggleActive.validate(webhook)].map(validation => validation.run(req)))
   const validationErrors = validationResult(req)
@@ -47,10 +40,6 @@ async function post (req, res) {
       },
       webhook
     })
-  }
-
-  if (req.body.toggleActive.toLowerCase() !== 'yes') {
-    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.detail, req.service.externalId, req.account.type, req.params.webhookExternalId))
   }
 
   await webhooksService.toggleStatus(req.params.webhookExternalId, req.service.externalId, req.account.id, webhook.status)

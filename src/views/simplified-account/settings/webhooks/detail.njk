@@ -65,13 +65,13 @@
 
   {% if webhook.status == 'ACTIVE' %}
     {{ govukButton({
-      href: deactivateWebhookLink,
+      href: toggleWebhookStatusLink,
       text: 'Deactivate webhook',
       classes: 'govuk-!-margin-top-2 govuk-button--secondary'
     }) }}
   {% else %}
     {{ govukButton({
-      href: activateWebhookLink,
+      href: toggleWebhookStatusLink,
       text: 'Activate webhook',
       classes: 'govuk-!-margin-top-2 govuk-button--secondary'
     }) }}
