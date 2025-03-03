@@ -91,11 +91,11 @@ describe('Controller: settings/webhooks/update', () => {
         mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, {
           errorSummary: [
-            { text: 'Please select from the list of payment events', href: '#subscriptions' },
+            { text: 'Select from the list of payment events', href: '#subscriptions' },
             { text: 'Enter a valid callback url beginning with https://', href: '#callback-url' },
             { text: 'Description must be 50 characters or fewer', href: '#description' }
           ],
-          formErrors: { subscriptions: 'Please select from the list of payment events', callbackUrl: 'Enter a valid callback url beginning with https://', description: 'Description must be 50 characters or fewer' }
+          formErrors: { subscriptions: 'Select from the list of payment events', callbackUrl: 'Enter a valid callback url beginning with https://', description: 'Description must be 50 characters or fewer' }
         })
       })
     })
