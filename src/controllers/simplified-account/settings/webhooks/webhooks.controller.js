@@ -28,5 +28,6 @@ module.exports = {
   get,
   create: require('./create/create.controller'),
   detail: require('./detail/detail.controller'),
-  update: require('./update/update-webhook.controller')
+  update: require('./update/update-webhook.controller'),
+  toggle: require('./toggle/toggle-webhook-status.controller')
 }

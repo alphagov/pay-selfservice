@@ -41,7 +41,9 @@ async function get (req, res) {
     webhookEvents,
     paginationDetails,
     eventTypes: constants.webhooks.humanReadableSubscriptions,
-    backToWebhooksLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.index, req.service.externalId, req.account.type)
+    backToWebhooksLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.index, req.service.externalId, req.account.type),
+    updateWebhookLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.update, req.service.externalId, req.account.type, req.params.webhookExternalId),
+    toggleWebhookStatusLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.toggle, req.service.externalId, req.account.type, req.params.webhookExternalId)
   })
 }
 

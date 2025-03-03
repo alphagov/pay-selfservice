@@ -3,6 +3,7 @@
 const webhooksClient = require('./clients/webhooks.client')
 const Paginator = require('@utils/paginator')
 const WebhookUpdateRequest = require('@models/webhooks/WebhookUpdateRequest.class')
+const { WebhookStatus } = require('@models/webhooks/Webhook.class')
 
 const PAGE_SIZE = 10
 
@@ -82,11 +83,19 @@ function resetSigningSecret (webhookId, serviceId, gatewayAccountId) {
   return webhooksClient.resetSigningSecret(webhookId, serviceId, gatewayAccountId)
 }
 
-function toggleStatus (webhookId, serviceId, gatewayAccountId, currentStatus) {
-  const status = currentStatus === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+/**
+ *
+ * @param webhookExternalId
+ * @param serviceId
+ * @param gatewayAccountId
+ * @param currentStatus {WebhookStatus}
+ * @returns {Promise<*>}
+ */
+function toggleStatus (webhookExternalId, serviceId, gatewayAccountId, currentStatus) {
+  const status = currentStatus === WebhookStatus.ACTIVE ? WebhookStatus.INACTIVE : WebhookStatus.ACTIVE
   const webhookUpdateRequest = new WebhookUpdateRequest()
     .replace().status(status)
-  return webhooksClient.updateWebhook(webhookId, serviceId, gatewayAccountId, webhookUpdateRequest)
+  return webhooksClient.updateWebhook(webhookExternalId, serviceId, gatewayAccountId, webhookUpdateRequest)
 }
 
 function resendWebhookMessage (webhookId, messageId) {
