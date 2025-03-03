@@ -22,7 +22,7 @@
     {% if service.gatewayAccounts.length %}
       <ul class="govuk-list service-section__links">
         {% for account in service.gatewayAccounts %}
-          <li>
+          <li class="{{ account.type }}">
             <a href="{{ account.links.dashboardLink }}" class="service-switcher govuk-link govuk-link--no-visited-state service-section__link service-section__link--{{ account.type }}">
               {{ account.type | title }}
               {% if account.type === 'live' %}

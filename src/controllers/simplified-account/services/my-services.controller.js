@@ -8,6 +8,8 @@ const { DEFAULT_SERVICE_NAME } = require('@utils/constants')
 const { formattedPathFor } = require('@root/paths')
 const { accountLinksGenerator, sortByLiveThenName, isWorldpayTestService } = require('@utils/simplified-account/services/my-services/service-presentation-utils')
 
+const SUPPORTED_ACCOUNT_PROVIDERS = [STRIPE, SANDBOX, WORLDPAY]
+
 async function get (req, res) {
   const userServiceRoles = req.user.serviceRoles
   const flags = {
@@ -118,17 +120,19 @@ const filterTestGatewaysDegatewayView = (testGatewayAccounts, service) => {
         return false
       }
       if (accounts.length === 1) {
-        if ([STRIPE, SANDBOX, WORLDPAY].includes(accounts[0].paymentProvider)) return true
+        if (SUPPORTED_ACCOUNT_PROVIDERS.includes(accounts[0].paymentProvider)) return true
         logger.warn(`Resolved test account is not of supported type [service_external_id: ${service.externalId}, payment_provider: ${accounts[0].paymentProvider}]`)
         return false
       }
-      for (const provider of [STRIPE, SANDBOX, WORLDPAY]) {
-        const testAccountsByProvider = accounts.filter(testAccount => testAccount.paymentProvider === provider)
-        if (testAccountsByProvider.length > 1) {
-          logger.warn(`Multiple ${provider} test accounts found for service [external_id: ${service.externalId}]`)
-          // if for some reason there is more than one test account with the same provider, use the ID to work out the newest one
-          testAccountsByProvider.sort((a, b) => parseInt(b.id) - parseInt(a.id))
-          return account.id === testAccountsByProvider[0].id
+      for (const provider of SUPPORTED_ACCOUNT_PROVIDERS) {
+        const accountsByProvider = accounts.filter(testAccount => testAccount.paymentProvider === provider)
+        if (accountsByProvider.length > 0) {
+          if (accountsByProvider.length > 1) {
+            logger.warn(`Multiple ${provider} test accounts found for service [service_external_id: ${service.externalId}]`)
+            // if for some reason there is more than one test account with the same provider, use the ID to work out the newest one
+            accountsByProvider.sort((a, b) => parseInt(b.id) - parseInt(a.id))
+          }
+          return account.id === accountsByProvider[0].id
         }
       }
       return false
