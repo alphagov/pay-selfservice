@@ -1,23 +1,22 @@
 {% extends "../settings-layout.njk" %}
 
 {% set inputLabel %}
-  <h1 class="govuk-label-wrapper">
-    <label class="govuk-label govuk-label--l" for="service-name-input">
-      {% if editCy %}Welsh service name (<span lang="cy">Cymraeg</span>){% else %}Service name (English){% endif %}
-    </label>
-  </h1>
+  {% if editCy %}Welsh service name (<span lang="cy">Cymraeg</span>){% else %}Service name (English){% endif %}
 {% endset %}
 
 {% set settingsPageTitle = ("Welsh" if editCy else "English") + " service name" %}
 
 {% block settingsContent %}
+
   <form id="edit-service-name" method="post" action="{{ submitLink }}" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
     <input id="cy" name="cy" type="hidden" value="{{ editCy }}"/>
 
     {{ govukInput({
       label: {
-        html: inputLabel
+        html: inputLabel,
+        classes: "govuk-label--l",
+        isPageHeading: true
       },
       errorMessage: { text: errors.formErrors['serviceName'] } if errors.formErrors['serviceName'] else false,
       id: "service-name",
