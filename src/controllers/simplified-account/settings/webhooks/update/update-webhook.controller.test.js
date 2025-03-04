@@ -75,9 +75,9 @@ describe('Controller: settings/webhooks/update', () => {
         mockUpdateWebhook.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
       })
 
-      it('should redirect to the webhooks index page', () => {
+      it('should redirect to the webhook detail page', () => {
         res.redirect.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
-        res.redirect.should.have.been.calledWith('/simplified/service/service-id-123abc/account/test/settings/webhooks')
+        res.redirect.should.have.been.calledWith('/simplified/service/service-id-123abc/account/test/settings/webhooks/webhook-external-id')
       })
     })
 
