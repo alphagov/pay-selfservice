@@ -168,6 +168,8 @@ describe('Controller: services/my-services.controller', () => {
                     expect(accounts.length).to.equal(3)
                     expect(accounts[0].type).to.equal('live')
                     expect(accounts[0].paymentProvider).to.equal(WORLDPAY)
+                    expect(accounts[1].type).to.equal('test')
+                    expect(accounts[2].type).to.equal('test')
                     return true
                   })
                 })
