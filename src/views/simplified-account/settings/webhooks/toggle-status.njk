@@ -1,6 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% set settingsPageTitle =  ("Activate" if webhook.status === 'INACTIVE' else 'Deactivate') + "webhook" %}
+{% set settingsPageTitle =  ("Activate" if webhook.status === 'INACTIVE' else 'Deactivate') + " webhook" %}
 
 {% block settingsContent %}
   <form id="toggle-webhook-status" method="post" novalidate>

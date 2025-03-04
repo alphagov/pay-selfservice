@@ -43,7 +43,7 @@ describe('Controller: settings/webhooks/update', () => {
     })
 
     it('should pass req, res and template path to the response method', () => {
-      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/webhooks/toggle')
+      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/webhooks/toggle-status')
     })
 
     it('should pass context data to the response method', () => {
