@@ -4,6 +4,7 @@ const webhooksClient = require('./clients/webhooks.client')
 const Paginator = require('@utils/paginator')
 const WebhookUpdateRequest = require('@models/webhooks/WebhookUpdateRequest.class')
 const { WebhookStatus } = require('@models/webhooks/Webhook.class')
+const { NotFoundError } = require('@root/errors')
 
 const PAGE_SIZE = 10
 
@@ -60,6 +61,13 @@ function updateWebhook (webhookExternalId, serviceExternalId, gatewayAccountId, 
  */
 function getWebhook (webhookExternalId, serviceExternalId, gatewayAccountId) {
   return webhooksClient.webhook(webhookExternalId, serviceExternalId, gatewayAccountId)
+    .catch(e => {
+      if (e.errorCode === 404) {
+        throw new NotFoundError(`Webhook with external ID <${webhookExternalId}> not found for service <${serviceExternalId}>, account <${gatewayAccountId}>`)
+      } else {
+        throw e
+      }
+    })
 }
 
 function getWebhookMessage (id, webhookId) {

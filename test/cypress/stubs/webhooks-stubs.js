@@ -82,6 +82,21 @@ function createWebhookViolatesBackend (opts = {}) {
   })
 }
 
+function patchUpdateWebhookViolatesBackend (gatewayAccountId, serviceExternalId, webhookExternalId) {
+  const path = `/v1/webhook/${webhookExternalId}`
+  return stubBuilder('PATCH', path, 400, {
+    query: {
+      service_id: serviceExternalId,
+      gateway_account_id: gatewayAccountId
+    },
+    response: {
+      error_identifier: 'CALLBACK_URL_NOT_ON_ALLOW_LIST',
+      message: 'Callback url violated security constraints'
+    },
+    deepMatchRequest: false
+  })
+}
+
 /**
  *
  * @param {Number | String} gatewayAccountId
@@ -140,5 +155,6 @@ module.exports = {
   postCreateWebhookSuccess,
   createWebhookViolatesBackend,
   patchUpdateWebhookSuccess,
-  patchBatchUpdateWebhookSuccess
+  patchBatchUpdateWebhookSuccess,
+  patchUpdateWebhookViolatesBackend
 }
