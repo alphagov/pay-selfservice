@@ -187,7 +187,7 @@ describe('webhook settings - update webhooks', () => {
           })
         })
 
-        it('should redirect to the webhooks list page', () => {
+        it('should redirect to the webhook detail page', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
           cy.get('input#callback_url').clear().type('https://this.url.is.valid.gov.uk', { delay: 0 })
           cy.get('input#description').clear().type('This is a new description for my webhook', { delay: 0 })
@@ -198,7 +198,7 @@ describe('webhook settings - update webhooks', () => {
 
           cy.get('button').contains('Save').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks`)
+          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
         })
       })
     })
