@@ -253,12 +253,12 @@ describe('webhook settings - toggle webhook status', () => {
       })
     })
 
-    // it('should return a 404', () => {
-    //   cy.request({
-    //     url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/this-webhook-does-not-exist/toggle-status`,
-    //     failOnStatusCode: false
-    //   }).then(response => expect(response.status).to.eq(403))
-    // })
+    it('should return a 404', () => {
+      cy.request({
+        url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/this-webhook-does-not-exist/toggle-status`,
+        failOnStatusCode: false
+      }).then(response => expect(response.status).to.eq(404))
+    })
   })
 
   describe('for a non-admin user', () => {
