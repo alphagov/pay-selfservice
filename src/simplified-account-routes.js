@@ -7,6 +7,7 @@ const {
   enforceEmailCollectionModeNotOff,
   enforceLiveAccountOnly,
   enforcePaymentProviderType,
+  enforceMotoAccountOnly,
   defaultViewDecider
 } = require('@middleware/simplified-account')
 const restrictToSwitchingAccount = require('@middleware/restrict-to-switching-account')
@@ -72,6 +73,10 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.cardPayments.applePay, pe
 simplifiedAccount.post(paths.simplifiedAccount.settings.cardPayments.applePay, permission('payment-types:update'), serviceSettingsController.cardPayments.applePay.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.cardPayments.googlePay, permission('payment-types:update'), serviceSettingsController.cardPayments.googlePay.get)
 simplifiedAccount.post(paths.simplifiedAccount.settings.cardPayments.googlePay, permission('payment-types:update'), serviceSettingsController.cardPayments.googlePay.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardNumber, enforceMotoAccountOnly, permission('payment-types:update'), serviceSettingsController.cardPayments.motoSecurity.hideCardNumber.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardNumber, enforceMotoAccountOnly, permission('payment-types:update'), serviceSettingsController.cardPayments.motoSecurity.hideCardNumber.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardSecurityCode, enforceMotoAccountOnly, permission('payment-types:update'), serviceSettingsController.cardPayments.motoSecurity.hideCardSecurityCode.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardSecurityCode, enforceMotoAccountOnly, permission('payment-types:update'), serviceSettingsController.cardPayments.motoSecurity.hideCardSecurityCode.post)
 
 // worldpay details
 simplifiedAccount.get(paths.simplifiedAccount.settings.worldpayDetails.index, enforcePaymentProviderType(WORLDPAY), permission('gateway-credentials:read'), serviceSettingsController.worldpayDetails.get)

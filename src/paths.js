@@ -226,7 +226,11 @@ module.exports = {
         collectBillingAddress: '/settings/card-payments/collect-billing-address',
         defaultBillingAddressCountry: '/settings/card-payments/default-billing-address-country',
         applePay: '/settings/card-payments/apple-pay',
-        googlePay: '/settings/card-payments/google-pay'
+        googlePay: '/settings/card-payments/google-pay',
+        motoSecurity: {
+          hideCardNumber: '/settings/card-payments/moto-security/hide-card-number',
+          hideCardSecurityCode: '/settings/card-payments/moto-security/hide-card-security-code'
+        }
       },
       cardTypes: {
         index: '/settings/card-types'

@@ -22,6 +22,7 @@
         text: 'Your payment service provider (PSP) uses the billing address to carry out fraud checks. If you turn off billing address collection, your PSP or your users\' banks may decline more payments.'
       },
       value: currentState,
+      errorMessage: { text: errors.formErrors['collectBillingAddress'] } if errors.formErrors['collectBillingAddress'] else false,
       items: [
         {
           value: "on",

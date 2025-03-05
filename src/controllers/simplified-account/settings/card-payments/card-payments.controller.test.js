@@ -37,7 +37,7 @@ const viewOnlyUser = new User(userFixtures.validUserResponse(
     }
   }))
 
-const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/card-payments/index.controller')
+const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/card-payments/card-payments.controller')
   .withStubs({
     '@utils/response': { response: mockResponse }
   })
