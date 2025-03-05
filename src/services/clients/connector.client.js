@@ -424,6 +424,7 @@ ConnectorClient.prototype = {
    * @param serviceExternalId {string}
    * @param accountType {string}
    * @param allowApplePay {boolean}
+   * @deprecated
    * @returns {Promise<Object>}
    */
   updateAllowApplePay: async function (serviceExternalId, accountType, allowApplePay) {
@@ -463,10 +464,10 @@ ConnectorClient.prototype = {
    * @param serviceExternalId {string}
    * @param accountType {string}
    * @param allowGooglePay {boolean}
+   * @deprecated
    * @returns {Promise<Object>}
    */
   updateAllowGooglePay: async function (serviceExternalId, accountType, allowGooglePay) {
-    // const url = getServiceIdAccountTypeBaseUrl(serviceExternalId, accountType)
     const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}`
       .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
       .replace('{accountType}', encodeURIComponent(accountType))
@@ -483,6 +484,7 @@ ConnectorClient.prototype = {
   /**
    * @param gatewayAccountId
    * @param isMaskCardNumber (boolean)
+   * @deprecated
    * @returns {Promise<Object>}
    */
   toggleMotoMaskCardNumberInput: async function (gatewayAccountId, isMaskCardNumber) {
@@ -501,6 +503,7 @@ ConnectorClient.prototype = {
   /**
    * @param gatewayAccountId
    * @param isMaskSecurityCode (boolean)
+   * @deprecated
    * @returns {Promise<Object>}
    */
   toggleMotoMaskSecurityCodeInput: async function (gatewayAccountId, isMaskSecurityCode) {

@@ -4,11 +4,10 @@
 
 {% block settingsContent %}
   <form method="post">
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
     {{ govukRadios({
       name: "defaultBillingAddress",
-      value: currentState,
-        fieldset: {
+      fieldset: {
         legend: {
           text: settingsPageTitle,
           classes: 'govuk-fieldset__legend--l',
@@ -18,6 +17,8 @@
       hint: {
         text: 'By default, the country field in the user’s billing address will be automatically set to United Kingdom. If your service frequently takes payments from overseas users, you can turn this off.'
       },
+      value: currentState,
+      errorMessage: { text: errors.formErrors['defaultBillingAddress'] } if errors.formErrors['defaultBillingAddress'] else false,
       items: [
         {
           value: "on",

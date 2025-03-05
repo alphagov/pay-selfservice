@@ -1,12 +1,12 @@
-{% extends "../settings-layout.njk" %}
+{% extends "simplified-account/settings/settings-layout.njk" %}
 
-{% set settingsPageTitle = "Apple Pay" %}
+{% set settingsPageTitle = "Hide card security codes (CVV) from call centre agents " %}
 
 {% block settingsContent %}
   <form method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {{ govukRadios({
-      name: "applePay",
+      name: "hideCardSecurityCode",
       fieldset: {
         legend: {
           text: settingsPageTitle,
@@ -15,21 +15,21 @@
         }
       },
       hint: {
-        text: "Corporate card fees cannot be charged to payments made with Apple Pay.",
+        text: "If you hide the security codes, call agents will not be able to read the numbers entered on their screen.",
         classes: "govuk-body"
       },
       value: currentState,
-      errorMessage: { text: errors.formErrors['applePay'] } if errors.formErrors['applePay'] else false,
+      errorMessage: { text: errors.formErrors['hideCardSecurityCode'] } if errors.formErrors['hideCardSecurityCode'] else false,
       items: [
         {
           value: "on",
-          text: "On",
-          id: "apple-pay-on"
+          text: "Hide",
+          id: "hide-card-security-code-on"
         },
         {
           value: "off",
-          text: "Off",
-          id: "apple-pay-off"
+          text: "Show",
+          id: "hide-card-security-code-off"
         }
       ]
     }) }}
@@ -38,5 +38,4 @@
       text: "Save changes"
     }) }}
   </form>
-
 {% endblock %}

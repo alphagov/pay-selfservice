@@ -20,7 +20,7 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/card-payments.service': { updateGooglePay: mockUpdateGooglePay }
+    '@services/card-payments.service': { updateAllowGooglePay: mockUpdateGooglePay }
   })
   .build()
 
