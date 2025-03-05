@@ -8,4 +8,15 @@ const DESCRIPTION_VALIDATION = [
     .withMessage('Name must be 50 characters or fewer')
 ]
 
-module.exports = DESCRIPTION_VALIDATION
+const REVOKE_VALIDATION = [
+  body('revokeApiKey')
+    .custom((revokeApiKey, { req }) => {
+      if (revokeApiKey === undefined) { throw new Error(`Confirm if you want to revoke ${req.body.apiKeyName}`) }
+      return true
+    })
+]
+
+module.exports = {
+  DESCRIPTION_VALIDATION,
+  REVOKE_VALIDATION
+}

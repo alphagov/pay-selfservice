@@ -8,7 +8,7 @@
   <p class="govuk-body govuk-!-margin-bottom-6">Payment card schemes require the details of the organisation taking
     payment to be shown on payment pages.</p>
 
-  <form id="organisation-details-form" method="post" action="{{ submitLink }}">
+  <form id="organisation-details-form" method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
     {% include "./_edit-organisation-details-name.njk" %}
