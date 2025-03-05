@@ -4,10 +4,9 @@ const { render } = require('@test/test-helpers/html-assertions')
 
 describe('The pagination links', function () {
   it('should display correct pagination links with the correct href links when on first page', () => {
-    
     const templateData = transactionsTemplateData(filters(1), getAllLinks(3))
     const body = render('transactions/paginator', templateData)
-    
+
     body.should.containSelector('div.pagination')
     body.should.not.containSelector('div.govuk-pagination__prev').withText('Previous page')
     body.should.containSelector('div.govuk-pagination__next').withText('Next page')
@@ -16,15 +15,14 @@ describe('The pagination links', function () {
     body.should.containSelector('a.govuk-link.govuk-pagination__link[href="/all-service-transactions/test?page=2"]').withText('2')
     body.should.containSelector('a.govuk-link.govuk-pagination__link[href="/all-service-transactions/test?page=3"]').withText('3')
     body.should
-    .containSelector('div.govuk-pagination__next a.govuk-link.govuk-pagination__link span.govuk-pagination__link-title')
-    .withText('Next')
+      .containSelector('div.govuk-pagination__next a.govuk-link.govuk-pagination__link span.govuk-pagination__link-title')
+      .withText('Next')
   })
 
   it('should display ellipsis instead if two less or two more than current page but not first or last page', () => {
-
     const templateData = transactionsTemplateData(filters(5), getAllLinks(10))
     const body = render('transactions/paginator', templateData)
-    
+
     body.should.containSelector('div.pagination')
     body.should.containSelector('div.govuk-pagination__prev')
     body.should.containSelector('a.govuk-link.govuk-pagination__link').withText('Previous page')
@@ -35,10 +33,9 @@ describe('The pagination links', function () {
   })
 
   it('should display correct pagination links with the correct href links when on last page', () => {
-    
     const templateData = transactionsTemplateData(filters(10), getAllLinks(10))
     const body = render('transactions/paginator', templateData)
-    
+
     body.should.containSelector('div.pagination')
     body.should.containSelector('div.govuk-pagination__prev')
     body.should.containSelector('div.govuk-pagination__prev').withText('Previous page')
@@ -49,23 +46,23 @@ describe('The pagination links', function () {
     body.should.not.containSelector('a.govuk-link.govuk-pagination__link[href="/all-service-transactions/test?page=8"]').withText('8')
     body.should.containSelector('li.govuk-pagination__item.govuk-pagination__item--ellipses').withText('⋯')
     body.should
-    .containSelector('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link span.govuk-pagination__link-title')
-    .withText('Previous')
+      .containSelector('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link span.govuk-pagination__link-title')
+      .withText('Previous')
   })
-  
-  const filters = (pageNum) => ({ page: pageNum });
+
+  const filters = (pageNum) => ({ page: pageNum })
 
   const getAllLinks = (numPages) => {
-    return Array.from({ length: numPages }, (_, index) => 
+    return Array.from({ length: numPages }, (_, index) =>
       `/all-service-transactions/test?page=${index + 1}`
-    );
-  };  
+    )
+  }
 
   const getPrevAndNextLinks = (page, pageCount) => {
     return {
       prev: page > 1 ? `/all-service-transactions/test?page=${page - 1}` : null,
       next: page < pageCount ? `/all-service-transactions/test?page=${page + 1}` : null
-    };
+    }
   }
 
   const transactionsTemplateData = (filters, getAllLinks) => {
@@ -105,7 +102,7 @@ describe('The pagination links', function () {
       nextPage: paginationLinks.next,
       hasPaginationLinks: true,
       selectedState: 'Testing2',
-      hasResults: true,
+      hasResults: true
     }
   }
 })
