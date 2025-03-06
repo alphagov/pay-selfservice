@@ -51,6 +51,8 @@ class GatewayAccount {
     this.requires3ds = gatewayAccountData.requires3ds
     this.allowGooglePay = gatewayAccountData.allow_google_pay
     this.allowApplePay = gatewayAccountData.allow_apple_pay
+    this.motoMaskCardNumber = gatewayAccountData.moto_mask_card_number_input
+    this.motoMaskCardSecurityCode = gatewayAccountData.moto_mask_card_security_code_input
     /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
      * you should instead add any rawResponse data as part of the constructor */
     this.rawResponse = gatewayAccountData

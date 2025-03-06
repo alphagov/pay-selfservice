@@ -1,8 +1,8 @@
 const { response } = require('@utils/response')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
-const { updateApplePay } = require('@services/card-payments.service')
-const { validateOnOffField } = require('@utils/simplified-account/validation/on-off-field-validator')
+const { updateAllowApplePay } = require('@services/card-payments.service')
 const paths = require('@root/paths')
+const validateOnOffToggle = require('@utils/simplified-account/validation/on-off-toggle')
 
 function get (req, res) {
   const applePay = req.account?.allowApplePay
@@ -13,17 +13,21 @@ function get (req, res) {
 }
 
 async function post (req, res) {
-  const { value: userPreference, error } = validateOnOffField(req.body.applePay)
-  if (error) {
+  const { isValid, isOn, errors } = await validateOnOffToggle('applePay', req)
+  if (!isValid) {
     const applePay = req.account?.allowApplePay
     return response(req, res, 'simplified-account/settings/card-payments/apple-pay', {
+      errors: {
+        summary: errors.errorSummary,
+        formErrors: errors.formErrors
+      },
       currentState: applePay ? 'on' : 'off',
       backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.index, req.service.externalId, req.account.type)
     })
   }
   const serviceExternalId = req.service.externalId
   const accountType = req.account.type
-  await updateApplePay(serviceExternalId, accountType, userPreference)
+  await updateAllowApplePay(serviceExternalId, accountType, isOn)
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.index, serviceExternalId, accountType))
 }
 
