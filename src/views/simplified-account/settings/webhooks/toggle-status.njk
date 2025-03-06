@@ -11,7 +11,7 @@
       errorMessage: { text: errors.formErrors['toggleActive'] } if errors.formErrors['toggleActive'] else false,
       fieldset: {
         legend: {
-          text: 'Are you sure you want to ' + ('activate ' if webhook.status === 'INACTIVE' else 'deactivate ') + webhook.callbackUrl + '?',
+          text: 'Are you sure you want to ' + ('activate ' if webhook.status === 'INACTIVE' else 'deactivate ') + webhook.description + '?',
           isPageHeading: true,
           classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
         }
