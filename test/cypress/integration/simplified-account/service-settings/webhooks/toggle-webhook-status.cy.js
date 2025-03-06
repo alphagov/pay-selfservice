@@ -83,7 +83,7 @@ describe('webhook settings - toggle webhook status', () => {
         it('should show the correct heading and title', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
-          cy.get('h1').should('contain', 'Are you sure you want to deactivate https://www.compuglobalhypermeganet.example.com')
+          cy.get('h1').should('contain', 'Are you sure you want to deactivate a really awesome webhook?')
           cy.title().should('eq', 'Deactivate webhook - Settings - Compu-Global-Hyper-Mega-Net - GOV.UK Pay')
         })
 
@@ -114,7 +114,7 @@ describe('webhook settings - toggle webhook status', () => {
         it('should show the correct heading and title', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
-          cy.get('h1').should('contain', 'Are you sure you want to activate https://www.compuglobalhypermeganet.example.com')
+          cy.get('h1').should('contain', 'Are you sure you want to activate a really awesome webhook')
           cy.title().should('eq', 'Activate webhook - Settings - Compu-Global-Hyper-Mega-Net - GOV.UK Pay')
         })
       })
