@@ -42,8 +42,8 @@
           {% else %}
             {% if isServiceAdmin %}
               {% set actionItems = [
-                { href: member.changePermissionLink, text: "Change", classes: "govuk-link--no-visited-state" },
-                { href: member.removeLink, text: "Remove", classes: "govuk-link--no-visited-state" }
+                { href: member.changePermissionLink, text: "Change", visuallyHiddenText: member.email, classes: "govuk-link--no-visited-state" },
+                { href: member.removeLink, text: "Remove", visuallyHiddenText: member.email, classes: "govuk-link--no-visited-state" }
               ] %}
             {% endif %}
           {% endif %}
