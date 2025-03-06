@@ -28,10 +28,10 @@
   {% for role, roleDetails in roles %}
     {% if teamMembers[role].length %}
       <div class="team-member-email-list" id="team-members-{{ role }}-list">
-        <h3 id="{{ role }}-role-header" class="govuk-heading-m">
+        <h2 id="{{ role }}-role-header" class="govuk-heading-m">
           {{ roleDetails.description }} <span
             class="govuk-!-font-weight-regular pay-text-grey">({{ teamMembers[role].length }})</span>
-        </h3>
+        </h2>
 
         {% set teamMembersListedForRole = [] %}
         {% for member in teamMembers[role] %}
