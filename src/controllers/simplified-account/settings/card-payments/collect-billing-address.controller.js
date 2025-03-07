@@ -2,7 +2,7 @@ const { response } = require('@utils/response')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 const { updateCollectBillingAddress } = require('@services/card-payments.service')
 const paths = require('@root/paths')
-const validateOnOffToggle = require('@utils/simplified-account/validation/on-off-toggle')
+const { validateOnOffToggle } = require('@utils/simplified-account/validation/on-off-toggle')
 
 function get (req, res) {
   const collectBillingAddress = req.service.collectBillingAddress

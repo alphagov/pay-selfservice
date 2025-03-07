@@ -3,6 +3,30 @@
 {% set settingsPageTitle = "Google Pay" %}
 
 {% block settingsContent %}
+  {% set googlePayMerchantIdHint %}
+      Refer to the <a class="govuk-link govuk-link--no-visited-state" href="https://docs.payments.service.gov.uk/digital_wallets/#enable-google-pay">GOV.UK Pay documentation on enabling Google Pay</a> to learn where to find your merchant ID.
+  {% endset %}
+
+  {% set googlePayMerchantId %}
+    {% if paymentProvider === "worldpay" %}
+      {{
+      govukInput({
+        id: "google-pay-merchant-id",
+        name: "googlePayMerchantId",
+        value: currentGooglePayMerchantId,
+        hint: {
+          html: googlePayMerchantIdHint
+        },
+        label: {
+          text: "Google Pay merchant ID"
+        },
+        errorMessage: { text: errors.formErrors['googlePayMerchantId'] } if errors.formErrors['googlePayMerchantId'] else false,
+        classes: "govuk-!-width-two-thirds"
+      })
+      }}
+    {% endif %}
+  {% endset %}
+
   <form method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
     {{ govukRadios({
@@ -23,7 +47,10 @@
         {
           value: "on",
           text: "On",
-          id: "google-pay-on"
+          id: "google-pay-on",
+          conditional: {
+            html: googlePayMerchantId
+          }
         },
         {
           value: "off",

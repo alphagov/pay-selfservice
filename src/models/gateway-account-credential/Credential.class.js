@@ -41,6 +41,15 @@ class Credential {
     return this
   }
 
+  /**
+   * @param {String} googlePayMerchantId
+   * @returns {Credential}
+   */
+  withGooglePayMerchantId (googlePayMerchantId) {
+    this.googlePayMerchantId = googlePayMerchantId
+    return this
+  }
+
   /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
    * you should instead add any rawResponse data as part of the constructor */
   withRawResponse (data) {
@@ -71,6 +80,9 @@ class Credential {
     }
     if (data?.recurring_merchant_initiated) {
       credential.withRecurringMerchantInitiated(WorldpayCredential.fromJson(data.recurring_merchant_initiated))
+    }
+    if (data?.gateway_merchant_id) {
+      credential.withGooglePayMerchantId(data.gateway_merchant_id)
     }
     return credential
   }

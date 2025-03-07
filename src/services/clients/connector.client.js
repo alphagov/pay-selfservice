@@ -139,21 +139,24 @@ ConnectorClient.prototype = {
    *
    * @param {String} serviceExternalId
    * @param {String} accountType
-   * @param {String} credentialsId
+   * @param {String} credentialExternalId
    * @param {GatewayAccountCredentialUpdateRequest} patchRequest
    * @returns {Promise<GatewayAccountCredential>}
    */
-  patchGatewayAccountCredentialsByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, credentialsId, patchRequest) {
-    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/credentials/{credentialsId}`
+  patchGatewayAccountCredentialsByServiceExternalIdAndAccountType: async function (serviceExternalId, accountType, credentialExternalId, patchRequest) {
+    const url = `${this.connectorUrl}/v1/api/service/{serviceExternalId}/account/{accountType}/credentials/{credentialExternalId}`
       .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
       .replace('{accountType}', encodeURIComponent(accountType))
-      .replace('{credentialsId}', encodeURIComponent(credentialsId))
+      .replace('{credentialExternalId}', encodeURIComponent(credentialExternalId))
 
     configureClient(client, url)
     const response = await client.patch(url, patchRequest.formatPayload(), 'patch gateway account credentials')
     return GatewayAccountCredential.fromJson(response.data)
   },
 
+  /**
+   * @deprecated
+   */
   patchGooglePayGatewayMerchantId: async function (gatewayAccountId, gatewayAccountCredentialsId, googlePayGatewayMerchantId, userExternalId) {
     const url = `${this.connectorUrl}/v1/api/accounts/{accountId}/credentials/{credentialsId}`
       .replace('{accountId}', encodeURIComponent(gatewayAccountId))

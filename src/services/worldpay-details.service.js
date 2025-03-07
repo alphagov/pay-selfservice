@@ -119,7 +119,6 @@ async function update3dsFlexCredentials (serviceExternalId, accountType, flexCre
 }
 
 /**
- *
  * @param {String} serviceExternalId
  * @param {String} accountType
  * @param {Number} integrationVersion3ds
@@ -131,6 +130,14 @@ async function updateIntegrationVersion3ds (serviceExternalId, accountType, inte
   return connectorClient.patchGatewayAccountByServiceExternalIdAndAccountType(serviceExternalId, accountType, updateIntegrationVersion3dsRequest)
 }
 
+async function updateGooglePayMerchantId (serviceExternalId, accountType, credentialExternalId, userExternalId, googlePayMerchantId) {
+  const updateGooglePayMerchantIdRequest = new GatewayAccountCredentialUpdateRequest(userExternalId)
+    .replace()
+    .credentials()
+    .googlePayMerchantId(googlePayMerchantId)
+  return connectorClient.patchGatewayAccountCredentialsByServiceExternalIdAndAccountType(serviceExternalId, accountType, credentialExternalId, updateGooglePayMerchantIdRequest)
+}
+
 module.exports = {
   checkCredential,
   updateOneOffCustomerInitiatedCredentials,
@@ -139,5 +146,6 @@ module.exports = {
   update3dsFlexCredentials,
   updateIntegrationVersion3ds,
   updateRecurringMerchantInitiatedCredentials,
-  updateRecurringCustomerInitiatedCredentials
+  updateRecurringCustomerInitiatedCredentials,
+  updateGooglePayMerchantId
 }

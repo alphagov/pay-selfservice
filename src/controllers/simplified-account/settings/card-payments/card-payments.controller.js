@@ -26,6 +26,7 @@ function get (req, res) {
     applePayLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.applePay, service.externalId, account.type),
     googlePayEnabled: account?.allowGooglePay,
     googlePayLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.googlePay, service.externalId, account.type),
+    googlePayEditable: account.getActiveCredential() !== null,
     ...(motoSettings.isMoto && motoSettings)
   })
 }

@@ -85,7 +85,7 @@
           text: "Google Pay"
         },
         value: {
-          text: googlePayEnabled | boolToOnOrOff
+          text: "On" if googlePayEnabled else ("Off" if googlePayEditable else "Off, you need to add your Worldpay Details first")
         },
         actions: {
           items: [
@@ -96,7 +96,7 @@
               visuallyHiddenText: "Google Pay"
             }
           ]
-        } if userCanUpdatePaymentTypes
+        } if userCanUpdatePaymentTypes and googlePayEditable
       }
     ]
   }) }}
