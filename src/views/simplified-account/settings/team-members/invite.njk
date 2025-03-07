@@ -33,9 +33,8 @@
       } %}
       {% set roleItems = (roleItems.push(roleItem), roleItems) %}
     {% endfor %}
-
+<div id="invited-user-role">
     {{ govukRadios({
-      idPrefix: "invited-user-role",
       name: "invitedUserRole",
       errorMessage: { text: errors.formErrors['invitedUserRole'] } if errors.formErrors['invitedUserRole'] else false,
       fieldset: {
@@ -46,6 +45,7 @@
       },
       items: roleItems
     }) }}
+</div>
 
     {{ govukButton({
       text: "Send invitation email"
