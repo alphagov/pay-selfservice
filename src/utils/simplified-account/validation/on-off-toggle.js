@@ -21,29 +21,6 @@ const validateOnOffToggle = async (fieldName, req) => {
   }
 }
 
-const validateOnOffToggleWithInlineFields = async (fieldName, additionalChains, req) => {
-  const validation = body(fieldName)
-    .isIn(['on', 'off'])
-    .withMessage('Select an option')
-
-  await validation.run(req)
-
-  const isOn = req.body[fieldName] === 'on'
-
-  if (isOn && additionalChains.length > 0) {
-    await Promise.all(additionalChains.map(validation => validation.run(req)))
-  }
-
-  const errors = validationResult(req)
-
-  return {
-    isValid: errors.isEmpty(),
-    isOn: req.body[fieldName] === 'on',
-    errors: formatValidationErrors(errors)
-  }
-}
-
 module.exports = {
-  validateOnOffToggle,
-  validateOnOffToggleWithInlineFields
+  validateOnOffToggle
 }
