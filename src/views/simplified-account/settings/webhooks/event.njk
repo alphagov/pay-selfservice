@@ -1,0 +1,78 @@
+{% from "./_webhook_status.njk" import webhookStatusTag %}
+{% from "./_message_status.njk" import messageStatusTag %}
+{% extends "../settings-layout.njk" %}
+
+{% set settingsPageTitle = webhook.description %}
+
+{% block settingsContent %}
+
+  <h1 class="govuk-heading-l">{{ eventTypes[event.event_type | upper] }}</h1>
+
+  {% set resourceLink %}
+    <a class="govuk-link" href="{{ resourceLink }}">{{ event.resource_id }}</a>
+  {% endset %}
+  {{ govukSummaryList({
+    classes: "webhooks-summary-card",
+    rows: [
+      {
+        key: {
+          text: 'GOV.UK Payment ID'
+        },
+        value: {
+          html: resourceLink
+        }
+      },
+      {
+        key: {
+          text: 'Event date'
+        },
+        value: {
+          html: event.event_date | datetime('datelong')
+        }
+      },
+      {
+        key: {
+          text: 'Status'
+        },
+        value: {
+          html: messageStatusTag(event.latest_attempt.status)
+        }
+      }
+    ]
+  }) }}
+
+  <h2 class="govuk-heading-m">Delivery Attempts</h2>
+
+  {% set attemptRows = [] %}
+  {% for attempt in attempts %}
+    {% set attemptRow = [
+      { text: attempt.send_at | datetime("datetime") },
+      { html: messageStatusTag(attempt.status) },
+      { html: attempt.status_code },
+      { text: attempt.result }
+    ] %}
+    {% set attemptRows = (attemptRows.push(attemptRow), attemptRows) %}
+  {% endfor %}
+
+
+  {{ govukTable({
+    firstCellIsHeader: false,
+    head: [
+      {
+        text: "Attempt date"
+      },
+      {
+        text: "Status"
+      },
+      {
+        text: "Status code"
+      },
+      {
+        text: "Result"
+      }
+    ],
+    rows: attemptRows
+
+  }) }}
+
+{% endblock %}
