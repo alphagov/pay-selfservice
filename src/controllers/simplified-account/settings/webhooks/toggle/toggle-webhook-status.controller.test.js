@@ -11,6 +11,7 @@ const GATEWAY_ACCOUNT_ID = '100'
 const testWebhook = new Webhook()
   .withCallbackUrl('https://www.globexcorporation.example.com')
   .withStatus(WebhookStatus.INACTIVE)
+  .withDescription('My webhook')
 const mockResponse = sinon.spy()
 const mockToggleWebhookStatus = sinon.stub().resolves({})
 const mockGetWebhook = sinon.stub().resolves(testWebhook)
@@ -98,6 +99,16 @@ describe('Controller: settings/webhooks/update', () => {
       it('should call the webhooks service to update the webhook status', () => {
         mockToggleWebhookStatus.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
         mockToggleWebhookStatus.should.have.been.calledWith('webhook-external-id', SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID)
+      })
+
+      it('should set success message', () => {
+        sinon.assert.calledOnceWithExactly(req.flash,
+          'messages', {
+            state: 'success',
+            icon: '&check;',
+            heading: 'My webhook updated to active'
+          }
+        )
       })
 
       it('should redirect to the webhook detail page', () => {

@@ -49,6 +49,7 @@ async function post (req, res) {
   }
 
   await webhooksService.toggleStatus(req.params.webhookExternalId, req.service.externalId, req.account.id, webhook.status)
+  req.flash('messages', { state: 'success', icon: '&check;', heading: `${webhook.description} updated to ${webhook.status === 'INACTIVE' ? 'active' : 'inactive'}` })
 
   return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.detail, req.service.externalId, req.account.type, req.params.webhookExternalId))
 }
