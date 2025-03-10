@@ -1,6 +1,8 @@
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
+const { ACTIVE } = require('@models/constants/credential-state')
+const { STRIPE } = require('@models/constants/payment-providers')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
@@ -29,7 +31,16 @@ const setupStubs = ({
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       allow_apple_pay: allowApplePay ?? true,
-      allow_google_pay: allowGooglePay ?? true
+      allow_google_pay: allowGooglePay ?? true,
+      gateway_account_credentials: [
+        {
+          state: ACTIVE,
+          payment_provider: STRIPE,
+          credentials: {
+            stripe_account_id: 'acct_blahblahblah'
+          }
+        }
+      ]
     })
   ])
 }

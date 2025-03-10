@@ -36,6 +36,10 @@ const safeOperation = (op, request) => {
         recurringMerchantInitiated: (value) => {
           request.updates.push({ op, path: 'credentials/worldpay/recurring_merchant_initiated', value })
           return request
+        },
+        googlePayMerchantId: (value) => {
+          request.updates.push({ op, path: 'credentials/gateway_merchant_id', value })
+          return request
         }
       }
     },

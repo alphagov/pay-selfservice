@@ -21,4 +21,6 @@ const validateOnOffToggle = async (fieldName, req) => {
   }
 }
 
-module.exports = validateOnOffToggle
+module.exports = {
+  validateOnOffToggle
+}

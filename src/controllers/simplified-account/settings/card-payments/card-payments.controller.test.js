@@ -57,7 +57,8 @@ describe('Controller: settings/card-payments', () => {
           type: ACCOUNT_TYPE,
           id: GATEWAY_ACCOUNT_ID,
           allowApplePay: false,
-          allowGooglePay: false
+          allowGooglePay: false,
+          getActiveCredential: () => true
         }
       })
       call('get')
@@ -97,7 +98,8 @@ describe('Controller: settings/card-payments', () => {
           type: ACCOUNT_TYPE,
           id: GATEWAY_ACCOUNT_ID,
           allowApplePay: true,
-          allowGooglePay: true
+          allowGooglePay: true,
+          getActiveCredential: () => true
         }
       })
       call('get')

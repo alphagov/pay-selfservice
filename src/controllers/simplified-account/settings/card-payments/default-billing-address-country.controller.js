@@ -3,7 +3,7 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const { updateDefaultBillingAddressCountry } = require('@services/card-payments.service')
 const paths = require('@root/paths')
 const { GB_COUNTRY_CODE } = require('@controllers/simplified-account/settings/card-payments/constants')
-const validateOnOffToggle = require('@utils/simplified-account/validation/on-off-toggle')
+const { validateOnOffToggle } = require('@utils/simplified-account/validation/on-off-toggle')
 
 function get (req, res) {
   const defaultBillingAddressCountry = req.service.defaultBillingAddressCountry

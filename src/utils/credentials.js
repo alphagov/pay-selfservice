@@ -25,12 +25,18 @@ const worldpayMerchantDetailOperations = {
 }
 const worldpayMerchantDetailOperationsIndex = Object.entries(worldpayMerchantDetailOperations).reduce((aggregate, [key, value]) => ({ [value.key]: value, ...aggregate }), {})
 
+/**
+ * @deprecated moved to the GatewayAccount class
+ */
 function getActiveCredential (gatewayAccount = {}) {
   const credentials = gatewayAccount.gateway_account_credentials || []
   return credentials
     .filter((credential) => credential.state === CREDENTIAL_STATE.ACTIVE)[0] || null
 }
 
+/**
+ * @deprecated moved to the GatewayAccount class
+ */
 function getCurrentCredential (gatewayAccount = {}) {
   const credentials = gatewayAccount.gateway_account_credentials || []
   if (credentials.length === 1) {
@@ -39,8 +45,11 @@ function getCurrentCredential (gatewayAccount = {}) {
   return getActiveCredential(gatewayAccount)
 }
 
-// gets exactly one switching credential, only given the right account state (one active credential exists)
-// throws an error if there's any ambiguity in the target of the switch
+/**
+ * gets exactly one switching credential, only given the right account state (one active credential exists)
+ * throws an error if there's any ambiguity in the target of the switch
+ * @deprecated moved to the GatewayAccount class
+ */
 function getSwitchingCredential (gatewayAccount = {}) {
   const credentials = gatewayAccount.gateway_account_credentials || []
 

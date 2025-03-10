@@ -27,7 +27,7 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/
 describe('Controller: settings/card-payments/google-pay', () => {
   describe('get', () => {
     before(() => {
-      call('get')
+      call('get', 1)
     })
     it('should call the response method', () => {
       expect(mockResponse).to.have.been.calledOnce  // eslint-disable-line
@@ -49,7 +49,7 @@ describe('Controller: settings/card-payments/google-pay', () => {
       nextRequest({
         body: { googlePay: 'on' }
       })
-      call('post')
+      call('post', 1)
     })
 
     it('should update allow Google Pay enabled', () => {
