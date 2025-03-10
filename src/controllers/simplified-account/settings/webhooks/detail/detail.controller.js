@@ -34,7 +34,10 @@ async function get (req, res) {
     eventDetailUrl: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.event, req.service.externalId, req.account.type, webhook.externalId, result.external_id)
   }))
   const paginationDetails = getPaginationDetails(page, webhookMessages.total, baseUrl, deliveryStatus)
+
+  const messages = res.locals?.flash?.messages ?? []
   response(req, res, 'simplified-account/settings/webhooks/detail', {
+    messages,
     webhook,
     signingSecret,
     deliveryStatus,
