@@ -38,10 +38,10 @@ async function post (req, res, next) {
   }
 
   const validations = [
-    body('invitedUserRole')
-      .not().isEmpty().withMessage('Select a permission level'),
     body('invitedUserEmail')
-      .isEmail().withMessage('Enter a valid email address')
+      .isEmail().withMessage('Enter a valid email address'),
+    body('invitedUserRole')
+      .not().isEmpty().withMessage('Select a permission level')
   ]
   await Promise.all(validations.map(validation => validation.run(req)))
   const validationErrors = validationResult(req)
