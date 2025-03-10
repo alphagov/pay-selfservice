@@ -48,7 +48,11 @@ async function postEditCustomParagraph (req, res) {
 
   const newCustomParagraph = req.body.customParagraph.trim()
   await updateCustomParagraphByServiceIdAndAccountType(serviceExternalId, accountType, newCustomParagraph)
-  req.flash('messages', { state: 'success', icon: '&check;', heading: 'Custom paragraph updated' })
+
+  if (newCustomParagraph && newCustomParagraph.length > 0) {
+    req.flash('messages', { state: 'success', icon: '&check;', heading: 'Custom paragraph updated' })
+  }
+
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.templates,
     serviceExternalId, accountType))
 }
