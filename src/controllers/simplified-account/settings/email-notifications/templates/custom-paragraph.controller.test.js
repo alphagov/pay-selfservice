@@ -104,16 +104,45 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
   })
 
   describe('postEditCustomParagraph', () => {
-    before(() => {
-      const body = { customParagraph: 'a test custom paragraph' }
-      setupTest(body)
-      customParagraphController.postEditCustomParagraph(req, res)
-    })
+    describe('with empty body', () => {
+      before(() => {
+        const body = { customParagraph: '' }
+        setupTest(body)
+        customParagraphController.postEditCustomParagraph(req, res)
+      })
+      it('should update the confirmation template', () => {
+        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
+        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_ID, ACCOUNT_TYPE, '')).to.be.true // eslint-disable-line
+      })
 
+      it('should not set success message', () => {
+        sinon.assert.notCalled(req.flash)
+      })
+
+      it('should redirect to the templates page', () => {
+        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.emailNotifications.templates)
+      })
+    })
     describe('without validation error', () => {
+      before(() => {
+        const body = { customParagraph: 'a test custom paragraph' }
+        setupTest(body)
+        customParagraphController.postEditCustomParagraph(req, res)
+      })
       it('should update the confirmation template', () => {
         expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
         expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_ID, ACCOUNT_TYPE, 'a test custom paragraph')).to.be.true // eslint-disable-line
+      })
+
+      it('should set success message', () => {
+        sinon.assert.calledOnceWithExactly(req.flash,
+          'messages', {
+            state: 'success',
+            icon: '&check;',
+            heading: 'Custom paragraph updated'
+          }
+        )
       })
 
       it('should redirect to the templates page', () => {
