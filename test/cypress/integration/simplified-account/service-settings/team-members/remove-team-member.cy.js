@@ -61,7 +61,7 @@ describe('Team members settings', () => {
       cy.get('.govuk-error-summary').should('not.exist')
       cy.get('button').contains('Save changes').click()
       cy.get('.govuk-error-summary').should('contain.text', 'Confirm if you want to remove view-only-user@example.com')
-      cy.get('#confirmRemoveUser-error').should('contain.text', 'Confirm if you want to remove view-only-user@example.com')
+      cy.get('#confirm-remove-user-error').should('contain.text', 'Confirm if you want to remove view-only-user@example.com')
     })
 
     it('should return to team members page and not show user removed notification banner when user selects no and saves changes', () => {
