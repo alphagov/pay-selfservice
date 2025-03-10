@@ -24,6 +24,18 @@ class GatewayTimeoutForAllServicesSearchError extends Error {
   }
 }
 
+class ValidationError extends Error {
+  constructor (template, validationErrors, errorContext) {
+    super('Validation error')
+    this.template = template
+    this.validationErrors = validationErrors
+    this.errorContext = errorContext
+
+    this.name = this.constructor.name
+    Error.captureStackTrace(this, this.constructor)
+  }
+}
+
 /**
  * Thrown when there is no authentication session for the user.
  */
@@ -120,5 +132,6 @@ module.exports = {
   GatewayTimeoutError,
   GatewayTimeoutForAllServicesSearchError,
   TaskAlreadyCompletedError,
-  TaskAccessedOutOfSequenceError
+  TaskAccessedOutOfSequenceError,
+  ValidationError
 }
