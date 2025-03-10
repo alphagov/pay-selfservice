@@ -140,7 +140,7 @@ describe('webhook settings - toggle webhook status', () => {
               .should('exist')
               .should('contain.text', 'Confirm if you want to deactivate https://www.compuglobalhypermeganet.example.com')
 
-            cy.get('#toggleActive-error').should('contain.text', 'Confirm if you want to deactivate https://www.compuglobalhypermeganet.example.com')
+            cy.get('#toggle-active-error').should('contain.text', 'Confirm if you want to deactivate https://www.compuglobalhypermeganet.example.com')
           })
         })
 
@@ -202,7 +202,7 @@ describe('webhook settings - toggle webhook status', () => {
               .should('exist')
               .should('contain.text', 'Confirm if you want to activate https://www.compuglobalhypermeganet.example.com')
 
-            cy.get('#toggleActive-error').should('contain.text', 'Confirm if you want to activate https://www.compuglobalhypermeganet.example.com')
+            cy.get('#toggle-active-error').should('contain.text', 'Confirm if you want to activate https://www.compuglobalhypermeganet.example.com')
           })
         })
 
