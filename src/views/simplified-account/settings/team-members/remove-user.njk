@@ -9,7 +9,7 @@
       <input type="hidden" name="email" value="{{ email }}"/>
 
       {{ govukRadios({
-        idPrefix: "confirmRemoveUser",
+        idPrefix: "confirm-remove-user",
         name: "confirmRemoveUser",
         errorMessage: { text: errors.formErrors['confirmRemoveUser'] } if errors.formErrors['confirmRemoveUser'] else false,
         fieldset: {
