@@ -8,6 +8,7 @@
 
     {{ govukRadios({
       name: 'toggleActive',
+      idPrefix: 'toggle-active',
       errorMessage: { text: errors.formErrors['toggleActive'] } if errors.formErrors['toggleActive'] else false,
       fieldset: {
         legend: {
