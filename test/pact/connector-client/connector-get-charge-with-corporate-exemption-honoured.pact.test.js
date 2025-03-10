@@ -44,7 +44,7 @@ describe('connector client - get single charge', () => {
         status: 'success',
         finished: true
       },
-      authorisation_summary: {three_d_secure: { required: false}}
+      authorisation_summary: { three_d_secure: { required: false } }
     }
     const response = chargeFixture.validGetChargeResponseWithExemption(opts)
 
@@ -52,7 +52,7 @@ describe('connector client - get single charge', () => {
       return provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/charges/${existingChargeExternalId}`)
           .withUponReceiving('a valid get charge which has an honoured corporate exemption request')
-          .withState("a charge with honoured corporate exemption exists")
+          .withState('a charge with honoured corporate exemption exists')
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactify(response))

@@ -54,7 +54,7 @@ describe('connector client - get single charge', () => {
       return provider.addInteraction(
         new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/charges/${existingChargeExternalId}`)
           .withUponReceiving('a valid get charge which has authorisation summary request')
-          .withState("a charge exists")
+          .withState('a charge exists')
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactify(response))
