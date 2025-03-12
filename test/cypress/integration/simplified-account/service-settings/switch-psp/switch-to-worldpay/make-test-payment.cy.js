@@ -9,7 +9,7 @@ const {
   STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
   WORLDPAY_CREDENTIAL_IN_ENTERED_STATE,
   WORLDPAY_CREDENTIAL_IN_CREATED_STATE, WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE
-} = require('@test/cypress/integration/simplified-account/service-settings/switch-psp/switch-to-worldpay/credential-states')
+} = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
 const CREDENTIAL_STATE = require('@models/constants/credential-state')
 const { VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY } = require('@utils/verify-psp-integration')
 

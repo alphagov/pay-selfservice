@@ -1,8 +1,7 @@
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
-const { ACTIVE } = require('@models/constants/credential-state')
-const { STRIPE } = require('@models/constants/payment-providers')
+const { STRIPE_CREDENTIAL_IN_ACTIVE_STATE } = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
@@ -15,8 +14,12 @@ const setupStubs = ({
   isDefaultBillingAddressCountryUK,
   allowApplePay,
   allowGooglePay,
-  serviceName
+  allowMoto,
+  serviceName,
+  gatewayAccountCredentials,
+  gatewayAccountPaymentProvider
 } = {}) => {
+  const credentials = gatewayAccountCredentials || [STRIPE_CREDENTIAL_IN_ACTIVE_STATE]
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
       userExternalId: USER_EXTERNAL_ID,
@@ -30,17 +33,11 @@ const setupStubs = ({
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
+      payment_provider: gatewayAccountPaymentProvider || 'sandbox',
       allow_apple_pay: allowApplePay ?? true,
       allow_google_pay: allowGooglePay ?? true,
-      gateway_account_credentials: [
-        {
-          state: ACTIVE,
-          payment_provider: STRIPE,
-          credentials: {
-            stripe_account_id: 'acct_blahblahblah'
-          }
-        }
-      ]
+      allow_moto: allowMoto ?? false,
+      gateway_account_credentials: credentials
     })
   ])
 }

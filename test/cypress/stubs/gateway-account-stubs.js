@@ -262,7 +262,7 @@ function patchAccountUpdateApplePaySuccess (gatewayAccountId, allowApplePay) {
   })
 }
 
-function patchAccountByServiceIdUpdateApplePaySuccess (serviceExternalId, accountType, allowApplePay) {
+function patchAccountByServiceExternalIdAndAccountTypeUpdateApplePaySuccess (serviceExternalId, accountType, allowApplePay) {
   const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
   return stubBuilder('PATCH', path, 200, {
     request: gatewayAccountFixtures.validUpdateToggleApplePayRequest(allowApplePay)
@@ -276,10 +276,17 @@ function patchAccountUpdateGooglePaySuccess (gatewayAccountId, allowGooglePay) {
   })
 }
 
-function patchAccountByServiceIdUpdateGooglePaySuccess (serviceExternalId, accountType, allowApplePay) {
+function patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePaySuccess (serviceExternalId, accountType, allowApplePay) {
   const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
   return stubBuilder('PATCH', path, 200, {
     request: gatewayAccountFixtures.validUpdateToggleGooglePayRequest(allowApplePay)
+  })
+}
+
+function patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePayMerchantIdSuccess (serviceExternalId, accountType, credentialExternalId, opts) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}/credentials/${credentialExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validPatchWorldpayGooglePayMerchantIdRequest(opts)
   })
 }
 
@@ -300,6 +307,20 @@ function patchUpdateMaskCardNumberSuccess (gatewayAccountId, mask) {
 
 function patchUpdateMaskSecurityCodeSuccess (gatewayAccountId, mask) {
   const path = `/v1/api/accounts/${gatewayAccountId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validPatchMaskSecurityCodeRequest(mask)
+  })
+}
+
+function patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardNumberSuccess (serviceExternalId, accountType, mask) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validPatchMaskCardNumberRequest(mask)
+  })
+}
+
+function patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardSecurityCodeSuccess (serviceExternalId, accountType, mask) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
   return stubBuilder('PATCH', path, 200, {
     request: gatewayAccountFixtures.validPatchMaskSecurityCodeRequest(mask)
   })
@@ -526,9 +547,12 @@ module.exports = {
   postSwitchPspSuccess,
   postSwitchPspSuccessByServiceExternalIdAndAccountType,
   patchAccountUpdateApplePaySuccess,
-  patchAccountByServiceIdUpdateApplePaySuccess,
+  patchAccountByServiceExternalIdAndAccountTypeUpdateApplePaySuccess,
   patchAccountUpdateGooglePaySuccess,
-  patchAccountByServiceIdUpdateGooglePaySuccess,
+  patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePaySuccess,
+  patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePayMerchantIdSuccess,
+  patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardNumberSuccess,
+  patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardSecurityCodeSuccess,
   requestStripeTestAccount,
   setPaymentConfirmationEmailEnabledByServiceIdAndAccountType,
   setRefundEmailEnabledByServiceIdAndAccountType,
