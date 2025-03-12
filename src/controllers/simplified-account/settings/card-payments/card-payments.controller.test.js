@@ -3,7 +3,7 @@ const { expect } = require('chai')
 const sinon = require('sinon')
 const User = require('@models/User.class')
 const userFixtures = require('@test/fixtures/user.fixtures')
-const formatSimplifiedAccountPathsFor = require('../../../../utils/simplified-account/format/format-simplified-account-paths-for')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 
 const ACCOUNT_TYPE = 'test'
