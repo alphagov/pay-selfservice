@@ -5,7 +5,7 @@ const {
   ACCOUNT_TYPE
 } = require('@test/cypress/integration/simplified-account/service-settings/card-payments/util')
 
-const pageUrl = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/card-payments`
+const pageUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/card-payments`
 
 const cardPaymentParams = [
   {

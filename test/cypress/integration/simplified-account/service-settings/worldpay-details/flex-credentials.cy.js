@@ -4,7 +4,7 @@ const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const GATEWAY_ACCOUNT_ID = 11
 const ACCOUNT_TYPE = 'test'
 const CREDENTIAL_EXTERNAL_ID = 'worldpay-credentials-xyz'
@@ -84,27 +84,27 @@ describe('Worldpay details settings', () => {
         })
 
         it('should show the correct heading and title', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
 
           cy.get('h1').should('contain', 'Your Worldpay 3DS Flex credentials')
           cy.title().should('eq', 'Your Worldpay 3DS Flex credentials - Settings - My cool service - GOV.UK Pay')
         })
 
         it('should show worldpay settings in the settings navigation', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
 
           cy.get('.service-settings-nav')
             .find('li')
             .contains('Worldpay details')
             .then(li => {
               cy.wrap(li)
-                .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+                .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
                 .parent().should('have.class', 'service-settings-nav__li--active')
             })
         })
 
         it('should show the form correctly', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
 
           cy.get('#flex-credentials-form')
             .within(() => {
@@ -139,13 +139,13 @@ describe('Worldpay details settings', () => {
         it('should return to the edit flex credentials page and show the validation errors', () => {
           setupStubs()
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
 
           cy.get('input#organisational-unit-id').type('this-is-not-a-valid-organisational-unit-id', { delay: 0 })
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
 
           cy.get('.govuk-error-summary')
             .should('exist')
@@ -163,7 +163,7 @@ describe('Worldpay details settings', () => {
         it('should return to the edit flex credentials page and show a validation error', () => {
           setupStubs()
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
 
           cy.get('input#organisational-unit-id').type(VALID_ORGANISATIONAL_UNIT_ID, { delay: 0 })
           cy.get('input#issuer').type(VALID_ISSUER, { delay: 0 })
@@ -171,7 +171,7 @@ describe('Worldpay details settings', () => {
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
 
           cy.get('.govuk-error-summary')
             .should('exist')
@@ -183,7 +183,7 @@ describe('Worldpay details settings', () => {
         it('should display an empty credentials form', () => {
           setupStubs()
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
 
           cy.get('input#organisational-unit-id').should('have.value', '')
           cy.get('input#issuer').should('have.value', '')
@@ -202,14 +202,14 @@ describe('Worldpay details settings', () => {
           })
         })
         it('should display the credentials form with Organisational Unit ID and Issuer populated', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
 
           cy.get('input#organisational-unit-id').should('have.value', '5bd9b55e4444761ac0af1c80') // pragma: allowlist secret
           cy.get('input#issuer').should('have.value', '5bd9e0e4444dce15fed8c940') // pragma: allowlist secret
         })
 
         it('should not populate the JWT MAC Key field', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
           cy.get('input#jwt-mac-key').should('have.value', '')
         })
       })
@@ -222,28 +222,28 @@ describe('Worldpay details settings', () => {
         it('should redirect to the index page', () => {
           setupStubs()
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
           cy.get('input#organisational-unit-id').type(VALID_ORGANISATIONAL_UNIT_ID, { delay: 0 })
           cy.get('input#issuer').type(VALID_ISSUER, { delay: 0 })
           cy.get('input#jwt-mac-key').type(VALID_JWT_MAC_KEY, { delay: 0 })
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
         })
 
         describe('when there are outstanding tasks', () => {
           it('should not show a success banner', () => {
             setupStubs()
 
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
             cy.get('input#organisational-unit-id').type(VALID_ORGANISATIONAL_UNIT_ID, { delay: 0 })
             cy.get('input#issuer').type(VALID_ISSUER, { delay: 0 })
             cy.get('input#jwt-mac-key').type(VALID_JWT_MAC_KEY, { delay: 0 })
 
             cy.get('button#submitCredentials').click()
 
-            cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages')
               .should('not.exist')
@@ -254,7 +254,7 @@ describe('Worldpay details settings', () => {
           it('should show a success banner on the landing page', () => {
             setupStubs()
 
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
             cy.get('input#organisational-unit-id').type(VALID_ORGANISATIONAL_UNIT_ID, { delay: 0 })
             cy.get('input#issuer').type(VALID_ISSUER, { delay: 0 })
             cy.get('input#jwt-mac-key').type(VALID_JWT_MAC_KEY, { delay: 0 })
@@ -285,7 +285,7 @@ describe('Worldpay details settings', () => {
             ])
             cy.get('button#submitCredentials').click()
 
-            cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages')
               .should('exist')
@@ -305,7 +305,7 @@ describe('Worldpay details settings', () => {
 
       it('should return a 403', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`,
           failOnStatusCode: false
         }).then(response => expect(response.status).to.eq(403))
       })
@@ -321,7 +321,7 @@ describe('Worldpay details settings', () => {
 
       it('should return a 404', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`,
           failOnStatusCode: false
         }).then(response => expect(response.status).to.eq(404))
       })

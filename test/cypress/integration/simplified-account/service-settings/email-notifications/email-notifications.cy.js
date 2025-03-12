@@ -3,7 +3,7 @@ const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const GATEWAY_ACCOUNT_ID = 11
 const ACCOUNT_TYPE = 'test'
 
@@ -36,19 +36,19 @@ describe('Email notifications settings', () => {
       })
 
       it('should show the correct heading and title', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         cy.get('h1').should('contain', 'Email notifications')
         cy.title().should('eq', 'Email notifications - Settings - My cool service - GOV.UK Pay')
       })
 
       it('should show links to change email settings', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         cy.get('.govuk-summary-list').within(() => {
           cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Ask users for their email address')
           cy.get('.govuk-summary-list__value').eq(0).should('contain', 'On')
           cy.get('.govuk-summary-list__actions a').eq(0).should('contain', 'Change')
           cy.get('.govuk-summary-list__actions a.govuk-link').eq(0).should('have.attr', 'href',
-            `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/email-collection-mode`)
+            `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/email-collection-mode`)
           cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Send payment confirmation emails')
           cy.get('.govuk-summary-list__value').eq(1).should('contain', 'On')
           cy.get('.govuk-summary-list__actions a').eq(1).should('contain', 'Change')
@@ -57,7 +57,7 @@ describe('Email notifications settings', () => {
           cy.get('.govuk-summary-list__value').eq(2).should('contain', 'On')
           cy.get('.govuk-summary-list__actions a').eq(2).should('contain', 'Change')
           cy.get('.govuk-summary-list__actions a.govuk-link').eq(2).should('have.attr', 'href',
-            `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`)
+            `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`)
         })
       })
     })
@@ -67,7 +67,7 @@ describe('Email notifications settings', () => {
         setupStubs('view-only')
       })
       it('should not show links to change email settings', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         cy.get('.govuk-summary-list').within(() => {
           cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Ask users for their email address')
           cy.get('.govuk-summary-list__value').eq(0).should('contain', 'On')
@@ -82,7 +82,7 @@ describe('Email notifications settings', () => {
       })
 
       it('should show the permissions banner', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         cy.get('.govuk-inset-text').should('contain',
           'You don’t have permission to manage settings. Contact your service admin if you would like to manage 3D Secure')
       })
@@ -96,7 +96,7 @@ describe('Email notifications settings', () => {
         cy.task('setupStubs', [
           gatewayAccountStubs.patchAccountEmailCollectionModeSuccessByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'OFF')
         ])
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         cy.get('.govuk-summary-list').within(() => {
           cy.get('.govuk-summary-list__actions a').eq(0).click()
         })
@@ -133,7 +133,7 @@ describe('Email notifications settings', () => {
       })
       it('should return 403 when navigating directly to the email collection mode page', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/email-collection-mode`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/email-collection-mode`,
           failOnStatusCode: false
         }).then((response) => {
           expect(response.status).to.eq(403)
@@ -147,14 +147,14 @@ describe('Email notifications settings', () => {
       setupStubs('admin', 'OFF')
     })
     it('there should be no "Change" link on the Payment confirmation emails and Refund emails rows', () => {
-      cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
 
       cy.get('.govuk-summary-list').within(() => {
         cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Ask users for their email address')
         cy.get('.govuk-summary-list__value').eq(0).should('contain', 'Off')
         cy.get('.govuk-summary-list__actions a').eq(0).should('contain', 'Change')
         cy.get('.govuk-summary-list__actions a.govuk-link').eq(0).should('have.attr', 'href',
-          `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/email-collection-mode`)
+          `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/email-collection-mode`)
 
         // Verify there's only one change link. It's currently not possible to verify there is no 'Change' link on the 1st and 2nd row
         cy.get('a.govuk-link').contains('Change').should('have.length', 1)
@@ -169,7 +169,7 @@ describe('Email notifications settings', () => {
 
     it('should return 404 when navigating directly to the refund email settings page', () => {
       cy.request({
-        url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`,
+        url: `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`,
         failOnStatusCode: false
       }).then((response) => {
         expect(response.status).to.eq(404)
@@ -178,7 +178,7 @@ describe('Email notifications settings', () => {
 
     it('should return 404 when navigating directly to the payment confirmation email settings page', () => {
       cy.request({
-        url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/payment-confirmation-email-toggle`,
+        url: `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/payment-confirmation-email-toggle`,
         failOnStatusCode: false
       }).then((response) => {
         expect(response.status).to.eq(404)
@@ -198,7 +198,7 @@ describe('Email notifications settings', () => {
         it('should navigate to the payment confirmation email toggle page', () => {
           ['MANDATORY', 'OPTIONAL'].forEach(mode => {
             setupStubs('admin', mode)
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
             cy.get('.govuk-summary-list').within(() => {
               cy.get('.govuk-summary-list__actions a').eq(1).click()
             })
@@ -228,7 +228,7 @@ describe('Email notifications settings', () => {
       })
       it('should return 403 when navigating directly to the email collection mode page', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/payment-confirmation-email-toggle`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/payment-confirmation-email-toggle`,
           failOnStatusCode: false
         }).then((response) => {
           expect(response.status).to.eq(403)
@@ -249,7 +249,7 @@ describe('Email notifications settings', () => {
         it('should navigate to the refund email toggle page', () => {
           ['MANDATORY', 'OPTIONAL'].forEach(mode => {
             setupStubs('admin', mode)
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
             cy.get('.govuk-summary-list').within(() => {
               cy.get('.govuk-summary-list__actions a').eq(2).click()
             })
@@ -279,7 +279,7 @@ describe('Email notifications settings', () => {
       })
       it('should return 403 when navigating directly to the email collection mode page', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/refund-email-toggle`,
           failOnStatusCode: false
         }).then((response) => {
           expect(response.status).to.eq(403)
@@ -295,10 +295,10 @@ describe('Email notifications settings', () => {
       })
 
       it('should show relevant tabs and Add Custom Paragraph link', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
         cy.get('#tab_confirmation-html').should('have.attr', 'href', '#confirmation-html')
         cy.get('#add-custom-paragraph-link').should('have.attr',
-          'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates/custom-paragraph`)
+          'href', `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates/custom-paragraph`)
         cy.get('#tab_refund-html').eq(0).should('have.attr', 'href', '#refund-html')
       })
 
@@ -308,7 +308,7 @@ describe('Email notifications settings', () => {
           gatewayAccountStubs.patchCustomParagraphByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, customParagraphText)
         ])
 
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates/custom-paragraph`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates/custom-paragraph`)
         cy.get('#custom-paragraph').clear().type(customParagraphText)
         cy.get('#continue').click()
         cy.get('h1').should('contain', 'Email templates')
@@ -322,14 +322,14 @@ describe('Email notifications settings', () => {
         setupStubs('view-only')
       })
       it('should show relevant tabs only', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates`)
         cy.get('#tab_confirmation-html').should('have.attr', 'href', '#confirmation-html')
         cy.get('#tab_refund-html').eq(0).should('have.attr', 'href', '#refund-html')
       })
 
       it('should return 403 when navigating directly to the custom paragraph page', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates/custom-paragraph`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications/templates/custom-paragraph`,
           failOnStatusCode: false
         }).then((response) => {
           expect(response.status).to.eq(403)

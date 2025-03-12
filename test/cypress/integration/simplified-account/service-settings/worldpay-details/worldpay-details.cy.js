@@ -4,7 +4,7 @@ const ROLES = require('@test/fixtures/roles.fixtures')
 const { WORLDPAY, SANDBOX } = require('@models/constants/payment-providers')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const GATEWAY_ACCOUNT_ID = 11
 const ACCOUNT_TYPE = 'test'
 const CREDENTIAL_EXTERNAL_ID = 'worldpay-credentials-xyz'
@@ -83,33 +83,33 @@ describe('Worldpay details settings', () => {
           })
 
           it('should show the correct heading and title', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('h1').should('contain', 'Worldpay details')
             cy.title().should('eq', 'Worldpay details - Settings - My cool service - GOV.UK Pay')
           })
 
           it('should show worldpay settings in the settings navigation', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('.service-settings-nav')
               .find('li')
               .contains('Worldpay details')
               .then(li => {
                 cy.wrap(li)
-                  .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+                  .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
                   .parent().should('have.class', 'service-settings-nav__li--active')
               })
           })
 
           it('should show the list of tasks with only the "Link your account to Worldpay" task', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('.govuk-task-list').within(() => {
               cy.get('.govuk-task-list__item').eq(0).within(() => {
                 cy.get('a')
                   .should('contain.text', 'Link your Worldpay account with GOV.UK Pay')
-                  .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+                  .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
                 cy.get('.govuk-task-list__status').within(() => {
                   cy.get('strong.govuk-tag.govuk-tag--blue').should('contain.text', 'Not yet started')
                 })
@@ -131,14 +131,14 @@ describe('Worldpay details settings', () => {
           })
 
           it('should show the correct heading and title', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('h1').should('contain', 'Worldpay details')
             cy.title().should('eq', 'Worldpay details - Settings - My cool service - GOV.UK Pay')
           })
 
           it('should show the single completed task card', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('.govuk-summary-card').eq(0).within(() => {
               cy.get('.govuk-summary-card__title-wrapper > h2').should('contain', 'Account credentials')
@@ -163,17 +163,17 @@ describe('Worldpay details settings', () => {
           })
 
           it('should show the link to edit the details', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('.govuk-summary-card').within(() => {
               cy.get('.govuk-summary-card__actions > a.govuk-link').should('contain', 'Change')
                 .should('have.attr', 'href',
-                  `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+                  `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
             })
           })
 
           it('should only show redacted passwords in task cards', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('.govuk-summary-card')
               .each(card => {
@@ -186,11 +186,11 @@ describe('Worldpay details settings', () => {
       })
 
       describe('for a recurring card payments service', () => {
-        const worldpayDetailsUrl = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
+        const worldpayDetailsUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
         describe('when none of the tasks are complete', () => {
           beforeEach(() => {
             setupStubs({ recurringEnabled: true })
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
           })
           it('should show all recurring related tasks as "Not yet started"', () => {
             cy.get('.govuk-task-list').within(() => {
@@ -247,7 +247,7 @@ describe('Worldpay details settings', () => {
                 }
               }
             )
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
           })
 
           it('should show all recurring related tasks as complete', () => {
@@ -301,13 +301,13 @@ describe('Worldpay details settings', () => {
           })
 
           it('should show the "Link your Worldpay account" task as "Not yet started"', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('.govuk-task-list').within(() => {
               cy.get('.govuk-task-list__item').eq(0).within(() => {
                 cy.get('a')
                   .should('contain.text', 'Link your Worldpay account with GOV.UK Pay')
-                  .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+                  .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
                 cy.get('.govuk-task-list__status').within(() => {
                   cy.get('strong.govuk-tag.govuk-tag--blue').should('contain.text', 'Not yet started')
                 })
@@ -316,7 +316,7 @@ describe('Worldpay details settings', () => {
           })
 
           it('should show the "Configure 3DS" task as "Not yet started"', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
             cy.get('.govuk-task-list').within(() => {
               cy.get('.govuk-task-list__item').eq(1).within(() => {
@@ -346,13 +346,13 @@ describe('Worldpay details settings', () => {
             })
 
             it('should show the "Link your Worldpay account" task as "Completed"', () => {
-              cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+              cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
               cy.get('.govuk-task-list').within(() => {
                 cy.get('.govuk-task-list__item').eq(0).within(() => {
                   cy.get('a')
                     .should('contain.text', 'Link your Worldpay account with GOV.UK Pay')
-                    .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+                    .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
                   cy.get('.govuk-task-list__status')
                     .should('contain.text', 'Completed')
@@ -364,12 +364,12 @@ describe('Worldpay details settings', () => {
             })
 
             it('should show the task list with the "Configure 3DS" task as "Not yet started"', () => {
-              cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+              cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
               cy.get('.govuk-task-list__item').eq(1).within(() => {
                 cy.get('a')
                   .should('contain.text', 'Configure 3DS')
-                  .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+                  .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
 
                 cy.get('.govuk-task-list__status').within(() => {
                   cy.get('strong.govuk-tag.govuk-tag--blue').should('contain.text', 'Not yet started')
@@ -395,7 +395,7 @@ describe('Worldpay details settings', () => {
             })
 
             it('should show the completed task cards', () => {
-              cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+              cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
               cy.get('.govuk-summary-card').eq(0).within(() => {
                 cy.get('.govuk-summary-card__title-wrapper > h2').should('contain', 'Account credentials')
@@ -422,23 +422,23 @@ describe('Worldpay details settings', () => {
             })
 
             it('should show the links to edit the details', () => {
-              cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+              cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
               cy.get('.govuk-summary-card').eq(0).within(() => {
                 cy.get('.govuk-summary-card__actions > a.govuk-link').should('contain', 'Change')
                   .should('have.attr', 'href',
-                    `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+                    `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
               })
 
               cy.get('.govuk-summary-card').eq(1).within(() => {
                 cy.get('.govuk-summary-card__actions > a.govuk-link').should('contain', 'Change')
                   .should('have.attr', 'href',
-                    `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
+                    `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
               })
             })
 
             it('should only show redacted passwords in task cards', () => {
-              cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+              cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
               cy.get('.govuk-summary-card')
                 .each(card => {
@@ -465,7 +465,7 @@ describe('Worldpay details settings', () => {
 
       it('should return a 403', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`,
           failOnStatusCode: false
         }).then(response => expect(response.status).to.eq(403))
       })
@@ -481,13 +481,13 @@ describe('Worldpay details settings', () => {
 
       it('should return a 404', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`,
           failOnStatusCode: false
         }).then(response => expect(response.status).to.eq(404))
       })
 
       it('should not show the Worldpay details link in the settings nav', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings`)
 
         cy.get('.service-settings-nav')
           .find('li')

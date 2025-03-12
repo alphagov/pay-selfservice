@@ -4,7 +4,7 @@ const serviceStubs = require('@test/cypress/stubs/service-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const GATEWAY_ACCOUNT_ID = 11
 
 const ACCOUNT_TYPE = 'test'
@@ -60,8 +60,8 @@ describe('Organisation details settings', () => {
         })
 
         it('should redirect to the edit organisation details page', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
         })
       })
 
@@ -71,18 +71,18 @@ describe('Organisation details settings', () => {
         })
 
         it('should not redirect to the edit organisation details page', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
         })
 
         it('should show the correct heading and title', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
           cy.get('h1').should('contain', 'Organisation details')
           cy.title().should('eq', 'Organisation details - Settings - My cool service - GOV.UK Pay')
         })
 
         it('should display the organisation details', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
           cy.get('.govuk-summary-card').within(() => {
             cy.get('.govuk-summary-card__title-wrapper > h2').should('contain', 'Organisation details')
             cy.get('.govuk-summary-list__row').eq(0).within(() => {
@@ -108,11 +108,11 @@ describe('Organisation details settings', () => {
         })
 
         it('should show a link to edit the organisation details', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
           cy.get('.govuk-summary-card').within(() => {
             cy.get('.govuk-summary-card__actions > a.govuk-link').should('contain', 'Change')
               .should('have.attr', 'href',
-                `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+                `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
           })
         })
       })
@@ -125,7 +125,7 @@ describe('Organisation details settings', () => {
 
       it('should return a 403', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`,
           failOnStatusCode: false
         }).then(response => expect(response.status).to.eq(403))
       })
@@ -140,17 +140,17 @@ describe('Organisation details settings', () => {
         })
 
         it('should show the back link to the organisation details landing page', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
 
           cy.get('.govuk-back-link')
             .should('be.visible')
             .should('contain', 'Back')
             .should('have.attr', 'href',
-              `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
         })
 
         it('should populate the form with the existing organisation details', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
 
           cy.get('input[name="organisationName"]').should('have.value', 'Compu-Global-Hyper-Mega-Net')
           cy.get('input[name="addressLine1"]').should('have.value', '742 Evergreen Terrace')
@@ -169,19 +169,19 @@ describe('Organisation details settings', () => {
         })
 
         it('should show the correct heading and title', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
           cy.get('h1').should('contain', 'Change organisation details')
           cy.title().should('eq', 'Change organisation details - Settings - My cool service - GOV.UK Pay')
         })
 
         it('should not show the back link to the organisation details landing page', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
 
           cy.get('.govuk-back-link').should('not.exist')
         })
 
         it('should show an empty form', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
 
           cy.get('input[name="organisationName"]').should('have.value', '')
           cy.get('input[name="addressLine1"]').should('have.value', '')
@@ -194,7 +194,7 @@ describe('Organisation details settings', () => {
         })
 
         it('should submit form and redirect to organisation details landing page if organisation details are valid', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
 
           cy.get('input[name="organisationName"]').type('Compu-Global-Hyper-Mega-Net')
           cy.get('input[name="addressLine1"]').type('742 Evergreen Terrace')
@@ -210,11 +210,11 @@ describe('Organisation details settings', () => {
 
           cy.get('button#save-merchant-details').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
         })
 
         it('should show validation errors on form submission if details are invalid', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
 
           cy.get('input[name="organisationName"]').type('a'.repeat(101))
           cy.get('select[name="addressCountry"]').select('GB')
@@ -224,7 +224,7 @@ describe('Organisation details settings', () => {
 
           cy.get('#organisation-details-form').submit()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
 
           cy.get('.govuk-error-summary')
             .should('exist')
@@ -252,7 +252,7 @@ describe('Organisation details settings', () => {
 
       it('should return a 403', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`,
           failOnStatusCode: false
         }).then(response => expect(response.status).to.eq(403))
       })

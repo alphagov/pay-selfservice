@@ -5,7 +5,7 @@ const { ACTIVE } = require('@models/constants/credential-state')
 const { STRIPE } = require('@models/constants/payment-providers')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const GATEWAY_ACCOUNT_ID = 11
 const ACCOUNT_TYPE = 'test'
 
