@@ -21,8 +21,7 @@ const adminUser = new User(userFixtures.validUserResponse({
 }))
 
 const mockResponse = sinon.spy()
-const mockCreateInviteToJoinServiceSuccess = sinon.stub().resolves()
-const mockCreateInviteToJoinServiceRejects = sinon.stub().rejects(new RESTClientError(null, 'adminusers', 412))
+const mockCreateInviteToJoinService = sinon.stub()
 
 const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/team-members/invite/invite.controller')
   .withServiceExternalId(SERVICE_ID)
@@ -64,13 +63,13 @@ describe('post', () => {
       })
       nextStubs({
         '@services/user.service':
-          { createInviteToJoinService: mockCreateInviteToJoinServiceSuccess }
+          { createInviteToJoinService: mockCreateInviteToJoinService.resolves() }
       })
       call('post')
     })
 
     it('should call adminusers to send an invite', () => {
-      expect(mockCreateInviteToJoinServiceSuccess.calledWith('user-to-invite@users.gov.uk', adminUser.externalId, SERVICE_ID, 'view-only')).to.be.true // eslint-disable-line
+      expect(mockCreateInviteToJoinService.calledWith('user-to-invite@users.gov.uk', adminUser.externalId, SERVICE_ID, 'view-only')).to.be.true // eslint-disable-line
     })
 
     it('should redirect to the team members index page', () => {
@@ -91,13 +90,13 @@ describe('post', () => {
       })
       nextStubs({
         '@services/user.service':
-          { createInviteToJoinService: mockCreateInviteToJoinServiceRejects }
+          { createInviteToJoinService: mockCreateInviteToJoinService.rejects(new RESTClientError(null, 'adminusers', 412)) }
       })
       call('post')
     })
 
     it('should respond with error message', () => {
-      expect(mockCreateInviteToJoinServiceRejects.calledWith('user-to-invite@users.gov.uk', adminUser.externalId, SERVICE_ID, 'view-only')).to.be.true // eslint-disable-line
+      expect(mockCreateInviteToJoinService.calledWith('user-to-invite@users.gov.uk', adminUser.externalId, SERVICE_ID, 'view-only')).to.be.true // eslint-disable-line
       expect(mockResponse.calledOnce).to.be.true // eslint-disable-line
       expect(mockResponse.args[0][1]).to.deep.equal(res)
       expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/team-members/invite')

@@ -34,8 +34,7 @@ const viewOnlyUser = new User(userFixtures.validUserResponse(
 
 const mockResponse = sinon.spy()
 const mockRenderErrorView = sinon.spy()
-const mockFindByExternalIdGetsAdminUser = sinon.stub().resolves(adminUser)
-const mockFindByExternalIdGetsViewOnlyUser = sinon.stub().resolves(viewOnlyUser)
+const mockFindByExternalId = sinon.stub()
 const mockDelete = sinon.stub().returns({ })
 
 const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/team-members/remove-user/remove-user.controller')
@@ -53,7 +52,7 @@ describe('Controller: settings/team-members/remove-user', () => {
       before(() => {
         nextStubs({
           '@services/user.service':
-            { findByExternalId: mockFindByExternalIdGetsViewOnlyUser }
+            { findByExternalId: mockFindByExternalId.resolves(viewOnlyUser) }
         })
         nextRequest({
           params: { externalUserId: 'user-id-to-remove' }
@@ -62,7 +61,7 @@ describe('Controller: settings/team-members/remove-user', () => {
       })
 
       it('should call the response method', () => {
-        expect(mockFindByExternalIdGetsViewOnlyUser.called).to.be.true // eslint-disable-line
+        expect(mockFindByExternalId.called).to.be.true // eslint-disable-line
         expect(mockResponse.called).to.be.true // eslint-disable-line
       })
 
@@ -82,7 +81,7 @@ describe('Controller: settings/team-members/remove-user', () => {
       before(() => {
         nextStubs({
           '@services/user.service':
-            { findByExternalId: mockFindByExternalIdGetsAdminUser }
+            { findByExternalId: mockFindByExternalId.resolves(adminUser) }
         })
         nextRequest({
           params: { externalUserId: 'user-id-for-admin-user' }
@@ -102,7 +101,7 @@ describe('Controller: settings/team-members/remove-user', () => {
       before(() => {
         nextStubs({
           '@services/user.service':
-            { findByExternalId: mockFindByExternalIdGetsViewOnlyUser, delete: mockDelete }
+            { findByExternalId: mockFindByExternalId.resolves(adminUser), delete: mockDelete }
         })
         nextRequest({
           params: { externalUserId: 'user-id-to-remove' },
@@ -130,7 +129,7 @@ describe('Controller: settings/team-members/remove-user', () => {
       before(() => {
         nextStubs({
           '@services/user.service':
-            { findByExternalId: mockFindByExternalIdGetsViewOnlyUser, delete: mockDelete }
+            { findByExternalId: mockFindByExternalId.resolves(viewOnlyUser), delete: mockDelete }
         })
         nextRequest({
           params: { externalUserId: 'user-id-to-remove' },
@@ -150,7 +149,7 @@ describe('Controller: settings/team-members/remove-user', () => {
       before(() => {
         nextStubs({
           '@services/user.service':
-            { findByExternalId: mockFindByExternalIdGetsAdminUser, delete: mockDelete }
+            { findByExternalId: mockFindByExternalId.resolves(adminUser), delete: mockDelete }
         })
         nextRequest({
           params: { externalUserId: 'user-id-for-admin-user' },
