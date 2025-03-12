@@ -36,8 +36,8 @@ describe('connector client - patch gateway account credentials.gateway_merchant_
     const credentialsInResponse = {
       gateway_merchant_id: googlePayGatewayMerchantId
     }
-    const request = gatewayAccountFixtures.validPatchGatewayMerchantIdRequest({
-      gatewayMerchantId: googlePayGatewayMerchantId,
+    const request = gatewayAccountFixtures.validPatchWorldpayGooglePayMerchantIdRequest({
+      googlePayMerchantId: googlePayGatewayMerchantId,
       userExternalId
     })
     const response = gatewayAccountFixtures.validPatchGatewayCredentialsResponse({

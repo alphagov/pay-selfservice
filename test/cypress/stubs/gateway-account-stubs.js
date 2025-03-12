@@ -283,6 +283,13 @@ function patchAccountByServiceIdUpdateGooglePaySuccess (serviceExternalId, accou
   })
 }
 
+function patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePayMerchantIdSuccess (serviceExternalId, accountType, credentialExternalId, opts) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}/credentials/${credentialExternalId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validPatchWorldpayGooglePayMerchantIdRequest(opts)
+  })
+}
+
 function patchUpdateServiceNameSuccess (gatewayAccountId, serviceName) {
   const path = `/v1/frontend/accounts/${gatewayAccountId}/servicename`
   return stubBuilder('PATCH', path, 200, {
@@ -300,6 +307,20 @@ function patchUpdateMaskCardNumberSuccess (gatewayAccountId, mask) {
 
 function patchUpdateMaskSecurityCodeSuccess (gatewayAccountId, mask) {
   const path = `/v1/api/accounts/${gatewayAccountId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validPatchMaskSecurityCodeRequest(mask)
+  })
+}
+
+function patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardNumberSuccess (serviceExternalId, accountType, mask) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
+  return stubBuilder('PATCH', path, 200, {
+    request: gatewayAccountFixtures.validPatchMaskCardNumberRequest(mask)
+  })
+}
+
+function patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardSecurityCodeSuccess (serviceExternalId, accountType, mask) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
   return stubBuilder('PATCH', path, 200, {
     request: gatewayAccountFixtures.validPatchMaskSecurityCodeRequest(mask)
   })
@@ -529,6 +550,9 @@ module.exports = {
   patchAccountByServiceIdUpdateApplePaySuccess,
   patchAccountUpdateGooglePaySuccess,
   patchAccountByServiceIdUpdateGooglePaySuccess,
+  patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePayMerchantIdSuccess,
+  patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardNumberSuccess,
+  patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardSecurityCodeSuccess,
   requestStripeTestAccount,
   setPaymentConfirmationEmailEnabledByServiceIdAndAccountType,
   setRefundEmailEnabledByServiceIdAndAccountType,

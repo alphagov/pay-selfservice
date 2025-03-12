@@ -280,21 +280,6 @@ function validGatewayAccountCredentialsResponse (opts = {}) {
   return data
 }
 
-function validPatchGatewayMerchantIdRequest (opts = {}) {
-  return [
-    {
-      op: 'replace',
-      path: 'credentials/gateway_merchant_id',
-      value: opts.gatewayMerchantId || 'abcdef123abcdef'
-    },
-    {
-      op: 'replace',
-      path: 'last_updated_by_user_external_id',
-      value: opts.userExternalId || 'a-user-external-id'
-    }
-  ]
-}
-
 function validPatchAccountGatewayAccountCredentialsStateRequest (opts = {}) {
   return [
     {
@@ -359,6 +344,21 @@ function validPatchWorldpayOneOffCustomerInitiatedRequest (opts = {}) {
   ]
 }
 
+function validPatchWorldpayGooglePayMerchantIdRequest (opts = {}) {
+  return [
+    {
+      op: 'replace',
+      path: 'credentials/gateway_merchant_id',
+      value: opts.googlePayMerchantId || '0123456789abcde'
+    },
+    {
+      op: 'replace',
+      path: 'last_updated_by_user_external_id',
+      value: opts.userExternalId || 'user-123-abc'
+    }
+  ]
+}
+
 function validPatchGatewayCredentialsResponse (opts = {}) {
   const defaultCredentials = {}
   if (opts.gatewayMerchantId !== undefined) {
@@ -412,8 +412,8 @@ module.exports = {
   validCreateGatewayAccountRequest,
   validUpdateGatewayAccountCredentialsRequest,
   validGatewayAccountCredentialsResponse,
-  validPatchGatewayMerchantIdRequest,
   validPatchWorldpayOneOffCustomerInitiatedRequest,
+  validPatchWorldpayGooglePayMerchantIdRequest,
   validPatchGatewayCredentialsResponse,
   validPatchAccountGatewayAccountCredentialsStateRequest,
   validPatchServiceNameRequest,
