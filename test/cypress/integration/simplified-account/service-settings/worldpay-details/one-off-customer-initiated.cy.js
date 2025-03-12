@@ -4,7 +4,7 @@ const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const GATEWAY_ACCOUNT_ID = 11
 const ACCOUNT_TYPE = 'test'
 const CREDENTIAL_EXTERNAL_ID = 'worldpay-credentials-xyz'
@@ -85,21 +85,21 @@ describe('Worldpay details settings', () => {
         })
 
         it('should show the correct heading and title', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('h1').should('contain', 'Your Worldpay credentials')
           cy.title().should('eq', 'Your Worldpay credentials - Settings - My cool service - GOV.UK Pay')
         })
 
         it('should show worldpay settings in the settings navigation', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('.service-settings-nav')
             .find('li')
             .contains('Worldpay details')
             .then(li => {
               cy.wrap(li)
-                .should('have.attr', 'href', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+                .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
                 .parent().should('have.class', 'service-settings-nav__li--active')
             })
         })
@@ -109,13 +109,13 @@ describe('Worldpay details settings', () => {
         it('should return to the edit credentials page and show the validation errors', () => {
           setupStubs()
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('input#merchant-code').type('this-is-not-a-valid-merchant-code', { delay: 0 })
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('.govuk-error-summary')
             .should('exist')
@@ -133,7 +133,7 @@ describe('Worldpay details settings', () => {
         it('should show the empty credentials form', () => {
           setupStubs()
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('input#merchant-code').should('have.value', '')
           cy.get('input#username').should('have.value', '')
@@ -143,7 +143,7 @@ describe('Worldpay details settings', () => {
         it('should redirect to the worldpay details landing page on valid form submission', () => {
           setupStubs()
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('input#merchant-code').type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').type(VALID_WORLDPAY_USERNAME, { delay: 0 })
@@ -151,13 +151,13 @@ describe('Worldpay details settings', () => {
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
         })
 
         it('should show a success banner on the landing page if this is the final task to complete', () => {
           setupStubs()
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME, { delay: 0 })
@@ -185,7 +185,7 @@ describe('Worldpay details settings', () => {
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
           cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages')
             .should('exist')
@@ -196,7 +196,7 @@ describe('Worldpay details settings', () => {
         it('should not show a success banner if other tasks are outstanding', () => {
           setupStubs()
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME, { delay: 0 })
@@ -204,7 +204,7 @@ describe('Worldpay details settings', () => {
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
           cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages')
             .should('not.exist')
@@ -222,7 +222,7 @@ describe('Worldpay details settings', () => {
             }
           })
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('input#merchant-code').should('have.value', VALID_MOTO_MERCHANT_CODE)
           cy.get('input#username').should('have.value', VALID_WORLDPAY_USERNAME)
@@ -241,7 +241,7 @@ describe('Worldpay details settings', () => {
             }
           })
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('input#password').should('have.value', '')
         })
@@ -256,7 +256,7 @@ describe('Worldpay details settings', () => {
             }
           })
 
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
 
           cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME_2, { delay: 0 })
@@ -307,7 +307,7 @@ describe('Worldpay details settings', () => {
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
 
           cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages').should('not.exist')
         })
@@ -323,7 +323,7 @@ describe('Worldpay details settings', () => {
 
       it('should return a 403', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`,
           failOnStatusCode: false
         }).then(response => expect(response.status).to.eq(403))
       })
@@ -339,7 +339,7 @@ describe('Worldpay details settings', () => {
 
       it('should return a 404', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`,
           failOnStatusCode: false
         }).then(response => expect(response.status).to.eq(404))
       })

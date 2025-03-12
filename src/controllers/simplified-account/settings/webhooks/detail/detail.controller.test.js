@@ -80,21 +80,21 @@ describe('Controller: settings/webhooks/detail', () => {
         items: [
           {
             number: 1,
-            href: '/simplified/service/service-id-123abc/account/test/settings/webhooks/my-webhook-id-789?deliveryStatus=all&page=1',
+            href: '/service/service-id-123abc/account/test/settings/webhooks/my-webhook-id-789?deliveryStatus=all&page=1',
             current: true
           },
           {
             number: 2,
-            href: '/simplified/service/service-id-123abc/account/test/settings/webhooks/my-webhook-id-789?deliveryStatus=all&page=2'
+            href: '/service/service-id-123abc/account/test/settings/webhooks/my-webhook-id-789?deliveryStatus=all&page=2'
           }
         ],
         next: {
-          href: '/simplified/service/service-id-123abc/account/test/settings/webhooks/my-webhook-id-789?deliveryStatus=all&page=2'
+          href: '/service/service-id-123abc/account/test/settings/webhooks/my-webhook-id-789?deliveryStatus=all&page=2'
         }
       })
       expect(mockResponse.args[0][3]).to.have.property('eventTypes').to.have.property('CARD_PAYMENT_SUCCEEDED').to.equal('Payment succeeded')
       expect(mockResponse.args[0][3]).to.have.property('backToWebhooksLink')
-        .to.equal('/simplified/service/service-id-123abc/account/test/settings/webhooks')
+        .to.equal('/service/service-id-123abc/account/test/settings/webhooks')
     })
   })
 })

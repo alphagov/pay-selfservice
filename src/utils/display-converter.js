@@ -154,7 +154,7 @@ module.exports = function (req, data, template) {
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, isDegatewayed, currentUrl, service, account)
     convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account)
-    if (currentUrl.includes('simplified') && currentUrl.includes('settings')) {
+    if (currentUrl.match(/service\/[A-z0-9]+\/account\/test|live\/settings/)) {
       convertedData.serviceSettings = serviceSettings(account, service, currentUrl, permissions)
     }
   }

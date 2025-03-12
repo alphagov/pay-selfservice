@@ -73,7 +73,7 @@ describe('Controller: settings/team-members/change-permission', () => {
         expect(mockResponse.args[0][3]).to.have.property('availableRoles').to.have.length(3)
         expect(mockResponse.args[0][3]).to.have.property('userCurrentRoleName').to.equal('view-only')
         expect(mockResponse.args[0][3]).to.have.property('email').to.equal('user-to-change-permission@users.gov.uk')
-        expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal('/simplified/service/service-id-123abc/account/test/settings/team-members')
+        expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal('/service/service-id-123abc/account/test/settings/team-members')
       })
     })
     describe('failure - admin attempts to change own permissions', () => {

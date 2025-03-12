@@ -8,12 +8,12 @@ const { STRIPE_CREDENTIAL_IN_ACTIVE_STATE, WORLDPAY_CREDENTIAL_IN_CREATED_STATE 
 
 // test constants
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const LIVE_ACCOUNT_TYPE = 'live'
 const SERVICE_NAME = 'My cool service'
 const GATEWAY_ACCOUNT_ID = 11
-const SWITCH_TO_WORLDPAY_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay`
-const SWITCH_TO_WORLDPAY_ADD_3DS_FLEX_CREDENTIAL_TASK_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/worldpay-details/flex-credentials`
+const SWITCH_TO_WORLDPAY_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay`
+const SWITCH_TO_WORLDPAY_ADD_3DS_FLEX_CREDENTIAL_TASK_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/worldpay-details/flex-credentials`
 const A_VALID_ORG_UNIT_ID = '5bd9b55e4444761ac0af1c80'
 const A_VALID_ISSUER = '5bd9e0e4444dce15fed8c940' // pragma: allowlist secret
 const A_VALID_JWT_MAC_KEY = 'fa2daee2-1fbb-45ff-4444-52805d5cd9e0'

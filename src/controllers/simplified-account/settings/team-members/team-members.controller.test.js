@@ -80,7 +80,7 @@ describe('Controller: settings/team-members', () => {
       expect(mockResponse.args[0][3].invitedTeamMembers['view-only'][0]).to.have.property('email').to.equal('invited-view-only-user@user.gov.uk')
 
       expect(mockResponse.args[0][3]).to.have.property('inviteTeamMemberLink')
-        .to.equal('/simplified/service/service-id-123abc/account/test/settings/team-members/invite')
+        .to.equal('/service/service-id-123abc/account/test/settings/team-members/invite')
       expect(mockResponse.args[0][3]).to.have.property('numberInvitedMembers').to.equal(2)
       expect(mockResponse.args[0][3]).to.have.property('isServiceAdmin').to.be.true // eslint-disable-line no-unused-expressions
       expect(mockResponse.args[0][3]).to.have.property('roles').to.have.keys('admin', 'view-and-initiate-moto', 'view-and-refund', 'view-only', 'view-refund-and-initiate-moto')
@@ -119,7 +119,7 @@ describe('Controller: settings/team-members', () => {
       expect(mockResponse.args[0][3].invitedTeamMembers['view-only'][0]).to.have.property('email').to.equal('invited-view-only-user@user.gov.uk')
 
       expect(mockResponse.args[0][3]).to.have.property('inviteTeamMemberLink')
-        .to.equal('/simplified/service/service-id-123abc/account/test/settings/team-members/invite')
+        .to.equal('/service/service-id-123abc/account/test/settings/team-members/invite')
       expect(mockResponse.args[0][3]).to.have.property('numberInvitedMembers').to.equal(2)
       expect(mockResponse.args[0][3]).to.have.property('isServiceAdmin').to.be.true // eslint-disable-line no-unused-expressions
       expect(mockResponse.args[0][3]).to.have.property('roles').to.have.keys('admin', 'view-and-initiate-moto', 'view-and-refund', 'view-only', 'view-refund-and-initiate-moto')

@@ -51,7 +51,7 @@ describe('Controller: settings/webhooks', () => {
       expect(mockResponse.args[0][3].activeWebhooks[0]).to.have.property('callbackUrl').to.equal('https://www.callback-url.gov.uk')
       expect(mockResponse.args[0][3]).to.have.property('eventTypes').to.have.property('CARD_PAYMENT_SUCCEEDED').to.equal('Payment succeeded')
       expect(mockResponse.args[0][3]).to.have.property('createWebhookLink')
-        .to.equal('/simplified/service/service-id-123abc/account/test/settings/webhooks/create')
+        .to.equal('/service/service-id-123abc/account/test/settings/webhooks/create')
     })
   })
 })

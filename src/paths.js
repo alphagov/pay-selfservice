@@ -168,7 +168,7 @@ module.exports = {
     }
   },
   simplifiedAccount: {
-    root: `/simplified/service/:${keys.SERVICE_EXTERNAL_ID}/account/:${keys.ACCOUNT_TYPE}`,
+    root: `/service/:${keys.SERVICE_EXTERNAL_ID}/account/:${keys.ACCOUNT_TYPE}`,
     settings: {
       index: '/settings',
       serviceName: {

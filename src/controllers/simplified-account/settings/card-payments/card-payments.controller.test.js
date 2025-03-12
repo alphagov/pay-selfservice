@@ -11,7 +11,7 @@ const ACCOUNT_TYPE = 'test'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
 const GATEWAY_ACCOUNT_ID = '123'
-const BASE_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments/`
+const BASE_URL = `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments/`
 
 const mockResponse = sinon.spy()
 

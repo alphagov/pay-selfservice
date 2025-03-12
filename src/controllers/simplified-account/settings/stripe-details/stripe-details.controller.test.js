@@ -80,19 +80,19 @@ describe('Controller: settings/stripe-details', () => {
         const stripeDetailsTasks = mockResponse.args[0][3].tasks
         expect(stripeDetailsTasks[0]).to.deep.equal({
           linkText: 'Organisation\'s bank details',
-          href: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/bank-details`,
+          href: `/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/bank-details`,
           complete: true,
           status: COMPLETED_CANNOT_START
         })
         expect(stripeDetailsTasks[1]).to.deep.equal({
           linkText: 'VAT registration number',
-          href: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/vat-number`,
+          href: `/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/vat-number`,
           complete: false,
           status: NOT_STARTED
         })
         expect(stripeDetailsTasks[2]).to.deep.equal({
           linkText: 'Government entity document',
-          href: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/government-entity-document`,
+          href: `/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/government-entity-document`,
           complete: false,
           status: CANNOT_START
         })

@@ -23,7 +23,7 @@ const {
 } = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
 const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 
-const baseUrl = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/card-payments`
+const baseUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/card-payments`
 
 describe('Card payment updates', () => {
   beforeEach(() => {

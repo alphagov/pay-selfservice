@@ -70,7 +70,7 @@ describe('Controller: settings/team-members/remove-user', () => {
           'simplified-account/settings/team-members/remove-user',
           {
             email: 'user-to-remove@users.gov.uk',
-            backLink: '/simplified/service/service-id-123abc/account/test/settings/team-members'
+            backLink: '/service/service-id-123abc/account/test/settings/team-members'
           })
       })
     })

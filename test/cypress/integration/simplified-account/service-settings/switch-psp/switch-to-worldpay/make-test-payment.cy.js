@@ -15,15 +15,15 @@ const { VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY } = require('@utils/verify
 
 // test constants
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const CHARGE_EXTERNAL_ID = 'charge-456-def'
 const SWITCHING_CREDENTIAL_EXTERNAL_ID = WORLDPAY_CREDENTIAL_IN_ENTERED_STATE.external_id
 const SERVICE_NAME = { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
-const SWITCH_TO_WORLDPAY_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay`
-const SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/worldpay-details/make-a-payment`
-const SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_RETURN_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/worldpay-details/make-a-payment/verify`
+const SWITCH_TO_WORLDPAY_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay`
+const SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/worldpay-details/make-a-payment`
+const SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_RETURN_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/worldpay-details/make-a-payment/verify`
 // ---
 
 const setStubs = (opts = {}, additionalStubs = []) => {

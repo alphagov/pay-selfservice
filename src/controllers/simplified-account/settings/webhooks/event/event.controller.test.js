@@ -8,7 +8,7 @@ const GATEWAY_ACCOUNT_EXTERNAL_ID = 'gateway-external-id-123'
 const WEBHOOK_EXTERNAL_ID = 'webhook-external-id-789'
 const WEBHOOK_EVENT_EXTERNAL_ID = 'event-external-id-1'
 const CHARGE_ID = 'charge-id-123'
-const BACK_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`
+const BACK_URL = `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`
 const RESOURCE_URL = `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/transactions/${CHARGE_ID}`
 
 const event = {
