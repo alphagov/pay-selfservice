@@ -4,6 +4,8 @@ const {
   SERVICE_EXTERNAL_ID,
   ACCOUNT_TYPE
 } = require('@test/cypress/integration/simplified-account/service-settings/card-payments/util')
+const { WORLDPAY } = require('@models/constants/payment-providers')
+const { WORLDPAY_CREDENTIAL_IN_CREATED_STATE } = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
 
 const pageUrl = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/card-payments`
 
@@ -125,6 +127,28 @@ describe('Card payments page', () => {
           cy.get('a.govuk-back-link').click()
           cy.url().should('contain', pageUrl)
         })
+      })
+    })
+
+    describe('for an admin user of a worldpay account without an active credential', () => {
+      it('should inform the user that google pay cannot be set up without entering their worldpay details', () => {
+        setupStubs({
+          role: 'admin',
+          allowGooglePay: false,
+          serviceName: 'worldpay service without active credential',
+          gatewayAccountPaymentProvider: WORLDPAY,
+          gatewayAccountCredentials: [
+            WORLDPAY_CREDENTIAL_IN_CREATED_STATE
+          ]
+        })
+
+        cy.visit(pageUrl)
+        cy.contains('.govuk-summary-list__key', 'Google Pay')
+          .parent()
+          .within(() => {
+            cy.contains('Off (complete Worldpay details to switch on)').should('exist')
+            cy.contains('a', 'Change').should('not.exist')
+          })
       })
     })
 

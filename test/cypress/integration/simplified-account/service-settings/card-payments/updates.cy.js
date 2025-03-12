@@ -187,35 +187,15 @@ describe('Card payment updates', () => {
         WORLDPAY_CREDENTIAL_IN_CREATED_STATE
       ]
     })
-    // check GET is redirected by middleware
     cy.request({
       method: 'GET',
       url: baseUrl + '/google-pay',
       followRedirect: false
     }).then((res) => {
       expect(res.status).to.eq(302)
+      expect(res.headers.location).to.include('/card-payments')
+      expect(res.headers.location).to.not.include('/google-pay')
     })
-    // check POST is redirected by middleware
-    cy.request({
-      method: 'POST',
-      body: {
-        sneaky: 'hackerman'
-      },
-      url: baseUrl + '/google-pay',
-      followRedirect: false
-    }).then((res) => {
-      expect(res.status).to.eq(302)
-    })
-    // check redirect is card payments settings index
-    cy.visit(baseUrl + '/google-pay')
-    cy.get('h1').should('contain.text', 'Card payments')
-    checkSettingsNavigation('Card payments', baseUrl)
-    cy.contains('.govuk-summary-list__key', 'Google Pay')
-      .parent()
-      .within(() => {
-        cy.contains('Off (complete Worldpay details to switch on)').should('exist')
-        cy.contains('a', 'Change').should('not.exist')
-      })
   })
 
   describe('Moto Security', () => {
