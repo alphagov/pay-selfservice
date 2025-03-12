@@ -179,7 +179,7 @@ describe('Card payment updates', () => {
     cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
   })
 
-  it('should not allow update of Google Pay with inactive Worldpay credential', () => {
+  it('should redirect to card payments settings index when accessing Google Pay with inactive Worldpay credential', () => {
     setupStubs({
       allowGooglePay: false,
       gatewayAccountPaymentProvider: WORLDPAY,
@@ -187,6 +187,26 @@ describe('Card payment updates', () => {
         WORLDPAY_CREDENTIAL_IN_CREATED_STATE
       ]
     })
+    // check GET is redirected by middleware
+    cy.request({
+      method: 'GET',
+      url: baseUrl + '/google-pay',
+      followRedirect: false
+    }).then((res) => {
+      expect(res.status).to.eq(302)
+    })
+    // check POST is redirected by middleware
+    cy.request({
+      method: 'POST',
+      body: {
+        sneaky: 'hackerman'
+      },
+      url: baseUrl + '/google-pay',
+      followRedirect: false
+    }).then((res) => {
+      expect(res.status).to.eq(302)
+    })
+    // check redirect is card payments settings index
     cy.visit(baseUrl + '/google-pay')
     cy.get('h1').should('contain.text', 'Card payments')
     checkSettingsNavigation('Card payments', baseUrl)
