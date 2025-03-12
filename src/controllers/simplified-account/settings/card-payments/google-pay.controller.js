@@ -5,7 +5,11 @@ const { updateAllowGooglePay } = require('@services/card-payments.service')
 const { validationResult } = require('express-validator')
 const { WORLDPAY } = require('@models/constants/payment-providers')
 const { updateGooglePayMerchantId } = require('@services/worldpay-details.service')
-const { googlePaySchema, GOOGLE_PAY_TOGGLE_FIELD, GOOGLE_PAY_MERCHANT_ID_FIELD } = require('@utils/simplified-account/validation/google-pay.schema')
+const {
+  googlePaySchema,
+  GOOGLE_PAY_TOGGLE_FIELD,
+  GOOGLE_PAY_MERCHANT_ID_FIELD
+} = require('@utils/simplified-account/validation/google-pay.schema')
 
 /**
  * @param {import('@utils/types/settings/settings-request').SettingsRequest} req

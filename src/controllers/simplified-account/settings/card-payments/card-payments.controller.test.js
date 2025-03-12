@@ -3,6 +3,8 @@ const { expect } = require('chai')
 const sinon = require('sinon')
 const User = require('@models/User.class')
 const userFixtures = require('@test/fixtures/user.fixtures')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
+const paths = require('@root/paths')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
@@ -37,90 +39,150 @@ const viewOnlyUser = new User(userFixtures.validUserResponse(
     }
   }))
 
-const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/card-payments/card-payments.controller')
+const {
+  res,
+  nextRequest,
+  call
+} = new ControllerTestBuilder('@controllers/simplified-account/settings/card-payments/card-payments.controller')
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
+  .withAccount({
+    type: ACCOUNT_TYPE,
+    id: GATEWAY_ACCOUNT_ID
+  })
   .withStubs({
     '@utils/response': { response: mockResponse }
   })
   .build()
 
 describe('Controller: settings/card-payments', () => {
-  describe('get for admin user', () => {
-    before(() => {
-      nextRequest({
-        user: adminUser,
-        service: {
-          externalId: SERVICE_EXTERNAL_ID,
-          collectBillingAddress: false,
-          defaultBillingAddressCountry: 'GB'
-        },
-        account: {
-          type: ACCOUNT_TYPE,
-          id: GATEWAY_ACCOUNT_ID,
-          allowApplePay: false,
-          allowGooglePay: false,
-          getActiveCredential: () => true
-        }
+  describe('get', () => {
+    describe('for admin user', () => {
+      describe('for non-moto gateway account', () => {
+        before(() => {
+          nextRequest({
+            user: adminUser,
+            service: {
+              collectBillingAddress: false,
+              defaultBillingAddressCountry: 'GB'
+            },
+            account: {
+              allowApplePay: false,
+              allowGooglePay: false,
+              getActiveCredential: () => true
+            }
+          })
+          call('get')
+        })
+        it('should call the response method', () => {
+          expect(mockResponse).to.have.been.calledOnce  // eslint-disable-line
+        })
+
+        it('should pass req, res and template path to the response method', () => {
+          expect(mockResponse.args[0][0].user).to.deep.equal(adminUser)
+          expect(mockResponse.args[0][1]).to.deep.equal(res)
+          expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/card-payments/index')
+        })
+
+        it('should pass context data to the response method', () => {
+          const context = mockResponse.args[0][3]
+          expect(context).to.have.property('collectBillingAddressEnabled').to.equal(false)
+          expect(context).to.have.property('collectBillingAddressLink').to.equal(BASE_URL + 'collect-billing-address')
+          expect(context).to.have.property('defaultBillingAddressCountry').to.equal('United Kingdom')
+          expect(context).to.have.property('defaultBillingAddressCountryLink').to.equal(BASE_URL + 'default-billing-address-country')
+          expect(context).to.have.property('applePayEnabled').to.equal(false)
+          expect(context).to.have.property('applePayLink').to.equal(BASE_URL + 'apple-pay')
+          expect(context).to.have.property('googlePayEnabled').to.equal(false)
+          expect(context).to.have.property('googlePayLink').to.equal(BASE_URL + 'google-pay')
+          expect(context).to.have.property('googlePayEditable').to.equal(true)
+          expect(context).to.have.property('userCanUpdatePaymentTypes').to.equal(true)
+          expect(context).to.not.have.property('isMoto')
+          expect(context).to.not.have.property('hideCardSecurityCodeEnabled')
+        })
       })
-      call('get')
-    })
-    it('should call the response method', () => {
-      expect(mockResponse).to.have.been.calledOnce  // eslint-disable-line
-    })
+      describe('for moto gateway account', () => {
+        before(() => {
+          nextRequest({
+            user: adminUser,
+            account: {
+              allowMoto: true,
+              motoMaskCardNumber: false,
+              motoMaskCardSecurityCode: true,
+              getActiveCredential: () => null
+            }
+          })
+          call('get')
+        })
 
-    it('should pass req, res and template path to the response method', () => {
-      expect(mockResponse.args[0][0].user).to.deep.equal(adminUser)
-      expect(mockResponse.args[0][1]).to.deep.equal(res)
-      expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/card-payments/index')
-    })
-
-    it('should pass context data to the response method', () => {
-      const context = mockResponse.args[0][3]
-      expect(context).to.have.property('collectBillingAddressEnabled').to.equal(false)
-      expect(context).to.have.property('collectBillingAddressLink').to.equal(BASE_URL + 'collect-billing-address')
-      expect(context).to.have.property('defaultBillingAddressCountry').to.equal('United Kingdom')
-      expect(context).to.have.property('defaultBillingAddressCountryLink').to.equal(BASE_URL + 'default-billing-address-country')
-      expect(context).to.have.property('applePayEnabled').to.equal(false)
-      expect(context).to.have.property('applePayLink').to.equal(BASE_URL + 'apple-pay')
-      expect(context).to.have.property('googlePayEnabled').to.equal(false)
-      expect(context).to.have.property('googlePayLink').to.equal(BASE_URL + 'google-pay')
-      expect(context).to.have.property('userCanUpdatePaymentTypes').to.equal(true)
-    })
-  })
-  describe('get for non-admin user', () => {
-    before(() => {
-      nextRequest({
-        user: viewOnlyUser,
-        service: {
-          externalId: SERVICE_EXTERNAL_ID,
-          collectBillingAddress: true
-        },
-        account: {
-          type: ACCOUNT_TYPE,
-          id: GATEWAY_ACCOUNT_ID,
-          allowApplePay: true,
-          allowGooglePay: true,
-          getActiveCredential: () => true
-        }
+        it('should pass additional context data to the response method', () => {
+          const context = mockResponse.args[0][3]
+          expect(context).to.have.property('googlePayEditable').to.equal(false)
+          expect(context).to.have.property('isMoto').to.equal(true)
+          expect(context).to.have.property('hideCardNumberEnabled').to.equal(false)
+          expect(context).to.have.property('hideCardNumberLink').to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardNumber, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
+          expect(context).to.have.property('hideCardSecurityCodeEnabled').to.equal(true)
+          expect(context).to.have.property('hideCardSecurityCodeLink').to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardSecurityCode, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
+        })
       })
-      call('get')
     })
-    it('should call the response method', () => {
-      expect(mockResponse).to.have.been.calledOnce  // eslint-disable-line
-    })
+    describe('for non-admin user', () => {
+      describe('for non-moto gateway account', () => {
+        before(() => {
+          nextRequest({
+            user: viewOnlyUser,
+            service: {
+              collectBillingAddress: true
+            },
+            account: {
+              allowApplePay: true,
+              allowGooglePay: true,
+              getActiveCredential: () => true
+            }
+          })
+          call('get')
+        })
+        it('should call the response method', () => {
+          expect(mockResponse).to.have.been.calledOnce  // eslint-disable-line
+        })
 
-    it('should pass req, res and template path to the response method', () => {
-      expect(mockResponse.args[0][0].user).to.deep.equal(viewOnlyUser)
-      expect(mockResponse.args[0][1]).to.deep.equal(res)
-      expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/card-payments/index')
-    })
+        it('should pass req, res and template path to the response method', () => {
+          expect(mockResponse.args[0][0].user).to.deep.equal(viewOnlyUser)
+          expect(mockResponse.args[0][1]).to.deep.equal(res)
+          expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/card-payments/index')
+        })
 
-    it('should pass context data to the response method', () => {
-      const context = mockResponse.args[0][3]
-      expect(context).to.have.property('collectBillingAddressEnabled').to.equal(true)
-      expect(context).to.have.property('defaultBillingAddressCountry').to.equal('None')
-      expect(context).to.have.property('applePayEnabled').to.equal(true)
-      expect(context).to.have.property('googlePayEnabled').to.equal(true)
-      expect(context).to.have.property('userCanUpdatePaymentTypes').to.equal(false)
+        it('should pass context data to the response method', () => {
+          const context = mockResponse.args[0][3]
+          expect(context).to.have.property('collectBillingAddressEnabled').to.equal(true)
+          expect(context).to.have.property('defaultBillingAddressCountry').to.equal('None')
+          expect(context).to.have.property('applePayEnabled').to.equal(true)
+          expect(context).to.have.property('googlePayEnabled').to.equal(true)
+          expect(context).to.have.property('userCanUpdatePaymentTypes').to.equal(false)
+        })
+      })
+      describe('for moto gateway account', () => {
+        before(() => {
+          nextRequest({
+            user: viewOnlyUser,
+            account: {
+              allowMoto: true,
+              motoMaskCardNumber: false,
+              motoMaskCardSecurityCode: true,
+              getActiveCredential: () => null
+            }
+          })
+          call('get')
+        })
+
+        it('should pass additional context data to the response method', () => {
+          const context = mockResponse.args[0][3]
+          expect(context).to.have.property('userCanUpdatePaymentTypes').to.equal(false)
+          expect(context).to.have.property('isMoto').to.equal(true)
+          expect(context).to.have.property('hideCardNumberEnabled').to.equal(false)
+          expect(context).to.have.property('hideCardNumberLink').to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardNumber, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
+          expect(context).to.have.property('hideCardSecurityCodeEnabled').to.equal(true)
+          expect(context).to.have.property('hideCardSecurityCodeLink').to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardSecurityCode, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
+        })
+      })
     })
   })
 })
