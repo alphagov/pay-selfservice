@@ -142,7 +142,7 @@ describe('Card payment updates', () => {
     const googlePayMerchantId = '0123456789abcde'
     const googlePayMerchantIdError = 'Enter a Google Pay merchant ID'
     setupStubs({
-      allowGooglePay: true,
+      allowGooglePay: false,
       gatewayAccountPaymentProvider: WORLDPAY,
       gatewayAccountCredentials: [
         WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE
