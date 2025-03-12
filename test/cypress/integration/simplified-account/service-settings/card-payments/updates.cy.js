@@ -10,8 +10,8 @@ const {
   patchUpdateCollectBillingAddressSuccess
 } = require('@test/cypress/stubs/service-stubs')
 const {
-  patchAccountByServiceIdUpdateApplePaySuccess,
-  patchAccountByServiceIdUpdateGooglePaySuccess,
+  patchAccountByServiceExternalIdAndAccountTypeUpdateApplePaySuccess,
+  patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePaySuccess,
   patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePayMerchantIdSuccess,
   patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardNumberSuccess,
   patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardSecurityCodeSuccess
@@ -112,7 +112,7 @@ describe('Card payment updates', () => {
       allowApplePay: false
     })
     cy.task('setupStubs', [
-      patchAccountByServiceIdUpdateApplePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
+      patchAccountByServiceExternalIdAndAccountTypeUpdateApplePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
     ])
     cy.visit(baseUrl + '/apple-pay')
     cy.get('h1').should('contain.text', 'Apple Pay')
@@ -128,7 +128,7 @@ describe('Card payment updates', () => {
       gatewayAccountPaymentProvider: STRIPE
     })
     cy.task('setupStubs', [
-      patchAccountByServiceIdUpdateGooglePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
+      patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
     ])
     cy.visit(baseUrl + '/google-pay')
     cy.get('h1').should('contain.text', 'Google Pay')
@@ -149,11 +149,11 @@ describe('Card payment updates', () => {
       ]
     })
     cy.task('setupStubs', [
-      patchAccountByServiceIdUpdateGooglePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true),
+      patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true),
       patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePayMerchantIdSuccess(
         SERVICE_EXTERNAL_ID,
         ACCOUNT_TYPE,
-        WORLDPAY_CREDENTIAL_IN_CREATED_STATE.external_id,
+        WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE.external_id,
         {
           googlePayMerchantId,
           userExternalId: USER_EXTERNAL_ID
@@ -187,9 +187,6 @@ describe('Card payment updates', () => {
         WORLDPAY_CREDENTIAL_IN_CREATED_STATE
       ]
     })
-    cy.task('setupStubs', [
-      patchAccountByServiceIdUpdateGooglePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
-    ])
     cy.visit(baseUrl + '/google-pay')
     cy.get('h1').should('contain.text', 'Card payments')
     checkSettingsNavigation('Card payments', baseUrl)
