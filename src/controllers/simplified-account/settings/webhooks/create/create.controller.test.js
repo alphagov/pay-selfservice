@@ -39,7 +39,7 @@ describe('Controller: settings/webhooks', () => {
 
     it('should pass context data to the response method', () => {
       expect(mockResponse.args[0][3]).to.have.property('eventTypes').to.have.property('CARD_PAYMENT_SUCCEEDED').to.equal('Payment succeeded')
-      expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal('/simplified/service/service-id-123abc/account/test/settings/webhooks')
+      expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal('/service/service-id-123abc/account/test/settings/webhooks')
     })
   })
 

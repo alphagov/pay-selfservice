@@ -48,7 +48,7 @@ describe('Controller: settings/webhooks/update', () => {
           callbackUrl: 'https://www.globexcorporation.example.com', description: undefined, subscriptions: undefined
         },
         eventTypes: constants.webhooks.humanReadableSubscriptions,
-        backLink: '/simplified/service/service-id-123abc/account/test/settings/webhooks'
+        backLink: '/service/service-id-123abc/account/test/settings/webhooks'
       })
     })
 
@@ -77,7 +77,7 @@ describe('Controller: settings/webhooks/update', () => {
 
       it('should redirect to the webhook detail page', () => {
         res.redirect.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
-        res.redirect.should.have.been.calledWith('/simplified/service/service-id-123abc/account/test/settings/webhooks/webhook-external-id')
+        res.redirect.should.have.been.calledWith('/service/service-id-123abc/account/test/settings/webhooks/webhook-external-id')
       })
     })
 
