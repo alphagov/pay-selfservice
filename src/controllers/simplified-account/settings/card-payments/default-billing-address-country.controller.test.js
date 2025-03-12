@@ -43,7 +43,7 @@ describe('Controller: settings/card-payments/default-billing-address', () => {
     it('should pass context data to the response method', () => {
       const context = mockResponse.args[0][3]
       expect(context).to.have.property('currentState').to.equal('on')
-      expect(context).to.have.property('backLink').to.equal(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments`)
+      expect(context).to.have.property('backLink').to.equal(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments`)
     })
   })
   describe('post', () => {

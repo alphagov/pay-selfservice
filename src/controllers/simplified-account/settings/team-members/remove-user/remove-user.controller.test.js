@@ -88,7 +88,7 @@ describe('Controller: settings/team-members/remove-user', () => {
 
       it('should pass context data to the response method', () => {
         expect(responseStub.args[0][3]).to.have.property('email').to.equal('user-to-remove@users.gov.uk')
-        expect(responseStub.args[0][3]).to.have.property('backLink').to.equal('/simplified/service/service-id-123abc/account/test/settings/team-members')
+        expect(responseStub.args[0][3]).to.have.property('backLink').to.equal('/service/service-id-123abc/account/test/settings/team-members')
       })
     })
 

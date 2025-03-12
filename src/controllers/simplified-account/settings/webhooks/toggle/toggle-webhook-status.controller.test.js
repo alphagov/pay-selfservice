@@ -50,7 +50,7 @@ describe('Controller: settings/webhooks/update', () => {
     it('should pass context data to the response method', () => {
       mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
         webhook: testWebhook,
-        backLink: '/simplified/service/service-id-123abc/account/test/settings/webhooks/webhook-external-id'
+        backLink: '/service/service-id-123abc/account/test/settings/webhooks/webhook-external-id'
       })
     })
 
@@ -81,7 +81,7 @@ describe('Controller: settings/webhooks/update', () => {
             formErrors: { toggleActive: 'Confirm if you want to activate https://www.globexcorporation.example.com' }
           },
           webhook: testWebhook,
-          backLink: '/simplified/service/service-id-123abc/account/test/settings/webhooks/webhook-external-id'
+          backLink: '/service/service-id-123abc/account/test/settings/webhooks/webhook-external-id'
         })
       })
     })

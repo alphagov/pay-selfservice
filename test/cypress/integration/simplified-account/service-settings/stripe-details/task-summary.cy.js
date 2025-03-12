@@ -6,7 +6,7 @@ const { SANDBOX, STRIPE } = require('@models/constants/payment-providers')
 const stripePspStubs = require('@test/cypress/stubs/stripe-psp-stubs')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = {
   en: 'McDuck Enterprises', cy: 'Mentrau McDuck'
 }
@@ -14,7 +14,7 @@ const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
 const STRIPE_ACCOUNT_ID = 'acct_123example123'
 
-const SERVICE_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings`
+const SERVICE_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings`
 
 const setStubs = (opts = {}, additionalStubs = []) => {
   cy.task('setupStubs', [

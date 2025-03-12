@@ -4,13 +4,13 @@ const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const { getWebhooksListSuccess, createWebhookViolatesBackend, postCreateWebhookSuccess } = require('@test/cypress/stubs/webhooks-stubs')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = {
   en: 'McDuck Enterprises', cy: 'Mentrau McDuck'
 }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
-const WEBHOOKS_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/webhooks`
+const WEBHOOKS_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/webhooks`
 const VALID_DESCRIPTION = 'My new webhook'
 const VALID_CALLBACK_URL = 'https://www.callback.gov.uk'
 
@@ -144,7 +144,7 @@ describe('for a non-admin user', () => {
   })
 
   it('should not show webhooks link in the navigation panel', () => {
-    cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/`)
+    cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/`)
     cy.get('#webhooks').should('not.exist')
   })
 })

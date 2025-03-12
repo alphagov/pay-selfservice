@@ -4,10 +4,10 @@ const inviteStubs = require('../../../../stubs/invite-stubs')
 
 const ADMIN_USER_ID = 'admin-user-id'
 const VIEW_ONLY_USER_ID = 'view-only-user-id'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const TEST_ACCOUNT_TYPE = 'test'
 const TEST_GATEWAY_ACCOUNT_ID = 10
-const TEAM_MEMBERS_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${TEST_ACCOUNT_TYPE}/settings/team-members`
+const TEAM_MEMBERS_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST_ACCOUNT_TYPE}/settings/team-members`
 
 const setStubs = (opts = {}, additionalStubs = []) => {
   const adminUserStubOpts = userStubs.getUserWithServiceRoleStubOpts(ADMIN_USER_ID, 'admin-user@example.com', SERVICE_EXTERNAL_ID, 'admin')

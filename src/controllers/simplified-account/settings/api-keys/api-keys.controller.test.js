@@ -44,15 +44,15 @@ describe('Controller: settings/api-keys', () => {
         apiKeys.map(apiKey => {
           return {
             ...apiKey,
-            changeNameLink: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/change-name/${apiKeys[0].tokenLink}`,
-            revokeKeyLink: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoke/${apiKeys[0].tokenLink}`
+            changeNameLink: `/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/change-name/${apiKeys[0].tokenLink}`,
+            revokeKeyLink: `/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoke/${apiKeys[0].tokenLink}`
           }
         }))
       expect(mockResponse.args[0][3]).to.have.property('createApiKeyLink').to.equal(
-        `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/create`
+        `/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/create`
       )
       expect(mockResponse.args[0][3]).to.have.property('revokedKeysLink').to.equal(
-        `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoked`
+        `/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoked`
       )
       expect(mockResponse.args[0][3]).to.have.property('showRevokedKeysLink').to.equal(false)
     })

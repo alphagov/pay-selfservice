@@ -11,7 +11,7 @@ const {
 } = require('@test/cypress/stubs/service-stubs')
 const { patchAccountByServiceIdUpdateApplePaySuccess, patchAccountByServiceIdUpdateGooglePaySuccess } = require('@test/cypress/stubs/gateway-account-stubs')
 
-const baseUrl = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/card-payments`
+const baseUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/card-payments`
 
 describe('Card payment updates', () => {
   beforeEach(() => {
