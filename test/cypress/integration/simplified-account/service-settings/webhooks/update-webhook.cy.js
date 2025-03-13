@@ -135,7 +135,7 @@ describe('webhook settings - update webhooks', () => {
         it('should render the form with the validation errors', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
 
-          cy.get('input#callback_url').clear().type('http://this.url.is.invalid.becuase.it.is.not.https.com', { delay: 0 })
+          cy.get('input#callback-url').clear().type('http://this.url.is.invalid.becuase.it.is.not.https.com', { delay: 0 })
           // cy.get('input#description').clear().type('a'.repeat(100), { delay: 0 })
           cy.get('div.govuk-checkboxes__item').filter(':contains("Payment captured")').first()
             .within(() => {
@@ -151,7 +151,7 @@ describe('webhook settings - update webhooks', () => {
             .should('contain.text', 'Select at least one payment event')
             .should('contain.text', 'Enter a valid callback url beginning with https://')
 
-          cy.get('#callback_url-error').should('contain.text', 'Enter a valid callback url beginning with https://')
+          cy.get('#callback-url-error').should('contain.text', 'Enter a valid callback url beginning with https://')
           cy.get('#subscriptions-error').should('contain.text', 'Select at least one payment event')
         })
       })
@@ -166,7 +166,7 @@ describe('webhook settings - update webhooks', () => {
 
         it('should render the form with the validation error', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
-          cy.get('input#callback_url').clear().type('https://this.url.is.invalid.becuase.the.domain.is.not.in.the.allowlist.biz', { delay: 0 })
+          cy.get('input#callback-url').clear().type('https://this.url.is.invalid.becuase.the.domain.is.not.in.the.allowlist.biz', { delay: 0 })
 
           cy.get('button').contains('Save').click()
 
@@ -176,7 +176,7 @@ describe('webhook settings - update webhooks', () => {
             .should('exist')
             .should('contain.text', 'Callback URL must be approved. Please contact support')
 
-          cy.get('#callback_url-error').should('contain.text', 'Callback URL must be approved. Please contact support')
+          cy.get('#callback-url-error').should('contain.text', 'Callback URL must be approved. Please contact support')
         })
       })
 
@@ -189,7 +189,7 @@ describe('webhook settings - update webhooks', () => {
 
         it('should redirect to the webhook detail page', () => {
           cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
-          cy.get('input#callback_url').clear().type('https://this.url.is.valid.gov.uk', { delay: 0 })
+          cy.get('input#callback-url').clear().type('https://this.url.is.valid.gov.uk', { delay: 0 })
           cy.get('input#description').clear().type('This is a new description for my webhook', { delay: 0 })
           cy.get('div.govuk-checkboxes__item').filter(':contains("Payment succeeded")').first()
             .within(() => {
