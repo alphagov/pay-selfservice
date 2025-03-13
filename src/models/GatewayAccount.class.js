@@ -31,6 +31,7 @@ class GatewayAccount {
   constructor (gatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
     this.externalId = gatewayAccountData.external_id
+    this.emailCollectionMode = gatewayAccountData.email_collection_mode
     this.name = gatewayAccountData.service_name
     this.type = gatewayAccountData.type
     this.paymentProvider = gatewayAccountData.payment_provider

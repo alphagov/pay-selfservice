@@ -43,8 +43,8 @@ simplifiedAccount.post(paths.simplifiedAccount.settings.teamMembers.invite, perm
 
 // email notifications
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.index, permission('transactions:read'), serviceSettingsController.emailNotifications.getEmailNotificationsSettingsPage)
-simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.emailCollectionMode, permission('email-notification-toggle:update'), serviceSettingsController.emailNotifications.getEditEmailCollectionModePage)
-simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.emailCollectionMode, permission('email-notification-toggle:update'), serviceSettingsController.emailNotifications.postEditEmailCollectionMode)
+simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.emailCollectionMode, permission('email-notification-toggle:update'), serviceSettingsController.emailNotifications.emailCollectionMode.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.emailCollectionMode, permission('email-notification-toggle:update'), serviceSettingsController.emailNotifications.emailCollectionMode.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.refundEmailToggle, enforceEmailCollectionModeNotOff, permission('email-notification-toggle:update'), serviceSettingsController.emailNotifications.refundEmails.get)
 simplifiedAccount.post(paths.simplifiedAccount.settings.emailNotifications.refundEmailToggle, enforceEmailCollectionModeNotOff, permission('email-notification-toggle:update'), serviceSettingsController.emailNotifications.refundEmails.post)
 simplifiedAccount.get(paths.simplifiedAccount.settings.emailNotifications.paymentConfirmationEmailToggle, enforceEmailCollectionModeNotOff, permission('email-notification-toggle:update'), serviceSettingsController.emailNotifications.paymentConfirmationEmails.get)
