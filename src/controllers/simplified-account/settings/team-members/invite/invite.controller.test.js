@@ -23,11 +23,12 @@ const adminUser = new User(userFixtures.validUserResponse({
 const mockResponse = sinon.spy()
 const mockCreateInviteToJoinService = sinon.stub()
 
-const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/team-members/invite/invite.controller')
+const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/team-members/invite/invite.controller')
   .withServiceExternalId(SERVICE_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
-    '@utils/response': { response: mockResponse }
+    '@utils/response': { response: mockResponse },
+    '@services/user.service': { createInviteToJoinService: mockCreateInviteToJoinService }
   })
   .withUser(adminUser)
   .build()
@@ -61,10 +62,7 @@ describe('post', () => {
       nextRequest({
         body: { invitedUserEmail: 'user-to-invite@users.gov.uk', invitedUserRole: 'view-only' }
       })
-      nextStubs({
-        '@services/user.service':
-          { createInviteToJoinService: mockCreateInviteToJoinService.resolves() }
-      })
+      mockCreateInviteToJoinService.resolves()
       call('post')
     })
 
@@ -88,10 +86,7 @@ describe('post', () => {
       nextRequest({
         body: { invitedUserEmail: 'user-to-invite@users.gov.uk', invitedUserRole: 'view-only' }
       })
-      nextStubs({
-        '@services/user.service':
-          { createInviteToJoinService: mockCreateInviteToJoinService.rejects(new RESTClientError(null, 'adminusers', 412)) }
-      })
+      mockCreateInviteToJoinService.rejects(new RESTClientError(null, 'adminusers', 412))
       call('post')
     })
 

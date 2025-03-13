@@ -37,11 +37,12 @@ const mockRenderErrorView = sinon.spy()
 const mockFindByExternalId = sinon.stub()
 const mockDelete = sinon.stub().returns({ })
 
-const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/team-members/remove-user/remove-user.controller')
+const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/team-members/remove-user/remove-user.controller')
   .withServiceExternalId(SERVICE_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
-    '@utils/response': { response: mockResponse, renderErrorView: mockRenderErrorView }
+    '@utils/response': { response: mockResponse, renderErrorView: mockRenderErrorView },
+    '@services/user.service': { findByExternalId: mockFindByExternalId, delete: mockDelete }
   })
   .withUser(adminUser)
   .build()
@@ -50,10 +51,7 @@ describe('Controller: settings/team-members/remove-user', () => {
   describe('get', () => {
     describe('success', () => {
       before(() => {
-        nextStubs({
-          '@services/user.service':
-            { findByExternalId: mockFindByExternalId.resolves(viewOnlyUser) }
-        })
+        mockFindByExternalId.resolves(viewOnlyUser)
         nextRequest({
           params: { externalUserId: 'user-id-to-remove' }
         })
@@ -79,10 +77,7 @@ describe('Controller: settings/team-members/remove-user', () => {
 
     describe('failure - admin attempts to remove self', () => {
       before(() => {
-        nextStubs({
-          '@services/user.service':
-            { findByExternalId: mockFindByExternalId.resolves(adminUser) }
-        })
+        mockFindByExternalId.resolves(adminUser)
         nextRequest({
           params: { externalUserId: 'user-id-for-admin-user' }
         })
@@ -99,10 +94,7 @@ describe('Controller: settings/team-members/remove-user', () => {
   describe('post', () => {
     describe('admin user confirmed remove user', () => {
       before(() => {
-        nextStubs({
-          '@services/user.service':
-            { findByExternalId: mockFindByExternalId.resolves(adminUser), delete: mockDelete }
-        })
+        mockFindByExternalId.resolves(adminUser)
         nextRequest({
           params: { externalUserId: 'user-id-to-remove' },
           body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'yes' }
@@ -127,10 +119,7 @@ describe('Controller: settings/team-members/remove-user', () => {
 
     describe('admin user selected not to remove user', () => {
       before(() => {
-        nextStubs({
-          '@services/user.service':
-            { findByExternalId: mockFindByExternalId.resolves(viewOnlyUser), delete: mockDelete }
-        })
+        mockFindByExternalId.resolves(viewOnlyUser)
         nextRequest({
           params: { externalUserId: 'user-id-to-remove' },
           body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'no' }
@@ -147,10 +136,7 @@ describe('Controller: settings/team-members/remove-user', () => {
 
     describe('admin user attempted to remove self', () => {
       before(() => {
-        nextStubs({
-          '@services/user.service':
-            { findByExternalId: mockFindByExternalId.resolves(adminUser), delete: mockDelete }
-        })
+        mockFindByExternalId.resolves(adminUser)
         nextRequest({
           params: { externalUserId: 'user-id-for-admin-user' },
           body: { email: 'admin-user@users.gov.uk', confirmRemoveUser: 'yes' }
