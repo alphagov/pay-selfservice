@@ -5,6 +5,7 @@ const User = require('@models/User.class')
 const userFixtures = require('@test/fixtures/user.fixtures')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
+const { WORLDPAY, STRIPE, SANDBOX } = require('@models/constants/payment-providers')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
@@ -104,6 +105,7 @@ describe('Controller: settings/card-payments', () => {
           nextRequest({
             user: adminUser,
             account: {
+              paymentProvider: SANDBOX,
               allowMoto: true,
               motoMaskCardNumber: false,
               motoMaskCardSecurityCode: true,
@@ -115,12 +117,63 @@ describe('Controller: settings/card-payments', () => {
 
         it('should pass additional context data to the response method', () => {
           const context = mockResponse.args[0][3]
-          expect(context).to.have.property('googlePayEditable').to.equal(false)
+          expect(context).to.have.property('googlePayEditable').to.equal(true)
           expect(context).to.have.property('isMoto').to.equal(true)
           expect(context).to.have.property('hideCardNumberEnabled').to.equal(false)
           expect(context).to.have.property('hideCardNumberLink').to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardNumber, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
           expect(context).to.have.property('hideCardSecurityCodeEnabled').to.equal(true)
           expect(context).to.have.property('hideCardSecurityCodeLink').to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardSecurityCode, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
+        })
+      })
+      describe('for worldpay gateway account with no active credential', () => {
+        before(() => {
+          nextRequest({
+            user: adminUser,
+            account: {
+              paymentProvider: WORLDPAY,
+              getActiveCredential: () => null
+            }
+          })
+          call('get')
+        })
+
+        it('should not enable edit of google pay setting', () => {
+          const context = mockResponse.args[0][3]
+          expect(context).to.have.property('googlePayEditable').to.equal(false)
+        })
+      })
+      describe('for stripe gateway account with no active credential', () => {
+        before(() => {
+          nextRequest({
+            user: adminUser,
+            account: {
+              paymentProvider: STRIPE,
+              getActiveCredential: () => null
+            }
+          })
+          call('get')
+        })
+
+        it('should enable edit of google pay setting', () => {
+          const context = mockResponse.args[0][3]
+          expect(context).to.have.property('googlePayEditable').to.equal(true)
+        })
+      })
+      describe('for worldpay gateway account with active credential', () => {
+        before(() => {
+          nextRequest({
+            user: adminUser,
+            account: {
+              paymentProvider: WORLDPAY,
+              getActiveCredential: () => true
+            }
+          })
+          call('get')
+        })
+
+        it('should enable edit of google pay setting', () => {
+          const context = mockResponse.args[0][3]
+          expect(context).to.have.property('googlePayEditable').to.equal(true)
         })
       })
     })

@@ -2,6 +2,7 @@ const paths = require('@root/paths')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const { response } = require('@utils/response')
 const { GB_COUNTRY_CODE } = require('@controllers/simplified-account/settings/card-payments/constants')
+const { WORLDPAY } = require('@models/constants/payment-providers')
 
 function get (req, res) {
   const service = req.service
@@ -16,6 +17,8 @@ function get (req, res) {
     hideCardSecurityCodeLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardSecurityCode, service.externalId, account.type)
   }
 
+  const googlePayEditable = account.paymentProvider !== WORLDPAY || account.getActiveCredential() !== null
+
   response(req, res, 'simplified-account/settings/card-payments/index', {
     userCanUpdatePaymentTypes: user.hasPermission(service.externalId, 'payment-types:update'),
     collectBillingAddressEnabled: service.collectBillingAddress,
@@ -26,7 +29,7 @@ function get (req, res) {
     applePayLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.applePay, service.externalId, account.type),
     googlePayEnabled: account?.allowGooglePay,
     googlePayLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.googlePay, service.externalId, account.type),
-    googlePayEditable: account.getActiveCredential() !== null,
+    googlePayEditable,
     ...(motoSettings.isMoto && motoSettings)
   })
 }
