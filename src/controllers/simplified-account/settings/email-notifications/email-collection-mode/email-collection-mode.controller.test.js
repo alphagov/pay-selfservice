@@ -22,7 +22,6 @@ const {
     type: ACCOUNT_TYPE,
     emailCollectionMode: 'MANDATORY'
   })
-  .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/email.service': mockEmailService

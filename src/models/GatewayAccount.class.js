@@ -7,53 +7,56 @@ const pendingCredentialStates = [CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTE
 /**
  * @class GatewayAccount
  * Represents a gateway account
- * @property {string} id The id of the gateway account
- * @property {string} externalId The external id of the gateway account
- * @property {string} name The name of the gateway account
- * @property {string} type The type of the gateway account (e.g. test/live)
- * @property {string} paymentProvider The payment provider for the gateway account (e.g. stripe/worldpay)
- * @property {string} description The description of the gateway account
- * @property {boolean} allowMoto whether MOTO payments are enabled on the gateway account
- * @property {string} analyticsId Google analyticsId of the gateway account
- * @property {boolean} toggle3ds whether 3DS is enabled or not on this gateway account
- * @property {boolean} providerSwitchEnabled whether provider switching is enabled on this gateway account
- * @property {boolean} recurringEnabled whether recurring payments are enabled on this gateway account
- * @property {GatewayAccountCredential[]} gatewayAccountCredentials available credentials for gateway account
- * @property {Worldpay3dsFlexCredential} worldpay3dsFlex available credentials for gateway account
- * @property {boolean} supports3ds
- * @property {boolean} disableToggle3ds
- * @property {boolean} requires3ds
  * @property {boolean} allowApplePay whether the gateway has Apple Pay enabled or not
  * @property {boolean} allowGooglePay whether the gateway has Google Pay enabled or not
+ * @property {boolean} allowMoto whether MOTO payments are enabled on the gateway account
+ * @property {string} analyticsId Google analyticsId of the gateway account
+ * @property {string} description The description of the gateway account
+ * @property {boolean} disableToggle3ds
+ * @property {string} externalId The external id of the gateway account
+ * @property {string} emailCollectionMode The email collection mode of the gateway account
+ * @property {GatewayAccountCredential[]} gatewayAccountCredentials available credentials for gateway account
+ * @property {string} id The id of the gateway account
+ * @property {boolean} motoMaskCardNumber
+ * @property {boolean} motoMaskCardSecurityCode
+ * @property {string} name The name of the gateway account
+ * @property {string} paymentProvider The payment provider for the gateway account (e.g. stripe/worldpay)
+ * @property {boolean} providerSwitchEnabled whether provider switching is enabled on this gateway account
+ * @property {boolean} recurringEnabled whether recurring payments are enabled on this gateway account
+ * @property {boolean} requires3ds
+ * @property {boolean} supports3ds
+ * @property {string} type The type of the gateway account (e.g. test/live)
+ * @property {boolean} toggle3ds whether 3DS is enabled or not on this gateway account
+ * @property {Worldpay3dsFlexCredential} worldpay3dsFlex available credentials for gateway account
  * @property {Object} rawResponse raw 'gateway account' object
  */
 class GatewayAccount {
   constructor (gatewayAccountData) {
-    this.id = gatewayAccountData.gateway_account_id
-    this.externalId = gatewayAccountData.external_id
-    this.emailCollectionMode = gatewayAccountData.email_collection_mode
-    this.name = gatewayAccountData.service_name
-    this.type = gatewayAccountData.type
-    this.paymentProvider = gatewayAccountData.payment_provider
-    this.description = gatewayAccountData.description
+    this.allowApplePay = gatewayAccountData.allow_apple_pay
+    this.allowGooglePay = gatewayAccountData.allow_google_pay
     this.allowMoto = gatewayAccountData.allow_moto
     this.analyticsId = gatewayAccountData.analytics_id
-    this.toggle3ds = gatewayAccountData.toggle_3ds
-    this.providerSwitchEnabled = gatewayAccountData.provider_switch_enabled
-    this.recurringEnabled = gatewayAccountData.recurring_enabled
+    this.description = gatewayAccountData.description
+    this.disableToggle3ds = gatewayAccountData.payment_provider === 'stripe'
+    this.externalId = gatewayAccountData.external_id
+    this.emailCollectionMode = gatewayAccountData.email_collection_mode
     this.gatewayAccountCredentials = gatewayAccountData?.gateway_account_credentials?.map(
       credentialData => GatewayAccountCredential.fromJson(credentialData)
     ) ?? []
+    this.id = gatewayAccountData.gateway_account_id
+    this.motoMaskCardNumber = gatewayAccountData.moto_mask_card_number_input
+    this.motoMaskCardSecurityCode = gatewayAccountData.moto_mask_card_security_code_input
+    this.name = gatewayAccountData.service_name
+    this.paymentProvider = gatewayAccountData.payment_provider
+    this.providerSwitchEnabled = gatewayAccountData.provider_switch_enabled
+    this.recurringEnabled = gatewayAccountData.recurring_enabled
+    this.requires3ds = gatewayAccountData.requires3ds
+    this.supports3ds = ['worldpay', 'stripe'].includes(gatewayAccountData.payment_provider)
+    this.type = gatewayAccountData.type
+    this.toggle3ds = gatewayAccountData.toggle_3ds
     if (gatewayAccountData?.worldpay_3ds_flex) {
       this.worldpay3dsFlex = Worldpay3dsFlexCredential.fromJson(gatewayAccountData.worldpay_3ds_flex)
     }
-    this.supports3ds = ['worldpay', 'stripe'].includes(gatewayAccountData.payment_provider)
-    this.disableToggle3ds = gatewayAccountData.payment_provider === 'stripe'
-    this.requires3ds = gatewayAccountData.requires3ds
-    this.allowGooglePay = gatewayAccountData.allow_google_pay
-    this.allowApplePay = gatewayAccountData.allow_apple_pay
-    this.motoMaskCardNumber = gatewayAccountData.moto_mask_card_number_input
-    this.motoMaskCardSecurityCode = gatewayAccountData.moto_mask_card_security_code_input
     /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
      * you should instead add any rawResponse data as part of the constructor */
     this.rawResponse = gatewayAccountData

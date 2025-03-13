@@ -2,7 +2,6 @@ const { response } = require('@utils/response')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const { setEmailCollectionModeByServiceIdAndAccountType } = require('@services/email.service')
-const logger = require('@utils/logger')(__filename)
 
 function get (req, res) {
   return response(req, res, 'simplified-account/settings/email-notifications/collect-email-page', {
@@ -22,10 +21,6 @@ async function post (req, res) {
   const serviceExternalId = req.service.externalId
   const accountType = req.account.type
   await setEmailCollectionModeByServiceIdAndAccountType(serviceExternalId, accountType, emailCollectionMode)
-  logger.info(`Updated email collection mode (${emailCollectionMode})`, {
-    service: serviceExternalId,
-    accountType
-  })
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index,
     serviceExternalId, accountType))
 }
