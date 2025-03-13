@@ -72,8 +72,7 @@ describe('Agreements', () => {
 
     cy.visit('/test/service/service-id/account/gateway-account-id/agreements')
 
-    cy.get('#navigation-menu-agreements').should('have.length', 1)
-
+    cy.contains('.govuk-service-navigation__item--active', 'Agreements')
     cy.get('h1').contains('Agreements')
 
     cy.get('[data-cy=filter-container]').should('exist')

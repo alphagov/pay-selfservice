@@ -33,7 +33,7 @@ describe('Apple Pay', () => {
     cy.get('input[type="radio"]').should('have.length', 2)
     cy.get('input[value="on"]').should('not.be.checked')
     cy.get('input[value="off"]').should('be.checked')
-    cy.get('#navigation-menu-settings').click()
+    cy.contains('.govuk-service-navigation__item--active', 'Settings').click()
     cy.get('.govuk-summary-list__value').first().should('contain', 'Off')
   })
 
@@ -46,7 +46,7 @@ describe('Apple Pay', () => {
     cy.get('input[type="radio"]').should('have.length', 2)
     cy.get('input[value="on"]').should('be.checked')
     cy.get('input[value="off"]').should('not.be.checked')
-    cy.get('#navigation-menu-settings').click()
+    cy.contains('.govuk-service-navigation__item--active', 'Settings').click()
     cy.get('.govuk-summary-list__value').first().should('contain', 'On')
   })
 
