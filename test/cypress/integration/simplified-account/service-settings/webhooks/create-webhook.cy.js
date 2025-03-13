@@ -108,7 +108,7 @@ describe('for an admin', () => {
       cy.get('input[type="text"][name="description"]').should('have.class', 'govuk-input--error')
       cy.get('#description-error').should('contain.text', 'Enter a description')
       cy.get('input[type="url"][name="callbackUrl"]').should('have.class', 'govuk-input--error')
-      cy.get('#callback_url-error').should('contain.text', 'Enter a callback url')
+      cy.get('#callback-url-error').should('contain.text', 'Enter a callback url')
       cy.get('.govuk-fieldset').should('contain.text', 'Select at least one payment event')
     })
 
@@ -123,7 +123,7 @@ describe('for an admin', () => {
         .should('exist')
         .should('contain', 'Callback URL must be approved. Please contact support')
       cy.get('input[type="url"][name="callbackUrl"]').should('have.class', 'govuk-input--error')
-      cy.get('#callback_url-error').should('contain.text', 'Callback URL must be approved. Please contact support')
+      cy.get('#callback-url-error').should('contain.text', 'Callback URL must be approved. Please contact support')
     })
   })
 })
