@@ -16,7 +16,9 @@ async function get (req, res) {
 
 async function post (req, res, next) {
   const accountIsLive = req.account.type === 'live'
-  await Promise.all(CREATE_AND_UPDATE_WEBHOOK_VALIDATIONS.map(validation => validation.run(req)))
+  for (const validation of CREATE_AND_UPDATE_WEBHOOK_VALIDATIONS) {
+    await validation.run(req)
+  }
   const validationErrors = validationResult(req)
   if (!validationErrors.isEmpty()) {
     const formattedValidationErrors = formatValidationErrors(validationErrors)
