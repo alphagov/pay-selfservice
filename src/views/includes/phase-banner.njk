@@ -60,7 +60,10 @@
         {% set navItems = (navItems.push({
           href: item.url,
           text: item.name,
-          active: item.current
+          active: item.current,
+          attributes: {
+            id: item.id
+          }
         }), navItems) %}
       {% endif %}
     {% endfor %}
