@@ -39,7 +39,6 @@ describe('Controller: settings/stripe-details/vat-number', () => {
     })
 
     it('should pass context data to the response method', () => {
-      expect(mockResponse.args[0][3]).to.have.property('vatNumberDeclaration').to.equal(true)
       expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal(STRIPE_DETAILS_INDEX_PATH)
     })
   })
@@ -73,7 +72,7 @@ describe('Controller: settings/stripe-details/vat-number', () => {
         before(() => {
           nextRequest({
             body: {
-              vatNumberDeclaration: 'true',
+              vatNumberDeclaration: 'yes',
               vatNumber
             }
           })
@@ -93,11 +92,11 @@ describe('Controller: settings/stripe-details/vat-number', () => {
         })
       })
     })
-    describe('when VAT number declaration is false', () => {
+    describe('when VAT number declaration is no', () => {
       before(() => {
         nextRequest({
           body: {
-            vatNumberDeclaration: 'false'
+            vatNumberDeclaration: 'no'
           }
         })
         call('post', 1)
@@ -125,7 +124,7 @@ describe('Controller: settings/stripe-details/vat-number', () => {
         })
         nextRequest({
           body: {
-            vatNumberDeclaration: 'true',
+            vatNumberDeclaration: 'yes',
             vatNumber: 'GB123456789'
           }
         })
@@ -141,7 +140,7 @@ describe('Controller: settings/stripe-details/vat-number', () => {
       before(() => {
         nextRequest({
           body: {
-            vatNumberDeclaration: 'true',
+            vatNumberDeclaration: 'yes',
             vatNumber: 'what'
           }
         })
@@ -165,7 +164,7 @@ describe('Controller: settings/stripe-details/vat-number', () => {
       })
 
       it('should restore user input', () => {
-        expect(mockResponse.args[0][3]).to.have.property('vatNumberDeclaration').to.equal(true)
+        expect(mockResponse.args[0][3]).to.have.property('vatNumberDeclaration').to.equal('yes')
         expect(mockResponse.args[0][3]).to.have.property('vatNumber').to.equal('what')
         expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal(STRIPE_DETAILS_INDEX_PATH)
       })
