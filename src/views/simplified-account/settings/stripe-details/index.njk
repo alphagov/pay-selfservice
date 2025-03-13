@@ -14,7 +14,7 @@
   {% endif %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   {% if incompleteTasks %}
-    <p class="govuk-body govuk-!-font-weight-bold">Add your organisation's details</p>
+    <h2 class="govuk-heading-s">Add your organisation's details</h2>
     {{ taskList({
       tasks: tasks,
       idPrefix: 'stripe-details'
