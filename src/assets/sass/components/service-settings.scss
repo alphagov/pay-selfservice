@@ -18,15 +18,27 @@
   padding-top: govuk-spacing(1);
   padding-bottom: govuk-spacing(1);
   @include govuk-font(16);
+  a {
+    &:hover {
+      color: govuk-colour("dark-blue");
+      text-decoration: underline;
+      text-decoration-thickness: max(3px, .1875rem, .12em);
+      text-decoration-skip-ink: none;
+      text-decoration-skip: none;
+    }
+    &:focus {
+      text-decoration: none;
+    }
+  }
 }
 
 .service-settings-nav__li--active:before {
   content: '';
   position: absolute;
-  left: -14px;
+  left: -15px;
   top: 0;
   height: 100%;
-  width: 4px;
+  width: 5px;
   background-color: $govuk-brand-colour;
 }
 

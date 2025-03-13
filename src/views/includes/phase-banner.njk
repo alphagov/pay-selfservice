@@ -1,4 +1,5 @@
 {% from "../macro/breadcrumbs.njk" import breadcrumbs %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {% set accountLabelWithTag %}
   <strong>{{ currentService.name }}</strong>
   {% if currentGatewayAccount %}
@@ -52,18 +53,21 @@
 {{ breadcrumbs(breadcrumbItems) }}
 
 {% if not hideServiceNav and not hideServiceHeader %}
-  <div class="govuk-phase-banner govuk-clearfix pay-top-navigation" data-cy="service-nav">
-    <nav role="navigation" class="service-navigation" data-cy="account-sub-nav">
-      <ul class="service-navigation--list">
-        {% for item in serviceNavigationItems %}
-          {% if item.permissions %}
-            <li
-              class="service-navigation--list-item {% if item.current %} service-navigation--list-item-active {% endif %}">
-              <a id="{{ item.id }}" href="{{ item.url }}">{{ item.name }}</a>
-            </li>
-          {% endif %}
-        {% endfor %}
-      </ul>
-    </nav>
-  </div>
+  <nav role="navigation" class="service-sub-nav" data-cy="account-sub-nav">
+    {% set navItems = [] %}
+    {% for item in serviceNavigationItems %}
+      {% if item.permissions %}
+        {% set navItems = (navItems.push({
+          href: item.url,
+          text: item.name,
+          active: item.current
+        }), navItems) %}
+      {% endif %}
+    {% endfor %}
+    {{ govukServiceNavigation({
+      navigation: navItems,
+      navigationId: "service-nav",
+      menuButtonText: "Service menu"
+    }) }}
+  </nav>
 {% endif %}

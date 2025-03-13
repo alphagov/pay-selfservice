@@ -49,7 +49,7 @@ describe('Webhooks', () => {
     cy.get('h1').should('have.text', 'Webhooks')
 
     // navigation menus are correctly integrated
-    cy.get('#navigation-menu-settings').parent().should('have.class', 'service-navigation--list-item-active')
+    cy.contains('.govuk-service-navigation__item--active', 'Settings')
     cy.get('#navigation-menu-webhooks').parent().should('have.class', 'govuk-!-margin-bottom-2')
 
     cy.get('[data-webhook-entry]').should('have.length', 3)

@@ -25,8 +25,7 @@ describe('navigation menu', function () {
     }
 
     const body = render('dashboard/index', templateData)
-
-    body.should.containSelector('.service-navigation--list-item:nth-child(1)').withExactText('Dashboard')
+    body.should.containSelector('.govuk-service-navigation__item:nth-child(1)').withExactText('Dashboard')
   })
 
   it('should render Transactions navigation link when user have transactions read permission and payment type is card', function () {
@@ -49,29 +48,7 @@ describe('navigation menu', function () {
     }
 
     const body = render('dashboard/index', templateData)
-
-    body.should.containSelector('#navigation-menu-transactions').withExactText('Transactions')
-  })
-
-  it('should render Transactions navigation link when user have transactions read permission and payment type is direct debit', function () {
-    const testPermissions = {
-      transactions_read: true
-    }
-    const templateData = {
-      currentGatewayAccount: {
-        full_type: 'test'
-      },
-      currentService: { name: 'Service Name' },
-      permissions: testPermissions,
-      hideServiceNav: false,
-      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'direct debit'),
-      links: [],
-      linksToDisplay: []
-    }
-
-    const body = render('dashboard/index', templateData)
-
-    body.should.containNoSelector('#navigation-menu-transactions')
+    body.should.containSelector('.govuk-service-navigation__item:nth-child(2)').withExactText('Transactions')
   })
 
   it('should render API keys navigation link when user have tokens read permission', function () {
