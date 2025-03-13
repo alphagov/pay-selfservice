@@ -1,8 +1,6 @@
 const { response } = require('../../../../utils/response')
 const formatSimplifiedAccountPathsFor = require('../../../../utils/simplified-account/format/format-simplified-account-paths-for')
-const paths = require('../../../../paths')
-const { setEmailCollectionModeByServiceIdAndAccountType } = require('../../../../services/email.service')
-const logger = require('../../../../utils/logger')(__filename)
+const paths = require('@root/paths')
 
 function getEmailNotificationsSettingsPage (req, res) {
   const service = req.service
@@ -24,37 +22,10 @@ function getEmailNotificationsSettingsPage (req, res) {
   return response(req, res, 'simplified-account/settings/email-notifications/index', context)
 }
 
-function getEditEmailCollectionModePage (req, res) {
-  return response(req, res, 'simplified-account/settings/email-notifications/collect-email-page', {
-    emailCollectionModes: {
-      mandatory: 'MANDATORY',
-      optional: 'OPTIONAL',
-      no: 'OFF'
-    },
-    emailCollectionMode: req.account.rawResponse.email_collection_mode,
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index,
-      req.service.externalId, req.account.type)
-  })
-}
-
-async function postEditEmailCollectionMode (req, res) {
-  const emailCollectionMode = req.body.emailCollectionMode
-  const serviceExternalId = req.service.externalId
-  const accountType = req.account.type
-  await setEmailCollectionModeByServiceIdAndAccountType(serviceExternalId, accountType, emailCollectionMode)
-  logger.info(`Updated email collection mode (${emailCollectionMode})`, {
-    service: serviceExternalId,
-    accountType
-  })
-  res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index,
-    serviceExternalId, accountType))
-}
-
 module.exports = {
-  getEmailNotificationsSettingsPage,
-  getEditEmailCollectionModePage,
-  postEditEmailCollectionMode
+  getEmailNotificationsSettingsPage
 }
+module.exports.emailCollectionMode = require('./email-collection-mode/email-collection-mode.controller')
 module.exports.refundEmails = require('./refund-emails/refund-emails.controller')
 module.exports.paymentConfirmationEmails = require('./payment-confirmation-emails/payment-confirmation-emails.controller')
 module.exports.templates = require('./templates/templates.controller')
