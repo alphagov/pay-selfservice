@@ -134,6 +134,12 @@ describe('Stripe details settings', () => {
 
           cy.get('.govuk-error-summary').should('not.exist')
 
+          cy.get('input[type="radio"]')
+            .siblings('label')
+            .contains('Yes')
+            .prev('input[type="radio"]')
+            .check()
+
           cy.get('input[name="vatNumber"]')
             .clear({ force: true })
             .type('what')
@@ -188,6 +194,12 @@ describe('Stripe details settings', () => {
         })
 
         it('should redirect to the task summary page on success', () => {
+          cy.get('input[type="radio"]')
+            .siblings('label')
+            .contains('Yes')
+            .prev('input[type="radio"]')
+            .check()
+
           cy.get('input[name="vatNumber"]')
             .clear({ force: true })
             .type('GB123456789')
