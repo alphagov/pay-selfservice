@@ -4,9 +4,14 @@
 
 {% set settingsPageTitle = webhook.description %}
 
+{% set title = eventTypes[event.event_type | upper] %}
+{% set settingsPageTitle = title %}
+
 {% block settingsContent %}
 
-  <h1 class="govuk-heading-l">{{ eventTypes[event.event_type | upper] }}</h1>
+
+
+  <h1 class="govuk-heading-l">{{ title }}</h1>
 
   {% set resourceLink %}
     <a class="govuk-link" href="{{ resourceLink }}">{{ event.resource_id }}</a>
