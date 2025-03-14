@@ -21,7 +21,7 @@
       items: [
         {
           text: 'Yes',
-          value: 'true',
+          value: 'yes',
           conditional: {
           html: govukInput({
             label: {
@@ -38,12 +38,12 @@
             }
           })
         },
-          checked: (vatNumberDeclaration === true)
+          checked: (vatNumberDeclaration === 'yes')
         },
         {
           text: 'No',
-          value: 'false',
-          checked: (vatNumberDeclaration === false)
+          value: 'no',
+          checked: (vatNumberDeclaration === 'no')
         }
       ]
     }) }}

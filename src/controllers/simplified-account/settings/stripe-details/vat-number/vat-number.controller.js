@@ -8,38 +8,40 @@ const paths = require('@root/paths')
 
 async function get (req, res) {
   return response(req, res, 'simplified-account/settings/stripe-details/vat-number/index', {
-    vatNumberDeclaration: true,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type)
   })
 }
 
 async function post (req, res, next) {
-  const hasVatNumber = req.body.vatNumberDeclaration === 'true'
-  if (hasVatNumber) {
-    const validations = [
-      body('vatNumber')
-        .trim()
-        .notEmpty()
-        .withMessage('Enter a VAT registration number')
-        .bail()
-        .custom(value => {
-          if (!/^((GB)?((\d{9})|(\d{12})|((GD)([0-4])(\d{2}))|((HA)([5-9])(\d{2}))))$/.test(value)) {
-            throw new Error('Enter a valid VAT registration number')
-          }
-          return true
-        })
-    ]
-    await Promise.all(validations.map(validation => validation.run(req)))
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-      const formattedErrors = formatValidationErrors(errors)
-      return postErrorResponse(req, res, {
-        summary: formattedErrors.errorSummary,
-        formErrors: formattedErrors.formErrors
+  const validations = [
+    body('vatNumberDeclaration')
+      .isIn(['yes', 'no'])
+      .withMessage('Select an option'),
+    body('vatNumber')
+      .if((value, { req }) => {
+        return req.body.vatNumberDeclaration === 'yes'
       })
-    }
+      .trim()
+      .notEmpty()
+      .withMessage('Enter a VAT registration number')
+      .bail()
+      .custom(value => {
+        if (!/^((GB)?((\d{9})|(\d{12})|((GD)([0-4])(\d{2}))|((HA)([5-9])(\d{2}))))$/.test(value)) {
+          throw new Error('Enter a valid VAT registration number')
+        }
+        return true
+      })
+  ]
+  await Promise.all(validations.map(validation => validation.run(req)))
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    const formattedErrors = formatValidationErrors(errors)
+    return postErrorResponse(req, res, {
+      summary: formattedErrors.errorSummary,
+      formErrors: formattedErrors.formErrors
+    })
   }
-
+  const hasVatNumber = req.body.vatNumberDeclaration === 'yes'
   updateStripeDetailsVatNumber(req.service, req.account, hasVatNumber
     ? req.body.vatNumber.replace(/\s/g, '').toUpperCase()
     : false)
@@ -59,7 +61,7 @@ async function post (req, res, next) {
 const postErrorResponse = (req, res, errors) => {
   return response(req, res, 'simplified-account/settings/stripe-details/vat-number/index', {
     errors,
-    vatNumberDeclaration: req.body.vatNumberDeclaration === 'true',
+    vatNumberDeclaration: req.body.vatNumberDeclaration,
     vatNumber: req.body.vatNumber,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type)
   })

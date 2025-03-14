@@ -21,7 +21,7 @@
       items: [
         {
           text: 'Yes',
-          value: 'true',
+          value: 'yes',
           conditional: {
           html: govukInput({
             label: {
@@ -37,12 +37,12 @@
             }
           })
         },
-          checked: (companyNumberDeclaration === true)
+          checked: (companyNumberDeclaration === 'yes')
         },
         {
           text: 'No',
-          value: 'false',
-          checked: (companyNumberDeclaration === false)
+          value: 'no',
+          checked: (companyNumberDeclaration === 'no')
         }
       ]
     }) }}

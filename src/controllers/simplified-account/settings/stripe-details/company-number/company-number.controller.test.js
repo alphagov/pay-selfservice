@@ -45,7 +45,6 @@ describe('Controller: settings/stripe-details/company-number', () => {
     })
 
     it('should pass context data to the response method', () => {
-      expect(mockResponse.args[0][3]).to.have.property('companyNumberDeclaration').to.equal(true)
       expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal(STRIPE_DETAILS_INDEX_PATH)
     })
   })
@@ -99,7 +98,7 @@ describe('Controller: settings/stripe-details/company-number', () => {
         before(() => {
           nextRequest({
             body: {
-              companyNumberDeclaration: 'true',
+              companyNumberDeclaration: 'yes',
               companyNumber
             }
           })
@@ -120,11 +119,11 @@ describe('Controller: settings/stripe-details/company-number', () => {
       })
     })
 
-    describe('when company number declaration is false', () => {
+    describe('when company number declaration is no', () => {
       before(() => {
         nextRequest({
           body: {
-            companyNumberDeclaration: 'false'
+            companyNumberDeclaration: 'no'
           }
         })
         call('post', 1)
@@ -152,7 +151,7 @@ describe('Controller: settings/stripe-details/company-number', () => {
         })
         nextRequest({
           body: {
-            companyNumberDeclaration: 'true',
+            companyNumberDeclaration: 'yes',
             companyNumber: '01234567'
           }
         })
@@ -168,7 +167,7 @@ describe('Controller: settings/stripe-details/company-number', () => {
       before(() => {
         nextRequest({
           body: {
-            companyNumberDeclaration: 'true',
+            companyNumberDeclaration: 'yes',
             companyNumber: 'what'
           }
         })
@@ -192,7 +191,7 @@ describe('Controller: settings/stripe-details/company-number', () => {
       })
 
       it('should restore user input', () => {
-        expect(mockResponse.args[0][3]).to.have.property('companyNumberDeclaration').to.equal(true)
+        expect(mockResponse.args[0][3]).to.have.property('companyNumberDeclaration').to.equal('yes')
         expect(mockResponse.args[0][3]).to.have.property('companyNumber').to.equal('what')
         expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal(STRIPE_DETAILS_INDEX_PATH)
       })
@@ -202,7 +201,7 @@ describe('Controller: settings/stripe-details/company-number', () => {
       before(() => {
         nextRequest({
           body: {
-            companyNumberDeclaration: 'true',
+            companyNumberDeclaration: 'yes',
             companyNumber: '1234567'
           }
         })
@@ -213,6 +212,22 @@ describe('Controller: settings/stripe-details/company-number', () => {
         expect(mockResponse.args[0][3].errors.summary[0].text).to.equal('Limited Company numbers in England and Wales have 8 digits and always start with 0')
         expect(mockResponse.args[0][3].errors.formErrors.companyNumber).to.equal(
           'Limited Company numbers in England and Wales have 8 digits and always start with 0'
+        )
+      })
+    })
+
+    describe('when no option is selected', () => {
+      before(() => {
+        nextRequest({
+          body: {}
+        })
+        call('post', 1)
+      })
+
+      it('should render the form with validation errors', () => {
+        expect(mockResponse.args[0][3].errors.summary[0].text).to.equal('Select an option')
+        expect(mockResponse.args[0][3].errors.formErrors.companyNumberDeclaration).to.equal(
+          'Select an option'
         )
       })
     })
