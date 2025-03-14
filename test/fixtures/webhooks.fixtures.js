@@ -32,7 +32,8 @@ function validWebhookMessage (options = {}) {
     resource_type: options.resource_type || 'PAYMENT',
     resource_id: options.resource_id || 'valid-resource-id',
     resource: transactionFixtures.validTransactionDetailsResponse(options.resource || { transaction_id: 'an-external-id' }),
-    latest_attempt: validWebhookMessageAttempt(options.latest_attempt || {})
+    latest_attempt: validWebhookMessageAttempt(options.latest_attempt || {}),
+    last_delivery_status: options.last_delivery_status || 'SUCCESSFUL'
   }
 }
 
@@ -67,6 +68,7 @@ function webhookMessageSearchResponse (options = {}) {
   return {
     count: messages.length,
     page: options.page || 1,
+    total: options.total || 1,
     results: messages.map(validWebhookMessage)
   }
 }
