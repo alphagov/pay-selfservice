@@ -129,8 +129,8 @@ describe('Stripe details settings', () => {
         })
 
         it('should render errors when submitting bad inputs', () => {
-          const emptyFirstNameError = 'Enter your first name'
-          const emptyLastNameError = 'Enter your last name'
+          const emptyFirstNameError = 'Enter the first name'
+          const emptyLastNameError = 'Enter the last name'
           const tooOldError = 'Enter a valid year of birth'
           const invalidEmailError = 'Enter a real email address'
 
