@@ -86,8 +86,8 @@ describe('Controller: settings/api-keys/change-name', () => {
       it('should pass req, res, template path and context to the response method', () => {
         expect(mockResponse.calledOnce).to.be.true // eslint-disable-line
         expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/api-keys/api-key-name')
-        expect(mockResponse.args[0][3].errors.summary[0].text).to.equal('Name must not be empty')
-        expect(mockResponse.args[0][3].errors.formErrors.description).to.equal('Name must not be empty')
+        expect(mockResponse.args[0][3].errors.summary[0].text).to.equal('Enter the API key name')
+        expect(mockResponse.args[0][3].errors.formErrors.description).to.equal('Enter the API key name')
         expect(mockResponse.args[0][3].backLink).to.equal(
           formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, SERVICE_ID, ACCOUNT_TYPE))
       })
