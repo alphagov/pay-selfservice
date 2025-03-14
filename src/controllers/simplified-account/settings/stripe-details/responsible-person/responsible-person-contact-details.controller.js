@@ -3,10 +3,10 @@ const { checkTaskCompletion } = require('@middleware/simplified-account')
 const paths = require('@root/paths')
 const _ = require('lodash')
 const { response } = require('@utils/response')
-const { stripePersonSchema } = require('@utils/simplified-account/validation/stripe-person.schema')
 const { validationResult } = require('express-validator')
 const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const { FORM_STATE_KEY } = require('@controllers/simplified-account/settings/stripe-details/responsible-person/constants')
+const { RESPONSIBLE_PERSON_CONTACT_DETAILS_VALIDATIONS } = require('@utils/simplified-account/validation/responsible-person.schema')
 
 async function get (req, res) {
   const { contact } = _.get(req, FORM_STATE_KEY, {})
@@ -17,12 +17,9 @@ async function get (req, res) {
 }
 
 async function post (req, res) {
-  const validations = [
-    stripePersonSchema.contactDetails.workEmail.validate,
-    stripePersonSchema.contactDetails.workTelephoneNumber.validate
-  ]
-
-  await Promise.all(validations.map(validation => validation.run(req)))
+  for (const validation of RESPONSIBLE_PERSON_CONTACT_DETAILS_VALIDATIONS) {
+    await validation.run(req)
+  }
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)

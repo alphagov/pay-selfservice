@@ -178,7 +178,7 @@ describe('Controller: settings/stripe-details/responsible-person', () => {
         expect(errorSummary).to.deep.include(
           {
             href: '#first-name',
-            text: 'Enter your first name'
+            text: 'Enter the first name'
           }
         )
       })

@@ -120,8 +120,8 @@ describe('Stripe details settings', () => {
       describe('When entering invalid details', () => {
         describe('Name and DOB sub-task', () => {
           it('should render errors when submitting bad inputs', () => {
-            const emptyFirstNameError = 'Enter your first name'
-            const emptyLastNameError = 'Enter your last name'
+            const emptyFirstNameError = 'Enter the first name'
+            const emptyLastNameError = 'Enter the last name'
             const tooOldError = 'Enter a valid year of birth'
 
             cy.get('.govuk-error-summary').should('not.exist')
@@ -181,7 +181,7 @@ describe('Stripe details settings', () => {
               .should('contain', emptyAddressCityError)
               .should('contain', invalidPostcodeError)
             cy.get('input[name="homeAddressLine1"]').should('have.class', 'govuk-input--error')
-            cy.get('#home-address-line-1-error').should('contain.text', emptyAddressError)
+            cy.get('#home-address-line1-error').should('contain.text', emptyAddressError)
             cy.get('input[name="homeAddressCity"]').should('have.class', 'govuk-input--error')
             cy.get('#home-address-city-error').should('contain.text', emptyAddressCityError)
             cy.get('input[name="homeAddressPostcode"]').should('have.class', 'govuk-input--error')

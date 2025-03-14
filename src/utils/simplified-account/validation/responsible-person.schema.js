@@ -7,7 +7,7 @@ const responsiblePersonSchema = {
     firstName: {
       validate: body('firstName')
         .notEmpty()
-        .withMessage('Enter your first name')
+        .withMessage('Enter the first name')
         .bail()
         .isLength({ max: 100 })
         .withMessage('First name must be 100 characters or fewer')
@@ -15,7 +15,7 @@ const responsiblePersonSchema = {
     lastName: {
       validate: body('lastName')
         .notEmpty()
-        .withMessage('Enter your last name')
+        .withMessage('Enter the last name')
         .bail()
         .isLength({ max: 100 })
         .withMessage('Last name must be 100 characters or fewer')
@@ -151,5 +151,23 @@ const responsiblePersonSchema = {
 }
 
 module.exports = {
-  responsiblePersonSchema
+  responsiblePersonSchema,
+  RESPONSIBLE_PERSON_NAME_AND_DOB_VALIDATIONS: [
+    responsiblePersonSchema.name.firstName.validate,
+    responsiblePersonSchema.name.lastName.validate,
+    responsiblePersonSchema.dob.validate,
+    responsiblePersonSchema.dob.dobDay.validate,
+    responsiblePersonSchema.dob.dobMonth.validate,
+    responsiblePersonSchema.dob.dobYear.validate
+  ],
+  RESPONSIBLE_PERSON_HOME_ADDRESS_VALIDATIONS: [
+    responsiblePersonSchema.address.homeAddressLine1.validate,
+    responsiblePersonSchema.address.homeAddressLine2.validate,
+    responsiblePersonSchema.address.homeAddressCity.validate,
+    responsiblePersonSchema.address.homeAddressPostcode.validate
+  ],
+  RESPONSIBLE_PERSON_CONTACT_DETAILS_VALIDATIONS: [
+    responsiblePersonSchema.contactDetails.workTelephoneNumber.validate,
+    responsiblePersonSchema.contactDetails.workEmail.validate
+  ]
 }
