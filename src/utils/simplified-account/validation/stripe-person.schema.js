@@ -21,7 +21,7 @@ const stripePersonSchema = {
     }
   },
   dob: {
-    validate: body('dobDay') // Use just one DOB field as the anchor to prevent multiple validations
+    validate: body('dob')
       .custom((value, { req }) => {
         const { dobDay, dobMonth, dobYear } = req.body
         if (!dobDay && !dobMonth && !dobYear) {
