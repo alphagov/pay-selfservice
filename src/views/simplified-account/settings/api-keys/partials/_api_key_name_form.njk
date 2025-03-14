@@ -1,0 +1,21 @@
+<form id="api-key-name" method="post" novalidate>
+  <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+  {{ govukInput({
+    id: "description",
+    name: "description",
+    type: "text",
+    attributes: {
+      maxlength: "50"
+    },
+    errorMessage: { text: errors.formErrors['description'] } if errors.formErrors['description'] else false,
+    classes: "govuk-input--width-40",
+    hint: {
+      text: "For example, “John Smith’s API key”"
+    }
+  }) }}
+
+  {{ govukButton({
+    text: "Continue"
+  }) }}
+</form>

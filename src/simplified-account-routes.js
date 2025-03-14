@@ -94,13 +94,14 @@ simplifiedAccount.get(paths.simplifiedAccount.settings.cardTypes.index, permissi
 
 // api keys
 simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.index, permission('tokens-active:read'), serviceSettingsController.apiKeys.get)
-simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.create, permission('tokens:create'), serviceSettingsController.apiKeys.createApiKey.get)
-simplifiedAccount.post(paths.simplifiedAccount.settings.apiKeys.create, permission('tokens:create'), serviceSettingsController.apiKeys.createApiKey.post)
-simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.changeName, permission('tokens:update'), serviceSettingsController.apiKeys.changeName.get)
-simplifiedAccount.post(paths.simplifiedAccount.settings.apiKeys.changeName, permission('tokens:update'), serviceSettingsController.apiKeys.changeName.post)
-simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.revoke, permission('tokens:delete'), serviceSettingsController.apiKeys.revoke.get)
-simplifiedAccount.post(paths.simplifiedAccount.settings.apiKeys.revoke, permission('tokens:delete'), serviceSettingsController.apiKeys.revoke.post)
-simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.revokedKeys, permission('tokens-revoked:read'), serviceSettingsController.apiKeys.revokedKeys.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.create.index, permission('tokens:create'), serviceSettingsController.apiKeys.create.createKey.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.apiKeys.create.index, permission('tokens:create'), serviceSettingsController.apiKeys.create.createKey.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.create.newKeyDetails, permission('tokens:create'), serviceSettingsController.apiKeys.create.newKeyDetails.get)
+simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.edit.changeName, permission('tokens:update'), serviceSettingsController.apiKeys.edit.changeName.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.apiKeys.edit.changeName, permission('tokens:update'), serviceSettingsController.apiKeys.edit.changeName.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.revoke.index, permission('tokens:delete'), serviceSettingsController.apiKeys.revoke.revokeKey.get)
+simplifiedAccount.post(paths.simplifiedAccount.settings.apiKeys.revoke.index, permission('tokens:delete'), serviceSettingsController.apiKeys.revoke.revokeKey.post)
+simplifiedAccount.get(paths.simplifiedAccount.settings.apiKeys.revoke.revokedKeys, permission('tokens-revoked:read'), serviceSettingsController.apiKeys.revoke.revokedKeys.get)
 
 // webhooks
 simplifiedAccount.get(paths.simplifiedAccount.settings.webhooks.index, permission('webhooks:read'), serviceSettingsController.webhooks.get)
