@@ -8,14 +8,14 @@ const TOKEN_SOURCE = {
 
 /**
  * @param {GatewayAccount} gatewayAccount
- * @param {string} description
+ * @param {string} name
  * @param {string} email - the user email
  * @param {'API' | 'PRODUCTS'} tokenSource - The type of the token (must match one of TOKEN_TYPE values).
  * @returns {Promise<string>} the new api key
  */
-const createApiKey = async (gatewayAccount, description, email, tokenSource) => {
+const createKey = async (gatewayAccount, name, email, tokenSource) => {
   const payload = {
-    description,
+    description: name,
     account_id: gatewayAccount.id,
     created_by: email,
     type: tokenSource,
@@ -29,7 +29,7 @@ const createApiKey = async (gatewayAccount, description, email, tokenSource) => 
 /**
  * Gets the list of revoked api keys for a gateway account
  * @param {string} gatewayAccountId
- * @returns {[Token]}
+ * @returns {Promise<[Token]>}
  */
 const getRevokedKeys = async (gatewayAccountId) => {
   const response = await publicAuthClient.getRevokedTokensForAccount({ accountId: gatewayAccountId })
@@ -40,7 +40,7 @@ const getRevokedKeys = async (gatewayAccountId) => {
 /**
  * Gets the list of active api keys for a gateway account
  * @param {string} gatewayAccountId
- * @returns {[Token]}
+ * @returns {Promise<[Token]>}
  */
 const getActiveKeys = async (gatewayAccountId) => {
   const response = await publicAuthClient.getActiveTokensForAccount({
@@ -54,17 +54,18 @@ const getActiveKeys = async (gatewayAccountId) => {
  * @param {string} name The new name/description
  * @return {Promise<void>}
  */
-const changeApiKeyName = async (tokenLink, name) => {
+const changeKeyName = async (tokenLink, name) => {
   await publicAuthClient.updateToken({ payload: { token_link: tokenLink, description: name } })
 }
 
 /**
  * @param {string} gatewayAccountId
  * @param {string} tokenLink
- * @return {Promise<*>}
+ * @return {Promise<Token>}
  */
 const getKeyByTokenLink = async (gatewayAccountId, tokenLink) => {
-  return await publicAuthClient.getKeyByTokenLink(gatewayAccountId, tokenLink)
+  const data = await publicAuthClient.getKeyByTokenLink(gatewayAccountId, tokenLink)
+  return Token.fromJson(data)
 }
 
 /**
@@ -80,8 +81,8 @@ const revokeKey = async (gatewayAccountId, tokenLink) => {
 }
 
 module.exports = {
-  changeApiKeyName,
-  createApiKey,
+  changeKeyName,
+  createKey,
   getActiveKeys,
   getKeyByTokenLink,
   getRevokedKeys,

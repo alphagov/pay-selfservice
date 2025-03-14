@@ -1,4 +1,4 @@
-{% extends "../settings-layout.njk" %}
+{% extends "simplified-account/settings/settings-layout.njk" %}
 
 {% set settingsPageTitle = ("Test" if accountType === 'test' else "Live") + " API keys" %}
 
@@ -25,7 +25,7 @@
   </p>
 
   {{ govukButton({
-    href: createApiKeyLink,
+    href: createKeyLink,
     text: 'Create a new API key',
     classes: 'govuk-!-margin-top-2'
   }) }}
@@ -48,11 +48,13 @@
             items: [
               {
                 href: key.changeNameLink,
-                text: 'Change name'
+                text: 'Change name',
+                classes: 'govuk-link--no-visited-state'
               },
               {
                 href: key.revokeKeyLink,
-                text: 'Revoke'
+                text: 'Revoke',
+                classes: 'govuk-link--no-visited-state'
               }
             ]
           }

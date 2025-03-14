@@ -102,7 +102,7 @@ export { clientBuild, serverBuild }
 
 // if file is called directly, do this
 if (import.meta.url === `file://${process.argv[1]}`) {
-  await rm('dist', { recursive: true, force: true }, async () => {
+  rm('dist', { recursive: true, force: true }, async () => {
     console.log('✅ [dist] cleared')
     console.log('🚧 starting build...')
     await Promise.all([

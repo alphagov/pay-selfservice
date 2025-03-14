@@ -9,7 +9,7 @@ const SERVICE_EXTERNAL_ID = 'service-456-def'
 const GATEWAY_ACCOUNT_ID = 11
 const ACCOUNT_TYPE = 'test'
 const USER_EMAIL = 'potter@wand.com'
-const SERVICE_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`
+const API_KEYS_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`
 
 const setupStubs = (role = 'admin', activeApiKeys = [], revokedApiKeys = []) => {
   cy.task('setupStubs', [
@@ -58,11 +58,11 @@ describe('Settings - API keys', () => {
           cy.contains('a', 'Show revoked API keys').click()
           cy.contains('h1', 'Revoked API keys (2)').should('exist')
 
-          verifySummaryCard(0, revokedKeys[0])
-          verifySummaryCard(1, revokedKeys[1])
+          verifySummaryCard(0, revokedKeys[0], true)
+          verifySummaryCard(1, revokedKeys[1], true)
         })
 
-        function verifySummaryCard (pos, token) {
+        function verifySummaryCard (pos, token, revoked) {
           cy.get('div.govuk-summary-card').eq(pos)
             .within(() => {
               cy.get('.govuk-summary-card__title').should('contain', token.description)
@@ -83,7 +83,7 @@ describe('Settings - API keys', () => {
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Last used')
                   if (token.lastUsed === undefined) {
-                    cy.get('.govuk-summary-list__value').should('contain', 'Not used yet')
+                    cy.get('.govuk-summary-list__value').should('contain', revoked ? 'Never used' : 'Not used yet')
                   } else {
                     cy.get('.govuk-summary-list__value').should('contain', token.lastUsed)
                   }
@@ -110,7 +110,7 @@ describe('Settings - API keys', () => {
 
         it('should return a 404 when trying to access the revoke page directly', () => {
           cy.request({
-            url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoked`,
+            url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoked-keys`,
             failOnStatusCode: false
           }).then((response) => {
             expect(response.status).to.eq(404)
@@ -178,14 +178,14 @@ describe('Settings - API keys', () => {
                 .within(() => {
                   cy.get('a')
                     .should('contain.text', 'Change name')
-                    .and('have.attr', 'href', `${SERVICE_SETTINGS_URL}/change-name/${token.tokenLink}`)
+                    .and('have.attr', 'href', `${API_KEYS_SETTINGS_URL}/${token.tokenLink}/change-name`)
                 })
 
               cy.get('.govuk-summary-card__action').eq(1)
                 .within(() => {
                   cy.get('a')
                     .should('contain.text', 'Revoke')
-                    .and('have.attr', 'href', `${SERVICE_SETTINGS_URL}/revoke/${token.tokenLink}`)
+                    .and('have.attr', 'href', `${API_KEYS_SETTINGS_URL}/${token.tokenLink}/revoke`)
                 })
 
               cy.get('.govuk-summary-list__row').eq(0)
@@ -232,13 +232,14 @@ describe('Settings - API keys', () => {
       it('successfully', () => {
         cy.contains('a', 'Create a new API key').click()
         cy.contains('h1', 'API key name').should('exist')
-        cy.get('input[id="description"]').type(API_KEY_DESCRIPTION)
+        cy.get('input[name="keyName"]').type(API_KEY_DESCRIPTION)
         cy.contains('button', 'Continue').click()
         cy.contains('h1', 'New API key').should('exist')
         cy.contains('h2', API_KEY_DESCRIPTION).should('exist')
-        cy.get('#apiKey').should('have.text', EXPECTED_TOKEN)
-        cy.get('#generate-button').should('have.attr', 'data-copy-text', 'true')
-        cy.get('#generate-button').should('have.attr', 'data-target', 'copy-this-api-key')
+        cy.get('#api-key').should('have.text', EXPECTED_TOKEN)
+        cy.get('#copy-key-button')
+          .should('have.attr', 'data-copy-text', 'true')
+          .should('have.attr', 'data-target', 'copy-this-api-key')
       })
 
       it('unsuccessfully', () => {
@@ -247,7 +248,7 @@ describe('Settings - API keys', () => {
         cy.contains('button', 'Continue').click()
         cy.get('.govuk-error-summary__body').within(() => {
           cy.contains('a', 'Enter the API key name').should('exist')
-          cy.get('a').should('have.attr', 'href', '#description')
+          cy.get('a').should('have.attr', 'href', '#key-name')
         })
       })
     })
@@ -275,7 +276,7 @@ describe('Settings - API keys', () => {
           cy.contains('a', 'Revoke').click()
         })
         cy.contains('button', 'Save changes').click()
-        cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoke/${TOKEN_LINK}`)
+        cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/${TOKEN_LINK}/revoke`)
         cy.get('.govuk-error-summary').within(() => {
           cy.contains('h2', 'There is a problem').should('exist')
           cy.contains('a', `Confirm if you want to revoke ${DESCRIPTION}`).should('exist')
@@ -288,7 +289,7 @@ describe('Settings - API keys', () => {
           cy.contains('h2', DESCRIPTION).should('exist')
           cy.contains('a', 'Revoke').click()
         })
-        cy.get('input[type="radio"][value="Yes"]').check()
+        cy.get('input[type="radio"][value="yes"]').check()
         cy.contains('button', 'Save changes').click()
         cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
         cy.contains('h1', 'Test API keys').should('exist')
@@ -301,7 +302,7 @@ describe('Settings - API keys', () => {
           cy.contains('h2', DESCRIPTION).should('exist')
           cy.contains('a', 'Revoke').click()
         })
-        cy.get('input[type="radio"][value="No"]').check()
+        cy.get('input[type="radio"][value="no"]').check()
         cy.contains('button', 'Save changes').click()
         cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
         cy.contains('h1', 'Test API keys').should('exist')
@@ -321,6 +322,7 @@ describe('Settings - API keys', () => {
       beforeEach(() => {
         setupStubs('admin', apiKeys)
         cy.task('setupStubs', [
+          apiKeysStubs.getKeyByTokenLink(GATEWAY_ACCOUNT_ID, TOKEN_LINK, 'mathematical clothes'),
           apiKeysStubs.changeApiKeyName(TOKEN_LINK, NEW_API_KEY_NAME)
         ])
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
@@ -339,7 +341,9 @@ describe('Settings - API keys', () => {
           cy.contains('h2', 'mathematical clothes').should('exist')
           cy.contains('a', 'Change name').click()
         })
-        cy.get('input[id="description"]').type(NEW_API_KEY_NAME)
+        cy.get('input[id="key-name"]')
+          .clear({ force: true })
+          .type(NEW_API_KEY_NAME)
         cy.contains('button', 'Continue').click()
         cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
         cy.contains('h1', 'Test API keys').should('exist')

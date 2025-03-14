@@ -1,18 +1,18 @@
-{% extends "../settings-layout.njk" %}
+{% extends "simplified-account/settings/settings-layout.njk" %}
 
 {% set settingsPageTitle = "Revoke " + ("test" if accountType === 'test' else "live") + " API key" %}
 
 {% block settingsContent %}
-  <form id="revoke-api-key" method="post" novalidate>
+  <form id="revoke-api-key-form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-    <input id="apiKeyName" name="apiKeyName" type="hidden" value="{{ description }}"/>
+    <input id="api-key-name" name="apiKeyName" type="hidden" value="{{ name }}"/>
 
     {{ govukRadios({
       name: 'revokeApiKey',
       errorMessage: { text: errors.formErrors['revokeApiKey'] } if errors.formErrors['revokeApiKey'] else false,
       fieldset: {
         legend: {
-          text: 'Are you sure you want to revoke ' + description + '?',
+          text: 'Are you sure you want to revoke ' + name + '?',
           isPageHeading: true,
           classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
         }
@@ -22,12 +22,12 @@
       },
       items: [
         {
-          value: 'Yes',
-          text: 'Yes'
+          text: 'Yes',
+          value: 'yes'
         },
         {
-          value: 'No',
-          text: 'No'
+          text: 'No',
+          value: 'no'
         }
       ]
     }) }}
