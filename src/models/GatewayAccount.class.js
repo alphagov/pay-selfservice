@@ -117,18 +117,29 @@ class GatewayAccount {
   }
 }
 
+/**
+ * @class EmailNotifications
+ * @property {boolean} enabled
+ * @property {string} templateBody
+ * @property {number} version
+ */
+class EmailNotificationSetting {
+  constructor (data) {
+    this.enabled = data?.enabled
+    this.templateBody = data?.template_body
+    this.version = data?.version
+  }
+}
+
+/**
+ * @class EmailNotifications
+ * @property {EmailNotificationSetting} paymentConfirmed Payment confirmation email notification settings
+ * @property {EmailNotificationSetting} refundIssued Refund issued email notification settings
+ */
 class EmailNotifications {
   constructor (email_notifications = {}) { // eslint-disable-line
-    this.paymentConfirmed = {
-      enabled: email_notifications?.PAYMENT_CONFIRMED?.enabled ?? false, // eslint-disable-line
-      templateBody: email_notifications?.PAYMENT_CONFIRMED?.template_body, // eslint-disable-line
-      version: email_notifications?.PAYMENT_CONFIRMED?.version // eslint-disable-line
-    }
-    this.refundIssued = {
-      enabled: email_notifications?.REFUND_ISSUED?.enabled ?? false, // eslint-disable-line
-      templateBody: email_notifications?.REFUND_ISSUED?.template_body, // eslint-disable-line
-      version: email_notifications?.REFUND_ISSUED?.version // eslint-disable-line
-    }
+    this.paymentConfirmed = new EmailNotificationSetting(email_notifications?.PAYMENT_CONFIRMED) // eslint-disable-line
+    this.refundIssued = new EmailNotificationSetting(email_notifications?.REFUND_ISSUED) // eslint-disable-line
   }
 }
 
