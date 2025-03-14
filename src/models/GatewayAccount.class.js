@@ -15,6 +15,7 @@ const pendingCredentialStates = [CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTE
  * @property {boolean} disableToggle3ds
  * @property {string} externalId The external id of the gateway account
  * @property {string} emailCollectionMode The email collection mode of the gateway account
+ * @property {EmailNotifications} emailNotifications The email collection notification settings of the gateway account
  * @property {GatewayAccountCredential[]} gatewayAccountCredentials available credentials for gateway account
  * @property {string} id The id of the gateway account
  * @property {boolean} motoMaskCardNumber
@@ -40,7 +41,8 @@ class GatewayAccount {
     this.disableToggle3ds = gatewayAccountData.payment_provider === 'stripe'
     this.externalId = gatewayAccountData.external_id
     this.emailCollectionMode = gatewayAccountData.email_collection_mode
-    this.gatewayAccountCredentials = gatewayAccountData?.gateway_account_credentials?.map(
+    this.emailNotifications = new EmailNotifications(gatewayAccountData.email_notifications)
+    this.gatewayAccountCredentials = gatewayAccountData.gateway_account_credentials?.map(
       credentialData => GatewayAccountCredential.fromJson(credentialData)
     ) ?? []
     this.id = gatewayAccountData.gateway_account_id
@@ -112,6 +114,32 @@ class GatewayAccount {
     } catch {
       return false
     }
+  }
+}
+
+/**
+ * @class EmailNotifications
+ * @property {boolean} enabled
+ * @property {string} templateBody
+ * @property {number} version
+ */
+class EmailNotificationSetting {
+  constructor (data) {
+    this.enabled = data?.enabled
+    this.templateBody = data?.template_body
+    this.version = data?.version
+  }
+}
+
+/**
+ * @class EmailNotifications
+ * @property {EmailNotificationSetting} paymentConfirmed Payment confirmation email notification settings
+ * @property {EmailNotificationSetting} refundIssued Refund issued email notification settings
+ */
+class EmailNotifications {
+  constructor (email_notifications = {}) { // eslint-disable-line
+    this.paymentConfirmed = new EmailNotificationSetting(email_notifications?.PAYMENT_CONFIRMED) // eslint-disable-line
+    this.refundIssued = new EmailNotificationSetting(email_notifications?.REFUND_ISSUED) // eslint-disable-line
   }
 }
 
