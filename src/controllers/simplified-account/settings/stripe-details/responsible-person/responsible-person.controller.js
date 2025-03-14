@@ -26,8 +26,9 @@ async function post (req, res) {
     stripePersonSchema.dob.dobMonth.validate,
     stripePersonSchema.dob.dobYear.validate
   ]
-
-  await Promise.all(validations.map(validation => validation.run(req)))
+  for (const validation of validations) {
+    await validation.run(req)
+  }
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)

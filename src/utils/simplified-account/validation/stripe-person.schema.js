@@ -6,7 +6,7 @@ const stripePersonSchema = {
     firstName: {
       validate: body('firstName')
         .notEmpty()
-        .withMessage('Enter your first name')
+        .withMessage('Enter the first name')
         .bail()
         .isLength({ max: 100 })
         .withMessage('First name must be 100 characters or fewer')
@@ -14,14 +14,14 @@ const stripePersonSchema = {
     lastName: {
       validate: body('lastName')
         .notEmpty()
-        .withMessage('Enter your last name')
+        .withMessage('Enter the last name')
         .bail()
         .isLength({ max: 100 })
         .withMessage('Last name must be 100 characters or fewer')
     }
   },
   dob: {
-    validate: body('dobDay') // Use just one DOB field as the anchor to prevent multiple validations
+    validate: body('dob')
       .custom((value, { req }) => {
         const { dobDay, dobMonth, dobYear } = req.body
         if (!dobDay && !dobMonth && !dobYear) {

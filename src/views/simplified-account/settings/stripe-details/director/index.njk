@@ -53,47 +53,7 @@
 
     {% endcall %}
 
-    {{ govukDateInput({
-      id: "dob",
-      fieldset: {
-        legend: {
-          classes: "govuk-fieldset__legend--m",
-          text: "Date of birth"
-        }
-      },
-      hint: {
-        text: "For example, 26 5 1980"
-      },
-      errorMessage: {
-        text: errors.formErrors['dobDay'] or errors.formErrors['dobMonth'] or errors.formErrors['dobYear']
-      } if (errors.formErrors['dobDay'] or errors.formErrors['dobMonth'] or errors.formErrors['dobYear']) else false,
-      items: [
-        {
-          label: "Day",
-          value: dob.dobDay,
-          name: "dobDay",
-          id: "dob-day",
-          classes: "govuk-input--width-2",
-          autocomplete: "section-person bday-day"
-        },
-        {
-          label: "Month",
-          value: dob.dobMonth,
-          name: "dobMonth",
-          id: "dob-month",
-          classes: "govuk-input--width-2",
-          autocomplete: "section-person bday-month"
-        },
-        {
-          label: "Year",
-          value: dob.dobYear,
-          name: "dobYear",
-          id: "dob-year",
-          classes: "govuk-input--width-4",
-          autocomplete: "section-person bday-year"
-        }
-      ]
-    }) }}
+    {% include "simplified-account/settings/stripe-details/partials/_stripe_person_dob.njk" %}
 
     {{ govukInput({
       label: {
@@ -117,6 +77,14 @@
   </form>
 
   <script>
+    // progressively enhance dob input to only accept digits
+    const elementIds = [{ id: 'dob-day', length: 2 }, { id: 'dob-month', length: 2 }, { id: 'dob-year', length: 4 }]
+    elementIds.forEach(element => {
+      document.getElementById(element.id).addEventListener('input', function (e) {
+        let value = e.target.value
+        e.target.value = value.replace(/\D/g, '').slice(0, element.length)
+      })
+    })
     // progressively enhance the submit button to be disabled during form submission as it takes a few seconds to talk to Stripe
     const submitButton = document.getElementById('director-submit')
     document.getElementById('director-form').addEventListener('submit', function () {

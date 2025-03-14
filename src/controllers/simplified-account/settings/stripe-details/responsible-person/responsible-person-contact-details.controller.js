@@ -21,8 +21,9 @@ async function post (req, res) {
     stripePersonSchema.contactDetails.workEmail.validate,
     stripePersonSchema.contactDetails.workTelephoneNumber.validate
   ]
-
-  await Promise.all(validations.map(validation => validation.run(req)))
+  for (const validation of validations) {
+    await validation.run(req)
+  }
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)

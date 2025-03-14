@@ -113,16 +113,16 @@ describe('Controller: settings/stripe-details/director', () => {
           {
             errors: {
               summary: [
-                { text: 'Enter your first name', href: '#first-name' },
-                { text: 'Enter your last name', href: '#last-name' },
-                { text: 'Enter a real email address', href: '#work-email' },
-                { text: 'Enter a valid year of birth', href: '#dob-year' }
+                { text: 'Enter the first name', href: '#first-name' },
+                { text: 'Enter the last name', href: '#last-name' },
+                { text: 'Enter a valid year of birth', href: '#dob-year' },
+                { text: 'Enter a real email address', href: '#work-email' }
               ],
               formErrors: {
-                firstName: 'Enter your first name',
-                lastName: 'Enter your last name',
-                workEmail: 'Enter a real email address',
-                dobYear: 'Enter a valid year of birth'
+                firstName: 'Enter the first name',
+                lastName: 'Enter the last name',
+                dobYear: 'Enter a valid year of birth',
+                workEmail: 'Enter a real email address'
               }
             },
             name: { firstName: '', lastName: '' },

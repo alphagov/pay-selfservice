@@ -23,8 +23,9 @@ async function post (req, res) {
     stripePersonSchema.address.homeAddressCity.validate,
     stripePersonSchema.address.homeAddressPostcode.validate
   ]
-
-  await Promise.all(validations.map(validation => validation.run(req)))
+  for (const validation of validations) {
+    await validation.run(req)
+  }
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)
