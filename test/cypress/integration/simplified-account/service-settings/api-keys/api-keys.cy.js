@@ -246,7 +246,7 @@ describe('Settings - API keys', () => {
         cy.contains('h1', 'API key name').should('exist')
         cy.contains('button', 'Continue').click()
         cy.get('.govuk-error-summary__body').within(() => {
-          cy.contains('a', 'Name must not be empty').should('exist')
+          cy.contains('a', 'Enter the API key name').should('exist')
           cy.get('a').should('have.attr', 'href', '#description')
         })
       })

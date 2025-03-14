@@ -19,7 +19,8 @@
       classes: "govuk-input--width-40",
       hint: {
         text: "For example, “John Smith’s API key”"
-      }
+      },
+      errorMessage: { text: errors.formErrors['description'] } if errors.formErrors['description'] else false
     }) }}
 
     {{ govukButton({

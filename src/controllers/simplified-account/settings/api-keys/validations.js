@@ -3,7 +3,7 @@ const DESCRIPTION_VALIDATION = [
   body('description')
     .trim()
     .notEmpty()
-    .withMessage('Name must not be empty')
+    .withMessage('Enter the API key name')
     .isLength({ max: 50 })
     .withMessage('Name must be 50 characters or fewer')
 ]

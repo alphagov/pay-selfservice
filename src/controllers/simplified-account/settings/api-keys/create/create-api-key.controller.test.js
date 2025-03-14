@@ -108,7 +108,7 @@ describe('Controller: settings/api-keys/create', () => {
         })
 
         it('should pass req, res, template path and context to the response method', () => {
-          assertMockResponseArgs('Name must not be empty')
+          assertMockResponseArgs('Enter the API key name')
         })
       })
 
