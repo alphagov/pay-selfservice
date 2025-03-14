@@ -1,4 +1,4 @@
-{% extends "../settings-layout.njk" %}
+{% extends "simplified-account/settings/settings-layout.njk" %}
 
 {% set settingsPageTitle = "Revoke " + ("test" if accountType === 'test' else "live") + " API key" %}
 
@@ -22,12 +22,12 @@
       },
       items: [
         {
-          value: 'Yes',
-          text: 'Yes'
+          text: 'Yes',
+          value: 'yes'
         },
         {
-          value: 'No',
-          text: 'No'
+          text: 'No',
+          value: 'no'
         }
       ]
     }) }}
