@@ -100,7 +100,7 @@ const assertEmailNotificationsControllerIsSelected = async (accountType) => {
   const expectedUrl = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, SERVICE_ID, accountType)
   const expectedController = require('@controllers/simplified-account/settings/email-notifications/email-notifications.controller')
   expect(actual.req.url).to.equal(expectedUrl)
-  expect(actual.req.selectedController).to.equal(expectedController.getEmailNotificationsSettingsPage)
+  expect(actual.req.selectedController).to.equal(expectedController.get)
   sinon.assert.called(next)
 }
 

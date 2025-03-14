@@ -15,7 +15,7 @@ const pendingCredentialStates = [CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTE
  * @property {boolean} disableToggle3ds
  * @property {string} externalId The external id of the gateway account
  * @property {string} emailCollectionMode The email collection mode of the gateway account
- * @property {JSON} emailNotifications The email collection notification settings of the gateway account
+ * @property {EmailNotifications} emailNotifications The email collection notification settings of the gateway account
  * @property {GatewayAccountCredential[]} gatewayAccountCredentials available credentials for gateway account
  * @property {string} id The id of the gateway account
  * @property {boolean} motoMaskCardNumber
@@ -41,18 +41,7 @@ class GatewayAccount {
     this.disableToggle3ds = gatewayAccountData.payment_provider === 'stripe'
     this.externalId = gatewayAccountData.external_id
     this.emailCollectionMode = gatewayAccountData.email_collection_mode
-    this.emailNotifications = {
-      paymentConfirmed: {
-        enabled: gatewayAccountData.email_notifications?.PAYMENT_CONFIRMED?.enabled ?? false,
-        templateBody: gatewayAccountData.email_notifications?.PAYMENT_CONFIRMED?.template_body ?? null,
-        version: gatewayAccountData.email_notifications?.PAYMENT_CONFIRMED?.version ?? null
-      },
-      refundIssued: {
-        enabled: gatewayAccountData.email_notifications?.REFUND_ISSUED?.enabled ?? false,
-        templateBody: gatewayAccountData.email_notifications?.REFUND_ISSUED?.template_body ?? null,
-        version: gatewayAccountData.email_notifications?.REFUND_ISSUED?.version ?? null
-      }
-    }
+    this.emailNotifications = new EmailNotifications(gatewayAccountData.email_notifications)
     this.gatewayAccountCredentials = gatewayAccountData.gateway_account_credentials?.map(
       credentialData => GatewayAccountCredential.fromJson(credentialData)
     ) ?? []
@@ -124,6 +113,21 @@ class GatewayAccount {
       return switchingCredential.paymentProvider === paymentProvider
     } catch {
       return false
+    }
+  }
+}
+
+class EmailNotifications {
+  constructor (email_notifications = {}) { // eslint-disable-line
+    this.paymentConfirmed = {
+      enabled: email_notifications?.PAYMENT_CONFIRMED?.enabled ?? false, // eslint-disable-line
+      templateBody: email_notifications?.PAYMENT_CONFIRMED?.template_body, // eslint-disable-line
+      version: email_notifications?.PAYMENT_CONFIRMED?.version // eslint-disable-line
+    }
+    this.refundIssued = {
+      enabled: email_notifications?.REFUND_ISSUED?.enabled ?? false, // eslint-disable-line
+      templateBody: email_notifications?.REFUND_ISSUED?.template_body, // eslint-disable-line
+      version: email_notifications?.REFUND_ISSUED?.version // eslint-disable-line
     }
   }
 }

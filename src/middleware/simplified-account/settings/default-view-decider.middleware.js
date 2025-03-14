@@ -10,7 +10,7 @@ module.exports = function (req, res) {
   const useEmailNotificationsController = !isServiceAdmin || (account.type === 'test' && service.currentGoLiveStage === LIVE)
   if (useEmailNotificationsController) {
     req.url = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.emailNotifications.index, service.externalId, account.type)
-    return serviceSettingsController.emailNotifications.getEmailNotificationsSettingsPage(req, res)
+    return serviceSettingsController.emailNotifications.get(req, res)
   } else {
     req.url = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, service.externalId, account.type)
     return serviceSettingsController.serviceName.get(req, res)

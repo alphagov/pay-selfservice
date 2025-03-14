@@ -27,7 +27,7 @@ const {
   .build()
 
 describe('Controller: settings/email-notifications', () => {
-  describe('getEmailNotificationsSettingsPage', () => {
+  describe('get', () => {
     before(() => {
       call('get')
     })
