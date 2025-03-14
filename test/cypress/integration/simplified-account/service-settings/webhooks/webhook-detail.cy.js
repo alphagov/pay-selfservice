@@ -2,6 +2,7 @@ const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const webhooksStubs = require('@test/cypress/stubs/webhooks-stubs')
+const moment = require('moment-timezone')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
@@ -12,6 +13,51 @@ const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
 const WEBHOOK_ID = 'webhook-id-1'
 const WEBHOOK_DETAILS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_ID}`
+
+const statusTextMap = {
+  PENDING: 'Pending Retry',
+  SUCCESSFUL: 'Successful',
+  FAILED: 'Failed',
+  WILL_NOT_SEND: 'Will not send'
+}
+
+const humanReadableSubscriptions = {
+  card_payment_succeeded: 'Payment succeeded',
+  card_payment_failed: 'Payment failed',
+  card_payment_expired: 'Payment expired',
+  card_payment_captured: 'Payment captured',
+  card_payment_refunded: 'Payment refunded'
+}
+
+const messages = [
+  {
+    external_id: 'webhook-event-3',
+    created_date: '2025-02-25T11:30:49.295Z',
+    event_date: '2025-02-25T11:30:48.015Z',
+    event_type: 'card_payment_captured',
+    resource_id: 'webhook-resource-id-3',
+    resource_type: 'PAYMENT',
+    last_delivery_status: 'SUCCESSFUL'
+  },
+  {
+    external_id: 'webhook-event-2',
+    created_date: '2025-02-24T11:30:46.199Z',
+    event_date: '2025-02-24T11:30:45.969Z',
+    event_type: 'card_payment_succeeded',
+    resource_id: 'webhook-resource-id-2',
+    resource_type: 'PAYMENT',
+    last_delivery_status: 'PENDING'
+  },
+  {
+    external_id: 'webhook-event-1',
+    created_date: '2025-02-23T11:30:14.670Z',
+    event_date: '2025-02-23T11:30:13.376Z',
+    event_type: 'card_payment_captured',
+    resource_id: 'webhook-resource-id-1',
+    resource_type: 'PAYMENT',
+    last_delivery_status: 'FAILED'
+  }
+]
 
 const setStubs = (opts = {}, additionalStubs = []) => {
   cy.task('setupStubs', [
@@ -44,7 +90,9 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       signing_key: '123-signing-secret-456'
     }),
     webhooksStubs.getWebhookMessagesListSuccess({
-      external_id: WEBHOOK_ID
+      external_id: WEBHOOK_ID,
+      total: 3,
+      messages
     }),
     ...additionalStubs])
 }
@@ -93,6 +141,25 @@ describe('for an admin', () => {
     cy.get('#copy-signing-secret')
       .should('contain.text', 'Signing secret copied')
   })
+
+  it('should show events', () => {
+    cy.get('.govuk-table').should('have.length', 1)
+    cy.get('.govuk-table__header:eq(0)').should('contain', 'GOV.UK payment ID')
+    cy.get('.govuk-table__header:eq(1)').should('contain', 'Event name')
+    cy.get('.govuk-table__header:eq(2)').should('contain', 'Delivery status')
+    cy.get('.govuk-table__header:eq(3)').should('contain', 'Event date')
+
+    messages.forEach((message, i) => {
+      cy.get(`tbody .govuk-table__row:eq(${i}) > td:eq(0)`).should('contain.text', message.resource_id)
+      cy.get(`tbody .govuk-table__row:eq(${i}) > td:eq(1)`)
+        .should('contain.text', humanReadableSubscriptions[message.event_type])
+        .find('a')
+        .should('have.attr', 'href', `${WEBHOOK_DETAILS_URL}/event/${message.external_id}`)
+        .should('contain.text', 'View details')
+      cy.get(`tbody .govuk-table__row:eq(${i}) > td:eq(2)`).should('contain.text', statusTextMap[message.last_delivery_status])
+      cy.get(`tbody .govuk-table__row:eq(${i}) > td:eq(3)`).should('contain.text', formatDateTime(message.event_date))
+    })
+  })
 })
 
 describe('for a non-admin user', () => {
@@ -110,3 +177,7 @@ describe('for a non-admin user', () => {
     })
   })
 })
+
+function formatDateTime (isoTimeString) {
+  return moment(isoTimeString).tz('Europe/London').format('D MMMM YYYY HH:mm')
+}
