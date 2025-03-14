@@ -14,7 +14,9 @@ async function get (req, res) {
 }
 
 async function post (req, res, next) {
-  await Promise.all(directorValidations.map(validation => validation.run(req)))
+  for (const validation of directorValidations) {
+    await validation.run(req)
+  }
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)

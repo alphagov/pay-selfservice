@@ -34,7 +34,7 @@ describe('Stripe Person Validation', () => {
       req.body.firstName = ''
       await stripePersonSchema.name.firstName.validate.run(req)
       const errors = validationResult(req)
-      expect(errors.array()[0].msg).to.equal('Enter your first name')
+      expect(errors.array()[0].msg).to.equal('Enter the first name')
     })
 
     it('should fail when first name exceeds 100 characters', async () => {

@@ -181,7 +181,7 @@ describe('Stripe details settings', () => {
               .should('contain', emptyAddressCityError)
               .should('contain', invalidPostcodeError)
             cy.get('input[name="homeAddressLine1"]').should('have.class', 'govuk-input--error')
-            cy.get('#home-address-line-1-error').should('contain.text', emptyAddressError)
+            cy.get('#home-address-line1-error').should('contain.text', emptyAddressError)
             cy.get('input[name="homeAddressCity"]').should('have.class', 'govuk-input--error')
             cy.get('#home-address-city-error').should('contain.text', emptyAddressCityError)
             cy.get('input[name="homeAddressPostcode"]').should('have.class', 'govuk-input--error')
