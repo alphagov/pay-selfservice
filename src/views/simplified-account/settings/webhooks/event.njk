@@ -9,8 +9,6 @@
 
 {% block settingsContent %}
 
-
-
   <h1 class="govuk-heading-l">{{ title }}</h1>
 
   {% set resourceLink %}
@@ -44,6 +42,11 @@
         }
       }
     ]
+  }) }}
+
+  {{ govukDetails({
+    summaryText: title + " event body",
+    html: '<pre><code>' + event.resource | dump(4) + '</code></pre>'
   }) }}
 
   <h2 class="govuk-heading-m">Delivery Attempts</h2>
