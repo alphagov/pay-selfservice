@@ -35,7 +35,7 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
   const errors = validateConfirmOrgDetails(confirmOrgDetails)
 
   if (!lodash.isEmpty(errors)) {
-    const { merchantDetails } = req.service
+    const merchantDetails = req.service.merchantDetails.rawResponse
     const data = {
       errors,
       orgName: merchantDetails.name,

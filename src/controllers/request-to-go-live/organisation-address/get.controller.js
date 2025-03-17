@@ -38,7 +38,7 @@ module.exports = function getOrganisationAddress (req, res) {
     }
   }
 
-  const merchantDetails = lodash.get(req, 'service.merchantDetails')
+  const merchantDetails = lodash.get(req, 'service.merchantDetails.rawResponse')
 
   const merchantFormDetails = !isStripeSetupUserJourney
     ? {

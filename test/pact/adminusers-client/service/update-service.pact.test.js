@@ -70,7 +70,7 @@ describe('adminusers client - patch request to update service', function () {
       const service = await adminUsersClient.updateService(existingServiceExternalId, validUpdateServiceRequest)
 
       expect(service.externalId).to.equal(existingServiceExternalId)
-      expect(service.merchantDetails.name).to.equal(merchantDetailsName)
+      expect(service.merchantDetails.organisationName).to.equal(merchantDetailsName)
     })
   })
 
@@ -130,7 +130,7 @@ describe('adminusers client - patch request to update service', function () {
     it('should update service successfully', async function () {
       const service = await adminUsersClient.updateService(existingServiceExternalId, validUpdateServiceRequest)
       expect(service.externalId).to.equal(existingServiceExternalId)
-      expect(service.merchantDetails).to.deep.equal(merchantDetails)
+      expect(service.merchantDetails.rawResponse).to.deep.equal(merchantDetails)
       expect(service.currentGoLiveStage).to.equal(currentGoLiveStage)
       expect(service.currentPspTestAccountStage).to.equal(currentPspTestAccountStage)
       expect(service.takesPaymentsOverPhone).to.equal(takesPaymentsOverPhone)

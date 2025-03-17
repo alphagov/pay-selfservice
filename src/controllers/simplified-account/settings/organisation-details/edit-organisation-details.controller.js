@@ -10,27 +10,27 @@ const { organisationDetailsSchema } = require('@utils/simplified-account/validat
 const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
 const { updateService } = require('@services/service.service')
 
+/**
+ *
+ * @param {SimplifiedAccountRequest} req
+ * @param res
+ */
 function get (req, res) {
-  const organisationDetails = {
-    organisationName: req.service?.merchantDetails?.name || '',
-    addressLine1: req.service?.merchantDetails?.address_line1 || '',
-    addressLine2: req.service?.merchantDetails?.address_line2 || '',
-    addressCity: req.service?.merchantDetails?.address_city || '',
-    addressPostcode: req.service?.merchantDetails?.address_postcode || '',
-    addressCountry: req.service?.merchantDetails?.address_country || '',
-    telephoneNumber: req.service?.merchantDetails?.telephone_number || '',
-    organisationUrl: req.service?.merchantDetails?.url || ''
-  }
   const context = {
     messages: res.locals?.flash?.messages ?? [],
-    organisationDetails,
+    organisationDetails: req.service.merchantDetails,
     submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, req.service.externalId, req.account.type),
-    countries: countries.govukFrontendFormatted(organisationDetails.addressCountry),
+    countries: countries.govukFrontendFormatted(req.service.merchantDetails.addressCountry),
     backLink: req.service?.merchantDetails && formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, req.service.externalId, req.account.type)
   }
   return response(req, res, 'simplified-account/settings/organisation-details/edit-organisation-details', context)
 }
 
+/**
+ *
+ * @param {SimplifiedAccountRequest} req
+ * @param res
+ */
 async function post (req, res) {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {

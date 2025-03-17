@@ -1,7 +1,7 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 
-const Service = require('../../models/Service.class')
+const Service = require('@models/service/Service.class')
 const serviceFixtures = require('../../../test/fixtures/service.fixtures')
 const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
 

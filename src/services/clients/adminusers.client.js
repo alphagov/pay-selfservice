@@ -5,7 +5,7 @@ const lodash = require('lodash')
 const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client')
 const { configureClient } = require('./base/config')
 const User = require('../../models/User.class')
-const Service = require('../../models/Service.class')
+const Service = require('@models/service/Service.class')
 
 // Constants
 const SERVICE_NAME = 'adminusers'
@@ -342,7 +342,7 @@ module.exports = function (clientOptions = {}) {
    *
    * @param serviceExternalId
    * @param body
-   * @returns {*|Constructor|promise}
+   * @returns {Promise<Service>}
    */
   async function updateService (serviceExternalId, body) {
     const url = `${baseUrl}${serviceResource}/${serviceExternalId}`

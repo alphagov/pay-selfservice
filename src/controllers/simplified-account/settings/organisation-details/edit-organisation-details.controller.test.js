@@ -4,7 +4,7 @@ const paths = require('@root/paths')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const chai = require('chai')
 const expect = chai.expect
-const Service = require('@models/Service.class')
+const Service = require('@models/service/Service.class')
 
 const mockResponse = sinon.spy()
 const updateServiceSpy = sinon.spy()
@@ -51,7 +51,7 @@ describe('Controller: settings/organisation-details', () => {
     it('should pass the context to the response method', () => {
       expect(mockResponse).to.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
         messages: [],
-        organisationDetails: {
+        organisationDetails: sinon.match({
           organisationName: 'Compu-Global-Hyper-Mega-Net',
           addressLine1: '742 Evergreen Terrace',
           addressLine2: '',
@@ -60,7 +60,7 @@ describe('Controller: settings/organisation-details', () => {
           addressCountry: 'US',
           telephoneNumber: '01234567890',
           organisationUrl: 'https://www.cpghm.example.com'
-        },
+        }),
         submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, SERVICE_ID, ACCOUNT_TYPE),
         countries: [],
         backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_ID, ACCOUNT_TYPE)

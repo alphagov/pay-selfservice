@@ -1,7 +1,11 @@
-'use strict'
-
-module.exports = {
+/**
+ * @readonly
+ * @enum {string} PSP_TEST_ACCOUNT_STAGE
+ */
+const PSP_TEST_ACCOUNT_STAGE = {
   NOT_STARTED: 'NOT_STARTED',
   REQUEST_SUBMITTED: 'REQUEST_SUBMITTED',
   CREATED: 'CREATED'
 }
+
+module.exports = PSP_TEST_ACCOUNT_STAGE

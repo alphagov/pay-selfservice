@@ -1,5 +1,5 @@
 'use strict'
-const Service = require('./Service.class')
+const Service = require('./service/Service.class')
 
 /**
  * @class ServiceRole

@@ -8,7 +8,7 @@ const { response } = require('../utils/response')
 
 function showOrganisationDetails (req, res) {
   const externalServiceId = req.service.externalId
-  const merchantDetails = lodash.get(req, 'service.merchantDetails', undefined)
+  const merchantDetails = lodash.get(req, 'service.merchantDetails.rawResponse', undefined)
   if (!merchantDetails ||
     !merchantDetails.name ||
     !merchantDetails.address_line1 ||

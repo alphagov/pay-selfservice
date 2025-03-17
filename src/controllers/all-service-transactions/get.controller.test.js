@@ -3,7 +3,7 @@ const proxyquire = require('proxyquire')
 const User = require('../../models/User.class')
 const userFixtures = require('../../../test/fixtures/user.fixtures')
 const gatewayAccountFixture = require('../../../test/fixtures/gateway-account.fixtures')
-const Service = require('../../models/Service.class')
+const Service = require('@models/service/Service.class')
 const serviceFixtures = require('../../../test/fixtures/service.fixtures')
 const ledgerTransactionFixture = require('../../../test/fixtures/ledger-transaction.fixtures')
 

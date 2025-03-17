@@ -7,19 +7,12 @@ const { updateStripeDetailsOrganisationNameAndAddress } = require('@services/str
 const { validationResult } = require('express-validator')
 const { organisationDetailsSchema } = require('@utils/simplified-account/validation/organisation-details.schema')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
+const _ = require('lodash')
 
 async function get (req, res) {
-  const { merchantDetails } = req.service
   return response(req, res, 'simplified-account/settings/stripe-details/organisation-details/update-organisation-details', {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.organisationDetails.index, req.service.externalId, req.account.type),
-    organisationDetails: {
-      organisationName: merchantDetails.name,
-      addressLine1: merchantDetails.address_line1,
-      addressLine2: merchantDetails.address_line2,
-      addressCity: merchantDetails.address_city,
-      addressPostcode: merchantDetails.address_postcode,
-      addressCountry: merchantDetails.address_country
-    },
+    organisationDetails: _.pick(req.service.merchantDetails, ['organisationName', 'addressLine1', 'addressLine2', 'addressCity', 'addressPostcode', 'addressCountry']),
     countries: countries.govukFrontendFormatted()
   })
 }

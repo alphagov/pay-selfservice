@@ -1,5 +1,5 @@
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const Service = require('@models/Service.class')
+const Service = require('@models/service/Service.class')
 const GatewayAccount = require('@models/GatewayAccount.class')
 const sinon = require('sinon')
 const { expect } = require('chai')
