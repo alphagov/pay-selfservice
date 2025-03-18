@@ -4,6 +4,7 @@ const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const webhooksStubs = require('@test/cypress/stubs/webhooks-stubs')
 const moment = require('moment-timezone')
 const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
+const transactionFixtures = require('@test/fixtures/ledger-transaction.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service-456-def'
@@ -25,6 +26,8 @@ const WEBHOOK_BASE_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${L
 const WEBHOOK_DETAILS_URL = `${WEBHOOK_BASE_URL}/${WEBHOOK_ID}`
 const WEBHOOK_EVENT_URL = `${WEBHOOK_DETAILS_URL}/event/${webhookEvent.external_id}`
 const WEBHOOK_EVENT_RESOURCE_URL = `/account/a-valid-external-id/transactions/${webhookEvent.resource_id}`
+
+const WEBHOOK_EVENT_RESOURCE = transactionFixtures.validTransactionDetailsResponse({ transaction_id: 'an-external-id' })
 
 const attempts = [
   {
@@ -104,6 +107,11 @@ describe('for an admin', () => {
   it('should show title and heading', () => {
     cy.title().should('eq', 'Payment captured - Settings - McDuck Enterprises - GOV.UK Pay')
     cy.get('h1.govuk-heading-l').should('have.text', 'Payment captured')
+  })
+
+  it('should show event body in detail component', () => {
+    cy.get('.govuk-details summary').should('contain.text', 'Payment captured event body').click()
+    cy.get('.govuk-details div.govuk-details__text pre code').should('contain.text', JSON.stringify(WEBHOOK_EVENT_RESOURCE, null, 4))
   })
 
   it('should show active "Webhooks" link', () => {
