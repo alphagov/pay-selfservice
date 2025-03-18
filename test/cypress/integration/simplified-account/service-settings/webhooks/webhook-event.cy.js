@@ -105,7 +105,7 @@ describe('for an admin', () => {
   })
 
   it('should show title and heading', () => {
-    cy.title().should('eq', 'Payment captured - Settings - McDuck Enterprises - GOV.UK Pay')
+    cy.title().should('eq', 'Payment captured event details - Settings - McDuck Enterprises - GOV.UK Pay')
     cy.get('h1.govuk-heading-l').should('have.text', 'Payment captured')
   })
 

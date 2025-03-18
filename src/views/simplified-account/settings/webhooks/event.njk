@@ -5,7 +5,7 @@
 {% set settingsPageTitle = webhook.description %}
 
 {% set title = eventTypes[event.event_type | upper] %}
-{% set settingsPageTitle = title %}
+{% set settingsPageTitle = title + " event details" %}
 
 {% block settingsContent %}
 
