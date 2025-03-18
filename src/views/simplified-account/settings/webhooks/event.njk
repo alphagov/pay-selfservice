@@ -9,8 +9,6 @@
 
 {% block settingsContent %}
 
-
-
   <h1 class="govuk-heading-l">{{ title }}</h1>
 
   {% set resourceLink %}
@@ -46,14 +44,18 @@
     ]
   }) }}
 
-  <h2 class="govuk-heading-m">Delivery Attempts</h2>
+  {{ govukDetails({
+    summaryText: title + " event body",
+    html: '<pre><code>' + event.resource | dump(4) + '</code></pre>'
+  }) }}
 
+  <h2 class="govuk-heading-m">Delivery Attempts</h2>
   {% set attemptRows = [] %}
   {% for attempt in attempts %}
     {% set attemptRow = [
       { text: attempt.send_at | datetime("datetime") },
       { html: messageStatusTag(attempt.status) },
-      { html: attempt.status_code },
+      { text: (attempt.status_code if attempt.status_code else 'None') },
       { text: attempt.result }
     ] %}
     {% set attemptRows = (attemptRows.push(attemptRow), attemptRows) %}
