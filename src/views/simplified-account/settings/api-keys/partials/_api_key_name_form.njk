@@ -2,6 +2,11 @@
   <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
   {{ govukInput({
+    label: {
+      text: settingsPageTitle,
+      isPageHeading: true,
+      classes: "govuk-label--l"
+    },
     id: "key-name",
     name: "keyName",
     value: currentKeyName,
