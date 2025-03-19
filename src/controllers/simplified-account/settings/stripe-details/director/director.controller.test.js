@@ -89,10 +89,10 @@ describe('Controller: settings/stripe-details/director', () => {
         nextRequest({
           body: {
             firstName: '',
-            lastName: '',
-            dobDay: '01',
-            dobMonth: '01',
-            dobYear: '1899',
+            lastName: 'McDuck',
+            dobDay: '',
+            dobMonth: '',
+            dobYear: '',
             workEmail: 'scrooge.mcduck'
           }
         })
@@ -106,7 +106,7 @@ describe('Controller: settings/stripe-details/director', () => {
         expect(res.redirect).to.not.have.been.called // eslint-disable-line
       })
       it('should render the form with validation errors', () => {
-        expect(mockResponse).to.have.been.calledWith(
+        sinon.assert.calledOnceWithMatch(mockResponse,
           sinon.match.any,
           sinon.match.any,
           'simplified-account/settings/stripe-details/director/index',
@@ -114,22 +114,21 @@ describe('Controller: settings/stripe-details/director', () => {
             errors: {
               summary: [
                 { text: 'Enter the first name', href: '#first-name' },
-                { text: 'Enter the last name', href: '#last-name' },
-                { text: 'Enter a valid year of birth', href: '#dob-year' },
+                { text: 'Enter the date of birth', href: '#dob-day' },
                 { text: 'Enter a real email address', href: '#work-email' }
               ],
               formErrors: {
                 firstName: 'Enter the first name',
-                lastName: 'Enter the last name',
-                dobYear: 'Enter a valid year of birth',
+                dob: 'Enter the date of birth',
                 workEmail: 'Enter a real email address'
               }
             },
-            name: { firstName: '', lastName: '' },
-            dob: { dobDay: '01', dobMonth: '01', dobYear: '1899' },
+            name: { firstName: '', lastName: 'McDuck' },
+            dob: { dobDay: '', dobMonth: '', dobYear: '' },
             workEmail: 'scrooge.mcduck',
             backLink: STRIPE_DETAILS_INDEX_PATH
-          })
+          }
+        )
       })
     })
     describe('when the Stripe API returns an error', () => {
@@ -153,7 +152,7 @@ describe('Controller: settings/stripe-details/director', () => {
       })
 
       it('should render the form with appropriate error response', () => {
-        expect(mockResponse).to.have.been.calledWith(
+        sinon.assert.calledWithMatch(mockResponse,
           sinon.match.any,
           sinon.match.any,
           'simplified-account/settings/stripe-details/director/index',
@@ -167,7 +166,8 @@ describe('Controller: settings/stripe-details/director', () => {
             dob: { dobDay: '01', dobMonth: '01', dobYear: '1901' },
             workEmail: 'scrooge.mcduck@pay.gov.uk',
             backLink: STRIPE_DETAILS_INDEX_PATH
-          })
+          }
+        )
       })
     })
   })
