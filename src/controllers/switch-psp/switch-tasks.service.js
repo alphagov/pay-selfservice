@@ -25,7 +25,7 @@ function stripeSetupStageComplete (account, stage) {
 }
 
 function organisationUrlComplete (service) {
-  const organisationUrl = lodash.get(service, 'merchantDetails.url', '')
+  const organisationUrl = lodash.get(service, 'merchantDetails.organisationUrl', '')
   return organisationUrl && organisationUrl.length > 0
 }
 

@@ -5,7 +5,7 @@ const lodash = require('lodash')
 const logger = require('../utils/logger')(__filename)
 const getAdminUsersClient = require('./clients/adminusers.client')
 const { ConnectorClient } = require('./clients/connector.client')
-const Service = require('@models/Service.class')
+const Service = require('@models/service/Service.class')
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 const adminUsersClient = getAdminUsersClient()
 const { DEFAULT_SERVICE_NAME } = require('@utils/constants')
@@ -33,6 +33,12 @@ async function updateServiceName (serviceExternalId, serviceName, serviceNameCy)
   return new Service(result)
 }
 
+/**
+ *
+ * @param serviceExternalId
+ * @param serviceUpdateRequest
+ * @returns {Promise<Service>}
+ */
 function updateService (serviceExternalId, serviceUpdateRequest) {
   return adminUsersClient.updateService(serviceExternalId, serviceUpdateRequest)
 }

@@ -3,7 +3,7 @@
 const sinon = require('sinon')
 const { expect } = require('chai')
 const getController = require('./get.controller')
-const Service = require('../../../models/Service.class')
+const Service = require('@models/service/Service.class')
 const User = require('../../../models/User.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
@@ -111,6 +111,7 @@ describe('Check org details - get controller', () => {
   it('should render `check your organisation` form if details are not yet submitted and only the `merchantDetails.name` is empty', async () => {
     const updatedService = { ...req.service }
     updatedService.merchantDetails.name = undefined
+    updatedService.merchantDetails.rawResponse.name = undefined
     req.service = updatedService
 
     req.account.connectorGatewayAccountStripeProgress = { organisationDetails: false }

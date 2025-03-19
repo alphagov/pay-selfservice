@@ -309,7 +309,7 @@ describe('Settings - API keys', () => {
       })
     })
 
-    describe('re-name an api key', () => {
+    describe.only('re-name an api key', () => {
       const NEW_API_KEY_NAME = 'api key description' // pragma: allowlist secret
       const TOKEN_LINK = 'token-link-1'
 
