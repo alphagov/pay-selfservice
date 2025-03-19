@@ -24,10 +24,12 @@ const stripePersonSchema = {
     validate: body('dob')
       .custom((value, { req }) => {
         const { dobDay, dobMonth, dobYear } = req.body
-        if (!dobDay && !dobMonth && !dobYear) {
-          throw new Error('Enter the date of birth')
-        }
-
+        return !(!dobDay && !dobMonth && !dobYear)
+      })
+      .withMessage('Enter the date of birth')
+      .bail()
+      .custom((value, { req }) => {
+        const { dobDay, dobMonth, dobYear } = req.body
         // Stripe requires minimum age of 13
         const day = Number(dobDay)
         const month = Number(dobMonth) - 1
@@ -43,11 +45,9 @@ const stripePersonSchema = {
           age--
         }
 
-        if (age < 13) {
-          throw new Error('Date of birth cannot be younger than 13')
-        }
-        return true
+        return age >= 13
       })
+      .withMessage('Date of birth cannot be younger than 13')
       .bail(),
     dobDay: {
       validate: body('dobDay')

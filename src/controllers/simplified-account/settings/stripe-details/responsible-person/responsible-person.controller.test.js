@@ -139,11 +139,11 @@ describe('Controller: settings/stripe-details/responsible-person', () => {
 
     describe('validation fails', () => {
       const invalidBody = {
-        firstName: '',
-        lastName: '',
-        dobDay: '32',
-        dobMonth: '13',
-        dobYear: '1899'
+        firstName: 'Scrooge',
+        lastName: 'McDuck',
+        dobDay: '',
+        dobMonth: '',
+        dobYear: ''
       }
 
       before(() => setupTest('post', {}, {}, {
@@ -158,27 +158,27 @@ describe('Controller: settings/stripe-details/responsible-person', () => {
       it('should pass context data to the response method with errors', () => {
         expect(responseStub.args[0][3]).to.have.property('backLink').to.equal(STRIPE_DETAILS_INDEX_PATH)
         expect(responseStub.args[0][3]).to.have.property('name').to.deep.equal({
-          firstName: '',
-          lastName: ''
+          firstName: 'Scrooge',
+          lastName: 'McDuck'
         })
         expect(responseStub.args[0][3]).to.have.property('dob').to.deep.equal({
-          dobDay: '32',
-          dobMonth: '13',
-          dobYear: '1899'
+          dobDay: '',
+          dobMonth: '',
+          dobYear: ''
         })
         const formErrors = responseStub.args[0][3].errors.formErrors
-        expect(Object.keys(formErrors).length).to.equal(5)
+        expect(Object.keys(formErrors).length).to.equal(1)
         expect(formErrors).to.deep.include(
           {
-            dobDay: 'Day of birth must be a number between 1 and 31'
+            dob: 'Enter the date of birth'
           }
         )
         const errorSummary = responseStub.args[0][3].errors.summary
-        expect(errorSummary.length).to.equal(5)
+        expect(errorSummary.length).to.equal(1)
         expect(errorSummary).to.deep.include(
           {
-            href: '#first-name',
-            text: 'Enter the first name'
+            href: '#dob-day',
+            text: 'Enter the date of birth'
           }
         )
       })

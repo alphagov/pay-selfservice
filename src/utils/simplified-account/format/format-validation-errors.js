@@ -3,7 +3,7 @@ const { kebabCase } = require('change-case')
 module.exports = validationResult => {
   const errorSummary = validationResult.array().map(error => ({
     text: error.msg,
-    href: `#${kebabCase(error.path)}`
+    href: `#${kebabCase(error.pathOverride || error.path)}`
   }))
 
   const formErrors = validationResult.array().reduce((acc, error) => {
