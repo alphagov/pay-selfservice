@@ -1,0 +1,7 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+
+{% set settingsPageTitle = "Change API key name" %}
+
+{% block settingsContent %}
+  {% include "simplified-account/settings/api-keys/partials/_api_key_name_form.njk" %}
+{% endblock %}

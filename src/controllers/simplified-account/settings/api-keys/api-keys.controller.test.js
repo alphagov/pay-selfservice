@@ -1,12 +1,19 @@
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const sinon = require('sinon')
-const { expect } = require('chai')
+const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
+const paths = require('@root/paths')
 const ACCOUNT_TYPE = 'live'
-const SERVICE_ID = 'service-id-123abc'
+const ACCOUNT_ID = '1337'
+const SERVICE_EXTERNAL_ID = 'service123abc'
 
 const mockResponse = sinon.spy()
-const apiKeys = [{ description: 'my token', createdBy: 'system generated', issuedDate: '12 Dec 2024', tokenLink: '123-345' }]
-const apiKeysService = {
+const apiKeys = [{
+  description: 'my token',
+  createdBy: 'system generated',
+  issuedDate: '12 Dec 2024',
+  tokenLink: '123-345'
+}]
+const mockApiKeysService = {
   getActiveKeys: sinon.stub().resolves(apiKeys),
   getRevokedKeys: sinon.stub().resolves([])
 }
@@ -16,11 +23,14 @@ const {
   res,
   call
 } = new ControllerTestBuilder('@controllers/simplified-account/settings/api-keys/api-keys.controller')
-  .withServiceExternalId(SERVICE_ID)
-  .withAccountType(ACCOUNT_TYPE)
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
+  .withAccount({
+    type: ACCOUNT_TYPE,
+    id: ACCOUNT_ID
+  })
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/api-keys.service': apiKeysService
+    '@services/api-keys.service': mockApiKeysService
   })
   .build()
 
@@ -30,31 +40,40 @@ describe('Controller: settings/api-keys', () => {
       call('get')
     })
 
-    it('should call the response method', () => {
-      expect(mockResponse).to.have.been.calledOnce // eslint-disable-line
+    it('should call apiKeysService', () => {
+      sinon.assert.calledOnceWithExactly(mockApiKeysService.getActiveKeys,
+        ACCOUNT_ID
+      )
+      sinon.assert.calledOnceWithExactly(mockApiKeysService.getRevokedKeys,
+        ACCOUNT_ID
+      )
     })
 
-    it('should pass req, res and template path to the response method', () => {
-      expect(mockResponse).to.have.been.calledWith(req, res, 'simplified-account/settings/api-keys/index')
-    })
-
-    it('should pass context data to the response method', () => {
-      expect(mockResponse.args[0][3]).to.have.property('accountType').to.equal('live')
-      expect(mockResponse.args[0][3]).to.have.property('activeKeys').to.deep.equal(
-        apiKeys.map(apiKey => {
-          return {
-            ...apiKey,
-            changeNameLink: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/change-name/${apiKeys[0].tokenLink}`,
-            revokeKeyLink: `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoke/${apiKeys[0].tokenLink}`
-          }
-        }))
-      expect(mockResponse.args[0][3]).to.have.property('createApiKeyLink').to.equal(
-        `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/create`
+    it('should call the response method with context', () => {
+      sinon.assert.calledOnceWithExactly(mockResponse,
+        req,
+        res,
+        'simplified-account/settings/api-keys/index',
+        {
+          messages: [],
+          accountType: ACCOUNT_TYPE,
+          activeKeys: [
+            {
+              description: 'my token',
+              createdBy: 'system generated',
+              issuedDate: '12 Dec 2024',
+              tokenLink: '123-345',
+              changeNameLink: '/simplified/service/service123abc/account/live/settings/api-keys/123-345/change-name',
+              revokeKeyLink: '/simplified/service/service123abc/account/live/settings/api-keys/123-345/revoke'
+            }
+          ],
+          createKeyLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.create.index,
+            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
+          revokedKeysLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.revoke.revokedKeys,
+            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
+          showRevokedKeysLink: false
+        }
       )
-      expect(mockResponse.args[0][3]).to.have.property('revokedKeysLink').to.equal(
-        `/simplified/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoked`
-      )
-      expect(mockResponse.args[0][3]).to.have.property('showRevokedKeysLink').to.equal(false)
     })
   })
 })

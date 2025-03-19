@@ -13,22 +13,21 @@ async function get (req, res) {
     activeKeys: activeKeys.map(activeKey => {
       return {
         ...activeKey,
-        changeNameLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.changeName,
+        changeNameLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.edit.changeName,
           req.service.externalId, req.account.type, activeKey.tokenLink),
-        revokeKeyLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.revoke,
+        revokeKeyLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.revoke.index,
           req.service.externalId, req.account.type, activeKey.tokenLink)
       }
     }),
-    createApiKeyLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.create,
+    createKeyLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.create.index,
       req.service.externalId, req.account.type),
-    revokedKeysLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.revokedKeys,
+    revokedKeysLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.revoke.revokedKeys,
       req.service.externalId, req.account.type),
     showRevokedKeysLink: revokedKeys.length > 0
   })
 }
 
 module.exports = { get }
-module.exports.createApiKey = require('./create/create-api-key.controller')
-module.exports.changeName = require('./change-name/change-name.controller')
-module.exports.revoke = require('./revoke/revoke.controller')
-module.exports.revokedKeys = require('./revoked-keys/revoked-keys.controller')
+module.exports.create = require('./create')
+module.exports.edit = require('./edit')
+module.exports.revoke = require('./revoke')

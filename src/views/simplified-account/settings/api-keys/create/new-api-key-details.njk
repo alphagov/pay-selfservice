@@ -1,24 +1,12 @@
-{% extends "../settings-layout.njk" %}
+{% extends "simplified-account/settings/settings-layout.njk" %}
 
 {% set settingsPageTitle = "New API key" %}
 
 {% block settingsContent %}
-
-  {{ govukBackLink({
-    text: "Back to API keys",
-    href: backToApiKeysLink
-  }) }}
-
   <h1 class="govuk-heading-l page-title">{{ settingsPageTitle }}</h1>
 
-  {% set html %}
-    <p class="govuk-body">
-      Copy your key to somewhere safe.</br></br>You won’t be able to see it again once you leave this page.
-    </p>
-  {% endset %}
-
   {{ govukInsetText({
-    html: html
+    html: "Copy your key to somewhere safe.<br><br>You won’t be able to see it again once you leave this page."
   }) }}
 
   <p class="govuk-body">
@@ -44,17 +32,17 @@
   </p>
 
   <h2 class="govuk-heading-m">
-    {{ description }}
+    {{ details.name }}
   </h2>
   <div>
-    <span id="apiKey" class="code copy-this-api-key govuk-!-margin-top-6">{{ apiKey }}</span>
+    <span id="api-key" class="code copy-this-api-key govuk-!-margin-top-6">{{ details.key }}</span>
   </div>
 
   {{ govukButton({
     text: "Copy API key to clipboard",
     classes: "govuk-button--secondary govuk-!-margin-top-6",
     attributes: {
-      id: "generate-button",
+      id: "copy-key-button",
       "data-copy-text": true,
       "data-target": "copy-this-api-key",
       "data-success": "API key has been copied",
