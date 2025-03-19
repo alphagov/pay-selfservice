@@ -3,15 +3,11 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
-const GatewayAccount = require('@models/GatewayAccount.class')
 
 const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
-const GATEWAY_ACCOUNT_ID = 1
 const mockResponse = sinon.spy()
-const DESCRIPTION = 'My API key description'
 const apiKeysService = {
-  getKeyByTokenLink: sinon.stub().resolves({ description: DESCRIPTION }),
   changeApiKeyName: sinon.stub().resolves()
 }
 const {
@@ -21,15 +17,11 @@ const {
   call
 } = new ControllerTestBuilder('@controllers/simplified-account/settings/api-keys/change-name/change-name.controller')
   .withServiceExternalId(SERVICE_ID)
-  .withAccount(new GatewayAccount({
-    type: ACCOUNT_TYPE,
-    gateway_account_id: GATEWAY_ACCOUNT_ID
-  }))
+  .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/api-keys.service': apiKeysService
   })
-  .withParams({ tokenLink: '123-456-abc' })
   .build()
 
 describe('Controller: settings/api-keys/change-name', () => {
@@ -38,17 +30,13 @@ describe('Controller: settings/api-keys/change-name', () => {
       call('get')
     })
 
-    it('should get api key and call the response method', () => {
-      expect(apiKeysService.getKeyByTokenLink).to.have.been.calledWith(1, '123-456-abc')
+    it('should call the response method', () => {
       expect(mockResponse).to.have.been.calledOnce // eslint-disable-line
     })
 
     it('should pass req, res, template path and context to the response method', () => {
       expect(mockResponse).to.have.been.calledWith(req, res, 'simplified-account/settings/api-keys/api-key-name',
-        {
-          description: DESCRIPTION,
-          backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, SERVICE_ID, ACCOUNT_TYPE)
-        })
+        { backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, SERVICE_ID, ACCOUNT_TYPE) })
     })
   })
 
@@ -58,6 +46,9 @@ describe('Controller: settings/api-keys/change-name', () => {
         nextRequest({
           body: {
             description: 'a test api key'
+          },
+          params: {
+            tokenLink: '123-456-abc'
           }
         })
         call('post')
@@ -80,6 +71,9 @@ describe('Controller: settings/api-keys/change-name', () => {
         nextRequest({
           body: {
             description: ''
+          },
+          params: {
+            tokenLink: '123-456-abc'
           }
         })
         call('post')

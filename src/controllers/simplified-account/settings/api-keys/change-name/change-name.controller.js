@@ -3,13 +3,11 @@ const { validationResult } = require('express-validator')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const { response } = require('@utils/response')
-const { getKeyByTokenLink, changeApiKeyName } = require('@services/api-keys.service')
+const { changeApiKeyName } = require('@services/api-keys.service')
 const DESCRIPTION_VALIDATION = require('@controllers/simplified-account/settings/api-keys/validations')
 
-async function get (req, res) {
-  const { description } = await getKeyByTokenLink(req.account.id, req.params.tokenLink)
+function get (req, res) {
   return response(req, res, 'simplified-account/settings/api-keys/api-key-name', {
-    description,
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, req.service.externalId, req.account.type)
   })
 }
