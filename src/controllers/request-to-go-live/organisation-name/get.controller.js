@@ -21,7 +21,7 @@ module.exports = (req, res) => {
     delete req.session.pageData.requestToGoLive.organisationName
   } else {
     pageData = {
-      organisationName: lodash.get(req, 'service.merchantDetails.name', '')
+      organisationName: lodash.get(req, 'service.merchantDetails.organisationName', '')
     }
   }
   // render

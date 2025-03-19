@@ -187,7 +187,7 @@ describe('Switching PSP service', () => {
         })
         const service = {
           merchantDetails: {
-            url: 'http://example.org'
+            organisationUrl: 'http://example.org'
           }
         }
         account.connectorGatewayAccountStripeProgress = {

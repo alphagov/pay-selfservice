@@ -62,7 +62,7 @@ module.exports = async (req, res, next) => {
 
       const messageOpts = {
         serviceName: req.service.name,
-        merchantDetails: req.service.rawResponse.merchant_details.name,
+        merchantDetails: req.service.merchantDetails.rawResponse.name,
         serviceExternalId: req.service.externalId,
         psp: stages[req.service.currentGoLiveStage],
         ipAddress: ipAddress || '',
