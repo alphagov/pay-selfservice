@@ -4,12 +4,15 @@
 
 {% block settingsContent %}
 
-  <h1 class="govuk-heading-l page-title">{{ settingsPageTitle }}</h1>
-
   <form id="api-key-name" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
 
     {{ govukInput({
+      label: {
+        text: "API key name",
+        classes: "govuk-label--l",
+        isPageHeading: true
+      },
       id: "description",
       name: "description",
       type: "text",
