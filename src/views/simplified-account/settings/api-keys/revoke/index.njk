@@ -3,13 +3,12 @@
 {% set settingsPageTitle = "Revoke " + ("test" if accountType === 'test' else "live") + " API key" %}
 
 {% block settingsContent %}
-  <form id="revoke-api-key-form" method="post" novalidate>
+  <form id="revoke-key-form" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-    <input id="api-key-name" name="apiKeyName" type="hidden" value="{{ name }}"/>
 
     {{ govukRadios({
-      name: 'revokeApiKey',
-      errorMessage: { text: errors.formErrors['revokeApiKey'] } if errors.formErrors['revokeApiKey'] else false,
+      name: 'revokeKey',
+      errorMessage: { text: errors.formErrors['revokeKey'] } if errors.formErrors['revokeKey'] else false,
       fieldset: {
         legend: {
           text: 'Are you sure you want to revoke ' + name + '?',

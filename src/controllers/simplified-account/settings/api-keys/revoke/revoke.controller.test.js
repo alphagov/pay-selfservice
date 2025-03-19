@@ -62,9 +62,7 @@ describe('Controller: settings/api-keys/revoke', () => {
     describe('when nothing is selected', () => {
       before(() => {
         nextRequest({
-          body: {
-            apiKeyName: TOKEN_DESC
-          }
+          body: {}
         })
         call('post')
       })
@@ -86,11 +84,11 @@ describe('Controller: settings/api-keys/revoke', () => {
           {
             errors: {
               formErrors: {
-                revokeApiKey: `Confirm if you want to revoke ${TOKEN_DESC}` // pragma: allowlist secret
+                revokeKey: `Confirm if you want to revoke ${TOKEN_DESC}` // pragma: allowlist secret
               },
               summary: [{
                 text: `Confirm if you want to revoke ${TOKEN_DESC}`,
-                href: '#revoke-api-key'
+                href: '#revoke-key'
               }]
             },
             name: TOKEN_DESC,
@@ -104,8 +102,7 @@ describe('Controller: settings/api-keys/revoke', () => {
       before(() => {
         nextRequest({
           body: {
-            apiKeyName: TOKEN_DESC,
-            revokeApiKey: 'no' // pragma: allowlist secret
+            revokeKey: 'no' // pragma: allowlist secret
           }
         })
         call('post')
@@ -127,8 +124,7 @@ describe('Controller: settings/api-keys/revoke', () => {
       before(() => {
         nextRequest({
           body: {
-            apiKeyName: TOKEN_DESC,
-            revokeApiKey: 'yes' // pragma: allowlist secret
+            revokeKey: 'yes' // pragma: allowlist secret
           }
         })
         call('post')

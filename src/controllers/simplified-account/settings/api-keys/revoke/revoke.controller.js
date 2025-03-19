@@ -15,10 +15,11 @@ async function get (req, res) {
 }
 
 async function post (req, res) {
-  const name = req.body.apiKeyName
-  const validation = body('revokeApiKey')
+  const tokenLink = req.params.tokenLink
+  const apiKey = await getKeyByTokenLink(req.account.id, tokenLink)
+  const validation = body('revokeKey')
     .isIn(['yes', 'no'])
-    .withMessage(`Confirm if you want to revoke ${name}`)
+    .withMessage(`Confirm if you want to revoke ${apiKey.description}`)
   await validation.run(req)
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
@@ -28,14 +29,13 @@ async function post (req, res) {
         summary: formattedErrors.errorSummary,
         formErrors: formattedErrors.formErrors
       },
-      name,
+      name: apiKey.description,
       backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, req.service.externalId, req.account.type)
     })
   }
-  const description = req.body.apiKeyName
-  if (req.body.revokeApiKey === 'yes') { // pragma: allowlist secret
+  if (req.body.revokeKey === 'yes') { // pragma: allowlist secret
     await revokeKey(req.account.id, req.params.tokenLink)
-    req.flash('messages', { state: 'success', icon: '&check;', heading: `${description} was successfully revoked` })
+    req.flash('messages', { state: 'success', icon: '&check;', heading: `${apiKey.description} was successfully revoked` })
   }
   res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, req.service.externalId, req.account.type))
 }
