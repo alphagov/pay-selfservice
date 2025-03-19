@@ -321,6 +321,7 @@ describe('Settings - API keys', () => {
       beforeEach(() => {
         setupStubs('admin', apiKeys)
         cy.task('setupStubs', [
+          apiKeysStubs.getKeyByTokenLink(GATEWAY_ACCOUNT_ID, TOKEN_LINK, 'mathematical clothes'),
           apiKeysStubs.changeApiKeyName(TOKEN_LINK, NEW_API_KEY_NAME)
         ])
         cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
@@ -339,7 +340,8 @@ describe('Settings - API keys', () => {
           cy.contains('h2', 'mathematical clothes').should('exist')
           cy.contains('a', 'Change name').click()
         })
-        cy.get('input[id="description"]').type(NEW_API_KEY_NAME)
+        cy.get('input[id="description"]').should('have.value', 'mathematical clothes')
+        cy.get('input[id="description"]').clear().type(NEW_API_KEY_NAME)
         cy.contains('button', 'Continue').click()
         cy.url().should('include', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
         cy.contains('h1', 'Test API keys').should('exist')
