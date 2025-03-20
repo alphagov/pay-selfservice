@@ -2,22 +2,20 @@
 
 {% if (isAdminUser and currentGatewayAccount.provider_switch_enabled) %}
 
-  <div class="govuk-grid-column-full">
+<div class="govuk-grid-column-full">
   {% set html %}
     <p class="govuk-notification-banner__heading">
-    Switch your payment service provider (PSP) to {{ targetCredential.payment_provider | formatPSPname }}
+      Switch your payment service provider (PSP) to {{ targetCredential.payment_provider | formatPSPname }}
     </p>
-
-    <p class="govuk-body">Your service is ready to switch PSP from {{ activeCredential.payment_provider | formatPSPname }} to {{ targetCredential.payment_provider | formatPSPname }}.
-
     <p class="govuk-body">
-      Find out <a class="govuk-notification-banner__link" href="{{ formatAccountPathsFor(routes.account.switchPSP.index, currentGatewayAccount.external_id) }}">how to switch to {{ targetCredential.payment_provider | formatPSPname }}</a>.
+      Your service is ready to switch PSP from {{ activeCredential.payment_provider | formatPSPname }} to {{ targetCredential.payment_provider | formatPSPname }}.
     </p>
-
+    <p class="govuk-body">
+      Find out how to switch to {{ targetCredential.payment_provider | formatPSPname | docsLink("switch_payment_service_provider") }}
+    </p>
   {% endset %}
-
   {{ govukNotificationBanner({
     html: html
   }) }}
-  </div>
+</div>
 {% endif %}

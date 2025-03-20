@@ -1,21 +1,17 @@
 {% from "../macro/breadcrumbs.njk" import breadcrumbs %}
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {% set accountLabelWithTag %}
-  <strong>{{ currentService.name }}</strong>
+  <strong class="service-info--name">{{ currentService.name }}</strong>
   {% if currentGatewayAccount %}
     {% set paymentProvider = currentGatewayAccount.payment_provider or currentGatewayAccount.paymentProvider %}
     {% set normalisedPaymentProvider = paymentProvider.toLowerCase() %}
     {% set isLive = currentGatewayAccount.type === "live" %}
-    {% set stripeAccountIsSetup = (currentGatewayAccount.connectorGatewayAccountStripeProgress.bankAccount and currentGatewayAccount.connectorGatewayAccountStripeProgress.responsiblePerson
-      and currentGatewayAccount.connectorGatewayAccountStripeProgress.vatNumber and currentGatewayAccount.connectorGatewayAccountStripeProgress.companyNumber
-      and currentGatewayAccount.connectorGatewayAccountStripeProgress.organisationDetails and currentGatewayAccount.connectorGatewayAccountStripeProgress.governmentEntityDocument) %}
 
     {% set tagModifierClass %}
-      {% if (normalisedPaymentProvider === 'stripe' and not stripeAccountIsSetup) or
-        (currentGatewayAccount.provider_switch_enabled or currentGatewayAccount.providerSwitchEnabled) %}
-        govuk-tag--blue
-      {% elseif not isLive %}
+      {% if not isLive %}
         govuk-tag--grey
+      {% else %}
+        govuk-tag--blue
       {% endif %}
     {% endset %}
 
@@ -29,7 +25,7 @@
       {% else %}
         Live
       {% endif %}
-      {% if (normalisedPaymentProvider === 'stripe' and not stripeAccountIsSetup) %}
+      {% if informationNeeded %}
         - information needed
       {% endif %}
       {% if isAdminUser and (currentGatewayAccount.provider_switch_enabled or currentGatewayAccount.providerSwitchEnabled) %}

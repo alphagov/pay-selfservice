@@ -4,6 +4,8 @@ const getHeldPermissions = require('./get-held-permissions')
 const { serviceNavigationItems, adminNavigationItems } = require('./nav-builder')
 const formatPSPname = require('./format-PSP-name')
 const serviceSettings = require('./simplified-account/settings/service-settings')
+const GatewayAccount = require('@models/GatewayAccount.class')
+const { getActiveCredential } = require('@utils/credentials')
 
 const hideServiceHeaderTemplates = [
   'services/add-service',
@@ -55,22 +57,17 @@ const digitalWalletsSupportedProviders = [
 
 /**
  * converts users permission array of form
- *
  * [
  * 'permission-type:operation',
  * ...
- *
  * ]
- *
  * to object of form
- *
  * {
  *   'permission_type_operation': true,
  *   ...
- *
  * }
- *
  * @param user
+ * @param service
  * @returns {object}
  */
 const getPermissions = (user, service) => {
@@ -114,6 +111,18 @@ const getAccount = account => {
   return account
 }
 
+const informationNeeded = account => {
+  if (account) {
+    if (account instanceof GatewayAccount) {
+      return account.getActiveCredential() === null
+    } else {
+      // TODO: bin me, back compat code
+      return getActiveCredential(account) === null
+    }
+  }
+  return false
+}
+
 module.exports = function (req, data, template) {
   const convertedData = _.clone(data)
   const { user, account, service, session, url: relativeUrl } = req
@@ -138,6 +147,7 @@ module.exports = function (req, data, template) {
   convertedData.currentService = service
   convertedData.isLive = req.isLive
   convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'
+  convertedData.informationNeeded = informationNeeded(account)
   /* eslint-disable-next-line n/no-deprecated-api */ // TODO update this as url.parse is deprecated
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   const currentUrl = req.baseUrl && req.path ? req.baseUrl + req.path : 'unavailable'
