@@ -41,9 +41,15 @@ describe('Worldpay account setup banner', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
 
       cy.get('.govuk-notification-banner__title').contains('Important')
-      cy.get('.govuk-notification-banner__content').contains('You have not finished setting up your account. You will not be able to take payments unless you connect your Worldpay account to GOV.UK Pay.')
-
-      cy.get('#connect-worldpay-account').click()
+      cy.get('.govuk-notification-banner__content')
+        .contains('You have not finished setting up your account')
+        .parent()
+        .contains('You need to connect your Worldpay account to GOV.UK Pay to be able to take payments.')
+        .within(() => {
+          cy.get('a')
+            .should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
+            .click()
+        })
       cy.get('h1').contains('Your payment service provider (PSP) - Worldpay')
     })
   })

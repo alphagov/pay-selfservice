@@ -115,22 +115,29 @@ async function isWorldpayTestService (service, account) {
 const getConfigurePSPAccountLink = (req) => {
   const credential = getCurrentCredential(req.account)
   const paymentProvider = credential?.payment_provider
-  if ((paymentProvider === WORLDPAY && credential && credential.state === 'CREATED')) {
-    if (req.user.isDegatewayed()) {
-      return formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, req.service.externalId, req.account.type)
-    } else {
-      return formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, credential.external_id)
-    }
+
+  if (![WORLDPAY, STRIPE].includes(paymentProvider)) {
+    return
   }
 
-  if ((paymentProvider === STRIPE && req.account.type === 'live' && credential && credential.state === 'CREATED')) {
-    if (req.user.isDegatewayed()) {
-      return formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type)
-    } else {
-      return formatAccountPathsFor(paths.account.yourPsp.index, req.account.external_id, credential.external_id)
-    }
+  const simplifiedPaths = {
+    [WORLDPAY]: paths.simplifiedAccount.settings.worldpayDetails.index,
+    [STRIPE]: paths.simplifiedAccount.settings.stripeDetails.index
   }
-  return false
+
+  if (req.user.isDegatewayed()) {
+    return formatSimplifiedAccountPathsFor(
+      simplifiedPaths[paymentProvider],
+      req.service.externalId,
+      req.account.type
+    )
+  } else {
+    return formatAccountPathsFor(
+      paths.account.yourPsp.index,
+      req.account.external_id,
+      credential.external_id
+    )
+  }
 }
 
 module.exports = async (req, res) => {

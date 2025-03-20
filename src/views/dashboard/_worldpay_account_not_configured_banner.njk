@@ -1,6 +1,6 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
-{% if isAdminUser and paymentProvider === "worldpay" and configurePSPAccountLink %}
+{% if isAdminUser and worldpayAccountAndSetupIncomplete %}
   <div class="govuk-grid-column-full">
     {% set html %}
 

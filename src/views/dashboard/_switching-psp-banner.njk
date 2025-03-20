@@ -11,7 +11,7 @@
       Your service is ready to switch PSP from {{ activeCredential.payment_provider | formatPSPname }} to {{ targetCredential.payment_provider | formatPSPname }}.
     </p>
     <p class="govuk-body">
-      Find out how to switch to {{ targetCredential.payment_provider | formatPSPname | docsLink("switch_payment_service_provider") }}
+      Find out how to switch to {{ targetCredential.payment_provider | formatPSPname | docsLink("switch_payment_service_provider") }}.
     </p>
   {% endset %}
   {{ govukNotificationBanner({
