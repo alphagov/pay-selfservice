@@ -11,7 +11,7 @@ const CY_SERVICE_NAME = 'Fy Ngwasanaeth Cwl'
 
 const mockResponse = sinon.stub()
 
-const { req, res, call, nextResponse } = new ControllerTestBuilder('@controllers/simplified-account/settings/service-name/index/service-name-index.controller')
+const { req, res, call, nextResponse } = new ControllerTestBuilder('@controllers/simplified-account/settings/service-name/service-name.controller')
   .withService(new Service({
     id: '123',
     external_id: SERVICE_EXTERNAL_ID,

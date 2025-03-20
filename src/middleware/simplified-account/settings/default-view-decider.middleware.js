@@ -13,6 +13,6 @@ module.exports = function (req, res) {
     return serviceSettingsController.emailNotifications.get(req, res)
   } else {
     req.url = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, service.externalId, account.type)
-    return serviceSettingsController.serviceName.index.get(req, res)
+    return serviceSettingsController.serviceName.get(req, res)
   }
 }
