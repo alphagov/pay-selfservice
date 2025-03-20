@@ -141,7 +141,7 @@ const stripePersonSchema = {
       validate: body('workEmail')
         .trim()
         .notEmpty()
-        .withMessage('Work email is required')
+        .withMessage('Enter the work email')
         .bail()
         .isEmail()
         .withMessage('Enter a real email address')
