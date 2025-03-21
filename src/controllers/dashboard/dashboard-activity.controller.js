@@ -26,7 +26,10 @@ const {
   DENIED
 } = require('@models/constants/go-live-stage')
 const pspTestAccountStage = require('@models/constants/psp-test-account-stage')
-const { WORLDPAY } = require('@models/constants/payment-providers')
+const { WORLDPAY, STRIPE } = require('@models/constants/payment-providers')
+const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
+const paths = require('@root/paths')
+const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 const links = {
   demoPayment: 0,
@@ -109,6 +112,34 @@ async function isWorldpayTestService (service, account) {
     account.payment_provider === WORLDPAY
 }
 
+const getConfigurePSPAccountLink = (req) => {
+  const credential = getCurrentCredential(req.account)
+  const paymentProvider = credential?.payment_provider
+
+  if (![WORLDPAY, STRIPE].includes(paymentProvider)) {
+    return
+  }
+
+  const simplifiedPaths = {
+    [WORLDPAY]: paths.simplifiedAccount.settings.worldpayDetails.index,
+    [STRIPE]: paths.simplifiedAccount.settings.stripeDetails.index
+  }
+
+  if (req.user.isDegatewayed()) {
+    return formatSimplifiedAccountPathsFor(
+      simplifiedPaths[paymentProvider],
+      req.service.externalId,
+      req.account.type
+    )
+  } else {
+    return formatAccountPathsFor(
+      paths.account.yourPsp.index,
+      req.account.external_id,
+      credential.external_id
+    )
+  }
+}
+
 module.exports = async (req, res) => {
   const gatewayAccountId = req.account.gateway_account_id
   const messages = res.locals.flash.messages
@@ -128,7 +159,9 @@ module.exports = async (req, res) => {
     goLiveRequested: goLiveRequestedStages.includes(req.service.currentGoLiveStage),
     gatewayAccount: req.account,
     enableStripeOnboardingTaskList: process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true',
-    isWorldpayTestService: worldpayTestService
+    isWorldpayTestService: worldpayTestService,
+    paymentProvider: req.account.payment_provider,
+    configurePSPAccountLink: getConfigurePSPAccountLink(req)
   }
 
   if (req.account.payment_provider === 'stripe' && req.account.type === 'live') {
@@ -146,8 +179,6 @@ module.exports = async (req, res) => {
     const { fromDateTimeInUTC, toDateTimeInUTC } = getTransactionDateRangeInUTC(period)
 
     const transactionsPeriodString = `fromDate=${encodeURIComponent(datetime(fromDateTimeInUTC, 'date'))}&fromTime=${encodeURIComponent(datetime(fromDateTimeInUTC, 'time'))}&toDate=${encodeURIComponent(datetime(toDateTimeInUTC, 'date'))}&toTime=${encodeURIComponent(datetime(toDateTimeInUTC, 'time'))}`
-
-    logger.info('Successfully logged in')
 
     try {
       const result = await LedgerClient.transactionSummary(gatewayAccountId, fromDateTimeInUTC, toDateTimeInUTC)

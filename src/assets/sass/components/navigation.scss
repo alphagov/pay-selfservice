@@ -8,18 +8,14 @@
 
 .service-info--name {
   margin: govuk-spacing(2) 0 govuk-spacing(1);
+  @include govuk-media-query($until: tablet) {
+    margin: 0 0 0 govuk-spacing(1);
+  }
 }
 
 .service-info--tag {
-  display: inline-block;
   margin-left: 5px;
   max-width: none;
-}
-
-.service-info {
-  @include govuk-media-query(tablet) {
-    float: left;
-  }
 }
 
 @include govuk-media-query(tablet) {
@@ -32,10 +28,12 @@
 .service-sub-nav {
   .govuk-service-navigation {
     background-color: #fff;
+
     .govuk-width-container {
       margin: 0;
     }
   }
+
   ul.govuk-service-navigation__list {
     @include govuk-font($size: 16);
     @include govuk-media-query($until: tablet) {
@@ -46,6 +44,7 @@
         padding-bottom: govuk-spacing(1);
       }
     }
+
     li.govuk-service-navigation__item--active {
       @include govuk-typography-weight-bold();
     }

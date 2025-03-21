@@ -3,10 +3,13 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
+const { WORLDPAY } = require('@models/constants/payment-providers')
 
 describe('Worldpay account setup banner', () => {
   const gatewayAccountId = '22'
+  const gatewayAccountType = 'live'
   const gatewayAccountExternalId = 'a-valid-external-id'
+  const serviceExternalId = 'service123abc'
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 
   const gatewayAccountCredentials = [{
@@ -14,21 +17,28 @@ describe('Worldpay account setup banner', () => {
     state: 'CREATED'
   }]
 
-  function setupStubs (roleName) {
+  function setupStubs (roleName, userFeatures = '') {
     cy.setEncryptedCookies(userExternalId)
     cy.task('setupStubs', [
       userStubs.getUserSuccess({
         userExternalId,
         gatewayAccountId,
         gatewayAccountExternalId,
-        role: { name: roleName }
+        serviceExternalId,
+        role: { name: roleName },
+        features: userFeatures
       }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
         gatewayAccountId,
         gatewayAccountExternalId,
-        type: 'live',
-        paymentProvider: 'worldpay',
+        type: gatewayAccountType,
+        paymentProvider: WORLDPAY,
         gatewayAccountCredentials
+      }),
+      gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, gatewayAccountType, {
+        gateway_account_id: gatewayAccountId,
+        type: gatewayAccountType,
+        payment_provider: WORLDPAY
       }),
       gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }),
       transactionsSummaryStubs.getDashboardStatistics()
@@ -41,10 +51,30 @@ describe('Worldpay account setup banner', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
 
       cy.get('.govuk-notification-banner__title').contains('Important')
-      cy.get('.govuk-notification-banner__content').contains('You have not finished setting up your account. You will not be able to take payments unless you connect your Worldpay account to GOV.UK Pay.')
-
-      cy.get('#connect-worldpay-account').click()
+      cy.get('.govuk-notification-banner__content')
+        .contains('Finish setting up your service to start taking payments')
+        .parent()
+        .contains('You\'ve started to set up your live account. There are still some steps you need to complete.')
+        .within(() => {
+          cy.get('a')
+            .should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
+            .click()
+        })
       cy.get('h1').contains('Your payment service provider (PSP) - Worldpay')
+    })
+
+    it('banner should link to payment provider stripe details for degatewayed user', () => {
+      setupStubs('admin', 'degatewayaccountification')
+
+      cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+      cy.get('.govuk-notification-banner__title').contains('Important')
+      cy.get('.govuk-notification-banner__content')
+        .within(() => {
+          cy.get('a')
+            .should('have.attr', 'href', '/simplified/service/service123abc/account/live/settings/worldpay-details')
+            .click()
+        })
+      cy.get('h1').contains('Worldpay details')
     })
   })
 

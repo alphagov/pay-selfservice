@@ -541,11 +541,8 @@ describe('dashboard-activity-controller', () => {
         const $ = cheerio.load(res.text)
         const resultText = $('.govuk-notification-banner__content').text()
         expect($('.govuk-notification-banner__content').length).to.equal(1)
-        expect(resultText).to.contain('the name, date of birth and home address of the person in your organisation legally responsible for payments')
-        expect(resultText).to.contain('organisation bank details')
-        expect(resultText).to.contain('the name, date of birth and work email address of the director of your service (or someone at director level)')
-        expect(resultText).to.not.contain('VAT number (if applicable)')
-        expect(resultText).to.not.contain('Company registration number (if applicable)')
+        expect(resultText).to.contain('Finish setting up your service to start taking payments')
+        expect(resultText).to.contain('You\'ve started to set up your live account. There are still some steps you need to complete.')
       })
 
       it('it should not display account status panel when account is fully setup', async () => {
@@ -554,27 +551,6 @@ describe('dashboard-activity-controller', () => {
         const res = await getDashboard()
         const $ = cheerio.load(res.text)
         expect($('.govuk-notification-banner__content').length).to.equal(0)
-      })
-
-      it('it should display account status panel with DATE when account is not fully setup and there is a deadline', async () => {
-        mockConnectorGetStripeSetup(true, true, false, false, true)
-        mockStripeRetrieveAccount(true, 1606820691)
-        const res = await getDashboard()
-        const $ = cheerio.load(res.text)
-        expect($('.govuk-notification-banner__content').length).to.equal(1)
-        const resultText = $('.govuk-notification-banner__content').text()
-        expect(resultText).to.contain('You must add more details by 1 December 2020 to continue taking payments')
-      })
-
-      it('it should display RESTRICTED account status panel when payouts=false, account is not fully setup', async () => {
-        mockConnectorGetStripeSetup(true, true, false, false, false)
-        mockStripeRetrieveAccount(false, null)
-
-        const res = await getDashboard()
-        const $ = cheerio.load(res.text)
-        expect($('.govuk-notification-banner__content').length).to.equal(1)
-        const resultText = $('.govuk-notification-banner__content').text()
-        expect(resultText).to.contain('Stripe has restricted your account')
       })
 
       it('it should display RESTRICTED account status panel when payouts=false, account is fully setup', async () => {
@@ -586,7 +562,7 @@ describe('dashboard-activity-controller', () => {
         expect($('.govuk-notification-banner__content').length).to.equal(1)
         const resultText = $('.govuk-notification-banner__content').text()
         expect(resultText).to.contain('Stripe has restricted your account')
-        expect(resultText).to.contain('To start taking payments again, please contact support.')
+        expect(resultText).to.contain('To start taking payments again, please contact support')
       })
     })
     describe('User does not have permission to update account details', () => {
