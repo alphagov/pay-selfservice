@@ -48,7 +48,9 @@
 
 .service-settings-pane {
   max-width: 630px;
-  word-break: break-word;
+  h1, .service-settings-break-word  {
+    word-break: break-word;
+  }
 }
 
 .service-settings-inset-text--grey {
