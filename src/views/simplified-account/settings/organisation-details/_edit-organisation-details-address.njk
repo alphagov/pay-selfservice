@@ -16,7 +16,7 @@
     classes: "govuk-!-width-three-quarters",
     id: "address-line1",
     name: "addressLine1",
-    autocomplete: "section-address address-line1",
+    autocomplete: "address-line1",
     errorMessage: { text: errors.formErrors['addressLine1'] } if errors.formErrors['addressLine1'] else false,
     value: organisationDetails.addressLine1
   }) }}
@@ -28,7 +28,7 @@
     classes: "govuk-!-width-three-quarters",
     id: "address-line2",
     name: "addressLine2",
-    autocomplete: "section-address address-line2",
+    autocomplete: "address-line2",
     errorMessage: { text: errors.formErrors['addressLine2'] } if errors.formErrors['addressLine2'] else false,
     value: organisationDetails.addressLine2
   }) }}
@@ -40,7 +40,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "address-city",
     name: "addressCity",
-    autocomplete: "section-address address-level2",
+    autocomplete: "address-level2",
     errorMessage: { text: errors.formErrors['addressCity'] } if errors.formErrors['addressCity'] else false,
     value: organisationDetails.addressCity
   }) }}
@@ -63,7 +63,7 @@
     classes: "govuk-!-width-one-quarter",
     id: "address-postcode",
     name: "addressPostcode",
-    autocomplete: "section-address postal-code",
+    autocomplete: "postal-code",
     errorMessage: { text: errors.formErrors['addressPostcode'] } if errors.formErrors['addressPostcode'] else false,
     value: organisationDetails.addressPostcode
   }) }}

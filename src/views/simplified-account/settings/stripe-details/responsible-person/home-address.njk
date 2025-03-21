@@ -17,7 +17,7 @@
         name: "homeAddressLine1",
         value: address.homeAddressLine1,
         type: "text",
-        autocomplete: "section-address address-line1",
+        autocomplete: "address-line1",
         errorMessage: { text: errors.formErrors['homeAddressLine1'] } if errors.formErrors['homeAddressLine1'] else false,
         classes: "govuk-!-width-three-quarters"
       }) }}
@@ -29,7 +29,7 @@
         name: "homeAddressLine2",
         value: address.homeAddressLine2,
         type: "text",
-        autocomplete: "section-address address-line2",
+        autocomplete: "address-line2",
         errorMessage: { text: errors.formErrors['homeAddressLine2'] } if errors.formErrors['homeAddressLine2'] else false,
         attributes: {
           "aria-label": "Enter address line 2"
@@ -44,7 +44,7 @@
         name: "homeAddressCity",
         value: address.homeAddressCity,
         type: "text",
-        autocomplete: "section-address address-level2",
+        autocomplete: "address-level2",
         errorMessage: { text: errors.formErrors['homeAddressCity'] } if errors.formErrors['homeAddressCity'] else false,
         classes: "govuk-!-width-one-half"
       }) }}
@@ -56,7 +56,7 @@
         name: "homeAddressPostcode",
         value: address.homeAddressPostcode,
         type: "text",
-        autocomplete: "section-address postal-code",
+        autocomplete: "postal-code",
         classes: "govuk-!-width-one-third",
         errorMessage: { text: errors.formErrors['homeAddressPostcode'] } if errors.formErrors['homeAddressPostcode'] else false
       }) }}

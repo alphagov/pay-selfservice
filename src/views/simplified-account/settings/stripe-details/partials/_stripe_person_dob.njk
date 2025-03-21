@@ -19,7 +19,7 @@
       name: "dobDay",
       id: "dob-day",
       classes: "govuk-input--width-2 govuk-input--error" if (errors.formErrors['dob'] or errors.formErrors['dobDay']) else "govuk-input--width-2",
-      autocomplete: "section-person bday-day"
+      autocomplete: "bday-day"
     },
     {
       label: "Month",
@@ -27,7 +27,7 @@
       name: "dobMonth",
       id: "dob-month",
       classes: "govuk-input--width-2 govuk-input--error" if (errors.formErrors['dob'] or errors.formErrors['dobMonth']) else "govuk-input--width-2",
-      autocomplete: "section-person bday-month"
+      autocomplete: "bday-month"
     },
     {
       label: "Year",
@@ -35,7 +35,7 @@
       name: "dobYear",
       id: "dob-year",
       classes: "govuk-input--width-4 govuk-input--error" if (errors.formErrors['dob'] or errors.formErrors['dobYear']) else "govuk-input--width-4",
-      autocomplete: "section-person bday-year"
+      autocomplete: "bday-year"
     }
   ]
 }) }}

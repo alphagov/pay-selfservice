@@ -20,7 +20,7 @@
       name: "workTelephoneNumber",
       value: contact.workTelephoneNumber,
       type: "tel",
-      autocomplete: "section-contact work tel",
+      autocomplete: "work tel",
       errorMessage: { text: errors.formErrors['workTelephoneNumber'] } if errors.formErrors['workTelephoneNumber'] else false,
       classes: "govuk-!-full-width"
     }) }}
@@ -34,7 +34,7 @@
       name: "workEmail",
       value: contact.workEmail,
       type: "email",
-      autocomplete: "section-contact work email",
+      autocomplete: "work email",
       spellcheck: false,
       errorMessage: { text: errors.formErrors['workEmail'] } if errors.formErrors['workEmail'] else false,
       classes: "govuk-!-full-width"
