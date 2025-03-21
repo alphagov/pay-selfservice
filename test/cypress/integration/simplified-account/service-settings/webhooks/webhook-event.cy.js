@@ -22,7 +22,7 @@ const webhookEvent = {
   resource_id: 'webhook-event-resource-id-1'
 }
 
-const WEBHOOK_BASE_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/webhooks`
+const WEBHOOK_BASE_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/webhooks`
 const WEBHOOK_DETAILS_URL = `${WEBHOOK_BASE_URL}/${WEBHOOK_ID}`
 const WEBHOOK_EVENT_URL = `${WEBHOOK_DETAILS_URL}/event/${webhookEvent.external_id}`
 const WEBHOOK_EVENT_RESOURCE_URL = `/account/a-valid-external-id/transactions/${webhookEvent.resource_id}`
