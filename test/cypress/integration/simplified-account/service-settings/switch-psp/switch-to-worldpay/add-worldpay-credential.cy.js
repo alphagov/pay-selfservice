@@ -8,7 +8,7 @@ const { STRIPE_CREDENTIAL_IN_ACTIVE_STATE, WORLDPAY_CREDENTIAL_IN_ENTERED_STATE,
 
 // test constants
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const SWITCHING_CREDENTIAL_EXTERNAL_ID = WORLDPAY_CREDENTIAL_IN_ENTERED_STATE.external_id
 const SERVICE_NAME = { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' }
 const LIVE_ACCOUNT_TYPE = 'live'
@@ -16,8 +16,8 @@ const GATEWAY_ACCOUNT_ID = 10
 const VALID_MOTO_MERCHANT_CODE = WORLDPAY_CREDENTIAL_IN_ENTERED_STATE.credentials.one_off_customer_initiated.merchant_code
 const VALID_WORLDPAY_USERNAME = WORLDPAY_CREDENTIAL_IN_ENTERED_STATE.credentials.one_off_customer_initiated.username
 const VALID_WORLDPAY_PASSWORD = WORLDPAY_CREDENTIAL_IN_ENTERED_STATE.credentials.one_off_customer_initiated.password
-const SWITCH_TO_WORLDPAY_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay`
-const SWITCH_TO_WORLDPAY_ADD_CREDENTIAL_TASK_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated`
+const SWITCH_TO_WORLDPAY_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay`
+const SWITCH_TO_WORLDPAY_ADD_CREDENTIAL_TASK_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated`
 // ---
 
 const setStubs = (opts = {}, additionalStubs = []) => {

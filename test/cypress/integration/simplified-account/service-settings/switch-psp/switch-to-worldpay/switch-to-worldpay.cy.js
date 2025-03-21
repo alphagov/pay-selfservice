@@ -11,12 +11,12 @@ const {
 
 // test constants
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
-const WORLDPAY_DETAILS_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/worldpay-details`
-const SWITCH_TO_WORLDPAY_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay`
+const WORLDPAY_DETAILS_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/worldpay-details`
+const SWITCH_TO_WORLDPAY_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay`
 const SWITCHING_CREDENTIAL_EXTERNAL_ID = WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE.external_id
 // ---
 

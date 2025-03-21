@@ -94,7 +94,7 @@ describe('The Stripe psp details banner', () => {
     cy.get('.govuk-notification-banner__content')
       .within(() => {
         cy.get('a')
-          .should('have.attr', 'href', '/simplified/service/service123abc/account/live/settings/stripe-details')
+          .should('have.attr', 'href', '/service/service123abc/account/live/settings/stripe-details')
           .click()
       })
     cy.get('h1').contains('Stripe details')

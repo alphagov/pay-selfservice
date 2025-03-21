@@ -51,7 +51,7 @@ describe('Controller: settings/team-members/invite', () => {
 
     it('should pass context data to the response method', () => {
       expect(mockResponse.args[0][3]).to.have.property('availableRoles').to.have.length(3)
-      expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal('/simplified/service/service-id-123abc/account/test/settings/team-members')
+      expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal('/service/service-id-123abc/account/test/settings/team-members')
     })
   })
 })

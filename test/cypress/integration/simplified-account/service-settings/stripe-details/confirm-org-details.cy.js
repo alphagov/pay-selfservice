@@ -7,7 +7,7 @@ const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const ROLES = require('@test/fixtures/roles.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = {
   en: 'McDuck Enterprises', cy: 'Mentrau McDuck'
 }
@@ -15,7 +15,7 @@ const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
 const STRIPE_ACCOUNT_ID = 'acct_123example123'
 
-const STRIPE_DETAILS_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/stripe-details`
+const STRIPE_DETAILS_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/stripe-details`
 
 const setStubs = (opts = {}, additionalStubs = []) => {
   cy.task('setupStubs', [

@@ -63,8 +63,8 @@ describe('Controller: settings/api-keys', () => {
               createdBy: 'system generated',
               issuedDate: '12 Dec 2024',
               tokenLink: '123-345',
-              changeNameLink: '/simplified/service/service123abc/account/live/settings/api-keys/123-345/change-name',
-              revokeKeyLink: '/simplified/service/service123abc/account/live/settings/api-keys/123-345/revoke'
+              changeNameLink: '/service/service123abc/account/live/settings/api-keys/123-345/change-name',
+              revokeKeyLink: '/service/service123abc/account/live/settings/api-keys/123-345/revoke'
             }
           ],
           createKeyLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.create.index,

@@ -6,7 +6,7 @@ const webhooksStubs = require('@test/cypress/stubs/webhooks-stubs')
 const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = { en: 'Compu-Global-Hyper-Mega-Net' }
 const GATEWAY_ACCOUNT_ID = 100
 const ACCOUNT_TYPE = 'test'
@@ -93,34 +93,34 @@ describe('webhook settings - update webhooks', () => {
       })
 
       it('should be accessible from the webhook list page', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks`)
 
         cy.get('a').contains('Update').click()
 
         cy.location('pathname')
-          .should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
+          .should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
       })
 
       it('should be accessible from the webhook detail page', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
 
         cy.get('a').contains('Update webhook').click()
 
         cy.location('pathname')
-          .should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
+          .should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
       })
 
       it('should show the correct heading and title', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
 
         cy.get('h1').should('contain', 'Webhook details')
         cy.title().should('eq', 'Webhook details - Settings - Compu-Global-Hyper-Mega-Net - GOV.UK Pay')
       })
 
       it('should show active "Webhooks" link', () => {
-        cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
 
-        checkSettingsNavigation('Webhooks', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks`)
+        checkSettingsNavigation('Webhooks', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks`)
       })
     })
 
@@ -133,7 +133,7 @@ describe('webhook settings - update webhooks', () => {
         })
 
         it('should render the form with the validation errors', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
 
           cy.get('input#callback-url').clear().type('http://this.url.is.invalid.becuase.it.is.not.https.com', { delay: 0 })
           // cy.get('input#description').clear().type('a'.repeat(100), { delay: 0 })
@@ -144,7 +144,7 @@ describe('webhook settings - update webhooks', () => {
 
           cy.get('button').contains('Save').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
 
           cy.get('.govuk-error-summary')
             .should('exist')
@@ -165,12 +165,12 @@ describe('webhook settings - update webhooks', () => {
         })
 
         it('should render the form with the validation error', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
           cy.get('input#callback-url').clear().type('https://this.url.is.invalid.becuase.the.domain.is.not.in.the.allowlist.biz', { delay: 0 })
 
           cy.get('button').contains('Save').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
 
           cy.get('.govuk-error-summary')
             .should('exist')
@@ -188,7 +188,7 @@ describe('webhook settings - update webhooks', () => {
         })
 
         it('should redirect to the webhook detail page', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`)
           cy.get('input#callback-url').clear().type('https://this.url.is.valid.gov.uk', { delay: 0 })
           cy.get('input#description').clear().type('This is a new description for my webhook', { delay: 0 })
           cy.get('div.govuk-checkboxes__item').filter(':contains("Payment succeeded")').first()
@@ -198,7 +198,7 @@ describe('webhook settings - update webhooks', () => {
 
           cy.get('button').contains('Save').click()
 
-          cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
         })
       })
     })
@@ -213,7 +213,7 @@ describe('webhook settings - update webhooks', () => {
 
       it('should respond with a 404', () => {
         cy.request({
-          url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/this-webhook-does-not-exist/update`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/this-webhook-does-not-exist/update`,
           failOnStatusCode: false
         }).then(response => expect(response.status).to.eq(404))
       })
@@ -229,7 +229,7 @@ describe('webhook settings - update webhooks', () => {
 
     it('should return a 403', () => {
       cy.request({
-        url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`,
+        url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/update`,
         failOnStatusCode: false
       }).then(response => expect(response.status).to.eq(403))
     })

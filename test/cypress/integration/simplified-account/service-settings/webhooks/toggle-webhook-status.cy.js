@@ -6,7 +6,7 @@ const webhooksStubs = require('@test/cypress/stubs/webhooks-stubs')
 const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = { en: 'Compu-Global-Hyper-Mega-Net' }
 const GATEWAY_ACCOUNT_ID = 100
 const ACCOUNT_TYPE = 'test'
@@ -72,25 +72,25 @@ describe('webhook settings - toggle webhook status', () => {
         })
 
         it('should be accessible from the webhook detail page', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
 
           cy.get('a').contains('Deactivate webhook').click()
 
           cy.location('pathname')
-            .should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            .should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
         })
 
         it('should show the correct heading and title', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
           cy.get('h1').should('contain', 'Are you sure you want to deactivate a really awesome webhook?')
           cy.title().should('eq', 'Deactivate webhook - Settings - Compu-Global-Hyper-Mega-Net - GOV.UK Pay')
         })
 
         it('should show active "Webhooks" link', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
-          checkSettingsNavigation('Webhooks', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks`)
+          checkSettingsNavigation('Webhooks', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks`)
         })
       })
 
@@ -103,16 +103,16 @@ describe('webhook settings - toggle webhook status', () => {
         })
 
         it('should be accessible from the webhook detail page', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
 
           cy.get('a').contains('Activate webhook').click()
 
           cy.location('pathname')
-            .should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            .should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
         })
 
         it('should show the correct heading and title', () => {
-          cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
           cy.get('h1').should('contain', 'Are you sure you want to activate a really awesome webhook')
           cy.title().should('eq', 'Activate webhook - Settings - Compu-Global-Hyper-Mega-Net - GOV.UK Pay')
@@ -130,11 +130,11 @@ describe('webhook settings - toggle webhook status', () => {
 
         describe('when no option is selected', () => {
           it('should show the form with a validation error', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
             cy.get('.govuk-error-summary')
               .should('exist')
@@ -146,7 +146,7 @@ describe('webhook settings - toggle webhook status', () => {
 
         describe('when "no" is selected', () => {
           it('should redirect to the webhook details page', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
             cy.get('div.govuk-radios__item').filter(':contains("No")').first()
               .within(() => {
@@ -154,7 +154,7 @@ describe('webhook settings - toggle webhook status', () => {
               })
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
           })
         })
 
@@ -169,7 +169,7 @@ describe('webhook settings - toggle webhook status', () => {
           })
 
           it('should redirect to the webhook details page', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
             cy.get('div.govuk-radios__item').filter(':contains("No")').first()
               .within(() => {
@@ -177,7 +177,7 @@ describe('webhook settings - toggle webhook status', () => {
               })
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
           })
         })
       })
@@ -192,11 +192,11 @@ describe('webhook settings - toggle webhook status', () => {
 
         describe('when no option is selected', () => {
           it('should show the form with a validation error', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
             cy.get('.govuk-error-summary')
               .should('exist')
@@ -208,7 +208,7 @@ describe('webhook settings - toggle webhook status', () => {
 
         describe('when "no" is selected', () => {
           it('should redirect to the webhook details page', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
             cy.get('div.govuk-radios__item').filter(':contains("No")').first()
               .within(() => {
@@ -216,7 +216,7 @@ describe('webhook settings - toggle webhook status', () => {
               })
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
           })
         })
 
@@ -231,7 +231,7 @@ describe('webhook settings - toggle webhook status', () => {
           })
 
           it('should redirect to the webhook details page', () => {
-            cy.visit(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
             cy.get('div.govuk-radios__item').filter(':contains("No")').first()
               .within(() => {
@@ -239,7 +239,7 @@ describe('webhook settings - toggle webhook status', () => {
               })
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
           })
         })
       })
@@ -255,7 +255,7 @@ describe('webhook settings - toggle webhook status', () => {
 
     it('should return a 404', () => {
       cy.request({
-        url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/this-webhook-does-not-exist/toggle-status`,
+        url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/this-webhook-does-not-exist/toggle-status`,
         failOnStatusCode: false
       }).then(response => expect(response.status).to.eq(404))
     })
@@ -270,7 +270,7 @@ describe('webhook settings - toggle webhook status', () => {
 
     it('should return a 403', () => {
       cy.request({
-        url: `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`,
+        url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`,
         failOnStatusCode: false
       }).then(response => expect(response.status).to.eq(403))
     })

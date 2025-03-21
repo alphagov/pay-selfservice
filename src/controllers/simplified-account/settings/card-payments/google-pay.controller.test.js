@@ -50,7 +50,7 @@ describe('Controller: settings/card-payments/google-pay', () => {
         const context = mockResponse.args[0][3]
         expect(context).to.not.have.property('currentGooglePayMerchantId')
         expect(context).to.have.property('currentState').to.equal('off')
-        expect(context).to.have.property('backLink').to.equal(`/simplified/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments`)
+        expect(context).to.have.property('backLink').to.equal(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments`)
       })
     })
 

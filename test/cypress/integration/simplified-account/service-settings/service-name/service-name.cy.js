@@ -8,7 +8,7 @@ const {
 } = require('./service-name-test-helpers')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = {
   en: 'My Cool Service',
   cy: 'Fy Ngwasanaeth Cwl'
@@ -16,7 +16,7 @@ const SERVICE_NAME = {
 const TEST_ACCOUNT_TYPE = 'test'
 const TEST_GATEWAY_ACCOUNT_ID = 10
 
-const SERVICE_SETTINGS_URL = `/simplified/service/${SERVICE_EXTERNAL_ID}/account/${TEST_ACCOUNT_TYPE}/settings`
+const SERVICE_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST_ACCOUNT_TYPE}/settings`
 
 const setStubs = (opts = {}, additionalStubs = []) => {
   cy.task('setupStubs', [
