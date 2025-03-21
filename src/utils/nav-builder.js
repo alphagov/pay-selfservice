@@ -62,33 +62,34 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
       permissions: permissions.transactions_read
     })
   }
-  navigationItems.push({
-    id: 'navigation-menu-settings',
-    name: 'Settings',
-    url: formatAccountPathsFor(paths.account.settings.index, gatewayAccountExternalId),
-    current: currentPath !== '/' && !currentUrl.includes('simplified')
-      ? yourPspPaths.concat(additionalPspPaths, webhookPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
-        ...mainSettingsPaths,
-        paths.account.apiKeys,
-        paths.futureAccountStrategy.webhooks,
-        paths.account.paymentTypes
-      ])
-      : false,
-    permissions: _.some([
-      permissions.tokens_read,
-      permissions.gateway_credentials_read,
-      permissions.payment_types_read,
-      permissions.toggle_3ds_read,
-      permissions.email_notification_template_read
-    ], Boolean)
-  })
   if (isDegatewayed) {
     navigationItems.push({
-      id: 'simplified-account-settings',
-      name: 'Simplified Account Settings',
+      id: 'navigation-menu-settings',
+      name: 'Settings',
       url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.index, serviceExternalId, account.type),
-      current: currentUrl.includes('simplified') && currentUrl.includes('settings'),
+      current: currentUrl.includes('settings'),
       permissions: true
+    })
+  } else {
+    navigationItems.push({
+      id: 'navigation-menu-settings',
+      name: 'Settings',
+      url: formatAccountPathsFor(paths.account.settings.index, gatewayAccountExternalId),
+      current: currentPath !== '/' && !currentUrl.includes('simplified')
+        ? yourPspPaths.concat(additionalPspPaths, webhookPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
+          ...mainSettingsPaths,
+          paths.account.apiKeys,
+          paths.futureAccountStrategy.webhooks,
+          paths.account.paymentTypes
+        ])
+        : false,
+      permissions: _.some([
+        permissions.tokens_read,
+        permissions.gateway_credentials_read,
+        permissions.payment_types_read,
+        permissions.toggle_3ds_read,
+        permissions.email_notification_template_read
+      ], Boolean)
     })
   }
 
