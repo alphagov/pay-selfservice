@@ -7,31 +7,39 @@ const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripeAccountStubs = require('../../stubs/stripe-account-stubs')
 const stripeAccountId = 'stripe-account-id'
 const stripePspStubs = require('../../stubs/stripe-psp-stubs')
+const { STRIPE } = require('@models/constants/payment-providers')
 
 const gatewayAccountId = '22'
 const gatewayAccountExternalId = 'a-valid-external-id'
+const gatewayAccountType = 'live'
+const serviceExternalId = 'service123abc'
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountCredentials = [{ payment_provider: 'stripe' }]
 
 function setupYourPspStubs (opts = {}) {
-  const user = userStubs.getUserSuccess({ userExternalId, gatewayAccountId, gatewayAccountExternalId })
-
+  const user = userStubs.getUserSuccess({
+    userExternalId,
+    gatewayAccountId,
+    gatewayAccountExternalId,
+    serviceExternalId,
+    features: opts.userFeatures || ''
+  })
   const stripeAccount = stripeAccountStubs.getStripeAccountSuccess(gatewayAccountId, 'stripe-account-id')
   const gatewayAccountByExternalId = gatewayAccountStubs.getGatewayAccountByExternalIdSuccess(
-    { gatewayAccountId, gatewayAccountExternalId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials })
+    { gatewayAccountId, gatewayAccountExternalId, type: gatewayAccountType, paymentProvider: STRIPE, gatewayAccountCredentials })
   const gatewayAccounts = gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId })
   const transactionsSummary = transactionsSummaryStubs.getDashboardStatistics()
-  const gatewayAccountSucess = gatewayAccountStubs.getGatewayAccountSuccess(
-    { gatewayAccountId, type: 'live', paymentProvider: 'stripe', gatewayAccountCredentials })
+  const gatewayAccountSuccess = gatewayAccountStubs.getGatewayAccountSuccess(
+    { gatewayAccountId, type: gatewayAccountType, paymentProvider: 'stripe', gatewayAccountCredentials })
   const stripeAccountSetup = stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
     gatewayAccountId,
-    bankAccount: opts.bankAccount,
-    director: opts.director,
-    vatNumber: opts.vatNumber,
-    companyNumber: opts.companyNumber,
-    responsiblePerson: opts.responsiblePerson,
-    organisationDetails: opts.organisationDetails,
-    governmentEntityDocument: opts.governmentEntityDocument
+    bankAccount: opts.bankAccount || false,
+    director: opts.director || false,
+    vatNumber: opts.vatNumber || false,
+    companyNumber: opts.companyNumber || false,
+    responsiblePerson: opts.responsiblePerson || false,
+    organisationDetails: opts.organisationDetails || false,
+    governmentEntityDocument: opts.governmentEntityDocument || false
   })
 
   const stripeRestrictedAccountDetails = stripePspStubs.retrieveAccountDetails({
@@ -40,8 +48,17 @@ function setupYourPspStubs (opts = {}) {
     current_deadline: opts.current_deadline
   })
 
-  const stubs = [user, stripeAccount, gatewayAccountByExternalId, transactionsSummary, gatewayAccountSucess,
-    stripeAccountSetup, stripeRestrictedAccountDetails, gatewayAccounts]
+  const stubs = [user, stripeAccount, gatewayAccountByExternalId, transactionsSummary, gatewayAccountSuccess,
+    stripeAccountSetup, stripeRestrictedAccountDetails, gatewayAccounts,
+    stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
+      serviceExternalId,
+      accountType: gatewayAccountType
+    }),
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, gatewayAccountType, {
+      gateway_account_id: gatewayAccountId,
+      type: gatewayAccountType,
+      payment_provider: STRIPE
+    })]
   cy.task('setupStubs', stubs)
 }
 
@@ -51,28 +68,36 @@ describe('The Stripe psp details banner', () => {
   })
 
   it('should display call to action banner when all the tasks are not complete ', () => {
-    setupYourPspStubs({
-      bankAccount: false,
-      director: false,
-      vatNumber: false,
-      companyNumber: false,
-      responsiblePerson: false,
-      organisationDetails: false,
-      governmentEntityDocument: false
-    })
+    setupYourPspStubs({})
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
     cy.get('.govuk-notification-banner__title').contains('Important')
     cy.get('.govuk-notification-banner__content')
-      .contains('You have not finished setting up your account')
+      .contains('Finish setting up your service to start taking payments')
       .parent()
-      .contains('You need to submit additional information to Stripe to be able to take payments.')
+      .contains('You\'ve started to set up your live account. There are still some steps you need to complete.')
       .within(() => {
         cy.get('a')
           .should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
           .click()
       })
     cy.get('h1').contains('Information for Stripe')
+  })
+
+  it('call to action banner should link to payment provider stripe details for degatewayed user', () => {
+    setupYourPspStubs({
+      userFeatures: 'degatewayaccountification'
+    })
+
+    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.get('.govuk-notification-banner__title').contains('Important')
+    cy.get('.govuk-notification-banner__content')
+      .within(() => {
+        cy.get('a')
+          .should('have.attr', 'href', '/simplified/service/service123abc/account/live/settings/stripe-details')
+          .click()
+      })
+    cy.get('h1').contains('Stripe details')
   })
 
   it('should display restricted banner when account is fully setup but the Stripe account is restricted ', () => {
@@ -111,6 +136,6 @@ describe('The Stripe psp details banner', () => {
     })
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
-    cy.get('[data-cy=stripe-notification]').should('not.exist')
+    cy.get('.govuk-notification-banner').should('not.exist')
   })
 })
