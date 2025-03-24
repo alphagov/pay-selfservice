@@ -80,6 +80,7 @@
 
   <h2 class="govuk-heading-m">Signing Secret</h2>
   <p class="govuk-body">Webhook messages sent by GOV.UK Pay will include a signature. Only your application should store this secret to verify messages are from GOV.UK Pay.</p>
+  <h3 class="govuk-visually-hidden" id="app-subnav-heading">{{ webhook.description }} signing secret </h3>
   <div>
     <span id="signing-secret" class="code copy-target">{{ signingSecret.signing_key }}</span>
   </div>
