@@ -50,7 +50,7 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
     name: 'Agreements',
     url: formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.agreements.index, account.type, serviceExternalId, gatewayAccountExternalId),
     current: pathLookup(currentPath, paths.futureAccountStrategy.agreements.index),
-    permissions: permissions.agreements_read && account.recurring_enabled
+    permissions: permissions.agreements_read && (account.recurring_enabled ?? account.recurringEnabled)
   })
   if (type === 'card') {
     navigationItems.push({
