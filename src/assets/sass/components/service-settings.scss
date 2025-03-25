@@ -49,7 +49,7 @@
 .service-settings-pane {
   max-width: 630px;
   h1, .service-settings-break-word  {
-    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 }
 
