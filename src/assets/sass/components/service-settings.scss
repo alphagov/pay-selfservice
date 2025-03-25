@@ -48,6 +48,9 @@
 
 .service-settings-pane {
   max-width: 630px;
+  h1, .govuk-error-summary, .govuk-error-message {
+    overflow-wrap: anywhere
+  }
 }
 
 .service-settings-inset-text--grey {
