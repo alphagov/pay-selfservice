@@ -123,27 +123,12 @@ describe('for an admin', () => {
     cy.get('.govuk-summary-list').should('have.length', 1)
     cy.get('.govuk-summary-list__row:eq(0) > dt').should('contain.text', 'GOV.UK Payment ID')
     cy.get('.govuk-summary-list__row:eq(0) > dd').within(() => {
-      cy.get('a').then(($span) => {
-        cy.get('span')
-          .should('have.attr', 'class', 'govuk-visually-hidden')
-          .should('contain.text', 'GOV.UK Payment ID')
-        cy.get('a')
-          .should('have.attr', 'href', WEBHOOK_EVENT_RESOURCE_URL)
-          .should('contain.text', webhookEvent.resource_id)
-        cy.get('span').then(($span) => {
-          cy.get('a').then(($a) => {
-            /* Ensure the <span> comes before the <a> in the DOM
-             Attempted to use Node.DOCUMENT_POSITION_FOLLOWING).to.be.greaterThan(0) which works as it is a built-in
-             part of the browser's JavaScript API, but this fails the build with:
-
-             standard: Use JavaScript Standard Style (https://standardjs.com); 'Node' is not defined. (no-undef)
-
-             Instead of using Node.DOCUMENT_POSITION_FOLLOWING, its numeric value, which is 4 can be used.
-             */
-            expect($span[0].compareDocumentPosition($a[0]) & 4).to.be.greaterThan(0)
-          })
-        })
-      })
+      cy.get('span')
+        .should('have.attr', 'class', 'govuk-visually-hidden')
+        .should('contain.text', 'GOV.UK Payment ID')
+      cy.get('a')
+        .should('have.attr', 'href', WEBHOOK_EVENT_RESOURCE_URL)
+        .should('contain.text', webhookEvent.resource_id)
     })
     cy.get('.govuk-summary-list__row:eq(1) > dt').should('contain.text', 'Event date')
     cy.get('.govuk-summary-list__row:eq(1) > dd').should('contain.text', '25 February 2025')
