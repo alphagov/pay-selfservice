@@ -48,8 +48,8 @@
 
 .service-settings-pane {
   max-width: 630px;
-  h1, .service-settings-break-word  {
-    overflow-wrap: anywhere;
+  h1, .govuk-error-summary, .govuk-error-message {
+    overflow-wrap: anywhere
   }
 }
 
