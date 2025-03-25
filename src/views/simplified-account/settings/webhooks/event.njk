@@ -12,7 +12,7 @@
   <h1 class="govuk-heading-l">{{ title }}</h1>
 
   {% set resourceLink %}
-    <span class="govuk-visually-hidden">GOV.UK Payment ID </span><a class="govuk-link" href="{{ resourceLink }}">{{ event.resource_id }}</a>
+    <a class="govuk-link" href="{{ resourceLink }}"><span class="govuk-visually-hidden">GOV.UK Payment ID </span>{{ event.resource_id }}</a>
   {% endset %}
   {{ govukSummaryList({
     classes: "webhooks-summary-card",
