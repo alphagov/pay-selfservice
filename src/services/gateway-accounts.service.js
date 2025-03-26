@@ -14,7 +14,21 @@ async function getGatewayAccountsByIds (gatewayAccountIds) {
   }, {})
 }
 
+/**
+ *
+ * @param serviceExternalId
+ * @param accountType
+ * @returns {Promise<GatewayAccount>}
+ */
+async function getGatewayAccountByServiceExternalIdAndType (serviceExternalId, accountType) {
+  return connectorClient.getAccountByServiceExternalIdAndAccountType({
+    serviceExternalId,
+    accountType
+  })
+}
+
 module.exports = {
   getGatewayAccountsByIds,
+  getGatewayAccountByServiceExternalIdAndType,
   postSwitchPSP: connectorClient.postSwitchPSPByServiceExternalIdAndAccountType.bind(connectorClient)
 }

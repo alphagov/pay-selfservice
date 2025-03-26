@@ -22,6 +22,7 @@ const restrictToStripeAccountContext = require('./middleware/stripe-setup/restri
 const restrictToSwitchingAccount = require('./middleware/restrict-to-switching-account')
 const uploadGovernmentEntityDocument = require('./middleware/multer-middleware')
 const inviteCookieIsPresent = require('./middleware/invite-cookie-is-present')
+const simplifiedSettingsRedirect = require('./middleware/simplified-account/simplified-settings-redirect.middleware')
 
 // Controllers
 const staticController = require('./controllers/static.controller')
@@ -277,24 +278,24 @@ module.exports.bind = function (app) {
   // --------------------
 
   // Edit service name
-  service.get(editServiceName.index, permission('service-name:update'), editServiceNameController.get)
-  service.post(editServiceName.update, permission('service-name:update'), editServiceNameController.post)
+  service.get(editServiceName.index, simplifiedSettingsRedirect, permission('service-name:update'), editServiceNameController.get)
+  service.post(editServiceName.update, simplifiedSettingsRedirect, permission('service-name:update'), editServiceNameController.post)
 
   // Team members
-  service.get(teamMembers.index, serviceUsersController.index)
-  service.get(teamMembers.show, permission('users-service:read'), serviceUsersController.show)
-  service.get(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.index)
-  service.post(teamMembers.permissions, permission('users-service:create'), serviceRolesUpdateController.update)
-  service.post(teamMembers.delete, permission('users-service:delete'), serviceUsersController.remove)
+  service.get(teamMembers.index, simplifiedSettingsRedirect, serviceUsersController.index)
+  service.get(teamMembers.show, simplifiedSettingsRedirect, permission('users-service:read'), serviceUsersController.show)
+  service.get(teamMembers.permissions, simplifiedSettingsRedirect, permission('users-service:create'), serviceRolesUpdateController.index)
+  service.post(teamMembers.permissions, simplifiedSettingsRedirect, permission('users-service:create'), serviceRolesUpdateController.update)
+  service.post(teamMembers.delete, simplifiedSettingsRedirect, permission('users-service:delete'), serviceUsersController.remove)
 
   // Invite team member
-  service.get(teamMembers.invite, permission('users-service:create'), inviteUserController.index)
-  service.post(teamMembers.invite, permission('users-service:create'), inviteUserController.invite)
+  service.get(teamMembers.invite, simplifiedSettingsRedirect, permission('users-service:create'), inviteUserController.index)
+  service.post(teamMembers.invite, simplifiedSettingsRedirect, permission('users-service:create'), inviteUserController.invite)
 
   // Merchant details
-  service.get(organisationDetails.index, permission('merchant-details:read'), organisationDetailsController.showOrganisationDetails)
-  service.get(organisationDetails.edit, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.get)
-  service.post(organisationDetails.edit, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.post)
+  service.get(organisationDetails.index, simplifiedSettingsRedirect, permission('merchant-details:read'), organisationDetailsController.showOrganisationDetails)
+  service.get(organisationDetails.edit, simplifiedSettingsRedirect, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.get)
+  service.post(organisationDetails.edit, simplifiedSettingsRedirect, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.post)
 
   // Request to go live
   service.get(requestToGoLive.index, permission('go-live-stage:read'), requestToGoLiveIndexController.get)
@@ -331,73 +332,73 @@ module.exports.bind = function (app) {
   account.post(transactions.refund, permission('refunds:create'), transactionRefundController)
 
   // Settings
-  account.get(settings.index, permission('transactions-details:read'), settingsController.index)
+  account.get(settings.index, simplifiedSettingsRedirect, permission('transactions-details:read'), settingsController.index)
 
   // Your PSP
-  account.get(yourPsp.index, permission('gateway-credentials:read'), yourPspController.getIndex)
-  account.get([yourPsp.flex, switchPSP.flex], permission('gateway-credentials:update'), yourPspController.getFlex)
-  account.post([yourPsp.flex, switchPSP.flex], permission('gateway-credentials:update'), yourPspController.postFlex)
+  account.get(yourPsp.index, simplifiedSettingsRedirect, permission('gateway-credentials:read'), yourPspController.getIndex)
+  account.get([yourPsp.flex, switchPSP.flex], simplifiedSettingsRedirect, permission('gateway-credentials:update'), yourPspController.getFlex)
+  account.post([yourPsp.flex, switchPSP.flex], simplifiedSettingsRedirect, permission('gateway-credentials:update'), yourPspController.postFlex)
 
-  account.get(switchPSP.index, restrictToSwitchingAccount, permission('gateway-credentials:update'), switchPSPController.switchPSPPage)
-  account.post(switchPSP.index, restrictToSwitchingAccount, permission('gateway-credentials:update'), switchPSPController.submitSwitchPSP)
-  account.get(switchPSP.verifyPSPIntegrationPayment, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.verifyPSPIntegrationPaymentPage)
-  account.post(switchPSP.verifyPSPIntegrationPayment, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.startPaymentJourney)
-  account.get(switchPSP.receiveVerifyPSPIntegrationPayment, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.completePaymentJourney)
+  account.get(switchPSP.index, restrictToSwitchingAccount, simplifiedSettingsRedirect, permission('gateway-credentials:update'), switchPSPController.switchPSPPage)
+  account.post(switchPSP.index, restrictToSwitchingAccount, simplifiedSettingsRedirect, permission('gateway-credentials:update'), switchPSPController.submitSwitchPSP)
+  account.get(switchPSP.verifyPSPIntegrationPayment, simplifiedSettingsRedirect, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.verifyPSPIntegrationPaymentPage)
+  account.post(switchPSP.verifyPSPIntegrationPayment, simplifiedSettingsRedirect, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.startPaymentJourney)
+  account.get(switchPSP.receiveVerifyPSPIntegrationPayment, simplifiedSettingsRedirect, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.completePaymentJourney)
 
   // Credentials
-  account.get(yourPsp.worldpayCredentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
-  account.post(yourPsp.worldpayCredentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
-  account.get(switchPSP.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
-  account.post(switchPSP.credentialsWithGatewayCheck, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
+  account.get(yourPsp.worldpayCredentialsWithGatewayCheck, simplifiedSettingsRedirect, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
+  account.post(yourPsp.worldpayCredentialsWithGatewayCheck, simplifiedSettingsRedirect, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
+  account.get(switchPSP.credentialsWithGatewayCheck, simplifiedSettingsRedirect, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
+  account.post(switchPSP.credentialsWithGatewayCheck, simplifiedSettingsRedirect, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
 
-  account.get(credentials.edit, permission('gateway-credentials:update'), credentialsController.editCredentials)
-  account.post(credentials.index, permission('gateway-credentials:update'), credentialsController.update)
-  account.get(notificationCredentials.edit, permission('gateway-credentials:update'), credentialsController.editNotificationCredentials)
-  account.post(notificationCredentials.update, permission('gateway-credentials:update'), credentialsController.updateNotificationCredentials)
+  account.get(credentials.edit, simplifiedSettingsRedirect, permission('gateway-credentials:update'), credentialsController.editCredentials)
+  account.post(credentials.index, simplifiedSettingsRedirect, permission('gateway-credentials:update'), credentialsController.update)
+  account.get(notificationCredentials.edit, simplifiedSettingsRedirect, permission('gateway-credentials:update'), credentialsController.editNotificationCredentials)
+  account.post(notificationCredentials.update, simplifiedSettingsRedirect, permission('gateway-credentials:update'), credentialsController.updateNotificationCredentials)
 
   // API keys
-  account.get(apiKeys.index, permission('tokens-active:read'), apiKeysController.getIndex)
-  account.get(apiKeys.revoked, permission('tokens-revoked:read'), apiKeysController.getRevoked)
-  account.get(apiKeys.create, permission('tokens:create'), apiKeysController.getCreate)
-  account.post(apiKeys.create, permission('tokens:create'), apiKeysController.postCreate)
-  account.post(apiKeys.revoke, permission('tokens:delete'), apiKeysController.postRevoke)
-  account.post(apiKeys.update, permission('tokens:update'), apiKeysController.postUpdate)
+  account.get(apiKeys.index, simplifiedSettingsRedirect, permission('tokens-active:read'), apiKeysController.getIndex)
+  account.get(apiKeys.revoked, simplifiedSettingsRedirect, permission('tokens-revoked:read'), apiKeysController.getRevoked)
+  account.get(apiKeys.create, simplifiedSettingsRedirect, permission('tokens:create'), apiKeysController.getCreate)
+  account.post(apiKeys.create, simplifiedSettingsRedirect, permission('tokens:create'), apiKeysController.postCreate)
+  account.post(apiKeys.revoke, simplifiedSettingsRedirect, permission('tokens:delete'), apiKeysController.postRevoke)
+  account.post(apiKeys.update, simplifiedSettingsRedirect, permission('tokens:update'), apiKeysController.postUpdate)
 
   // Payment types
-  account.get(paymentTypes.index, permission('payment-types:read'), paymentTypesController.getIndex)
-  account.post(paymentTypes.index, permission('payment-types:update'), paymentTypesController.postIndex)
+  account.get(paymentTypes.index, simplifiedSettingsRedirect, permission('payment-types:read'), paymentTypesController.getIndex)
+  account.post(paymentTypes.index, simplifiedSettingsRedirect, permission('payment-types:update'), paymentTypesController.postIndex)
 
   // Digital wallet
-  account.get(digitalWallet.applePay, permission('payment-types:update'), digitalWalletController.getApplePay)
-  account.post(digitalWallet.applePay, permission('payment-types:update'), digitalWalletController.postApplePay)
-  account.get(digitalWallet.googlePay, permission('payment-types:update'), digitalWalletController.getGooglePay)
-  account.post(digitalWallet.googlePay, permission('payment-types:update'), digitalWalletController.postGooglePay)
+  account.get(digitalWallet.applePay, simplifiedSettingsRedirect, permission('payment-types:update'), digitalWalletController.getApplePay)
+  account.post(digitalWallet.applePay, simplifiedSettingsRedirect, permission('payment-types:update'), digitalWalletController.postApplePay)
+  account.get(digitalWallet.googlePay, simplifiedSettingsRedirect, permission('payment-types:update'), digitalWalletController.getGooglePay)
+  account.post(digitalWallet.googlePay, simplifiedSettingsRedirect, permission('payment-types:update'), digitalWalletController.postGooglePay)
 
   // Email notifications
-  account.get(emailNotifications.index, permission('email-notification-template:read'), emailNotificationsController.showConfirmationEmailTemplate)
-  account.get(emailNotifications.indexRefundTabEnabled, permission('email-notification-template:read'), emailNotificationsController.showRefundEmailTemplate)
-  account.get(emailNotifications.edit, permission('email-notification-paragraph:update'), emailNotificationsController.editCustomParagraph)
-  account.post(emailNotifications.confirm, permission('email-notification-paragraph:update'), emailNotificationsController.confirmCustomParagraph)
-  account.post(emailNotifications.update, permission('email-notification-paragraph:update'), emailNotificationsController.updateCustomParagraph)
-  account.get(emailNotifications.collection, permission('email-notification-template:read'), emailNotificationsController.collectionEmailIndex)
-  account.post(emailNotifications.collection, permission('email-notification-toggle:update'), emailNotificationsController.collectionEmailUpdate)
-  account.get(emailNotifications.confirmation, permission('email-notification-template:read'), emailNotificationsController.confirmationEmailIndex)
-  account.post(emailNotifications.confirmation, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailUpdate)
-  account.post(emailNotifications.off, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailOff)
-  account.get(emailNotifications.refund, permission('email-notification-template:read'), emailNotificationsController.refundEmailIndex)
-  account.post(emailNotifications.refund, permission('email-notification-toggle:update'), emailNotificationsController.refundEmailUpdate)
+  account.get(emailNotifications.index, simplifiedSettingsRedirect, permission('email-notification-template:read'), emailNotificationsController.showConfirmationEmailTemplate)
+  account.get(emailNotifications.indexRefundTabEnabled, simplifiedSettingsRedirect, permission('email-notification-template:read'), emailNotificationsController.showRefundEmailTemplate)
+  account.get(emailNotifications.edit, simplifiedSettingsRedirect, permission('email-notification-paragraph:update'), emailNotificationsController.editCustomParagraph)
+  account.post(emailNotifications.confirm, simplifiedSettingsRedirect, permission('email-notification-paragraph:update'), emailNotificationsController.confirmCustomParagraph)
+  account.post(emailNotifications.update, simplifiedSettingsRedirect, permission('email-notification-paragraph:update'), emailNotificationsController.updateCustomParagraph)
+  account.get(emailNotifications.collection, simplifiedSettingsRedirect, permission('email-notification-template:read'), emailNotificationsController.collectionEmailIndex)
+  account.post(emailNotifications.collection, simplifiedSettingsRedirect, permission('email-notification-toggle:update'), emailNotificationsController.collectionEmailUpdate)
+  account.get(emailNotifications.confirmation, simplifiedSettingsRedirect, permission('email-notification-template:read'), emailNotificationsController.confirmationEmailIndex)
+  account.post(emailNotifications.confirmation, simplifiedSettingsRedirect, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailUpdate)
+  account.post(emailNotifications.off, simplifiedSettingsRedirect, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailOff)
+  account.get(emailNotifications.refund, simplifiedSettingsRedirect, permission('email-notification-template:read'), emailNotificationsController.refundEmailIndex)
+  account.post(emailNotifications.refund, simplifiedSettingsRedirect, permission('email-notification-toggle:update'), emailNotificationsController.refundEmailUpdate)
 
   // MOTO mask card number & security code
-  account.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:read'), toggleMotoMaskCardNumber.get)
-  account.post(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, permission('moto-mask-input:update'), toggleMotoMaskCardNumber.post)
-  account.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:read'), toggleMotoMaskSecurityCode.get)
-  account.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, permission('moto-mask-input:update'), toggleMotoMaskSecurityCode.post)
+  account.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, simplifiedSettingsRedirect, permission('moto-mask-input:read'), toggleMotoMaskCardNumber.get)
+  account.post(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, simplifiedSettingsRedirect, permission('moto-mask-input:update'), toggleMotoMaskCardNumber.post)
+  account.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, simplifiedSettingsRedirect, permission('moto-mask-input:read'), toggleMotoMaskSecurityCode.get)
+  account.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, simplifiedSettingsRedirect, permission('moto-mask-input:update'), toggleMotoMaskSecurityCode.post)
 
-  account.get(toggleBillingAddress.index, permission('toggle-billing-address:read'), toggleBillingAddressController.getIndex)
-  account.post(toggleBillingAddress.index, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
+  account.get(toggleBillingAddress.index, simplifiedSettingsRedirect, permission('toggle-billing-address:read'), toggleBillingAddressController.getIndex)
+  account.post(toggleBillingAddress.index, simplifiedSettingsRedirect, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
 
-  account.get(defaultBillingAddressCountry.index, permission('toggle-billing-address:read'), defaultBillingAddressCountryController.showDefaultBillingAddressCountry)
-  account.post(defaultBillingAddressCountry.index, permission('toggle-billing-address:update'), defaultBillingAddressCountryController.updateDefaultBillingAddressCountry)
+  account.get(defaultBillingAddressCountry.index, simplifiedSettingsRedirect, permission('toggle-billing-address:read'), defaultBillingAddressCountryController.showDefaultBillingAddressCountry)
+  account.post(defaultBillingAddressCountry.index, simplifiedSettingsRedirect, permission('toggle-billing-address:update'), defaultBillingAddressCountryController.updateDefaultBillingAddressCountry)
 
   // Prototype links
   account.get(prototyping.demoService.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index)
@@ -454,22 +455,22 @@ module.exports.bind = function (app) {
   account.post(switchPSP.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, organisationUrlController.post)
 
   // Stripe setup
-  account.get([yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.get)
-  account.post([yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails], permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.post)
-  account.get([yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson], permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.get)
-  account.post([yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson], permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.post)
-  account.get([yourPsp.stripeSetup.director, switchPSP.stripeSetup.director], permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.get)
-  account.post([yourPsp.stripeSetup.director, switchPSP.stripeSetup.director], permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.post)
-  account.get([yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.get)
-  account.post([yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.post)
-  account.get([yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.get)
-  account.post([yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber], permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.post)
-  account.get([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, stripeSetupGovernmentEntityDocument.get)
-  account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument], permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, uploadGovernmentEntityDocument, stripeSetupGovernmentEntityDocument.post)
-  account.get([yourPsp.stripeSetup.checkOrgDetails, switchPSP.stripeSetup.checkOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.get)
-  account.post([yourPsp.stripeSetup.checkOrgDetails, switchPSP.stripeSetup.checkOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.post)
-  account.get([yourPsp.stripeSetup.updateOrgDetails, switchPSP.stripeSetup.updateOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.get)
-  account.post([yourPsp.stripeSetup.updateOrgDetails, switchPSP.stripeSetup.updateOrgDetails], permission('stripe-organisation-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.post)
+  account.get([yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails], simplifiedSettingsRedirect, permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.get)
+  account.post([yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails], simplifiedSettingsRedirect, permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.post)
+  account.get([yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson], simplifiedSettingsRedirect, permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.get)
+  account.post([yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson], simplifiedSettingsRedirect, permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.post)
+  account.get([yourPsp.stripeSetup.director, switchPSP.stripeSetup.director], simplifiedSettingsRedirect, permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.get)
+  account.post([yourPsp.stripeSetup.director, switchPSP.stripeSetup.director], simplifiedSettingsRedirect, permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.post)
+  account.get([yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber], simplifiedSettingsRedirect, permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.get)
+  account.post([yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber], simplifiedSettingsRedirect, permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.post)
+  account.get([yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber], simplifiedSettingsRedirect, permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.get)
+  account.post([yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber], simplifiedSettingsRedirect, permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.post)
+  account.get([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument], simplifiedSettingsRedirect, permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, stripeSetupGovernmentEntityDocument.get)
+  account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument], simplifiedSettingsRedirect, permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, uploadGovernmentEntityDocument, stripeSetupGovernmentEntityDocument.post)
+  account.get([yourPsp.stripeSetup.checkOrgDetails, switchPSP.stripeSetup.checkOrgDetails], simplifiedSettingsRedirect, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.get)
+  account.post([yourPsp.stripeSetup.checkOrgDetails, switchPSP.stripeSetup.checkOrgDetails], simplifiedSettingsRedirect, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.post)
+  account.get([yourPsp.stripeSetup.updateOrgDetails, switchPSP.stripeSetup.updateOrgDetails], simplifiedSettingsRedirect, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.get)
+  account.post([yourPsp.stripeSetup.updateOrgDetails, switchPSP.stripeSetup.updateOrgDetails], simplifiedSettingsRedirect, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.post)
 
   account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToStripeAccountContext, stripeSetupAddPspAccountDetailsController.get)
 
@@ -478,17 +479,17 @@ module.exports.bind = function (app) {
   futureAccountStrategy.post(agreements.cancel, permission('agreements:update'), agreementsController.cancelAgreement)
 
   // Webhook settings
-  futureAccountStrategy.get(webhooks.index, permission('webhooks:read'), webhooksController.listWebhooksPage)
-  futureAccountStrategy.get(webhooks.create, permission('webhooks:update'), webhooksController.createWebhookPage)
-  futureAccountStrategy.post(webhooks.create, permission('webhooks:update'), webhooksController.createWebhook)
-  futureAccountStrategy.get(webhooks.update, permission('webhooks:update'), webhooksController.updateWebhookPage)
-  futureAccountStrategy.post(webhooks.update, permission('webhooks:update'), webhooksController.updateWebhook)
-  futureAccountStrategy.get(webhooks.detail, permission('webhooks:read'), webhooksController.webhookDetailPage)
-  futureAccountStrategy.get(webhooks.message, permission('webhooks:read'), webhooksController.webhookMessageDetailPage)
-  futureAccountStrategy.post(webhooks.resendMessage, permission('webhooks:update'), webhooksController.resendWebhookMessage)
-  futureAccountStrategy.get(webhooks.signingSecret, permission('webhooks:update'), webhooksController.signingSecretPage)
-  futureAccountStrategy.get(webhooks.toggleActive, permission('webhooks:update'), webhooksController.toggleActivePage)
-  futureAccountStrategy.post(webhooks.toggleActive, permission('webhooks:update'), webhooksController.toggleActiveWebhook)
+  futureAccountStrategy.get(webhooks.index, simplifiedSettingsRedirect, permission('webhooks:read'), webhooksController.listWebhooksPage)
+  futureAccountStrategy.get(webhooks.create, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.createWebhookPage)
+  futureAccountStrategy.post(webhooks.create, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.createWebhook)
+  futureAccountStrategy.get(webhooks.update, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.updateWebhookPage)
+  futureAccountStrategy.post(webhooks.update, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.updateWebhook)
+  futureAccountStrategy.get(webhooks.detail, simplifiedSettingsRedirect, permission('webhooks:read'), webhooksController.webhookDetailPage)
+  futureAccountStrategy.get(webhooks.message, simplifiedSettingsRedirect, permission('webhooks:read'), webhooksController.webhookMessageDetailPage)
+  futureAccountStrategy.post(webhooks.resendMessage, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.resendWebhookMessage)
+  futureAccountStrategy.get(webhooks.signingSecret, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.signingSecretPage)
+  futureAccountStrategy.get(webhooks.toggleActive, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.toggleActivePage)
+  futureAccountStrategy.post(webhooks.toggleActive, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.toggleActiveWebhook)
 
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
