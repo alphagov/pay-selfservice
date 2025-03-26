@@ -65,6 +65,7 @@
     {% endif %}
 
     <h1 class="govuk-heading-l">Transaction details</h1>
+    {% include "transactions/timezone-banner.njk" %}
     {% include "./_details.njk" %}
 
     {% if dispute %}
