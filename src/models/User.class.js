@@ -140,9 +140,6 @@ class User {
 
   isDegatewayed () {
     const isDegatewayed = DEGATEWAY_FLAG && (this.hasFeature('degatewayaccountification') || ENABLE_SIMPLIFIED_SETTINGS_ALL_USERS)
-    if (isDegatewayed) {
-      logger.info('Page viewed with account simplification turned on')
-    }
     return isDegatewayed
   }
 }
