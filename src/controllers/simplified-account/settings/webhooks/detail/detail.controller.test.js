@@ -3,9 +3,9 @@ const { expect } = require('chai')
 const sinon = require('sinon')
 
 const ACCOUNT_TYPE = 'test'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = '123'
-const WEBHOOK_EXTERNAL_ID = 'my-webhook-id-789'
+const WEBHOOK_EXTERNAL_ID = 'webhook123abc'
 
 const webhook = {
   id: WEBHOOK_EXTERNAL_ID,
@@ -19,17 +19,17 @@ const webhookMessages = {
   page: 1,
   total: 11,
   results: [
-    { resource_id: 'payment_id-1' },
-    { resource_id: 'payment_id-2' },
-    { resource_id: 'payment_id-3' },
-    { resource_id: 'payment_id-4' },
-    { resource_id: 'payment_id-5' },
-    { resource_id: 'payment_id-6' },
-    { resource_id: 'payment_id-7' },
-    { resource_id: 'payment_id-8' },
-    { resource_id: 'payment_id-9' },
-    { resource_id: 'payment_id-10' },
-    { resource_id: 'payment_id-11' }
+    { resource_id: 'payment1' },
+    { resource_id: 'payment2' },
+    { resource_id: 'payment3' },
+    { resource_id: 'payment4' },
+    { resource_id: 'payment5' },
+    { resource_id: 'payment6' },
+    { resource_id: 'payment7' },
+    { resource_id: 'payment8' },
+    { resource_id: 'payment9' },
+    { resource_id: 'payment10' },
+    { resource_id: 'payment11' }
   ]
 }
 const mockResponse = sinon.spy()
@@ -37,8 +37,12 @@ const mockGetWebhook = sinon.stub().resolves(webhook)
 const mockGetSigningSecret = sinon.stub().resolves(signingSecret)
 const mockGetWebhookMessages = sinon.stub().resolves(webhookMessages)
 
-const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/webhooks/detail/detail.controller')
-  .withServiceExternalId(SERVICE_ID)
+const {
+  res,
+  nextRequest,
+  call
+} = new ControllerTestBuilder('@controllers/simplified-account/settings/webhooks/detail/detail.controller')
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withAccount({ type: ACCOUNT_TYPE, id: GATEWAY_ACCOUNT_ID })
   .withStubs({
@@ -58,9 +62,9 @@ describe('Controller: settings/webhooks/detail', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockGetWebhook.calledWith(WEBHOOK_EXTERNAL_ID, SERVICE_ID, GATEWAY_ACCOUNT_ID)).to.be.true // eslint-disable-line
+      expect(mockGetWebhook.calledWith(WEBHOOK_EXTERNAL_ID, SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID)).to.be.true // eslint-disable-line
       expect(mockGetWebhookMessages.calledWith(WEBHOOK_EXTERNAL_ID)).to.be.true // eslint-disable-line
-      expect(mockGetSigningSecret.calledWith(WEBHOOK_EXTERNAL_ID, SERVICE_ID, GATEWAY_ACCOUNT_ID)).to.be.true // eslint-disable-line
+      expect(mockGetSigningSecret.calledWith(WEBHOOK_EXTERNAL_ID, SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID)).to.be.true // eslint-disable-line
       expect(mockResponse.called).to.be.true // eslint-disable-line
     })
 
@@ -75,26 +79,30 @@ describe('Controller: settings/webhooks/detail', () => {
       expect(mockResponse.args[0][3]).to.have.property('signingSecret').to.deep.equal(signingSecret)
       expect(mockResponse.args[0][3]).to.have.property('deliveryStatus').to.equal('all')
       expect(mockResponse.args[0][3]).to.have.property('webhookEvents').to.have.length(11)
-      expect(mockResponse.args[0][3].webhookEvents[0]).to.have.property('resourceId').to.equal('payment_id-1')
-      expect(mockResponse.args[0][3]).to.have.property('paginationDetails').to.deep.equal({
+      expect(mockResponse.args[0][3].webhookEvents[0]).to.have.property('resourceId').to.equal('payment1')
+      expect(mockResponse.args[0][3]).to.have.property('pagination').to.deep.equal({
+        classes: 'pagination-links',
+        endIndex: 10,
         items: [
           {
-            number: 1,
-            href: '/service/service-id-123abc/account/test/settings/webhooks/my-webhook-id-789?deliveryStatus=all&page=1',
-            current: true
+            current: true,
+            href: '/service/service123abc/account/test/settings/webhooks/webhook123abc?deliveryStatus=all&page=1#events',
+            number: 1
           },
           {
-            number: 2,
-            href: '/service/service-id-123abc/account/test/settings/webhooks/my-webhook-id-789?deliveryStatus=all&page=2'
+            href: '/service/service123abc/account/test/settings/webhooks/webhook123abc?deliveryStatus=all&page=2#events',
+            number: 2
           }
         ],
         next: {
-          href: '/service/service-id-123abc/account/test/settings/webhooks/my-webhook-id-789?deliveryStatus=all&page=2'
-        }
+          href: '/service/service123abc/account/test/settings/webhooks/webhook123abc?deliveryStatus=all&page=2#events'
+        },
+        startIndex: 1,
+        total: 11
       })
       expect(mockResponse.args[0][3]).to.have.property('eventTypes').to.have.property('CARD_PAYMENT_SUCCEEDED').to.equal('Payment succeeded')
-      expect(mockResponse.args[0][3]).to.have.property('backToWebhooksLink')
-        .to.equal('/service/service-id-123abc/account/test/settings/webhooks')
+      expect(mockResponse.args[0][3]).to.have.property('backLink')
+        .to.equal('/service/service123abc/account/test/settings/webhooks')
     })
   })
 })

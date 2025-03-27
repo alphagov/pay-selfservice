@@ -9,6 +9,6 @@
 "DISABLED": "Disabled"
 } %}
 
-{% macro webhookStatusTag(status) %}
-<strong class="govuk-tag {{ statusStyleMap[status] }}">{{ statusTextMap[status] }}</strong>
+{% macro webhookStatus(status) %}
+  <strong class="govuk-tag {{ statusStyleMap[status] }}">{{ statusTextMap[status] }}</strong>
 {% endmacro %}

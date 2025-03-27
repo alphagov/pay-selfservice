@@ -1,25 +1,22 @@
-{% from "./_webhook_status.njk" import webhookStatusTag %}
-{% from "./_message_status.njk" import messageStatusTag %}
 {% extends "../settings-layout.njk" %}
+{% from "./macro/webhook-event-status.njk" import webhookEventStatus %}
 
-{% set settingsPageTitle = webhook.description %}
-
-{% set title = eventTypes[event.event_type | upper] %}
-{% set settingsPageTitle = title + " event details" %}
+{% set heading = eventTypes[event.event_type | upper] %}
+{% set settingsPageTitle = heading + " event details" %}
 
 {% block settingsContent %}
 
-  <h1 class="govuk-heading-l">{{ title }}</h1>
+  <h1 class="govuk-heading-l">{{ heading }}</h1>
 
   {% set resourceLink %}
-    <a class="govuk-link" href="{{ resourceLink }}"><span class="govuk-visually-hidden">GOV.UK Payment ID </span>{{ event.resource_id }}</a>
+    <a class="govuk-link" href="{{ resourceLink }}"><span class="govuk-visually-hidden">GOV.UK payment ID </span>{{ event.resource_id }}</a>
   {% endset %}
   {{ govukSummaryList({
     classes: "webhooks-summary-card",
     rows: [
       {
         key: {
-          text: 'GOV.UK Payment ID'
+          text: 'GOV.UK payment ID'
         },
         value: {
           html: resourceLink
@@ -30,7 +27,7 @@
           text: 'Event date'
         },
         value: {
-          html: event.event_date | datetime('datelong')
+          html: event.event_date | govukDate()
         }
       },
       {
@@ -38,23 +35,23 @@
           text: 'Status'
         },
         value: {
-          html: messageStatusTag(event.latest_attempt.status)
+          html: webhookEventStatus(event.latest_attempt.status)
         }
       }
     ]
   }) }}
 
   {{ govukDetails({
-    summaryText: title + " event body",
+    summaryText: heading + " event body",
     html: '<pre class="json-block"><code>' + event.resource | dump(4) + '</code></pre>'
   }) }}
 
-  <h2 class="govuk-heading-m">Delivery Attempts</h2>
+  <h2 class="govuk-heading-m">Delivery attempts</h2>
   {% set attemptRows = [] %}
   {% for attempt in attempts %}
     {% set attemptRow = [
-      { text: attempt.send_at | datetime("datetime") },
-      { html: messageStatusTag(attempt.status) },
+      { text: attempt.send_at | govukDate({ preserveTime: true }) },
+      { html: webhookEventStatus(attempt.status) },
       { text: (attempt.status_code if attempt.status_code else 'None') },
       { text: attempt.result }
     ] %}

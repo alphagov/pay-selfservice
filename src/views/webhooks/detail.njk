@@ -1,4 +1,4 @@
-{% from "../simplified-account/settings/webhooks/_webhook_status.njk" import webhookStatusTag %}
+{% from "../simplified-account/settings/webhooks/macro/webhook-status.njk" import webhookStatus %}
 {% from "./_message_status.njk" import messageStatusTag %}
 {% extends "layout.njk" %}
 
@@ -14,7 +14,7 @@
 <div class="govuk-grid-column-two-thirds">
   <h1 class="govuk-heading-l page-title" title="{{ webhook.callback_url }}">
     {{ webhook.callback_url | truncate(40) }}
-    {{ webhookStatusTag(webhook.status) }}
+    {{ webhookStatus(webhook.status) }}
   </h1>
 
   <p class="govuk-body">{{ webhook.description }}</p>

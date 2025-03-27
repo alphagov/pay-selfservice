@@ -1,18 +1,27 @@
 const { DateTime } = require('luxon')
 
-module.exports = (string, format = false) => {
+module.exports = (string, kwargs) => {
   string = normalize(string, '')
+
+  const options = {
+    preserveTime: false,
+    ...kwargs
+  }
 
   try {
     if (string === 'today' || string === 'now') {
       string = DateTime.now().toString()
-      return DateTime.fromISO(string).toFormat('dd MMMM yyyy')
+      return options.preserveTime
+        ? DateTime.fromISO(string).toFormat('dd MMMM yyyy HH:mm')
+        : DateTime.fromISO(string).toFormat('dd MMMM yyyy')
     }
     let date = DateTime.fromISO(string)
     if (!date.isValid) {
       date = DateTime.fromFormat(string, 'yyyy-M-d')
     }
-    return date.toFormat('dd MMMM yyyy')
+    return options.preserveTime
+      ? date.toFormat('dd MMMM yyyy HH:mm')
+      : date.toFormat('dd MMMM yyyy')
   } catch (error) {
     return error.message.split(':')[0]
   }

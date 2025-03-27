@@ -6,7 +6,7 @@
  */
 
 /**
- * @typedef {import('express').Request & RequestExt} SettingsRequest
+ * @typedef {import('express').Request & RequestExt & { flash: import('connect-flash').Flash }} SettingsRequest
  */
 
 module.exports = {}

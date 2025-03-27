@@ -1,34 +1,20 @@
-{% from "./_webhook_status.njk" import webhookStatusTag %}
-{% from "./_message_status.njk" import messageStatusTag %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+{% from "./macro/webhook-status.njk" import webhookStatus %}
+{% from "./macro/webhook-subscriptions.njk" import webhookSubscriptions %}
+{% from "./macro/webhook-event-status.njk" import webhookEventStatus %}
 {% extends "../settings-layout.njk" %}
-
-{% macro webhookSubscriptions(webhook) %}
-  <ul class="govuk-list">
-    {% for subscription in webhook.subscriptions | sort %}
-      {% set key = subscription | upper %}
-      <li>{{ eventTypes[key] }}</li>
-    {% endfor %}
-  </ul>
-{% endmacro %}
 
 {% set settingsPageTitle = webhook.description %}
 
 {% block settingsContent %}
-
-  {{ govukBackLink({
-    text: "Back to webhooks",
-    href: backToWebhooksLink
-  }) }}
-
-  <div class="webhook-header-with-tag">
+  <div class="header-with-tag">
     <h1 class="govuk-heading-l">{{ webhook.description }}</h1>
-    <span class="webhook-tag">{{ webhookStatusTag(webhook.status) }}</span>
+    <div>
+      {{ webhookStatus(webhook.status) }}
+    </div>
   </div>
 
-  {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
-
   {{ govukSummaryList({
-    classes: "webhooks-summary-card",
     rows: [
       {
         key: {
@@ -43,7 +29,7 @@
           text: 'Payment events sent by this webhook'
         },
         value: {
-          html: webhookSubscriptionsList
+          html: webhookSubscriptions(webhook, eventTypes)
         }
       },
       {
@@ -51,32 +37,32 @@
           text: 'Date created'
         },
         value: {
-          html: webhook.createdDate | datetime('datelong')
+          html: webhook.createdDate | govukDate
         }
       }
     ]
   }) }}
 
-  {{ govukButton({
-    href: updateWebhookLink,
-    text: 'Update webhook',
-    classes: 'govuk-!-margin-top-2 govuk-button--secondary'
-  }) }}
-
-  {% if webhook.status == 'ACTIVE' %}
+  <div class="govuk-button-group">
     {{ govukButton({
-      href: toggleWebhookStatusLink,
-      text: 'Deactivate webhook',
-      classes: 'govuk-!-margin-top-2 govuk-button--secondary'
+      href: updateWebhookLink,
+      text: 'Update webhook',
+      classes: 'govuk-button--secondary'
     }) }}
-  {% else %}
-    {{ govukButton({
-      href: toggleWebhookStatusLink,
-      text: 'Activate webhook',
-      classes: 'govuk-!-margin-top-2 govuk-button--secondary'
-    }) }}
-  {% endif %}
-
+    {% if webhook.status == 'ACTIVE' %}
+      {{ govukButton({
+        href: toggleWebhookStatusLink,
+        text: 'Deactivate webhook',
+        classes: 'govuk-button--secondary'
+      }) }}
+    {% else %}
+      {{ govukButton({
+        href: toggleWebhookStatusLink,
+        text: 'Activate webhook',
+        classes: 'govuk-button--secondary'
+      }) }}
+    {% endif %}
+  </div>
 
   <h2 class="govuk-heading-m">Signing Secret</h2>
   <p class="govuk-body">Webhook messages sent by GOV.UK Pay will include a signature. Only your application should store this secret to verify messages are from GOV.UK Pay.</p>
@@ -84,8 +70,7 @@
   <div>
     <span id="signing-secret" class="code copy-target">{{ signingSecret.signing_key }}</span>
   </div>
-  {{
-  govukButton({
+  {{ govukButton({
     text: "Copy signing secret to clipboard",
     classes: "govuk-button--secondary govuk-!-margin-top-4",
     attributes: {
@@ -95,18 +80,18 @@
       "data-success": "Signing secret copied",
       "data-notification-target": "copy-notification"
     }
-  })
-  }}
+  }) }}
   <div class="copy-notification govuk-visually-hidden" aria-live="assertive"></div>
 
-  <h2 class="govuk-heading-m">Events</h2>
+  <h2 id="events" class="govuk-heading-m">Events</h2>
   <p class="govuk-body">Events sent to your webhook are stored for 7 days.</p>
-  <form>
+  <form action="#events" method="get">
     {{ govukSelect({
+      classes: "govuk-!-margin-right-2 govuk-!-margin-bottom-2 govuk-!-margin-top-1",
       id: "filter-events",
       name: "deliveryStatus",
       label: {
-        text: "Filter Events",
+        text: "Filter events by delivery status",
         classes: "govuk-label--s"
       },
       value: deliveryStatus,
@@ -122,11 +107,20 @@
         {
           value: "failed",
           text: "Failed"
+        },
+        {
+          value: "pending",
+          text: "Pending retry"
+        },
+        {
+          value: "will_not_send",
+          text: "Will not send"
         }
       ],
       formGroup: {
+        classes: "govuk-!-margin-bottom-2",
         afterInput: {
-            html: '<button type="submit" class="govuk-button govuk-button" data-module="govuk-button" data-govuk-button-init="">Update</button>'
+          html: '<button type="submit" class="govuk-button govuk-!-margin-top-1 govuk-!-margin-bottom-2" data-module="govuk-button">Update</button>'
         }
       }
     }) }}
@@ -135,10 +129,15 @@
   {% set eventRows = [] %}
   {% for event in webhookEvents %}
     {% set eventRow = [
-      { text: event.resourceId },
-      { html: eventTypes[event.eventType | upper] + '<br><a href="'+event.eventDetailUrl+'">View details<a/>' },
-      { html: messageStatusTag(event.lastDeliveryStatus) },
-      { text: event.eventDate | datetime('datetime') }
+      {
+        text: event.resourceId,
+        classes: 'break-all'
+      },
+      { html: eventTypes[event.eventType | upper] + '<br><a class="govuk-link govuk-link--no-visited-state" href="'+event.eventDetailUrl+'">View details</a>' },
+      {
+        html: webhookEventStatus(event.lastDeliveryStatus)
+      },
+      { text: event.eventDate | govukDate({ preserveTime: true }) }
     ] %}
     {% set eventRows = (eventRows.push(eventRow), eventRows) %}
   {% endfor %}
@@ -147,7 +146,7 @@
     firstCellIsHeader: false,
     head: [
       {
-        html: "GOV.UK payment ID"
+        text: "GOV.UK payment ID"
       },
       {
         text: "Event name"
@@ -160,11 +159,10 @@
       }
     ],
     rows: eventRows
-
   }) }}
 
-  {% from "govuk/components/pagination/macro.njk" import govukPagination %}
+  {{ govukPagination(pagination) }}
 
-  {{ govukPagination( paginationDetails ) }}
+  <p data-cy="pagination-detail" class="govuk-body">{% if pagination.total > 0 %}Showing {{ pagination.startIndex }} to {{ pagination.endIndex }} of{% endif %} {{ pagination.total }} events</p>
 
 {% endblock %}

@@ -7,10 +7,8 @@ const formatValidationErrors = require('@utils/simplified-account/format/format-
 const { webhookSchema } = require('@utils/simplified-account/validation/webhook.schema')
 
 /**
- *
- * @param req {SimplifiedAccountRequest}
- * @param res
- * @returns {Promise<void>}
+ * @param {import('@utils/types/settings/settings-request').SettingsRequest} req
+ * @param {import('express').Response} res
  */
 async function get (req, res) {
   const webhook = await webhooksService.getWebhook(req.params.webhookExternalId, req.service.externalId, req.account.id)
@@ -22,10 +20,8 @@ async function get (req, res) {
 }
 
 /**
- *
- * @param req {SimplifiedAccountRequest}
- * @param res
- * @returns {Promise<void>}
+ * @param {import('@utils/types/settings/settings-request').SettingsRequest} req
+ * @param {import('express').Response} res
  */
 async function post (req, res) {
   const webhook = await webhooksService.getWebhook(req.params.webhookExternalId, req.service.externalId, req.account.id)

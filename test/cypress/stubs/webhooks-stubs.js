@@ -23,9 +23,7 @@ function getWebhookMessagesListSuccess (opts = {}) {
       page: opts.page || 1,
       ...opts.status && { status: opts.status }
     },
-    response: webhooksFixtures.webhookMessageSearchResponse({
-      messages: opts.messages || []
-    })
+    response: webhooksFixtures.webhookMessageSearchResponse(opts)
   })
 }
 
