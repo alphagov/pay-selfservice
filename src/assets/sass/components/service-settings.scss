@@ -132,10 +132,13 @@
 .header-with-tag {
   display: flex;
   align-items: flex-start;
+  > h1 {
+    margin-top: govuk-spacing(2);
+    margin-right: govuk-spacing(2);
+  }
   > div {
     white-space: nowrap;
-    padding: govuk-spacing(1) govuk-spacing(2);
-    margin-top: govuk-spacing(1);
+    margin-top: govuk-spacing(2);
   }
 }
 
