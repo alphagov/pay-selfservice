@@ -1,5 +1,5 @@
 {% macro spinner(params) %}
-  <div class="spinner"></div>
+  <div class="spinner" aria-live="polite" role="status"></div>
   {% if params.text %}
     <h3 class="govuk-heading-m govuk-!-text-align-centre">{{ params.text }}</h3>
   {% endif %}
