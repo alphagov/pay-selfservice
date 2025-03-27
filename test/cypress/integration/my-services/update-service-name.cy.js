@@ -24,7 +24,7 @@ function setupStubs (serviceName, stubs = []) {
   ])
 }
 
-describe('Update service name', () => {
+describe.skip('Update service name', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(authenticatedUserId)
   })

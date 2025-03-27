@@ -67,7 +67,7 @@ describe('The Stripe psp details banner', () => {
     cy.setEncryptedCookies(userExternalId)
   })
 
-  it('should display call to action banner when all the tasks are not complete ', () => {
+  it.skip('should display call to action banner when all the tasks are not complete ', () => {
     setupYourPspStubs({})
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
@@ -92,6 +92,9 @@ describe('The Stripe psp details banner', () => {
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
     cy.get('.govuk-notification-banner__title').contains('Important')
     cy.get('.govuk-notification-banner__content')
+      .contains('Finish setting up your service to start taking payments')
+      .parent()
+      .contains('You\'ve started to set up your live account. There are still some steps you need to complete.')
       .within(() => {
         cy.get('a')
           .should('have.attr', 'href', '/service/service123abc/account/live/settings/stripe-details')

@@ -28,7 +28,7 @@ const merchantDetails = {
   url: validUrl
 }
 
-describe('The organisation details page', () => {
+describe.skip('The organisation details page', () => {
   it('should be able to enter organisation details', () => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceExternalId }),

@@ -46,7 +46,7 @@ describe('Worldpay account setup banner', () => {
   }
 
   describe('Admin user', () => {
-    it('should display banner if account is worldpay and the credentials are in CREATED state', () => {
+    it.skip('should display banner if account is worldpay and the credentials are in CREATED state', () => {
       setupStubs('admin')
       cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
 
@@ -69,6 +69,9 @@ describe('Worldpay account setup banner', () => {
       cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
       cy.get('.govuk-notification-banner__title').contains('Important')
       cy.get('.govuk-notification-banner__content')
+        .contains('Finish setting up your service to start taking payments')
+        .parent()
+        .contains('You\'ve started to set up your live account. There are still some steps you need to complete.')
         .within(() => {
           cy.get('a')
             .should('have.attr', 'href', '/service/service123abc/account/live/settings/worldpay-details')

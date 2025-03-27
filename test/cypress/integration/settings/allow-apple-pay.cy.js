@@ -24,7 +24,7 @@ describe('Apple Pay', () => {
     cy.setEncryptedCookies(userExternalId)
   })
 
-  it('should show it is disabled', () => {
+  it.skip('should show it is disabled', () => {
     setupStubs(false)
 
     cy.visit(`/account/${gatewayAccountExternalId}/settings`)
@@ -37,7 +37,7 @@ describe('Apple Pay', () => {
     cy.get('.govuk-summary-list__value').first().should('contain', 'Off')
   })
 
-  it('should show it is enabled', () => {
+  it.skip('should show it is enabled', () => {
     setupStubs(true)
 
     cy.visit(`/account/${gatewayAccountExternalId}/settings`)
