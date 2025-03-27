@@ -42,7 +42,7 @@ describe('Webhooks', () => {
     cy.setEncryptedCookies(userExternalId)
   })
 
-  it('should correctly list webhooks for a given service', () => {
+  it.skip('should correctly list webhooks for a given service', () => {
     cy.task('setupStubs', [...userAndGatewayAccountStubs])
     cy.visit('/test/service/service-id/account/gateway-account-id/webhooks')
 

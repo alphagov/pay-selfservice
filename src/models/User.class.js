@@ -5,6 +5,7 @@ const ServiceRole = require('./ServiceRole.class')
 const { isInternalGDSEmail } = require('../utils/email-tools')
 const logger = require('../utils/logger')(__filename)
 const DEGATEWAY_FLAG = process.env.DEGATEWAY_FLAG === 'true'
+const ENABLE_SIMPLIFIED_SETTINGS_ALL_USERS = process.env.ENABLE_SIMPLIFIED_SETTINGS_ALL_USERS === 'true'
 
 /**
  * @class User
@@ -138,7 +139,7 @@ class User {
   }
 
   isDegatewayed () {
-    const isDegatewayed = DEGATEWAY_FLAG && this.hasFeature('degatewayaccountification')
+    const isDegatewayed = DEGATEWAY_FLAG && (this.hasFeature('degatewayaccountification') || ENABLE_SIMPLIFIED_SETTINGS_ALL_USERS)
     if (isDegatewayed) {
       logger.info('Page viewed with account simplification turned on')
     }
