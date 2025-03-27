@@ -5,7 +5,6 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
 const stripePspStubs = require('../../stubs/stripe-psp-stubs')
 const serviceStubs = require('../../stubs/service-stubs')
-const ROLES = require('@test/fixtures/roles.fixtures')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = '42'
