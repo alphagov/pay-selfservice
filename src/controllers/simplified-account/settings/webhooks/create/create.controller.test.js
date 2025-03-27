@@ -5,14 +5,14 @@ const paths = require('@root/paths')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 const ACCOUNT_TYPE = 'test'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
 const mockResponse = sinon.spy()
 const mockCreateWebhook = sinon.stub().resolves({})
 const mockCreateWebhookDomainNotAllowed = sinon.stub().rejects(new RESTClientError(null, 'webhooks', 400, 'CALLBACK_URL_NOT_ON_ALLOW_LIST'))
 
 const { req, res, call, nextRequest, nextStubs } = new ControllerTestBuilder('@controllers/simplified-account/settings/webhooks/create/create.controller')
-  .withServiceExternalId(SERVICE_ID)
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse },

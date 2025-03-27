@@ -18,7 +18,7 @@ async function get (req, res) {
   const validations = [
     query('page')
       .customSanitizer((value) => {
-        const pageNumber = parseInt(value)
+        const pageNumber = Number(value)
         if (isNaN(pageNumber)) {
           return 1
         }

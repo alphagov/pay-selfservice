@@ -4,7 +4,7 @@ const sinon = require('sinon')
 const { Webhook, WebhookStatus } = require('@models/webhooks/Webhook.class')
 
 const ACCOUNT_TYPE = 'test'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service123abc'
 
 const GATEWAY_ACCOUNT_ID = '123'
 
@@ -17,14 +17,13 @@ const mockResponse = sinon.spy()
 const mockListWebhooks = sinon.stub().resolves([webhook])
 
 const { req, res, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/webhooks/webhooks.controller')
-  .withServiceExternalId(SERVICE_ID)
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withAccount({ type: ACCOUNT_TYPE, id: GATEWAY_ACCOUNT_ID })
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/webhooks.service':
       { listWebhooks: mockListWebhooks }
-
   })
   .build()
 
@@ -35,7 +34,7 @@ describe('Controller: settings/webhooks', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockListWebhooks.calledWith(SERVICE_ID, GATEWAY_ACCOUNT_ID, false)).to.be.true // eslint-disable-line
+      expect(mockListWebhooks.calledWith(SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID, false)).to.be.true // eslint-disable-line
       expect(mockResponse.called).to.be.true // eslint-disable-line
     })
 
@@ -51,7 +50,7 @@ describe('Controller: settings/webhooks', () => {
       expect(mockResponse.args[0][3].activeWebhooks[0]).to.have.property('callbackUrl').to.equal('https://www.callback-url.gov.uk')
       expect(mockResponse.args[0][3]).to.have.property('eventTypes').to.have.property('CARD_PAYMENT_SUCCEEDED').to.equal('Payment succeeded')
       expect(mockResponse.args[0][3]).to.have.property('createWebhookLink')
-        .to.equal('/service/service-id-123abc/account/test/settings/webhooks/create')
+        .to.equal('/service/service123abc/account/test/settings/webhooks/create')
     })
   })
 })
