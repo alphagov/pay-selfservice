@@ -50,7 +50,8 @@ module.exports = (account, service, currentUrl, permissions) => {
       id: 'worldpay-details',
       name: 'worldpay details',
       path: paths.simplifiedAccount.settings.worldpayDetails.index,
-      permission: account.paymentProvider === 'worldpay' && 'gateway_credentials_read'
+      permission: account.paymentProvider === 'worldpay' && 'gateway_credentials_read',
+      alwaysViewable: true // worldpay test accounts are user configurable so details should always be visible
     })
     .add({
       id: ['switch-psp', 'switch-to-worldpay'], // sits under settings/switch-psp/switch-to-worldpay
