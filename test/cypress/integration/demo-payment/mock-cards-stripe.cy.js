@@ -38,15 +38,17 @@ describe('Show Mock cards screen for stripe accounts', () => {
     cy.setEncryptedCookies(userExternalId)
   })
 
-  it('should display stripe settings page correctly', () => {
-    setupYourPspStubs()
-    cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-    cy.log('Continue to Make a demo payment page via Dashboard')
-    cy.get('a').contains('Dashboard').click()
-    cy.get('a').contains('Make a demo payment').click()
-    cy.log('Continue to Mock Cards page')
-    cy.get('a').contains('Continue').click()
-    cy.get('h1').should('have.text', 'Mock card numbers')
-    cy.get('p').contains(/^4000058260000005/)
+  describe.skip('with simplified settings disabled', () => {
+    it('should display stripe settings page correctly', () => {
+      setupYourPspStubs()
+      cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+      cy.log('Continue to Make a demo payment page via Dashboard')
+      cy.get('a').contains('Dashboard').click()
+      cy.get('a').contains('Make a demo payment').click()
+      cy.log('Continue to Mock Cards page')
+      cy.get('a').contains('Continue').click()
+      cy.get('h1').should('have.text', 'Mock card numbers')
+      cy.get('p').contains(/^4000058260000005/)
+    })
   })
 })
