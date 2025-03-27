@@ -1,0 +1,8 @@
+{% macro webhookSubscriptions(webhook, eventTypes) %}
+  <ul class="govuk-list">
+    {% for subscription in webhook.subscriptions | sort %}
+      {% set key = subscription | upper %}
+      <li>{{ eventTypes[key] }}</li>
+    {% endfor %}
+  </ul>
+{% endmacro %}

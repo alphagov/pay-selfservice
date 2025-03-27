@@ -6,10 +6,8 @@ const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const { constants } = require('@govuk-pay/pay-js-commons')
 
 /**
- *
- * @param req {SimplifiedAccountRequest}
- * @param res
- * @returns {Promise<void>}
+ * @param {import('@utils/types/settings/settings-request').SettingsRequest} req
+ * @param {import('express').Response} res
  */
 async function get (req, res) {
   const event = await webhooksService.getWebhookMessage(req.params.eventId, req.params.webhookExternalId)

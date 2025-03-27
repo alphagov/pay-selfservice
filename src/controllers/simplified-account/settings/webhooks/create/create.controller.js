@@ -7,6 +7,10 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const webhooksService = require('@services/webhooks.service')
 
+/**
+ * @param {import('@utils/types/settings/settings-request').SettingsRequest} req
+ * @param {import('express').Response} res
+ */
 async function get (req, res) {
   response(req, res, 'simplified-account/settings/webhooks/edit', {
     eventTypes: constants.webhooks.humanReadableSubscriptions,
@@ -14,6 +18,11 @@ async function get (req, res) {
   })
 }
 
+/**
+ * @param {import('@utils/types/settings/settings-request').SettingsRequest} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
 async function post (req, res, next) {
   const accountIsLive = req.account.type === 'live'
   for (const validation of CREATE_AND_UPDATE_WEBHOOK_VALIDATIONS) {

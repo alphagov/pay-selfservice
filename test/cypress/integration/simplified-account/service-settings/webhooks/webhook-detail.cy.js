@@ -11,11 +11,11 @@ const SERVICE_NAME = {
 }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
-const WEBHOOK_ID = 'webhook-id-1'
+const WEBHOOK_ID = 'webhook123abc'
 const WEBHOOK_DETAILS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_ID}`
 
 const statusTextMap = {
-  PENDING: 'Pending Retry',
+  PENDING: 'Pending retry',
   SUCCESSFUL: 'Successful',
   FAILED: 'Failed',
   WILL_NOT_SEND: 'Will not send'
@@ -31,29 +31,29 @@ const humanReadableSubscriptions = {
 
 const messages = [
   {
-    external_id: 'webhook-event-3',
+    external_id: 'event123abc',
     created_date: '2025-02-25T11:30:49.295Z',
     event_date: '2025-02-25T11:30:48.015Z',
     event_type: 'card_payment_captured',
-    resource_id: 'webhook-resource-id-3',
+    resource_id: 'payment123abc',
     resource_type: 'PAYMENT',
     last_delivery_status: 'SUCCESSFUL'
   },
   {
-    external_id: 'webhook-event-2',
+    external_id: 'event456def',
     created_date: '2025-02-24T11:30:46.199Z',
     event_date: '2025-02-24T11:30:45.969Z',
     event_type: 'card_payment_succeeded',
-    resource_id: 'webhook-resource-id-2',
+    resource_id: 'payment456def',
     resource_type: 'PAYMENT',
     last_delivery_status: 'PENDING'
   },
   {
-    external_id: 'webhook-event-1',
+    external_id: 'event789ghi',
     created_date: '2025-02-23T11:30:14.670Z',
     event_date: '2025-02-23T11:30:13.376Z',
     event_type: 'card_payment_captured',
-    resource_id: 'webhook-resource-id-1',
+    resource_id: 'payment789ghi',
     resource_type: 'PAYMENT',
     last_delivery_status: 'FAILED'
   }
@@ -91,7 +91,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
     }),
     webhooksStubs.getWebhookMessagesListSuccess({
       external_id: WEBHOOK_ID,
-      total: 3,
+      total: messages.length,
       messages
     }),
     ...additionalStubs])
@@ -106,8 +106,8 @@ describe('for an admin', () => {
 
   it('should show title and heading', () => {
     cy.title().should('eq', 'My first webhook - Settings - McDuck Enterprises - GOV.UK Pay')
-    cy.get('div.webhook-header-with-tag').find('h1').should('have.text', 'My first webhook')
-    cy.get('div.webhook-header-with-tag').find('.govuk-tag--blue').should('have.text', 'Active')
+    cy.get('div.header-with-tag').find('h1').should('have.text', 'My first webhook')
+    cy.get('div.header-with-tag').find('.govuk-tag--blue').should('have.text', 'Active')
   })
 
   it('should show summary list, update button and deactivate button', () => {
@@ -162,6 +162,8 @@ describe('for an admin', () => {
       cy.get(`tbody .govuk-table__row:eq(${i}) > td:eq(2)`).should('contain.text', statusTextMap[message.last_delivery_status])
       cy.get(`tbody .govuk-table__row:eq(${i}) > td:eq(3)`).should('contain.text', formatDateTime(message.event_date))
     })
+
+    cy.get('[data-cy="pagination-detail"]').should('contain', 'Showing 1 to 3 of 3 events')
   })
 })
 

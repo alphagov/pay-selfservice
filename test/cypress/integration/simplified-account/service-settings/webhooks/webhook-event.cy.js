@@ -121,11 +121,11 @@ describe('for an admin', () => {
 
   it('should show summary list', () => {
     cy.get('.govuk-summary-list').should('have.length', 1)
-    cy.get('.govuk-summary-list__row:eq(0) > dt').should('contain.text', 'GOV.UK Payment ID')
+    cy.get('.govuk-summary-list__row:eq(0) > dt').should('contain.text', 'GOV.UK payment ID')
     cy.get('.govuk-summary-list__row:eq(0) > dd').within(() => {
       cy.get('span')
         .should('have.attr', 'class', 'govuk-visually-hidden')
-        .should('contain.text', 'GOV.UK Payment ID')
+        .should('contain.text', 'GOV.UK payment ID')
       cy.get('a')
         .should('have.attr', 'href', WEBHOOK_EVENT_RESOURCE_URL)
         .should('contain.text', webhookEvent.resource_id)

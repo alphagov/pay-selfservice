@@ -1,4 +1,4 @@
-{% from "../simplified-account/settings/webhooks/_webhook_status.njk" import webhookStatusTag %}
+{% from "../simplified-account/settings/webhooks/macro/webhook-status.njk" import webhookStatus %}
 {% extends "layout.njk" %}
 
 {% block pageTitle %}
@@ -24,7 +24,7 @@
     <div data-webhook-entry>
       <p class="govuk-body">
         <span class="pay-text-grey">{{ webhook.callback_url }}</span>
-        {{ webhookStatusTag(webhook.status) }}
+        {{ webhookStatus(webhook.status) }}
       </p>
       <p class="govuk-body">{{ webhook.description }}</p>
       <div>
