@@ -138,9 +138,9 @@ describe('webhook settings - toggle webhook status', () => {
 
             cy.get('.govuk-error-summary')
               .should('exist')
-              .should('contain.text', 'Confirm if you want to deactivate https://www.compuglobalhypermeganet.example.com')
+              .should('contain.text', 'Confirm if you want to deactivate a really awesome webhook')
 
-            cy.get('#toggle-active-error').should('contain.text', 'Confirm if you want to deactivate https://www.compuglobalhypermeganet.example.com')
+            cy.get('#toggle-active-error').should('contain.text', 'Confirm if you want to deactivate a really awesome webhook')
           })
         })
 
@@ -200,9 +200,9 @@ describe('webhook settings - toggle webhook status', () => {
 
             cy.get('.govuk-error-summary')
               .should('exist')
-              .should('contain.text', 'Confirm if you want to activate https://www.compuglobalhypermeganet.example.com')
+              .should('contain.text', 'Confirm if you want to activate a really awesome webhook')
 
-            cy.get('#toggle-active-error').should('contain.text', 'Confirm if you want to activate https://www.compuglobalhypermeganet.example.com')
+            cy.get('#toggle-active-error').should('contain.text', 'Confirm if you want to activate a really awesome webhook')
           })
         })
 

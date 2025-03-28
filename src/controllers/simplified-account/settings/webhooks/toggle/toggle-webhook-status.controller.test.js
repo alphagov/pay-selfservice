@@ -76,9 +76,9 @@ describe('Controller: settings/webhooks/update', () => {
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
           errors: {
             summary: [
-              { text: 'Confirm if you want to activate https://www.globexcorporation.example.com', href: '#toggle-active' }
+              { text: 'Confirm if you want to activate My webhook', href: '#toggle-active' }
             ],
-            formErrors: { toggleActive: 'Confirm if you want to activate https://www.globexcorporation.example.com' }
+            formErrors: { toggleActive: 'Confirm if you want to activate My webhook' }
           },
           webhook: testWebhook,
           backLink: '/service/service-id-123abc/account/test/settings/webhooks/webhook-external-id'

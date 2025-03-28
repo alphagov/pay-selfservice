@@ -35,7 +35,7 @@ const webhookSchema = {
     validate: (webhook) => body('toggleActive')
       .toLowerCase()
       .isIn(['yes', 'no'])
-      .withMessage(`Confirm if you want to ${webhook.status === WebhookStatus.INACTIVE ? 'activate' : 'deactivate'} ${webhook.callbackUrl}`)
+      .withMessage(`Confirm if you want to ${webhook.status === WebhookStatus.INACTIVE ? 'activate' : 'deactivate'} ${webhook.description}`)
   }
 }
 
