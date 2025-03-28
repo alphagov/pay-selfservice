@@ -25,7 +25,7 @@ module.exports = async (req, res, next) => {
   if (liveAccountExists) {
     logger.info('Live account exists for service. Redirecting to simplified settings for "live" account type')
   } else {
-    logger.info('No ive account exists for service. Redirecting to simplified settings for "test" account type')
+    logger.info('No live account exists for service. Redirecting to simplified settings for "test" account type')
   }
 
   return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.index, req.service.externalId, liveAccountExists ? 'live' : 'test'))
