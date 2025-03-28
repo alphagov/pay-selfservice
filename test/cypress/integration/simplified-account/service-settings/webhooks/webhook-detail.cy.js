@@ -106,8 +106,8 @@ describe('for an admin', () => {
 
   it('should show title and heading', () => {
     cy.title().should('eq', 'My first webhook - Settings - McDuck Enterprises - GOV.UK Pay')
-    cy.get('div.header-with-tag').find('h1').should('have.text', 'My first webhook')
-    cy.get('div.header-with-tag').find('.govuk-tag--blue').should('have.text', 'Active')
+    cy.get('div.text-with-tag').find('h1').should('have.text', 'My first webhook')
+    cy.get('div.text-with-tag').find('.govuk-tag--blue').should('have.text', 'Active')
   })
 
   it('should show summary list, update button and deactivate button', () => {

@@ -18,6 +18,7 @@
   padding-top: govuk-spacing(1);
   padding-bottom: govuk-spacing(1);
   @include govuk-font(16);
+
   a {
     &:hover {
       color: govuk-colour("dark-blue");
@@ -26,6 +27,7 @@
       text-decoration-skip-ink: none;
       text-decoration-skip: none;
     }
+
     &:focus {
       text-decoration: none;
     }
@@ -48,6 +50,7 @@
 
 .service-settings-pane {
   max-width: 630px;
+
   h1, .govuk-error-summary, .govuk-error-message {
     overflow-wrap: anywhere
   }
@@ -67,12 +70,15 @@
   .govuk-task-list__name-and-hint {
     width: 70% !important;
   }
+
   a:visited, a:link {
     color: govuk-colour("blue");
   }
+
   a:hover {
     color: govuk-colour("dark-blue");
   }
+
   a:active, a:focus {
     color: govuk-colour("black");
   }
@@ -86,12 +92,6 @@
 
   .govuk-summary-list__row:first-of-type {
     border-top: 1px solid govuk-colour("mid-grey");
-  }
-}
-
-.webhooks-summary-card {
-  .govuk-summary-list__key {
-    width: 180px;
   }
 }
 
@@ -129,29 +129,55 @@
   }
 }
 
-.header-with-tag {
+.text-with-tag {
   display: flex;
   align-items: flex-start;
-  > h1 {
-    margin-top: govuk-spacing(2);
-    margin-right: govuk-spacing(2);
-  }
-  > div {
-    white-space: nowrap;
-    margin-top: govuk-spacing(2);
-  }
+  gap: govuk-spacing(2);
 }
 
-.card-title-with-tag {
-  display: inline-flex;
-  flex-wrap: wrap;
-  > div {
-    margin-right: govuk-spacing(1);
-    &:first-child {
-      margin-bottom: govuk-spacing(1);
+.flex-align-items-centre {
+  align-items: center;
+}
+
+.text-with-tag__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.text-with-tag__tag {
+  flex-shrink: 0;
+}
+
+.card-with-tag {
+  .govuk-summary-card__title-wrapper {
+    flex-wrap: wrap;
+
+    .govuk-summary-card__title {
+      flex-basis: 100%;
+      min-width: 100%;
+      margin: govuk-spacing(1) 0;
+    }
+
+    .govuk-summary-card__actions {
+      flex-basis: 100%;
     }
   }
+
+  .govuk-summary-card__content {
+    .govuk-summary-list__key {
+      width: 180px;
+      @include govuk-media-query($until: tablet) {
+        width: 100%;
+      }
+    }
+  }
+
 }
+
+.responsive-margin-bottom-l {
+  @include govuk-responsive-margin(6, "bottom");
+}
+
 
 .json-block {
   overflow: scroll
