@@ -1,4 +1,4 @@
-FROM node:18.20.7-alpine3.20@sha256:853c72c7052192499f17190db292afc2340e0a825c40061386525b107bb6a39b AS base
+FROM node:18.20.8-alpine3.20@sha256:a25c800a782c8fd378561a294d877a72ea289bb0676fbbe619c10a1efc8373c2 AS base
 
 WORKDIR /app
 RUN apk upgrade --no-cache \
