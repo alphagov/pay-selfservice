@@ -66,133 +66,135 @@ function setupStubs (organisationDetails, type = 'live', paymentProvider = 'stri
 }
 
 describe('Stripe setup: Check your organisation’s details', () => {
-  describe('when user is admin, account is Stripe and "organisation details" is not already submitted', () => {
-    beforeEach(() => {
-      setupStubs(false)
+  describe.skip('with simplified settings disabled', () => {
+    describe('when user is admin, account is Stripe and "organisation details" is not already submitted', () => {
+      beforeEach(() => {
+        setupStubs(false)
 
-      cy.setEncryptedCookies(userExternalId, {})
+        cy.setEncryptedCookies(userExternalId, {})
 
-      cy.visit(checkOrgDetailsUrl)
+        cy.visit(checkOrgDetailsUrl)
+      })
+
+      it('should display page correctly', () => {
+        cy.get('h1').should('contain', 'Check your organisation’s details')
+
+        cy.get('#navigation-menu-your-psp')
+          .should('contain', 'Information for Stripe')
+          .parent().should('have.class', 'govuk-!-font-weight-bold')
+
+        cy.get('[data-cy=org-details]').should('exist')
+        cy.get('[data-cy=org-details]').find('dd').eq(0).should('contain', 'HMRC')
+        cy.get('[data-cy=org-details]').find('dd').eq(1)
+          .should('contain', validLine1)
+          .should('contain', validLine2)
+          .should('contain', validCity)
+          .should('contain', validPostcodeGb)
+
+        cy.get('[data-cy=form]')
+          .within(() => {
+            cy.get('[data-cy=yes-radio]').should('exist')
+            cy.get('[data-cy=no-radio]').should('exist')
+          })
+      })
+
+      it('should have a back link that redirects back to tasklist page', () => {
+        cy.get('.govuk-back-link').should('contain', 'Back to information for Stripe')
+        cy.get('.govuk-back-link').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
+      })
+
+      it('should display the account sub nav', () => {
+        cy.get('[data-cy=account-sub-nav]')
+          .should('exist')
+      })
+
+      it('should display an error when a radio button is not clicked', () => {
+        cy.get('[data-cy=continue-button]').click()
+
+        cy.get('[data-cy=error-summary] a')
+          .should('contain', 'Select yes if your organisation’s details match the details on your government entity document')
+          .should('have.attr', 'href', '#confirm-org-details')
+
+        cy.get('[data-cy=error-message]').should('contain', 'Select yes if your organisation’s details match the details on your government entity document')
+
+        cy.get('#navigation-menu-your-psp')
+          .should('contain', 'Information for Stripe')
+          .parent().should('have.class', 'govuk-!-font-weight-bold')
+
+        cy.get('.govuk-back-link')
+          .should('contain', 'Back to information for Stripe')
+          .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
+      })
     })
 
-    it('should display page correctly', () => {
-      cy.get('h1').should('contain', 'Check your organisation’s details')
+    describe('when user is admin, account is Stripe and "organisation details" is already submitted', () => {
+      beforeEach(() => {
+        cy.setEncryptedCookies(userExternalId)
+      })
 
-      cy.get('#navigation-menu-your-psp')
-        .should('contain', 'Information for Stripe')
-        .parent().should('have.class', 'govuk-!-font-weight-bold')
+      it('should display an error when displaying the page', () => {
+        setupStubs(true)
 
-      cy.get('[data-cy=org-details]').should('exist')
-      cy.get('[data-cy=org-details]').find('dd').eq(0).should('contain', 'HMRC')
-      cy.get('[data-cy=org-details]').find('dd').eq(1)
-        .should('contain', validLine1)
-        .should('contain', validLine2)
-        .should('contain', validCity)
-        .should('contain', validPostcodeGb)
+        cy.visit(checkOrgDetailsUrl)
 
-      cy.get('[data-cy=form]')
-        .within(() => {
-          cy.get('[data-cy=yes-radio]').should('exist')
-          cy.get('[data-cy=no-radio]').should('exist')
+        cy.get('h1').should('contain', 'An error occurred')
+        cy.get('#back-link').should('contain', 'Back to dashboard')
+        cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
+        cy.get('#error-message').should('contain', 'You’ve already submitted your organisation details. Contact GOV.UK Pay support if you need to update them.')
+      })
+    })
+
+    describe('when it is not a Stripe gateway account', () => {
+      beforeEach(() => {
+        cy.setEncryptedCookies(userExternalId)
+      })
+
+      it('should show a 404 error when gateway account is not Stripe', () => {
+        setupStubs(false, 'live', 'sandbox')
+
+        cy.visit(checkOrgDetailsUrl, {
+          failOnStatusCode: false
         })
-    })
-
-    it('should have a back link that redirects back to tasklist page', () => {
-      cy.get('.govuk-back-link').should('contain', 'Back to information for Stripe')
-      cy.get('.govuk-back-link').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
-    })
-
-    it('should display the account sub nav', () => {
-      cy.get('[data-cy=account-sub-nav]')
-        .should('exist')
-    })
-
-    it('should display an error when a radio button is not clicked', () => {
-      cy.get('[data-cy=continue-button]').click()
-
-      cy.get('[data-cy=error-summary] a')
-        .should('contain', 'Select yes if your organisation’s details match the details on your government entity document')
-        .should('have.attr', 'href', '#confirm-org-details')
-
-      cy.get('[data-cy=error-message]').should('contain', 'Select yes if your organisation’s details match the details on your government entity document')
-
-      cy.get('#navigation-menu-your-psp')
-        .should('contain', 'Information for Stripe')
-        .parent().should('have.class', 'govuk-!-font-weight-bold')
-
-      cy.get('.govuk-back-link')
-        .should('contain', 'Back to information for Stripe')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${gatewayAccountCredentialExternalId}`)
-    })
-  })
-
-  describe('when user is admin, account is Stripe and "organisation details" is already submitted', () => {
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
-    })
-
-    it('should display an error when displaying the page', () => {
-      setupStubs(true)
-
-      cy.visit(checkOrgDetailsUrl)
-
-      cy.get('h1').should('contain', 'An error occurred')
-      cy.get('#back-link').should('contain', 'Back to dashboard')
-      cy.get('#back-link').should('have.attr', 'href', dashboardUrl)
-      cy.get('#error-message').should('contain', 'You’ve already submitted your organisation details. Contact GOV.UK Pay support if you need to update them.')
-    })
-  })
-
-  describe('when it is not a Stripe gateway account', () => {
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
-    })
-
-    it('should show a 404 error when gateway account is not Stripe', () => {
-      setupStubs(false, 'live', 'sandbox')
-
-      cy.visit(checkOrgDetailsUrl, {
-        failOnStatusCode: false
+        cy.get('h1').should('contain', 'Page not found')
       })
-      cy.get('h1').should('contain', 'Page not found')
-    })
-  })
-
-  describe('when it is not a live gateway account', () => {
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
     })
 
-    it('should show a 404 error when gateway account is not live', () => {
-      setupStubs(false, 'test', 'stripe')
-
-      cy.visit(checkOrgDetailsUrl, {
-        failOnStatusCode: false
+    describe('when it is not a live gateway account', () => {
+      beforeEach(() => {
+        cy.setEncryptedCookies(userExternalId)
       })
-      cy.get('h1').should('contain', 'Page not found')
+
+      it('should show a 404 error when gateway account is not live', () => {
+        setupStubs(false, 'test', 'stripe')
+
+        cy.visit(checkOrgDetailsUrl, {
+          failOnStatusCode: false
+        })
+        cy.get('h1').should('contain', 'Page not found')
+      })
     })
-  })
 
-  describe('when the user does not have the correct permissions', () => {
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
-    })
+    describe('when the user does not have the correct permissions', () => {
+      beforeEach(() => {
+        cy.setEncryptedCookies(userExternalId)
+      })
 
-    it('should show a permission error when the user does not have enough permissions', () => {
-      cy.task('setupStubs', [
-        userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
-        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
-          gatewayAccountId,
-          gatewayAccountExternalId,
-          type: 'live',
-          paymentProvider: 'stripe'
-        }),
-        stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true })
-      ])
+      it('should show a permission error when the user does not have enough permissions', () => {
+        cy.task('setupStubs', [
+          userStubs.getUserWithNoPermissions(userExternalId, gatewayAccountId),
+          gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+            gatewayAccountId,
+            gatewayAccountExternalId,
+            type: 'live',
+            paymentProvider: 'stripe'
+          }),
+          stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({ gatewayAccountId, vatNumber: true })
+        ])
 
-      cy.visit(checkOrgDetailsUrl, { failOnStatusCode: false })
-      cy.get('h1').should('contain', 'An error occurred')
-      cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
+        cy.visit(checkOrgDetailsUrl, { failOnStatusCode: false })
+        cy.get('h1').should('contain', 'An error occurred')
+        cy.get('#errorMsg').should('contain', 'You do not have the administrator rights to perform this operation.')
+      })
     })
   })
 })

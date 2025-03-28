@@ -58,105 +58,107 @@ describe('MOTO mask security section', () => {
     cy.setEncryptedCookies(userExternalId)
   })
 
-  describe('When accessing MOTO mask settings', () => {
-    describe('when gateway account has allowMoto=false', () => {
-      it('should not show mask security section', () => {
-        setupMotoStubs({ allowMoto: false })
+  describe.skip('with simplified settings disabled', () => {
+    describe('When accessing MOTO mask settings', () => {
+      describe('when gateway account has allowMoto=false', () => {
+        it('should not show mask security section', () => {
+          setupMotoStubs({ allowMoto: false })
 
-        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-        cy.get('#moto-mask-security-settings-heading').should('not.exist')
+          cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+          cy.get('#moto-mask-security-settings-heading').should('not.exist')
+        })
       })
-    })
 
-    describe('mask card number - when user has read permission and card number mask disabled', () => {
-      it('should show radios as disabled and card number mask disabled', () => {
-        setupMotoStubs({ readonly: true, allowMoto: true, motoMaskCardNumber: false })
+      describe('mask card number - when user has read permission and card number mask disabled', () => {
+        it('should show radios as disabled and card number mask disabled', () => {
+          setupMotoStubs({ readonly: true, allowMoto: true, motoMaskCardNumber: false })
 
-        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-        cy.get('[data-cy=moto-security-settings]').within(() => {
-          cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Hide card numbers')
-          cy.get('.govuk-summary-list__value').eq(0).should('contain', 'Off')
-          cy.get('.govuk-summary-list__actions a').eq(0).contains('View')
-          cy.get('.govuk-summary-list__actions a').eq(0).click()
+          cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+          cy.get('[data-cy=moto-security-settings]').within(() => {
+            cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Hide card numbers')
+            cy.get('.govuk-summary-list__value').eq(0).should('contain', 'Off')
+            cy.get('.govuk-summary-list__actions a').eq(0).contains('View')
+            cy.get('.govuk-summary-list__actions a').eq(0).click()
+          })
+          cy.title().should('eq', `MOTO - hide card numbers for ${serviceName} - GOV.UK Pay`)
+          cy.get('.pay-info-warning-box').should('exist')
+          cy.get('input[value="on"]').should('be.disabled')
+          cy.get('input[value="off"]').should('be.disabled')
+          cy.get('input[value="on"]').should('not.be.checked')
+          cy.get('input[value="off"]').should('be.checked')
         })
-        cy.title().should('eq', `MOTO - hide card numbers for ${serviceName} - GOV.UK Pay`)
-        cy.get('.pay-info-warning-box').should('exist')
-        cy.get('input[value="on"]').should('be.disabled')
-        cy.get('input[value="off"]').should('be.disabled')
-        cy.get('input[value="on"]').should('not.be.checked')
-        cy.get('input[value="off"]').should('be.checked')
       })
-    })
 
-    describe('mask card number - when user has update permission and card number mask disabled', () => {
-      it('should show radios as enabled and card number mask disabled and allow updating', () => {
-        setupMotoStubs({ readonly: false, allowMoto: true, motoMaskCardNumber: false })
+      describe('mask card number - when user has update permission and card number mask disabled', () => {
+        it('should show radios as enabled and card number mask disabled and allow updating', () => {
+          setupMotoStubs({ readonly: false, allowMoto: true, motoMaskCardNumber: false })
 
-        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-        cy.get('[data-cy=moto-security-settings]').within(() => {
-          cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Hide card numbers')
-          cy.get('.govuk-summary-list__value').eq(0).should('contain', 'Off')
-          cy.get('.govuk-summary-list__actions a').eq(0).contains('Change')
-          cy.get('.govuk-summary-list__actions a').eq(0).click()
+          cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+          cy.get('[data-cy=moto-security-settings]').within(() => {
+            cy.get('.govuk-summary-list__key').eq(0).should('contain', 'Hide card numbers')
+            cy.get('.govuk-summary-list__value').eq(0).should('contain', 'Off')
+            cy.get('.govuk-summary-list__actions a').eq(0).contains('Change')
+            cy.get('.govuk-summary-list__actions a').eq(0).click()
+          })
+          cy.title().should('eq', `MOTO - hide card numbers for ${serviceName} - GOV.UK Pay`)
+          cy.get('input[value="on"]').should('not.be.disabled')
+          cy.get('input[value="off"]').should('not.be.disabled')
+          cy.get('input[value="on"]').should('not.be.checked')
+          cy.get('input[value="off"]').should('be.checked')
+
+          cy.get('input[value="on"]').click()
+          cy.get('#save-moto-mask-changes').click()
+          cy.location().should((location) => {
+            expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/settings`)
+          })
+          cy.get('.govuk-notification-banner--success').contains('Your changes have saved')
         })
-        cy.title().should('eq', `MOTO - hide card numbers for ${serviceName} - GOV.UK Pay`)
-        cy.get('input[value="on"]').should('not.be.disabled')
-        cy.get('input[value="off"]').should('not.be.disabled')
-        cy.get('input[value="on"]').should('not.be.checked')
-        cy.get('input[value="off"]').should('be.checked')
-
-        cy.get('input[value="on"]').click()
-        cy.get('#save-moto-mask-changes').click()
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/settings`)
-        })
-        cy.get('.govuk-notification-banner--success').contains('Your changes have saved')
       })
-    })
 
-    describe('mask security code - when user has read permission and security code mask disabled', () => {
-      it('should show radios as disabled and card number mask disabled', () => {
-        setupMotoStubs({ readonly: true, allowMoto: true, motoMaskSecurityCode: false })
+      describe('mask security code - when user has read permission and security code mask disabled', () => {
+        it('should show radios as disabled and card number mask disabled', () => {
+          setupMotoStubs({ readonly: true, allowMoto: true, motoMaskSecurityCode: false })
 
-        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-        cy.get('[data-cy=moto-security-settings]').within(() => {
-          cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Hide card security codes')
-          cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
-          cy.get('.govuk-summary-list__actions a').eq(1).contains('View')
-          cy.get('.govuk-summary-list__actions a').eq(1).click()
+          cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+          cy.get('[data-cy=moto-security-settings]').within(() => {
+            cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Hide card security codes')
+            cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
+            cy.get('.govuk-summary-list__actions a').eq(1).contains('View')
+            cy.get('.govuk-summary-list__actions a').eq(1).click()
+          })
+          cy.title().should('eq', `MOTO - hide security codes for ${serviceName} - GOV.UK Pay`)
+          cy.get('.pay-info-warning-box').should('exist')
+          cy.get('input[value="on"]').should('be.disabled')
+          cy.get('input[value="off"]').should('be.disabled')
+          cy.get('input[value="on"]').should('not.be.checked')
+          cy.get('input[value="off"]').should('be.checked')
         })
-        cy.title().should('eq', `MOTO - hide security codes for ${serviceName} - GOV.UK Pay`)
-        cy.get('.pay-info-warning-box').should('exist')
-        cy.get('input[value="on"]').should('be.disabled')
-        cy.get('input[value="off"]').should('be.disabled')
-        cy.get('input[value="on"]').should('not.be.checked')
-        cy.get('input[value="off"]').should('be.checked')
       })
-    })
 
-    describe('mask security code - when user has update permission and security code mask disabled', () => {
-      it('should show radios as enabled and no masking and allow updating', () => {
-        setupMotoStubs({ readonly: false, allowMoto: true, motoMaskSecurityCode: false })
+      describe('mask security code - when user has update permission and security code mask disabled', () => {
+        it('should show radios as enabled and no masking and allow updating', () => {
+          setupMotoStubs({ readonly: false, allowMoto: true, motoMaskSecurityCode: false })
 
-        cy.visit(`/account/${gatewayAccountExternalId}/settings`)
-        cy.get('[data-cy=moto-security-settings]').within(() => {
-          cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Hide card security codes')
-          cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
-          cy.get('.govuk-summary-list__actions a').eq(1).contains('Change')
-          cy.get('.govuk-summary-list__actions a').eq(1).click()
+          cy.visit(`/account/${gatewayAccountExternalId}/settings`)
+          cy.get('[data-cy=moto-security-settings]').within(() => {
+            cy.get('.govuk-summary-list__key').eq(1).should('contain', 'Hide card security codes')
+            cy.get('.govuk-summary-list__value').eq(1).should('contain', 'Off')
+            cy.get('.govuk-summary-list__actions a').eq(1).contains('Change')
+            cy.get('.govuk-summary-list__actions a').eq(1).click()
+          })
+          cy.title().should('eq', `MOTO - hide security codes for ${serviceName} - GOV.UK Pay`)
+          cy.get('input[value="on"]').should('not.be.disabled')
+          cy.get('input[value="off"]').should('not.be.disabled')
+          cy.get('input[value="on"]').should('not.be.checked')
+          cy.get('input[value="off"]').should('be.checked')
+
+          cy.get('input[value="on"]').click()
+          cy.get('#save-moto-mask-changes').click()
+          cy.location().should((location) => {
+            expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/settings`)
+          })
+          cy.get('.govuk-notification-banner--success').contains('Your changes have saved')
         })
-        cy.title().should('eq', `MOTO - hide security codes for ${serviceName} - GOV.UK Pay`)
-        cy.get('input[value="on"]').should('not.be.disabled')
-        cy.get('input[value="off"]').should('not.be.disabled')
-        cy.get('input[value="on"]').should('not.be.checked')
-        cy.get('input[value="off"]').should('be.checked')
-
-        cy.get('input[value="on"]').click()
-        cy.get('#save-moto-mask-changes').click()
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/account/${gatewayAccountExternalId}/settings`)
-        })
-        cy.get('.govuk-notification-banner--success').contains('Your changes have saved')
       })
     })
   })

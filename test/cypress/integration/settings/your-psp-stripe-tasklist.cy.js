@@ -66,281 +66,283 @@ describe('Your PSP Stripe page', () => {
     cy.setEncryptedCookies(userExternalId)
   })
 
-  describe('Should display the page correctly', () => {
-    it('should display Your PSP - Stripe page correctly', () => {
-      setupYourPspStubs()
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('h1').should('contain', 'Information for Stripe')
-      cy.get('#navigation-menu-your-psp')
-        .should('contain', 'Information for Stripe')
-        .parent().should('have.class', 'govuk-!-font-weight-bold')
+  describe.skip('with simplified settings disabled', () => {
+    describe('Should display the page correctly', () => {
+      it('should display Your PSP - Stripe page correctly', () => {
+        setupYourPspStubs()
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('h1').should('contain', 'Information for Stripe')
+        cy.get('#navigation-menu-your-psp')
+          .should('contain', 'Information for Stripe')
+          .parent().should('have.class', 'govuk-!-font-weight-bold')
 
-      cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
-      cy.get('h2').should('contain', 'Information incomplete')
-      cy.get('[data-cy="progress-indicator"]').should('contain', '0 out of 7 steps completed')
-      cy.get('h2').should('contain', 'Add your organisation’s details')
+        cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
+        cy.get('h2').should('contain', 'Information incomplete')
+        cy.get('[data-cy="progress-indicator"]').should('contain', '0 out of 7 steps completed')
+        cy.get('h2').should('contain', 'Add your organisation’s details')
 
-      cy.get('[data-cy="task-bank-details"]').contains('Bank Details')
-        .should('exist')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/bank-details`)
-      cy.get('[data-cy="task-sro"]').contains('Responsible person')
-        .should('exist')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/responsible-person`)
-      cy.get('[data-cy="task-director"]').contains('Service director')
-        .should('exist')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/director`)
-      cy.get('[data-cy="task-vatNumber"]').contains('VAT registration number')
-        .should('exist')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/vat-number`)
-      cy.get('[data-cy="task-Company-number"]').contains('Company registration number')
-        .should('exist')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/company-number`)
-      cy.get('[data-cy="task-checkorganisation-details"]').contains('Confirm your organisation’s name and address match your government entity document')
-        .should('exist')
-        .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/check-organisation-details`)
-      cy.get('[data-cy="task-government-entity-document"]').contains('Government entity document')
-        .should('exist')
-        .should('not.have.attr', 'href')
-    })
-
-    it('should show progress indicator and warning text when some steps are not complete', () => {
-      setupYourPspStubs({
-        bankAccount: true,
-        responsiblePerson: true,
-        director: false,
-        vatNumber: false,
-        companyNumber: false,
-        organisationDetails: false,
-        governmentEntityDocument: false
+        cy.get('[data-cy="task-bank-details"]').contains('Bank Details')
+          .should('exist')
+          .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/bank-details`)
+        cy.get('[data-cy="task-sro"]').contains('Responsible person')
+          .should('exist')
+          .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/responsible-person`)
+        cy.get('[data-cy="task-director"]').contains('Service director')
+          .should('exist')
+          .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/director`)
+        cy.get('[data-cy="task-vatNumber"]').contains('VAT registration number')
+          .should('exist')
+          .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/vat-number`)
+        cy.get('[data-cy="task-Company-number"]').contains('Company registration number')
+          .should('exist')
+          .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/company-number`)
+        cy.get('[data-cy="task-checkorganisation-details"]').contains('Confirm your organisation’s name and address match your government entity document')
+          .should('exist')
+          .should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/check-organisation-details`)
+        cy.get('[data-cy="task-government-entity-document"]').contains('Government entity document')
+          .should('exist')
+          .should('not.have.attr', 'href')
       })
 
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      it('should show progress indicator and warning text when some steps are not complete', () => {
+        setupYourPspStubs({
+          bankAccount: true,
+          responsiblePerson: true,
+          director: false,
+          vatNumber: false,
+          companyNumber: false,
+          organisationDetails: false,
+          governmentEntityDocument: false
+        })
 
-      cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
-      cy.get('h2').should('contain', 'Information incomplete')
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
-      cy.get('[data-cy="progress-indicator"]').should('contain', '2 out of 7 steps complete')
-      cy.get('strong[id="task-bank-details-status"]').should('contain', 'Complete')
-      cy.get('strong[id="task-sro-status"]').should('contain', 'Complete')
-      cy.get('strong[id="task-director-status"]').should('contain', 'Not started')
-      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Not started')
-      cy.get('strong[id="task-Company-number-status"]').should('contain', 'Not started')
-      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Not started')
-      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'Cannot start yet')
-    })
+        cy.get('[data-cy=warning-text]').should('contain', 'You need to submit additional information to Stripe.')
+        cy.get('h2').should('contain', 'Information incomplete')
 
-    it('should show progress indicator and all completed tasks', () => {
-      setupYourPspStubs({
-        bankAccount: true,
-        director: true,
-        vatNumber: true,
-        companyNumber: true,
-        responsiblePerson: true,
-        organisationDetails: true,
-        governmentEntityDocument: true
+        cy.get('[data-cy="progress-indicator"]').should('contain', '2 out of 7 steps complete')
+        cy.get('strong[id="task-bank-details-status"]').should('contain', 'Complete')
+        cy.get('strong[id="task-sro-status"]').should('contain', 'Complete')
+        cy.get('strong[id="task-director-status"]').should('contain', 'Not started')
+        cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Not started')
+        cy.get('strong[id="task-Company-number-status"]').should('contain', 'Not started')
+        cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Not started')
+        cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'Cannot start yet')
       })
 
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+      it('should show progress indicator and all completed tasks', () => {
+        setupYourPspStubs({
+          bankAccount: true,
+          director: true,
+          vatNumber: true,
+          companyNumber: true,
+          responsiblePerson: true,
+          organisationDetails: true,
+          governmentEntityDocument: true
+        })
 
-      cy.get('[data-cy=warning-text]').should('not.exist')
-      cy.get('h2').should('contain', 'Information complete')
-      cy.get('[data-cy="progress-indicator"]').should('contain', '7 out of 7 steps complete')
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
-      cy.get('strong[id="task-bank-details-status"]').should('contain', 'Complete')
-      cy.get('strong[id="task-sro-status"]').should('contain', 'Complete')
-      cy.get('strong[id="task-director-status"]').should('contain', 'Complete')
-      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Complete')
-      cy.get('strong[id="task-Company-number-status"]').should('contain', 'Complete')
-      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Complete')
-      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'Complete')
-    })
+        cy.get('[data-cy=warning-text]').should('not.exist')
+        cy.get('h2').should('contain', 'Information complete')
+        cy.get('[data-cy="progress-indicator"]').should('contain', '7 out of 7 steps complete')
 
-    it('should automatically show government document as cannot start yet and the rest of the tasks as not started', () => {
-      setupYourPspStubs()
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-
-      cy.get('strong[id="task-bank-details-status"]').should('contain', 'Not started')
-      cy.get('strong[id="task-sro-status"]').should('contain', 'Not started')
-      cy.get('strong[id="task-director-status"]').should('contain', 'Not started')
-      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Not started')
-      cy.get('strong[id="task-Company-number-status"]').should('contain', 'Not started')
-      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Not started')
-      cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'Cannot start yet')
-    })
-  })
-
-  describe('Bank details task', () => {
-    it('should click bank details task and redirect to task list when valid bank details is submitted', () => {
-      setupYourPspStubs({}, { path: 'bank_account', value: true })
-
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-
-      cy.get('[data-cy="task-bank-details"]').contains('Bank Details').click()
-      cy.get('h1').should('contain', 'Enter your organisation’s banking details')
-      cy.get('input#account-number[name="account-number"]').type(accountNumber)
-      cy.get('input#sort-code[name="sort-code"]').type(sortCode)
-      cy.get('#bank-details-form > button').click()
-      cy.get('h1').should('contain', 'Information for Stripe')
-    })
-
-    it('should have Bank details hyperlink removed when complete and status updated to "COMPLETE" ', () => {
-      setupYourPspStubs({
-        bankAccount: true
+        cy.get('strong[id="task-bank-details-status"]').should('contain', 'Complete')
+        cy.get('strong[id="task-sro-status"]').should('contain', 'Complete')
+        cy.get('strong[id="task-director-status"]').should('contain', 'Complete')
+        cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Complete')
+        cy.get('strong[id="task-Company-number-status"]').should('contain', 'Complete')
+        cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Complete')
+        cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'Complete')
       })
 
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('strong[id="task-bank-details-status"]').should('contain', 'Complete')
-      cy.get('[data-cy="task-bank-details"]').contains('Bank Details').should('not.have.attr', 'href')
-    })
-  })
+      it('should automatically show government document as cannot start yet and the rest of the tasks as not started', () => {
+        setupYourPspStubs()
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
 
-  describe('VAT task', () => {
-    it('should click VAT number task and redirect back to tasklist when valid VAT number is submitted', () => {
-      setupYourPspStubs({}, { path: 'vat_number', value: true })
-
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('[data-cy="task-vatNumber"]').contains('VAT registration number').click()
-      cy.get('h1').should('contain', 'VAT registration number')
-      cy.get('#have-vat-number').click()
-      cy.get('#vat-number').type(standardVatNumber)
-      cy.get('#vat-number-form > button').click()
-      cy.get('h1').should('contain', 'Information for Stripe')
+        cy.get('strong[id="task-bank-details-status"]').should('contain', 'Not started')
+        cy.get('strong[id="task-sro-status"]').should('contain', 'Not started')
+        cy.get('strong[id="task-director-status"]').should('contain', 'Not started')
+        cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Not started')
+        cy.get('strong[id="task-Company-number-status"]').should('contain', 'Not started')
+        cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Not started')
+        cy.get('strong[id="task-government-entity-document-status"]').should('contain', 'Cannot start yet')
+      })
     })
 
-    it('should have VAT number task hyperlink removed when complete and status updated to "COMPLETE " ', () => {
-      setupYourPspStubs({
-        vatNumber: true
+    describe('Bank details task', () => {
+      it('should click bank details task and redirect to task list when valid bank details is submitted', () => {
+        setupYourPspStubs({}, { path: 'bank_account', value: true })
+
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+
+        cy.get('[data-cy="task-bank-details"]').contains('Bank Details').click()
+        cy.get('h1').should('contain', 'Enter your organisation’s banking details')
+        cy.get('input#account-number[name="account-number"]').type(accountNumber)
+        cy.get('input#sort-code[name="sort-code"]').type(sortCode)
+        cy.get('#bank-details-form > button').click()
+        cy.get('h1').should('contain', 'Information for Stripe')
       })
 
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('[data-cy="task-vatNumber"]').contains('VAT registration number').should('not.have.attr', 'href')
-      cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Complete')
-    })
-  })
+      it('should have Bank details hyperlink removed when complete and status updated to "COMPLETE" ', () => {
+        setupYourPspStubs({
+          bankAccount: true
+        })
 
-  describe('Company number task', () => {
-    it('should click company registration task and redirect back to tasklist when valid company number is submitted', () => {
-      setupYourPspStubs({}, { path: 'company_number', value: true })
-
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('[data-cy="task-Company-number"]').contains('Company registration number').click()
-      cy.get('h1').should('contain', 'Company registration number')
-      cy.get('#company-number-declaration').click()
-      cy.get('#company-number').type(validCompanyNumber)
-      cy.get('#company-number-form > button').click()
-      cy.get('h1').should('contain', 'Information for Stripe')
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('strong[id="task-bank-details-status"]').should('contain', 'Complete')
+        cy.get('[data-cy="task-bank-details"]').contains('Bank Details').should('not.have.attr', 'href')
+      })
     })
 
-    it('should have Company registration number task hyperlink removed when complete and status updated to "COMPLETE " ', () => {
-      setupYourPspStubs({
-        companyNumber: true
+    describe('VAT task', () => {
+      it('should click VAT number task and redirect back to tasklist when valid VAT number is submitted', () => {
+        setupYourPspStubs({}, { path: 'vat_number', value: true })
+
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('[data-cy="task-vatNumber"]').contains('VAT registration number').click()
+        cy.get('h1').should('contain', 'VAT registration number')
+        cy.get('#have-vat-number').click()
+        cy.get('#vat-number').type(standardVatNumber)
+        cy.get('#vat-number-form > button').click()
+        cy.get('h1').should('contain', 'Information for Stripe')
       })
 
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('[data-cy="task-Company-number"]').contains('Company registration number').should('not.have.attr', 'href')
-      cy.get('strong[id="task-Company-number-status"]').should('contain', 'Complete')
-    })
-  })
+      it('should have VAT number task hyperlink removed when complete and status updated to "COMPLETE " ', () => {
+        setupYourPspStubs({
+          vatNumber: true
+        })
 
-  describe('Service director task', () => {
-    it('should click on service director task and redirect back to tasklist when valid service director information is submitted', () => {
-      setupYourPspStubs({}, { path: 'director', value: true })
-
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('[data-cy="task-director"]').contains('Service director').click()
-      cy.get('h1').should('contain', 'Enter a director’s details')
-      cy.get('#first-name').type(typedFirstName)
-      cy.get('#last-name').type(typedLastName)
-      cy.get('#dob-day').type(typedDobDay)
-      cy.get('#dob-month').type(typedDobMonth)
-      cy.get('#dob-year').type(typedDobYear)
-      cy.get('#email').type(typedEmail)
-      cy.get('#director-form > button').click()
-      cy.get('h1').should('contain', 'Information for Stripe')
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('[data-cy="task-vatNumber"]').contains('VAT registration number').should('not.have.attr', 'href')
+        cy.get('strong[id="task-vatNumber-status"]').should('contain', 'Complete')
+      })
     })
 
-    it('should have Service director task hyperlink removed when complete and status updated to "COMPLETE"', () => {
-      setupYourPspStubs({
-        director: true
+    describe('Company number task', () => {
+      it('should click company registration task and redirect back to tasklist when valid company number is submitted', () => {
+        setupYourPspStubs({}, { path: 'company_number', value: true })
+
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('[data-cy="task-Company-number"]').contains('Company registration number').click()
+        cy.get('h1').should('contain', 'Company registration number')
+        cy.get('#company-number-declaration').click()
+        cy.get('#company-number').type(validCompanyNumber)
+        cy.get('#company-number-form > button').click()
+        cy.get('h1').should('contain', 'Information for Stripe')
       })
 
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('strong[id="task-director-status"]').should('contain', 'Complete')
-      cy.get('[data-cy="task-director"]').contains('Service director').should('not.have.attr', 'href')
-    })
-  })
+      it('should have Company registration number task hyperlink removed when complete and status updated to "COMPLETE " ', () => {
+        setupYourPspStubs({
+          companyNumber: true
+        })
 
-  describe('Responsible person task', () => {
-    it('should click Responsible task and redirect back to tasklist when valid responsible information is submitted', () => {
-      setupYourPspStubs({}, { path: 'responsible_person', value: true })
-
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('[data-cy="task-sro"]').contains('Responsible person').click()
-      cy.get('h1').should('contain', 'Enter responsible person details')
-      cy.get('#first-name').type(typedFirstName)
-      cy.get('#last-name').type(typedLastName)
-      cy.get('#dob-day').type(typedDobDay)
-      cy.get('#dob-month').type(typedDobMonth)
-      cy.get('#dob-year').type(typedDobYear)
-      cy.get('#email').type(typedEmail)
-      cy.get('#home-address-line-1').type(typedHomeAddress)
-      cy.get('#home-address-city').type('London')
-      cy.get('#home-address-postcode').type(typedPostcode)
-      cy.get('#telephone-number').type(typedPhoneNumber)
-      cy.get('#responsible-person-form > button').click()
-      cy.get('h1').should('contain', 'Information for Stripe')
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('[data-cy="task-Company-number"]').contains('Company registration number').should('not.have.attr', 'href')
+        cy.get('strong[id="task-Company-number-status"]').should('contain', 'Complete')
+      })
     })
 
-    it('should have Responsible person task hyperlink removed when complete and status updated to "COMPLETE" ', () => {
-      setupYourPspStubs({
-        responsiblePerson: true
+    describe('Service director task', () => {
+      it('should click on service director task and redirect back to tasklist when valid service director information is submitted', () => {
+        setupYourPspStubs({}, { path: 'director', value: true })
+
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('[data-cy="task-director"]').contains('Service director').click()
+        cy.get('h1').should('contain', 'Enter a director’s details')
+        cy.get('#first-name').type(typedFirstName)
+        cy.get('#last-name').type(typedLastName)
+        cy.get('#dob-day').type(typedDobDay)
+        cy.get('#dob-month').type(typedDobMonth)
+        cy.get('#dob-year').type(typedDobYear)
+        cy.get('#email').type(typedEmail)
+        cy.get('#director-form > button').click()
+        cy.get('h1').should('contain', 'Information for Stripe')
       })
 
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('[data-cy="task-sro"]').contains('Responsible person').should('not.have.attr', 'href')
-      cy.get('strong[id="task-sro-status"]').should('contain', 'Complete')
-    })
-  })
+      it('should have Service director task hyperlink removed when complete and status updated to "COMPLETE"', () => {
+        setupYourPspStubs({
+          director: true
+        })
 
-  describe('Confirm Organisation details task', () => {
-    it('should click on Confirm organisation details task and redirect to tasklist page when organisation details are correct', () => {
-      setupYourPspStubs({}, { path: 'organisation_details', value: true })
-
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('[data-cy="task-checkorganisation-details"]').contains('Confirm your organisation’s name and address match your government entity document').click()
-      cy.get('h1').contains('Check your organisation’s details')
-      cy.get('[data-cy="yes-radio"]').click()
-      cy.get('[data-cy="continue-button"]').click()
-      cy.get('h1').should('contain', 'Information for Stripe')
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('strong[id="task-director-status"]').should('contain', 'Complete')
+        cy.get('[data-cy="task-director"]').contains('Service director').should('not.have.attr', 'href')
+      })
     })
 
-    it('should have Confirm Organisation details task hyperlink removed when complete and status updated to "COMPLETE" ', () => {
-      setupYourPspStubs({
-        organisationDetails: true
+    describe('Responsible person task', () => {
+      it('should click Responsible task and redirect back to tasklist when valid responsible information is submitted', () => {
+        setupYourPspStubs({}, { path: 'responsible_person', value: true })
+
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('[data-cy="task-sro"]').contains('Responsible person').click()
+        cy.get('h1').should('contain', 'Enter responsible person details')
+        cy.get('#first-name').type(typedFirstName)
+        cy.get('#last-name').type(typedLastName)
+        cy.get('#dob-day').type(typedDobDay)
+        cy.get('#dob-month').type(typedDobMonth)
+        cy.get('#dob-year').type(typedDobYear)
+        cy.get('#email').type(typedEmail)
+        cy.get('#home-address-line-1').type(typedHomeAddress)
+        cy.get('#home-address-city').type('London')
+        cy.get('#home-address-postcode').type(typedPostcode)
+        cy.get('#telephone-number').type(typedPhoneNumber)
+        cy.get('#responsible-person-form > button').click()
+        cy.get('h1').should('contain', 'Information for Stripe')
       })
 
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('[data-cy="task-checkorganisation-details"]').contains('Confirm your organisation’s name and address match your government entity document').should('not.have.attr', 'href')
-      cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Complete')
-    })
-  })
+      it('should have Responsible person task hyperlink removed when complete and status updated to "COMPLETE" ', () => {
+        setupYourPspStubs({
+          responsiblePerson: true
+        })
 
-  describe('Government entity task', () => {
-    it('should have Government entity document hyperlinked  when all other tasks are complete and should click Government entity task and display the correct page', () => {
-      setupYourPspStubs({
-        bankAccount: true,
-        director: true,
-        vatNumber: true,
-        companyNumber: true,
-        responsiblePerson: true,
-        organisationDetails: true,
-        governmentEntityDocument: false
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('[data-cy="task-sro"]').contains('Responsible person').should('not.have.attr', 'href')
+        cy.get('strong[id="task-sro-status"]').should('contain', 'Complete')
+      })
+    })
+
+    describe('Confirm Organisation details task', () => {
+      it('should click on Confirm organisation details task and redirect to tasklist page when organisation details are correct', () => {
+        setupYourPspStubs({}, { path: 'organisation_details', value: true })
+
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('[data-cy="task-checkorganisation-details"]').contains('Confirm your organisation’s name and address match your government entity document').click()
+        cy.get('h1').contains('Check your organisation’s details')
+        cy.get('[data-cy="yes-radio"]').click()
+        cy.get('[data-cy="continue-button"]').click()
+        cy.get('h1').should('contain', 'Information for Stripe')
       })
 
-      cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
-      cy.get('[data-cy="task-government-entity-document"]').contains('Government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/government-entity-document`)
-      cy.get('[data-cy="task-government-entity-document"]').contains('Government entity document').click()
-      cy.get('h1').contains('Upload a government entity document')
+      it('should have Confirm Organisation details task hyperlink removed when complete and status updated to "COMPLETE" ', () => {
+        setupYourPspStubs({
+          organisationDetails: true
+        })
+
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('[data-cy="task-checkorganisation-details"]').contains('Confirm your organisation’s name and address match your government entity document').should('not.have.attr', 'href')
+        cy.get('strong[id="task-checkorganisation-details-status"]').should('contain', 'Complete')
+      })
+    })
+
+    describe('Government entity task', () => {
+      it('should have Government entity document hyperlinked  when all other tasks are complete and should click Government entity task and display the correct page', () => {
+        setupYourPspStubs({
+          bankAccount: true,
+          director: true,
+          vatNumber: true,
+          companyNumber: true,
+          responsiblePerson: true,
+          organisationDetails: true,
+          governmentEntityDocument: false
+        })
+
+        cy.visit(`/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}`)
+        cy.get('[data-cy="task-government-entity-document"]').contains('Government entity document').should('have.attr', 'href', `/account/${gatewayAccountExternalId}/your-psp/${credentialExternalId}/government-entity-document`)
+        cy.get('[data-cy="task-government-entity-document"]').contains('Government entity document').click()
+        cy.get('h1').contains('Upload a government entity document')
+      })
     })
   })
 })
