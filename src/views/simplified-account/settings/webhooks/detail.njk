@@ -7,9 +7,11 @@
 {% set settingsPageTitle = webhook.description %}
 
 {% block settingsContent %}
-  <div class="header-with-tag">
-    <h1 class="govuk-heading-l">{{ webhook.description }}</h1>
-    <div>
+  <div class="text-with-tag flex-align-items-centre responsive-margin-bottom-l">
+    <div class="text-with-tag__text">
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-0">{{ webhook.description }}</h1>
+    </div>
+    <div class="text-with-tag__tag">
       {{ webhookStatus(webhook.status) }}
     </div>
   </div>
@@ -65,7 +67,8 @@
   </div>
 
   <h2 class="govuk-heading-m">Signing Secret</h2>
-  <p class="govuk-body">Webhook messages sent by GOV.UK Pay will include a signature. Only your application should store this secret to verify messages are from GOV.UK Pay.</p>
+  <p class="govuk-body">Webhook messages sent by GOV.UK Pay will include a signature. Only your application should store
+    this secret to verify messages are from GOV.UK Pay.</p>
   <h3 class="govuk-visually-hidden" id="app-subnav-heading">{{ webhook.description }} signing secret </h3>
   <div>
     <span id="signing-secret" class="code copy-target">{{ signingSecret.signing_key }}</span>
