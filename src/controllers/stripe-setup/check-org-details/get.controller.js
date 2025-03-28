@@ -20,7 +20,7 @@ module.exports = (req, res, next) => {
     return response(req, res, 'error-with-link', errorPageData)
   }
 
-  const { merchantDetails } = req.service
+  const merchantDetails = req.service.merchantDetails?.rawResponse
 
   const data = {
     orgName: lodash.get(merchantDetails, 'name', ''),

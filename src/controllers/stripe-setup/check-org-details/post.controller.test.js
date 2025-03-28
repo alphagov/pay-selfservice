@@ -3,7 +3,7 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
-const Service = require('../../../models/Service.class')
+const Service = require('@models/service/Service.class')
 const User = require('../../../models/User.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
 const userFixtures = require('../../../../test/fixtures/user.fixtures')

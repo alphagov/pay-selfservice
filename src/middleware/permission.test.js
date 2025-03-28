@@ -6,7 +6,7 @@ const { expect } = require('chai')
 const getPermissionMiddleware = require('./permission')
 const { PermissionDeniedError } = require('../errors')
 const User = require('../models/User.class')
-const Service = require('../models/Service.class')
+const Service = require('@models/service/Service.class')
 const userFixtures = require('../../test/fixtures/user.fixtures')
 const serviceFixtures = require('../../test/fixtures/service.fixtures')
 

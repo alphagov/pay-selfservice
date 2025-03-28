@@ -3,6 +3,7 @@ const { expect } = require('chai')
 const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
+const Service = require('@models/service/Service.class')
 
 const mockResponse = sinon.spy()
 const mockStripeDetailsService = {
@@ -27,14 +28,14 @@ const {
   nextRequest,
   call
 } = new ControllerTestBuilder('@controllers/simplified-account/settings/stripe-details/organisation-details/organisation-details-update.controller')
-  .withService({
-    externalId: SERVICE_ID,
-    merchantDetails: {
+  .withService(new Service({
+    external_id: SERVICE_ID,
+    merchant_details: {
       name: 'McDuck Enterprises',
       address_line1: 'McDuck Manor',
       address_city: 'Duckburg'
     }
-  })
+  }))
   .withAccount({ type: ACCOUNT_TYPE })
   .withStubs({
     '@utils/response': { response: mockResponse },
@@ -59,7 +60,7 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
           organisationDetails: {
             organisationName: 'McDuck Enterprises',
             addressLine1: 'McDuck Manor',
-            addressLine2: undefined,
+            addressLine2: '',
             addressCity: 'Duckburg',
             addressPostcode: undefined,
             addressCountry: undefined

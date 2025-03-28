@@ -4,7 +4,7 @@ const paths = require('@root/paths')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const chai = require('chai')
 const expect = chai.expect
-const Service = require('@models/Service.class')
+const Service = require('@models/service/Service.class')
 
 const mockResponse = sinon.spy()
 
@@ -34,8 +34,8 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/
 describe('Controller: settings/organisation-details', () => {
   describe('get', () => {
     describe('where organisation details have been set', () => {
-      before(() => {
-        call('get')
+      before(async () => {
+        await call('get')
       })
 
       it('should call the response method', () => {
