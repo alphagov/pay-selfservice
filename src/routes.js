@@ -186,6 +186,8 @@ module.exports.bind = function (app) {
   app.get(invite.subscribeService, userIsAuthorised, inviteCookieIsPresent, registerController.subscribeService)
 
   // REGISTRATION
+  app.get(register.register, registrationController.showRegisterPage)
+  app.post(register.register, registrationController.submitRegisterPage)
   app.get(register.email, registrationController.showEmailPage)
   app.post(register.email, registrationController.submitEmailPage)
   app.get(register.checkEmail, registrationController.showCheckEmailPage)

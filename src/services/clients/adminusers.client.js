@@ -292,10 +292,18 @@ module.exports = function (clientOptions = {}) {
    *
    * @param email
    */
-  async function createSelfSignupInvite (email) {
+  async function createSelfSignupInvite (email, phoneNumber, password) {
     const url = `${baseUrl}/v1/api/invites/create-self-registration-invite`
     configureClient(client, url)
-    const response = await client.post(url, { email }, 'create self-registration invite')
+
+    const body = { email }
+    if (phoneNumber) {
+      body.telephone_number = phoneNumber
+    }
+    if (password) {
+      body.password = password
+    }
+    const response = await client.post(url, body, 'create self-registration invite')
     return response.data
   }
 

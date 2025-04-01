@@ -20,12 +20,50 @@ const { validationErrors } = require('../../utils/validation/field-validation-ch
 const { INVITE_SESSION_COOKIE_NAME } = require('../../utils/constants')
 const { APP, SMS } = require('@models/constants/second-factor-method')
 const { USER_EXTERNAL_ID } = require('@govuk-pay/pay-js-commons/lib/logging/keys')
+const {
+  EMAIL_INPUT_FIELD_NAME, PHONE_NUMBER_INPUT_FIELD_NAME, PASSWORD_INPUT_FIELD_NAME,
+  REPEAT_PASSWORD_INPUT_FIELD_NAME
+} = require('@controllers/registration/constants')
+const { validateRegistrationForm } = require('@controllers/registration/validation.util')
 
-const EMAIL_INPUT_FIELD_NAME = 'email'
-const PASSWORD_INPUT_FIELD_NAME = 'password'
-const REPEAT_PASSWORD_INPUT_FIELD_NAME = 'repeat-password'
-const PHONE_NUMBER_INPUT_FIELD_NAME = 'phone'
 const OTP_CODE_FIELD_NAME = 'code'
+
+async function showRegisterPage (req, res, next) {
+  res.render('registration/register')
+}
+
+async function submitRegisterPage (req, res, next) {
+  const email = req.body[EMAIL_INPUT_FIELD_NAME]
+  const phoneNumber = req.body[PHONE_NUMBER_INPUT_FIELD_NAME]
+  const password = req.body[PASSWORD_INPUT_FIELD_NAME]
+  const repeatPassword = req.body[REPEAT_PASSWORD_INPUT_FIELD_NAME]
+
+  const errors = validateRegistrationForm(email, phoneNumber, password, repeatPassword)
+
+  if (!lodash.isEmpty(errors)) {
+    return res.render('registration/register', { errors, email, phoneNumber })
+  }
+
+  try {
+    await adminusersClient.createSelfSignupInvite(email, phoneNumber, password)
+
+    lodash.set(req, 'session.pageData.submitRegistration', { email })
+
+    res.redirect(paths.register.checkEmail)
+  } catch (err) {
+    if (err instanceof RESTClientError) {
+      if (err.errorCode === 403) {
+        errors[EMAIL_INPUT_FIELD_NAME] = validationErrors.notPublicSectorEmail
+        return res.render('registration/register', { errors, email, phoneNumber })
+      } else if (err.errorCode === 409) {
+        lodash.set(req, 'session.pageData.submitRegistration', { email })
+
+        return res.redirect(paths.register.checkEmail)
+      }
+    }
+    next(err)
+  }
+}
 
 async function showEmailPage (req, res, next) {
   res.render('registration/email')
@@ -340,6 +378,8 @@ async function reprovisionOtpKeyIfRequired (inviteSessionData, newSecondFactorMe
 }
 
 module.exports = {
+  showRegisterPage,
+  submitRegisterPage,
   showEmailPage,
   submitEmailPage,
   showCheckEmailPage,

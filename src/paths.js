@@ -343,6 +343,7 @@ module.exports = {
     subscribeService: '/subscribe'
   },
   register: {
+    register: '/register',
     email: '/register/email-address',
     checkEmail: '/register/check-email',
     password: '/register/password',
