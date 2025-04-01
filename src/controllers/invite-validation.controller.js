@@ -31,12 +31,17 @@ async function validateInvite (req, res, next) {
 
     if (invite.user_exist) {
       if (invite.is_invite_to_join_service) {
+        // todo: check journey
         res.redirect(paths.invite.subscribeService)
       } else {
         res.redirect(paths.services.index)
       }
     } else {
-      res.redirect(paths.register.password)
+      if (invite.password_set) {
+        res.redirect(paths.register.securityCodes)
+      } else {
+        res.redirect(paths.register.password)
+      }
     }
   } catch (err) {
     switch (err.errorCode) {

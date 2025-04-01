@@ -164,20 +164,32 @@ function showChooseSignInMethodPage (req, res) {
   res.render('registration/get-security-codes')
 }
 
-function submitChooseSignInMethodPage (req, res) {
-  const signInMethod = req.body['sign-in-method']
-  if (!signInMethod) {
-    return res.render('registration/get-security-codes', {
-      errors: {
-        'sign-in-method': 'You need to select an option'
-      }
-    })
-  }
+async function submitChooseSignInMethodPage (req, res, next) {
+  try {
+    const signInMethod = req.body['sign-in-method']
+    if (!signInMethod) {
+      return res.render('registration/get-security-codes', {
+        errors: {
+          'sign-in-method': 'You need to select an option'
+        }
+      })
+    }
 
-  if (signInMethod === 'SMS') {
-    res.redirect(paths.register.phoneNumber)
-  } else {
-    res.redirect(paths.register.authenticatorApp)
+    if (signInMethod === 'SMS') {
+      const sessionData = req[INVITE_SESSION_COOKIE_NAME]
+      const invite = await adminusersClient.getValidatedInvite(sessionData.code)
+
+      if (invite.telephone_number) {
+        await adminusersClient.sendOtp(sessionData.code)
+        res.redirect(paths.register.smsCode)
+      } else {
+        res.redirect(paths.register.phoneNumber)
+      }
+    } else {
+      res.redirect(paths.register.authenticatorApp)
+    }
+  } catch (err) {
+    next(err)
   }
 }
 
