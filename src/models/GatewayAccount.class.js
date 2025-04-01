@@ -30,6 +30,7 @@ const pendingCredentialStates = [CREDENTIAL_STATE.CREATED, CREDENTIAL_STATE.ENTE
  * @property {boolean} toggle3ds whether 3DS is enabled or not on this gateway account
  * @property {Worldpay3dsFlexCredential} worldpay3dsFlex available credentials for gateway account
  * @property {Object} rawResponse raw 'gateway account' object
+ * @property {boolean} disabled whether the gateway account is disabled
  */
 class GatewayAccount {
   constructor (gatewayAccountData) {
@@ -59,6 +60,7 @@ class GatewayAccount {
     if (gatewayAccountData?.worldpay_3ds_flex) {
       this.worldpay3dsFlex = Worldpay3dsFlexCredential.fromJson(gatewayAccountData.worldpay_3ds_flex)
     }
+    this.disabled = gatewayAccountData.disabled
     /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
      * you should instead add any rawResponse data as part of the constructor */
     this.rawResponse = gatewayAccountData
