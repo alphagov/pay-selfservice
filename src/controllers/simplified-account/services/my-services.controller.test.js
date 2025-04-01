@@ -53,6 +53,20 @@ const mockGatewayAccountService = {
       service_name: SERVICE_NAME,
       type: 'live',
       payment_provider: WORLDPAY
+    })),
+    38: new GatewayAccount(validGatewayAccount({
+      gateway_account_id: 38,
+      service_name: SERVICE_NAME,
+      type: 'test',
+      payment_provider: SANDBOX,
+      disabled: true
+    })),
+    39: new GatewayAccount(validGatewayAccount({
+      gateway_account_id: 39,
+      service_name: SERVICE_NAME,
+      type: 'test',
+      payment_provider: SANDBOX,
+      disabled: true
     }))
   })
 }
@@ -398,6 +412,39 @@ describe('Controller: services/my-services.controller', () => {
                   gatewayAccounts: sinon.match(accounts => {
                     expect(accounts.length).to.equal(1)
                     expect(accounts[0].type).to.equal('live')
+                    expect(accounts[0].paymentProvider).to.equal(WORLDPAY)
+                    return true
+                  })
+                })
+              ]
+            })
+          )
+        })
+      })
+      describe('for a service with disabled test gateway accounts', () => {
+        before(() => {
+          userServiceRoles[0].service.gatewayAccountIds = ['32', '38', '39']
+          nextRequest({
+            user: {
+              isDegatewayed: () => true,
+              serviceRoles: userServiceRoles
+            }
+          })
+          call('get')
+        })
+
+        it('should filter out the disabled test gateway accounts', () => {
+          sinon.assert.calledWithMatch(mockResponse,
+            sinon.match.any,
+            sinon.match.any,
+            sinon.match.any,
+            sinon.match({
+              services: [
+                sinon.match({
+                  name: SERVICE_NAME,
+                  gatewayAccounts: sinon.match(accounts => {
+                    expect(accounts.length).to.equal(1)
+                    expect(accounts[0].type).to.equal('test')
                     expect(accounts[0].paymentProvider).to.equal(WORLDPAY)
                     return true
                   })
