@@ -56,6 +56,7 @@ const mergeServicesWithGatewayAccounts = (services, gatewayAccounts, flags) => {
     const mappedGatewayAccounts = service.gatewayAccountIds
       .map(id => gatewayAccounts[id])
       .filter(account => account !== undefined)
+      .filter(account => !account.disabled)
 
     const mappedLiveGatewayAccounts = mappedGatewayAccounts
       .filter(account => account.type === 'live')
