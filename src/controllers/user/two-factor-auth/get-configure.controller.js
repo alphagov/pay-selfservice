@@ -7,13 +7,21 @@ const logger = require('../../../utils/logger')(__filename)
 const { response } = require('../../../utils/response.js')
 const paths = require('../../../paths')
 const secondFactorMethod = require('@models/constants/second-factor-method')
+const userService = require('@services/user.service')
 
 module.exports = async function showConfigureSecondFactorMethod (req, res) {
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', secondFactorMethod.APP)
   const recovered = lodash.get(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {})
   lodash.unset(req, 'session.pageData.configureTwoFactorAuthMethodRecovered')
 
-  const prettyPrintedSecret = req.user.provisionalOtpKey.match(/.{4}/g).join(' ')
+  let prettyPrintedSecret
+  if (req.user.provisionalOtpKey) {
+    prettyPrintedSecret = req.user.provisionalOtpKey.match(/.{4}/g).join(' ')
+  } else {
+    const user = await userService.provisionNewOtpKey(req.user.externalId)
+    prettyPrintedSecret = user.provisionalOtpKey.match(/.{4}/g).join(' ')
+  }
+
   const otpUrl = `otpauth://totp/GOV.UK%20Pay:${encodeURIComponent(req.user.email)}?secret=${encodeURIComponent(req.user.provisionalOtpKey)}&issuer=GOV.UK%20Pay&algorithm=SHA1&digits=6&period=30`
 
   try {

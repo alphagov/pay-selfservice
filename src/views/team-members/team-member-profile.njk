@@ -2,90 +2,129 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% block pageTitle %}
-My profile - GOV.UK Pay
+  My profile - GOV.UK Pay
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
-  {% if flash.otpMethodUpdated %}
-    {% set html %}
-      <p class="govuk-notification-banner__heading">Your sign-in method has been updated</p>
-
+  <div class="govuk-grid-column-two-thirds">
+    {% if flash.otpMethodUpdated %}
       {% if flash.otpMethodUpdated[0] === secondFactorMethod.APP %}
-        <p class="govuk-body">Use your authenticator app when you next sign in.</p>
+        {% set html %}
+          <p class="govuk-notification-banner__heading">Your authenticator app has been updated</p>
+        {% endset %}
       {% else %}
-        <p class="govuk-body">We’ll send you a text message when you next sign in.</p>
+        {% set html %}
+          <p class="govuk-notification-banner__heading">Your mobile number has been updated</p>
+        {% endset %}
       {% endif %}
-    {% endset %}
 
-    {{ govukNotificationBanner({
-      html: html,
-      type: 'success'
-    }) }}
-  {% endif %}
-</div>
-<div class="govuk-grid-column-full">
-  <h1 id="details-for" class="govuk-heading-l page-title">
-      My profile
-  </h1>
-</div>
-<div class="govuk-grid-column-two-thirds">
-  <dl class="profile-settings govuk-table">
-    <div class="profile-settings__row">
-      <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
-        Email
-      </dt>
-      <dd class="profile-settings__value govuk-table__cell" id="email">
-        {{email}}
-      </dd>
-    </div>
-    {% if telephone_number %}
-    <div class="profile-settings__row" data-cy="telephone-number-row">
-      <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
-        Mobile number
-      </dt>
-      <dd class="profile-settings__value govuk-table__cell" id="telephone-number">
-        {{telephone_number}}
-        <span class="profile-settings__change-link">
-          <a class="govuk-link govuk-link--no-visited-state" href="{{routes.user.profile.phoneNumber }}" id="change-phone-link">Change <span class="govuk-visually-hidden">mobile number</span></a>
-        </span>
-      </dd>
-    </div>
+      {{ govukNotificationBanner({
+        html: html,
+        type: 'success'
+      }) }}
     {% endif %}
-    <div class="profile-settings__row">
-      <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
-        Sign-in method
-      </dt>
-      <dd class="profile-settings__value govuk-table__cell" id="two-factor-auth">
-          {% if two_factor_auth === secondFactorMethod.APP %}
-            Authenticator app
-          {% endif %}
-          {% if two_factor_auth === secondFactorMethod.SMS %}
-            Text message
-          {% endif %}
-          <span class="profile-settings__change-link">
-            <a class="govuk-link govuk-link--no-visited-state" href="{{two_factor_auth_link}}">Change <span class="govuk-visually-hidden">sign-in method</span></a>
-          </span>
-      </dd>
-    </div>
-    {% if SHOW_DEGATEWAY_SETTINGS %}
+  </div>
+  <div class="govuk-grid-column-full">
+    <h1 id="details-for" class="govuk-heading-l page-title">
+      My profile
+    </h1>
+  </div>
+  <div class="govuk-grid-column-two-thirds">
+    <dl class="profile-settings govuk-table">
       <div class="profile-settings__row">
         <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
-          Account simplification
+          Email
         </dt>
-        <dd class="profile-settings__value govuk-table__cell" id="degatewayaccountification">
-          {{degatewayaccountification}}
-          <span class="profile-settings__change-link">
-            <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.user.profile.degateway }}" id="change-degateway-preference-link">Change <span class="govuk-visually-hidden">Account simplification preference</span></a>
-          </span>
+        <dd class="profile-settings__value govuk-table__cell" id="email">
+          {{ email }}
         </dd>
       </div>
-    {% endif %}
-  </dl>
-</div>
-<div class="govuk-grid-column-one-third">
-  <div class="related-information">
-    <p class="govuk-body govuk-!-font-size-16">To change your permission level on a service you need to contact an administrator for that service.</p>
+      {% if SHOW_DEGATEWAY_SETTINGS %}
+        <div class="profile-settings__row">
+          <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
+            Account simplification
+          </dt>
+          <dd class="profile-settings__value govuk-table__cell" id="degatewayaccountification">
+            {{ degatewayaccountification }}
+            <span class="profile-settings__change-link">
+            <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.user.profile.degateway }}"
+               id="change-degateway-preference-link">Change <span class="govuk-visually-hidden">Account simplification preference</span></a>
+          </span>
+          </dd>
+        </div>
+      {% endif %}
+    </dl>
   </div>
-</div>
+
+  <div class="govuk-grid-column-two-thirds">
+    <table class="govuk-table ">
+      <caption class="govuk-table__caption govuk-table__caption--m">Two factor authentication</caption>
+      <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th scope="col" class="govuk-table__header">Method</th>
+        <th scope="col" class="govuk-table__header">Details</th>
+        <th scope="col" class="govuk-table__header">Action</th>
+      </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Mobile</th>
+        <td class="govuk-table__cell">{{ mfa_phone.phoneNumber }}</td>
+        <td class="govuk-table__cell">
+          <a class="govuk-link govuk-link--no-visited-state" href="{{ two_factor_phone_config_link }}">
+            {% if not mfa_phone %}
+              Add
+            {% else %}
+              Change
+            {% endif %}
+            <span
+              class="govuk-visually-hidden">mobile number</span></a>
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">Authenticator app</th>
+        <td class="govuk-table__cell"></td>
+        <td class="govuk-table__cell">
+          <a class="govuk-link govuk-link--no-visited-state" href="{{ two_factor_auth_config_link }}">
+            {% if mfa_app === undefined %}
+              Add
+            {% else %}
+              Change
+            {% endif %}
+            <span
+              class="govuk-visually-hidden">change authenticator app</span>
+          </a>
+        </td>
+      </tr>
+      {#      <tr class="govuk-table__row"> #}
+      {#        <th scope="row" class="govuk-table__header"> #}
+      {#          Backup codes #}
+      {#          <div class="govuk-row"> #}
+      {#            <span class="govuk-hint">one time backup codes</span> #}
+      {#          </div> #}
+      {#        </th> #}
+      {#        <td class="govuk-table__cell"></td> #}
+      {#        <td class="govuk-table__cell"> #}
+      {#          <a class="govuk-link govuk-link--no-visited-state" href="{{ two_factor_auth_link }}"> #}
+      {#            {% if has_backup_codes %} #}
+      {#              Regenerate #}
+      {#            {% else %} #}
+      {#              Generate #}
+      {#            {% endif %} #}
+      {#            <span #}
+      {#              class="govuk-visually-hidden">backup codes</span></a> #}
+      {#        </td> #}
+      {#      </tr> #}
+      </tbody>
+    </table>
+  </div>
+
+  {% if todo %}
+    <div class="govuk-grid-column-one-third">
+      <div class="related-information">
+        <p class="govuk-body govuk-!-font-size-16">To change your permission level on a service you need to contact an
+          administrator for that service.</p>
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

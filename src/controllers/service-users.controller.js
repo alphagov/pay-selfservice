@@ -8,6 +8,7 @@ const secondFactorMethod = require('@models/constants/second-factor-method')
 const logger = require('../utils/logger.js')(__filename)
 const { SHOW_DEGATEWAY_SETTINGS } = require('../utils/constants')
 const formatServicePathsFor = require('../utils/format-service-paths-for')
+const lodash = require('lodash')
 
 const mapByRoles = function (users, externalServiceId, currentUser) {
   const userRolesMap = {}
@@ -153,16 +154,22 @@ async function remove (req, res, next) {
  */
 async function profile (req, res, next) {
   try {
+    lodash.unset(req, 'session.pageData.twoFactorAuthMethod')
     const user = await userService.findByExternalId(req.user.externalId)
+
     if (SHOW_DEGATEWAY_SETTINGS) {
       logger.info('User viewed page with Degateway settings')
     }
     response(req, res, 'team-members/team-member-profile', {
       secondFactorMethod,
       email: user.email,
-      telephone_number: user.telephoneNumber,
+      mfa_phone: user.mfas.find(mfa => mfa.method === 'SMS'),
+      mfa_app: user.mfas.find(mfa => mfa.method === 'APP'),
+      has_backup_codes: user.mfas.find(mfa => mfa.method === 'backup_code') !== undefined,
       two_factor_auth: user.secondFactor,
       two_factor_auth_link: paths.user.profile.twoFactorAuth.index,
+      two_factor_auth_config_link: paths.user.profile.twoFactorAuth.configure,
+      two_factor_phone_config_link: paths.user.profile.phoneNumber,
       SHOW_DEGATEWAY_SETTINGS,
       degatewayaccountification: user.isDegatewayed() ? 'Enabled' : 'Disabled'
     })

@@ -27,6 +27,7 @@ module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
   try {
     await userService.configureNewOtpKey(req.user.externalId, code, method)
     req.flash('otpMethodUpdated', method)
+    lodash.unset(req, 'session.pageData.twoFactorAuthMethod')
     return res.redirect(paths.user.profile.index)
   } catch (err) {
     if (err instanceof RESTClientError && (err.errorCode === 401 || err.errorCode === 400)) {

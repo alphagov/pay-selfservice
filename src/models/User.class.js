@@ -1,6 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
+const UserMfa = require('./UserMfa.class')
 const ServiceRole = require('./ServiceRole.class')
 const { isInternalGDSEmail } = require('../utils/email-tools')
 const DEGATEWAY_FLAG = process.env.DEGATEWAY_FLAG === 'true'
@@ -34,6 +35,7 @@ class User {
    * @param {Object} userData.service_roles[].service - A raw service object see {@link Service.constructor}
    * @param {Object} userData.service_roles[].role - A raw role object
    * @param {String[]} userData.features - An array of the user's active feature flags
+   * @param {Object[]} userData.mfas[] - An array of the user's mfas
    **/
   constructor (userData) {
     if (!userData) {
@@ -51,6 +53,7 @@ class User {
     this.provisionalOtpKey = userData.provisional_otp_key || ''
     this.internalUser = isInternalGDSEmail(this.email)
     this.numberOfLiveServices = this.serviceRoles.filter(serviceRole => serviceRole.service.currentGoLiveStage === 'LIVE').length
+    this.mfas = userData.mfas.map(userMfaData => new UserMfa(userMfaData))
   }
 
   /**
