@@ -1,0 +1,61 @@
+{% extends "../layout.njk" %}
+{% from "../macro/error-summary.njk" import errorSummary %}
+
+{% block pageTitle %}
+  Choose how to get security codes - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-one-half">
+
+    {{ errorSummary ({
+      errors: errors,
+      hrefs: {
+        'sign-in-method': '#sign-in-method'
+      }
+    }) }}
+
+    <form method="post" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+      {{ govukRadios({
+        name: "sign-in-method",
+        fieldset: {
+          legend: {
+            text: "Choose how to get security codes",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        errorMessage: { text: errors['sign-in-method'] } if errors['sign-in-method'] else false,
+        attributes: {
+          'data-cy': 'radios-security-code'
+        },
+        items: [
+          {
+            value: "SMS",
+            text: "Text message",
+            attributes: {
+            'data-cy': 'radio-option-sms'
+          }
+          },
+          {
+            value: "APP",
+            text: "Authenticator app for your smartphone, tablet or computer",
+            attributes: {
+            'data-cy': 'radio-option-app'
+          }
+          }
+        ]
+      }) }}
+
+      {{ govukButton({
+        text: "Continue",
+        attributes: {
+          id: "continue"
+        }
+      }) }}
+      <p class="govuk-body"><a class="govuk-link cancel-link" href="{{routes.user.logOut}}">Cancel</a></p>
+    </form>
+  </div>
+{% endblock %}

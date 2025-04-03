@@ -6,7 +6,7 @@ const { renderErrorView } = require('../../utils/response')
 const secondFactorMethod = require('@models/constants/second-factor-method')
 
 module.exports = async function resendOtp (req, res, next) {
-  if (req.user.secondFactor === secondFactorMethod.SMS) {
+  if (req.session.authenticatorMethod === secondFactorMethod.SMS || req.user.secondFactor === secondFactorMethod.SMS) {
     try {
       await userService.sendOTP(req.user.externalId)
       res.redirect(paths.user.otpLogIn)

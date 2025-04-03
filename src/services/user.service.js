@@ -22,12 +22,12 @@ module.exports = {
    * @param code
    * @returns {Promise<User>}
    */
-  authenticateSecondFactor: function (externalId, code) {
+  authenticateSecondFactor: function (externalId, code, authenticatorMethod) {
     if (!externalId || !code) {
       return Promise.reject(new Error('Failed to authenticate second factor'))
     }
 
-    return adminUsersClient.authenticateSecondFactor(externalId, code)
+    return adminUsersClient.authenticateSecondFactor(externalId, code, authenticatorMethod)
   },
 
   /**

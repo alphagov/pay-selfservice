@@ -72,7 +72,7 @@ async function localStrategy2Fa (req, done) {
     return done(null, false, { message: validationResult.message })
   }
   try {
-    const user = await userService.authenticateSecondFactor(req.user.externalId, code)
+    const user = await userService.authenticateSecondFactor(req.user.externalId, code, req.session.authenticatorMethod)
     done(null, user)
   } catch (err) {
     const message = req.user.secondFactor === secondFactorMethod.SMS

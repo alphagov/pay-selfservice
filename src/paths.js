@@ -318,6 +318,7 @@ module.exports = {
   },
   user: {
     logIn: '/login',
+    chooseOtp: '/choose-otp',
     otpLogIn: '/otp-login',
     otpSendAgain: '/otp-send-again',
     logOut: '/logout',

@@ -139,10 +139,10 @@ module.exports = function (clientOptions = {}) {
    * @param code
    * @returns {Promise}
    */
-  async function authenticateSecondFactor (externalId, code) {
+  async function authenticateSecondFactor (externalId, code, authenticatorMethod) {
     const url = `${baseUrl}${userResource}/${externalId}/second-factor/authenticate`
     configureClient(client, url)
-    const response = await client.post(url, { code }, 'authenticate a second factor auth token entered by user')
+    const response = await client.post(url, { code, method: authenticatorMethod }, 'authenticate a second factor auth token entered by user')
     return responseBodyToUserTransformer(response.data)
   }
 

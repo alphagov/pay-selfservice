@@ -168,6 +168,8 @@ module.exports.bind = function (app) {
   // LOGIN
   app.get(user.logIn, redirectLoggedInUser, loginController.loginGet)
   app.post(user.logIn, trimUsername, loginController.loginUser, loginController.postLogin)
+  app.get(user.chooseOtp, enforceUserFirstFactor, loginController.loginChooseOtp)
+  app.post(user.chooseOtp, enforceUserFirstFactor, loginController.loginChooseOtpPost)
   app.get(user.noAccess, loginController.noAccess)
   app.get(user.logOut, loginController.logout)
   app.get(user.otpSendAgain, enforceUserFirstFactor, loginController.sendAgainGet)

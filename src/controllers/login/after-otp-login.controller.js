@@ -7,6 +7,7 @@ module.exports = (req, res) => {
   req.session.secondFactor = 'totp'
   const redirectUrl = req.session.last_url || '/'
   delete req.session.last_url
+  delete req.session.authenticatorMethod
   logger.info('Successfully entered a valid 2fa token')
   setSessionVersion(req)
   res.redirect(redirectUrl)

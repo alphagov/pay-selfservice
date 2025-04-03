@@ -5,9 +5,10 @@ const secondFactorMethod = require('@models/constants/second-factor-method')
 
 module.exports = async function showOtpLogin (req, res, next) {
   const pageData = { secondFactorMethod }
-  pageData.authenticatorMethod = req.user.secondFactor
 
-  if (!req.session.sentCode && req.user.secondFactor === secondFactorMethod.SMS) {
+  pageData.authenticatorMethod = req.session.authenticatorMethod || req.user.secondFactor
+
+  if (!req.session.sentCode && pageData.authenticatorMethod === secondFactorMethod.SMS) {
     try {
       await userService.sendOTP(req.user.externalId)
       req.session.sentCode = true
