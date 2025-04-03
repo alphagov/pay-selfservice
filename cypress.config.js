@@ -1,5 +1,6 @@
 const { defineConfig } = require('cypress')
 const path = require('path')
+const addAccessibilityTasks = require('wick-a11y/accessibility-tasks')
 
 const packageJson = require('./package.json')
 const aliases = packageJson._moduleAliases || {}
@@ -26,6 +27,7 @@ module.exports = defineConfig({
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.
     setupNodeEvents (on, config) {
+      addAccessibilityTasks(on)
       on('file:preprocessor', require('@cypress/webpack-preprocessor')({
         webpackOptions: {
           resolve: {
@@ -35,6 +37,7 @@ module.exports = defineConfig({
       }))
       return require('./test/cypress/plugins')(on, config)
     },
+
     baseUrl: 'http://127.0.0.1:3000',
     specPattern: './test/cypress/integration/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: './test/cypress/support'
