@@ -3,7 +3,7 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const paths = require('@root/paths')
 const { body, validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
-const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
+const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class').default
 const worldpayDetailsService = require('@services/worldpay-details.service')
 const { WorldpayTasks } = require('@models/WorldpayTasks.class')
 

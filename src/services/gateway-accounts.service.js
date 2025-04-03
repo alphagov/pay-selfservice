@@ -1,5 +1,5 @@
 const { ConnectorClient } = require('@services/clients/connector.client')
-const GatewayAccount = require('@models/GatewayAccount.class')
+const GatewayAccount = require('@models/GatewayAccount.class').default
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)
 
 async function getGatewayAccountsByIds (gatewayAccountIds) {

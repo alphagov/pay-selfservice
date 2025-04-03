@@ -4,7 +4,7 @@ const getHeldPermissions = require('./get-held-permissions')
 const { serviceNavigationItems, adminNavigationItems } = require('./nav-builder')
 const formatPSPname = require('./format-PSP-name')
 const serviceSettings = require('./simplified-account/settings/service-settings')
-const GatewayAccount = require('@models/GatewayAccount.class')
+const GatewayAccount = require('@models/GatewayAccount.class').default
 const { getActiveCredential } = require('@utils/credentials')
 
 const hideServiceHeaderTemplates = [

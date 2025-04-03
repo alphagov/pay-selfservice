@@ -1,6 +1,6 @@
 const { response } = require('@utils/response')
 const { WorldpayTasks } = require('@models/WorldpayTasks.class')
-const GatewayAccountSwitchPaymentProviderRequest = require('@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class')
+const GatewayAccountSwitchPaymentProviderRequest = require('@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class').default
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const paths = require('@root/paths')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
