@@ -1,12 +1,12 @@
 import edit from '@controllers/simplified-account/settings/service-name/edit/edit-service-name.controller'
 import removeWelshServiceName from '@controllers/simplified-account/settings/service-name/remove-cy/remove-welsh-service-name.controller'
-import type SettingsRequest from '@utils/types/express/SettingsRequest'
-import type SettingsResponse from '@utils/types/express/SettingsResponse'
+import type ServiceRequest from '@utils/types/express/ServiceRequest'
+import type ServiceResponse from '@utils/types/express/ServiceResponse'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { response } from '@utils/response'
 
-function get(req: SettingsRequest, res: SettingsResponse) {
+function get(req: ServiceRequest, res: ServiceResponse) {
   const context = {
     messages: res.locals?.flash?.messages ?? [],
     serviceNameEn: req.service.serviceName.en,
