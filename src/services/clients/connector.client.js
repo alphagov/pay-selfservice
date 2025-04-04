@@ -1,13 +1,13 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
+const logger = require('@utils/logger')(__filename)
 const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client')
 const { configureClient } = require('./base/config')
-const StripeAccountSetup = require('../../models/StripeAccountSetup.class')
-const StripeAccount = require('../../models/StripeAccount.class')
+const StripeAccountSetup = require('@models/StripeAccountSetup.class')
+const StripeAccount = require('@models/StripeAccount.class')
 const GatewayAccount = require('@models/GatewayAccount.class')
 const ValidationResult = require('@models/gateway-account-credential/ValidationResult.class')
-const { GatewayAccountCredential } = require('@models/gateway-account-credential/GatewayAccountCredential.class')
+const GatewayAccountCredential = require('@models/gateway-account-credential/GatewayAccountCredential.class')
 
 // Constants
 const SERVICE_NAME = 'connector'

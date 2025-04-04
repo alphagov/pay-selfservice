@@ -1,15 +1,21 @@
+import { WorldpayCredentialData } from '@models/gateway-account-credential/dto/WorldpayCredential.dto'
+
 class WorldpayCredential {
-  withMerchantCode (merchantCode) {
+  public merchantCode: string | undefined
+  public username: string | undefined
+  public password: string | undefined
+
+  withMerchantCode (merchantCode: string) {
     this.merchantCode = merchantCode
     return this
   }
 
-  withUsername (username) {
+  withUsername (username: string) {
     this.username = username
     return this
   }
 
-  withPassword (password) {
+  withPassword (password: string) {
     this.password = password
     return this
   }
@@ -22,7 +28,7 @@ class WorldpayCredential {
     }
   }
 
-  static fromJson (data) {
+  static fromJson (data: WorldpayCredentialData) {
     return new WorldpayCredential()
       .withMerchantCode(data?.merchant_code)
       .withUsername(data?.username)
@@ -30,4 +36,4 @@ class WorldpayCredential {
   }
 }
 
-module.exports = WorldpayCredential
+export = WorldpayCredential

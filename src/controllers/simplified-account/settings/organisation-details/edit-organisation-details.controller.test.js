@@ -4,28 +4,27 @@ const paths = require('@root/paths')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const chai = require('chai')
 const expect = chai.expect
-const Service = require('@models/Service.class')
 
 const mockResponse = sinon.spy()
 const updateServiceSpy = sinon.spy()
 
 const ACCOUNT_TYPE = 'live'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
 const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/simplified-account/settings/organisation-details/edit-organisation-details.controller')
-  .withService(new Service({
+  .withService({
     id: '123',
-    external_id: SERVICE_ID,
-    merchant_details: {
+    externalId: SERVICE_EXTERNAL_ID,
+    merchantDetails: {
       name: 'Compu-Global-Hyper-Mega-Net',
-      address_line1: '742 Evergreen Terrace',
-      address_city: 'Springfield',
-      address_postcode: 'SP21NG',
-      address_country: 'US',
-      telephone_number: '01234567890',
+      addressLine1: '742 Evergreen Terrace',
+      addressCity: 'Springfield',
+      addressPostcode: 'SP21NG',
+      addressCountry: 'US',
+      telephoneNumber: '01234567890',
       url: 'https://www.cpghm.example.com'
     }
-  }))
+  })
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse },
@@ -61,9 +60,9 @@ describe('Controller: settings/organisation-details', () => {
           telephoneNumber: '01234567890',
           organisationUrl: 'https://www.cpghm.example.com'
         },
-        submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, SERVICE_ID, ACCOUNT_TYPE),
+        submitLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
         countries: [],
-        backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+        backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
       })
     })
   })
@@ -71,13 +70,6 @@ describe('Controller: settings/organisation-details', () => {
   describe('post', () => {
     before(() => {
       nextRequest({
-        service: new Service({
-          id: '123',
-          external_id: SERVICE_ID
-        }),
-        account: {
-          type: ACCOUNT_TYPE
-        },
         body: {
           organisationName: 'Flancrest Enterprises',
           addressLine1: '744 Evergreen Terrace',
@@ -94,7 +86,7 @@ describe('Controller: settings/organisation-details', () => {
 
     it('should call the updateService method with the correct PATCH request', () => {
       expect(updateServiceSpy).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
-      expect(updateServiceSpy).to.have.been.calledWith(SERVICE_ID, [
+      expect(updateServiceSpy).to.have.been.calledWith(SERVICE_EXTERNAL_ID, [
         {
           op: 'replace',
           value: 'Flancrest Enterprises',
@@ -140,7 +132,7 @@ describe('Controller: settings/organisation-details', () => {
 
     it('should call redirect with the correct path', () => {
       expect(res.redirect).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
-      expect(res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_ID, ACCOUNT_TYPE))
+      expect(res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
     })
   })
 })
