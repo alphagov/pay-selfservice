@@ -43,6 +43,11 @@ describe('Service name settings', () => {
         setStubs()
         cy.visit(SERVICE_SETTINGS_URL)
       })
+
+      it('should check accessibility of the page', { defaultCommandTimeout: 15000 }, () => {
+        cy.a11yCheck()
+      })
+
       it('should be Service name', () => {
         cy.title().should('eq', 'Service name - Settings - My Cool Service - GOV.UK Pay')
       })
@@ -251,6 +256,11 @@ describe('Service name settings', () => {
         ])
         cy.visit(SERVICE_SETTINGS_URL + '/service-name/edit')
       })
+
+      it('should check accessibility of the page', { defaultCommandTimeout: 15000 }, () => {
+        cy.a11yCheck()
+      })
+
       it('should show expected form elements', () => {
         cy.get('h1').should('contain.text', 'Service name (English)')
         cy.get('input[name="serviceName"]')
@@ -283,6 +293,11 @@ describe('Service name settings', () => {
           ])
           cy.visit(SERVICE_SETTINGS_URL + '/service-name/edit?cy=true')
         })
+
+        it('should check accessibility of the page', { defaultCommandTimeout: 15000 }, () => {
+          cy.a11yCheck()
+        })
+
         it('should show expected form elements', () => {
           cy.get('h1').should('contain.text', 'Welsh service name (Cymraeg)')
           cy.get('input[name="serviceName"]')
