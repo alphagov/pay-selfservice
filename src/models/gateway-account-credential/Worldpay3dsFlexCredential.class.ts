@@ -52,4 +52,4 @@ class Worldpay3dsFlexCredential {
   }
 }
 
-export default Worldpay3dsFlexCredential
+export = Worldpay3dsFlexCredential

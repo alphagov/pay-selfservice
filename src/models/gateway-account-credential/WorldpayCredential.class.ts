@@ -36,4 +36,4 @@ class WorldpayCredential {
   }
 }
 
-export default WorldpayCredential
+export = WorldpayCredential

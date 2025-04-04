@@ -1,8 +1,9 @@
 import { kebabCase } from 'change-case'
-import type { FieldValidationError, Result } from 'express-validator'
+import type { FieldValidationError, Result, ValidationError } from 'express-validator'
 
-interface CustomValidationError extends FieldValidationError {
+interface FieldValidationWithPathOverrideError extends FieldValidationError {
   pathOverride?: string
+  msg: string
 }
 
 interface SummaryError {
@@ -12,17 +13,26 @@ interface SummaryError {
 
 type FormError = Record<string, string>
 
-function formatValidationErrors (validationResult: Result<FieldValidationError>) {
+function formatValidationErrors (validationResult: Result<ValidationError>) {
   const errorSummary: SummaryError[] = validationResult.array().map((error) => {
-    const customError = error as CustomValidationError
-    return {
-      text: error.msg as string,
-      href: `#${kebabCase(customError.pathOverride ?? error.path)}`,
+    if (error.type === 'field') {
+      const err = error as FieldValidationWithPathOverrideError
+      return {
+        text: err.msg,
+        href: `#${kebabCase(err.pathOverride ?? error.path)}`,
+      }
+    } else {
+      return {
+        text: error.msg as string,
+        href: `#`,
+      }
     }
   })
 
   const formErrors = validationResult.array().reduce((acc, error) => {
-    acc[error.path] ??= error.msg
+    if (error.type === 'field') {
+      acc[error.path] ??= error.msg
+    }
     return acc
   }, {} as FormError)
   return {

@@ -65,4 +65,4 @@ class Credential {
   }
 }
 
-export default Credential
+export = Credential

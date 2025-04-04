@@ -3,7 +3,7 @@ const CredentialState = {
   ENTERED: 'ENTERED',
   VERIFIED: 'VERIFIED_WITH_LIVE_PAYMENT',
   ACTIVE: 'ACTIVE',
-  RETIRED: 'RETIRED',
+  RETIRED: 'RETIRED'
 }
 
-export default CredentialState
+export = CredentialState

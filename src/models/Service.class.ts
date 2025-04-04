@@ -4,7 +4,7 @@ class Service {
   readonly id: number
   readonly externalId: string
   readonly name: string
-  readonly serviceName: { en: string; cy: string }
+  readonly serviceName: { en: string, cy?: string }
   readonly gatewayAccountIds: string[]
   readonly merchantDetails: {
     name: string
@@ -57,4 +57,4 @@ class Service {
   }
 }
 
-export default Service
+export = Service

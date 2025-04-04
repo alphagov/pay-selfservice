@@ -1,10 +1,10 @@
 const sinon = require('sinon')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const GatewayAccount = require('@models/GatewayAccount.class').default
+const GatewayAccount = require('@models/GatewayAccount.class')
 const { expect } = require('chai')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
-const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class').default
+const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
 const { WorldpayTasks } = require('@models/WorldpayTasks.class')
 const mockResponse = sinon.spy()
 

@@ -1,10 +1,10 @@
 import Worldpay3dsFlexCredential from '@models/gateway-account-credential/Worldpay3dsFlexCredential.class'
 import { InvalidConfigurationError } from '@root/errors'
-import CredentialState from '@models/gateway-account-credential/constants/CredentialState'
+import CredentialState from '@models/constants/credential-state'
 import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
 import { EmailNotificationsData } from '@models/gateway-account/dto/EmailNotifications.dto'
 import GatewayAccountCredential from '@models/gateway-account-credential/GatewayAccountCredential.class'
-import PaymentProvider from '@models/gateway-account/constants/PaymentProvider'
+import PaymentProvider from '@models/constants/payment-providers'
 
 const pendingCredentialStates = [
   CredentialState.CREATED,
@@ -139,4 +139,4 @@ class EmailNotifications {
   }
 }
 
-export default GatewayAccount
+export = GatewayAccount

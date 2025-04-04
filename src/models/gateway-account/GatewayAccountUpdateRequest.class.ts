@@ -68,4 +68,4 @@ const safeOperation = (op: Operation, request: GatewayAccountUpdateRequest) => {
   }
 }
 
-module.exports = GatewayAccountUpdateRequest
+export = GatewayAccountUpdateRequest

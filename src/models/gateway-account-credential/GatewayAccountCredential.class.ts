@@ -1,4 +1,4 @@
-import Credential from './Credential.class'
+import Credential from '@models/gateway-account-credential/Credential.class'
 import { GatewayAccountCredentialData } from '@models/gateway-account-credential/dto/GatewayAccountCredential.dto'
 
 class GatewayAccountCredential {
@@ -66,4 +66,4 @@ class GatewayAccountCredential {
   }
 }
 
-export default GatewayAccountCredential
+export = GatewayAccountCredential

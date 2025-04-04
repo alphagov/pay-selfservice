@@ -5,9 +5,9 @@ const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-clien
 const { configureClient } = require('./base/config')
 const StripeAccountSetup = require('@models/StripeAccountSetup.class')
 const StripeAccount = require('@models/StripeAccount.class')
-const GatewayAccount = require('@models/GatewayAccount.class').default
+const GatewayAccount = require('@models/GatewayAccount.class')
 const ValidationResult = require('@models/gateway-account-credential/ValidationResult.class')
-const GatewayAccountCredential = require('@models/gateway-account-credential/GatewayAccountCredential.class').default
+const GatewayAccountCredential = require('@models/gateway-account-credential/GatewayAccountCredential.class')
 
 // Constants
 const SERVICE_NAME = 'connector'

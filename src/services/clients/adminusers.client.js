@@ -5,7 +5,7 @@ const lodash = require('lodash')
 const { Client } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client')
 const { configureClient } = require('./base/config')
 const User = require('@models/User.class')
-const Service = require('@models/Service.class').default
+const Service = require('@models/Service.class')
 
 // Constants
 const SERVICE_NAME = 'adminusers'

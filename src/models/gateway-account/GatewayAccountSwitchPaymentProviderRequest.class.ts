@@ -25,4 +25,4 @@ class GatewayAccountSwitchPaymentProviderRequest {
   }
 }
 
-export default GatewayAccountSwitchPaymentProviderRequest
+export = GatewayAccountSwitchPaymentProviderRequest
