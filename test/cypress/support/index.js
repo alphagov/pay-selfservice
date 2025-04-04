@@ -25,7 +25,7 @@ Cypress.Commands.add('a11yCheck', (excludeSelectors = { exclude: ['.govuk-skip-l
     {
       generateReport: false,
       includedImpacts: ['critical', 'serious', 'moderate', 'minor'],
-      runOnly: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice']
+      runOnly: ['wcag22aa', 'wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice']
     }
   )
 })
