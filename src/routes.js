@@ -37,7 +37,6 @@ const worldpayCredentialsController = require('./controllers/credentials/worldpa
 const loginController = require('./controllers/login')
 const dashboardController = require('./controllers/dashboard')
 const apiKeysController = require('./controllers/api-keys')
-const digitalWalletController = require('./controllers/digital-wallet')
 const emailNotificationsController = require('./controllers/email-notifications/email-notifications.controller')
 const forgotPasswordController = require('./controllers/forgotten-password.controller')
 const editServiceNameController = require('./controllers/edit-service-name/edit-service-name.controller')
@@ -113,7 +112,6 @@ const {
   credentials,
   dashboard,
   defaultBillingAddressCountry,
-  digitalWallet,
   emailNotifications,
   notificationCredentials,
   paymentLinks,
@@ -367,12 +365,6 @@ module.exports.bind = function (app) {
   // Payment types
   account.get(paymentTypes.index, simplifiedSettingsRedirect, permission('payment-types:read'), paymentTypesController.getIndex)
   account.post(paymentTypes.index, simplifiedSettingsRedirect, permission('payment-types:update'), paymentTypesController.postIndex)
-
-  // Digital wallet
-  account.get(digitalWallet.applePay, simplifiedSettingsRedirect, permission('payment-types:update'), digitalWalletController.getApplePay)
-  account.post(digitalWallet.applePay, simplifiedSettingsRedirect, permission('payment-types:update'), digitalWalletController.postApplePay)
-  account.get(digitalWallet.googlePay, simplifiedSettingsRedirect, permission('payment-types:update'), digitalWalletController.getGooglePay)
-  account.post(digitalWallet.googlePay, simplifiedSettingsRedirect, permission('payment-types:update'), digitalWalletController.postGooglePay)
 
   // Email notifications
   account.get(emailNotifications.index, simplifiedSettingsRedirect, permission('email-notification-template:read'), emailNotificationsController.showConfirmationEmailTemplate)
