@@ -2,7 +2,7 @@
 
 const { expect } = require('chai')
 
-const { buildPaymentView } = require('./transaction-view')
+const { buildPaymentView, buildPaymentList } = require('./transaction-view')
 const transactionFixtures = require('../../test/fixtures/ledger-transaction.fixtures')
 
 describe('Transaction view utilities', () => {
@@ -47,6 +47,51 @@ describe('Transaction view utilities', () => {
       const paymentView = buildPaymentView(transaction, events, disputeData)
 
       expect(paymentView.dispute.amount_friendly).to.equal('£10.00')
+    })
+  })
+
+  describe('Dispute amount formatting', () => {
+    it('should add minus sign to dispute amounts when not in won state', () => {
+      const connectorData = {
+        results: [
+          {
+            charge_id: 'dispute-charge-id-1',
+            transaction_type: 'DISPUTE',
+            state: { status: 'under_review' },
+            amount: 2000,
+            created_date: '2025-04-01T10:00:00Z',
+            updated: '2025-04-02T10:00:00Z'
+          }
+        ],
+        _links: {},
+        page: 1
+      }
+
+      const formattedData = buildPaymentList(connectorData, { card_types: [] }, 'test-account', {}, null, null, null, null)
+
+      expect(formattedData.results[0].amount).to.include('–£')
+    })
+
+    it('should NOT add minus sign to dispute amounts when in won state', () => {
+      const connectorData = {
+        results: [
+          {
+            charge_id: 'dispute-charge-id-2',
+            transaction_type: 'DISPUTE',
+            state: { status: 'won' },
+            amount: 2000,
+            created_date: '2025-04-01T10:00:00Z',
+            updated: '2025-04-02T10:00:00Z'
+          }
+        ],
+        _links: {},
+        page: 1
+      }
+
+      const formattedData = buildPaymentList(connectorData, { card_types: [] }, 'test-account', {}, null, null, null, null)
+
+      expect(formattedData.results[0].amount).to.not.include('–£')
+      expect(formattedData.results[0].amount).to.include('£20.00')
     })
   })
 
