@@ -44,8 +44,6 @@ const organisationDetailsController = require('./controllers/organisation-detail
 const inviteUserController = require('./controllers/invite-user.controller')
 const registerController = require('./controllers/subscribe-service.controller')
 const serviceRolesUpdateController = require('./controllers/service-roles-update.controller')
-const toggleMotoMaskCardNumber = require('./controllers/toggle-moto-mask-card-number')
-const toggleMotoMaskSecurityCode = require('./controllers/toggle-moto-mask-security-code')
 const createServiceController = require('./controllers/create-service/create-service.controller')
 const selectOrgTypeController = require('./controllers/create-service/select-organisation-type/select-organisation-type.controller')
 const inviteValidationController = require('./controllers/invite-validation.controller')
@@ -111,7 +109,6 @@ const {
   prototyping,
   settings,
   stripe,
-  toggleMotoMaskCardNumberAndSecurityCode,
   transactions,
   yourPsp,
   switchPSP
@@ -351,12 +348,6 @@ module.exports.bind = function (app) {
   account.post(apiKeys.create, simplifiedSettingsRedirect, permission('tokens:create'), apiKeysController.postCreate)
   account.post(apiKeys.revoke, simplifiedSettingsRedirect, permission('tokens:delete'), apiKeysController.postRevoke)
   account.post(apiKeys.update, simplifiedSettingsRedirect, permission('tokens:update'), apiKeysController.postUpdate)
-
-  // MOTO mask card number & security code
-  account.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, simplifiedSettingsRedirect, permission('moto-mask-input:read'), toggleMotoMaskCardNumber.get)
-  account.post(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, simplifiedSettingsRedirect, permission('moto-mask-input:update'), toggleMotoMaskCardNumber.post)
-  account.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, simplifiedSettingsRedirect, permission('moto-mask-input:read'), toggleMotoMaskSecurityCode.get)
-  account.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, simplifiedSettingsRedirect, permission('moto-mask-input:update'), toggleMotoMaskSecurityCode.post)
 
   // Prototype links
   account.get(prototyping.demoService.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index)
