@@ -1,7 +1,6 @@
 'use strict'
 
 const process = require('process')
-const _ = require('lodash')
 const paths = require('./../paths')
 const formatAccountPathsFor = require('./format-account-paths-for')
 const formatSimplifiedAccountPathsFor = require('./simplified-account/format/format-simplified-account-paths-for')
@@ -20,9 +19,6 @@ const mainSettingsPaths = [
   paths.account.toggleMotoMaskCardNumberAndSecurityCode,
   paths.account.defaultBillingAddressCountry
 ]
-
-const yourPspPaths = ['your-psp', 'notification-credentials']
-const additionalPspPaths = ['switch-psp']
 
 const serviceNavigationItems = (currentPath, permissions, type, currentUrl, service = {}, account = {}) => {
   const gatewayAccountExternalId = account.external_id ?? account.externalId
@@ -68,12 +64,10 @@ const serviceNavigationItems = (currentPath, permissions, type, currentUrl, serv
     current: currentUrl.includes('settings'),
     permissions: true
   })
-
   return navigationItems
 }
 
 const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}) => {
-  const apiKeysPath = formatAccountPathsFor(paths.account.apiKeys.index, account.external_id)
   return [
     {
       id: 'navigation-menu-settings-home',
@@ -81,13 +75,6 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
       current: pathLookup(currentPath, mainSettingsPaths),
       permissions: type === 'card'
-    },
-    {
-      id: 'navigation-menu-api-keys',
-      name: 'API keys',
-      url: apiKeysPath,
-      current: pathLookup(currentPath, paths.account.apiKeys.index),
-      permissions: permissions.tokens_update && !account.disabled
     },
     ...yourPSPNavigationItems(account, currentPath).map((yourPSPNavigationItem) => ({
       ...yourPSPNavigationItem,

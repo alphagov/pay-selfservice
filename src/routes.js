@@ -36,7 +36,6 @@ const credentialsController = require('./controllers/credentials.controller')
 const worldpayCredentialsController = require('./controllers/credentials/worldpay.controller')
 const loginController = require('./controllers/login')
 const dashboardController = require('./controllers/dashboard')
-const apiKeysController = require('./controllers/api-keys')
 const forgotPasswordController = require('./controllers/forgotten-password.controller')
 const editServiceNameController = require('./controllers/edit-service-name/edit-service-name.controller')
 const serviceUsersController = require('./controllers/service-users.controller')
@@ -100,7 +99,6 @@ const {
   user
 } = paths
 const {
-  apiKeys,
   credentials,
   dashboard,
   notificationCredentials,
@@ -335,14 +333,6 @@ module.exports.bind = function (app) {
   account.post(credentials.index, simplifiedSettingsRedirect, permission('gateway-credentials:update'), credentialsController.update)
   account.get(notificationCredentials.edit, simplifiedSettingsRedirect, permission('gateway-credentials:update'), credentialsController.editNotificationCredentials)
   account.post(notificationCredentials.update, simplifiedSettingsRedirect, permission('gateway-credentials:update'), credentialsController.updateNotificationCredentials)
-
-  // API keys
-  account.get(apiKeys.index, simplifiedSettingsRedirect, permission('tokens-active:read'), apiKeysController.getIndex)
-  account.get(apiKeys.revoked, simplifiedSettingsRedirect, permission('tokens-revoked:read'), apiKeysController.getRevoked)
-  account.get(apiKeys.create, simplifiedSettingsRedirect, permission('tokens:create'), apiKeysController.getCreate)
-  account.post(apiKeys.create, simplifiedSettingsRedirect, permission('tokens:create'), apiKeysController.postCreate)
-  account.post(apiKeys.revoke, simplifiedSettingsRedirect, permission('tokens:delete'), apiKeysController.postRevoke)
-  account.post(apiKeys.update, simplifiedSettingsRedirect, permission('tokens:update'), apiKeysController.postUpdate)
 
   // Prototype links
   account.get(prototyping.demoService.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index)
