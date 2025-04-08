@@ -78,7 +78,6 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
       current: currentPath !== '/' && !currentUrl.includes('simplified')
         ? yourPspPaths.concat(additionalPspPaths, webhookPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
           ...mainSettingsPaths,
-          paths.account.apiKeys,
           paths.futureAccountStrategy.webhooks,
           paths.account.paymentTypes
         ])
@@ -97,7 +96,6 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
 }
 
 const adminNavigationItems = (currentPath, permissions, type, paymentProvider, account = {}) => {
-  const apiKeysPath = formatAccountPathsFor(paths.account.apiKeys.index, account.external_id)
   return [
     {
       id: 'navigation-menu-settings-home',
@@ -105,13 +103,6 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
       current: pathLookup(currentPath, mainSettingsPaths),
       permissions: type === 'card'
-    },
-    {
-      id: 'navigation-menu-api-keys',
-      name: 'API keys',
-      url: apiKeysPath,
-      current: pathLookup(currentPath, paths.account.apiKeys.index),
-      permissions: permissions.tokens_update && !account.disabled
     },
     {
       id: 'navigation-menu-webhooks',
