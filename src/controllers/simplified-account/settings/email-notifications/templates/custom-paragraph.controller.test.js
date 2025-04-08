@@ -3,9 +3,11 @@ const User = require('../../../../../models/User.class')
 const { expect } = require('chai')
 const paths = require('../../../../../paths')
 const proxyquire = require('proxyquire')
+const { validServiceResponse } = require('@test/fixtures/service.fixtures')
+const Service = require('@models/Service.class')
 
 const ACCOUNT_TYPE = 'test'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 const SERVICE_NAME = 'My Service'
 
 let req, res, responseStub, customParagraphController, updateCustomParagraphByServiceIdAndAccountTypeStub
@@ -42,19 +44,20 @@ const setupTest = (body = {}) => {
         }
       }
     },
-    service: {
-      name: SERVICE_NAME,
-      externalId: SERVICE_ID
-    },
+    service: new Service(validServiceResponse({
+      external_id: SERVICE_EXTERNAL_ID,
+      name: SERVICE_NAME
+    })),
     user: new User({
       service_roles: [
         {
           role: {
             name: 'admin'
           },
-          service: {
-            external_id: SERVICE_ID
-          }
+          service: validServiceResponse({
+            external_id: SERVICE_EXTERNAL_ID,
+            name: SERVICE_NAME
+          })
         }
       ]
     })
@@ -94,7 +97,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
 
     it('should update the confirmation template', () => {
       expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
-      expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_ID, ACCOUNT_TYPE, '')).to.be.true // eslint-disable-line
+      expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, '')).to.be.true // eslint-disable-line
     })
 
     it('should redirect to the templates page', () => {
@@ -112,7 +115,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
       })
       it('should update the confirmation template', () => {
         expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
-        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_ID, ACCOUNT_TYPE, '')).to.be.true // eslint-disable-line
+        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, '')).to.be.true // eslint-disable-line
       })
 
       it('should not set success message', () => {
@@ -132,7 +135,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
       })
       it('should update the confirmation template', () => {
         expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
-        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_ID, ACCOUNT_TYPE, 'a test custom paragraph')).to.be.true // eslint-disable-line
+        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'a test custom paragraph')).to.be.true // eslint-disable-line
       })
 
       it('should set success message', () => {

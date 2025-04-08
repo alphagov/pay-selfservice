@@ -5,6 +5,7 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 const Service = require('../../models/Service.class')
 const random = require('../../utils/random')
+const { validServiceResponse } = require('@test/fixtures/service.fixtures')
 const mockResponses = {}
 const mockServiceService = {}
 const editServiceNameCtrl = proxyquire('./edit-service-name.controller', {
@@ -19,7 +20,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
-        service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
+        service: new Service(validServiceResponse({ external_id: random.randomUuid(), name: 'Example Service' })),
         body: {
           'service-name': 'A brand spanking new English service name',
           'service-name-cy': 'A brand spanking new Welsh service name'
@@ -43,7 +44,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockServiceService.updateServiceName = sinon.stub().rejects(new Error('something went wrong'))
       mockResponses.renderErrorView = sinon.spy()
       req = {
-        service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
+        service: new Service(validServiceResponse({ external_id: random.randomUuid(), name: 'Example Service' })),
         body: {
           'service-name': 'A brand spanking new English service name',
           'service-name-cy': 'A brand spanking new Welsh service name'
@@ -67,7 +68,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
-        service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
+        service: new Service(validServiceResponse({ external_id: random.randomUuid(), name: 'Example Service' })),
         body: {
           'service-name': '',
           'service-name-cy': ''
@@ -96,7 +97,7 @@ describe('Controller: editServiceName, Method: get', () => {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
-        service: new Service({ external_id: random.randomUuid(), name: 'Example Service' }),
+        service: new Service(validServiceResponse({ external_id: random.randomUuid(), name: 'Example Service' })),
         body: {
           'service-name': 'Lorem ipsum dolor sit amet, consectetuer adipiscing',
           'service-name-cy': 'Lorem ipsum dolor sit amet, consectetuer adipiscing'

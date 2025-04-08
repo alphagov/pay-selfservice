@@ -1,7 +1,7 @@
 const sinon = require('sinon')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const { expect } = require('chai')
-const { GatewayAccountCredential } = require('@models/gateway-account-credential/GatewayAccountCredential.class')
+const GatewayAccountCredential = require('@models/gateway-account-credential/GatewayAccountCredential.class')
 const { WORLDPAY, STRIPE } = require('@models/constants/payment-providers')
 const { paths } = require('@root/routes')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')

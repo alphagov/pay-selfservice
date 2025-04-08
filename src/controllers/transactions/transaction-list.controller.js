@@ -25,7 +25,6 @@ module.exports = async function showTransactionList (req, res, next) {
     _links: {},
     filters: {}
   }
-  // eslint-disable-next-line n/no-deprecated-api
   req.session.filters = url.parse(req.url).query // TODO update this as url.parse is deprecated
 
   if (!filters.valid) {

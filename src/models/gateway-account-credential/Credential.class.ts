@@ -1,72 +1,49 @@
-const WorldpayCredential = require('./WorldpayCredential.class')
+import { CredentialData } from '@models/gateway-account-credential/dto/Credential.dto'
+import WorldpayCredential from '@models/gateway-account-credential/WorldpayCredential.class'
 
 class Credential {
-  /**
-   *
-   * @param {String} stripeAccountId
-   * @returns {Credential}
-   */
-  withStripeAccountId (stripeAccountId) {
+  public stripeAccountId: string | undefined
+  public oneOffCustomerInitiated: WorldpayCredential | undefined
+  public recurringCustomerInitiated: WorldpayCredential | undefined
+  public recurringMerchantInitiated: WorldpayCredential | undefined
+  public googlePayMerchantId: string | undefined
+  public rawResponse: CredentialData | undefined
+
+  withStripeAccountId (stripeAccountId: string) {
     this.stripeAccountId = stripeAccountId
     return this
   }
 
-  /**
-   *
-   * @param {WorldpayCredential} oneOffCustomerInitiated
-   * @returns {Credential}
-   */
-  withOneOffCustomerInitiated (oneOffCustomerInitiated) {
+  withOneOffCustomerInitiated (oneOffCustomerInitiated: WorldpayCredential) {
     this.oneOffCustomerInitiated = oneOffCustomerInitiated
     return this
   }
 
-  /**
-   *
-   * @param {WorldpayCredential} recurringCustomerInitiated
-   * @returns {Credential}
-   */
-  withRecurringCustomerInitiated (recurringCustomerInitiated) {
+  withRecurringCustomerInitiated (recurringCustomerInitiated: WorldpayCredential) {
     this.recurringCustomerInitiated = recurringCustomerInitiated
     return this
   }
 
-  /**
-   *
-   * @param {WorldpayCredential} recurringMerchantInitiated
-   * @returns {Credential}
-   */
-  withRecurringMerchantInitiated (recurringMerchantInitiated) {
+  withRecurringMerchantInitiated (recurringMerchantInitiated: WorldpayCredential) {
     this.recurringMerchantInitiated = recurringMerchantInitiated
     return this
   }
 
-  /**
-   * @param {String} googlePayMerchantId
-   * @returns {Credential}
-   */
-  withGooglePayMerchantId (googlePayMerchantId) {
+  withGooglePayMerchantId (googlePayMerchantId: string) {
     this.googlePayMerchantId = googlePayMerchantId
     return this
   }
 
   /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
    * you should instead add any rawResponse data as part of the constructor */
-  withRawResponse (data) {
+  withRawResponse (data: CredentialData) {
     /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
      * you should instead add any rawResponse data as part of the constructor */
     this.rawResponse = data
     return this
   }
 
-  toJson () {
-    return {
-      ...this.stripeAccountId && { stripe_account_id: this.stripeAccountId },
-      ...this.oneOffCustomerInitiated && { one_off_customer_initiated: this.oneOffCustomerInitiated.toJson() }
-    }
-  }
-
-  static fromJson (data) {
+  static fromJson (data: CredentialData) {
     const credential = new Credential()
       .withRawResponse(data)
     if (data?.stripe_account_id) {
@@ -88,4 +65,4 @@ class Credential {
   }
 }
 
-module.exports = Credential
+export = Credential

@@ -13,7 +13,7 @@ const TASK_STATUS = require('@models/constants/task-status')
 const { TaskAccessedOutOfSequenceError } = require('@root/errors')
 const SELFSERVICE_URL = process.env.SELFSERVICE_URL
 
-function get (req, res, next) {
+function get (req, res) {
   const account = req.account
   const service = req.service
   canStartTask(account, service)
