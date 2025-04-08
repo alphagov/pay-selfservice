@@ -37,7 +37,6 @@ const worldpayCredentialsController = require('./controllers/credentials/worldpa
 const loginController = require('./controllers/login')
 const dashboardController = require('./controllers/dashboard')
 const apiKeysController = require('./controllers/api-keys')
-const emailNotificationsController = require('./controllers/email-notifications/email-notifications.controller')
 const forgotPasswordController = require('./controllers/forgotten-password.controller')
 const editServiceNameController = require('./controllers/edit-service-name/edit-service-name.controller')
 const serviceUsersController = require('./controllers/service-users.controller')
@@ -55,7 +54,6 @@ const makeADemoPaymentController = require('./controllers/make-a-demo-payment')
 const paymentLinksController = require('./controllers/payment-links')
 const twoFactorAuthController = require('./controllers/user/two-factor-auth')
 const feedbackController = require('./controllers/feedback')
-const toggleBillingAddressController = require('./controllers/billing-address/toggle-billing-address.controller')
 const requestToGoLiveIndexController = require('./controllers/request-to-go-live/index')
 const requestToGoLiveOrganisationNameController = require('./controllers/request-to-go-live/organisation-name')
 const requestToGoLiveOrganisationAddressController = require('./controllers/request-to-go-live/organisation-address')
@@ -83,7 +81,6 @@ const allTransactionsController = require('./controllers/all-service-transaction
 const payoutsController = require('./controllers/payouts/payout-list.controller')
 const stripeSetupDashboardRedirectController = require('./controllers/stripe-setup/stripe-setup-link')
 const requestPspTestAccountController = require('./controllers/request-psp-test-account')
-const defaultBillingAddressCountryController = require('./controllers/settings/default-billing-address-country.controller')
 const webhooksController = require('./controllers/webhooks/webhooks.controller')
 const agreementsController = require('./controllers/agreements/agreements.controller')
 const organisationUrlController = require('./controllers/switch-psp/organisation-url')
@@ -111,15 +108,12 @@ const {
   apiKeys,
   credentials,
   dashboard,
-  defaultBillingAddressCountry,
-  emailNotifications,
   notificationCredentials,
   paymentLinks,
   paymentTypes,
   prototyping,
   settings,
   stripe,
-  toggleBillingAddress,
   toggleMotoMaskCardNumberAndSecurityCode,
   transactions,
   yourPsp,
@@ -366,31 +360,11 @@ module.exports.bind = function (app) {
   account.get(paymentTypes.index, simplifiedSettingsRedirect, permission('payment-types:read'), paymentTypesController.getIndex)
   account.post(paymentTypes.index, simplifiedSettingsRedirect, permission('payment-types:update'), paymentTypesController.postIndex)
 
-  // Email notifications
-  account.get(emailNotifications.index, simplifiedSettingsRedirect, permission('email-notification-template:read'), emailNotificationsController.showConfirmationEmailTemplate)
-  account.get(emailNotifications.indexRefundTabEnabled, simplifiedSettingsRedirect, permission('email-notification-template:read'), emailNotificationsController.showRefundEmailTemplate)
-  account.get(emailNotifications.edit, simplifiedSettingsRedirect, permission('email-notification-paragraph:update'), emailNotificationsController.editCustomParagraph)
-  account.post(emailNotifications.confirm, simplifiedSettingsRedirect, permission('email-notification-paragraph:update'), emailNotificationsController.confirmCustomParagraph)
-  account.post(emailNotifications.update, simplifiedSettingsRedirect, permission('email-notification-paragraph:update'), emailNotificationsController.updateCustomParagraph)
-  account.get(emailNotifications.collection, simplifiedSettingsRedirect, permission('email-notification-template:read'), emailNotificationsController.collectionEmailIndex)
-  account.post(emailNotifications.collection, simplifiedSettingsRedirect, permission('email-notification-toggle:update'), emailNotificationsController.collectionEmailUpdate)
-  account.get(emailNotifications.confirmation, simplifiedSettingsRedirect, permission('email-notification-template:read'), emailNotificationsController.confirmationEmailIndex)
-  account.post(emailNotifications.confirmation, simplifiedSettingsRedirect, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailUpdate)
-  account.post(emailNotifications.off, simplifiedSettingsRedirect, permission('email-notification-toggle:update'), emailNotificationsController.confirmationEmailOff)
-  account.get(emailNotifications.refund, simplifiedSettingsRedirect, permission('email-notification-template:read'), emailNotificationsController.refundEmailIndex)
-  account.post(emailNotifications.refund, simplifiedSettingsRedirect, permission('email-notification-toggle:update'), emailNotificationsController.refundEmailUpdate)
-
   // MOTO mask card number & security code
   account.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, simplifiedSettingsRedirect, permission('moto-mask-input:read'), toggleMotoMaskCardNumber.get)
   account.post(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, simplifiedSettingsRedirect, permission('moto-mask-input:update'), toggleMotoMaskCardNumber.post)
   account.get(toggleMotoMaskCardNumberAndSecurityCode.securityCode, simplifiedSettingsRedirect, permission('moto-mask-input:read'), toggleMotoMaskSecurityCode.get)
   account.post(toggleMotoMaskCardNumberAndSecurityCode.securityCode, simplifiedSettingsRedirect, permission('moto-mask-input:update'), toggleMotoMaskSecurityCode.post)
-
-  account.get(toggleBillingAddress.index, simplifiedSettingsRedirect, permission('toggle-billing-address:read'), toggleBillingAddressController.getIndex)
-  account.post(toggleBillingAddress.index, simplifiedSettingsRedirect, permission('toggle-billing-address:update'), toggleBillingAddressController.postIndex)
-
-  account.get(defaultBillingAddressCountry.index, simplifiedSettingsRedirect, permission('toggle-billing-address:read'), defaultBillingAddressCountryController.showDefaultBillingAddressCountry)
-  account.post(defaultBillingAddressCountry.index, simplifiedSettingsRedirect, permission('toggle-billing-address:update'), defaultBillingAddressCountryController.updateDefaultBillingAddressCountry)
 
   // Prototype links
   account.get(prototyping.demoService.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index)
