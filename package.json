@@ -143,6 +143,7 @@
     "stylelint-config-gds": "^1.0.0",
     "stylelint-order": "^6.0.3",
     "supertest": "^6.3.3",
+    "ts-loader": "^9.5.2",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.28.0",

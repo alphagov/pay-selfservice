@@ -31,15 +31,36 @@ module.exports = defineConfig({
       on('file:preprocessor', require('@cypress/webpack-preprocessor')({
         webpackOptions: {
           resolve: {
-            alias: webpackAliases
-          }
+            alias: webpackAliases,
+            extensions: ['.ts', '.js', '.json']
+          },
+          module: {
+            rules: [
+              {
+                test: /\.ts$/,
+                use: [
+                  {
+                    loader: 'ts-loader',
+                    options: {
+                      transpileOnly: true,
+                      compilerOptions: {
+                        esModuleInterop: true,
+                        module: 'NodeNext'
+                      }
+                    }
+                  }
+                ],
+                exclude: /node_modules/,
+              },
+            ],
+          },
         }
       }))
       return require('./test/cypress/plugins')(on, config)
     },
 
     baseUrl: 'http://127.0.0.1:3000',
-    specPattern: './test/cypress/integration/**/*.cy.{js,jsx,ts,tsx}',
+    specPattern: './test/cypress/integration/**/*.cy.{js,ts}',
     supportFile: './test/cypress/support'
   }
 })
