@@ -151,16 +151,6 @@ module.exports = {
     // remove account when hybrid gateway account root no longer required
     // `/:${keys.ENVIRONMENT_ID}(test|live)/service/:${keys.SERVICE_EXTERNAL_ID}`,
     root: `/:${keys.ENVIRONMENT_ID}(test|live)/service/:${keys.SERVICE_EXTERNAL_ID}/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}`,
-    webhooks: {
-      index: '/webhooks',
-      detail: '/webhooks/:webhookId',
-      update: '/webhooks/:webhookId/update',
-      signingSecret: '/webhooks/:webhookId/signing-secret',
-      toggleActive: '/webhooks/:webhookId/status',
-      message: '/webhooks/:webhookId/message/:messageId',
-      resendMessage: '/webhooks/:webhookId/message/:messageId/resend',
-      create: '/webhooks/create'
-    },
     agreements: {
       index: '/agreements',
       detail: '/agreements/:agreementId',

@@ -23,7 +23,6 @@ const mainSettingsPaths = [
 
 const yourPspPaths = ['your-psp', 'notification-credentials']
 const additionalPspPaths = ['switch-psp']
-const webhookPaths = ['webhooks']
 
 const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, currentUrl, service = {}, account = {}) => {
   const gatewayAccountExternalId = account.external_id ?? account.externalId
@@ -76,10 +75,9 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
       name: 'Settings',
       url: formatAccountPathsFor(paths.account.settings.index, gatewayAccountExternalId),
       current: currentPath !== '/' && !currentUrl.includes('simplified')
-        ? yourPspPaths.concat(additionalPspPaths, webhookPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
+        ? yourPspPaths.concat(additionalPspPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
           ...mainSettingsPaths,
           paths.account.apiKeys,
-          paths.futureAccountStrategy.webhooks,
           paths.account.paymentTypes
         ])
         : false,
@@ -112,13 +110,6 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       url: apiKeysPath,
       current: pathLookup(currentPath, paths.account.apiKeys.index),
       permissions: permissions.tokens_update && !account.disabled
-    },
-    {
-      id: 'navigation-menu-webhooks',
-      name: 'Webhooks',
-      url: formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.webhooks.index, account.type, account.service_id, account.external_id),
-      current: pathLookup(currentPath, paths.futureAccountStrategy.webhooks.index),
-      permissions: permissions.webhooks_update
     },
     ...yourPSPNavigationItems(account, currentPath).map((yourPSPNavigationItem) => ({
       ...yourPSPNavigationItem,

@@ -81,7 +81,6 @@ const allTransactionsController = require('./controllers/all-service-transaction
 const payoutsController = require('./controllers/payouts/payout-list.controller')
 const stripeSetupDashboardRedirectController = require('./controllers/stripe-setup/stripe-setup-link')
 const requestPspTestAccountController = require('./controllers/request-psp-test-account')
-const webhooksController = require('./controllers/webhooks/webhooks.controller')
 const agreementsController = require('./controllers/agreements/agreements.controller')
 const organisationUrlController = require('./controllers/switch-psp/organisation-url')
 const registrationController = require('./controllers/registration/registration.controller')
@@ -120,7 +119,6 @@ const {
   switchPSP
 } = paths.account
 const {
-  webhooks,
   agreements
 } = paths.futureAccountStrategy
 const {
@@ -443,19 +441,6 @@ module.exports.bind = function (app) {
   futureAccountStrategy.get(agreements.index, permission('agreements:read'), agreementsController.listAgreements)
   futureAccountStrategy.get(agreements.detail, permission('agreements:read'), agreementsController.agreementDetail)
   futureAccountStrategy.post(agreements.cancel, permission('agreements:update'), agreementsController.cancelAgreement)
-
-  // Webhook settings
-  futureAccountStrategy.get(webhooks.index, simplifiedSettingsRedirect, permission('webhooks:read'), webhooksController.listWebhooksPage)
-  futureAccountStrategy.get(webhooks.create, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.createWebhookPage)
-  futureAccountStrategy.post(webhooks.create, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.createWebhook)
-  futureAccountStrategy.get(webhooks.update, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.updateWebhookPage)
-  futureAccountStrategy.post(webhooks.update, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.updateWebhook)
-  futureAccountStrategy.get(webhooks.detail, simplifiedSettingsRedirect, permission('webhooks:read'), webhooksController.webhookDetailPage)
-  futureAccountStrategy.get(webhooks.message, simplifiedSettingsRedirect, permission('webhooks:read'), webhooksController.webhookMessageDetailPage)
-  futureAccountStrategy.post(webhooks.resendMessage, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.resendWebhookMessage)
-  futureAccountStrategy.get(webhooks.signingSecret, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.signingSecretPage)
-  futureAccountStrategy.get(webhooks.toggleActive, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.toggleActivePage)
-  futureAccountStrategy.post(webhooks.toggleActive, simplifiedSettingsRedirect, permission('webhooks:update'), webhooksController.toggleActiveWebhook)
 
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
