@@ -70,7 +70,6 @@ const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/c
 const stripeSetupDirectorController = require('./controllers/stripe-setup/director')
 const stripeSetupGovernmentEntityDocument = require('./controllers/stripe-setup/government-entity-document')
 const stripeSetupAddPspAccountDetailsController = require('./controllers/stripe-setup/add-psp-account-details')
-const paymentTypesController = require('./controllers/payment-types')
 const settingsController = require('./controllers/settings')
 const userPhoneNumberController = require('./controllers/user/phone-number')
 const userDegatewayController = require('./controllers/user/degateway')
@@ -109,7 +108,6 @@ const {
   dashboard,
   notificationCredentials,
   paymentLinks,
-  paymentTypes,
   prototyping,
   settings,
   stripe,
@@ -353,10 +351,6 @@ module.exports.bind = function (app) {
   account.post(apiKeys.create, simplifiedSettingsRedirect, permission('tokens:create'), apiKeysController.postCreate)
   account.post(apiKeys.revoke, simplifiedSettingsRedirect, permission('tokens:delete'), apiKeysController.postRevoke)
   account.post(apiKeys.update, simplifiedSettingsRedirect, permission('tokens:update'), apiKeysController.postUpdate)
-
-  // Payment types
-  account.get(paymentTypes.index, simplifiedSettingsRedirect, permission('payment-types:read'), paymentTypesController.getIndex)
-  account.post(paymentTypes.index, simplifiedSettingsRedirect, permission('payment-types:update'), paymentTypesController.postIndex)
 
   // MOTO mask card number & security code
   account.get(toggleMotoMaskCardNumberAndSecurityCode.cardNumber, simplifiedSettingsRedirect, permission('moto-mask-input:read'), toggleMotoMaskCardNumber.get)
