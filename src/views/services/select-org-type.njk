@@ -8,9 +8,6 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {% if isDegatewayed %}
-    {% include "includes/degateway-banner.njk" %}
-  {% endif %}
   {{ govukBackLink({
     text: "Back",
     href: back_link
