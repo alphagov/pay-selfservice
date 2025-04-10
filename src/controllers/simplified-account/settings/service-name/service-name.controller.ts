@@ -8,7 +8,7 @@ import { response } from '@utils/response'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const context = {
-    messages: res.locals?.flash?.messages ?? [],
+    messages: res.locals.flash?.messages ?? [],
     serviceNameEn: req.service.serviceName.en,
     serviceNameCy: req.service.serviceName.cy,
     manageEn: formatServiceAndAccountPathsFor(
