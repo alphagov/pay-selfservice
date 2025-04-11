@@ -17,29 +17,11 @@
     "@views": "src/views",
     "@test": "test"
   },
-  "standard": {
-    "globals": [
-      "describe",
-      "context",
-      "before",
-      "beforeEach",
-      "after",
-      "afterEach",
-      "it",
-      "expect",
-      "cy",
-      "Cypress"
-    ],
-    "ignore": [
-      "src/assets/**/*.js",
-      "dist/"
-    ]
-  },
   "scripts": {
     "dev": "NODE_ENV=development node dev-server.mjs",
     "compile": "NODE_ENV=production node esbuild.config.mjs",
-    "lint": "standard",
-    "lint-fix": "standard --fix",
+    "lint": "eslint",
+    "lint-fix": "eslint --fix",
     "lint-sass": "stylelint 'src/assets/sass/**/*.scss'",
     "test": "rm -rf ./pacts && NODE_ENV=test mocha '!(node_modules)/**/*.test'.js",
     "test:no-pact": "rm -rf ./pacts && NODE_ENV=test mocha --exclude **/*.pact.test.js '!(node_modules)/**/*.test'.js",
@@ -122,10 +104,13 @@
   },
   "devDependencies": {
     "@cypress/webpack-preprocessor": "^6.0.2",
+    "@eslint/js": "^9.23.0",
     "@govuk-pay/run-amock": "0.0.9",
     "@pact-foundation/pact": "^12.1.1",
     "@pact-foundation/pact-core": "^14.0.5",
+    "@types/express": "^5.0.1",
     "@types/jquery": "^3.5.32",
+    "@types/node": "^22.13.14",
     "axe-core": "^4.10.3",
     "chai": "4.5.0",
     "chai-arrays": "2.2.0",
@@ -139,22 +124,29 @@
     "esbuild": "^0.25.0",
     "esbuild-plugin-copy": "^2.1.1",
     "esbuild-sass-plugin": "^3.3.1",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.1.1",
     "gaap-analytics": "3.1.0",
+    "globals": "^16.0.0",
     "jsdom": "^21.1.1",
     "lint-staged": "14.0.1",
     "mocha": "^10.2.0",
     "nock": "13.3.3",
     "notp": "2.0.3",
     "portfinder": "1.0.32",
+    "prettier": "3.5.3",
     "proxyquire": "~2.1.0",
     "sass": "^1.66.1",
     "sinon": "15.2.0",
     "sinon-chai": "3.7.0",
-    "standard": "^17.1.2",
     "stylelint": "^15.10.3",
     "stylelint-config-gds": "^1.0.0",
     "stylelint-order": "^6.0.3",
     "supertest": "^6.3.3",
+    "ts-loader": "^9.5.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.28.0",
     "wick-a11y": "^1.4.0"
   }
 }

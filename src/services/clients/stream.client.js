@@ -13,7 +13,6 @@ class Stream {
   }
 
   request (targetUrl) {
-    // eslint-disable-next-line n/no-deprecated-api
     const parsed = url.parse(targetUrl) // TODO update this as url.parse is deprecated
     const options = {
       path: `${parsed.pathname}${parsed.search}`,

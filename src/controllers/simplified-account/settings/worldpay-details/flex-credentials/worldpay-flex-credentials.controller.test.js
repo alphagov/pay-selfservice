@@ -6,9 +6,10 @@ const { expect } = require('chai')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
+const { validServiceResponse } = require('@test/fixtures/service.fixtures')
 
 const ACCOUNT_TYPE = 'live'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
 const mockResponse = sinon.spy()
 
@@ -24,9 +25,9 @@ const validFlexCredential = new Worldpay3dsFlexCredential()
   .withJwtMacKey('fa2daee2-1fbb-45ff-4444-52805d5cd9e0') // pragma: allowlist secret
 
 const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/worldpay-details/flex-credentials/worldpay-flex-credentials.controller')
-  .withService(new Service({
-    external_id: SERVICE_ID
-  }))
+  .withService(new Service(validServiceResponse({
+    external_id: SERVICE_EXTERNAL_ID
+  })))
   .withAccount(new GatewayAccount({
     type: ACCOUNT_TYPE,
     allow_moto: false,
@@ -67,7 +68,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
             organisationalUnitId: undefined,
             issuer: undefined
           },
-          backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+          backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
         })
       })
     })
@@ -91,7 +92,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
             organisationalUnitId: '5bd9b55e4444761ac0af1c80', // pragma: allowlist secret
             issuer: '5bd9e0e4444dce15fed8c940' // pragma: allowlist secret
           },
-          backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+          backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
         })
       })
     })
@@ -132,7 +133,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
                 issuer: '',
                 jwtMacKey: ''
               },
-              backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+              backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
             })
         })
 
@@ -168,7 +169,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
                 issuer: '1234567890abcdef', // pragma: allowlist secret
                 jwtMacKey: 'not-a-uuid'
               },
-              backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+              backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
             })
         })
       })
@@ -213,7 +214,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
                   issuer: '5bd9e0e4444dce15fed8c940', // pragma: allowlist secret
                   jwtMacKey: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e0' // pragma: allowlist secret
                 },
-                backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+                backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
               })
           })
         })
@@ -229,7 +230,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
             await call('post')
 
             worldpayDetailsServiceStubs.update3dsFlexCredentials.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
-            worldpayDetailsServiceStubs.update3dsFlexCredentials.should.have.been.calledWith(SERVICE_ID, ACCOUNT_TYPE, validFlexCredential)
+            worldpayDetailsServiceStubs.update3dsFlexCredentials.should.have.been.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, validFlexCredential)
           })
         })
 
@@ -237,13 +238,13 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
           await call('post')
 
           worldpayDetailsServiceStubs.updateIntegrationVersion3ds.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
-          worldpayDetailsServiceStubs.updateIntegrationVersion3ds.should.have.been.calledWith(SERVICE_ID, ACCOUNT_TYPE)
+          worldpayDetailsServiceStubs.updateIntegrationVersion3ds.should.have.been.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
         })
 
         it('should call the redirect method with the worldpay details index path on success', async () => {
           await call('post')
 
-          res.redirect.should.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE))
+          res.redirect.should.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
         })
       })
     })

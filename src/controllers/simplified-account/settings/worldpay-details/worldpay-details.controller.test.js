@@ -1,7 +1,6 @@
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const Service = require('@models/Service.class')
 const GatewayAccount = require('@models/GatewayAccount.class')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
@@ -9,12 +8,10 @@ const paths = require('@root/paths')
 const mockResponse = sinon.spy()
 
 const ACCOUNT_TYPE = 'live'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
 const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/simplified-account/settings/worldpay-details/worldpay-details.controller')
-  .withService(new Service({
-    external_id: SERVICE_ID
-  }))
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount(new GatewayAccount({
     type: ACCOUNT_TYPE,
     allow_moto: false,
@@ -53,13 +50,13 @@ describe('Controller: settings/worldpay-details', () => {
       it('should pass context data to the response method', () => {
         const tasks = [{
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
-            SERVICE_ID, ACCOUNT_TYPE),
+            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
           id: 'worldpay-credentials',
           linkText: 'Link your Worldpay account with GOV.UK Pay',
           status: 'NOT_STARTED'
         }, {
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
-            SERVICE_ID, ACCOUNT_TYPE),
+            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
           id: '3ds-flex-credentials',
           linkText: 'Configure 3DS',
           status: 'NOT_STARTED'
@@ -91,7 +88,7 @@ describe('Controller: settings/worldpay-details', () => {
       it('should pass context data to the response method', () => {
         const tasks = [{
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
-            SERVICE_ID, ACCOUNT_TYPE),
+            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
           id: 'worldpay-credentials',
           linkText: 'Link your Worldpay account with GOV.UK Pay',
           status: 'NOT_STARTED'
@@ -124,19 +121,19 @@ describe('Controller: settings/worldpay-details', () => {
       it('should pass context data to the response method', () => {
         const tasks = [{
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
-            SERVICE_ID, ACCOUNT_TYPE),
+            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
           id: 'cit-credentials',
           linkText: 'Recurring customer initiated transaction (CIT) credentials',
           status: 'NOT_STARTED'
         }, {
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated,
-            SERVICE_ID, ACCOUNT_TYPE),
+            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
           id: 'mit-credentials',
           linkText: 'Recurring merchant initiated transaction (MIT) credentials',
           status: 'NOT_STARTED'
         }, {
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
-            SERVICE_ID, ACCOUNT_TYPE),
+            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
           id: '3ds-flex-credentials',
           linkText: 'Configure 3DS',
           status: 'NOT_STARTED'

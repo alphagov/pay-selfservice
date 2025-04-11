@@ -44,12 +44,12 @@ module.exports = function getOrganisationAddress (req, res) {
     ? {
         ...lodash.pick(merchantDetails, [
           'name',
-          'address_line1',
-          'address_line2',
-          'address_city',
-          'address_postcode',
-          'address_country',
-          'telephone_number',
+          'addressLine1',
+          'addressLine2',
+          'addressCity',
+          'addressPostcode',
+          'addressCountry',
+          'telephoneNumber',
           'url'
         ])
       }

@@ -250,7 +250,10 @@ function buildServiceRoleOpts (opts) {
   }
   if (opts.serviceName) {
     service.name = opts.serviceName.en || opts.serviceName
-    service.service_name = opts.serviceName
+    service.service_name = {
+      en: opts.serviceName.en || opts.serviceName,
+      cy: opts.serviceName.cy
+    }
   }
   if (opts.goLiveStage) {
     service.current_go_live_stage = opts.goLiveStage

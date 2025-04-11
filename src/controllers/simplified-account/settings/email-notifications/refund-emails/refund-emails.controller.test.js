@@ -3,9 +3,11 @@ const User = require('../../../../../models/User.class')
 const { expect } = require('chai')
 const paths = require('../../../../../paths')
 const proxyquire = require('proxyquire')
+const { validServiceResponse } = require('@test/fixtures/service.fixtures')
+const Service = require('@models/Service.class')
 
 const ACCOUNT_TYPE = 'test'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
 let req, res, responseStub, refundEmailsController, setRefundEmailEnabledByServiceIdAndAccountTypeStub
 
@@ -39,18 +41,18 @@ const setupTest = (additionalReqProps = {}) => {
         }
       }
     },
-    service: {
-      externalId: SERVICE_ID
-    },
+    service: new Service(validServiceResponse({
+      external_id: SERVICE_EXTERNAL_ID
+    })),
     user: new User({
       service_roles: [
         {
           role: {
             name: 'admin'
           },
-          service: {
-            external_id: SERVICE_ID
-          }
+          service: validServiceResponse({
+            external_id: SERVICE_EXTERNAL_ID
+          }),
         }
       ]
     }),
@@ -94,7 +96,7 @@ describe('Controller: settings/email-notifications/refund-emails', () => {
 
     it('should update refund email enabled', () => {
       expect(setRefundEmailEnabledByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
-      expect(setRefundEmailEnabledByServiceIdAndAccountTypeStub.calledWith(SERVICE_ID, ACCOUNT_TYPE, 'false')).to.be.true // eslint-disable-line
+      expect(setRefundEmailEnabledByServiceIdAndAccountTypeStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'false')).to.be.true // eslint-disable-line
     })
 
     it('should redirect to the email notifications landing page', () => {

@@ -3,11 +3,9 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const { paths } = require('@root/routes')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
-const {
-  GatewayAccountCredential,
-  Credential
-} = require('@models/gateway-account-credential/GatewayAccountCredential.class')
+const GatewayAccountCredential = require('@models/gateway-account-credential/GatewayAccountCredential.class')
 const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
+const Credential = require('@models/gateway-account-credential/Credential.class')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 
 const ACCOUNT_TYPE = 'live'

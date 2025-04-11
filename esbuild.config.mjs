@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { build, analyzeMetafile } from 'esbuild'
 import { sassPlugin } from 'esbuild-sass-plugin'
 import { copy } from 'esbuild-plugin-copy'
@@ -19,6 +20,16 @@ const buildOptions = {
   outExtension: {
     '.css': '.css',
     '.js': '.js'
+  },
+  alias: {
+    '@root': resolve(__dirname, 'src'),
+    '@controllers': resolve(__dirname, 'src/controllers'),
+    '@middleware': resolve(__dirname, 'src/middleware'),
+    '@models': resolve(__dirname, 'src/models'),
+    '@services': resolve(__dirname, 'src/services'),
+    '@utils': resolve(__dirname, 'src/utils'),
+    '@views': resolve(__dirname, 'src/views'),
+    '@test': resolve(__dirname, 'test')
   }
 }
 
@@ -64,18 +75,8 @@ const clientBuild = {
 const serverBuild = {
   ...buildOptions,
   entryPoints: [
-    { out: 'application', in: 'src/start.js' }
+    { out: 'application', in: 'src/start.ts' }
   ],
-  alias: {
-    '@root': resolve(__dirname, 'src'),
-    '@controllers': resolve(__dirname, 'src/controllers'),
-    '@middleware': resolve(__dirname, 'src/middleware'),
-    '@models': resolve(__dirname, 'src/models'),
-    '@services': resolve(__dirname, 'src/services'),
-    '@utils': resolve(__dirname, 'src/utils'),
-    '@views': resolve(__dirname, 'src/views'),
-    '@test': resolve(__dirname, 'test')
-  },
   platform: 'node',
   target: 'node18',
   format: 'cjs',

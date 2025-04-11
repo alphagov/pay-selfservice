@@ -24,10 +24,10 @@ module.exports = (req, res, next) => {
 
   const data = {
     orgName: lodash.get(merchantDetails, 'name', ''),
-    orgAddressLine1: lodash.get(merchantDetails, 'address_line1', ''),
-    orgAddressLine2: lodash.get(merchantDetails, 'address_line2', ''),
-    orgCity: lodash.get(merchantDetails, 'address_city', ''),
-    orgPostcode: lodash.get(merchantDetails, 'address_postcode', ''),
+    orgAddressLine1: lodash.get(merchantDetails, 'addressLine1', ''),
+    orgAddressLine2: lodash.get(merchantDetails, 'addressLine2', ''),
+    orgCity: lodash.get(merchantDetails, 'addressCity', ''),
+    orgPostcode: lodash.get(merchantDetails, 'addressPostcode', ''),
     isSwitchingCredentials,
     enableStripeOnboardingTaskList,
     currentCredential

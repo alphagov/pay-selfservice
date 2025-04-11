@@ -1,6 +1,4 @@
-'use strict'
-
-module.exports = {
+const GoLiveStage = {
   NOT_STARTED: 'NOT_STARTED',
   ENTERED_ORGANISATION_NAME: 'ENTERED_ORGANISATION_NAME',
   ENTERED_ORGANISATION_ADDRESS: 'ENTERED_ORGANISATION_ADDRESS',
@@ -12,3 +10,5 @@ module.exports = {
   DENIED: 'DENIED',
   LIVE: 'LIVE'
 }
+
+export = GoLiveStage

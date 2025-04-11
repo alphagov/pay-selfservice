@@ -3,9 +3,11 @@ const User = require('../../../../../models/User.class')
 const { expect } = require('chai')
 const paths = require('../../../../../paths')
 const proxyquire = require('proxyquire')
+const Service = require('@models/Service.class')
+const { validServiceResponse } = require('@test/fixtures/service.fixtures')
 
 const ACCOUNT_TYPE = 'test'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 const SERVICE_NAME = 'My Service'
 
 let req, res, responseStub, templatesController
@@ -38,19 +40,20 @@ const setupTest = () => {
         }
       }
     },
-    service: {
-      name: SERVICE_NAME,
-      externalId: SERVICE_ID
-    },
+    service: new Service(validServiceResponse({
+      external_id: SERVICE_EXTERNAL_ID,
+      name: SERVICE_NAME
+    })),
     user: new User({
       service_roles: [
         {
           role: {
             name: 'admin'
           },
-          service: {
-            external_id: SERVICE_ID
-          }
+          service: validServiceResponse({
+            external_id: SERVICE_EXTERNAL_ID,
+            name: SERVICE_NAME
+          })
         }
       ]
     })
