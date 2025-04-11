@@ -109,9 +109,10 @@ module.exports = {
       }
 
       const transactionType = element.transaction_type && element.transaction_type.toLowerCase()
-      if (transactionType === 'refund' || transactionType === 'dispute') {
+      if (transactionType === 'refund' || (transactionType === 'dispute' && element.state.status !== 'won')) {
         element.amount = `–${element.amount}`
       }
+
       delete element.created_date
     })
 

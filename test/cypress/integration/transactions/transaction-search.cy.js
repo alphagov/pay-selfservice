@@ -118,6 +118,42 @@ const disputeTransactions = [
   }
 ]
 
+const disputeTransactionsWithWonState = [
+  {
+    gateway_account_id: gatewayAccountId,
+    reference: 'ref1',
+    transaction_id: 'transaction-id-1',
+    parent_transaction_id: 'parent-transaction-id-1',
+    live: true,
+    type: 'dispute',
+    includePaymentDetails: true,
+    status: 'needs_response',
+    amount: 2500
+  },
+  {
+    gateway_account_id: gatewayAccountId,
+    reference: 'ref2',
+    transaction_id: 'transaction-id-2',
+    parent_transaction_id: 'parent-transaction-id-2',
+    live: true,
+    type: 'dispute',
+    includePaymentDetails: true,
+    status: 'won',
+    amount: 3500
+  },
+  {
+    gateway_account_id: gatewayAccountId,
+    reference: 'ref3',
+    transaction_id: 'transaction-id-3',
+    parent_transaction_id: 'parent-transaction-id-3',
+    live: true,
+    type: 'dispute',
+    includePaymentDetails: true,
+    status: 'lost',
+    amount: 4500
+  }
+]
+
 const sharedStubs = (paymentProvider = 'sandbox') => {
   return [
     userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName }),
@@ -476,6 +512,48 @@ describe('Transactions List', () => {
         'test@example.org', '–£35.00', 'Visa', 'Dispute lost to customer', '£15.00', '-£50.00')
 
       cy.get('#download-transactions-link').should('have.attr', 'href', '/account/a-valid-external-id/transactions/download?dispute_states=needs_response&dispute_states=under_review')
+    })
+
+    it('should display dispute amounts correctly based on state - only showing minus sign for non-won disputes', () => {
+      cy.setEncryptedCookies(userExternalId)
+      cy.task('setupStubs', [
+        ...sharedStubs('stripe'),
+        transactionsStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: []
+        }),
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId,
+          transactions: disputeTransactionsWithWonState,
+          filters: {
+            dispute_states: 'needs_response,won,lost'
+          }
+        })
+      ])
+
+      cy.visit(transactionsUrl)
+
+      cy.get('#state').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'Dispute awaiting evidence\']').trigger('mouseover').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'Dispute won in your favour\']').trigger('mouseover').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'Dispute lost to customer\']').trigger('mouseover').click()
+
+      cy.get('#filter').click()
+      cy.get('.transactions-list--row').should('have.length', 3)
+
+      cy.get('#charge-id-parent-transaction-id-1').should('exist')
+      cy.get('#charge-id-parent-transaction-id-2').should('exist')
+      cy.get('#charge-id-parent-transaction-id-3').should('exist')
+
+      cy.get('#transactions-list tbody').find('tr').eq(0).find('.amount').should('contain', '–£25.00')
+      cy.get('#transactions-list tbody').find('tr').eq(0).find('.state').should('contain', 'Dispute awaiting evidence')
+
+      cy.get('#transactions-list tbody').find('tr').eq(1).find('.amount').should('not.contain', '–£')
+      cy.get('#transactions-list tbody').find('tr').eq(1).find('.amount').should('contain', '£35.00')
+      cy.get('#transactions-list tbody').find('tr').eq(1).find('.state').should('contain', 'Dispute won in your favour')
+
+      cy.get('#transactions-list tbody').find('tr').eq(2).find('.amount').should('contain', '–£45.00')
+      cy.get('#transactions-list tbody').find('tr').eq(2).find('.state').should('contain', 'Dispute lost to customer')
     })
   })
 
