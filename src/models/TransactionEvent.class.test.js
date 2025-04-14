@@ -115,6 +115,29 @@ describe('Transaction event model', () => {
     expect(transactionEvent.amount_friendly).to.equal('–£75.00')
   })
 
+  it('should not negate amount for dispute transactions that are won', () => {
+    const eventData = {
+      type: 'DISPUTE',
+      amount: 7500,
+      updated: '2022-07-29T09:30:45.000Z',
+      refund_reference: null,
+      submitted_by: null,
+      state: {
+        status: 'won',
+        code: 'D0050',
+        finished: true,
+        message: 'Dispute won in your favor'
+      }
+    }
+
+    const transactionEvent = new TransactionEvent(eventData)
+
+    expect(transactionEvent.type).to.equal('DISPUTE')
+    expect(transactionEvent.amount).to.equal(7500)
+
+    expect(transactionEvent.amount_friendly).to.equal('£75.00')
+  })
+
   it('should build transaction event correctly with minimal data', () => {
     const eventData = {
       type: 'PAYMENT',

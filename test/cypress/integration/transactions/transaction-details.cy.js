@@ -509,6 +509,68 @@ describe('Transaction details page', () => {
   })
 
   describe('Disputed payment', () => {
+    it('should display won dispute with positive amount in transaction details', () => {
+      const disputedPaymentDetails = defaultTransactionDetails()
+      disputedPaymentDetails.disputed = true
+
+      disputedPaymentDetails.events = [
+        {
+          type: 'PAYMENT',
+          status: 'success',
+          finished: true,
+          amount: defaultAmount,
+          timestamp: '2022-07-20T14:45:22.000Z'
+        },
+        {
+          type: 'DISPUTE',
+          status: 'won',
+          finished: true,
+          amount: defaultAmount,
+          timestamp: '2022-07-29T16:30:45.000Z'
+        }
+      ]
+
+      const wonDisputeDetails = {
+        parent_transaction_id: transactionId,
+        gateway_account_id: gatewayAccountId,
+        transactions: [
+          {
+            gateway_account_id: gatewayAccountId,
+            amount: 20000,
+            fee: 1500,
+            net_amount: 20000,
+            finished: true,
+            status: 'won',
+            created_date: '2022-07-26T19:57:26.000Z',
+            type: 'dispute',
+            includePaymentDetails: true,
+            evidence_due_date: '2022-08-04T13:59:59.000Z',
+            reason: 'product_not_received',
+            transaction_id: disputeTransactionId,
+            parent_transaction_id: transactionId
+          }
+        ]
+      }
+
+      cy.task('setupStubs', getStubs(disputedPaymentDetails, {}, wonDisputeDetails))
+      cy.visit(`${transactionsUrl}/${disputedPaymentDetails.transaction_id}`)
+
+      cy.get('.transaction-details tbody').find('tr').eq(2).find('td').first().should('contain', 'Dispute won in your favour')
+
+      cy.get('.transaction-events tbody tr').contains(formatDate(new Date(disputedPaymentDetails.events[1].timestamp)))
+        .closest('tr')
+        .find('td').eq(1)
+        .should('contain', '£10.00')
+        .should('not.contain', '–£10.00')
+
+      cy.get('[data-cy=dispute-details]').contains('Dispute details').should('exist')
+      cy.get('[data-cy=dispute-details-container]').within(() => {
+        cy.get('[data-cy=dispute-state]').contains('Dispute won in your favour').should('exist')
+        cy.get('[data-cy=dispute-amount]').contains('£200.00').should('exist')
+        cy.get('[data-cy=dispute-net-amount]').contains('£200.00').should('exist')
+      })
+    })
+
     it('should show refund unavailable message', () => {
       const disputedPaymentDetails = defaultTransactionDetails()
       disputedPaymentDetails.disputed = true
