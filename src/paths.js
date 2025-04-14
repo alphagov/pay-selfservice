@@ -134,7 +134,17 @@ module.exports = {
       index: '/your-psp/:credentialId',
       flex: '/your-psp/:credentialId/flex',
       worldpay3dsFlex: '/your-psp/:credentialId/worldpay-3ds-flex',
-      worldpayCredentialsWithGatewayCheck: '/your-psp/:credentialId/credentials-with-gateway-check/:merchantDetailsKey'
+      worldpayCredentialsWithGatewayCheck: '/your-psp/:credentialId/credentials-with-gateway-check/:merchantDetailsKey',
+      stripeSetup: {
+        bankDetails: '/your-psp/:credentialId/bank-details',
+        responsiblePerson: '/your-psp/:credentialId/responsible-person',
+        vatNumber: '/your-psp/:credentialId/vat-number',
+        companyNumber: '/your-psp/:credentialId/company-number',
+        governmentEntityDocument: '/your-psp/:credentialId/government-entity-document',
+        director: '/your-psp/:credentialId/director',
+        checkOrgDetails: '/your-psp/:credentialId/check-organisation-details',
+        updateOrgDetails: '/your-psp/:credentialId/update-organisation-details'
+      }
     }
   },
   futureAccountStrategy: {
@@ -259,6 +269,9 @@ module.exports = {
     organisationDetails: {
       index: '/organisation-details',
       edit: '/organisation-details/edit'
+    },
+    redirects: {
+      stripeSetupLiveDashboardRedirect: '/dashboard/live'
     },
     requestPspTestAccount: '/request-stripe-test-account',
     requestToGoLive: {
