@@ -23,8 +23,12 @@ class TransactionEvent {
     this.updated_friendly = dates.utcToDisplay(this.updated)
     this.amount_friendly = penceToPoundsWithCurrency(this.amount)
     const transactionType = this.type.toLowerCase()
-    if (this.amount && (transactionType === 'refund' || transactionType === 'dispute')) {
-      this.amount_friendly = `–${this.amount_friendly}`
+    if (this.amount) {
+      if (transactionType === 'refund') {
+        this.amount_friendly = `–${this.amount_friendly}`
+      } else if (transactionType === 'dispute' && this.state.status !== 'won') {
+        this.amount_friendly = `–${this.amount_friendly}`
+      }
     }
   }
 }
