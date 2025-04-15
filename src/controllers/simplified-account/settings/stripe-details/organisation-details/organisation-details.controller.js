@@ -11,7 +11,7 @@ async function get (req, res) {
   const { merchantDetails } = req.service
   return response(req, res, 'simplified-account/settings/stripe-details/organisation-details/index', {
     organisationName: merchantDetails.name,
-    organisationAddress: ['address_line1', 'address_line2', 'address_city', 'address_postcode'].map(k => merchantDetails?.[k]).filter(v => v && v !== '').join('<br>'),
+    organisationAddress: ['addressLine1', 'addressLine2', 'addressCity', 'addressPostcode'].map(k => merchantDetails?.[k]).filter(v => v && v !== '').join('<br>'),
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type)
   })
 }
@@ -52,7 +52,7 @@ const postErrorResponse = (req, res, errors) => {
   return response(req, res, 'simplified-account/settings/stripe-details/organisation-details/index', {
     errors,
     organisationName: merchantDetails.name,
-    organisationAddress: ['address_line1', 'address_line2', 'address_city', 'address_postcode'].map(k => merchantDetails?.[k]).filter(v => v && v !== '').join('<br>'),
+    organisationAddress: ['addressLine1', 'addressLine2', 'addressCity', 'addressPostcode'].map(k => merchantDetails?.[k]).filter(v => v && v !== '').join('<br>'),
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type)
   })
 }

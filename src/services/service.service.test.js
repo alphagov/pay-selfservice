@@ -3,6 +3,7 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
 const sinon = require('sinon')
+const { validServiceResponse } = require('@test/fixtures/service.fixtures')
 
 const expect = chai.expect
 
@@ -31,7 +32,7 @@ describe('service service', function () {
         return {
           updateServiceName: () => {
             return new Promise(resolve => {
-              resolve({ gateway_account_ids: [1] })
+              resolve(validServiceResponse({ gateway_account_ids: ['1'] }))
             })
           }
         }
@@ -43,7 +44,7 @@ describe('service service', function () {
         })
 
       const service = await serviceService.updateServiceName(externalServiceId, newServiceName)
-      expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[1]}')
+      expect(service).to.have.property('gatewayAccountIds').to.deep.equal(['1'])
     })
   })
 
@@ -75,14 +76,14 @@ describe('service service', function () {
     it('should call connector 2 times', async function () {
       const externalServiceId = 'ext3rnalserv1ce1d'
       const newServiceName = 'New Name'
-      const gatewayAccountIds = [10, 9]
+      const gatewayAccountIds = ['10', '9']
       const patchServiceName = sinon.stub()
       patchServiceName.resolves()
       adminusersClientStub = () => {
         return {
           updateServiceName: () => {
             return new Promise(resolve => {
-              return resolve({ gateway_account_ids: gatewayAccountIds })
+              return resolve(validServiceResponse({ gateway_account_ids: gatewayAccountIds }))
             })
           }
         }
@@ -103,7 +104,7 @@ describe('service service', function () {
       const service = await serviceService.updateServiceName(externalServiceId, newServiceName)
 
       expect(patchServiceName.callCount).to.equal(2)
-      expect(JSON.stringify(service)).to.deep.equal('{"gatewayAccountIds":[10,9]}')
+      expect(service).to.have.property('gatewayAccountIds').to.deep.equal(['10', '9'])
     })
   })
 })

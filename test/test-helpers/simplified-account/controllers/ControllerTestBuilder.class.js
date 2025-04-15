@@ -17,7 +17,8 @@ module.exports = class ControllerTestBuilder {
     }
     this.res = {
       redirect: sinon.spy(),
-      json: sinon.spy()
+      json: sinon.spy(),
+      locals: {}
     }
     this.nextReq = null
     this.nextRes = null

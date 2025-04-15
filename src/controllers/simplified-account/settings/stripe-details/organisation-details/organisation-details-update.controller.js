@@ -14,11 +14,11 @@ async function get (req, res) {
     backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.organisationDetails.index, req.service.externalId, req.account.type),
     organisationDetails: {
       organisationName: merchantDetails.name,
-      addressLine1: merchantDetails.address_line1,
-      addressLine2: merchantDetails.address_line2,
-      addressCity: merchantDetails.address_city,
-      addressPostcode: merchantDetails.address_postcode,
-      addressCountry: merchantDetails.address_country
+      addressLine1: merchantDetails.addressLine1,
+      addressLine2: merchantDetails.addressLine2,
+      addressCity: merchantDetails.addressCity,
+      addressPostcode: merchantDetails.addressPostcode,
+      addressCountry: merchantDetails.addressCountry
     },
     countries: countries.govukFrontendFormatted()
   })

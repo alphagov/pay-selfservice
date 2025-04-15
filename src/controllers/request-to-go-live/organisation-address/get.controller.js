@@ -44,12 +44,12 @@ module.exports = function getOrganisationAddress (req, res) {
     ? {
         ...lodash.pick(merchantDetails, [
           'name',
-          'address_line1',
-          'address_line2',
-          'address_city',
-          'address_postcode',
-          'address_country',
-          'telephone_number',
+          'addressLine1',
+          'addressLine2',
+          'addressCity',
+          'addressPostcode',
+          'addressCountry',
+          'telephoneNumber',
           'url'
         ])
       }
@@ -64,7 +64,7 @@ module.exports = function getOrganisationAddress (req, res) {
     enableStripeOnboardingTaskList,
     currentCredential
   }
-  pageData.countries = countries.govukFrontendFormatted(lodash.get(pageData, 'address_country'))
+  pageData.countries = countries.govukFrontendFormatted(lodash.get(pageData, 'addressCountry'))
 
   const templatePath = isStripeSetupUserJourney ? 'stripe-setup/update-org-details/index' : 'request-to-go-live/organisation-address'
   return response(req, res, templatePath, pageData)

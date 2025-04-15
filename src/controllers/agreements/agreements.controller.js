@@ -19,7 +19,6 @@ async function listAgreements (req, res, next) {
     ...req.query.status && { status: req.query.status },
     ...req.query.reference && { reference: req.query.reference.trim() }
   }
-  // eslint-disable-next-line n/no-deprecated-api
   req.session.agreementsFilter = url.parse(req.url).query // TODO update this as url.parse is deprecated
 
   try {

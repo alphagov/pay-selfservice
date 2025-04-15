@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { context } from 'esbuild'
 import { spawn } from 'child_process'
 import { clientBuild, serverBuild } from './esbuild.config.mjs'
@@ -10,11 +11,11 @@ const startServer = async () => {
   if (server) server.kill()
   console.log(`💻\x1b[32m node\x1b[0m\x1b[33m ${args.join(' ')}\x1b[0m`)
   server = spawn('node', args, {
-    stdio: 'inherit'
+    stdio: 'inherit',
   })
 }
 
-async function startDevServer () {
+async function startDevServer() {
   const clientCtx = await context(clientBuild)
 
   const serverCtx = await context({
@@ -23,29 +24,23 @@ async function startDevServer () {
       ...serverBuild.plugins,
       {
         name: 'server-rebuild',
-        setup (build) {
-          build.onEnd(async result => {
+        setup(build) {
+          build.onEnd(async (result) => {
             if (result.errors.length === 0) {
               await startServer()
             }
           })
-        }
-      }
-    ]
+        },
+      },
+    ],
   })
 
-  await Promise.all([
-    clientCtx.watch(),
-    serverCtx.watch()
-  ])
+  await Promise.all([clientCtx.watch(), serverCtx.watch()])
 
   const cleanup = async () => {
     server?.kill()
-    await Promise.all([
-      clientCtx.dispose(),
-      serverCtx.dispose()
-    ]).then(() => {
-      console.log('\n✅ dev server down')
+    await Promise.all([clientCtx.dispose(), serverCtx.dispose()]).then(() => {
+      console.log('\n🔽 dev server down')
     })
     process.exit()
   }
@@ -70,10 +65,12 @@ rm('dist', { recursive: true, force: true }, async () => {
       }
     })
   }
-  startDevServer().then(() => {
-    console.log('⚡️ dev server going up')
-  }).catch(err => {
-    console.error('💥 dev server failed to start', err)
-    process.exit(1)
-  })
+  startDevServer()
+    .then(() => {
+      console.log('🔼 dev server going up')
+    })
+    .catch((err) => {
+      console.error('💥 dev server failed to start', err)
+      process.exit(1)
+    })
 })
