@@ -22,16 +22,21 @@
       items: [
         {
           text: 'Yes',
-          value: 'yes'
+          value: 'yes',
+          id: 'yes-radio'
         },
         {
           text: 'No',
-          value: 'no'
+          value: 'no',
+          id: 'no-radio'
         }
       ]
     }) }}
     {{ govukButton({
-      text: 'Save changes'
+      text: 'Save changes',
+      attributes: {
+        id: "revoke-button"
+      }
     }) }}
   </form>
 {% endblock %}

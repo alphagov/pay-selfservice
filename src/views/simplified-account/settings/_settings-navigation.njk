@@ -7,7 +7,7 @@
         <ul class="govuk-list">
           {% for setting in array %}
             <li class="service-settings-nav__li{% if setting.current %} service-settings-nav__li--active{% endif %}">
-              <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" id="{{setting.id}}" href="{{setting.url}}" {% if setting.current %}aria-current="page"{% endif %}>{{setting.name | smartCaps}}</a>
+              <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" id="settings-navigation-{{setting.id}}" href="{{setting.url}}" {% if setting.current %}aria-current="page"{% endif %}>{{setting.name | smartCaps}}</a>
             </li>
           {% endfor %}
         </ul>

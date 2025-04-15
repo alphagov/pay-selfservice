@@ -27,7 +27,10 @@
   {{ govukButton({
     href: createKeyLink,
     text: 'Create a new API key',
-    classes: 'govuk-!-margin-top-2'
+    classes: 'govuk-!-margin-top-2',
+    attributes: {
+      id: "create-api-key"
+    }
   }) }}
 
   {% if activeKeys.length == 0 %}
@@ -93,7 +96,10 @@
     {{ govukButton({
       href: revokedKeysLink,
       text: 'Show revoked API keys',
-      classes: 'govuk-!-margin-top-2 govuk-button--secondary'
+      classes: 'govuk-!-margin-top-2 govuk-button--secondary',
+      attributes: {
+        id: "revoked-keys-link"
+      }
     }) }}
   {% endif %}
 {% endblock %}
