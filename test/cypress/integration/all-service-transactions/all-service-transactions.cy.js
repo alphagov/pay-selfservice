@@ -77,38 +77,6 @@ describe('All service transactions', () => {
     cy.setEncryptedCookies(userExternalId)
   })
 
-  it('should display timezone notification banner with correct content and link in live mode', () => {
-    cy.task('setupStubs', [
-      userStub,
-      gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccountStripe, gatewayAccount2, gatewayAccount3]),
-      transactionStubs.getLedgerTransactionsSuccess({
-        gatewayAccountIds: [gatewayAccountStripe.gatewayAccountId, gatewayAccount2.gatewayAccountId],
-        transactions: liveTransactions
-      }),
-      transactionStubs.getLedgerTransactionsSuccess({
-        gatewayAccountIds: [gatewayAccount3.gatewayAccountId],
-        transactions: testTransactions
-      }),
-      gatewayAccountStubs.getCardTypesSuccess()
-    ])
-
-    cy.visit(transactionsUrl)
-
-    cy.get('.govuk-notification-banner').should('exist').within(() => {
-      cy.get('.govuk-notification-banner__heading')
-        .should('contain', 'BST has started and it could affect your reporting.')
-
-      cy.get('.govuk-body')
-        .should('contain', 'Clocks in the UK went forward 1 hour on 30 March 2025 for British Summer Time (BST)')
-        .and('contain', 'times in the GOV.UK Pay admin tool are 1 hour ahead of downloaded CSV files.')
-        .and('contain', 'how timezones work in GOV.UK Pay in our documentation')
-
-      cy.get('a.govuk-notification-banner__link')
-        .should('have.attr', 'href')
-        .and('include', 'https://docs.payments.service.gov.uk/reporting/#timezones-in-gov-uk-pay')
-    })
-  })
-
   it('should display All Service Transactions list page with live transactions and ability to view test transactions', () => {
     cy.task('setupStubs', [
       userStub,
