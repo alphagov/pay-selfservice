@@ -21,7 +21,7 @@ const { GOV_ENTITY_DOC_FORM_FIELD_NAME } = require('@controllers/simplified-acco
 const upload = multer({ storage: multer.memoryStorage() })
 const simplifiedAccount = new Router({ mergeParams: true })
 
-simplifiedAccount.use(simplifiedAccountOptIn, simplifiedAccountStrategy, userIsAuthorised)
+simplifiedAccount.use(simplifiedAccountStrategy, userIsAuthorised)
 
 // settings index
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)

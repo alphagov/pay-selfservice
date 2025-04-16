@@ -12,9 +12,7 @@ const SUPPORTED_ACCOUNT_PROVIDERS = [STRIPE, SANDBOX, WORLDPAY]
 
 async function get (req, res) {
   const userServiceRoles = req.user.serviceRoles
-  const flags = {
-    userIsDegatewayed: req.user.isDegatewayed()
-  }
+  const flags = {}
 
   if (res.locals?.flash?.inviteSuccessServiceId?.[0]) {
     flags.recentlyInvitedServiceExternalId = res.locals.flash.inviteSuccessServiceId[0]
@@ -64,9 +62,7 @@ const mergeServicesWithGatewayAccounts = (services, gatewayAccounts, flags) => {
     let mappedTestGatewayAccounts = mappedGatewayAccounts
       .filter(account => account.type === 'test')
 
-    if (flags.userIsDegatewayed) {
-      mappedTestGatewayAccounts = filterTestGatewaysDegatewayView(mappedTestGatewayAccounts, service)
-    }
+    mappedTestGatewayAccounts = filterTestGatewaysDegatewayView(mappedTestGatewayAccounts, service)
 
     if (mappedLiveGatewayAccounts.length > 0) {
       flags.hasLiveAccount = true
@@ -87,7 +83,7 @@ const mergeServicesWithGatewayAccounts = (services, gatewayAccounts, flags) => {
         allowMoto: account.allowMoto,
         providerSwitchEnabled: account.providerSwitchEnabled,
         recurringEnabled: account.recurringEnabled,
-        links: accountLinksGenerator(account, service, flags.userIsDegatewayed)
+        links: accountLinksGenerator(account, service)
       }
     })
       .sort((a, b) => {

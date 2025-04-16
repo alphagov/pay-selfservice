@@ -36,7 +36,6 @@ const hideServiceNavTemplates = [
   'team-members/team-member-profile',
   'team-members/team-member-permissions',
   'team-members/edit-phone-number',
-  'team-members/edit-degateway-preference',
   'request-to-go-live/agreement',
   'request-to-go-live/choose-how-to-process-payments',
   'request-to-go-live/index',
@@ -128,11 +127,9 @@ module.exports = function (req, data, template) {
   const { user, account, service, session, url: relativeUrl } = req
   const permissions = getPermissions(user, service)
   const isAdminUser = service && user && user.isAdminUserForService(service.externalId)
-  const isDegatewayed = user && session && user.isDegatewayed()
   const paymentMethod = _.get(account, 'paymentMethod', 'card')
   const paymentProvider = account && (account.payment_provider || account.paymentProvider) // TODO back compat, remove me
   convertedData.loggedIn = user && session && user.sessionVersion === session.version
-  convertedData.isDegatewayed = isDegatewayed
   convertedData.paymentMethod = paymentMethod
   convertedData.permissions = permissions
   convertedData.isAdminUser = isAdminUser
@@ -152,7 +149,7 @@ module.exports = function (req, data, template) {
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   const currentUrl = req.baseUrl && req.path ? req.baseUrl + req.path : 'unavailable'
   if (permissions) {
-    convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, isDegatewayed, currentUrl, service, account)
+    convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, currentUrl, service, account)
     convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account)
     if (currentUrl.match(/service\/[A-z0-9]+\/account\/test|live\/settings/)) {
       convertedData.serviceSettings = serviceSettings(account, service, currentUrl, permissions)

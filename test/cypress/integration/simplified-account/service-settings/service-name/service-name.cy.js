@@ -25,8 +25,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
       serviceName: opts.serviceName || SERVICE_NAME,
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role: opts.role,
-      features: 'degatewayaccountification' // TODO remove features once simplified accounts are live
+      role: opts.role
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, TEST_ACCOUNT_TYPE, { gateway_account_id: TEST_GATEWAY_ACCOUNT_ID }),
     ...additionalStubs

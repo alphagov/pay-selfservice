@@ -125,19 +125,11 @@ const getConfigurePSPAccountLink = (req) => {
     [STRIPE]: paths.simplifiedAccount.settings.stripeDetails.index
   }
 
-  if (req.user.isDegatewayed()) {
-    return formatSimplifiedAccountPathsFor(
-      simplifiedPaths[paymentProvider],
-      req.service.externalId,
-      req.account.type
-    )
-  } else {
-    return formatAccountPathsFor(
-      paths.account.yourPsp.index,
-      req.account.external_id,
-      credential.external_id
-    )
-  }
+  return formatSimplifiedAccountPathsFor(
+    simplifiedPaths[paymentProvider],
+    req.service.externalId,
+    req.account.type
+  )
 }
 
 module.exports = async (req, res) => {

@@ -3,8 +3,6 @@
 const _ = require('lodash')
 const ServiceRole = require('./ServiceRole.class')
 const { isInternalGDSEmail } = require('../utils/email-tools')
-const DEGATEWAY_FLAG = process.env.DEGATEWAY_FLAG === 'true'
-const ENABLE_SIMPLIFIED_SETTINGS_ALL_USERS = process.env.ENABLE_SIMPLIFIED_SETTINGS_ALL_USERS === 'true'
 
 /**
  * @class User
@@ -135,10 +133,6 @@ class User {
       .filter(serviceRole => serviceRole.role && serviceRole.role.name === 'admin' &&
         serviceRole.service && serviceRole.service.externalId === serviceExternalId)
       .length > 0
-  }
-
-  isDegatewayed () {
-    return DEGATEWAY_FLAG && (this.hasFeature('degatewayaccountification') || ENABLE_SIMPLIFIED_SETTINGS_ALL_USERS)
   }
 }
 
