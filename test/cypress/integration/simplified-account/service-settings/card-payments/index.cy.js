@@ -59,7 +59,7 @@ describe('Card payments page', () => {
         setupStubs()
         cy.visit(pageUrl)
         cy.get('.service-settings-nav__li--active').within(() => {
-          cy.get('#card-payments').should('contain.text', 'Card payments')
+          cy.get('#settings-navigation-card-payments').should('contain.text', 'Card payments')
         })
       })
 
@@ -164,7 +164,7 @@ describe('Card payments page', () => {
         setupStubs()
         cy.visit(pageUrl)
         cy.get('.service-settings-nav__li--active').within(() => {
-          cy.get('#card-payments').should('contain.text', 'Card payments')
+          cy.get('#settings-navigation-card-payments').should('contain.text', 'Card payments')
         })
       })
 

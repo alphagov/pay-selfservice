@@ -82,7 +82,7 @@ describe('Card payment updates', () => {
     cy.visit(baseUrl + '/default-billing-address-country')
     cy.get('h1').should('contain.text', 'Default billing address country')
     cy.get('.service-settings-nav__li--active').within(() => {
-      cy.get('#card-payments').should('contain.text', 'Card payments')
+      cy.get('#settings-navigation-card-payments').should('contain.text', 'Card payments')
     })
     cy.get('input#default-billing-address-on').click()
     cy.contains('button', 'Save changes').click()
