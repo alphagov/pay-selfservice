@@ -2,12 +2,12 @@ import { CredentialData } from '@models/gateway-account-credential/dto/Credentia
 import WorldpayCredential from '@models/gateway-account-credential/WorldpayCredential.class'
 
 class Credential {
-  public stripeAccountId: string | undefined
-  public oneOffCustomerInitiated: WorldpayCredential | undefined
-  public recurringCustomerInitiated: WorldpayCredential | undefined
-  public recurringMerchantInitiated: WorldpayCredential | undefined
-  public googlePayMerchantId: string | undefined
-  public rawResponse: CredentialData | undefined
+  public stripeAccountId?: string
+  public oneOffCustomerInitiated?: WorldpayCredential
+  public recurringCustomerInitiated?: WorldpayCredential
+  public recurringMerchantInitiated?: WorldpayCredential
+  public googlePayMerchantId?: string
+  public rawResponse?: CredentialData
 
   withStripeAccountId (stripeAccountId: string) {
     this.stripeAccountId = stripeAccountId

@@ -1,9 +1,9 @@
 import { WorldpayCredentialData } from '@models/gateway-account-credential/dto/WorldpayCredential.dto'
 
 class WorldpayCredential {
-  public merchantCode: string | undefined
-  public username: string | undefined
-  public password: string | undefined
+  public merchantCode?: string
+  public username?: string
+  public password?: string
 
   withMerchantCode (merchantCode: string) {
     this.merchantCode = merchantCode

@@ -1,11 +1,11 @@
 import { Worldpay3dsFlexCredentialData } from '@models/gateway-account-credential/dto/Worldpay3dsFlexCredential.dto'
 
 class Worldpay3dsFlexCredential {
-  public organisationalUnitId: string | undefined
-  public issuer: string | undefined
-  public jwtMacKey: string | undefined
-  public exemptionEngineEnabled: boolean | undefined
-  public corporateExemptionsEnabled: boolean | undefined
+  public organisationalUnitId?: string
+  public issuer?: string
+  public jwtMacKey?: string
+  public exemptionEngineEnabled?: boolean
+  public corporateExemptionsEnabled?: boolean
 
   withOrganisationalUnitId (organisationalUnitId: string) {
     this.organisationalUnitId = organisationalUnitId

@@ -4,11 +4,11 @@ import { GatewayAccountCredentialData } from '@models/gateway-account-credential
 class GatewayAccountCredential {
   public externalId!: string
   public paymentProvider!: string
-  public credentials: Credential | undefined
+  public credentials?: Credential
   public state!: string
-  public createdDate: string | undefined
-  public activeStartDate: string | undefined
-  public activeEndDate: string | undefined
+  public createdDate?: string
+  public activeStartDate?: string
+  public activeEndDate?: string
   public gatewayAccountId!: number
 
   withExternalId(externalId: string) {

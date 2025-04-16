@@ -1,11 +1,11 @@
 interface GatewayAccountSwitchPaymentProviderRequestData {
-  user_external_id: string | undefined
-  gateway_account_credential_external_id: string | undefined
+  user_external_id?: string
+  gateway_account_credential_external_id?: string
 }
 
 class GatewayAccountSwitchPaymentProviderRequest {
-  public userExternalId: string | undefined
-  public gatewayAccountCredentialExternalId: string | undefined
+  public userExternalId?: string
+  public gatewayAccountCredentialExternalId?: string
 
   withUserExternalId (userExternalId: string) {
     this.userExternalId = userExternalId

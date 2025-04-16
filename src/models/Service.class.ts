@@ -6,7 +6,7 @@ class Service {
   readonly name: string
   readonly serviceName: { en: string, cy?: string }
   readonly gatewayAccountIds: string[]
-  readonly merchantDetails: {
+  readonly merchantDetails?: {
     name: string
     telephoneNumber: string
     addressLine1: string
@@ -16,7 +16,7 @@ class Service {
     addressCountry: string
     url: string,
     email: string
-  } | undefined
+  }
   readonly collectBillingAddress: boolean
   readonly currentGoLiveStage: string
   readonly experimentalFeaturesEnabled: boolean

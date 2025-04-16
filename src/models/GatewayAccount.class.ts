@@ -34,7 +34,7 @@ class GatewayAccount {
   readonly recurringEnabled: boolean
   readonly requires3ds: boolean
   readonly supports3ds: boolean
-  readonly worldpay3dsFlex: Worldpay3dsFlexCredential | undefined
+  readonly worldpay3dsFlex?: Worldpay3dsFlexCredential
   readonly rawResponse: GatewayAccountData
 
   constructor(gatewayAccountData: GatewayAccountData) {
