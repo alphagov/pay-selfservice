@@ -125,7 +125,7 @@ describe('Settings - API keys', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
       it('should show appropriate buttons and text', () => {
-        cy.get('#api-keys').should('have.text', 'API keys')
+        cy.get('#settings-navigation-api-keys').should('have.text', 'API keys')
         cy.get('.service-settings-pane')
           .find('a')
           .contains('Create a new API key')
@@ -151,7 +151,7 @@ describe('Settings - API keys', () => {
       })
 
       it('should show appropriate buttons and text', () => {
-        cy.get('#api-keys').should('have.text', 'API keys')
+        cy.get('#settings-navigation-api-keys').should('have.text', 'API keys')
         cy.get('.service-settings-pane')
           .find('a')
           .contains('Create a new API key')
@@ -367,7 +367,7 @@ describe('Settings - API keys', () => {
 
     it('should not show API keys link in the navigation panel', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings`)
-      cy.get('#api-keys').should('not.exist')
+      cy.get('#settings-navigation-api-keys').should('not.exist')
     })
 
     it('should return forbidden when visiting the create api key url directly', () => {
