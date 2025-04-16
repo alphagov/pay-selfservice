@@ -70,7 +70,6 @@ const stripeSetupGovernmentEntityDocument = require('./controllers/stripe-setup/
 const stripeSetupAddPspAccountDetailsController = require('./controllers/stripe-setup/add-psp-account-details')
 const settingsController = require('./controllers/settings')
 const userPhoneNumberController = require('./controllers/user/phone-number')
-const userDegatewayController = require('./controllers/user/degateway')
 const yourPspController = require('./controllers/your-psp')
 const switchPSPController = require('./controllers/switch-psp/switch-psp.controller')
 const verifyPSPIntegrationController = require('./controllers/switch-psp/verify-psp-integration.controller')
@@ -243,10 +242,6 @@ module.exports.bind = function (app) {
   app.get(user.profile.index, userIsAuthorised, serviceUsersController.profile)
   app.get(user.profile.phoneNumber, userIsAuthorised, userPhoneNumberController.get)
   app.post(user.profile.phoneNumber, userIsAuthorised, userPhoneNumberController.post)
-
-  // Degateway
-  app.get(user.profile.degateway, userIsAuthorised, userDegatewayController.get)
-  app.post(user.profile.degateway, userIsAuthorised, userDegatewayController.post)
 
   // Configure 2FA
   app.get(user.profile.twoFactorAuth.index, userIsAuthorised, twoFactorAuthController.getIndex)

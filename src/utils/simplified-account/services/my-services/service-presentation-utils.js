@@ -1,27 +1,19 @@
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const paths = require('@root/paths')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
-const formatServicePathsFor = require('@utils/format-service-paths-for')
 const { WORLDPAY } = require('@models/constants/payment-providers')
 
 /**
  * @param {GatewayAccount} account
  * @param {GOVUKPayService} service
- * @param {boolean} userIsDegatewayed
  * @returns {{dashboardLink: String, editServiceNameLink: String, manageTeamMembersLink: String, organisationDetailsLink: String}}
  */
-const accountLinksGenerator = (account, service, userIsDegatewayed) => {
+const accountLinksGenerator = (account, service) => {
   return {
     dashboardLink: formatAccountPathsFor(paths.account.dashboard.index, account.externalId),
-    editServiceNameLink: userIsDegatewayed
-      ? formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, service.externalId, account.type)
-      : formatServicePathsFor(paths.service.editServiceName.index, service.externalId),
-    manageTeamMembersLink: userIsDegatewayed
-      ? formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, service.externalId, account.type)
-      : formatServicePathsFor(paths.service.teamMembers.index, service.externalId),
-    organisationDetailsLink: userIsDegatewayed
-      ? formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, service.externalId, account.type)
-      : formatServicePathsFor(paths.service.organisationDetails.index, service.externalId)
+    editServiceNameLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, service.externalId, account.type),
+    manageTeamMembersLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, service.externalId, account.type),
+    organisationDetailsLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, service.externalId, account.type)
   }
 }
 

@@ -28,8 +28,7 @@ const setupStubs = ({
       serviceExternalId: SERVICE_EXTERNAL_ID,
       role: ROLES[role ?? 'admin'],
       collectBillingAddress: collectBillingAddress ?? true,
-      defaultBillingAddressCountry: getDefaultBillingAddressCountry(isDefaultBillingAddressCountryUK),
-      features: 'degatewayaccountification' // TODO remove features once simplified accounts are live
+      defaultBillingAddressCountry: getDefaultBillingAddressCountry(isDefaultBillingAddressCountryUK)
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,

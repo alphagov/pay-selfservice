@@ -24,7 +24,7 @@ const mainSettingsPaths = [
 const yourPspPaths = ['your-psp', 'notification-credentials']
 const additionalPspPaths = ['switch-psp']
 
-const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, currentUrl, service = {}, account = {}) => {
+const serviceNavigationItems = (currentPath, permissions, type, currentUrl, service = {}, account = {}) => {
   const gatewayAccountExternalId = account.external_id ?? account.externalId
   const serviceExternalId = account.service_id ?? service.externalId
   const navigationItems = []
@@ -61,35 +61,13 @@ const serviceNavigationItems = (currentPath, permissions, type, isDegatewayed, c
       permissions: permissions.transactions_read
     })
   }
-  if (isDegatewayed) {
-    navigationItems.push({
-      id: 'navigation-menu-settings',
-      name: 'Settings',
-      url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.index, serviceExternalId, account.type),
-      current: currentUrl.includes('settings'),
-      permissions: true
-    })
-  } else {
-    navigationItems.push({
-      id: 'navigation-menu-settings',
-      name: 'Settings',
-      url: formatAccountPathsFor(paths.account.settings.index, gatewayAccountExternalId),
-      current: currentPath !== '/' && !currentUrl.includes('simplified')
-        ? yourPspPaths.concat(additionalPspPaths).filter(path => currentPath.includes(path)).length || pathLookup(currentPath, [
-          ...mainSettingsPaths,
-          paths.account.apiKeys,
-          paths.account.paymentTypes
-        ])
-        : false,
-      permissions: _.some([
-        permissions.tokens_read,
-        permissions.gateway_credentials_read,
-        permissions.payment_types_read,
-        permissions.toggle_3ds_read,
-        permissions.email_notification_template_read
-      ], Boolean)
-    })
-  }
+  navigationItems.push({
+    id: 'navigation-menu-settings',
+    name: 'Settings',
+    url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.index, serviceExternalId, account.type),
+    current: currentUrl.includes('settings'),
+    permissions: true
+  })
 
   return navigationItems
 }

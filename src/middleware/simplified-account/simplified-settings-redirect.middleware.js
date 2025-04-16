@@ -4,10 +4,6 @@ const gatewayAccountsService = require('@services/gateway-accounts.service')
 const logger = require('@utils/logger')('simplified-settings-redirect.middleware.js')
 
 module.exports = async (req, res, next) => {
-  if (!req.user?.isDegatewayed()) {
-    return next()
-  }
-
   if (!req.service) {
     logger.warn('Simplified settings redirect middleware used on route with no service. Skipping redirect')
     return next()

@@ -10,7 +10,6 @@ const { validServiceResponse } = require('@test/fixtures/service.fixtures')
 const { validGatewayAccount } = require('@test/fixtures/gateway-account.fixtures')
 const { formattedPathFor } = require('@root/paths')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
-const formatServicePathsFor = require('@utils/format-service-paths-for')
 
 const SERVICE_NAME = 'Rare coin authentication service'
 const SERVICE_EXTERNAL_ID = 'service-123-def'
@@ -102,357 +101,194 @@ const {
 
 describe('Controller: services/my-services.controller', () => {
   describe('get', () => {
-    describe('for a non-degatewayed user', () => {
-      describe('for a service with only a worldpay test account', () => {
-        before(() => {
-          userServiceRoles[0].service.gatewayAccountIds = ['32']
-          nextRequest({
-            user: {
-              isDegatewayed: () => false,
-              serviceRoles: userServiceRoles
-            }
-          })
-          call('get')
+    describe('for a service with two sandbox test accounts and a live account', () => {
+      before(() => {
+        userServiceRoles[0].service.gatewayAccountIds = ['35', '36', '37']
+        nextRequest({
+          user: {
+            serviceRoles: userServiceRoles
+          }
         })
-
-        it('should set isWorldpayTestService on the service', () => {
-          sinon.assert.calledWithMatch(mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match({
-              services: [
-                sinon.match({
-                  name: SERVICE_NAME,
-                  isWorldpayTestService: true,
-                  gatewayAccounts: sinon.match(accounts => {
-                    expect(accounts.length).to.equal(1)
-                    expect(accounts[0].type).to.equal('test')
-                    expect(accounts[0].paymentProvider).to.equal(WORLDPAY)
-                    return true
-                  })
-                })
-              ],
-              flags: {
-                userIsDegatewayed: false
-              }
-            })
-          )
-        })
+        call('get')
       })
-      describe('for a service with two sandbox test accounts and a live account', () => {
-        before(() => {
-          userServiceRoles[0].service.gatewayAccountIds = ['35', '36', '37']
-          nextRequest({
-            user: {
-              isDegatewayed: () => false,
-              serviceRoles: userServiceRoles
-            }
-          })
-          call('get')
-        })
-        it('should call the response method with expected parameters', () => {
-          sinon.assert.calledOnceWithMatch(mockResponse,
-            req,
-            res,
-            'simplified-account/services/my-services/index',
-            {
-              createServicePath: paths.services.create.index,
-              allServiceTransactionsPath: formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'live'),
-              payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, 'live'),
-              services: [
-                sinon.match.any
-              ],
-              flags: sinon.match({
-                hasLiveAccount: true
+
+      it('should call the response method with expected parameters', () => {
+        sinon.assert.calledOnceWithMatch(mockResponse,
+          req,
+          res,
+          'simplified-account/services/my-services/index',
+          {
+            createServicePath: paths.services.create.index,
+            allServiceTransactionsPath: formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'live'),
+            payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, 'live'),
+            services: [
+              sinon.match.any
+            ],
+            flags: sinon.match({
+              hasLiveAccount: true
+            })
+          }
+        )
+      })
+      it('should filter test gateway accounts', () => {
+        sinon.assert.calledWithMatch(mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match({
+            services: [
+              sinon.match({
+                name: SERVICE_NAME,
+                gatewayAccounts: sinon.match(accounts => {
+                  expect(accounts.length).to.equal(2)
+                  expect(accounts[0].type).to.equal('live')
+                  expect(accounts[0].paymentProvider).to.equal(WORLDPAY)
+                  expect(accounts[1].id).to.equal(36)
+                  expect(accounts[1].type).to.equal('test')
+                  expect(accounts[1].paymentProvider).to.equal(SANDBOX)
+                  return true
+                })
               })
-            }
-          )
-        })
-        it('should not filter any test gateway accounts', () => {
-          sinon.assert.calledWithMatch(mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match({
-              services: [
-                sinon.match({
-                  name: SERVICE_NAME,
-                  gatewayAccounts: sinon.match(accounts => {
-                    expect(accounts.length).to.equal(3)
-                    expect(accounts[0].type).to.equal('live')
-                    expect(accounts[0].paymentProvider).to.equal(WORLDPAY)
-                    expect(accounts[1].type).to.equal('test')
-                    expect(accounts[2].type).to.equal('test')
-                    return true
-                  })
-                })
-              ]
-            })
-          )
-        })
-        it('should set old style settings links', () => {
-          sinon.assert.calledWithMatch(mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match({
-              services: [
-                sinon.match({
-                  gatewayAccounts: sinon.match(accounts => {
-                    expect(accounts[0].links.editServiceNameLink).to.equal(formatServicePathsFor(paths.service.editServiceName.index, SERVICE_EXTERNAL_ID))
-                    expect(accounts[0].links.manageTeamMembersLink).to.equal(formatServicePathsFor(paths.service.teamMembers.index, SERVICE_EXTERNAL_ID))
-                    expect(accounts[0].links.organisationDetailsLink).to.equal(formatServicePathsFor(paths.service.organisationDetails.index, SERVICE_EXTERNAL_ID))
-                    return true
-                  })
-                })
-              ]
-            })
-          )
-        })
-      })
-      describe('for a service with a test sandbox account, a test stripe account and no live account', () => {
-        before(() => {
-          userServiceRoles[0].service.gatewayAccountIds = ['34', '36']
-          nextRequest({
-            user: {
-              isDegatewayed: () => false,
-              serviceRoles: userServiceRoles
-            }
+            ]
           })
-          call('get')
-        })
-
-        it('should reformat links', () => {
-          sinon.assert.calledWithMatch(mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match({
-              allServiceTransactionsPath: formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'test'),
-              payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, 'test')
-            })
-          )
-        })
-
-        it('should not filter any test gateways', () => {
-          sinon.assert.calledWithMatch(mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match({
-              services: [
-                sinon.match({
-                  name: SERVICE_NAME,
-                  gatewayAccounts: sinon.match(accounts => {
-                    expect(accounts.length).to.equal(2)
-                    expect(accounts[0].type).to.equal('test')
-                    expect(accounts[0].paymentProvider).to.equal(STRIPE)
-                    expect(accounts[1].type).to.equal('test')
-                    expect(accounts[1].paymentProvider).to.equal(SANDBOX)
-                    return true
-                  })
+        )
+      })
+      it('should set new style settings links for live account', () => {
+        sinon.assert.calledWithMatch(mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match({
+            services: [
+              sinon.match({
+                gatewayAccounts: sinon.match(accounts => {
+                  expect(accounts[0].links.editServiceNameLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, SERVICE_EXTERNAL_ID, 'live'))
+                  expect(accounts[0].links.manageTeamMembersLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, SERVICE_EXTERNAL_ID, 'live'))
+                  expect(accounts[0].links.organisationDetailsLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_EXTERNAL_ID, 'live'))
+                  return true
                 })
-              ]
-            })
-          )
-        })
+              })
+            ]
+          })
+        )
       })
     })
-    describe('for a degatewayed user', () => {
-      describe('for a service with two sandbox test accounts and a live account', () => {
-        before(() => {
-          userServiceRoles[0].service.gatewayAccountIds = ['35', '36', '37']
-          nextRequest({
-            user: {
-              isDegatewayed: () => true,
-              serviceRoles: userServiceRoles
-            }
-          })
-          call('get')
+    describe('for a service with a test sandbox account, a test stripe account and no live account', () => {
+      before(() => {
+        userServiceRoles[0].service.gatewayAccountIds = ['34', '36']
+        nextRequest({
+          user: {
+            serviceRoles: userServiceRoles
+          }
         })
+        call('get')
+      })
 
-        it('should call the response method with expected parameters', () => {
-          sinon.assert.calledOnceWithMatch(mockResponse,
-            req,
-            res,
-            'simplified-account/services/my-services/index',
-            {
-              createServicePath: paths.services.create.index,
-              allServiceTransactionsPath: formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'live'),
-              payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, 'live'),
-              services: [
-                sinon.match.any
-              ],
-              flags: sinon.match({
-                hasLiveAccount: true
+      it('should reformat links for test', () => {
+        sinon.assert.calledWithMatch(mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match({
+            allServiceTransactionsPath: formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'test'),
+            payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, 'test'),
+            services: [
+              sinon.match({
+                gatewayAccounts: sinon.match(accounts => {
+                  expect(accounts[0].links.editServiceNameLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, SERVICE_EXTERNAL_ID, 'test'))
+                  expect(accounts[0].links.manageTeamMembersLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, SERVICE_EXTERNAL_ID, 'test'))
+                  expect(accounts[0].links.organisationDetailsLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_EXTERNAL_ID, 'test'))
+                  return true
+                })
               })
-            }
-          )
-        })
-        it('should filter test gateway accounts', () => {
-          sinon.assert.calledWithMatch(mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match({
-              services: [
-                sinon.match({
-                  name: SERVICE_NAME,
-                  gatewayAccounts: sinon.match(accounts => {
-                    expect(accounts.length).to.equal(2)
-                    expect(accounts[0].type).to.equal('live')
-                    expect(accounts[0].paymentProvider).to.equal(WORLDPAY)
-                    expect(accounts[1].id).to.equal(36)
-                    expect(accounts[1].type).to.equal('test')
-                    expect(accounts[1].paymentProvider).to.equal(SANDBOX)
-                    return true
-                  })
-                })
-              ]
-            })
-          )
-        })
-        it('should set new style settings links for live account', () => {
-          sinon.assert.calledWithMatch(mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match({
-              services: [
-                sinon.match({
-                  gatewayAccounts: sinon.match(accounts => {
-                    expect(accounts[0].links.editServiceNameLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, SERVICE_EXTERNAL_ID, 'live'))
-                    expect(accounts[0].links.manageTeamMembersLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, SERVICE_EXTERNAL_ID, 'live'))
-                    expect(accounts[0].links.organisationDetailsLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_EXTERNAL_ID, 'live'))
-                    return true
-                  })
-                })
-              ]
-            })
-          )
-        })
-      })
-      describe('for a service with a test sandbox account, a test stripe account and no live account', () => {
-        before(() => {
-          userServiceRoles[0].service.gatewayAccountIds = ['34', '36']
-          nextRequest({
-            user: {
-              isDegatewayed: () => true,
-              serviceRoles: userServiceRoles
-            }
+            ]
           })
-          call('get')
-        })
-
-        it('should reformat links for test', () => {
-          sinon.assert.calledWithMatch(mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match({
-              allServiceTransactionsPath: formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'test'),
-              payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, 'test'),
-              services: [
-                sinon.match({
-                  gatewayAccounts: sinon.match(accounts => {
-                    expect(accounts[0].links.editServiceNameLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, SERVICE_EXTERNAL_ID, 'test'))
-                    expect(accounts[0].links.manageTeamMembersLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, SERVICE_EXTERNAL_ID, 'test'))
-                    expect(accounts[0].links.organisationDetailsLink).to.equal(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_EXTERNAL_ID, 'test'))
-                    return true
-                  })
-                })
-              ]
-            })
-          )
-        })
-
-        it('should filter test gateway accounts and prioritise based on payment provider', () => {
-          sinon.assert.calledWithMatch(mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match({
-              services: [
-                sinon.match({
-                  name: SERVICE_NAME,
-                  gatewayAccounts: sinon.match(accounts => {
-                    expect(accounts.length).to.equal(1)
-                    expect(accounts[0].type).to.equal('test')
-                    expect(accounts[0].paymentProvider).to.equal(STRIPE)
-                    return true
-                  })
-                })
-              ]
-            })
-          )
-        })
+        )
       })
-      describe('for a service with an unsupported test account and a live account', () => {
-        before(() => {
-          userServiceRoles[0].service.gatewayAccountIds = ['33', '37']
-          nextRequest({
-            user: {
-              isDegatewayed: () => true,
-              serviceRoles: userServiceRoles
-            }
-          })
-          call('get')
-        })
 
-        it('should filter the unsupported test gateway account', () => {
-          sinon.assert.calledWithMatch(mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match({
-              services: [
-                sinon.match({
-                  name: SERVICE_NAME,
-                  gatewayAccounts: sinon.match(accounts => {
-                    expect(accounts.length).to.equal(1)
-                    expect(accounts[0].type).to.equal('live')
-                    expect(accounts[0].paymentProvider).to.equal(WORLDPAY)
-                    return true
-                  })
+      it('should filter test gateway accounts and prioritise based on payment provider', () => {
+        sinon.assert.calledWithMatch(mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match({
+            services: [
+              sinon.match({
+                name: SERVICE_NAME,
+                gatewayAccounts: sinon.match(accounts => {
+                  expect(accounts.length).to.equal(1)
+                  expect(accounts[0].type).to.equal('test')
+                  expect(accounts[0].paymentProvider).to.equal(STRIPE)
+                  return true
                 })
-              ]
-            })
-          )
-        })
+              })
+            ]
+          })
+        )
       })
-      describe('for a service with disabled test gateway accounts', () => {
-        before(() => {
-          userServiceRoles[0].service.gatewayAccountIds = ['32', '38', '39']
-          nextRequest({
-            user: {
-              isDegatewayed: () => true,
-              serviceRoles: userServiceRoles
-            }
-          })
-          call('get')
+    })
+    describe('for a service with an unsupported test account and a live account', () => {
+      before(() => {
+        userServiceRoles[0].service.gatewayAccountIds = ['33', '37']
+        nextRequest({
+          user: {
+            serviceRoles: userServiceRoles
+          }
         })
+        call('get')
+      })
 
-        it('should filter out the disabled test gateway accounts', () => {
-          sinon.assert.calledWithMatch(mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match.any,
-            sinon.match({
-              services: [
-                sinon.match({
-                  name: SERVICE_NAME,
-                  gatewayAccounts: sinon.match(accounts => {
-                    expect(accounts.length).to.equal(1)
-                    expect(accounts[0].type).to.equal('test')
-                    expect(accounts[0].paymentProvider).to.equal(WORLDPAY)
-                    return true
-                  })
+      it('should filter the unsupported test gateway account', () => {
+        sinon.assert.calledWithMatch(mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match({
+            services: [
+              sinon.match({
+                name: SERVICE_NAME,
+                gatewayAccounts: sinon.match(accounts => {
+                  expect(accounts.length).to.equal(1)
+                  expect(accounts[0].type).to.equal('live')
+                  expect(accounts[0].paymentProvider).to.equal(WORLDPAY)
+                  return true
                 })
-              ]
-            })
-          )
+              })
+            ]
+          })
+        )
+      })
+    })
+    describe('for a service with disabled test gateway accounts', () => {
+      before(() => {
+        userServiceRoles[0].service.gatewayAccountIds = ['32', '38', '39']
+        nextRequest({
+          user: {
+            serviceRoles: userServiceRoles
+          }
         })
+        call('get')
+      })
+
+      it('should filter out the disabled test gateway accounts', () => {
+        sinon.assert.calledWithMatch(mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match({
+            services: [
+              sinon.match({
+                name: SERVICE_NAME,
+                gatewayAccounts: sinon.match(accounts => {
+                  expect(accounts.length).to.equal(1)
+                  expect(accounts[0].type).to.equal('test')
+                  expect(accounts[0].paymentProvider).to.equal(WORLDPAY)
+                  return true
+                })
+              })
+            ]
+          })
+        )
       })
     })
   })

@@ -18,7 +18,7 @@ describe('navigation menu', function () {
       hideServiceNav: false,
       hideServiceHeader: false,
       loggedIn: true,
-      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card'),
+      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card', '/account/account-id/dashboard'),
       links: [],
       linksToDisplay: [],
       formatAccountPathsFor
@@ -42,7 +42,7 @@ describe('navigation menu', function () {
       hideServiceNav: false,
       hideServiceHeader: false,
       loggedIn: true,
-      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card'),
+      serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card', '/account/account-id/dashboard'),
       links: [],
       linksToDisplay: []
     }
