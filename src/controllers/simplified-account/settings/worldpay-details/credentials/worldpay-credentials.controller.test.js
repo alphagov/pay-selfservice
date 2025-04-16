@@ -1,33 +1,33 @@
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const Service = require('@models/Service.class')
-const GatewayAccount = require('@models/GatewayAccount.class')
 const sinon = require('sinon')
 const { expect } = require('chai')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
+const PaymentProvider = require('@models/constants/payment-providers')
+const CredentialState = require('@models/constants/credential-state')
 
 const ACCOUNT_TYPE = 'live'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
+const ACCOUNT_CREDENTIAL = {
+  externalId: 'creds-id',
+  paymentProvider: PaymentProvider.WORLDPAY,
+  state: CredentialState.CREATED,
+  createdDate: '2024-11-29T11:58:36.214Z',
+  gatewayAccountId: 1,
+  credentials: {}
+}
 
 const mockResponse = sinon.spy()
 
 const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/worldpay-details/credentials/worldpay-credentials.controller')
-  .withService(new Service({
-    external_id: SERVICE_ID
-  }))
-  .withAccount(new GatewayAccount({
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
+  .withAccount({
     type: ACCOUNT_TYPE,
-    allow_moto: true,
-    gateway_account_id: 1,
-    gateway_account_credentials: [{
-      external_id: 'creds-id',
-      payment_provider: 'worldpay',
-      state: 'CREATED',
-      created_date: '2024-11-29T11:58:36.214Z',
-      gateway_account_id: 1,
-      credentials: {}
-    }]
-  }))
+    allowMoto: true,
+    id: 1,
+    gatewayAccountCredentials: [ACCOUNT_CREDENTIAL],
+    getCurrentCredential: () => ACCOUNT_CREDENTIAL
+  })
   .withStubs({
     '@utils/response': { response: mockResponse }
   })
@@ -51,7 +51,7 @@ describe('Controller: settings/worldpay-details/credentials', () => {
 
     it('should pass context data to the response method', () => {
       expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal(
-        formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+        formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
       )
     })
   })
@@ -91,7 +91,7 @@ describe('Controller: settings/worldpay-details/credentials', () => {
                 username: '',
                 password: ''
               },
-              backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+              backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
             })
         })
         it('should render the form with MOTO validation error when merchant code is invalid', async () => {
@@ -122,7 +122,7 @@ describe('Controller: settings/worldpay-details/credentials', () => {
                 username: 'username',
                 password: 'password' // pragma: allowlist secret
               },
-              backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+              backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
             })
         })
       })

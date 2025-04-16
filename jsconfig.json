@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
     "checkJs": true,
-    "module": "commonjs",
-    "baseUrl": ".",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "target": "ES2018",
+    "baseUrl": "./",
     "paths": {
       "@controllers/*": [
         "src/controllers/*"

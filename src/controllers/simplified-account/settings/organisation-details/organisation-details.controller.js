@@ -11,12 +11,12 @@ function get (req, res) {
   const organisationDetails = {
     organisationName: req.service.merchantDetails.name,
     address: formatAddressAsParagraph({
-      line1: req.service.merchantDetails.address_line1,
-      line2: req.service.merchantDetails.address_line2,
-      city: req.service.merchantDetails.address_city,
-      postcode: req.service.merchantDetails.address_postcode
+      line1: req.service.merchantDetails.addressLine1,
+      line2: req.service.merchantDetails.addressLine2,
+      city: req.service.merchantDetails.addressCity,
+      postcode: req.service.merchantDetails.addressPostcode
     }),
-    telephoneNumber: req.service.merchantDetails.telephone_number,
+    telephoneNumber: req.service.merchantDetails.telephoneNumber,
     url: req.service.merchantDetails.url
   }
 

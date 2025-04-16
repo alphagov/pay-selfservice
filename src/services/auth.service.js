@@ -28,12 +28,12 @@ module.exports = {
   localStrategyLoginDirectAfterRegistration,
   noAccess,
   setSessionVersion,
-  redirectLoggedInUser
+  redirectLoggedInUser,
 }
 
 // Middleware
 
-function enforceUserFirstFactor (req, res, next) {
+function enforceUserFirstFactor(req, res, next) {
   const hasUser = lodash.get(req, 'user')
   const disabled = lodash.get(hasUser, 'disabled')
 
@@ -43,7 +43,7 @@ function enforceUserFirstFactor (req, res, next) {
   return next()
 }
 
-function noAccess (req, res, next) {
+function noAccess(req, res, next) {
   if (req.url !== paths.user.noAccess) {
     res.redirect(paths.user.noAccess)
   } else {
@@ -51,7 +51,7 @@ function noAccess (req, res, next) {
   }
 }
 
-function redirectLoggedInUser (req, res, next) {
+function redirectLoggedInUser(req, res, next) {
   if (hasValidSession(req)) {
     return res.redirect(paths.index)
   }
@@ -59,13 +59,14 @@ function redirectLoggedInUser (req, res, next) {
 }
 
 // Other Methods
-function localStrategyAuth (req, username, password, done) {
-  return userService.authenticate(username, password)
+function localStrategyAuth(req, username, password, done) {
+  return userService
+    .authenticate(username, password)
     .then((user) => done(null, user))
     .catch(() => done(null, false, { message: 'Invalid email or password' }))
 }
 
-async function localStrategy2Fa (req, done) {
+async function localStrategy2Fa(req, done) {
   const code = sanitiseSecurityCode(req.body.code)
   const validationResult = validateOtp(code)
   if (!validationResult.valid) {
@@ -75,14 +76,15 @@ async function localStrategy2Fa (req, done) {
     const user = await userService.authenticateSecondFactor(req.user.externalId, code)
     done(null, user)
   } catch (err) {
-    const message = req.user.secondFactor === secondFactorMethod.SMS
-      ? validationErrors.invalidOrExpiredSecurityCodeSMS
-      : validationErrors.invalidOrExpiredSecurityCodeApp
+    const message =
+      req.user.secondFactor === secondFactorMethod.SMS
+        ? validationErrors.invalidOrExpiredSecurityCodeSMS
+        : validationErrors.invalidOrExpiredSecurityCodeApp
     done(null, false, { message })
   }
 }
 
-async function localStrategyLoginDirectAfterRegistration (req, done) {
+async function localStrategyLoginDirectAfterRegistration(req, done) {
   const registrationSession = req[INVITE_SESSION_COOKIE_NAME]
   try {
     if (!(registrationSession && registrationSession.userExternalId)) {
@@ -100,23 +102,26 @@ async function localStrategyLoginDirectAfterRegistration (req, done) {
   }
 }
 
-function setSessionVersion (req) {
+function setSessionVersion(req) {
   req.session.version = lodash.get(req, 'user.sessionVersion', 0)
 }
 
-function redirectToLogin (req, res) {
+function redirectToLogin(req, res) {
   req.session.last_url = req.originalUrl
   logger.info(`Redirecting attempt to access ${req.originalUrl} to ${paths.user.logIn}`)
   res.redirect(paths.user.logIn)
 }
 
-function hasValidSession (req) {
+function hasValidSession(req) {
   const isValid = sessionValidator.validate(req.user, req.session)
-  if (!isValid) logger.info(`Invalid session version for user. User session_version: ${lodash.get(req, 'user.sessionVersion', 0)}, session version ${lodash.get(req, 'session.version')}`)
+  if (!isValid)
+    logger.info(
+      `Invalid session version for user. User session_version: ${lodash.get(req, 'user.sessionVersion', 0)}, session version ${lodash.get(req, 'session.version')}`
+    )
   return isValid
 }
 
-function addUserFieldsToLogContext (req, res, next) {
+function addUserFieldsToLogContext(req, res, next) {
   if (req.user) {
     addField(USER_EXTERNAL_ID, req.user.externalId)
     addField('internal_user', req.user.internalUser)
@@ -124,28 +129,37 @@ function addUserFieldsToLogContext (req, res, next) {
   next()
 }
 
-function initialise (app) {
+function initialise(app) {
   app.use(passport.initialize({}))
   app.use(passport.session({}))
-  passport.use('local', new LocalStrategy({ usernameField: 'username', passReqToCallback: true }, localStrategyAuth))
+  passport.use(
+    'local',
+    new LocalStrategy({ usernameField: 'username', passReqToCallback: true }, localStrategyAuth)
+  )
   passport.use('local2Fa', new CustomStrategy(localStrategy2Fa))
-  passport.use('localStrategyLoginDirectAfterRegistration', new CustomStrategy(localStrategyLoginDirectAfterRegistration))
+  passport.use(
+    'localStrategyLoginDirectAfterRegistration',
+    new CustomStrategy(localStrategyLoginDirectAfterRegistration)
+  )
   passport.serializeUser(serializeUser)
   passport.deserializeUser(deserializeUser)
   app.use(addUserFieldsToLogContext)
 }
 
-function deserializeUser (req, externalId, done) {
-  return userService.findByExternalId(externalId)
+function deserializeUser(req, externalId, done) {
+  return userService
+    .findByExternalId(externalId)
     .then((user) => {
       done(null, user)
     })
-    .catch(err => {
-      logger.info(`Failed to retrieve user, '${externalId}', from adminusers with statuscode: ${err.errorCode}`)
+    .catch((err) => {
+      logger.info(
+        `Failed to retrieve user, '${externalId}', from adminusers with statuscode: ${err.errorCode}`
+      )
       done(err)
     })
 }
 
-function serializeUser (user, done) {
+function serializeUser(user, done) {
   done(null, user?.externalId)
 }

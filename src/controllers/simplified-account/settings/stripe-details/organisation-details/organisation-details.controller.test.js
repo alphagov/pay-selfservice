@@ -19,8 +19,8 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/
     externalId: SERVICE_ID,
     merchantDetails: {
       name: 'McDuck Enterprises',
-      address_line1: 'McDuck Manor',
-      address_city: 'Duckburg'
+      addressLine1: 'McDuck Manor',
+      addressCity: 'Duckburg'
     }
   })
   .withAccount({ type: ACCOUNT_TYPE })
@@ -37,7 +37,7 @@ describe('Controller: settings/stripe-details/organisation-details', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {

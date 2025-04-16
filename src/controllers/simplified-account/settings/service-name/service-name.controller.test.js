@@ -1,7 +1,6 @@
 const sinon = require('sinon')
 const paths = require('@root/paths')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const Service = require('@models/Service.class')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 
 const ACCOUNT_TYPE = 'test'
@@ -12,14 +11,14 @@ const CY_SERVICE_NAME = 'Fy Ngwasanaeth Cwl'
 const mockResponse = sinon.stub()
 
 const { req, res, call, nextResponse } = new ControllerTestBuilder('@controllers/simplified-account/settings/service-name/service-name.controller')
-  .withService(new Service({
+  .withService({
     id: '123',
-    external_id: SERVICE_EXTERNAL_ID,
-    service_name: {
+    externalId: SERVICE_EXTERNAL_ID,
+    serviceName: {
       en: EN_SERVICE_NAME,
       cy: CY_SERVICE_NAME
     }
-  }))
+  })
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse }
@@ -34,7 +33,7 @@ describe('Controller: service name index', () => {
       })
 
       it('should call the response method', () => {
-        mockResponse.should.have.been.calledOnce // eslint-disable-line
+        mockResponse.should.have.been.calledOnce
       })
 
       it('should call the response method with req, res and template path', () => {

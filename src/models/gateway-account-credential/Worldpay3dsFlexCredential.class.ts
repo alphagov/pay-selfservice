@@ -1,27 +1,36 @@
+import { Worldpay3dsFlexCredentialData } from '@models/gateway-account-credential/dto/Worldpay3dsFlexCredential.dto'
+
 class Worldpay3dsFlexCredential {
-  withOrganisationalUnitId (organisationalUnitId) {
+  public organisationalUnitId?: string
+  public issuer?: string
+  public jwtMacKey?: string
+  public exemptionEngineEnabled?: boolean
+  public corporateExemptionsEnabled?: boolean
+
+  withOrganisationalUnitId (organisationalUnitId: string) {
     this.organisationalUnitId = organisationalUnitId
     return this
   }
 
-  withIssuer (issuer) {
+  withIssuer (issuer: string) {
     this.issuer = issuer
     return this
   }
 
-  withJwtMacKey (jwtMacKey) {
+  // not returned by Connector
+  withJwtMacKey (jwtMacKey: string) {
     this.jwtMacKey = jwtMacKey
     return this
   }
 
   // additional metadata returned by Connector - not included in POST body to update credentials
-  withExemptionEngineEnabled (exemptionEngineEnabled) {
+  withExemptionEngineEnabled (exemptionEngineEnabled: boolean) {
     this.exemptionEngineEnabled = exemptionEngineEnabled
     return this
   }
 
   // additional metadata returned by Connector - not included in POST body to update credentials
-  withCorporateExemptionsEnabled (corporateExemptionsEnabled) {
+  withCorporateExemptionsEnabled (corporateExemptionsEnabled: boolean) {
     this.corporateExemptionsEnabled = corporateExemptionsEnabled
     return this
   }
@@ -34,7 +43,7 @@ class Worldpay3dsFlexCredential {
     }
   }
 
-  static fromJson (data) {
+  static fromJson (data: Worldpay3dsFlexCredentialData) {
     return new Worldpay3dsFlexCredential()
       .withOrganisationalUnitId(data?.organisational_unit_id)
       .withIssuer(data?.issuer)
@@ -43,4 +52,4 @@ class Worldpay3dsFlexCredential {
   }
 }
 
-module.exports = Worldpay3dsFlexCredential
+export = Worldpay3dsFlexCredential

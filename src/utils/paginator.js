@@ -155,16 +155,16 @@ Paginator.prototype = {
     if (includeAdjacent) {
       previous = this.getPrevious()
       next = this.getNext()
-      if (previous) namedRange.unshift(createPageObject(previous, 'previous'))
-      if (next) namedRange.push(createPageObject(next, 'next'))
+      if (previous) namedRange.unshift(createPageObject.call(this, previous, 'previous'))
+      if (next) namedRange.push(createPageObject.call(this, next, 'next'))
     }
 
     // If extremities are required and not included in current range, add them
     if (includeExtremities) {
       first = this.getFirst()
       last = this.getLast()
-      if (pageRange.indexOf(first) === -1) namedRange.unshift(createPageObject(first, 'first'))
-      if (pageRange.indexOf(last) === -1) namedRange.push(createPageObject(last, 'last'))
+      if (pageRange.indexOf(first) === -1) namedRange.unshift(createPageObject.call(this, first, 'first'))
+      if (pageRange.indexOf(last) === -1) namedRange.push(createPageObject.call(this, last, 'last'))
     }
 
     return namedRange
@@ -179,16 +179,16 @@ Paginator.prototype = {
 
     if (linksFromResults.prev_page) {
       const previous = this.page - 1
-      namedPages.push(createPageObject(previous, 'Previous'))
+      namedPages.push(createPageObject.call(this, previous, 'Previous'))
     } else {
-      namedPages.push(createPageObject(null, 'Previous', true))
+      namedPages.push(createPageObject.call(this, null, 'Previous', true))
     }
 
     if (linksFromResults.next_page) {
       const next = this.page + 1
-      namedPages.push(createPageObject(next, 'Next'))
+      namedPages.push(createPageObject.call(this, next, 'Next'))
     } else {
-      namedPages.push(createPageObject(null, 'Next', true))
+      namedPages.push(createPageObject.call(this, null, 'Next', true))
     }
 
     return namedPages
@@ -197,15 +197,15 @@ Paginator.prototype = {
   buildNavigation: function buildNavigation (count) {
     const namedPages = []
     if (this.page > 1) {
-      namedPages.push(createPageObject(this.page - 1, 'Previous'))
+      namedPages.push(createPageObject.call(this, this.page - 1, 'Previous'))
     } else {
-      namedPages.push(createPageObject(null, 'Previous', true))
+      namedPages.push(createPageObject.call(this, null, 'Previous', true))
     }
 
     if (count >= this.limit) {
-      namedPages.push(createPageObject(this.page + 1, 'Next'))
+      namedPages.push(createPageObject.call(this, this.page + 1, 'Next'))
     } else {
-      namedPages.push(createPageObject(null, 'Next', true))
+      namedPages.push(createPageObject.call(this, null, 'Next', true))
     }
     return namedPages
   },

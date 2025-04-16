@@ -31,8 +31,8 @@ const {
     externalId: SERVICE_ID,
     merchantDetails: {
       name: 'McDuck Enterprises',
-      address_line1: 'McDuck Manor',
-      address_city: 'Duckburg'
+      addressLine1: 'McDuck Manor',
+      addressCity: 'Duckburg'
     }
   })
   .withAccount({ type: ACCOUNT_TYPE })

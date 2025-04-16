@@ -13,12 +13,12 @@ const { updateService } = require('@services/service.service')
 function get (req, res) {
   const organisationDetails = {
     organisationName: req.service?.merchantDetails?.name || '',
-    addressLine1: req.service?.merchantDetails?.address_line1 || '',
-    addressLine2: req.service?.merchantDetails?.address_line2 || '',
-    addressCity: req.service?.merchantDetails?.address_city || '',
-    addressPostcode: req.service?.merchantDetails?.address_postcode || '',
-    addressCountry: req.service?.merchantDetails?.address_country || '',
-    telephoneNumber: req.service?.merchantDetails?.telephone_number || '',
+    addressLine1: req.service?.merchantDetails?.addressLine1 || '',
+    addressLine2: req.service?.merchantDetails?.addressLine2 || '',
+    addressCity: req.service?.merchantDetails?.addressCity || '',
+    addressPostcode: req.service?.merchantDetails?.addressPostcode || '',
+    addressCountry: req.service?.merchantDetails?.addressCountry || '',
+    telephoneNumber: req.service?.merchantDetails?.telephoneNumber || '',
     organisationUrl: req.service?.merchantDetails?.url || ''
   }
   const context = {

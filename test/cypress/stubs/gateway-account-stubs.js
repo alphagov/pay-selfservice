@@ -5,6 +5,7 @@ const cardFixtures = require('../../fixtures/card.fixtures')
 const worldpay3dsFlexCredentialsFixtures = require('../../fixtures/worldpay-3ds-flex-credentials.fixtures')
 const worldpayCredentialsFixtures = require('../../fixtures/worldpay-credentials.fixtures')
 const { stubBuilder } = require('./stub-builder')
+const { validServiceResponse } = require('@test/fixtures/service.fixtures')
 
 function parseGatewayAccountOptions (opts) {
   const stubOptions = { gateway_account_id: opts.gatewayAccountId }
@@ -506,9 +507,11 @@ function requestStripeTestAccount (serviceExternalId, opts = {}) {
   })
 }
 
-function addGatewayAccountsToService (serviceExternalId) {
+function addGatewayAccountsToService (serviceExternalId, opts = {}) {
   const path = `/v1/api/services/${serviceExternalId}`
-  return stubBuilder('PATCH', path, 200)
+  return stubBuilder('PATCH', path, 200, {
+    response: validServiceResponse(opts)
+  })
 }
 
 module.exports = {

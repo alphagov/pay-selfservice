@@ -39,10 +39,10 @@ module.exports = async function postCheckOrgDetails (req, res, next) {
     const data = {
       errors,
       orgName: merchantDetails.name,
-      orgAddressLine1: merchantDetails.address_line1,
-      orgAddressLine2: merchantDetails.address_line2,
-      orgCity: merchantDetails.address_city,
-      orgPostcode: merchantDetails.address_postcode,
+      orgAddressLine1: merchantDetails.addressLine1,
+      orgAddressLine2: merchantDetails.addressLine2,
+      orgCity: merchantDetails.addressCity,
+      orgPostcode: merchantDetails.addressPostcode,
       isSwitchingCredentials,
       enableStripeOnboardingTaskList,
       currentCredential

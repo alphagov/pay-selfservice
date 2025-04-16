@@ -30,10 +30,11 @@ async function post (req, res) {
     await validation.run(req)
   }
   const errors = validationResult(req)
-    .formatWith(({ msg, path }) => {
+    .formatWith(({ msg, path, type }) => {
       return {
         msg,
         path,
+        type,
         ...(path === 'dob' ? { pathOverride: 'dobDay' } : {}) // ensure the error summary points at the first field in the dob component if the dob error is generic to all fields in said component
       }
     })

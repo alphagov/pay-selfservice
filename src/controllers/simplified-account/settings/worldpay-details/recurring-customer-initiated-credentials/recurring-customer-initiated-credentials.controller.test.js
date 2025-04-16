@@ -1,6 +1,5 @@
 const sinon = require('sinon')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const Service = require('@models/Service.class')
 const GatewayAccount = require('@models/GatewayAccount.class')
 const { expect } = require('chai')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
@@ -10,7 +9,7 @@ const { WorldpayTasks } = require('@models/WorldpayTasks.class')
 const mockResponse = sinon.spy()
 
 const ACCOUNT_TYPE = 'live'
-const SERVICE_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 const gatewayAccount = new GatewayAccount({
   type: ACCOUNT_TYPE,
   allow_moto: true,
@@ -24,7 +23,7 @@ const gatewayAccount = new GatewayAccount({
     credentials: {}
   }]
 })
-const worldpayTasks = new WorldpayTasks(gatewayAccount, SERVICE_ID)
+const worldpayTasks = new WorldpayTasks(gatewayAccount, SERVICE_EXTERNAL_ID)
 WorldpayTasks.recalculate = () => { return worldpayTasks }
 
 const worldpayDetailsServiceStubs = {
@@ -33,9 +32,7 @@ const worldpayDetailsServiceStubs = {
 }
 
 const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/worldpay-details/recurring-customer-initiated-credentials/recurring-customer-initiated-credentials.controller')
-  .withService(new Service({
-    external_id: SERVICE_ID
-  }))
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withUser({
     externalId: 'a-user-external-id'
   })
@@ -63,7 +60,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
       it('should pass context data with no credentials to the response method', () => {
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
           credentials: {},
-          backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+          backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
         })
       })
     })
@@ -97,7 +94,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
             merchantCode: 'a-merchant-code',
             username: 'a-username'
           },
-          backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+          backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
         })
       })
     })
@@ -141,7 +138,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
               username: 'a-username',
               password: 'a-password' // pragma: allowlist secret
             },
-            backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+            backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
           })
       })
     })
@@ -159,10 +156,10 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
           .withMerchantCode('a-merchant-code')
           .withUsername('a-username')
           .withPassword('a-password') // pragma: allowlist secret
-        worldpayDetailsServiceStubs.updateRecurringCustomerInitiatedCredentials.should.have.been.calledWith(SERVICE_ID, ACCOUNT_TYPE, 'creds-id', 'a-user-external-id', credential)
+        worldpayDetailsServiceStubs.updateRecurringCustomerInitiatedCredentials.should.have.been.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'creds-id', 'a-user-external-id', credential)
       })
       it('should call the redirect method with the worldpay details index path on success', () => {
-        res.redirect.should.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_ID, ACCOUNT_TYPE))
+        res.redirect.should.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
       })
     })
   })

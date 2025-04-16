@@ -4,5 +4,6 @@
 !src
 !esbuild.config.mjs
 !jsconfig.json
+!tsconfig.json
 !package.json
 !package-lock.json

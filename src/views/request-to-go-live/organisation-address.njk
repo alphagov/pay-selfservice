@@ -107,7 +107,7 @@
       id: "address-line1",
       name: "address-line1",
       errorMessage: { text: errors['address-line1'] } if errors['address-line1'] else false,
-      value: address_line1,
+      value: addressLine1,
       attributes: { 'data-cy': 'input-address-line-1' }
     }) }}
 
@@ -120,7 +120,7 @@
       id: "address-line2",
       name: "address-line2",
       errorMessage: { text: errors['address-line2'] } if errors['address-line2'] else false,
-      value: address_line2,
+      value: addressLine2,
       attributes: { 'data-cy': 'input-address-line-2' }
     }) }}
 
@@ -133,7 +133,7 @@
       id: "address-city",
       name: "address-city",
       errorMessage: { text: errors['address-city'] } if errors['address-city'] else false,
-      value: address_city,
+      value: addressCity,
       attributes: { 'data-cy': 'input-address-city' }
     }) }}
 
@@ -159,7 +159,7 @@
       id: "address-postcode",
       name: "address-postcode",
       errorMessage: { text: errors['address-postcode'] } if errors['address-postcode'] else false,
-      value: address_postcode,
+      value: addressPostcode,
       attributes: { 'data-cy': 'input-address-postcode' }
     }) }}
 
@@ -167,7 +167,7 @@
 
     {% if not isStripeSetupUserJourney %}
       {{ govukInput({
-        value: telephone_number,
+        value: telephoneNumber,
         label: {
           text: "Telephone number",
           classes: "govuk-label--m",

@@ -1,4 +1,5 @@
-const server = require('./server')
+import server from './server'
+
 const banner = `
                        __                                 _____                 _
   ___ ____ _  __ __ __/ /__    ___  ___ ___ __   ___ ___ / / _/__ ___ _____  __(_)______
@@ -8,8 +9,8 @@ const banner = `
 
 ================ START =======================
 PLATFORM: ${process.platform}/${process.arch}
-NODE_ENV: ${process.env.NODE_ENV || 'development'}, ${process.version}
-HOST/PORT: ${process.env.BIND_HOST || '127.0.0.1'}:${process.env.PORT || 3000}
+NODE_ENV: ${process.env.NODE_ENV ?? 'development'}, ${process.version}
+HOST/PORT: ${process.env.BIND_HOST ?? '127.0.0.1'}:${process.env.PORT ?? 3000}
 ==============================================`
 console.log(banner)
 server.start()

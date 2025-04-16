@@ -13,14 +13,14 @@ const mockResponse = sinon.stub()
 const mockUpdateServiceName = sinon.stub()
 
 const { req, res, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/service-name/remove-cy/remove-welsh-service-name.controller')
-  .withService(new Service({
+  .withService({
     id: '123',
-    external_id: SERVICE_EXTERNAL_ID,
-    service_name: {
+    externalId: SERVICE_EXTERNAL_ID,
+    serviceName: {
       en: EN_SERVICE_NAME,
       cy: CY_SERVICE_NAME
     }
-  }))
+  })
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse },
