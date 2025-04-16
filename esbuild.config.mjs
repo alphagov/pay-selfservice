@@ -79,7 +79,7 @@ const serverBuild = {
     { out: 'application', in: 'src/start.ts' }
   ],
   platform: 'node',
-  target: 'node18',
+  target: 'es2022',
   format: 'cjs',
   external: ['*.node'],
   plugins: [

@@ -3,7 +3,7 @@
     "checkJs": true,
     "module": "NodeNext",
     "moduleResolution": "nodenext",
-    "target": "ES2018",
+    "target": "ES2022",
     "baseUrl": "./",
     "paths": {
       "@controllers/*": [
