@@ -61,8 +61,7 @@ describe('Team members settings', () => {
         gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
         serviceName: { en: 'My cool service' },
         serviceExternalId: SERVICE_EXTERNAL_ID,
-        role: { name: 'admin' },
-        features: 'degatewayaccountification'// TODO remove features once simplified accounts are live
+        role: { name: 'admin' }
       })
       setStubs({}, [currentUserIsAdminStubs])
       cy.setEncryptedCookies(ADMIN_USER_ID)
@@ -106,8 +105,7 @@ describe('Team members settings', () => {
         gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
         serviceName: { en: 'My cool service' },
         serviceExternalId: SERVICE_EXTERNAL_ID,
-        role: { name: 'view-only' },
-        features: 'degatewayaccountification' // TODO remove features once simplified accounts are live
+        role: { name: 'view-only' }
       })
       setStubs({}, [currentUserIsViewOnlyStubs])
       cy.setEncryptedCookies(VIEW_ONLY_USER_ID)

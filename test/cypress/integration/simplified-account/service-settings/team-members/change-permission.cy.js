@@ -29,8 +29,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
       serviceName: { en: 'My cool service' },
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role: { name: 'admin' },
-      features: 'degatewayaccountification'// TODO remove features once simplified accounts are live
+      role: { name: 'admin' }
     }),
     userStubs.putUpdateServiceRoleSuccess({
       serviceExternalId: SERVICE_EXTERNAL_ID,

@@ -19,8 +19,7 @@ const setupStubs = (role = 'admin', activeApiKeys = [], revokedApiKeys = []) => 
       serviceName: { en: 'My cool service' },
       serviceExternalId: SERVICE_EXTERNAL_ID,
       email: USER_EMAIL,
-      role: ROLES[role],
-      features: 'degatewayaccountification' // TODO remove features once simplified accounts are live
+      role: ROLES[role]
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, { gateway_account_id: GATEWAY_ACCOUNT_ID }),
     apiKeysStubs.getActiveApiKeysForGatewayAccount(GATEWAY_ACCOUNT_ID, activeApiKeys),

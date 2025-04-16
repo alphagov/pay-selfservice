@@ -29,8 +29,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
         address_city: 'Duckburg',
         address_postcode: 'SW1A 1AA'
       },
-      role: opts.role,
-      features: 'degatewayaccountification' // TODO remove features once simplified accounts are live
+      role: opts.role
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,

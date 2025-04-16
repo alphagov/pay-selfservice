@@ -86,7 +86,6 @@ describe('The Stripe psp details banner', () => {
 
   it('call to action banner should link to payment provider stripe details for degatewayed user', () => {
     setupYourPspStubs({
-      userFeatures: 'degatewayaccountification'
     })
 
     cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
