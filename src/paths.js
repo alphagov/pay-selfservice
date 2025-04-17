@@ -14,13 +14,6 @@ module.exports = {
   keys,
   account: {
     root: `/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}`,
-    apiKeys: {
-      index: '/api-keys',
-      revoked: '/api-keys/revoked',
-      create: '/api-keys/create',
-      revoke: '/api-keys/revoke',
-      update: '/api-keys/update'
-    },
     credentials: {
       index: '/your-psp/:credentialId/credentials',
       edit: '/your-psp/:credentialId/credentials/edit'
