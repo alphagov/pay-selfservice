@@ -610,29 +610,5 @@ describe('Transaction details page', () => {
         cy.get('[data-cy=dispute-evidence-due-date]').contains(utcToDisplay('2022-08-04T13:59:59.000Z')).should('exist')
       })
     })
-
-    it('should display timezone notification banner', () => {
-      const disputedPaymentDetails = defaultTransactionDetails()
-      disputedPaymentDetails.disputed = true
-      disputedPaymentDetails.refund_summary_status = 'unavailable'
-      const disputeTransactionDetails = defaultDisputeDetails()
-
-      cy.task('setupStubs', getStubs(disputedPaymentDetails, {}, disputeTransactionDetails))
-      cy.visit(`${transactionsUrl}/${disputedPaymentDetails.transaction_id}`)
-
-      cy.get('.govuk-notification-banner').should('exist').within(() => {
-        cy.get('.govuk-notification-banner__heading')
-          .should('contain', 'BST has started and it could affect your reporting.')
-
-        cy.get('.govuk-body')
-          .should('contain', 'Clocks in the UK went forward 1 hour on 30 March 2025 for British Summer Time (BST)')
-          .and('contain', 'times in the GOV.UK Pay admin tool are 1 hour ahead of downloaded CSV files.')
-          .and('contain', 'how timezones work in GOV.UK Pay in our documentation')
-
-        cy.get('a.govuk-notification-banner__link')
-          .should('have.attr', 'href')
-          .and('include', 'https://docs.payments.service.gov.uk/reporting/#timezones-in-gov-uk-pay')
-      })
-    })
   })
 })
