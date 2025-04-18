@@ -24,6 +24,10 @@ const validReturnObject = {
   message: null
 }
 
+/**
+ * @param message
+ * @returns {{valid: boolean, message: string}}
+ */
 function notValidReturnObject (message) {
   return {
     valid: false,

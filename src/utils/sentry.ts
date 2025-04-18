@@ -1,4 +1,5 @@
-const Sentry = require('@sentry/node')
+import * as Sentry from '@sentry/node'
+import { Logger } from 'winston'
 
 function initialiseSentry () {
   Sentry.init({
@@ -14,19 +15,20 @@ function initialiseSentry () {
   return Sentry
 }
 
-const addSentryToErrorLevel = originalLogger => {
-  const sentryLogger = Object.create(originalLogger)
-  sentryLogger.error = function () {
+const addSentryToErrorLevel = (originalLogger: Logger): Logger => {
+  const sentryLogger = Object.create(originalLogger) as Logger
+  sentryLogger.error = function(...args: unknown[]): Logger {
     try {
-      Sentry.captureException(new Error(JSON.stringify(arguments)))
+      Sentry.captureException(new Error(JSON.stringify(args)))
     } finally {
-      originalLogger.error(...arguments)
+      originalLogger.error(args);
     }
+    return this
   }
   return sentryLogger
 }
 
-module.exports = {
+export {
   initialiseSentry,
   addSentryToErrorLevel
 }

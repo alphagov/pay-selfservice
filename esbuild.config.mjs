@@ -108,6 +108,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.log('✅ [dist] cleared')
     console.log('🚧 starting build...')
     console.log('🧬 [tsc] running TypeScript compiler...')
+    //todo lint
     execSync('npx tsc --diagnostics', { stdio: 'inherit' })
     console.log('✅ [tsc] done')
     await Promise.all([
