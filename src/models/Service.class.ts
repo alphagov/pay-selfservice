@@ -1,4 +1,4 @@
-import { ServiceData } from '@models/service/dto/Service.dto'
+import ServiceData from '@models/service/dto/Service.dto'
 
 class Service {
   readonly id: number
