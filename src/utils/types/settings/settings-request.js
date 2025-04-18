@@ -6,6 +6,7 @@
  */
 
 /**
+ * @deprecated convert file to typescript instead of using this
  * @typedef {import('express').Request & RequestExt & { flash: import('connect-flash').Flash }} SettingsRequest
  */
 
