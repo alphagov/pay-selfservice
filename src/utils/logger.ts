@@ -1,8 +1,9 @@
-const { createLogger, format, transports } = require('winston')
+import { createLogger, format, transports } from 'winston'
+import { logging } from '@govuk-pay/pay-js-commons'
+import { addSentryToErrorLevel } from '@utils/sentry.js'
+import { getLoggingFields } from '@services/clients/base/request-context'
+
 const { json, splat, prettyPrint, combine, timestamp, printf, colorize } = format
-const { govUkPayLoggingFormat } = require('@govuk-pay/pay-js-commons').logging
-const { addSentryToErrorLevel } = require('./sentry.js')
-const { getLoggingFields } = require('../services/clients/base/request-context')
 
 const supplementSharedLoggingFields = format((info) => {
   if (getLoggingFields()) {
@@ -16,15 +17,13 @@ const logger = createLogger({
     supplementSharedLoggingFields(),
     splat(),
     prettyPrint(),
-    govUkPayLoggingFormat({ container: 'selfservice', environment: process.env.ENVIRONMENT }),
+    logging.govUkPayLoggingFormat({ container: 'selfservice', environment: process.env.ENVIRONMENT }),
     json()
   ),
-  transports: [
-    new transports.Console()
-  ]
+  transports: [new transports.Console()],
 })
 
-const simpleLoggingFormat = printf(({ level, message, timestamp, ...metadata }) => {
+const simpleLoggingFormat = printf(({ level, message, timestamp }) => {
   return `${timestamp} [${level}]: ${message}`
 })
 
@@ -35,22 +34,22 @@ const simpleLogger = createLogger({
         error: 'red',
         warn: 'yellow',
         info: 'green',
-        debug: 'blue'
-      }
+        debug: 'blue',
+      },
     }),
     timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss'
+      format: 'YYYY-MM-DD HH:mm:ss',
     }),
     simpleLoggingFormat
   ),
   transports: [
     new transports.Console({
-      level: 'debug'
-    })
-  ]
+      level: 'debug',
+    }),
+  ],
 })
 
-module.exports = (loggerName) => {
+export = (loggerName: string) => {
   if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true') {
     return simpleLogger
   }
