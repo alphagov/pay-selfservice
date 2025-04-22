@@ -3,6 +3,7 @@
 # include following
 !src
 !esbuild.config.mjs
+!eslint.config.mjs
 !jsconfig.json
 !tsconfig.json
 !package.json
