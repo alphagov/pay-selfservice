@@ -121,8 +121,6 @@ function localStrategyLoginDirectAfterRegistration(req: Request, done: Authentic
   userService
     .findByExternalId(registrationSession.userExternalId)
     .then((user: User) => {
-      request.session.secondFactor = 'totp'
-      setSessionVersion(request)
       registrationSession.destroy()
       done(null, user)
     })
@@ -130,6 +128,12 @@ function localStrategyLoginDirectAfterRegistration(req: Request, done: Authentic
       registrationSession.destroy()
       done(null, false)
     })
+}
+
+function registrationSuccess(req: PassportExpressRequest, _: Response, next: NextFunction) {
+  req.session.secondFactor = 'totp'
+  setSessionVersion(req)
+  next()
 }
 
 function setSessionVersion(req: PassportExpressRequest) {
@@ -229,6 +233,7 @@ export {
   localStrategyAuth,
   localStrategy2Fa,
   localStrategyLoginDirectAfterRegistration,
+  registrationSuccess,
   noAccess,
   setSessionVersion,
   redirectLoggedInUser,

@@ -270,6 +270,21 @@ describe('auth service', function () {
     })
   })
 
+  describe('registrationSuccess', () => {
+    it('should set the required session properties', () => {
+      const req = {
+        user: {
+          sessionVersion: 2
+        },
+        session: {}
+      }
+      auth.registrationSuccess(req, response, next)
+      sinon.assert.calledOnce(next)
+      expect(req.session).to.have.property('version', 2)
+      expect(req.session).to.have.property('secondFactor', 'totp')
+    })
+  })
+
   describe('localStrategyLoginDirectAfterRegistration', () => {
     it('should successfully mark a user as second factor authenticated', (done) => {
       const userExternalId = 'a-user-external-id'
@@ -279,8 +294,6 @@ describe('auth service', function () {
           sinon.assert.calledWith(findByExternalIdSpy, userExternalId)
           sinon.assert.called(registerInviteCookie.destroy)
           sinon.assert.calledWithExactly(doneSpy, null, user)
-          expect(req.session.secondFactor).to.equal('totp')
-          expect(req.session.version).to.equal(1)
           done()
         } catch (err) {
           done(err)
