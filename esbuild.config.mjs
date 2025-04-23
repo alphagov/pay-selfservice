@@ -102,14 +102,25 @@ const serverBuild = {
 
 export { clientBuild, serverBuild }
 
+const executeTypeScriptCompile = () => {
+  console.log('🧬 [tsc] running TypeScript compiler...')
+  execSync(`npx tsc --diagnostics`, { stdio: 'inherit' })
+  console.log('✅ [tsc] done')
+}
+
+const executeESLint = () => {
+  console.log('🧼 [eslint] running ESLint...')
+  execSync('npx eslint', { stdio: 'inherit' })
+  console.log('✅ [eslint] done')
+}
+
 // if file is called directly, do this
 if (import.meta.url === `file://${process.argv[1]}`) {
   rm('dist', { recursive: true, force: true }, async () => {
     console.log('✅ [dist] cleared')
     console.log('🚧 starting build...')
-    console.log('🧬 [tsc] running TypeScript compiler...')
-    execSync('npx tsc --diagnostics', { stdio: 'inherit' })
-    console.log('✅ [tsc] done')
+    executeTypeScriptCompile()
+    executeESLint()
     await Promise.all([
       build(clientBuild).then(async result => {
         console.log(await analyzeMetafile(result.metafile))

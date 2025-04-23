@@ -83,6 +83,7 @@ const privacyController = require('./controllers/privacy/privacy.controller')
 const servicesController = require('./controllers/simplified-account/services')
 
 const simplifiedAccountRoutes = require('./simplified-account-routes')
+const { registrationSuccess } = require('@services/auth.service')
 
 // Assignments
 const {
@@ -186,6 +187,7 @@ module.exports.bind = function (app) {
   app.get(
     register.success,
     passport.authenticate('localStrategyLoginDirectAfterRegistration', { failureRedirect: user.logIn }),
+    registrationSuccess,
     userIsAuthorised,
     registrationController.showSuccessPage
   )

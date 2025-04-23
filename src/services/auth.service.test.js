@@ -14,6 +14,7 @@ const userFixtures = require('../../test/fixtures/user.fixtures')
 const User = require('../models/User.class')
 const secondFactorMethod = require('@models/constants/second-factor-method')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
+const { validationErrors } = require('@utils/validation/field-validation-checks')
 
 // Assignments and Variables
 const EXTERNAL_ID_IN_SESSION = '7d19aff33f8948deb97ed16b2912dcd3'
@@ -56,13 +57,11 @@ describe('auth service', function () {
   })
 
   describe('serialize user', function () {
-    it('should call done function with externalId', function (done) {
+    it('should call done function with externalId', function () {
       const user = { externalId: EXTERNAL_ID_IN_SESSION }
-      const doneSpy = sinon.spy(done)
-
+      const doneSpy = sinon.spy()
       auth.serializeUser(user, doneSpy)
-
-      assert(doneSpy.calledWithExactly(null, EXTERNAL_ID_IN_SESSION))
+      sinon.assert.calledWithExactly(doneSpy, null, EXTERNAL_ID_IN_SESSION)
     })
   })
 
@@ -77,28 +76,30 @@ describe('auth service', function () {
           })
         }
       }
-
-      getServiceWithMockedUserService(userServiceMock).deserializeUser({ headers: { 'x-request-id': 'foo' } }, EXTERNAL_ID_IN_SESSION, function (err, returnedUser) {
-        expect(err).to.be.null //eslint-disable-line
-        expect(returnedUser).to.deep.equal(user)
-        done()
+      const doneSpy = sinon.spy((err, returnedUser) => {
+        try {
+          expect(err).to.be.null
+          expect(returnedUser).to.deep.equal(user)
+          done()
+        } catch (err) {
+          done(err)
+        }
       })
+      getServiceWithMockedUserService(userServiceMock).deserializeUser(EXTERNAL_ID_IN_SESSION, doneSpy)
     })
   })
 
   describe('noAccess', function () {
-    it('call next when on no access', function (done) {
+    it('call next when on no access', function () {
       const invalid = _.cloneDeep(validRequest())
       invalid.url = paths.user.noAccess
       auth.noAccess(invalid, response, next)
-      expect(next.calledOnce).to.be.true // eslint-disable-line
-      done()
+      sinon.assert.calledOnce(next)
     })
 
-    it('call redirect to no access', function (done) {
+    it('call redirect to no access', function () {
       auth.noAccess(validRequest(), response, next)
-      assert(redirect.calledWith(paths.user.noAccess))
-      done()
+      sinon.assert.calledWithExactly(redirect, paths.user.noAccess)
     })
   })
 
@@ -110,6 +111,12 @@ describe('auth service', function () {
       const user = { username: 'user@example.com' }
       const password = 'correctPassword'
       const doneSpy = sinon.spy(() => {
+        try {
+          sinon.assert.calledWithExactly(doneSpy, null, user)
+          done()
+        } catch (error) {
+          done(error)
+        }
       })
       const userServiceMock = {
         authenticate: (username, password) => {
@@ -121,11 +128,7 @@ describe('auth service', function () {
         }
       }
 
-      getServiceWithMockedUserService(userServiceMock).localStrategyAuth(req, user.username, password, doneSpy)
-        .then(() => {
-          assert(doneSpy.calledWithExactly(null, user))
-          done()
-        })
+      getServiceWithMockedUserService(userServiceMock).localStrategyAuth(user.username, password, doneSpy)
     })
 
     it('should return error message when authentication fails', function (done) {
@@ -135,6 +138,12 @@ describe('auth service', function () {
       const email = 'user@example.com'
       const password = 'imagineThisIsInvalid'
       const doneSpy = sinon.spy(() => {
+        try {
+          sinon.assert.calledWithExactly(doneSpy, null, false, { message: 'Invalid email or password' })
+          done()
+        } catch (error) {
+          done(error)
+        }
       })
       const userServiceMock = {
         authenticate: (email, password) => {
@@ -145,12 +154,7 @@ describe('auth service', function () {
           })
         }
       }
-
-      getServiceWithMockedUserService(userServiceMock).localStrategyAuth(req, email, password, doneSpy)
-        .then(() => {
-          assert(doneSpy.calledWithExactly(null, false, { message: 'Invalid email or password' }))
-          done()
-        })
+      getServiceWithMockedUserService(userServiceMock).localStrategyAuth(email, password, doneSpy)
     })
   })
 
@@ -177,7 +181,7 @@ describe('auth service', function () {
       const doneSpy = sinon.spy(() => {})
 
       const authService = proxyquire('./auth.service.js', {
-        './user.service.js': {
+        '@services/user.service.js': {
           authenticateSecondFactor: authenticateSecondFactorSpy
         }
       })
@@ -196,15 +200,26 @@ describe('auth service', function () {
       sinon.assert.calledWith(doneSpy, null, user)
     })
 
-    it('should call done with error when authentication fails for user with SMS second factor method', async () => {
+    it('should call done with error when authentication fails for user with SMS second factor method', (done) => {
       const user = new User(userFixtures.validUserResponse({
         second_factor: secondFactorMethod.SMS
       }))
       const authenticateSecondFactorSpy = sinon.spy(() => Promise.reject(new Error()))
-      const doneSpy = sinon.spy(() => {})
+
+      const doneSpy = sinon.spy(() => {
+        try {
+          sinon.assert.calledWith(authenticateSecondFactorSpy, user.externalId, otpCode)
+          sinon.assert.calledWith(doneSpy, null, false, {
+            message: validationErrors.invalidOrExpiredSecurityCodeSMS
+          })
+          done()
+        } catch (error) {
+          done(error)
+        }
+      })
 
       const authService = proxyquire('./auth.service.js', {
-        './user.service.js': {
+        '@services/user.service.js': {
           authenticateSecondFactor: authenticateSecondFactorSpy
         }
       })
@@ -217,22 +232,28 @@ describe('auth service', function () {
         }
       }
 
-      await authService.localStrategy2Fa(req, doneSpy)
-      sinon.assert.calledWith(authenticateSecondFactorSpy, user.externalId, otpCode)
-      sinon.assert.calledWith(doneSpy, null, false, {
-        message: 'The security code you’ve used is incorrect or has expired'
-      })
+      authService.localStrategy2Fa(req, doneSpy)
     })
 
-    it('should call done with error when authentication fails for user with APP second factor method', async () => {
+    it('should call done with error when authentication fails for user with APP second factor method', (done) => {
       const user = new User(userFixtures.validUserResponse({
         second_factor: secondFactorMethod.APP
       }))
       const authenticateSecondFactorSpy = sinon.spy(() => Promise.reject(new Error()))
-      const doneSpy = sinon.spy(() => {})
+      const doneSpy = sinon.spy(() => {
+        try {
+          sinon.assert.calledWith(authenticateSecondFactorSpy, user.externalId, otpCode)
+          sinon.assert.calledWith(doneSpy, null, false, {
+            message: validationErrors.invalidOrExpiredSecurityCodeApp
+          })
+          done()
+        } catch (error) {
+          done(error)
+        }
+      })
 
       const authService = proxyquire('./auth.service.js', {
-        './user.service.js': {
+        '@services/user.service.js': {
           authenticateSecondFactor: authenticateSecondFactorSpy
         }
       })
@@ -245,19 +266,39 @@ describe('auth service', function () {
         }
       }
 
-      await authService.localStrategy2Fa(req, doneSpy)
-      sinon.assert.calledWith(authenticateSecondFactorSpy, user.externalId, otpCode)
-      sinon.assert.calledWith(doneSpy, null, false, {
-        message: 'The security code you entered is not correct, try entering it again or wait for your authenticator app to give you a new code'
-      })
+      authService.localStrategy2Fa(req, doneSpy)
+    })
+  })
+
+  describe('registrationSuccess', () => {
+    it('should set the required session properties', () => {
+      const req = {
+        user: {
+          sessionVersion: 2
+        },
+        session: {}
+      }
+      auth.registrationSuccess(req, response, next)
+      sinon.assert.calledOnce(next)
+      expect(req.session).to.have.property('version', 2)
+      expect(req.session).to.have.property('secondFactor', 'totp')
     })
   })
 
   describe('localStrategyLoginDirectAfterRegistration', () => {
-    it('should successfully mark a user as second factor authenticated', async () => {
+    it('should successfully mark a user as second factor authenticated', (done) => {
       const userExternalId = 'a-user-external-id'
       const user = { username: 'user@example.com', sessionVersion: 1 }
-      const doneSpy = sinon.spy()
+      const doneSpy = sinon.spy(() => {
+        try {
+          sinon.assert.calledWith(findByExternalIdSpy, userExternalId)
+          sinon.assert.called(registerInviteCookie.destroy)
+          sinon.assert.calledWithExactly(doneSpy, null, user)
+          done()
+        } catch (err) {
+          done(err)
+        }
+      })
       const registerInviteCookie = {
         userExternalId,
         destroy: sinon.spy()
@@ -274,39 +315,43 @@ describe('auth service', function () {
         findByExternalId: findByExternalIdSpy
       }
 
-      await getServiceWithMockedUserService(userServiceMock).localStrategyLoginDirectAfterRegistration(req, doneSpy)
-
-      sinon.assert.calledWith(findByExternalIdSpy, userExternalId)
-      sinon.assert.called(registerInviteCookie.destroy)
-      sinon.assert.calledWithExactly(doneSpy, null, user)
-      expect(req.session.secondFactor).to.equal('totp')
-      expect(req.session.version).to.equal(1)
+      getServiceWithMockedUserService(userServiceMock).localStrategyLoginDirectAfterRegistration(req, doneSpy)
     })
 
-    it('should call the callback with no user when the registration cookie is not present', async () => {
+    it('should call the callback with no user when the registration cookie is not present', (done) => {
       const req = {
         session: {}
       }
-      const doneSpy = sinon.spy()
-
-      await auth.localStrategyLoginDirectAfterRegistration(req, doneSpy)
-      sinon.assert.calledWith(doneSpy, null, false)
-      expect(req.session).to.not.have.property('secondFactor')
+      const doneSpy = sinon.spy(() => {
+        try {
+          sinon.assert.calledWith(doneSpy, null, false)
+          expect(req.session).to.not.have.property('secondFactor')
+          done()
+        } catch (err) {
+          done(err)
+        }
+      })
+      auth.localStrategyLoginDirectAfterRegistration(req, doneSpy)
     })
 
-    it('should call the callback with no user when the registration cookie does not have userExternalId set', async () => {
+    it('should call the callback with no user when the registration cookie does not have userExternalId set', (done) => {
       const req = {
         session: {},
         register_invite: {}
       }
-      const doneSpy = sinon.spy()
-
-      await auth.localStrategyLoginDirectAfterRegistration(req, doneSpy)
-      sinon.assert.calledWith(doneSpy, null, false)
-      expect(req.session).to.not.have.property('secondFactor')
+      const doneSpy = sinon.spy(() => {
+        try {
+          sinon.assert.calledWith(doneSpy, null, false)
+          expect(req.session).to.not.have.property('secondFactor')
+          done()
+        } catch (err) {
+          done(err)
+        }
+      })
+      auth.localStrategyLoginDirectAfterRegistration(req, doneSpy)
     })
 
-    it('should call the callback with adminusers returns an error', async () => {
+    it('should call the callback when adminusers returns an error', (done) => {
       const userExternalId = 'a-user-external-id'
       const registerInviteCookie = {
         userExternalId,
@@ -316,7 +361,17 @@ describe('auth service', function () {
         session: {},
         register_invite: registerInviteCookie
       }
-      const doneSpy = sinon.spy()
+      const doneSpy = sinon.spy(() => {
+        try {
+          sinon.assert.calledWith(findByExternalIdSpy, userExternalId)
+          sinon.assert.called(registerInviteCookie.destroy)
+          sinon.assert.calledWith(doneSpy, null, false)
+          expect(req.session).to.not.have.property('secondFactor')
+          done()
+        } catch (err) {
+          done(err)
+        }
+      })
 
       const error = new RESTClientError('Error', 'adminusers', 500)
       const findByExternalIdSpy = sinon.spy(() => Promise.reject(error))
@@ -324,34 +379,28 @@ describe('auth service', function () {
         findByExternalId: findByExternalIdSpy
       }
 
-      await getServiceWithMockedUserService(userServiceMock).localStrategyLoginDirectAfterRegistration(req, doneSpy)
-      sinon.assert.calledWith(findByExternalIdSpy, userExternalId)
-      sinon.assert.called(registerInviteCookie.destroy)
-      sinon.assert.calledWith(doneSpy, null, false)
-      expect(req.session).to.not.have.property('secondFactor')
+      getServiceWithMockedUserService(userServiceMock).localStrategyLoginDirectAfterRegistration(req, doneSpy)
     })
   })
 
   describe('redirectLoggedInUser', function (done) {
-    it('should redirect a user with a valid session to the index path', function (done) {
+    it('should redirect a user with a valid session to the index path', function () {
       const req = _.cloneDeep(validRequest())
       auth.redirectLoggedInUser(req, response, next)
-      expect(next.called).to.be.false // eslint-disable-line
-      assert(redirect.calledWith(paths.index))
-      done()
+      sinon.assert.notCalled(next)
+      sinon.assert.calledWith(redirect, paths.index)
     })
 
-    it('should call next if user is not logged in', function (done) {
+    it('should call next if user is not logged in', function () {
       const invalidSession = validRequest()
       invalidSession.session.version = 1
       auth.redirectLoggedInUser(invalidSession, response, next)
-      expect(next.calledOnce).to.be.true // eslint-disable-line
-      done()
+      sinon.assert.calledOnce(next)
     })
   })
 })
 
 function getServiceWithMockedUserService (userServiceMock) {
   return proxyquire(path.join(__dirname, '/./auth.service.js'),
-    { './user.service.js': userServiceMock })
+    { '@services/user.service.js': userServiceMock })
 }

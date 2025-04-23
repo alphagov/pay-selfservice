@@ -1,8 +1,16 @@
-const { createLogger, format, transports } = require('winston')
+import { createLogger, format, Logform, transports } from 'winston'
+// @ts-expect-error js commons is not updated for typescript support yet
+import { logging } from '@govuk-pay/pay-js-commons'
+import { addSentryToErrorLevel } from '@utils/sentry.js'
+import { getLoggingFields } from '@services/clients/base/request-context'
+
 const { json, splat, prettyPrint, combine, timestamp, printf, colorize } = format
-const { govUkPayLoggingFormat } = require('@govuk-pay/pay-js-commons').logging
-const { addSentryToErrorLevel } = require('./sentry.js')
-const { getLoggingFields } = require('../services/clients/base/request-context')
+
+interface PayJsCommonsLogging {
+  govUkPayLoggingFormat: (options: { container: string; environment?: string }) => Logform.Format
+}
+
+const { govUkPayLoggingFormat } = logging as PayJsCommonsLogging
 
 const supplementSharedLoggingFields = format((info) => {
   if (getLoggingFields()) {
@@ -19,13 +27,11 @@ const logger = createLogger({
     govUkPayLoggingFormat({ container: 'selfservice', environment: process.env.ENVIRONMENT }),
     json()
   ),
-  transports: [
-    new transports.Console()
-  ]
+  transports: [new transports.Console()],
 })
 
-const simpleLoggingFormat = printf(({ level, message, timestamp, ...metadata }) => {
-  return `${timestamp} [${level}]: ${message}`
+const simpleLoggingFormat = printf(({ level, message, timestamp }) => {
+  return `${timestamp as string} [${level}]: ${message as string}`
 })
 
 const simpleLogger = createLogger({
@@ -35,22 +41,22 @@ const simpleLogger = createLogger({
         error: 'red',
         warn: 'yellow',
         info: 'green',
-        debug: 'blue'
-      }
+        debug: 'blue',
+      },
     }),
     timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss'
+      format: 'YYYY-MM-DD HH:mm:ss',
     }),
     simpleLoggingFormat
   ),
   transports: [
     new transports.Console({
-      level: 'debug'
-    })
-  ]
+      level: 'debug',
+    }),
+  ],
 })
 
-module.exports = (loggerName) => {
+export = (loggerName: string) => {
   if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true') {
     return simpleLogger
   }

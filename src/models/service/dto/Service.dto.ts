@@ -15,7 +15,7 @@ interface MerchantDetailsData {
   email: string
 }
 
-export interface ServiceData {
+interface ServiceData {
   id: number
   external_id: string
   name: string
@@ -31,3 +31,5 @@ export interface ServiceData {
   default_billing_address_country: string
   takes_payments_over_phone: boolean
 }
+
+export = ServiceData
