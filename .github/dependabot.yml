@@ -5,11 +5,14 @@ updates:
   schedule:
     interval: daily
     time: "03:00"
-  open-pull-requests-limit: 0
+  open-pull-requests-limit: 10
   labels:
   - dependencies
   - govuk-pay
   - javascript
+  allow:
+  - dependency-name: "@govuk-pay/pay-js-commons"
+  - dependency-name: "@govuk-pay/pay-js-metrics"
   ignore:
   - dependency-name: change-case
     versions:
