@@ -60,8 +60,8 @@
   "dependencies": {
     "@aws-sdk/client-s3": "3.693.0",
     "@aws-sdk/s3-request-presigner": "3.693.0",
-    "@govuk-pay/pay-js-commons": "^6.0.36",
-    "@govuk-pay/pay-js-metrics": "^1.0.6",
+    "@govuk-pay/pay-js-commons": "^7.0.1",
+    "@govuk-pay/pay-js-metrics": "^1.0.13",
     "@sentry/node": "6.12.0",
     "accessible-autocomplete": "2.0.4",
     "axios": "^1.8.2",
