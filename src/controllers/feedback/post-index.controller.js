@@ -10,8 +10,10 @@ module.exports = async function postZendeskFeedback (req, res) {
 ----
 ${req.body['feedback-suggestion']}`
 
+  const email = req.user.email
+
   const opts = {
-    email: req.body.email,
+    email: email,
     name: '(no name supplied)',
     type: 'question',
     subject: 'Feedback from service',
