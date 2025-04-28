@@ -6,7 +6,6 @@ const { response } = require('../../utils/response.js')
 
 module.exports = (req, res) => {
   const pageData = {
-    email: req.user.email
   }
 
   const sessionFeedback = lodash.get(req, 'session.pageData.feedback', {})

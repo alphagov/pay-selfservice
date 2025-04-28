@@ -10,7 +10,6 @@ Give feedback — GOV.UK Pay
 
   <form method="POST" action="{{routes.feedback}}" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-    <input id="email" name="email" type="hidden" value="{{email}}"/>
     <input id="service-name" name="service-name" type="hidden" value="{{currentService.name}}"/>
     <input id="service-external-id" name="service-external-id" type="hidden" value="{{currentService.externalId}}"/>
     <input id="gateway" name="service-gateway" type="hidden" value="{{currentGatewayAccount.payment_provider}} - {{currentGatewayAccount.type}}"/>
