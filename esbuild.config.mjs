@@ -17,7 +17,6 @@ const buildOptions = {
   bundle: true,
   outdir: 'dist',
   minify: !isDev,
-  sourcemap: isDev ? 'inline' : false,
   outExtension: {
     '.css': '.css',
     '.js': '.js'
@@ -36,6 +35,7 @@ const buildOptions = {
 
 const clientBuild = {
   ...buildOptions,
+  sourcemap: isDev ? 'inline' : false,
   entryPoints: [
     { out: 'assets/stylesheets/application', in: 'src/assets/sass/application.scss' },
     { out: 'assets/js/client', in: 'src/client-side.js' }
@@ -75,6 +75,7 @@ const clientBuild = {
 
 const serverBuild = {
   ...buildOptions,
+  sourcemap: 'inline',
   entryPoints: [
     { out: 'application', in: 'src/start.ts' }
   ],

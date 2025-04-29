@@ -8,12 +8,11 @@ const GatewayAccountCredential = require('@models/gateway-account-credential/Gat
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
+const CredentialState = require('@models/constants/credential-state')
+const Credential = require('@models/gateway-account-credential/Credential.class')
+const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
 
 const mockResponse = sinon.spy()
-const mockWorldpayTasks = {
-  tasks: ['foo', 'bar', 'baz'],
-  incompleteTasks: true
-}
 
 const mockGatewayAccountsService = {
   postSwitchPSP: sinon.stub().resolves()
@@ -30,6 +29,7 @@ const {
   req,
   res,
   next,
+  nextRequest,
   nextResponse,
   call
 } = new ControllerTestBuilder('@controllers/simplified-account/settings/switch-psp/switch-to-worldpay/switch-to-worldpay.controller')
@@ -51,7 +51,6 @@ const {
   })
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@models/WorldpayTasks.class': { WorldpayTasks: sinon.stub().returns(mockWorldpayTasks) },
     '@services/gateway-accounts.service': mockGatewayAccountsService
   })
   .build()
@@ -80,7 +79,20 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
         isMoto: true,
         currentPsp: STRIPE,
         incompleteTasks: true,
-        tasks: ['foo', 'bar', 'baz'],
+        tasks: [
+          sinon.match({
+            linkText: 'Link your Worldpay account with GOV.UK Pay',
+            href: '/service/service-id-123abc/account/live/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated',
+            id: 'worldpay-credentials',
+            status: 'NOT_STARTED'
+          }),
+          sinon.match({
+            linkText: 'Make a live payment to test your Worldpay PSP',
+            href: '/service/service-id-123abc/account/live/settings/switch-psp/make-a-payment',
+            id: 'make-a-live-payment',
+            status: 'CANNOT_START'
+          })
+        ],
         transactionsUrl: formatAccountPathsFor(paths.account.transactions.index, ACCOUNT_EXTERNAL_ID)
       })
     })
@@ -106,7 +118,18 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
   describe('post', () => {
     describe('when all tasks are complete', () => {
       before(() => {
-        mockWorldpayTasks.incompleteTasks = false
+        nextRequest({
+          account: {
+            getSwitchingCredential: () => {
+              return new GatewayAccountCredential()
+                .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
+                .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
+                .withState(CredentialState.VERIFIED)
+                .withCredentials(new Credential()
+                  .withOneOffCustomerInitiated(new WorldpayCredential()))
+            }
+          }
+        })
         call('post')
       })
 
@@ -141,7 +164,6 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
 
     describe('when all tasks are not complete', () => {
       before(() => {
-        mockWorldpayTasks.incompleteTasks = true
         call('post')
       })
 
@@ -164,7 +186,18 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
 
     describe('when there is a problem talking to connector', () => {
       before(() => {
-        mockWorldpayTasks.incompleteTasks = false
+        nextRequest({
+          account: {
+            getSwitchingCredential: () => {
+              return new GatewayAccountCredential()
+                .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
+                .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
+                .withState(CredentialState.VERIFIED)
+                .withCredentials(new Credential()
+                  .withOneOffCustomerInitiated(new WorldpayCredential()))
+            }
+          }
+        })
         const error = new RESTClientError('whoops')
         mockGatewayAccountsService.postSwitchPSP.rejects(error)
         call('post')

@@ -5,7 +5,7 @@ const { expect } = require('chai')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
-const { WorldpayTasks } = require('@models/WorldpayTasks.class')
+const WorldpayTasks = require('@models/WorldpayTasks.class')
 const mockResponse = sinon.spy()
 
 const ACCOUNT_TYPE = 'live'

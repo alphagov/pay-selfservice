@@ -80,7 +80,7 @@ class GatewayAccount {
     return (
       this.gatewayAccountCredentials.find(
         (credential) => credential.state === CredentialState.ACTIVE
-      ) ?? null
+      ) ?? undefined
     )
   }
 

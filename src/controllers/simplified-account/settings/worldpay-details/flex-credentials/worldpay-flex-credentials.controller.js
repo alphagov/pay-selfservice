@@ -5,7 +5,7 @@ const { validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
 const worldpayDetailsService = require('@services/worldpay-details.service')
-const { WorldpayTasks } = require('@models/WorldpayTasks.class')
+const WorldpayTasks = require('@models/WorldpayTasks.class')
 const { THREE_DS_FLEX_VALIDATION } = require('@utils/simplified-account/validation/worldpay/validations.schema')
 
 function get (req, res) {
@@ -53,9 +53,9 @@ async function post (req, res) {
 
   await worldpayDetailsService.updateIntegrationVersion3ds(req.service.externalId, req.account.type)
 
-  if (worldpayTasks.incompleteTasks) {
+  if (worldpayTasks.incompleteTasks()) {
     const recalculatedTasks = await WorldpayTasks.recalculate(req.service.externalId, req.account.type)
-    if (!recalculatedTasks.incompleteTasks) {
+    if (!recalculatedTasks.incompleteTasks()) {
       req.flash('messages', {
         state: 'success',
         icon: '&check;',
