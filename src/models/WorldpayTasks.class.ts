@@ -156,7 +156,7 @@ class WorldpayTask extends Task {
       'Make a live payment to test your Worldpay PSP',
       'make-a-live-payment',
       formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.makeTestPayment.outbound,
+        paths.simplifiedAccount.settings.switchPsp.makeTestPayment.outbound,
         serviceExternalId,
         gatewayAccount.type
       )

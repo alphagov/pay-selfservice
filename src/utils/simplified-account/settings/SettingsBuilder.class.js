@@ -17,11 +17,12 @@ module.exports = class SettingsBuilder {
     return this
   }
 
-  add ({ id, name, permission, path, alwaysViewable = false }) {
+  add ({ id, altId, name, permission, path, alwaysViewable = false }) {
     if (!this.currentCategory) {
       throw new Error('Cannot add setting without category, use .category(name) first.')
     }
     const urlParts = [Array.isArray(id) ? `settings/${id.join('/')}` : `settings/${id}`]
+    const altUrlParts = [Array.isArray(altId) ? `settings/${altId.join('/')}` : `settings/${altId}`]
     const setting = {
       id: Array.isArray(id) ? id[id.length - 1] : id,
       name,
@@ -30,7 +31,7 @@ module.exports = class SettingsBuilder {
         this.service.externalId,
         this.account.type
       ),
-      current: urlParts.every(part => this.currentUrl.includes(part)),
+      current: urlParts.every(part => this.currentUrl.includes(part)) ||  altUrlParts.every(part => this.currentUrl.includes(part)),
       permitted: typeof permission === 'boolean' ? permission : this.permissions[permission],
       alwaysViewable // when true, this setting will appear on all account types
     }

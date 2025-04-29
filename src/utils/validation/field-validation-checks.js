@@ -1,6 +1,6 @@
 'use strict'
 
-const { isValidEmail } = require('../email-tools.js')
+const { isValidEmail } = require('@utils/email-tools')
 
 // Constants
 const MAX_AMOUNT = 100000

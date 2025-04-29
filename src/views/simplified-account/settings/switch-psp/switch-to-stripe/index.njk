@@ -1,0 +1,66 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+{% from "macro/task-list.njk" import taskList %}
+
+{% set settingsPageTitle = "Switch to Stripe" %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+
+  {% if stripeVerificationPending %}
+    {% set html %}
+      <h3 class="govuk-notification-banner__heading">
+        Stripe is still verifying your details
+      </h3>
+      <p class="govuk-body">You cannot make a test payment until this is complete. Please try again later.</p>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      html: html
+    }) }}
+  {% endif %}
+
+  {% if incompleteTasks %}
+
+    <p class="govuk-body">
+      This service is taking payments with {{ currentPsp | smartCaps }}.
+    </p>
+
+    <p class="govuk-body">To prepare for the switch, you need:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>your organisation bank details</li>
+      <li>the name, date of birth and home address of the person in your organisation legally responsible for payments (called your ‘<a class="govuk-link govuk-link--no-visited-state" href="https://www.payments.service.gov.uk/required-responsible-person-and-director-information/">responsible person</a>’)</li>
+      <li>the name, date of birth and work email address of the director of your service (or someone at director level)</li>
+      <li>VAT number (if applicable)</li>
+      <li>company registration number (if applicable)</li>
+      <li>government entity document</li>
+      <li>a debit or credit card to make a nominal live payment (refundable)</li>
+    </ul>
+
+    <h3 class="govuk-heading-s">Get ready to switch PSP to Stripe</h3>
+
+    {{ taskList({
+      tasks: tasks,
+      idPrefix: 'stripe-tasks'
+    }) }}
+
+  {% else %}
+
+    <p class="govuk-body">Your payment was successful. The connection between Stripe and GOV.UK Pay is working. You
+      can check the payment in <a class="govuk-link govuk-link--no-visited-state" href="{{ transactionsUrl }}">Transactions</a>
+      and refund the payment.</p>
+
+    {{ govukWarningText({
+      text: "Once you switch, Stripe will immediately start taking payments. You can refund previous payments through GOV.UK Pay.",
+      iconFallbackText: "Warning"
+    }) }}
+
+    <form id="switch-psp" method="post">
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      {{ govukButton({
+        text: "Switch to Stripe"
+      }) }}
+    </form>
+  {% endif %}
+{% endblock %}

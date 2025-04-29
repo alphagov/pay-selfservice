@@ -6,3 +6,6 @@ module.exports.enforceEmailCollectionModeNotOff = require('./enforce-email-colle
 module.exports.enforceMotoAccountOnly = require('./enforce-moto-account-only.middleware')
 module.exports.checkTaskCompletion = require('./check-task-completion.middleware')
 module.exports.defaultViewDecider = require('./settings/default-view-decider.middleware')
+module.exports.defaultViewDecider = require('./settings/default-view-decider.middleware')
+module.exports.canStartPspPaymentVerificationTask = require('./settings/psp-switch-payment-verification.middleware')
+module.exports.pspSwitchRedirect = require('./settings/psp-switch-redirect.middleware')

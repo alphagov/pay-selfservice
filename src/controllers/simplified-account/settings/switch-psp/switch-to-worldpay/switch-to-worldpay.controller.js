@@ -52,5 +52,4 @@ module.exports = {
   post,
   oneOffCustomerInitiated: require('./add-worldpay-credentials.controller'),
   flexCredentials: require('./add-flex-credentials.controller'),
-  makeTestPayment: require('./make-test-payment.controller')
 }

@@ -7,6 +7,7 @@ const {
 } = require('@services/clients/stripe/stripe.client')
 const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
 const { updateService } = require('@services/service.service')
+const { STRIPE } = require('@models/constants/payment-providers')
 const logger = require('@utils/logger')(__filename)
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
@@ -27,14 +28,14 @@ const getConnectorStripeAccountSetup = async (serviceExternalId, accountType) =>
  * @param {string} accountNumber
  */
 const updateStripeDetailsBankDetails = async (service, account, sortCode, accountNumber) => {
-  const stripeAccount = await connector.getStripeAccountByServiceIdAndAccountType(service.externalId, account.type)
-  await updateBankAccount(stripeAccount.stripeAccountId, {
+  const stripeAccountId = getStripeAccountIdForGatewayAccount(account)
+  await updateBankAccount(stripeAccountId, {
     bank_account_sort_code: sortCode,
     bank_account_number: accountNumber
   })
   await updateConnectorStripeProgress(service, account, 'bank_account')
   logger.info('Bank account details submitted for Stripe account', {
-    stripe_account_id: stripeAccount.stripeAccountId
+    stripe_account_id: stripeAccountId
   })
 }
 
@@ -45,18 +46,18 @@ const updateStripeDetailsBankDetails = async (service, account, sortCode, accoun
  * @param {StripePersonParams} responsiblePerson
  */
 const updateStripeDetailsResponsiblePerson = async (service, account, responsiblePerson) => {
-  const stripeAccount = await connector.getStripeAccountByServiceIdAndAccountType(service.externalId, account.type)
-  const stripePersonsResponse = await listPersons(stripeAccount.stripeAccountId)
+  const stripeAccountId = getStripeAccountIdForGatewayAccount(account)
+  const stripePersonsResponse = await listPersons(stripeAccountId)
   const possiblyExistingResponsiblePerson = stripePersonsResponse.data.filter(person => person.relationship && person.relationship.representative).pop()
   if (possiblyExistingResponsiblePerson !== undefined) {
-    await updatePerson(stripeAccount.stripeAccountId, possiblyExistingResponsiblePerson.id, responsiblePerson)
+    await updatePerson(stripeAccountId, possiblyExistingResponsiblePerson.id, responsiblePerson)
   } else {
-    await createPerson(stripeAccount.stripeAccountId, responsiblePerson)
+    await createPerson(stripeAccountId, responsiblePerson)
   }
-  await updateCompany(stripeAccount.stripeAccountId, { executives_provided: true })
+  await updateCompany(stripeAccountId, { executives_provided: true })
   await updateConnectorStripeProgress(service, account, 'responsible_person')
   logger.info('Responsible person details submitted for Stripe account', {
-    stripe_account_id: stripeAccount.stripeAccountId
+    stripe_account_id: stripeAccountId
   })
 }
 
@@ -67,18 +68,18 @@ const updateStripeDetailsResponsiblePerson = async (service, account, responsibl
  * @param {StripeDirectorParams} director
  */
 const updateStripeDetailsDirector = async (service, account, director) => {
-  const stripeAccount = await connector.getStripeAccountByServiceIdAndAccountType(service.externalId, account.type)
-  const stripePersonsResponse = await listPersons(stripeAccount.stripeAccountId)
+  const stripeAccountId = getStripeAccountIdForGatewayAccount(account)
+  const stripePersonsResponse = await listPersons(stripeAccountId)
   const possiblyExistingDirector = stripePersonsResponse.data.filter(person => person.relationship && person.relationship.director).pop()
   if (possiblyExistingDirector !== undefined) {
-    await updateDirector(stripeAccount.stripeAccountId, possiblyExistingDirector.id, director)
+    await updateDirector(stripeAccountId, possiblyExistingDirector.id, director)
   } else {
-    await createDirector(stripeAccount.stripeAccountId, director)
+    await createDirector(stripeAccountId, director)
   }
-  await updateCompany(stripeAccount.stripeAccountId, { directors_provided: true })
+  await updateCompany(stripeAccountId, { directors_provided: true })
   await updateConnectorStripeProgress(service, account, 'director')
   logger.info('Director details submitted for Stripe account', {
-    stripe_account_id: stripeAccount.stripeAccountId
+    stripe_account_id: stripeAccountId
   })
 }
 
@@ -89,15 +90,15 @@ const updateStripeDetailsDirector = async (service, account, director) => {
  * @param {string|boolean} companyNumber
  */
 const updateStripeDetailsCompanyNumber = async (service, account, companyNumber) => {
-  const stripeAccount = await connector.getStripeAccountByServiceIdAndAccountType(service.externalId, account.type)
+  const stripeAccountId = getStripeAccountIdForGatewayAccount(account)
   if (companyNumber) {
-    await updateCompany(stripeAccount.stripeAccountId, { tax_id: companyNumber })
+    await updateCompany(stripeAccountId, { tax_id: companyNumber })
     logger.info('Company number submitted for Stripe account', {
-      stripe_account_id: stripeAccount.stripeAccountId
+      stripe_account_id: stripeAccountId
     })
   } else {
     logger.info('Company number omitted for Stripe account', {
-      stripe_account_id: stripeAccount.stripeAccountId
+      stripe_account_id: stripeAccountId
     })
   }
   await updateConnectorStripeProgress(service, account, 'company_number')
@@ -110,15 +111,15 @@ const updateStripeDetailsCompanyNumber = async (service, account, companyNumber)
  * @param {string|boolean} vatNumber
  */
 const updateStripeDetailsVatNumber = async (service, account, vatNumber) => {
-  const stripeAccount = await connector.getStripeAccountByServiceIdAndAccountType(service.externalId, account.type)
+  const stripeAccountId = getStripeAccountIdForGatewayAccount(account)
   if (vatNumber) {
-    await updateCompany(stripeAccount.stripeAccountId, { vat_id: vatNumber })
+    await updateCompany(stripeAccountId, { vat_id: vatNumber })
     logger.info('VAT number submitted for Stripe account', {
-      stripe_account_id: stripeAccount.stripeAccountId
+      stripe_account_id: stripeAccountId
     })
   } else {
     logger.info('VAT number omitted for Stripe account', {
-      stripe_account_id: stripeAccount.stripeAccountId
+      stripe_account_id: stripeAccountId
     })
   }
   await updateConnectorStripeProgress(service, account, 'vat_number')
@@ -145,12 +146,12 @@ const updateStripeDetailsVatNumber = async (service, account, vatNumber) => {
  * @param {MulterFile} file
  */
 const updateStripeDetailsUploadEntityDocument = async (service, account, file) => {
-  const stripeAccount = await connector.getStripeAccountByServiceIdAndAccountType(service.externalId, account.type)
+  const stripeAccountId = getStripeAccountIdForGatewayAccount(account)
   const stripeFile = await uploadFile(`entity_document_for_account_${account.id}`, file.mimetype, file.buffer)
-  await updateAccount(stripeAccount.stripeAccountId, { entity_verification_document_id: stripeFile.id })
+  await updateAccount(stripeAccountId, { entity_verification_document_id: stripeFile.id })
   await updateConnectorStripeProgress(service, account, 'government_entity_document')
   logger.info('Government entity document uploaded for Stripe account', {
-    stripe_account_id: stripeAccount.stripeAccountId
+    stripe_account_id: stripeAccountId
   })
 }
 
@@ -161,11 +162,11 @@ const updateStripeDetailsUploadEntityDocument = async (service, account, file) =
  * @param {StripeOrganisationDetailsParams} newOrgDetails
  */
 const updateStripeDetailsOrganisationNameAndAddress = async (service, account, newOrgDetails) => {
-  const stripeAccount = await connector.getStripeAccountByServiceIdAndAccountType(service.externalId, account.type)
-  await updateOrganisationDetails(stripeAccount.stripeAccountId, newOrgDetails)
+  const stripeAccountId = getStripeAccountIdForGatewayAccount(account)
+  await updateOrganisationDetails(stripeAccountId, newOrgDetails)
   await updateConnectorStripeProgress(service, account, 'organisation_details')
   logger.info('Organisation details updated for Stripe account', {
-    stripe_account_id: stripeAccount.stripeAccountId
+    stripe_account_id: stripeAccountId
   })
   const serviceUpdateRequest = new ServiceUpdateRequest()
     .replace().merchantDetails.name(newOrgDetails.name)
@@ -192,13 +193,13 @@ const updateConnectorStripeProgress = async (service, account, flag) => {
 }
 
 const getStripeAccountOnboardingDetails = async (service, account) => {
-  const stripeAccount = await connector.getStripeAccountByServiceIdAndAccountType(service.externalId, account.type)
+  const stripeAccountId = getStripeAccountIdForGatewayAccount(account)
 
   try {
-    const connectAccount = await retrieveAccountDetails(stripeAccount.stripeAccountId)
-    const persons = await listPersons(stripeAccount.stripeAccountId)
+    const connectAccount = await retrieveAccountDetails(stripeAccountId)
+    const persons = await listPersons(stripeAccountId)
     const bankAccount = await listBankAccount(
-      stripeAccount.stripeAccountId,
+      stripeAccountId,
       { object: 'bank_account', limit: 1 }
     )
 
@@ -233,7 +234,18 @@ const getStripeAccountOnboardingDetails = async (service, account) => {
     }
   } catch (error) {
     logger.error(error.message)
-    throw new Error(`Problem fetching account details from Stripe [stripe_account_id: ${stripeAccount.stripeAccountId}]`)
+    throw new Error(`Problem fetching account details from Stripe [stripe_account_id: ${stripeAccountId}]`)
+  }
+}
+
+/**
+ * @param {GatewayAccount} gatewayAccount
+ */
+function getStripeAccountIdForGatewayAccount (gatewayAccount) {
+  if (gatewayAccount.isSwitchingToProvider(STRIPE)) {
+    return gatewayAccount.getSwitchingCredential().credentials.stripeAccountId
+  } else {
+    return gatewayAccount.getCurrentCredential().credentials.stripeAccountId
   }
 }
 
