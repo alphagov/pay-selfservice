@@ -22,8 +22,8 @@ const SERVICE_NAME = { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
 const SWITCH_TO_WORLDPAY_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay`
-const SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/worldpay-details/make-a-payment`
-const SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_RETURN_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/worldpay-details/make-a-payment/verify`
+const SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/make-a-payment`
+const SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_RETURN_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/make-a-payment/verify`
 // ---
 
 const setStubs = (opts = {}, additionalStubs = []) => {
@@ -142,7 +142,7 @@ describe('Make a live payment task', () => {
             cy.get('#make-a-payment button[type="submit"]').click()
 
             cy.wait('@frontendCall').then((interception) => {
-              expect(interception.request).to.exist // eslint-disable-line
+              expect(interception.request).to.exist
               expect(interception.request.method).to.equal('GET')
               expect(interception.response.statusCode).to.equal(200)
             })
@@ -154,7 +154,7 @@ describe('Make a live payment task', () => {
           beforeEach(() => {
             setStubs({
               moto: true,
-              pendingCredential: WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE
+              pendingCredential: WORLDPAY_CREDENTIAL_IN_ENTERED_STATE
             }, [
               connectorChargeStubs.getChargeSuccessByServiceExternalIdAndAccountType({
                 serviceExternalId: SERVICE_EXTERNAL_ID,
@@ -169,7 +169,18 @@ describe('Make a live payment task', () => {
                   path: 'state',
                   value: CREDENTIAL_STATE.VERIFIED,
                   userExternalId: USER_EXTERNAL_ID
-                })
+                }),
+              gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
+                gateway_account_id: GATEWAY_ACCOUNT_ID,
+                type: LIVE_ACCOUNT_TYPE,
+                payment_provider: STRIPE,
+                provider_switch_enabled: true,
+                allow_moto: true,
+                gateway_account_credentials: [
+                  STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
+                  WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE
+                ]
+              })
             ])
             cy.visit(SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_RETURN_URL)
           })
@@ -191,7 +202,8 @@ describe('Make a live payment task', () => {
         describe('The user does not complete the payment', () => {
           beforeEach(() => {
             setStubs({
-              moto: true
+              moto: true,
+              pendingCredential: WORLDPAY_CREDENTIAL_IN_ENTERED_STATE
             }, [
               connectorChargeStubs.getChargeSuccessByServiceExternalIdAndAccountType({
                 serviceExternalId: SERVICE_EXTERNAL_ID,
@@ -208,7 +220,7 @@ describe('Make a live payment task', () => {
               .should('have.class', 'system-messages')
               .contains('There is a problem')
               .parent()
-              .contains('The payment has failed. Check your Worldpay credentials and try again. If you need help, contact govuk-pay-support@digital.cabinet-office.gov.uk')
+              .contains('The payment has failed, please try again. If you need help, contact govuk-pay-support@digital.cabinet-office.gov.uk')
           })
           it('should not show the option to complete the switch', () => {
             cy.get('#switch-psp button[type="submit"]')

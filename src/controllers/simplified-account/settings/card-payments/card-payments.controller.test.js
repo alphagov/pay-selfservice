@@ -131,7 +131,7 @@ describe('Controller: settings/card-payments', () => {
             user: adminUser,
             account: {
               paymentProvider: WORLDPAY,
-              getActiveCredential: () => null
+              getActiveCredential: () => undefined
             }
           })
           call('get')
