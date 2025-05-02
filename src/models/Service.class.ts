@@ -5,7 +5,7 @@ class Service {
   readonly externalId: string
   readonly name: string
   readonly serviceName: { en: string, cy?: string }
-  gatewayAccountIds: string[]
+  readonly gatewayAccountIds: string[]
   readonly merchantDetails?: {
     name: string
     telephoneNumber: string

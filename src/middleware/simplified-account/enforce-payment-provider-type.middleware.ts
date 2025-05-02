@@ -7,7 +7,7 @@ function enforcePaymentProviderType (paymentProvider: string) {
   return function (req: ServiceRequest, _: ServiceResponse, next: NextFunction) {
     const account = req.account
     if (!account.isSwitchingToProvider(paymentProvider) && account.paymentProvider !== paymentProvider) {
-      next(new NotFoundError(`Attempted to access ${paymentProvider} setting for ${account.paymentProvider} service`))
+      return next(new NotFoundError(`Attempted to access ${paymentProvider} setting for ${account.paymentProvider} service`))
     }
     next()
   }
