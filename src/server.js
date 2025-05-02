@@ -1,4 +1,5 @@
 const path = require('path')
+const crypto = require('crypto');
 const express = require('express')
 const metrics = require('@govuk-pay/pay-js-metrics')
 const { configureCsrfMiddleware } = require('@govuk-pay/pay-js-commons/lib/utils/middleware/csrf.middleware')
@@ -49,6 +50,32 @@ function initialiseGlobalMiddleware(app) {
   app.use(staticify.middleware)
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))
+
+  const helmet = require('helmet');
+
+  app.use((req, res, next) => {
+    res.locals.nonce = crypto.randomBytes(16).toString('hex');
+    next();
+  });
+
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`, 'https://www.google-analytics.com'],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'https://www.google-analytics.com'],
+        connectSrc: ["'self'", 'https://www.google-analytics.com'],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'self'"],
+        formAction: ["'self'"],
+        baseUri: ["'self'"],
+        upgradeInsecureRequests: []
+      },
+      reportOnly: false,
+    })
+  );
 
   app.use(cookieParser())
   app.use(requestContextMiddleware)
