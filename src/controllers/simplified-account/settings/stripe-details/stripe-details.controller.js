@@ -1,8 +1,8 @@
 const { response } = require('@utils/response')
-const { friendlyStripeTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const { getStripeAccountOnboardingDetails } = require('@services/stripe-details.service')
 const paths = require('@root/paths')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
+const StripeTasks = require('@models/StripeTasks.class')
 
 async function getAccountDetails (req, res) {
   const account = req.account
@@ -20,11 +20,10 @@ async function get (req, res) {
   const account = req.account
   const service = req.service
   const gatewayAccountStripeProgress = req.gatewayAccountStripeProgress
-  const stripeDetailsTasks = friendlyStripeTasks(gatewayAccountStripeProgress, account.type, service.externalId)
-  const incompleteTasks = Object.values(stripeDetailsTasks).some(task => task.complete === false)
+  const stripeTasks = new StripeTasks(gatewayAccountStripeProgress, account, service.externalId)
   let answers = {}
   // load account onboarding details synchronously if javascript is unavailable
-  if (!incompleteTasks && javascriptUnavailable) {
+  if (!stripeTasks.incompleteTasks() && javascriptUnavailable) {
     const stripeAccountOnboardingDetails = await getStripeAccountOnboardingDetails(service, account)
     answers = {
       ...stripeAccountOnboardingDetails
@@ -34,8 +33,8 @@ async function get (req, res) {
     javascriptUnavailable,
     accountDetailsPath: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.accountDetails, service.externalId, account.type),
     messages: res.locals?.flash?.messages ?? [],
-    tasks: stripeDetailsTasks,
-    incompleteTasks,
+    tasks: stripeTasks.tasks,
+    incompleteTasks: stripeTasks.incompleteTasks(),
     serviceExternalId: service.externalId,
     answers,
     providerSwitchEnabled: account.providerSwitchEnabled

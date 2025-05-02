@@ -38,7 +38,7 @@ describe('Controller: settings/worldpay-details', () => {
   describe('get', () => {
     describe('for one-off card payments gateway account', () => {
       it('should call the response method', () => {
-        expect(mockResponse.called).to.be.true // eslint-disable-line
+        expect(mockResponse.called).to.be.true
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -57,7 +57,7 @@ describe('Controller: settings/worldpay-details', () => {
         }, {
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
             SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
-          id: '3ds-flex-credentials',
+          id: 'worldpay-3ds-flex-credentials',
           linkText: 'Configure 3DS',
           status: 'NOT_STARTED'
         }]
@@ -76,7 +76,7 @@ describe('Controller: settings/worldpay-details', () => {
         call('get')
       })
       it('should call the response method', () => {
-        expect(mockResponse.called).to.be.true // eslint-disable-line
+        expect(mockResponse.called).to.be.true
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -109,7 +109,7 @@ describe('Controller: settings/worldpay-details', () => {
         call('get')
       })
       it('should call the response method', () => {
-        expect(mockResponse.called).to.be.true // eslint-disable-line
+        expect(mockResponse.called).to.be.true
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -122,19 +122,19 @@ describe('Controller: settings/worldpay-details', () => {
         const tasks = [{
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
             SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
-          id: 'cit-credentials',
+          id: 'worldpay-cit-credentials',
           linkText: 'Recurring customer initiated transaction (CIT) credentials',
           status: 'NOT_STARTED'
         }, {
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated,
             SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
-          id: 'mit-credentials',
+          id: 'worldpay-mit-credentials',
           linkText: 'Recurring merchant initiated transaction (MIT) credentials',
           status: 'NOT_STARTED'
         }, {
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
             SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
-          id: '3ds-flex-credentials',
+          id: 'worldpay-3ds-flex-credentials',
           linkText: 'Configure 3DS',
           status: 'NOT_STARTED'
         }]

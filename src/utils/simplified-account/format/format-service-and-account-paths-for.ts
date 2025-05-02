@@ -23,4 +23,4 @@ const formattedPathFor = (path: string, ...pathParams: string[]) => {
   return path
 }
 
-export default formatServiceAndAccountPathsFor
+export = formatServiceAndAccountPathsFor

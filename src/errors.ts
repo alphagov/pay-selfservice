@@ -1,7 +1,5 @@
-'use strict'
-
 class DomainError extends Error {
-  constructor (message) {
+  constructor (message: string) {
     super(message)
     this.name = this.constructor.name
     Error.captureStackTrace(this, this.constructor)
@@ -9,7 +7,7 @@ class DomainError extends Error {
 }
 
 class GatewayTimeoutError extends Error {
-  constructor (message) {
+  constructor (message: string) {
     super(message)
     this.name = this.constructor.name
     Error.captureStackTrace(this, this.constructor)
@@ -17,7 +15,7 @@ class GatewayTimeoutError extends Error {
 }
 
 class GatewayTimeoutForAllServicesSearchError extends Error {
-  constructor (message) {
+  constructor (message: string) {
     super(message)
     this.name = this.constructor.name
     Error.captureStackTrace(this, this.constructor)
@@ -46,7 +44,7 @@ class NotAuthorisedError extends DomainError {
  * Thrown when the user does not have the permission for the given service to access a resource.
  */
 class PermissionDeniedError extends DomainError {
-  constructor (permission) {
+  constructor (permission: string) {
     super(`User does not have permission ${permission} for service`)
   }
 }
@@ -100,13 +98,14 @@ class TaskAlreadyCompletedError extends DomainError {
  * Thrown when trying to visit a task page when the requisite tasks have not been completed
  */
 class TaskAccessedOutOfSequenceError extends DomainError {
-  constructor (message, redirect) {
+  public redirect: string
+  constructor (message: string, redirectPath: string) {
     super(message)
-    this.redirect = redirect
+    this.redirect = redirectPath
   }
 }
 
-module.exports = {
+export {
   NotAuthenticatedError,
   UserAccountDisabledError,
   NotAuthorisedError,

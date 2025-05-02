@@ -1,5 +1,5 @@
 const { response } = require('@utils/response')
-const { WorldpayTasks } = require('@models/WorldpayTasks.class')
+const WorldpayTasks = require('@models/WorldpayTasks.class')
 const GatewayAccountSwitchPaymentProviderRequest = require('@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const paths = require('@root/paths')
@@ -16,7 +16,7 @@ function get (req, res) {
     messages: res.locals?.flash?.messages ?? [],
     isMoto: account.allowMoto,
     currentPsp: account.paymentProvider,
-    incompleteTasks: worldpayTasks.incompleteTasks,
+    incompleteTasks: worldpayTasks.incompleteTasks(),
     tasks: worldpayTasks.tasks,
     transactionsUrl: formatAccountPathsFor(paths.account.transactions.index, account.externalId)
   }
@@ -28,9 +28,9 @@ function post (req, res, next) {
   const service = req.service
   const user = req.user
   const targetCredential = account.getSwitchingCredential()
-  const worldpayTasks = new WorldpayTasks(account, service.externalId, true)
+  const worldpayTasks = new WorldpayTasks(account, service.externalId)
 
-  if (worldpayTasks.incompleteTasks) {
+  if (worldpayTasks.incompleteTasks()) {
     req.flash('messages', { state: 'error', heading: 'There is a problem', body: 'You cannot switch providers until all required tasks are completed' })
     return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, service.externalId, account.type))
   }
@@ -52,5 +52,4 @@ module.exports = {
   post,
   oneOffCustomerInitiated: require('./add-worldpay-credentials.controller'),
   flexCredentials: require('./add-flex-credentials.controller'),
-  makeTestPayment: require('./make-test-payment.controller')
 }

@@ -5,12 +5,13 @@ const CREDENTIAL_EXTERNAL_ID = 'credential-456-def'
 const VALID_MOTO_MERCHANT_CODE = 'helloMOTO'
 const VALID_WORLDPAY_USERNAME = 's-mcduck'
 const VALID_WORLDPAY_PASSWORD = 'topsecret!!1' // pragma: allowlist secret
+const VALID_STRIPE_ACCOUNT_ID = 'acct_blahblahblah'
 
 const STRIPE_CREDENTIAL_IN_ACTIVE_STATE = {
   state: ACTIVE,
   payment_provider: STRIPE,
   credentials: {
-    stripe_account_id: 'acct_blahblahblah'
+    stripe_account_id: VALID_STRIPE_ACCOUNT_ID
   }
 }
 
@@ -65,5 +66,5 @@ module.exports = {
   WORLDPAY_CREDENTIAL_IN_CREATED_STATE,
   WORLDPAY_CREDENTIAL_IN_ENTERED_STATE,
   WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE,
-  WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE
+  WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE,
 }

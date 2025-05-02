@@ -241,14 +241,32 @@ module.exports = {
         event: '/settings/webhooks/:webhookExternalId/event/:eventId'
       },
       switchPsp: {
+        switchToStripe: {
+          index: '/settings/switch-psp/switch-to-stripe',
+          bankDetails: '/settings/switch-psp/switch-to-stripe/bank-details',
+          responsiblePerson: {
+            index: '/settings/switch-psp/switch-to-stripe/responsible-person',
+            homeAddress: '/settings/switch-psp/switch-to-stripe/responsible-person/home-address',
+            contactDetails: '/settings/switch-psp/switch-to-stripe/responsible-person/contact-details',
+            checkYourAnswers: '/settings/switch-psp/switch-to-stripe/responsible-person/check-your-answers'
+          },
+          vatNumber: '/settings/switch-psp/switch-to-stripe/vat-number',
+          companyNumber: '/settings/switch-psp/switch-to-stripe/company-number',
+          director: '/settings/switch-psp/switch-to-stripe/director',
+          governmentEntityDocument: '/settings/switch-psp/switch-to-stripe/government-entity-document',
+          organisationDetails: {
+            index: '/settings/switch-psp/switch-to-stripe/organisation-details/index',
+            update: '/settings/switch-psp/switch-to-stripe/organisation-details/update'
+          }
+        },
         switchToWorldpay: {
           index: '/settings/switch-psp/switch-to-worldpay',
           oneOffCustomerInitiated: '/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated',
           flexCredentials: '/settings/switch-psp/switch-to-worldpay/worldpay-details/flex-credentials',
-          makeTestPayment: {
-            outbound: '/settings/switch-psp/switch-to-worldpay/worldpay-details/make-a-payment',
-            inbound: '/settings/switch-psp/switch-to-worldpay/worldpay-details/make-a-payment/verify'
-          }
+        },
+        makeTestPayment: {
+          outbound: '/settings/switch-psp/make-a-payment',
+          inbound: '/settings/switch-psp/make-a-payment/verify'
         }
       }
     }

@@ -1,5 +1,5 @@
 const { response } = require('@utils/response')
-const { WorldpayTasks } = require('@models/WorldpayTasks.class')
+const WorldpayTasks = require('@models/WorldpayTasks.class')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 
@@ -8,13 +8,14 @@ function get (req, res) {
 
   const context = {
     tasks: worldpayTasks.tasks,
-    incompleteTasks: worldpayTasks.incompleteTasks,
-    messages: res.locals?.flash?.messages ?? []
+    incompleteTasks: worldpayTasks.incompleteTasks(),
+    messages: res.locals.flash?.messages ?? [],
+    providerSwitchEnabled: req.account.providerSwitchEnabled
   }
 
-  if (!worldpayTasks.incompleteTasks) {
+  if (!worldpayTasks.incompleteTasks()) {
     context.answers = {
-      worldpay3dsFlex: worldpayTasks.findTask('3ds-flex-credentials') && {
+      worldpay3dsFlex: req.account.worldpay3dsFlex && {
         href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
           req.service.externalId, req.account.type),
         organisationalUnitId: req.account.worldpay3dsFlex.organisationalUnitId,

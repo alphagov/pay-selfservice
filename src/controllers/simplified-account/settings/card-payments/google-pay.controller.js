@@ -82,7 +82,7 @@ async function post (req, res, next) {
 const worldpayAccountHasActiveCredential = (req, res, next) => {
   const account = req.account
   const service = req.service
-  if (account.paymentProvider === WORLDPAY && account.getActiveCredential() === null) {
+  if (account.paymentProvider === WORLDPAY && account.getActiveCredential() === undefined) {
     return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.index, service.externalId, account.type))
   }
   next()

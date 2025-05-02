@@ -10,9 +10,6 @@ const { VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY } = require('@utils/verify
 const ChargeRequest = require('@models/ChargeRequest.class')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const { CREDENTIAL_STATE } = require('@utils/credentials')
-const { TaskAccessedOutOfSequenceError } = require('@root/errors')
-const TASK_STATUS = require('@models/constants/task-status')
-const { WorldpayTasks } = require('@models/WorldpayTasks.class')
 
 const ACCOUNT_TYPE = 'live'
 const SWITCHING_CREDENTIAL_EXTERNAL_ID = 'credential-id-123abc'
@@ -42,12 +39,6 @@ const mockChargeService = {
 const mockWorldpayDetailsService = {
   updateCredentialState: sinon.stub().resolves()
 }
-const mockWorldpayTasks = sinon.createStubInstance(WorldpayTasks, {
-  findTask: sinon.stub().returns({
-    id: 'make-a-live-payment',
-    status: TASK_STATUS.NOT_STARTED
-  })
-})
 
 const {
   req,
@@ -55,7 +46,7 @@ const {
   next,
   nextRequest,
   call
-} = new ControllerTestBuilder('@controllers/simplified-account/settings/switch-psp/switch-to-worldpay/make-test-payment.controller')
+} = new ControllerTestBuilder('@controllers/simplified-account/settings/switch-psp/make-test-payment/make-test-payment.controller')
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount({
     type: ACCOUNT_TYPE,
@@ -73,9 +64,6 @@ const {
   })
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@models/WorldpayTasks.class': {
-      WorldpayTasks: sinon.stub().callsFake(() => mockWorldpayTasks)
-    },
     '@services/charge.service': mockChargeService,
     '@services/worldpay-details.service': mockWorldpayDetailsService
   })
@@ -95,7 +83,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
       sinon.assert.calledWith(mockResponse,
         req,
         res,
-        'simplified-account/settings/switch-psp/switch-to-worldpay/make-a-test-payment'
+        'simplified-account/settings/switch-psp/make-test-payment/index'
       )
     })
 
@@ -139,10 +127,8 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
         )
       })
 
-      it('should redirect to switch to worldpay tasks index', () => {
-        sinon.assert.calledOnceWithExactly(res.redirect,
-          formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
-        )
+      it('should call next', () => {
+        sinon.assert.calledOnce(next)
       })
     })
     describe('when payment is not successful', () => {
@@ -165,15 +151,13 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
           'messages', {
             state: 'error',
             heading: 'There is a problem',
-            body: 'The payment has failed. Check your Worldpay credentials and try again. If you need help, contact govuk-pay-support@digital.cabinet-office.gov.uk'
+            body: 'The payment has failed, please try again. If you need help, contact govuk-pay-support@digital.cabinet-office.gov.uk'
           }
         )
       })
 
-      it('should redirect to switch to worldpay tasks index', () => {
-        sinon.assert.calledOnceWithExactly(res.redirect,
-          formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
-        )
+      it('should call next', () => {
+        sinon.assert.calledOnce(next)
       })
     })
     describe('when there is no charge present in the session', () => {
@@ -263,36 +247,6 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
           sinon.match.instanceOf(RESTClientError)
             .and(sinon.match.has('message', 'whoops'))
         )
-      })
-    })
-  })
-
-  describe('when task cannot be started yet', () => {
-    describe('all controller exports', () => {
-      before(() => {
-        mockWorldpayTasks.findTask.returns({
-          id: 'make-a-live-payment',
-          status: TASK_STATUS.CANNOT_START
-        })
-      })
-
-      after(() => {
-        // Reset the stub to its original state
-        mockWorldpayTasks.findTask.returns({
-          id: 'make-a-live-payment',
-          status: TASK_STATUS.NOT_STARTED
-        })
-      })
-
-      it('should throw an error', async () => {
-        const expectedErrorMessage = `Attempted to access task page before completing requisite tasks [task: make-a-live-payment, serviceExternalId: ${SERVICE_EXTERNAL_ID}]`
-        await expect(call('get'))
-          .to.be.rejectedWith(TaskAccessedOutOfSequenceError, expectedErrorMessage)
-        await expect(call('getInbound'))
-          .to.be.rejectedWith(TaskAccessedOutOfSequenceError, expectedErrorMessage)
-        await expect(call('post'))
-          .to.be.rejectedWith(TaskAccessedOutOfSequenceError, expectedErrorMessage)
-        sinon.assert.notCalled(res.redirect)
       })
     })
   })

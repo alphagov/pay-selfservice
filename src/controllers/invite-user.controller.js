@@ -3,7 +3,7 @@ const { response } = require('../utils/response.js')
 const userService = require('../services/user.service.js')
 const paths = require('../paths.js')
 const rolesModule = require('../utils/roles')
-const { isValidEmail } = require('../utils/email-tools.js')
+const { isValidEmail } = require('@utils/email-tools')
 
 const formatServicePathsFor = require('../utils/format-service-paths-for')
 

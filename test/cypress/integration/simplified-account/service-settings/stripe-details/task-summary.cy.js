@@ -4,6 +4,7 @@ const stripeAccountSetupStubs = require('@test/cypress/stubs/stripe-account-setu
 const { checkTaskNavigation, checkDisplayedTasks, taskStatus } = require('./task-summary-test-helpers')
 const { SANDBOX, STRIPE } = require('@models/constants/payment-providers')
 const stripePspStubs = require('@test/cypress/stubs/stripe-psp-stubs')
+const { STRIPE_CREDENTIAL_IN_ACTIVE_STATE } = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -12,7 +13,7 @@ const SERVICE_NAME = {
 }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
-const STRIPE_ACCOUNT_ID = 'acct_123example123'
+const STRIPE_ACCOUNT_ID = STRIPE_CREDENTIAL_IN_ACTIVE_STATE.credentials.stripe_account_id
 
 const SERVICE_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings`
 
@@ -35,7 +36,10 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       type: LIVE_ACCOUNT_TYPE,
       payment_provider: opts.paymentProvider || STRIPE,
-      provider_switch_enabled: opts.providerSwitchEnabled || false
+      provider_switch_enabled: opts.providerSwitchEnabled || false,
+      gateway_account_credentials: [
+        STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
+      ]
     }),
     ...additionalStubs])
 }

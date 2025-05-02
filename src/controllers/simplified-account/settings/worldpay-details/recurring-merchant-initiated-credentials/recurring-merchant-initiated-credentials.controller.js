@@ -5,7 +5,7 @@ const { body, validationResult } = require('express-validator')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
 const worldpayDetailsService = require('@services/worldpay-details.service')
-const { WorldpayTasks } = require('@models/WorldpayTasks.class')
+const WorldpayTasks = require('@models/WorldpayTasks.class')
 
 function get (req, res) {
   const existingCredentials = req.account.getCurrentCredential().credentials?.recurringMerchantInitiated || {}
@@ -62,9 +62,9 @@ async function post (req, res) {
   // if this is the last task to be completed
   // show a success banner
   const previousTasks = new WorldpayTasks(req.account, req.service.externalId)
-  if (previousTasks.incompleteTasks) {
+  if (previousTasks.incompleteTasks()) {
     const recalculatedTasks = await WorldpayTasks.recalculate(req.service.externalId, req.account.type)
-    if (!recalculatedTasks.incompleteTasks) {
+    if (!recalculatedTasks.incompleteTasks()) {
       req.flash('messages', {
         state: 'success',
         icon: '&check;',

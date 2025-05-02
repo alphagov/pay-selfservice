@@ -17,7 +17,7 @@ function get (req, res) {
     hideCardSecurityCodeLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardSecurityCode, service.externalId, account.type)
   }
 
-  const googlePayEditable = account.paymentProvider !== WORLDPAY || account.getActiveCredential() !== null
+  const googlePayEditable = account.paymentProvider !== WORLDPAY || account.getActiveCredential() !== undefined
 
   response(req, res, 'simplified-account/settings/card-payments/index', {
     userCanUpdatePaymentTypes: user.hasPermission(service.externalId, 'payment-types:update'),
