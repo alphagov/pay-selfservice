@@ -53,6 +53,10 @@ function initialiseGlobalMiddleware(app) {
 
   const helmet = require('helmet');
 
+  const SELF = ["'self'"];
+  const NONE = ["'none'"];
+  const GOOGLE_ANALYTICS = ['https://www.google-analytics.com'];
+
   app.use((req, res, next) => {
     res.locals.nonce = crypto.randomBytes(16).toString('hex');
     next();
@@ -61,17 +65,18 @@ function initialiseGlobalMiddleware(app) {
   app.use(
     helmet.contentSecurityPolicy({
       directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`, 'https://www.google-analytics.com'],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", 'data:', 'https://www.google-analytics.com'],
-        connectSrc: ["'self'", 'https://www.google-analytics.com'],
-        fontSrc: ["'self'"],
-        objectSrc: ["'none'"],
-        frameAncestors: ["'self'"],
-        formAction: ["'self'"],
-        baseUri: ["'self'"],
-        upgradeInsecureRequests: []
+        defaultSrc: SELF,
+        scriptSrc: [...SELF, (req, res) => `'nonce-${res.locals.nonce}'`, ...GOOGLE_ANALYTICS],
+        styleSrc: [...SELF, "'unsafe-inline'"],
+        imgSrc: [...SELF, 'data:', ...GOOGLE_ANALYTICS],
+        connectSrc: [...SELF, ...GOOGLE_ANALYTICS],
+        fontSrc: SELF,
+        objectSrc: NONE,
+        frameAncestors: SELF,
+        formAction: SELF,
+        baseUri: SELF,
+        upgradeInsecureRequests: [],
+        scriptSrcAttr: NONE
       },
       reportOnly: false,
     })
