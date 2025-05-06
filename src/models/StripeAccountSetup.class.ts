@@ -1,12 +1,4 @@
-interface StripeAccountSetupData {
-  bank_account: boolean
-  responsible_person: boolean
-  vat_number: boolean
-  company_number: boolean
-  director: boolean
-  government_entity_document: boolean
-  organisation_details: boolean
-}
+import StripeAccountSetupData from '@models/gateway-account/dto/StripeAccountSetup.dto'
 
 class StripeAccountSetup {
   readonly bankAccount: boolean

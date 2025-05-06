@@ -1,4 +1,5 @@
 import paths from '@root/paths'
+import urlJoin from '@utils/simplified-account/format/url'
 
 function formatServiceAndAccountPathsFor(
   path: string,
@@ -6,10 +7,7 @@ function formatServiceAndAccountPathsFor(
   accountType: string,
   ...params: string[]
 ) {
-  const rootPath = paths.simplifiedAccount.root
-  const cleanRoot = rootPath.endsWith('/') ? rootPath.slice(0, -1) : rootPath
-  const cleanPath = path.startsWith('/') ? path.slice(1) : path
-  const completePath = `${cleanRoot}/${cleanPath}`
+  const completePath = urlJoin(paths.simplifiedAccount.root, path)
   return formattedPathFor(completePath, serviceExternalId, accountType, ...params)
 }
 

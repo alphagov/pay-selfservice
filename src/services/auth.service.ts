@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction, Application } from 'express'
 import type { VerifyFunction } from 'passport-local'
+import type ClientSessionsCookie from '@utils/types/client-sessions/ClientSessionsCookie'
 import type User from '@models/User.class'
 import secondFactorMethod from '@models/constants/second-factor-method'
 import lodash from 'lodash'
@@ -23,16 +24,6 @@ const logger = createLogger(__filename)
 const CustomStrategy = passportCustom.Strategy
 // TODO remove type assertion once js commons is typescript compatible
 const { USER_EXTERNAL_ID } = (logging as { keys: Record<string, string> }).keys
-
-interface ClientSessionsCookie {
-  reset: () => void
-  setDuration: (duration: number) => void
-  destroy: (callback?: (err?: unknown) => void) => void
-  regenerate?: unknown
-  save?: unknown
-
-  [key: string]: unknown
-}
 
 interface ClientSessionsExpressRequest extends Request {
   session: ClientSessionsCookie

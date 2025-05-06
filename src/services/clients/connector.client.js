@@ -20,6 +20,7 @@ const client = new Client(SERVICE_NAME)
 /**
  * Connects to connector
  * @param {string} connectorUrl connector url
+ * @deprecated use src/services/clients/pay/ConnectorClient.class.ts
  */
 function ConnectorClient (connectorUrl) {
   this.connectorUrl = connectorUrl

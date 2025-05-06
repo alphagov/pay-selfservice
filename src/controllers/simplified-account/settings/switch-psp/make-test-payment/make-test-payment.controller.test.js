@@ -7,9 +7,11 @@ const { paths } = require('@root/routes')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 const formatPSPName = require('@utils/format-PSP-name')
 const { VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY } = require('@utils/verify-psp-integration')
-const ChargeRequest = require('@models/ChargeRequest.class')
+const ChargeRequest = require('@models/charge/ChargeRequest.class')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const { CREDENTIAL_STATE } = require('@utils/credentials')
+const Charge = require('@models/charge/Charge.class')
+const { validChargeResponse } = require('@test/fixtures/charge.fixtures')
 
 const ACCOUNT_TYPE = 'live'
 const SWITCHING_CREDENTIAL_EXTERNAL_ID = 'credential-id-123abc'
@@ -21,32 +23,38 @@ const USER_EXTERNAL_ID = 'user-id-123abc'
 
 const mockResponse = sinon.spy()
 const mockChargeService = {
-  createCharge: sinon.stub().resolves({
-    charge_id: CHARGE_EXTERNAL_ID,
-    links: [
-      {
-        rel: 'next_url',
-        href: CHARGE_URL
-      }
-    ]
-  }),
-  getCharge: sinon.stub().resolves({
-    state: {
-      status: 'success'
-    }
-  })
+  createCharge: sinon.stub().resolves(
+    new Charge(
+      validChargeResponse({
+        chargeId: CHARGE_EXTERNAL_ID,
+        links: [
+          {
+            rel: 'next_url',
+            href: CHARGE_URL,
+          },
+        ],
+      })
+    )
+  ),
+  getCharge: sinon.stub().resolves(
+    new Charge(
+      validChargeResponse({
+        chargeId: CHARGE_EXTERNAL_ID,
+        state: {
+          status: 'success',
+          finished: true,
+        },
+      })
+    )
+  ),
 }
 const mockWorldpayDetailsService = {
-  updateCredentialState: sinon.stub().resolves()
+  updateCredentialState: sinon.stub().resolves(),
 }
 
-const {
-  req,
-  res,
-  next,
-  nextRequest,
-  call
-} = new ControllerTestBuilder('@controllers/simplified-account/settings/switch-psp/make-test-payment/make-test-payment.controller')
+const { req, res, next, nextRequest, call } = new ControllerTestBuilder(
+  '@controllers/simplified-account/settings/switch-psp/make-test-payment/make-test-payment.controller'
+)
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount({
     type: ACCOUNT_TYPE,
@@ -57,15 +65,15 @@ const {
       return new GatewayAccountCredential()
         .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
         .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
-    }
+    },
   })
   .withUser({
-    externalId: USER_EXTERNAL_ID
+    externalId: USER_EXTERNAL_ID,
   })
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/charge.service': mockChargeService,
-    '@services/worldpay-details.service': mockWorldpayDetailsService
+    '@services/worldpay-details.service': mockWorldpayDetailsService,
   })
   .build()
 
@@ -80,17 +88,17 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
     })
 
     it('should pass req, res and template path to the response method', () => {
-      sinon.assert.calledWith(mockResponse,
-        req,
-        res,
-        'simplified-account/settings/switch-psp/make-test-payment/index'
-      )
+      sinon.assert.calledWith(mockResponse, req, res, 'simplified-account/settings/switch-psp/make-test-payment/index')
     })
 
     it('should pass the context data to the response method', () => {
       const context = mockResponse.args[0][3]
       sinon.assert.match(context, {
-        backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
+        backLink: formatSimplifiedAccountPathsFor(
+          paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
+          SERVICE_EXTERNAL_ID,
+          ACCOUNT_TYPE
+        ),
       })
     })
   })
@@ -100,14 +108,15 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
       before(() => {
         nextRequest({
           session: {
-            [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID
-          }
+            [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID,
+          },
         })
         call('getInbound')
       })
 
       it('should update the credential state', () => {
-        sinon.assert.calledOnceWithExactly(mockWorldpayDetailsService.updateCredentialState,
+        sinon.assert.calledOnceWithExactly(
+          mockWorldpayDetailsService.updateCredentialState,
           SERVICE_EXTERNAL_ID,
           ACCOUNT_TYPE,
           SWITCHING_CREDENTIAL_EXTERNAL_ID,
@@ -117,14 +126,12 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
       })
 
       it('should set success message', () => {
-        sinon.assert.calledOnceWithExactly(req.flash,
-          'messages', {
-            state: 'success',
-            icon: '&check;',
-            heading: 'Payment verified',
-            body: `This service is ready to switch to ${formatPSPName(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)}`
-          }
-        )
+        sinon.assert.calledOnceWithExactly(req.flash, 'messages', {
+          state: 'success',
+          icon: '&check;',
+          heading: 'Payment verified',
+          body: `This service is ready to switch to ${formatPSPName(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)}`,
+        })
       })
 
       it('should call next', () => {
@@ -135,25 +142,23 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
       before(() => {
         mockChargeService.getCharge.resolves({
           state: {
-            status: 'error'
-          }
+            status: 'error',
+          },
         })
         nextRequest({
           session: {
-            [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID
-          }
+            [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID,
+          },
         })
         call('getInbound')
       })
 
       it('should set error message', () => {
-        sinon.assert.calledOnceWithExactly(req.flash,
-          'messages', {
-            state: 'error',
-            heading: 'There is a problem',
-            body: 'The payment has failed, please try again. If you need help, contact govuk-pay-support@digital.cabinet-office.gov.uk'
-          }
-        )
+        sinon.assert.calledOnceWithExactly(req.flash, 'messages', {
+          state: 'error',
+          heading: 'There is a problem',
+          body: 'The payment has failed, please try again. If you need help, contact govuk-pay-support@digital.cabinet-office.gov.uk',
+        })
       })
 
       it('should call next', () => {
@@ -162,8 +167,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
     })
     describe('when there is no charge present in the session', () => {
       it('should throw an error', async () => {
-        await expect(call('getInbound'))
-          .to.be.rejectedWith(Error, 'No charge found on session')
+        await expect(call('getInbound')).to.be.rejectedWith(Error, 'No charge found on session')
         sinon.assert.notCalled(res.redirect)
       })
     })
@@ -173,16 +177,16 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
         mockChargeService.getCharge.rejects(error)
         nextRequest({
           session: {
-            [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID
-          }
+            [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID,
+          },
         })
         call('getInbound')
       })
       it('should call next with error', () => {
         sinon.assert.notCalled(res.redirect)
-        sinon.assert.calledOnceWithMatch(next,
-          sinon.match.instanceOf(RESTClientError)
-            .and(sinon.match.has('message', 'whoops'))
+        sinon.assert.calledOnceWithMatch(
+          next,
+          sinon.match.instanceOf(RESTClientError).and(sinon.match.has('message', 'whoops'))
         )
       })
     })
@@ -192,16 +196,16 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
         mockWorldpayDetailsService.updateCredentialState.rejects(error)
         nextRequest({
           session: {
-            [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID
-          }
+            [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID,
+          },
         })
         call('getInbound')
       })
       it('should call next with error', () => {
         sinon.assert.notCalled(res.redirect)
-        sinon.assert.calledOnceWithMatch(next,
-          sinon.match.instanceOf(RESTClientError)
-            .and(sinon.match.has('message', 'whoops'))
+        sinon.assert.calledOnceWithMatch(
+          next,
+          sinon.match.instanceOf(RESTClientError).and(sinon.match.has('message', 'whoops'))
         )
       })
     })
@@ -213,15 +217,22 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
     })
 
     it('should create a charge via the charge service', () => {
-      sinon.assert.calledOnceWithMatch(mockChargeService.createCharge,
+      sinon.assert.calledOnceWithMatch(
+        mockChargeService.createCharge,
         SERVICE_EXTERNAL_ID,
         ACCOUNT_TYPE,
-        sinon.match.instanceOf(ChargeRequest)
-          .and(sinon.match.has(
-            'amount', 200,
-            'reference', 'VERIFY_PSP_INTEGRATION',
-            'credentialExternalId', SWITCHING_CREDENTIAL_EXTERNAL_ID
-          ))
+        sinon.match
+          .instanceOf(ChargeRequest)
+          .and(
+            sinon.match.has(
+              'amount',
+              200,
+              'reference',
+              'VERIFY_PSP_INTEGRATION',
+              'credentialExternalId',
+              SWITCHING_CREDENTIAL_EXTERNAL_ID
+            )
+          )
       )
     })
 
@@ -230,9 +241,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
     })
 
     it('should redirect the user to make a payment', () => {
-      sinon.assert.calledOnceWithExactly(res.redirect,
-        CHARGE_URL
-      )
+      sinon.assert.calledOnceWithExactly(res.redirect, CHARGE_URL)
     })
 
     describe('when there is a problem creating the charge', () => {
@@ -243,9 +252,9 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
       })
 
       it('should call next with error', () => {
-        sinon.assert.calledOnceWithMatch(next,
-          sinon.match.instanceOf(RESTClientError)
-            .and(sinon.match.has('message', 'whoops'))
+        sinon.assert.calledOnceWithMatch(
+          next,
+          sinon.match.instanceOf(RESTClientError).and(sinon.match.has('message', 'whoops'))
         )
       })
     })
