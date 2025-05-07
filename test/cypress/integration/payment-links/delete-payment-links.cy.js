@@ -45,7 +45,9 @@ describe('Should delete payment link', () => {
     cy.get('ul.payment-links-list').should('have.length', 1)
 
     cy.get('ul.payment-links-list > li > div > a').contains('Delete').click()
-    cy.get('a').contains('Yes, delete this link').click()
+    cy.get('form[method="post"]').within(() => {
+      cy.get('button[type="submit"]').contains('Yes, delete this link').click()
+    })
 
     cy.get('h1').should('contain', 'Manage payment links')
     cy.get('.govuk-notification-banner--success').contains('The payment link was successfully deleted')
