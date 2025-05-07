@@ -9,4 +9,5 @@
 !package.json
 !package-lock.json
 # exclude tests
-src/**/*.test.{js,ts}
+**/*.test.ts
+**/*.test.js
