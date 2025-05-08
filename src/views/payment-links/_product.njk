@@ -1,52 +1,54 @@
 <li class="pay-!-border-bottom govuk-!-padding-bottom-3 govuk-!-padding-bottom-3">
-    <h2 class="govuk-heading-s govuk-!-margin-bottom-1 payment-links-list--item__title">{{ product.name }}</h2>
-    <h3 class="govuk-visually-hidden">URL</h3>
-    {% if product.links.friendly %}
-        <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="{{ product.links.friendly.href }}">{{ product.links.friendly.href }}</a>
-    {% else %}
-        <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
-    {% endif %}
-    {% if product.metadata %}
-        <h3 class="govuk-visually-hidden">Reporting columns</h3>
-        <dl class="reporting-columns govuk-body-s">
-           {% for key, value in product.metadata|dictsort %}
-               <div class="reporting-columns__keypair">
-                    <dt class="reporting-columns__key" id="metadata-key">{{key}}</dt>
-                    <dd class="reporting-columns__value" id="metadata-value">{{value}}</dd>
-                </div>
-            {% endfor %}
-        </dl>
-    {% endif %}
-    {% if permissions.tokens_create %}
-        <div class="govuk-!-margin-top-3">
-            <a class="govuk-!-font-size-16 govuk-!-margin-right-3 govuk-link govuk-link--no-visited-state" href="manage/edit/{{ product.externalId }}">Edit<span class="govuk-visually-hidden">
-                    payment link called
-                    {{product.name}}</span>
-            </a>
-            <a class="govuk-!-font-size-16 govuk-link govuk-link--no-visited-state payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete
-                <span class="govuk-visually-hidden">
-                    payment link called
-                    {{product.name}}</span>
-            </a>
-            <div class="target-to-show govuk-!-margin-top-6" id="delete-{{ product.externalId }}">
-                <div class="govuk-error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
-                    <h2 tabindex="0" class="target-to-show__heading govuk-error-summary__title" id="error-summary">
-                        Are you sure you want to delete this link?
-                    </h2>
+  <h2 class="govuk-heading-s govuk-!-margin-bottom-1 payment-links-list--item__title">{{ product.name }}</h2>
+  <h3 class="govuk-visually-hidden">URL</h3>
+  {% if product.links.friendly %}
+      <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="{{ product.links.friendly.href }}">{{ product.links.friendly.href }}</a>
+  {% else %}
+      <a class="govuk-link govuk-link--no-visited-state payment-links-list--item__link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a>
+  {% endif %}
+  {% if product.metadata %}
+      <h3 class="govuk-visually-hidden">Reporting columns</h3>
+      <dl class="reporting-columns govuk-body-s">
+         {% for key, value in product.metadata|dictsort %}
+             <div class="reporting-columns__keypair">
+                  <dt class="reporting-columns__key" id="metadata-key">{{key}}</dt>
+                  <dd class="reporting-columns__value" id="metadata-value">{{value}}</dd>
+              </div>
+          {% endfor %}
+      </dl>
+  {% endif %}
+  {% if permissions.tokens_create %}
+      <div class="govuk-!-margin-top-3">
+          <a class="govuk-!-font-size-16 govuk-!-margin-right-3 govuk-link govuk-link--no-visited-state" href="manage/edit/{{ product.externalId }}">Edit<span class="govuk-visually-hidden">
+                  payment link called
+                  {{product.name}}</span>
+          </a>
+          <a class="govuk-!-font-size-16 govuk-link govuk-link--no-visited-state payment-links-list--item__actions--toggle target-to-show--toggle" href="#delete-{{ product.externalId }}">Delete
+              <span class="govuk-visually-hidden">
+                  payment link called
+                  {{product.name}}</span>
+          </a>
+          <div class="target-to-show govuk-!-margin-top-6" id="delete-{{ product.externalId }}">
+              <div class="govuk-error-summary" role="group" aria-labelledby="error-summary" tabindex="-1">
+                  <h2 tabindex="0" class="target-to-show__heading govuk-error-summary__title" id="error-summary">
+                      Are you sure you want to delete this link?
+                  </h2>
 
-                    <div class="govuk-button-group">
+                  <div class="govuk-button-group">
+                    <form method="post" action="manage/delete/{{ product.externalId }}">
+                      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
                       {{
                         govukButton({
                           text: "Yes, delete this link",
-                          classes: "govuk-button--warning payment-links-list--item__actions--delete js",
-                          href: "manage/delete/" + product.externalId
+                          classes: "govuk-button--warning payment-links-list--item__actions--delete",
+                          type: "submit"
                         })
                       }}
-
                       <a class="govuk-link target-to-show--cancel govuk-link--no-visited-state" href="#main">Cancel</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
+                    </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+  {% endif %}
 </li>

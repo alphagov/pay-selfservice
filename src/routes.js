@@ -372,7 +372,8 @@ module.exports.bind = function (app) {
 
   account.get(paymentLinks.manage.index, permission('transactions:read'), paymentLinksController.getManage)
   account.get(paymentLinks.manage.disable, permission('tokens:create'), paymentLinksController.getDisable)
-  account.get(paymentLinks.manage.delete, permission('tokens:create'), paymentLinksController.getDelete)
+  account.get(paymentLinks.manage.delete, permission('tokens:create'), paymentLinksController.deleteLink.get)
+  account.post(paymentLinks.manage.delete, permission('tokens:create'), paymentLinksController.deleteLink.post)
   account.get(paymentLinks.manage.edit, permission('tokens:create'), paymentLinksController.getEdit)
   account.post(paymentLinks.manage.edit, permission('tokens:create'), paymentLinksController.postEdit)
   account.get(paymentLinks.manage.editInformation, permission('tokens:create'), paymentLinksController.getEditInformation)
