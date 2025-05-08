@@ -25,12 +25,12 @@ Check that you are using the right version of Node, which should match what spec
 node -v
 ```
 
-If the node version is not what specified in package.json, then you need to install it and set it, e.g. for 18.17.1:
+If the node version is not what specified in package.json, then you need to install it and set it, e.g. for 22.14.0:
 
 ```bash
-nvm install 18.17.1
+nvm install 22.14.0
 nvm use
-nvm alias default 18.17.1
+nvm alias default 22.14.0
 ```
 
 Run the following in the project root to start the app:
