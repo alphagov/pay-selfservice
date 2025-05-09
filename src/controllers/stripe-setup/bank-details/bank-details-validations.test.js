@@ -9,7 +9,7 @@ describe('Bank details validations', () => {
     it('should validate successfully', () => {
       const bankAccountNumber = '00012345'
 
-      expect(bankDetailsValidations.validateAccountNumber(bankAccountNumber).valid).to.be.true // eslint-disable-line
+      expect(bankDetailsValidations.validateAccountNumber(bankAccountNumber).valid).to.be.true
     })
 
     it('should not be valid when is empty string', () => {
@@ -33,7 +33,7 @@ describe('Bank details validations', () => {
     it('should validate successfully', () => {
       const sortCode = '108800'
 
-      expect(bankDetailsValidations.validateSortCode(sortCode).valid).to.be.true // eslint-disable-line
+      expect(bankDetailsValidations.validateSortCode(sortCode).valid).to.be.true
     })
 
     it('should not be valid when is empty string', () => {

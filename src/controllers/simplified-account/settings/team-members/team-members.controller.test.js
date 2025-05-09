@@ -58,8 +58,8 @@ describe('Controller: settings/team-members', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockGetServiceUsers.called).to.be.true // eslint-disable-line
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockGetServiceUsers.called).to.be.true
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -82,7 +82,7 @@ describe('Controller: settings/team-members', () => {
       expect(mockResponse.args[0][3]).to.have.property('inviteTeamMemberLink')
         .to.equal('/service/service-id-123abc/account/test/settings/team-members/invite')
       expect(mockResponse.args[0][3]).to.have.property('numberInvitedMembers').to.equal(2)
-      expect(mockResponse.args[0][3]).to.have.property('isServiceAdmin').to.be.true // eslint-disable-line no-unused-expressions
+      expect(mockResponse.args[0][3]).to.have.property('isServiceAdmin').to.be.true
       expect(mockResponse.args[0][3]).to.have.property('roles').to.have.keys('admin', 'view-and-initiate-moto', 'view-and-refund', 'view-only', 'view-refund-and-initiate-moto')
     })
   })
@@ -96,9 +96,9 @@ describe('Controller: settings/team-members', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockGetServiceUsers.called).to.be.true // eslint-disable-line
-      expect(mockResponse.called).to.be.true // eslint-disable-line
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockGetServiceUsers.called).to.be.true
+      expect(mockResponse.called).to.be.true
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -121,7 +121,7 @@ describe('Controller: settings/team-members', () => {
       expect(mockResponse.args[0][3]).to.have.property('inviteTeamMemberLink')
         .to.equal('/service/service-id-123abc/account/test/settings/team-members/invite')
       expect(mockResponse.args[0][3]).to.have.property('numberInvitedMembers').to.equal(2)
-      expect(mockResponse.args[0][3]).to.have.property('isServiceAdmin').to.be.true // eslint-disable-line no-unused-expressions
+      expect(mockResponse.args[0][3]).to.have.property('isServiceAdmin').to.be.true
       expect(mockResponse.args[0][3]).to.have.property('roles').to.have.keys('admin', 'view-and-initiate-moto', 'view-and-refund', 'view-only', 'view-refund-and-initiate-moto')
     })
   })

@@ -35,7 +35,7 @@ describe('Controller: settings/stripe-details/director', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -79,7 +79,7 @@ describe('Controller: settings/stripe-details/director', () => {
       })
       it('should redirect to the stripe details index', () => {
         const redirect = res.redirect
-        expect(redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(redirect.calledOnce).to.be.true
         expect(redirect.args[0][0]).to.include(STRIPE_DETAILS_INDEX_PATH)
       })
     })
@@ -100,10 +100,10 @@ describe('Controller: settings/stripe-details/director', () => {
       })
 
       it('should not submit director details to the stripe details service', () => {
-        expect(mockStripeDetailsService.updateStripeDetailsDirector).to.not.have.been.called // eslint-disable-line
+        expect(mockStripeDetailsService.updateStripeDetailsDirector).to.not.have.been.called
       })
       it('should not redirect to the stripe details index', () => {
-        expect(res.redirect).to.not.have.been.called // eslint-disable-line
+        expect(res.redirect).to.not.have.been.called
       })
       it('should render the form with validation errors', () => {
         sinon.assert.calledOnceWithMatch(mockResponse,

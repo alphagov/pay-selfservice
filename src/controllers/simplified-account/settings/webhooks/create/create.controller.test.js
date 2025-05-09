@@ -28,7 +28,7 @@ describe('Controller: settings/webhooks', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -57,11 +57,11 @@ describe('Controller: settings/webhooks', () => {
       })
 
       it('should call webhooks to create a webhook', () => {
-        expect(mockCreateWebhook.called).to.be.true // eslint-disable-line
+        expect(mockCreateWebhook.called).to.be.true
       })
 
       it('should redirect to the webhooks index page', () => {
-        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.webhooks.index)
       })
     })
@@ -83,8 +83,8 @@ describe('Controller: settings/webhooks', () => {
       })
 
       it('should respond with error message', () => {
-        expect(mockCreateWebhookDomainNotAllowed.called).to.be.true // eslint-disable-line
-        expect(mockResponse.calledOnce).to.be.true // eslint-disable-line
+        expect(mockCreateWebhookDomainNotAllowed.called).to.be.true
+        expect(mockResponse.calledOnce).to.be.true
         expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/webhooks/edit')
         expect(mockResponse.args[0][3]).to.have.property('errors').to.deep.equal({
           summary: [{ text: 'Callback URL must be approved. Please contact support', href: '#callback-url' }],

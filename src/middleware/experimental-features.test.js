@@ -26,7 +26,7 @@ describe('services experimental features middleware', () => {
     }
     experimentalFeatures(req, res, next)
     expect(res.status.calledWith(404))
-    expect(next.called).to.be.false // eslint-disable-line
+    expect(next.called).to.be.false
   })
 
   it('allows access if experimental features are enabled on the service configuration', () => {
@@ -36,6 +36,6 @@ describe('services experimental features middleware', () => {
       }
     }
     experimentalFeatures(req, res, next)
-    expect(next.called).to.be.true // eslint-disable-line
+    expect(next.called).to.be.true
   })
 })

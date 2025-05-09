@@ -109,7 +109,7 @@ describe('products client - find products associated with a particular gateway a
     after(() => provider.verify())
 
     it('should return an empty array', () => {
-      expect(result).to.be.an('array').that.is.empty // eslint-disable-line
+      expect(result).to.be.an('array').that.is.empty
     })
   })
 })

@@ -33,7 +33,7 @@ describe('Controller: settings/email-notifications', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {

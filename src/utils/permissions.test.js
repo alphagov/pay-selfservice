@@ -62,8 +62,8 @@ describe('gateway account filter utiltiies', () => {
       })
       const result = await getGatewayAccountsFor(user, false, 'perm-1')
 
-      expect(result.headers.shouldGetStripeHeaders).to.be.true // eslint-disable-line
-      expect(result.headers.shouldGetMotoHeaders).to.be.true // eslint-disable-line
+      expect(result.headers.shouldGetStripeHeaders).to.be.true
+      expect(result.headers.shouldGetMotoHeaders).to.be.true
       expect(result.hasLiveAccounts).to.equal(false)
       expect(result.hasTestStripeAccount).to.equal(true)
       expect(result.hasStripeAccount).to.equal(true)
@@ -86,8 +86,8 @@ describe('gateway account filter utiltiies', () => {
       })
       const result = await getGatewayAccountsFor(user, true, 'perm-1')
 
-      expect(result.headers.shouldGetStripeHeaders).to.be.false // eslint-disable-line
-      expect(result.headers.shouldGetMotoHeaders).to.be.false // eslint-disable-line
+      expect(result.headers.shouldGetStripeHeaders).to.be.false
+      expect(result.headers.shouldGetMotoHeaders).to.be.false
     })
 
     it('correctly filters accounts', async () => {

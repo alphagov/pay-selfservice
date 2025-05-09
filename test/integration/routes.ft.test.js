@@ -11,7 +11,7 @@ describe('URL redirecting from old ones', () => {
       .get('/transactions')
       .expect(302)
       .then((res) => {
-        res.header['location'].should.include('/my-services') // eslint-disable-line
+        res.header['location'].should.include('/my-services')
       })
   })
 
@@ -21,7 +21,7 @@ describe('URL redirecting from old ones', () => {
       .get('/dashboard')
       .expect(302)
       .then((res) => {
-        res.header['location'].should.include('/my-services') // eslint-disable-line
+        res.header['location'].should.include('/my-services')
       })
   })
 
@@ -32,8 +32,8 @@ describe('URL redirecting from old ones', () => {
       .get('/billing-address')
       .expect(302)
       .then((res) => {
-        res.header['location'].should.include('/login') // eslint-disable-line
-        requestSession.last_url.should.equal('/billing-address') //eslint-disable-line
+        res.header['location'].should.include('/login')
+        requestSession.last_url.should.equal('/billing-address')
       })
   })
 
@@ -43,7 +43,7 @@ describe('URL redirecting from old ones', () => {
       .get('/billing-address')
       .expect(302)
       .then((res) => {
-        res.header['location'].should.include('/my-services') // eslint-disable-line
+        res.header['location'].should.include('/my-services')
       })
   })
 

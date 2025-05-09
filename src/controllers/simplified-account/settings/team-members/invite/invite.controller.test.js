@@ -40,7 +40,7 @@ describe('Controller: settings/team-members/invite', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -67,7 +67,7 @@ describe('post', () => {
     })
 
     it('should call adminusers to send an invite', () => {
-      expect(mockCreateInviteToJoinService.calledWith('user-to-invite@users.gov.uk', adminUser.externalId, SERVICE_ID, 'view-only')).to.be.true // eslint-disable-line
+      expect(mockCreateInviteToJoinService.calledWith('user-to-invite@users.gov.uk', adminUser.externalId, SERVICE_ID, 'view-only')).to.be.true
     })
 
     it('should redirect to the team members index page', () => {
@@ -76,7 +76,7 @@ describe('post', () => {
         icon: '&check;',
         heading: 'Team member invitation sent to user-to-invite@users.gov.uk'
       })
-      expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+      expect(res.redirect.calledOnce).to.be.true
       expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.teamMembers.index)
     })
   })
@@ -91,8 +91,8 @@ describe('post', () => {
     })
 
     it('should respond with error message', () => {
-      expect(mockCreateInviteToJoinService.calledWith('user-to-invite@users.gov.uk', adminUser.externalId, SERVICE_ID, 'view-only')).to.be.true // eslint-disable-line
-      expect(mockResponse.calledOnce).to.be.true // eslint-disable-line
+      expect(mockCreateInviteToJoinService.calledWith('user-to-invite@users.gov.uk', adminUser.externalId, SERVICE_ID, 'view-only')).to.be.true
+      expect(mockResponse.calledOnce).to.be.true
       expect(mockResponse.args[0][1]).to.deep.equal(res)
       expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/team-members/invite')
       expect(mockResponse.args[0][3]).to.have.property('errors').to.deep.equal({

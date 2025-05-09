@@ -40,7 +40,7 @@ describe('Controller: settings/organisation-details', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockResponse).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
+      expect(mockResponse).to.have.been.calledOnce
     })
 
     it('should call the response method with req, res, and template path', () => {
@@ -85,7 +85,7 @@ describe('Controller: settings/organisation-details', () => {
     })
 
     it('should call the updateService method with the correct PATCH request', () => {
-      expect(updateServiceSpy).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
+      expect(updateServiceSpy).to.have.been.calledOnce
       expect(updateServiceSpy).to.have.been.calledWith(SERVICE_EXTERNAL_ID, [
         {
           op: 'replace',
@@ -131,7 +131,7 @@ describe('Controller: settings/organisation-details', () => {
     })
 
     it('should call redirect with the correct path', () => {
-      expect(res.redirect).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
+      expect(res.redirect).to.have.been.calledOnce
       expect(res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
     })
   })

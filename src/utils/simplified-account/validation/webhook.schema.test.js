@@ -17,7 +17,7 @@ describe('Webhook Validation', () => {
   describe('Callback url validation', () => {
     it('should pass with a valid callback url', async () => {
       await webhookSchema.callbackUrl.validate.run(VALID_REQUEST)
-      expect(validationResult(VALID_REQUEST).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(VALID_REQUEST).isEmpty()).to.be.true
     })
 
     it('should fail when callback url is empty', async () => {
@@ -51,7 +51,7 @@ describe('Webhook Validation', () => {
   describe('description validation', () => {
     it('should pass with a valid description', async () => {
       await webhookSchema.description.validate.run(VALID_REQUEST)
-      expect(validationResult(VALID_REQUEST).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(VALID_REQUEST).isEmpty()).to.be.true
     })
 
     it('should fail when description is empty', async () => {
@@ -76,7 +76,7 @@ describe('Webhook Validation', () => {
   describe('subscriptions validation', () => {
     it('should pass with more than one subscriptions', async () => {
       await webhookSchema.subscriptions.validate.run(VALID_REQUEST)
-      expect(validationResult(VALID_REQUEST).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(VALID_REQUEST).isEmpty()).to.be.true
     })
 
     it('should pass with one subscription', async () => {
@@ -84,7 +84,7 @@ describe('Webhook Validation', () => {
         body: Object.assign({}, VALID_REQUEST.body, { subscriptions: 'card_payment_succeeded' })
       }
       await webhookSchema.subscriptions.validate.run(validRequestWithOneSubscription)
-      expect(validationResult(validRequestWithOneSubscription).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(validRequestWithOneSubscription).isEmpty()).to.be.true
     })
 
     it('should fail with no subscriptions', async () => {

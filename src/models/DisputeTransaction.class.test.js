@@ -40,10 +40,10 @@ describe('Dispute transaction model', () => {
     expect(dispute.created_date).to.equal(dates.utcToDisplay('2022-07-26T19:57:26.000Z'))
     expect(dispute.state_friendly).to.equal('Dispute under review')
 
-    expect(dispute.reason_friendly).to.be.undefined // eslint-disable-line
-    expect(dispute.amount_friendly).to.be.undefined // eslint-disable-line
-    expect(dispute.net_amount_friendly).to.be.undefined // eslint-disable-line
-    expect(dispute.fee_friendly).to.be.undefined // eslint-disable-line
-    expect(dispute.evidence_due_date_friendly).to.be.undefined // eslint-disable-line
+    expect(dispute.reason_friendly).to.be.undefined
+    expect(dispute.amount_friendly).to.be.undefined
+    expect(dispute.net_amount_friendly).to.be.undefined
+    expect(dispute.fee_friendly).to.be.undefined
+    expect(dispute.evidence_due_date_friendly).to.be.undefined
   })
 })

@@ -32,7 +32,7 @@ describe('Controller: settings/card-payments/collect-billing-address', () => {
       call('get')
     })
     it('should call the response method', () => {
-      expect(mockResponse).to.have.been.calledOnce  // eslint-disable-line
+      expect(mockResponse).to.have.been.calledOnce
     })
     it('should pass req, res and template path to the response method', () => {
       expect(mockResponse.args[0][0]).to.deep.equal(req)
@@ -55,12 +55,12 @@ describe('Controller: settings/card-payments/collect-billing-address', () => {
     })
 
     it('should update allow Collect billing address enabled', () => {
-      expect(mockUpdateCollectBillingAddress.calledOnce).to.be.true // eslint-disable-line
-      expect(mockUpdateCollectBillingAddress.calledWith(SERVICE_EXTERNAL_ID, true)).to.be.true // eslint-disable-line
+      expect(mockUpdateCollectBillingAddress.calledOnce).to.be.true
+      expect(mockUpdateCollectBillingAddress.calledWith(SERVICE_EXTERNAL_ID, true)).to.be.true
     })
 
     it('should redirect to the card payments index page', () => {
-      expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+      expect(res.redirect.calledOnce).to.be.true
       expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.cardPayments.index)
     })
   })

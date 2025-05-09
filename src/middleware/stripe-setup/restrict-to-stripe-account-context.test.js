@@ -29,9 +29,9 @@ describe('Restrict to live stripe account middleware', () => {
 
     restrictToStripeAccountContext(req, res, next)
 
-    expect(next.calledOnce).to.be.true // eslint-disable-line
-    expect(res.status.notCalled).to.be.true // eslint-disable-line
-    expect(res.render.notCalled).to.be.true // eslint-disable-line
+    expect(next.calledOnce).to.be.true
+    expect(res.status.notCalled).to.be.true
+    expect(res.render.notCalled).to.be.true
   })
 
   it('should throw NotFoundError when the gateway account is not in the request', () => {

@@ -81,7 +81,7 @@ describe('Controller: settings/card-types', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -110,7 +110,7 @@ describe('Controller: settings/card-types', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -140,7 +140,7 @@ describe('Controller: settings/card-types', () => {
     })
 
     it('should call adminusers to update accepted card types', () => {
-      expect(mockPostAcceptedCardsForServiceAndAccountType.called).to.be.true // eslint-disable-line
+      expect(mockPostAcceptedCardsForServiceAndAccountType.called).to.be.true
     })
 
     it('should redirect to same page with success notification', () => {
@@ -149,7 +149,7 @@ describe('Controller: settings/card-types', () => {
         icon: '&check;',
         heading: 'Accepted card types have been updated'
       })
-      expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+      expect(res.redirect.calledOnce).to.be.true
       expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.cardTypes.index)
     })
   })
@@ -164,12 +164,12 @@ describe('Controller: settings/card-types', () => {
     })
 
     it('should not call adminusers', () => {
-      expect(mockPostAcceptedCardsForServiceAndAccountType.called).to.be.false // eslint-disable-line no-unused-expressions
+      expect(mockPostAcceptedCardsForServiceAndAccountType.called).to.be.false
     })
 
     it('should redirect to same page without a notification', () => {
-      expect(req.flash).to.have.been.not.called // eslint-disable-line no-unused-expressions
-      expect(res.redirect.calledOnce).to.be.true // eslint-disable-line no-unused-expressions
+      expect(req.flash).to.have.been.not.called
+      expect(res.redirect.calledOnce).to.be.true
       expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.cardTypes.index)
     })
   })
@@ -184,7 +184,7 @@ describe('Controller: settings/card-types', () => {
     })
 
     it('should not call adminusers', () => {
-      expect(mockPostAcceptedCardsForServiceAndAccountType.called).to.be.false // eslint-disable-line no-unused-expressions
+      expect(mockPostAcceptedCardsForServiceAndAccountType.called).to.be.false
     })
 
     it('should should pass context data to the response method with an error', () => {

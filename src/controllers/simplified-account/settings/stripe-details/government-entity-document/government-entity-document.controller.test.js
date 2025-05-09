@@ -36,7 +36,7 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
     })
 
     it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -95,15 +95,15 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
         })
 
         it('should not submit the file to the stripe details service', () => {
-          expect(mockStripeDetailsService.updateStripeDetailsUploadEntityDocument).to.not.have.been.called // eslint-disable-line
+          expect(mockStripeDetailsService.updateStripeDetailsUploadEntityDocument).to.not.have.been.called
         })
 
         it('should not set message', () => {
-          expect(req.flash).to.not.have.been.called // eslint-disable-line
+          expect(req.flash).to.not.have.been.called
         })
 
         it('should not redirect to the stripe details index', () => {
-          expect(res.redirect).to.not.have.been.called // eslint-disable-line
+          expect(res.redirect).to.not.have.been.called
         })
 
         it('should call response with errors', () => {
@@ -139,15 +139,15 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
         })
 
         it('should not submit the file to the stripe details service', () => {
-          expect(mockStripeDetailsService.updateStripeDetailsUploadEntityDocument).to.not.have.been.called // eslint-disable-line
+          expect(mockStripeDetailsService.updateStripeDetailsUploadEntityDocument).to.not.have.been.called
         })
 
         it('should not set message', () => {
-          expect(req.flash).to.not.have.been.called // eslint-disable-line
+          expect(req.flash).to.not.have.been.called
         })
 
         it('should not redirect to the stripe details index', () => {
-          expect(res.redirect).to.not.have.been.called // eslint-disable-line
+          expect(res.redirect).to.not.have.been.called
         })
 
         it('should call response with errors', () => {
@@ -178,15 +178,15 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
         })
 
         it('should not submit the file to the stripe details service', () => {
-          expect(mockStripeDetailsService.updateStripeDetailsUploadEntityDocument).to.not.have.been.called // eslint-disable-line
+          expect(mockStripeDetailsService.updateStripeDetailsUploadEntityDocument).to.not.have.been.called
         })
 
         it('should not set message', () => {
-          expect(req.flash).to.not.have.been.called // eslint-disable-line
+          expect(req.flash).to.not.have.been.called
         })
 
         it('should not redirect to the stripe details index', () => {
-          expect(res.redirect).to.not.have.been.called // eslint-disable-line
+          expect(res.redirect).to.not.have.been.called
         })
 
         it('should call response with errors', () => {
@@ -228,11 +228,11 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
       })
 
       it('should not set message', () => {
-        expect(req.flash).to.not.have.been.called // eslint-disable-line
+        expect(req.flash).to.not.have.been.called
       })
 
       it('should not redirect to the stripe details index', () => {
-        expect(res.redirect).to.not.have.been.called // eslint-disable-line
+        expect(res.redirect).to.not.have.been.called
       })
 
       it('should call response with errors', () => {

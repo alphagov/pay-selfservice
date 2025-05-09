@@ -166,7 +166,7 @@ describe('adminusers client - patch request to update service', function () {
     afterEach(() => provider.verify())
 
     it('should reject promise', () => {
-      return adminUsersClient.updateService(existingServiceExternalId, invalidRequest).should.be.rejected // eslint-disable-line
+      return adminUsersClient.updateService(existingServiceExternalId, invalidRequest).should.be.rejected
     })
   })
 })

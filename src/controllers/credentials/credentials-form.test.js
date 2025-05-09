@@ -4,7 +4,7 @@ const { CredentialsForm, isNotEmpty } = require('./credentials-form')
 describe('Credentials forms', () => {
   it('constructs a form with no fields', () => {
     const form = new CredentialsForm()
-    expect(form).to.not.be.null // eslint-disable-line
+    expect(form).to.not.be.null
     expect(form.validate().errors).to.deep.equal({})
   })
 

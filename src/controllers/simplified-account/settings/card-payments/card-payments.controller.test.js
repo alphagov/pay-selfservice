@@ -75,7 +75,7 @@ describe('Controller: settings/card-payments', () => {
           call('get')
         })
         it('should call the response method', () => {
-          expect(mockResponse).to.have.been.calledOnce  // eslint-disable-line
+          expect(mockResponse).to.have.been.calledOnce
         })
 
         it('should pass req, res and template path to the response method', () => {
@@ -194,7 +194,7 @@ describe('Controller: settings/card-payments', () => {
           call('get')
         })
         it('should call the response method', () => {
-          expect(mockResponse).to.have.been.calledOnce  // eslint-disable-line
+          expect(mockResponse).to.have.been.calledOnce
         })
 
         it('should pass req, res and template path to the response method', () => {

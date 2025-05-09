@@ -38,7 +38,7 @@ describe('Controller: settings/card-payments/google-pay', () => {
         call('get', 1)
       })
       it('should call the response method', () => {
-        expect(mockResponse).to.have.been.calledOnce  // eslint-disable-line
+        expect(mockResponse).to.have.been.calledOnce
       })
       it('should pass req, res and template path to the response method', () => {
         expect(mockResponse.args[0][0]).to.deep.equal(req)
@@ -91,7 +91,7 @@ describe('Controller: settings/card-payments/google-pay', () => {
       })
 
       it('should update allow Google Pay enabled', () => {
-        expect(mockUpdateGooglePay.calledOnce).to.be.true // eslint-disable-line
+        expect(mockUpdateGooglePay.calledOnce).to.be.true
         sinon.assert.calledWith(mockUpdateGooglePay, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
       })
 
@@ -135,7 +135,7 @@ describe('Controller: settings/card-payments/google-pay', () => {
       })
 
       it('should update allow Google Pay enabled', () => {
-        expect(mockUpdateGooglePay.calledOnce).to.be.true // eslint-disable-line
+        expect(mockUpdateGooglePay.calledOnce).to.be.true
         sinon.assert.calledWith(mockUpdateGooglePay, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
       })
 

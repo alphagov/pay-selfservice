@@ -50,7 +50,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
       })
 
       it('should call the response method', () => {
-        expect(mockResponse.called).to.be.true // eslint-disable-line
+        expect(mockResponse.called).to.be.true
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -81,7 +81,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
         call('get')
       })
       it('should call the response method', () => {
-        expect(mockResponse.called).to.be.true // eslint-disable-line
+        expect(mockResponse.called).to.be.true
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -122,7 +122,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
         await call('post')
       })
       it('should render the form with an error', () => {
-        mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockResponse.should.have.been.calledOnce
         mockResponse.should.have.been.calledWith(
           sinon.match.any,
           sinon.match.any,
@@ -151,7 +151,7 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
         await call('post')
       })
       it('should call the worldpay details service to update the recurring customer initiated credentials', () => {
-        worldpayDetailsServiceStubs.updateRecurringCustomerInitiatedCredentials.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        worldpayDetailsServiceStubs.updateRecurringCustomerInitiatedCredentials.should.have.been.calledOnce
         const credential = new WorldpayCredential()
           .withMerchantCode('a-merchant-code')
           .withUsername('a-username')

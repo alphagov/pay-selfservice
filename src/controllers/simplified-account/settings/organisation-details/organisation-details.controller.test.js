@@ -44,7 +44,7 @@ describe('Controller: settings/organisation-details', () => {
       })
 
       it('should call the response method', () => {
-        expect(mockResponse).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        expect(mockResponse).to.have.been.calledOnce
       })
 
       it('should call the response method with req, res, template path, and context', () => {
@@ -71,7 +71,7 @@ describe('Controller: settings/organisation-details', () => {
       })
 
       it('should call the redirect method with the edit organisation details url', () => {
-        expect(res.redirect).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        expect(res.redirect).to.have.been.calledOnce
         expect(res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
       })
     })

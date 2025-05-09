@@ -47,7 +47,7 @@ describe('User clicks on Logout', function () {
       .expect(302)
       .expect('Location', '/login')
       .expect(() => {
-        expect(getMockSession.version).to.be.undefined  // eslint-disable-line
+        expect(getMockSession.version).to.be.undefined
       })
       .end(done)
   })
@@ -64,7 +64,7 @@ describe('User clicks on Logout', function () {
       .expect(302)
       .expect('Location', '/login')
       .expect(() => {
-        expect(getMockSession.version).to.be.undefined  // eslint-disable-line
+        expect(getMockSession.version).to.be.undefined
       })
       .end(done)
   })

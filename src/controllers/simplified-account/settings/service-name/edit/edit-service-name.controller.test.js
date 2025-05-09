@@ -36,7 +36,7 @@ describe('Controller: edit service name', () => {
       })
 
       it('should call the response method', () => {
-        mockResponse.should.have.been.calledOnce // eslint-disable-line
+        mockResponse.should.have.been.calledOnce
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -66,7 +66,7 @@ describe('Controller: edit service name', () => {
       })
 
       it('should call the response method', () => {
-        mockResponse.should.have.been.calledOnce // eslint-disable-line
+        mockResponse.should.have.been.calledOnce
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -98,12 +98,12 @@ describe('Controller: edit service name', () => {
       })
 
       it('should update the service name', () => {
-        mockUpdateServiceName.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockUpdateServiceName.should.have.been.calledOnce
         mockUpdateServiceName.should.have.been.calledWith(SERVICE_EXTERNAL_ID, 'New English Name', CY_SERVICE_NAME)
       })
 
       it('should redirect to the service name index page', () => {
-        res.redirect.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        res.redirect.should.have.been.calledOnce
         res.redirect.should.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
       })
     })
@@ -119,12 +119,12 @@ describe('Controller: edit service name', () => {
       })
 
       it('should update the service name', () => {
-        mockUpdateServiceName.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockUpdateServiceName.should.have.been.calledOnce
         mockUpdateServiceName.should.have.been.calledWith(SERVICE_EXTERNAL_ID, EN_SERVICE_NAME, 'New Welsh Name')
       })
 
       it('should redirect to the service name index page', () => {
-        res.redirect.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        res.redirect.should.have.been.calledOnce
         res.redirect.should.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
       })
     })
@@ -142,11 +142,11 @@ describe('Controller: edit service name', () => {
       })
 
       it('should not update the service name', () => {
-        mockUpdateServiceName.should.not.have.been.called // eslint-disable-line no-unused-expressions
+        mockUpdateServiceName.should.not.have.been.called
       })
 
       it('should render the edit page with errors', () => {
-        mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockResponse.should.have.been.calledOnce
         mockResponse.should.have.been.calledWith(callContext.req, res, 'simplified-account/settings/service-name/edit-service-name')
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
           editCy: false,

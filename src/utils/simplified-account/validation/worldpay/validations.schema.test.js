@@ -18,7 +18,7 @@ describe('One Off Customer Initiated Credentials Validation', () => {
     it('should pass with valid merchant code', async () => {
       req.body.merchantCode = 'MCDUCKENTPROD'
       await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.merchantCode.validate.run(req)
-      expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(req).isEmpty()).to.be.true
     })
 
     it('should fail when merchant code is empty', async () => {
@@ -48,7 +48,7 @@ describe('One Off Customer Initiated Credentials Validation', () => {
       it(`should pass with valid ${desc}`, async () => {
         req.body.merchantCode = merchantCode
         await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.merchantCode.validate.run(req)
-        expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
+        expect(validationResult(req).isEmpty()).to.be.true
       })
     })
 
@@ -80,7 +80,7 @@ describe('One Off Customer Initiated Credentials Validation', () => {
     it('should pass with valid username', async () => {
       req.body.username = 's-mcduck'
       await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.username.validate.run(req)
-      expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(req).isEmpty()).to.be.true
     })
 
     it('should fail when username is empty', async () => {
@@ -104,7 +104,7 @@ describe('One Off Customer Initiated Credentials Validation', () => {
     it('should pass with valid password', async () => {
       req.body.password = 'topsecret!!!1' // pragma: allowlist secret
       await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.password.validate.run(req)
-      expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(req).isEmpty()).to.be.true
     })
 
     it('should fail when password is empty', async () => {

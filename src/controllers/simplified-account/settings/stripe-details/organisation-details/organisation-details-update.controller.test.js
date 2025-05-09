@@ -97,7 +97,7 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
       })
 
       it('should redirect to the stripe details index page', () => {
-        expect(res.redirect).to.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        expect(res.redirect).to.have.been.calledOnce
         expect(res.redirect).to.have.been.calledWith(STRIPE_DETAILS_INDEX_PATH)
       })
     })
@@ -117,11 +117,11 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
       })
 
       it('should not submit organisation details to the stripe details service', () => {
-        expect(mockStripeDetailsService.updateStripeDetailsOrganisationNameAndAddress).to.not.have.been.called // eslint-disable-line
+        expect(mockStripeDetailsService.updateStripeDetailsOrganisationNameAndAddress).to.not.have.been.called
       })
 
       it('should not redirect', () => {
-        expect(res.redirect).to.not.have.been.called // eslint-disable-line
+        expect(res.redirect).to.not.have.been.called
       })
 
       it('should pass context data to the response method with errors', () => {

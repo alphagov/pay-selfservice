@@ -59,8 +59,8 @@ describe('Controller: settings/team-members/remove-user', () => {
       })
 
       it('should call the response method', () => {
-        expect(mockFindByExternalId.called).to.be.true // eslint-disable-line
-        expect(mockResponse.called).to.be.true // eslint-disable-line
+        expect(mockFindByExternalId.called).to.be.true
+        expect(mockResponse.called).to.be.true
       })
 
       it('should pass req, res, template path and context to the response method', () => {
@@ -103,7 +103,7 @@ describe('Controller: settings/team-members/remove-user', () => {
       })
 
       it('should remove the user from the service', () => {
-        expect(mockDelete.calledWith(SERVICE_ID, 'user-id-for-admin-user', 'user-id-to-remove')).to.be.true // eslint-disable-line
+        expect(mockDelete.calledWith(SERVICE_ID, 'user-id-for-admin-user', 'user-id-to-remove')).to.be.true
       })
 
       it('should redirect to the team members index page', () => {
@@ -112,7 +112,7 @@ describe('Controller: settings/team-members/remove-user', () => {
           icon: '&check;',
           heading: 'Successfully removed user-to-remove@users.gov.uk'
         })
-        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.teamMembers.index)
       })
     })
@@ -128,9 +128,9 @@ describe('Controller: settings/team-members/remove-user', () => {
       })
 
       it('should redirect to the team members page without deleting the user', () => {
-        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.teamMembers.index)
-        expect(mockDelete.called).to.be.false // eslint-disable-line
+        expect(mockDelete.called).to.be.false
       })
     })
 

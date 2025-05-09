@@ -113,7 +113,7 @@ describe('middleware: getGatewayAccountAndService', () => {
 
     await getGatewayAccountAndService(req, res, next)
     sinon.assert.calledOnce(next)
-    expect(req.account).to.be.undefined // eslint-disable-line
+    expect(req.account).to.be.undefined
   })
   it('should set service based on gateway account, when serviceExternalId cannot be resolved', async () => {
     const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
@@ -129,7 +129,7 @@ describe('middleware: getGatewayAccountAndService', () => {
 
     await getGatewayAccountAndService(req, res, next)
     sinon.assert.calledOnce(next)
-    expect(req.service).to.be.undefined // eslint-disable-line
+    expect(req.service).to.be.undefined
   })
   it('should continue without setting service or gateway account, if user is not available on req object', async () => {
     const getGatewayAccountAndService = setupGetGatewayAccountAndService(1, 'some-gateway-external-id', 'worldpay', 'some-service-external-id')
@@ -137,8 +137,8 @@ describe('middleware: getGatewayAccountAndService', () => {
 
     await getGatewayAccountAndService(req, res, next)
     sinon.assert.calledOnce(next)
-    expect(req.service).to.be.undefined // eslint-disable-line
-    expect(req.account).to.be.undefined // eslint-disable-line
+    expect(req.service).to.be.undefined
+    expect(req.account).to.be.undefined
   })
   describe('extend gateway account data with disableToggle3ds field', () => {
     ['worldpay', 'smartpay', 'epdq'].forEach(function (value) {

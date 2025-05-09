@@ -50,7 +50,7 @@ describe('Controller: settings/stripe-details/responsible-person-contact-details
       before(() => setupTest('get'))
 
       it('should call the response method', () => {
-        expect(responseStub.called).to.be.true // eslint-disable-line
+        expect(responseStub.called).to.be.true
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -61,7 +61,7 @@ describe('Controller: settings/stripe-details/responsible-person-contact-details
 
       it('should pass context data to the response method', () => {
         expect(responseStub.args[0][3]).to.have.property('backLink').to.equal(RESPONSIBLE_PERSON_ADDRESS_PATH)
-        expect(responseStub.args[0][3]).to.have.property('contact').to.be.undefined // eslint-disable-line
+        expect(responseStub.args[0][3]).to.have.property('contact').to.be.undefined
       })
     })
     describe('existing form state', () => {
@@ -101,7 +101,7 @@ describe('Controller: settings/stripe-details/responsible-person-contact-details
       }))
 
       it('should redirect to the check answers controller', () => {
-        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.equal(RESPONSIBLE_PERSON_CHECK_ANSWERS_PATH)
       })
 
@@ -128,7 +128,7 @@ describe('Controller: settings/stripe-details/responsible-person-contact-details
       }))
 
       it('should not redirect', () => {
-        expect(res.redirect.called).to.be.false // eslint-disable-line
+        expect(res.redirect.called).to.be.false
       })
 
       it('should pass context data to the response method with errors', () => {

@@ -55,7 +55,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
       })
 
       it('should call the response method', () => {
-        expect(mockResponse.called).to.be.true // eslint-disable-line
+        expect(mockResponse.called).to.be.true
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -198,7 +198,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
           it('should render the form with an error', async () => {
             await call('post')
 
-            mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+            mockResponse.should.have.been.calledOnce
             mockResponse.should.have.been.calledWith(
               sinon.match.any,
               sinon.match.any,
@@ -229,7 +229,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
           it('should call the worldpay details service to update the 3ds flex credentials', async () => {
             await call('post')
 
-            worldpayDetailsServiceStubs.update3dsFlexCredentials.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+            worldpayDetailsServiceStubs.update3dsFlexCredentials.should.have.been.calledOnce
             worldpayDetailsServiceStubs.update3dsFlexCredentials.should.have.been.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, validFlexCredential)
           })
         })
@@ -237,7 +237,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
         it('should call the worldpay details service to update the 3ds integration version', async () => {
           await call('post')
 
-          worldpayDetailsServiceStubs.updateIntegrationVersion3ds.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+          worldpayDetailsServiceStubs.updateIntegrationVersion3ds.should.have.been.calledOnce
           worldpayDetailsServiceStubs.updateIntegrationVersion3ds.should.have.been.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
         })
 

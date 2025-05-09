@@ -35,7 +35,7 @@ describe('Controller: settings/webhooks/update', () => {
     })
 
     it('should call the response method', () => {
-      mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+      mockResponse.should.have.been.calledOnce
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -53,7 +53,7 @@ describe('Controller: settings/webhooks/update', () => {
     })
 
     it('should call the webhooks service to find the webhook', () => {
-      mockGetWebhook.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+      mockGetWebhook.should.have.been.calledOnce
       mockGetWebhook.should.have.been.calledWith('webhook-external-id', SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID)
     })
   })
@@ -72,11 +72,11 @@ describe('Controller: settings/webhooks/update', () => {
       })
 
       it('should call the webhook service to update the webhook', () => {
-        mockUpdateWebhook.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockUpdateWebhook.should.have.been.calledOnce
       })
 
       it('should redirect to the webhook detail page', () => {
-        res.redirect.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        res.redirect.should.have.been.calledOnce
         res.redirect.should.have.been.calledWith('/service/service-id-123abc/account/test/settings/webhooks/webhook-external-id')
       })
     })
@@ -97,7 +97,7 @@ describe('Controller: settings/webhooks/update', () => {
       })
 
       it('should respond with error message', () => {
-        mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockResponse.should.have.been.calledOnce
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, {
           errorSummary: [
             { text: 'Select from the list of payment events', href: '#subscriptions' },
@@ -126,8 +126,8 @@ describe('Controller: settings/webhooks/update', () => {
       })
 
       it('should respond with error message', () => {
-        mockUpdateWebhookDomainNotAllowed.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
-        mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockUpdateWebhookDomainNotAllowed.should.have.been.calledOnce
+        mockResponse.should.have.been.calledOnce
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, {
           errorSummary: [{ text: 'Callback URL must be approved. Please contact support', href: '#callback-url' }],
           formErrors: { callbackUrl: 'Callback URL must be approved. Please contact support' }
@@ -151,7 +151,7 @@ describe('Controller: settings/webhooks/update', () => {
       })
 
       it('should respond with error message', () => {
-        mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockResponse.should.have.been.calledOnce
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, {
           errorSummary: [{ text: 'Enter a valid callback url beginning with https://', href: '#callback-url' }],
           formErrors: { callbackUrl: 'Enter a valid callback url beginning with https://' }

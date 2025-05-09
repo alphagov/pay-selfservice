@@ -56,7 +56,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
       before(() => setupTest('get'))
 
       it('should redirect the user to the start of the journey', () => {
-        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(RESPONSIBLE_PERSON_INDEX_PATH)
       })
     })
@@ -94,7 +94,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
       }))
 
       it('should call the response method', () => {
-        expect(responseStub.called).to.be.true // eslint-disable-line
+        expect(responseStub.called).to.be.true
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -155,7 +155,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
 
       it('should submit responsible person to the stripe details service', () => {
         const call = updateStripeDetailsResponsiblePersonStub.getCall(0)
-        expect(call).to.not.be.null // eslint-disable-line
+        expect(call).to.not.be.null
         expect(call.args).to.deep.equal([
           req.service,
           req.account,
@@ -176,11 +176,11 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
       })
 
       it('should unset the form state key', () => {
-        expect(_.get(req, FORM_STATE_KEY)).to.be.undefined // eslint-disable-line
+        expect(_.get(req, FORM_STATE_KEY)).to.be.undefined
       })
 
       it('should redirect to the stripe details index page', () => {
-        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(STRIPE_DETAILS_INDEX_PATH)
       })
     })
@@ -207,7 +207,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
         })
 
         it('should render the check your answers view with an appropriate error message', () => {
-          expect(responseStub.calledOnce).to.be.true // eslint-disable-line
+          expect(responseStub.calledOnce).to.be.true
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary[0].text).to.equal(
             'There is a problem with your telephone number. Please check your answer and try again.'
@@ -236,7 +236,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
         })
 
         it('should render the check your answers view with an appropriate error message', () => {
-          expect(responseStub.calledOnce).to.be.true // eslint-disable-line
+          expect(responseStub.calledOnce).to.be.true
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary[0].text).to.equal(
             'There is a problem with the information you\'ve submitted. We\'ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.'
@@ -264,7 +264,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
         })
 
         it('should pass the error to next middleware', () => {
-          expect(next.calledOnce).to.be.true // eslint-disable-line
+          expect(next.calledOnce).to.be.true
           expect(next.firstCall.args[0].foo).to.equal('bar')
         })
       })
