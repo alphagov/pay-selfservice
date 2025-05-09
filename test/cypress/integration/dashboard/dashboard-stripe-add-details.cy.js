@@ -67,24 +67,7 @@ describe('The Stripe psp details banner', () => {
     cy.setEncryptedCookies(userExternalId)
   })
 
-  it.skip('should display call to action banner when all the tasks are not complete ', () => {
-    setupYourPspStubs({})
-
-    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
-    cy.get('.govuk-notification-banner__title').contains('Important')
-    cy.get('.govuk-notification-banner__content')
-      .contains('Finish setting up your service to start taking payments')
-      .parent()
-      .contains('You\'ve started to set up your live account. There are still some steps you need to complete.')
-      .within(() => {
-        cy.get('a')
-          .should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
-          .click()
-      })
-    cy.get('h1').contains('Information for Stripe')
-  })
-
-  it('call to action banner should link to payment provider stripe details for degatewayed user', () => {
+  it('call to action banner should link to payment provider stripe details', () => {
     setupYourPspStubs({
     })
 
