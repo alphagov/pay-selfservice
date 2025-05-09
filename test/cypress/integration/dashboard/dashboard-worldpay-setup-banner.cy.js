@@ -46,24 +46,7 @@ describe('Worldpay account setup banner', () => {
   }
 
   describe('Admin user', () => {
-    it.skip('should display banner if account is worldpay and the credentials are in CREATED state', () => {
-      setupStubs('admin')
-      cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
-
-      cy.get('.govuk-notification-banner__title').contains('Important')
-      cy.get('.govuk-notification-banner__content')
-        .contains('Finish setting up your service to start taking payments')
-        .parent()
-        .contains('You\'ve started to set up your live account. There are still some steps you need to complete.')
-        .within(() => {
-          cy.get('a')
-            .should('have.attr', 'href', '/account/a-valid-external-id/your-psp/a-valid-external-id')
-            .click()
-        })
-      cy.get('h1').contains('Your payment service provider (PSP) - Worldpay')
-    })
-
-    it('banner should link to payment provider stripe details for degatewayed user', () => {
+    it('banner should link to payment provider stripe details', () => {
       setupStubs('admin', 'degatewayaccountification')
 
       cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
