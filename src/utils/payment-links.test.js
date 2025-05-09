@@ -28,13 +28,13 @@ describe('payment links helper methods', () => {
     it('correctly gets nothing if there is no payment links session', () => {
       const mockRequest = { route: { path: '/create-payment-link/review' } }
       const result = getPaymentLinksContext(mockRequest)
-      expect(result.sessionData).to.be.undefined // eslint-disable-line
+      expect(result.sessionData).to.be.undefined
     })
 
     it('correctly flags context as creating payment link if not in manage list', () => {
       const mockRequest = { route: { path: paths.account.paymentLinks.review } }
       const result = getPaymentLinksContext(mockRequest)
-      expect(result.isCreatingPaymentLink).to.be.true // eslint-disable-line
+      expect(result.isCreatingPaymentLink).to.be.true
       expect(result.listMetadataPageUrl).to.include(paths.account.paymentLinks.review)
       expect(result.addMetadataPageUrl).to.include(paths.account.paymentLinks.addMetadata)
     })
@@ -45,7 +45,7 @@ describe('payment links helper methods', () => {
         params: { productExternalId: 'an-external-id' }
       }
       const result = getPaymentLinksContext(mockRequest)
-      expect(result.isCreatingPaymentLink).to.be.false // eslint-disable-line
+      expect(result.isCreatingPaymentLink).to.be.false
       expect(result.listMetadataPageUrl).to.include('/create-payment-link/manage/edit/an-external-id')
       expect(result.addMetadataPageUrl).to.include('/create-payment-link/manage/an-external-id/add-reporting-column')
     })
@@ -75,7 +75,7 @@ describe('payment links helper methods', () => {
       }
     }
     metadata.removeMetadata(mockPaymentLinkSession, 'key')
-    expect(mockPaymentLinkSession.metadata['key']).to.be.undefined // eslint-disable-line
+    expect(mockPaymentLinkSession.metadata['key']).to.be.undefined
   })
 
   it('updates session to consistently replace a metadata key if the same key is used', () => {
@@ -95,7 +95,7 @@ describe('payment links helper methods', () => {
       }
     }
     metadata.updateMetadata(mockPaymentLinkSession, 'key', 'updated-key', 'second-value')
-    expect(mockPaymentLinkSession.metadata['key']).to.be.undefined // eslint-disable-line
+    expect(mockPaymentLinkSession.metadata['key']).to.be.undefined
     expect(mockPaymentLinkSession.metadata['updated-key']).to.equal('second-value')
   })
 })

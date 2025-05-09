@@ -59,8 +59,8 @@ describe('Controller: settings/team-members/change-permission', () => {
       })
 
       it('should call the response method', () => {
-        expect(mockFindByExternalId.called).to.be.true // eslint-disable-line
-        expect(mockResponse.called).to.be.true // eslint-disable-line
+        expect(mockFindByExternalId.called).to.be.true
+        expect(mockResponse.called).to.be.true
       })
 
       it('should pass req, res and template path to the response method', () => {
@@ -103,7 +103,7 @@ describe('Controller: settings/team-members/change-permission', () => {
       })
 
       it('should call the update service role method with the new role', () => {
-        expect(mockUpdateServiceRole.calledWith('user-id-to-change-permission', 'view-and-refund', SERVICE_ID)).to.be.true // eslint-disable-line
+        expect(mockUpdateServiceRole.calledWith('user-id-to-change-permission', 'view-and-refund', SERVICE_ID)).to.be.true
       })
 
       it('should redirect to the team members index page with notification', () => {
@@ -112,7 +112,7 @@ describe('Controller: settings/team-members/change-permission', () => {
           icon: '&check;',
           heading: 'Permissions have been updated'
         })
-        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.teamMembers.index)
       })
     })
@@ -127,9 +127,9 @@ describe('Controller: settings/team-members/change-permission', () => {
       })
 
       it('should not attempt to update and should redirect to the team members index page without a notification', () => {
-        expect(mockUpdateServiceRole.called).to.be.false // eslint-disable-line
-        expect(req.flash.called).to.be.false // eslint-disable-line
-        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(mockUpdateServiceRole.called).to.be.false
+        expect(req.flash.called).to.be.false
+        expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.teamMembers.index)
       })
     })

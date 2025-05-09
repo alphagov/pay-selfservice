@@ -66,13 +66,13 @@ describe('Controller: settings/stripe-details/organisation-details', () => {
 
       it('should update progress in connector database', () => {
         const call = mockStripeDetailsService.updateConnectorStripeProgress.getCall(0)
-        expect(call).to.not.be.null // eslint-disable-line
+        expect(call).to.not.be.null
         expect(call.args).to.deep.equal([req.service, req.account, 'organisation_details'])
       })
 
       it('should redirect to the stripe details index page', () => {
         const call = res.redirect.getCall(0)
-        expect(call).to.not.be.null // eslint-disable-line
+        expect(call).to.not.be.null
         expect(call.args).to.deep.equal([STRIPE_DETAILS_INDEX_PATH])
       })
     })
@@ -89,12 +89,12 @@ describe('Controller: settings/stripe-details/organisation-details', () => {
 
       it('should not update progress in connector database', () => {
         const call = mockStripeDetailsService.updateConnectorStripeProgress.getCall(0)
-        expect(call).to.be.null // eslint-disable-line
+        expect(call).to.be.null
       })
 
       it('should redirect to the update organisation details page', () => {
         const call = res.redirect.getCall(0)
-        expect(call).to.not.be.null // eslint-disable-line
+        expect(call).to.not.be.null
         expect(call.args).to.deep.equal([STRIPE_DETAILS_UPDATE_ORG_PATH])
       })
     })
@@ -110,12 +110,12 @@ describe('Controller: settings/stripe-details/organisation-details', () => {
       })
 
       it('should not redirect', () => {
-        expect(res.redirect.called).to.be.false // eslint-disable-line
+        expect(res.redirect.called).to.be.false
       })
 
       it('should not update progress in connector database', () => {
         const call = mockStripeDetailsService.updateConnectorStripeProgress.getCall(0)
-        expect(call).to.be.null // eslint-disable-line
+        expect(call).to.be.null
       })
 
       it('should pass context data to the response method with errors', () => {

@@ -12,7 +12,7 @@ const invalidLongVatNumber = 'GB999 9999 7333333333333'
 
 describe('VAT number validations', () => {
   it('should validate successfully', () => {
-    expect(vatNumberValidations.validateVatNumber(standardVatNumber).valid).to.be.true // eslint-disable-line
+    expect(vatNumberValidations.validateVatNumber(standardVatNumber).valid).to.be.true
   })
 
   it('should validate successfully when no vat number provided', () => {

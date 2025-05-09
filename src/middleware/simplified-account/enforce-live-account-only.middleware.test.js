@@ -24,8 +24,8 @@ describe('Middleware: enforceLiveAccountOnly', () => {
   it('should call next() when account type is test and service is not live', () => {
     enforceLiveAccountOnly(req, res, next)
 
-    expect(next.calledOnce).to.be.true // eslint-disable-line
-    expect(next.args[0]).to.be.empty // eslint-disable-line
+    expect(next.calledOnce).to.be.true
+    expect(next.args[0]).to.be.empty
   })
 
   it('should call next() when account type is live and service is live', () => {
@@ -33,8 +33,8 @@ describe('Middleware: enforceLiveAccountOnly', () => {
     req.account.type = 'live'
     enforceLiveAccountOnly(req, res, next)
 
-    expect(next.calledOnce).to.be.true // eslint-disable-line
-    expect(next.args[0]).to.be.empty // eslint-disable-line
+    expect(next.calledOnce).to.be.true
+    expect(next.args[0]).to.be.empty
   })
 
   it('should call next() with error when account type is test service is live', () => {

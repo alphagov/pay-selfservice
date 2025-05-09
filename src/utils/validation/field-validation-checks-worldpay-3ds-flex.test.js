@@ -12,7 +12,7 @@ const invalidJwtMacKey = 'Enter your JWT MAC key in the format you received it'
 describe('Worldpay 3DS Flex credentials validations', () => {
   describe('Organisational unit ID validations', () => {
     it('should be valid when 24 lower-case hexadecimal characters', () => {
-      expect(isNotWorldpay3dsFlexOrgUnitId('1234567890abcdef12345678')).to.be.false // eslint-disable-line
+      expect(isNotWorldpay3dsFlexOrgUnitId('1234567890abcdef12345678')).to.be.false
     })
 
     it('should not be valid any letter is upper-case', () => {
@@ -30,7 +30,6 @@ describe('Worldpay 3DS Flex credentials validations', () => {
 
   describe('Issuer validations', () => {
     it('should be valid when 24 lower-case hexadecimal characters', () => {
-      // eslint-disable-next-line
       expect(isNotWorldpay3dsFlexIssuer('1234567890abcdef12345678')).to.be.false // pragma: allowlist secret
     })
 
@@ -49,7 +48,6 @@ describe('Worldpay 3DS Flex credentials validations', () => {
 
   describe('JWT MAC key validations', () => {
     it('should be valid when UUID in canonical 8-4-4-4-12 representation', () => {
-      // eslint-disable-next-line
       expect(isNotWorldpay3dsFlexJwtMacKey('abcdef12-3456-7890-abcd-ef1234567890')).to.be.false // pragma: allowlist secret
     })
 

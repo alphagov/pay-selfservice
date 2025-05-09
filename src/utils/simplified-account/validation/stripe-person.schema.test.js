@@ -27,7 +27,7 @@ describe('Stripe Person Validation', () => {
     it('should pass with valid first and last names', async () => {
       await stripePersonSchema.name.firstName.validate.run(req)
       await stripePersonSchema.name.lastName.validate.run(req)
-      expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(req).isEmpty()).to.be.true
     })
 
     it('should fail when first name is empty', async () => {
@@ -51,7 +51,7 @@ describe('Stripe Person Validation', () => {
       await stripePersonSchema.dob.dobDay.validate.run(req)
       await stripePersonSchema.dob.dobMonth.validate.run(req)
       await stripePersonSchema.dob.dobYear.validate.run(req)
-      expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(req).isEmpty()).to.be.true
     })
 
     it('should fail when person is under 13', async () => {
@@ -125,7 +125,7 @@ describe('Stripe Person Validation', () => {
       await stripePersonSchema.address.homeAddressLine1.validate.run(req)
       await stripePersonSchema.address.homeAddressCity.validate.run(req)
       await stripePersonSchema.address.homeAddressPostcode.validate.run(req)
-      expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(req).isEmpty()).to.be.true
     })
 
     it('should fail with invalid postcode', async () => {
@@ -138,7 +138,7 @@ describe('Stripe Person Validation', () => {
     it('should pass with empty address line 2', async () => {
       req.body.homeAddressLine2 = ''
       await stripePersonSchema.address.homeAddressLine2.validate.run(req)
-      expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(req).isEmpty()).to.be.true
     })
 
     const validPostcodes = [
@@ -172,7 +172,7 @@ describe('Stripe Person Validation', () => {
       it(`should validate ${description}: ${postcode}`, async () => {
         req.body.homeAddressPostcode = postcode
         await stripePersonSchema.address.homeAddressPostcode.validate.run(req)
-        expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
+        expect(validationResult(req).isEmpty()).to.be.true
       })
     })
 
@@ -201,7 +201,7 @@ describe('Stripe Person Validation', () => {
         req.body.homeAddressPostcode = postcode
         await stripePersonSchema.address.homeAddressPostcode.validate.run(req)
         const errors = validationResult(req)
-        expect(errors.isEmpty()).to.be.false // eslint-disable-line
+        expect(errors.isEmpty()).to.be.false
         expect(errors.array()[0].msg).to.equal('Enter a real postcode')
       })
     })
@@ -211,7 +211,7 @@ describe('Stripe Person Validation', () => {
     it('should pass with valid contact details', async () => {
       await stripePersonSchema.contactDetails.workEmail.validate.run(req)
       await stripePersonSchema.contactDetails.workTelephoneNumber.validate.run(req)
-      expect(validationResult(req).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(req).isEmpty()).to.be.true
     })
 
     it('should fail with invalid email', async () => {

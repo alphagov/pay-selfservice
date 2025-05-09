@@ -72,7 +72,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
     })
 
     it('should call the response method', () => {
-      expect(responseStub.called).to.be.true // eslint-disable-line
+      expect(responseStub.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -96,12 +96,12 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
     })
 
     it('should update the confirmation template', () => {
-      expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
-      expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, '')).to.be.true // eslint-disable-line
+      expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true
+      expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, '')).to.be.true
     })
 
     it('should redirect to the templates page', () => {
-      expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+      expect(res.redirect.calledOnce).to.be.true
       expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.emailNotifications.templates)
     })
   })
@@ -114,8 +114,8 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
         customParagraphController.postEditCustomParagraph(req, res)
       })
       it('should update the confirmation template', () => {
-        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
-        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, '')).to.be.true // eslint-disable-line
+        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true
+        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, '')).to.be.true
       })
 
       it('should not set success message', () => {
@@ -123,7 +123,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
       })
 
       it('should redirect to the templates page', () => {
-        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.emailNotifications.templates)
       })
     })
@@ -134,8 +134,8 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
         customParagraphController.postEditCustomParagraph(req, res)
       })
       it('should update the confirmation template', () => {
-        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true // eslint-disable-line
-        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'a test custom paragraph')).to.be.true // eslint-disable-line
+        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true
+        expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'a test custom paragraph')).to.be.true
       })
 
       it('should set success message', () => {
@@ -149,7 +149,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
       })
 
       it('should redirect to the templates page', () => {
-        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.emailNotifications.templates)
       })
     })
@@ -163,7 +163,7 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
       })
 
       it('should call the response method', () => {
-        expect(responseStub.called).to.be.true // eslint-disable-line
+        expect(responseStub.called).to.be.true
       })
 
       it('should pass req, res and template path to the response method', () => {

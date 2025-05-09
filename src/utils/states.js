@@ -173,7 +173,7 @@ function toConnectorStates (displayStates) {
   return result
 }
 
-exports.getEventDisplayNameForConnectorState = (state, type) => {  // eslint-disable-line
+exports.getEventDisplayNameForConnectorState = (state, type) => {
   const displayName = displayNameForConnectorState(state, type.toLowerCase())
   if (displayName.eventDisplayName) {
     return displayName.eventDisplayName

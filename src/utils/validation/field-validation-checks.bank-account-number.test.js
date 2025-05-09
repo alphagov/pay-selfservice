@@ -8,19 +8,19 @@ describe('isNotValidAccountNumber', () => {
   it('should validate successfully for 8 digits', () => {
     const accountNumber = '00012345'
 
-    expect(isNotAccountNumber(accountNumber)).to.be.false // eslint-disable-line
+    expect(isNotAccountNumber(accountNumber)).to.be.false
   })
 
   it('should validate successfully for 6 digits', () => {
     const accountNumber = '012345'
 
-    expect(isNotAccountNumber(accountNumber)).to.be.false // eslint-disable-line
+    expect(isNotAccountNumber(accountNumber)).to.be.false
   })
 
   it('should validate successfully for 7 digits', () => {
     const accountNumber = '0012345'
 
-    expect(isNotAccountNumber(accountNumber)).to.be.false // eslint-disable-line
+    expect(isNotAccountNumber(accountNumber)).to.be.false
   })
 
   it('should be not valid when is not a number', () => {

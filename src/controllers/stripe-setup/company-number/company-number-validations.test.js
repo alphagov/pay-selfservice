@@ -10,7 +10,7 @@ const invalidCompanyNumber = '¯\\_(ツ)_/¯'
 
 describe('company number validations', () => {
   it('should validate successfully', () => {
-    expect(companyNumberValidations.validateCompanyNumber(validCompanyNumber).valid).to.be.true // eslint-disable-line
+    expect(companyNumberValidations.validateCompanyNumber(validCompanyNumber).valid).to.be.true
   })
 
   it('should not be valid when blank', () => {

@@ -34,17 +34,17 @@ describe('Controller: remove welsh service name', () => {
   })
 
   it('should update the welsh service name', () => {
-    mockUpdateServiceName.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+    mockUpdateServiceName.should.have.been.calledOnce
     mockUpdateServiceName.should.have.been.calledWith(SERVICE_EXTERNAL_ID, EN_SERVICE_NAME, '')
   })
 
   it('should show a success banner', () => {
-    req.flash.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+    req.flash.should.have.been.calledOnce
     req.flash.should.have.been.calledWith('messages', { state: 'success', icon: '&check;', heading: 'Welsh service name removed' })
   })
 
   it('should redirect to the service name index page', () => {
-    res.redirect.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+    res.redirect.should.have.been.calledOnce
     res.redirect.should.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
   })
 })

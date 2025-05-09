@@ -29,7 +29,7 @@ function stubBuilder (method, path, responseCode, additionalParams = {}) {
   }
 
   let predicate
-  if (additionalParams?.deepMatchRequest === false) { // eslint-disable-line no-prototype-builtins
+  if (additionalParams?.deepMatchRequest === false) {
     predicate = { equals: request }
   } else {
     predicate = { deepEquals: request }

@@ -40,7 +40,7 @@ describe('Class: User', () => {
 
     it('should return undefined if user does not have access to service', () => {
       result = user.getRoleForService('non-accessible-service')
-      expect(result).to.be.undefined  // eslint-disable-line
+      expect(result).to.be.undefined
     })
   })
 

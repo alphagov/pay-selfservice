@@ -6,7 +6,7 @@ describe('Payment link metadata form model', () => {
   it('initialises with valid input', () => {
     const body = { 'metadata-column-header': 'key', 'metadata-cell-value': 'value' }
     const form = new MetadataForm(body)
-    expect(form).to.not.be.null // eslint-disable-line
+    expect(form).to.not.be.null
     expect(form.values['metadata-column-header']).to.eq('key')
     expect(form.values['metadata-cell-value']).to.eq('value')
   })
@@ -17,8 +17,8 @@ describe('Payment link metadata form model', () => {
     const tested = form.validate()
 
     expect(tested.errors.length).to.eq(1)
-    expect(tested.errorMaps['metadata-column-header']).to.not.be.null // eslint-disable-line
-    expect(tested.errorMaps['metadata-cell-value']).to.be.undefined // eslint-disable-line
+    expect(tested.errorMaps['metadata-column-header']).to.not.be.null
+    expect(tested.errorMaps['metadata-cell-value']).to.be.undefined
   })
 
   it('correctly validates given input that is too long', () => {
@@ -31,8 +31,8 @@ describe('Payment link metadata form model', () => {
     const tested = form.validate()
 
     expect(tested.errors.length).to.eq(2)
-    expect(tested.errorMaps['metadata-column-header']).to.not.be.null // eslint-disable-line
-    expect(tested.errorMaps['metadata-cell-value']).to.not.be.null // eslint-disable-line
+    expect(tested.errorMaps['metadata-column-header']).to.not.be.null
+    expect(tested.errorMaps['metadata-cell-value']).to.not.be.null
   })
 
   it('correctly validates a duplicate metadata column', () => {
@@ -49,8 +49,8 @@ describe('Payment link metadata form model', () => {
     const form = new MetadataForm(body, existingMetadata)
     const tested = form.validate()
     expect(tested.errors.length).to.eq(1)
-    expect(tested.errorMaps['metadata-column-header']).to.not.be.null // eslint-disable-line
-    expect(tested.errorMaps['metadata-cell-value']).to.be.undefined // eslint-disable-line
+    expect(tested.errorMaps['metadata-column-header']).to.not.be.null
+    expect(tested.errorMaps['metadata-cell-value']).to.be.undefined
   })
 
   it('correctly validates case insensitive duplicate keys', () => {
@@ -66,7 +66,7 @@ describe('Payment link metadata form model', () => {
     const form = new MetadataForm(newMetadata, existingMetadata)
     const tested = form.validate()
     expect(tested.errors.length).to.eq(1)
-    expect(tested.errorMaps['metadata-column-header']).to.include('Column header must not already exist') // eslint-disable-line
+    expect(tested.errorMaps['metadata-column-header']).to.include('Column header must not already exist')
   })
 
   it('correctly validates when the number of metadata columns exceeds the max number of allowed metadata columns', () => {
@@ -96,8 +96,8 @@ describe('Payment link metadata form model', () => {
     const form = new MetadataForm(body, existingMetadata)
     const tested = form.validate()
     expect(tested.errors.length).to.eq(1)
-    expect(tested.errorMaps['metadata-column-header']).to.not.be.null // eslint-disable-line
-    expect(tested.errorMaps['metadata-cell-value']).to.be.undefined // eslint-disable-line
+    expect(tested.errorMaps['metadata-column-header']).to.not.be.null
+    expect(tested.errorMaps['metadata-cell-value']).to.be.undefined
   })
 
   it('correctly validates when special characters are used for the header', () => {

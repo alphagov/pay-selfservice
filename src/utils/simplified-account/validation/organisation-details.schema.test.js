@@ -22,7 +22,7 @@ describe('Organisation details Validation', () => {
   describe('Organisation name Validation', () => {
     it('should pass with a valid organisation name', async () => {
       await organisationDetailsSchema.organisationName.validate.run(BASE_REQ)
-      expect(validationResult(BASE_REQ).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(BASE_REQ).isEmpty()).to.be.true
     })
 
     it('should fail when first name is empty', async () => {
@@ -51,7 +51,7 @@ describe('Organisation details Validation', () => {
       await organisationDetailsSchema.organisationAddress.city.validate.run(BASE_REQ)
       await organisationDetailsSchema.organisationAddress.postcode.validate.run(BASE_REQ)
       await organisationDetailsSchema.organisationAddress.country.validate.run(BASE_REQ)
-      expect(validationResult(BASE_REQ).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(BASE_REQ).isEmpty()).to.be.true
     })
 
     it('should pass with empty address line 2', async () => {
@@ -59,7 +59,7 @@ describe('Organisation details Validation', () => {
         body: Object.assign({}, BASE_REQ.body, { addressLine2: '' })
       }
       await organisationDetailsSchema.organisationAddress.line2.validate.run(validReq)
-      expect(validationResult(validReq).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(validReq).isEmpty()).to.be.true
     })
 
     it('should fail when city is empty', async () => {
@@ -103,7 +103,7 @@ describe('Organisation details Validation', () => {
         body: Object.assign({}, BASE_REQ.body, { addressPostcode: 'not a postcode', addressCountry: 'US' })
       }
       await organisationDetailsSchema.organisationAddress.postcode.validate.run(validReq)
-      expect(validationResult(validReq).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(validReq).isEmpty()).to.be.true
     })
 
     const validPostcodes = [
@@ -139,7 +139,7 @@ describe('Organisation details Validation', () => {
           body: Object.assign({}, BASE_REQ.body, { addressPostcode: postcode })
         }
         await organisationDetailsSchema.organisationAddress.postcode.validate.run(validReq)
-        expect(validationResult(validReq).isEmpty()).to.be.true // eslint-disable-line
+        expect(validationResult(validReq).isEmpty()).to.be.true
       })
     })
 
@@ -170,7 +170,7 @@ describe('Organisation details Validation', () => {
         }
         await organisationDetailsSchema.organisationAddress.postcode.validate.run(invalidReq)
         const errors = validationResult(invalidReq)
-        expect(errors.isEmpty()).to.be.false // eslint-disable-line
+        expect(errors.isEmpty()).to.be.false
         expect(errors.array()[0].msg).to.equal('Enter a real postcode')
       })
     })
@@ -206,7 +206,7 @@ describe('Organisation details Validation', () => {
   describe('Telephone number validation', () => {
     it('should pass with a valid telephone number', async () => {
       await organisationDetailsSchema.telephoneNumber.validate.run(BASE_REQ)
-      expect(validationResult(BASE_REQ).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(BASE_REQ).isEmpty()).to.be.true
     })
 
     it('should fail with empty telephone number', async () => {
@@ -231,7 +231,7 @@ describe('Organisation details Validation', () => {
   describe('Organisaiton URL validation', () => {
     it('should pass with a valid URL', async () => {
       await organisationDetailsSchema.organisationUrl.validate.run(BASE_REQ)
-      expect(validationResult(BASE_REQ).isEmpty()).to.be.true // eslint-disable-line
+      expect(validationResult(BASE_REQ).isEmpty()).to.be.true
     })
 
     it('should fail with an empty url', async () => {

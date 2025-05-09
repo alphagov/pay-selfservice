@@ -61,9 +61,9 @@ describe('Controller: settings/webhooks/event', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockGetWebhookMessage.calledWith(WEBHOOK_EVENT_EXTERNAL_ID, WEBHOOK_EXTERNAL_ID)).to.be.true // eslint-disable-line
-      expect(mockGetWebhookMessageAttempts.calledWith(WEBHOOK_EVENT_EXTERNAL_ID, WEBHOOK_EXTERNAL_ID)).to.be.true // eslint-disable-line
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockGetWebhookMessage.calledWith(WEBHOOK_EVENT_EXTERNAL_ID, WEBHOOK_EXTERNAL_ID)).to.be.true
+      expect(mockGetWebhookMessageAttempts.calledWith(WEBHOOK_EVENT_EXTERNAL_ID, WEBHOOK_EXTERNAL_ID)).to.be.true
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {

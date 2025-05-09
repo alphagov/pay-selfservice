@@ -12,11 +12,11 @@ const LOOOONG_TEXT = 'abcdefghijklmnopqrstuvwxyz'
 describe('Server side form validations', () => {
   describe('optional text field validations', () => {
     it('should validate that optional text is valid', () => {
-      expect(validations.validateOptionalField('some text', MAX_LENGTH).valid).to.be.true // eslint-disable-line
+      expect(validations.validateOptionalField('some text', MAX_LENGTH).valid).to.be.true
     })
 
     it('should validate that blank text is valid', () => {
-      expect(validations.validateOptionalField(BLANK_TEXT).valid).to.be.true // eslint-disable-line
+      expect(validations.validateOptionalField(BLANK_TEXT).valid).to.be.true
     })
 
     it('should not be valid when optional text is too long', () => {
@@ -50,7 +50,7 @@ describe('Server side form validations', () => {
 
   describe('mandatory text field validations', () => {
     it('should validate that mandatory text is valid', () => {
-      expect(validations.validateMandatoryField('some text', MAX_LENGTH).valid).to.be.true // eslint-disable-line
+      expect(validations.validateMandatoryField('some text', MAX_LENGTH).valid).to.be.true
     })
 
     it('should not be valid when mandatory text is blank', () => {
@@ -105,7 +105,7 @@ describe('Server side form validations', () => {
 
   describe('NAXSI safe validation', () => {
     it('should be valid when does not contain not allowed characters', () => {
-      expect(validations.validateNaxsiSafe('Brian', 'name').valid).to.be.true // eslint-disable-line
+      expect(validations.validateNaxsiSafe('Brian', 'name').valid).to.be.true
     })
 
     it('should return error if contains NAXSI not allowed characters', () => {
@@ -125,19 +125,19 @@ describe('Server side form validations', () => {
 
   describe('postcode validations', () => {
     it('should be valid when UK postcode', () => {
-      expect(validations.validatePostcode('NW1 5GH').valid).to.be.true // eslint-disable-line
+      expect(validations.validatePostcode('NW1 5GH').valid).to.be.true
     })
 
     it('should be valid when UK postcode but all lower-case', () => {
-      expect(validations.validatePostcode('nw1 5gh').valid).to.be.true // eslint-disable-line
+      expect(validations.validatePostcode('nw1 5gh').valid).to.be.true
     })
 
     it('should be valid when UK postcode but no space', () => {
-      expect(validations.validatePostcode('NW15GH').valid).to.be.true // eslint-disable-line
+      expect(validations.validatePostcode('NW15GH').valid).to.be.true
     })
 
     it('should be valid when UK postcode but no space and all lower-case', () => {
-      expect(validations.validatePostcode('nw15gh').valid).to.be.true // eslint-disable-line
+      expect(validations.validatePostcode('nw15gh').valid).to.be.true
     })
 
     it('should not be valid when postcode is blank', () => {
@@ -176,21 +176,21 @@ describe('Server side form validations', () => {
     })
 
     it('should be a valid postcode when postcode is not UK postcode and country is not GB', () => {
-      expect(validations.validatePostcode('CA90210', 'IE').valid).to.be.true // eslint-disable-line
+      expect(validations.validatePostcode('CA90210', 'IE').valid).to.be.true
     })
   })
 
   describe('date of birth validations', () => {
     it('should be valid when date of birth in the past', () => {
-      expect(validations.validateDateOfBirth('10', '6', '2000').valid).to.be.true // eslint-disable-line
+      expect(validations.validateDateOfBirth('10', '6', '2000').valid).to.be.true
     })
 
     it('should be valid when day has leading zero', () => {
-      expect(validations.validateDateOfBirth('01', '6', '2000').valid).to.be.true // eslint-disable-line
+      expect(validations.validateDateOfBirth('01', '6', '2000').valid).to.be.true
     })
 
     it('should be valid when month has leading zero', () => {
-      expect(validations.validateDateOfBirth('10', '06', '2000').valid).to.be.true // eslint-disable-line
+      expect(validations.validateDateOfBirth('10', '06', '2000').valid).to.be.true
     })
 
     it('should not be valid nothing entered', () => {
@@ -297,7 +297,7 @@ describe('Server side form validations', () => {
 
   describe('phone number validation', () => {
     it('should be valid for valid phone number', () => {
-      expect(validations.validatePhoneNumber('0113 496 0000').valid).to.be.true // eslint-disable-line
+      expect(validations.validatePhoneNumber('0113 496 0000').valid).to.be.true
     })
 
     it('should not be valid for empty phone number', () => {
@@ -317,7 +317,7 @@ describe('Server side form validations', () => {
 
   describe('email validation', () => {
     it('should be valid for valid email address', () => {
-      expect(validations.validateEmail('foo@example.com').valid).to.be.true // eslint-disable-line
+      expect(validations.validateEmail('foo@example.com').valid).to.be.true
     })
 
     it('should not be valid for empty email address', () => {
@@ -337,7 +337,7 @@ describe('Server side form validations', () => {
 
   describe('password validation', () => {
     it('should be valid for a not common password over 10 characters long', () => {
-      expect(validations.validatePassword('over-10-cha').valid).to.be.true // eslint-disable-line
+      expect(validations.validatePassword('over-10-cha').valid).to.be.true
     })
 
     it('should not be valid for a password that is too short', () => {
@@ -357,7 +357,7 @@ describe('Server side form validations', () => {
 
   describe('otp code validation', () => {
     it('should be valid for a valid OTP code', () => {
-      expect(validations.validateOtp('123456').valid).to.be.true // eslint-disable-line
+      expect(validations.validateOtp('123456').valid).to.be.true
     })
 
     it('should not be valid for empty OTP code', () => {
@@ -391,11 +391,11 @@ describe('Server side form validations', () => {
 
   describe('URL validation', () => {
     it('should be valid for a valid https URL', () => {
-      expect(validations.validateUrl('https://www.example.com').valid).to.be.true // eslint-disable-line
+      expect(validations.validateUrl('https://www.example.com').valid).to.be.true
     })
 
     it('should be valid for a valid http URL', () => {
-      expect(validations.validateUrl('http://www.example.com').valid).to.be.true // eslint-disable-line
+      expect(validations.validateUrl('http://www.example.com').valid).to.be.true
     })
 
     it('should not be valid for an empty URL', () => {

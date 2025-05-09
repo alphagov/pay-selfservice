@@ -62,10 +62,10 @@ describe('Controller: settings/webhooks/detail', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockGetWebhook.calledWith(WEBHOOK_EXTERNAL_ID, SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID)).to.be.true // eslint-disable-line
-      expect(mockGetWebhookMessages.calledWith(WEBHOOK_EXTERNAL_ID)).to.be.true // eslint-disable-line
-      expect(mockGetSigningSecret.calledWith(WEBHOOK_EXTERNAL_ID, SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID)).to.be.true // eslint-disable-line
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockGetWebhook.calledWith(WEBHOOK_EXTERNAL_ID, SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID)).to.be.true
+      expect(mockGetWebhookMessages.calledWith(WEBHOOK_EXTERNAL_ID)).to.be.true
+      expect(mockGetSigningSecret.calledWith(WEBHOOK_EXTERNAL_ID, SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID)).to.be.true
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {

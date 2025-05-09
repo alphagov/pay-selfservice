@@ -40,7 +40,7 @@ describe('Controller: settings/webhooks/update', () => {
     })
 
     it('should call the response method', () => {
-      mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+      mockResponse.should.have.been.calledOnce
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -55,7 +55,7 @@ describe('Controller: settings/webhooks/update', () => {
     })
 
     it('should call the webhooks service to find the webhook', () => {
-      mockGetWebhook.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+      mockGetWebhook.should.have.been.calledOnce
       mockGetWebhook.should.have.been.calledWith('webhook-external-id', SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID)
     })
   })
@@ -72,7 +72,7 @@ describe('Controller: settings/webhooks/update', () => {
       })
 
       it('should call the response method with validation errors', () => {
-        mockResponse.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockResponse.should.have.been.calledOnce
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
           errors: {
             summary: [
@@ -97,7 +97,7 @@ describe('Controller: settings/webhooks/update', () => {
       })
 
       it('should call the webhooks service to update the webhook status', () => {
-        mockToggleWebhookStatus.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        mockToggleWebhookStatus.should.have.been.calledOnce
         mockToggleWebhookStatus.should.have.been.calledWith('webhook-external-id', SERVICE_EXTERNAL_ID, GATEWAY_ACCOUNT_ID)
       })
 
@@ -112,7 +112,7 @@ describe('Controller: settings/webhooks/update', () => {
       })
 
       it('should redirect to the webhook detail page', () => {
-        res.redirect.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        res.redirect.should.have.been.calledOnce
         res.redirect.should.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.detail, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'webhook-external-id'))
       })
     })
@@ -128,11 +128,11 @@ describe('Controller: settings/webhooks/update', () => {
       })
 
       it('should not call the webhooks service to update the webhook status', () => {
-        mockToggleWebhookStatus.should.not.have.been.called // eslint-disable-line no-unused-expressions
+        mockToggleWebhookStatus.should.not.have.been.called
       })
 
       it('should redirect to the webhook detail page', () => {
-        res.redirect.should.have.been.calledOnce // eslint-disable-line no-unused-expressions
+        res.redirect.should.have.been.calledOnce
         res.redirect.should.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.detail, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, 'webhook-external-id'))
       })
     })

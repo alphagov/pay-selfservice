@@ -51,7 +51,7 @@ describe('Controller: settings/stripe-details/bank-details', () => {
     before(() => setupTest('get'))
 
     it('should call the response method', () => {
-      expect(responseStub.called).to.be.true // eslint-disable-line
+      expect(responseStub.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -78,11 +78,11 @@ describe('Controller: settings/stripe-details/bank-details', () => {
       }))
 
       it('should submit bank details to the stripe details service', () => {
-        expect(updateStripeDetailsBankDetailsStub.calledWith(req.service, req.account, VALID_SORT_CODE, VALID_ACCOUNT_NUMBER)).to.be.true // eslint-disable-line
+        expect(updateStripeDetailsBankDetailsStub.calledWith(req.service, req.account, VALID_SORT_CODE, VALID_ACCOUNT_NUMBER)).to.be.true
       })
 
       it('should redirect to the stripe details index page', () => {
-        expect(res.redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(STRIPE_DETAILS_INDEX_PATH)
       })
     })
@@ -98,7 +98,7 @@ describe('Controller: settings/stripe-details/bank-details', () => {
         })
 
         it('should render the form with validation errors', () => {
-          expect(responseStub.calledOnce).to.be.true // eslint-disable-line
+          expect(responseStub.calledOnce).to.be.true
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[2]).to.equal('simplified-account/settings/stripe-details/bank-account/index')
           expect(responseArgs[3].errors.summary).to.deep.equal([
@@ -133,7 +133,7 @@ describe('Controller: settings/stripe-details/bank-details', () => {
 
         it('should render the form with sort code validation error', () => {
           const expectedErrorMsg = 'Enter a valid sort code like 30-94-30 or 309430'
-          expect(responseStub.calledOnce).to.be.true // eslint-disable-line
+          expect(responseStub.calledOnce).to.be.true
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary).to.deep.equal([{
             href: '#sort-code',
@@ -160,7 +160,7 @@ describe('Controller: settings/stripe-details/bank-details', () => {
 
         it('should render the form with account number validation error', () => {
           const expectedErrorMsg = 'Enter a valid account number like 00733445'
-          expect(responseStub.calledOnce).to.be.true // eslint-disable-line
+          expect(responseStub.calledOnce).to.be.true
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary).to.deep.equal([{
             href: '#account-number',
@@ -188,7 +188,7 @@ describe('Controller: settings/stripe-details/bank-details', () => {
         })
 
         it('should render the form with appropriate error message', () => {
-          expect(responseStub.calledOnce).to.be.true // eslint-disable-line
+          expect(responseStub.calledOnce).to.be.true
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary[0].text).to.equal(
             'The bank account provided cannot be used. Contact GOV.UK Pay for assistance.'
@@ -206,7 +206,7 @@ describe('Controller: settings/stripe-details/bank-details', () => {
         })
 
         it('should render the form with sort code error', () => {
-          expect(responseStub.calledOnce).to.be.true // eslint-disable-line
+          expect(responseStub.calledOnce).to.be.true
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary[0].text).to.equal('Invalid sort code')
           expect(responseArgs[3].errors.formErrors.sortCode).to.equal(
@@ -225,7 +225,7 @@ describe('Controller: settings/stripe-details/bank-details', () => {
         })
 
         it('should render the form with account number error', () => {
-          expect(responseStub.calledOnce).to.be.true // eslint-disable-line
+          expect(responseStub.calledOnce).to.be.true
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary[0].text).to.equal('Invalid account number')
           expect(responseArgs[3].errors.formErrors.accountNumber).to.equal(
@@ -244,7 +244,7 @@ describe('Controller: settings/stripe-details/bank-details', () => {
         })
 
         it('should pass the error to next middleware', () => {
-          expect(next.calledOnce).to.be.true // eslint-disable-line
+          expect(next.calledOnce).to.be.true
           expect(next.firstCall.args[0].code).to.equal('unhandled_error')
         })
       })
@@ -259,7 +259,7 @@ describe('Controller: settings/stripe-details/bank-details', () => {
         })
 
         it('should pass the error to next middleware', () => {
-          expect(next.calledOnce).to.be.true // eslint-disable-line
+          expect(next.calledOnce).to.be.true
           expect(next.firstCall.args[0].foo).to.equal('bar')
         })
       })

@@ -29,7 +29,7 @@ describe('Controller: settings/stripe-details/vat-number', () => {
     })
 
     it('should call the response method', () => {
-      expect(mockResponse.called).to.be.true // eslint-disable-line
+      expect(mockResponse.called).to.be.true
     })
 
     it('should pass req, res and template path to the response method', () => {
@@ -81,13 +81,13 @@ describe('Controller: settings/stripe-details/vat-number', () => {
 
         it('should submit vat number to the stripe details service', () => {
           const call = mockStripeDetailsService.updateStripeDetailsVatNumber.getCall(0)
-          expect(call).to.not.be.null // eslint-disable-line
+          expect(call).to.not.be.null
           expect(call.args).to.deep.equal([req.service, req.account, vatNumber])
         })
 
         it('should redirect to the stripe details index page', () => {
           const redirect = res.redirect
-          expect(redirect.calledOnce).to.be.true // eslint-disable-line
+          expect(redirect.calledOnce).to.be.true
           expect(redirect.args[0][0]).to.include(STRIPE_DETAILS_INDEX_PATH)
         })
       })
@@ -104,13 +104,13 @@ describe('Controller: settings/stripe-details/vat-number', () => {
 
       it('should not submit VAT number to the stripe details service', () => {
         const call = mockStripeDetailsService.updateStripeDetailsVatNumber.getCall(0)
-        expect(call).to.not.be.null // eslint-disable-line
+        expect(call).to.not.be.null
         expect(call.args).to.deep.equal([req.service, req.account, false])
       })
 
       it('should redirect to the stripe details index page', () => {
         const redirect = res.redirect
-        expect(redirect.calledOnce).to.be.true // eslint-disable-line
+        expect(redirect.calledOnce).to.be.true
         expect(redirect.args[0][0]).to.include(STRIPE_DETAILS_INDEX_PATH)
       })
     })
@@ -156,7 +156,7 @@ describe('Controller: settings/stripe-details/vat-number', () => {
       })
 
       it('should render the form with validation errors', () => {
-        expect(mockResponse.calledOnce).to.be.true // eslint-disable-line
+        expect(mockResponse.calledOnce).to.be.true
         expect(mockResponse.args[0][3].errors.summary[0].text).to.equal('Enter a valid VAT registration number')
         expect(mockResponse.args[0][3].errors.formErrors.vatNumber).to.equal(
           'Enter a valid VAT registration number'
