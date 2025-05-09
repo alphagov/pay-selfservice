@@ -77,7 +77,33 @@ function validGetChargeResponseWithAuthSummary (opts = {}) {
   }
 }
 
+function validChargeResponse (opts = {}) {
+  return {
+    amount: opts.amount || 200,
+    state: opts.state || { status: 'started', finished: false },
+    charge_id: opts.chargeId || 'ht439nfg2l1e303k0dmifrn4fc',
+    created_date: opts.createdDate || '2025-05-01T17:29:34.062Z',
+    links: opts.links || [],
+    refund_summary: opts.refundSummary || {
+      status: 'pending',
+      user_external_id: null,
+      amount_available: 200,
+      amount_submitted: 0
+    },
+    settlement_summary: opts.settlementSummary || {
+      capture_submit_time: opts.captureSubmitTime || null,
+      captured_date: opts.capturedDate || null
+    },
+    authorisation_summary: opts.authorisationSummary || {
+      three_d_secure: {
+        required: false
+      }
+    }
+  }
+}
+
 module.exports = {
+  validChargeResponse,
   validPostChargeRequestRequest,
   validPostChargeRequestResponse,
   validGetChargeResponse,

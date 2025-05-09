@@ -1,75 +1,83 @@
-'use strict'
+type Operation = 'replace' | 'add'
+
+interface Update {
+  op: Operation
+  value: string
+  path: string
+}
 
 class ServiceUpdateRequest {
-  constructor () {
+  updates: Update[]
+
+  constructor() {
     this.updates = []
   }
 
-  replace () {
+  replace() {
     return safeOperation('replace', this)
   }
 
-  add () {
+  add() {
     return safeOperation('add', this)
   }
 
-  formatPayload () {
+  formatPayload() {
     return this.updates
   }
 }
 
-const safeOperation = (op, request) => {
+const safeOperation = (op: Operation, request: ServiceUpdateRequest) => {
   return {
     merchantDetails: {
-      name: (value) => {
+      name: (value: string) => {
         request.updates.push({ op, value, path: 'merchant_details/name' })
         return request
       },
-      addressLine1: (value) => {
+      addressLine1: (value: string) => {
         request.updates.push({ op, value, path: 'merchant_details/address_line1' })
         return request
       },
-      addressLine2: (value) => {
+      addressLine2: (value: string) => {
         request.updates.push({ op, value, path: 'merchant_details/address_line2' })
         return request
       },
-      addressCity: (value) => {
+      addressCity: (value: string) => {
         request.updates.push({ op, value, path: 'merchant_details/address_city' })
         return request
       },
-      addressPostcode: (value) => {
+      addressPostcode: (value: string) => {
         request.updates.push({ op, value, path: 'merchant_details/address_postcode' })
         return request
       },
-      addressCountry: (value) => {
+      addressCountry: (value: string) => {
         request.updates.push({ op, value, path: 'merchant_details/address_country' })
         return request
       },
-      telephoneNumber: (value) => {
+      telephoneNumber: (value: string) => {
         request.updates.push({ op, value, path: 'merchant_details/telephone_number' })
         return request
       },
-      email: (value) => {
+      email: (value: string) => {
         request.updates.push({ op, value, path: 'merchant_details/email' })
         return request
       },
-      url: (value) => {
+      url: (value: string) => {
         request.updates.push({ op, value, path: 'merchant_details/url' })
         return request
-      }
+      },
     },
-    currentGoLiveStage: (value) => {
+    currentGoLiveStage: (value: string) => {
       request.updates.push({ op, value, path: 'current_go_live_stage' })
       return request
     },
-    currentPspTestAccountStage: (value) => {
+    currentPspTestAccountStage: (value: string) => {
       request.updates.push({ op, value, path: 'current_psp_test_account_stage' })
       return request
     },
-    takesPaymentsOverPhone: (value) => {
+    takesPaymentsOverPhone: (value: string) => {
       request.updates.push({ op, value, path: 'takes_payments_over_phone' })
       return request
-    }
+    },
   }
 }
-module.exports = { ServiceUpdateRequest }
+export { ServiceUpdateRequest }

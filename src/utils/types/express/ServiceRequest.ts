@@ -3,6 +3,7 @@ import type Service from '@models/Service.class'
 import type GatewayAccount from '@models/GatewayAccount.class'
 import type { Request } from 'express'
 import type StripeAccountSetup from '@models/StripeAccountSetup.class'
+import ClientSessionsCookie from '@utils/types/client-sessions/ClientSessionsCookie'
 
 type MessageState = 'success' | 'error' | 'info'
 
@@ -19,5 +20,6 @@ export default interface ServiceRequest<T = never> extends Request {
   account: GatewayAccount
   gatewayAccountStripeProgress?: StripeAccountSetup
   flash(type: string, message: Message): void
-  body: T
+  body: T,
+  session: ClientSessionsCookie
 }

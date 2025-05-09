@@ -1,23 +1,26 @@
-const { response } = require('@utils/response')
-const { VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY, filterNextUrl } = require('@utils/verify-psp-integration')
-const { WORLDPAY } = require('@models/constants/payment-providers')
-const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
-const formatPSPName = require('@utils/format-PSP-name')
-const paths = require('@root/paths')
-const chargeService = require('@services/charge.service')
-const ChargeRequest = require('@models/ChargeRequest.class')
-const urljoin = require('url-join')
-const CREDENTIAL_STATE = require('@models/constants/credential-state')
-const worldpayDetailsService = require('@services/worldpay-details.service')
-const SELFSERVICE_URL = process.env.SELFSERVICE_URL
+import type { ServiceRequest, ServiceResponse } from '@utils/types/express'
+import type { NextFunction } from 'express'
+import { response } from '@utils/response'
+import { VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY, filterNextUrl } from '@utils/verify-psp-integration'
+import { WORLDPAY } from '@models/constants/payment-providers'
+import formatPSPName from '@utils/format-PSP-name'
+import paths from '@root/paths'
+import chargeService from '@services/charge.service'
+import ChargeRequest from '@models/charge/ChargeRequest.class'
+import CREDENTIAL_STATE from '@models/constants/credential-state'
+import worldpayDetailsService from '@services/worldpay-details.service'
+import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import urlJoin from '@utils/simplified-account/format/url'
 
-function get(req, res) {
+const SELFSERVICE_URL = process.env.SELFSERVICE_URL!
+
+function get(req: ServiceRequest, res: ServiceResponse) {
   const account = req.account
   const service = req.service
   const targetCredential = account.getSwitchingCredential()
   const context = {
     paymentProvider: targetCredential.paymentProvider,
-    backLink: formatSimplifiedAccountPathsFor(
+    backLink: formatServiceAndAccountPathsFor(
       targetCredential.paymentProvider === WORLDPAY
         ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
         : paths.simplifiedAccount.settings.switchPsp.switchToStripe.index,
@@ -28,7 +31,7 @@ function get(req, res) {
   return response(req, res, 'simplified-account/settings/switch-psp/make-test-payment/index', context)
 }
 
-async function post(req, res, next) {
+function post(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
   const account = req.account
   const service = req.service
   const targetCredential = account.getSwitchingCredential()
@@ -37,9 +40,9 @@ async function post(req, res, next) {
     .withDescription(`Live payment to verify ${formatPSPName(targetCredential.paymentProvider)} integration`)
     .withReference('VERIFY_PSP_INTEGRATION')
     .withReturnUrl(
-      urljoin(
+      urlJoin(
         SELFSERVICE_URL,
-        formatSimplifiedAccountPathsFor(
+        formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.settings.switchPsp.makeTestPayment.inbound,
           service.externalId,
           account.type
@@ -52,19 +55,19 @@ async function post(req, res, next) {
   chargeService
     .createCharge(service.externalId, account.type, chargeRequest)
     .then((response) => {
-      req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY] = response.charge_id
-      res.redirect(filterNextUrl(response))
+      req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY] = response.chargeId
+      res.redirect(filterNextUrl(response) as string)
     })
     .catch((error) => {
       next(error)
     })
 }
 
-async function getInbound(req, res, next) {
+function getInbound(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
   const account = req.account
   const service = req.service
   const user = req.user
-  const chargeExternalId = req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]
+  const chargeExternalId = req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY] as string
   delete req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]
   const targetCredential = account.getSwitchingCredential()
   if (!chargeExternalId) {
@@ -100,7 +103,7 @@ async function getInbound(req, res, next) {
     .catch((err) => next(err))
 }
 
-module.exports = {
+export {
   get,
   getInbound,
   post,

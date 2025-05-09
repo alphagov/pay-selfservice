@@ -1,23 +1,19 @@
 import type { NextFunction } from 'express'
 import type { ServiceRequest, ServiceResponse } from '@utils/types/express'
-import { response } from '@utils/response'
-import StripeTasks from '@models/StripeTasks.class'
-import { getConnectorStripeAccountSetup } from '@services/stripe-details.service'
-import StripeAccountSetup from '@models/StripeAccountSetup.class'
-import TaskStatus from '@models/constants/task-status'
-import paths from '@root/paths'
-import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'
-import gatewayAccountsService from '@services/gateway-accounts.service'
 import formatPSPName from '@utils/format-PSP-name'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import { response } from '@utils/response'
+import StripeTasks from '@models/StripeTasks.class'
+import TaskStatus from '@models/constants/task-status'
+import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'
+import { getConnectorStripeAccountSetup } from '@services/stripe-details.service'
+import gatewayAccountsService from '@services/gateway-accounts.service'
+import paths from '@root/paths'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const account = req.account
   const service = req.service
-  const stripeAccountSetup = (await getConnectorStripeAccountSetup(
-    service.externalId,
-    account.type
-  )) as StripeAccountSetup
+  const stripeAccountSetup = await getConnectorStripeAccountSetup(service.externalId, account.type)
   const stripesTasks = new StripeTasks(stripeAccountSetup, account, service.externalId)
   const stripeVerificationPending =
     stripesTasks.findTaskById('make-a-live-payment').status === TaskStatus.CANNOT_START &&
@@ -36,7 +32,7 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
   const service = req.service
   const user = req.user
   const targetCredential = account.getSwitchingCredential()
-  const connectorStripeAccountSetup = await getConnectorStripeAccountSetup(service.externalId, account.type) as StripeAccountSetup
+  const connectorStripeAccountSetup = await getConnectorStripeAccountSetup(service.externalId, account.type)
   const stripeTasks = new StripeTasks(connectorStripeAccountSetup, account, service.externalId)
 
   if (stripeTasks.incompleteTasks()) {

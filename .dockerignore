@@ -8,3 +8,6 @@
 !tsconfig.json
 !package.json
 !package-lock.json
+# exclude tests
+**/*.test.ts
+**/*.test.js

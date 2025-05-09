@@ -1,5 +1,11 @@
 'use strict'
 
+/**
+ * @typedef {Object} StripeBankAccountParams
+ * @property {string} bank_account_sort_code
+ * @property {string} bank_account_number
+ */
+
 const Joi = require('joi')
 
 const schema = Joi.object({

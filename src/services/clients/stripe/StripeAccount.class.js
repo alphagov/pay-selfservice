@@ -1,5 +1,11 @@
 'use strict'
 
+/**
+ * @typedef {Object} StripeAccountParams
+ * @property {string} [url]
+ * @property {string} [entity_verification_document_id]
+ */
+
 const Joi = require('joi')
 
 const schema = Joi.object({

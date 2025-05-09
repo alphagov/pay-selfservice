@@ -13,11 +13,11 @@ const logInfoSpy = sinon.spy()
 
 function getConfigWithMocks (correlationId) {
   const config = proxyquire('./config.js', {
-    './request-context': {
+    '@services/clients/base/request-context': {
       getRequestCorrelationIDField: () => correlationId
     },
     './request-logger': proxyquire('./request-logger', {
-      '../../../utils/logger': () => ({
+      '@utils/logger': () => ({
         info: logInfoSpy
       })
     })

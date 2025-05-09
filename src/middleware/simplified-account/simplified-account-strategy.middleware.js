@@ -4,8 +4,9 @@ const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { addField } = require('@services/clients/base/request-context')
 const _ = require('lodash')
 const logger = require('@utils/logger')(__filename)
-const Connector = require('@services/clients/connector.client.js').ConnectorClient
-const connectorClient = new Connector(process.env.CONNECTOR_URL)
+const ConnectorClient = require('@services/clients/pay/ConnectorClient.class')
+
+const connectorClient = new ConnectorClient()
 
 function getService (user, serviceExternalId, gatewayAccountId) {
   let service
@@ -39,7 +40,7 @@ async function getGatewayAccount (serviceExternalId, accountType) {
       serviceExternalId,
       accountType
     }
-    return await connectorClient.getAccountByServiceExternalIdAndAccountType(params)
+    return await connectorClient.getGatewayAccountByServiceExternalIdAndAccountType(params.serviceExternalId, params.accountType)
   } catch (err) {
     const logContext = {
       error: err.message,

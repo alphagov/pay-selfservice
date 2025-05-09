@@ -1,5 +1,13 @@
 'use strict'
 
+/**
+ * @typedef {Object} StripeCompanyParams
+ * @property {string} [vat_id]
+ * @property {string} [tax_id]
+ * @property {boolean} [directors_provided]
+ * @property {boolean} [executives_provided]
+ */
+
 const Joi = require('joi')
 
 const schema = Joi.object({

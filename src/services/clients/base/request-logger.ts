@@ -1,7 +1,9 @@
-const logger = require('../../../utils/logger')(__filename)
+import createLogger from '@utils/logger'
+import LoggingContext from './config'
+const logger = createLogger(__filename)
 
-module.exports = {
-  logRequestStart: context => {
+export = {
+  logRequestStart: (context: LoggingContext) => {
     logger.info(`Calling ${context.service} to ${context.description}`, {
       service: context.service,
       method: context.method,
@@ -11,9 +13,9 @@ module.exports = {
     })
   },
 
-  logRequestEnd: (context) => {
-    const responseTime = (context.startTime && new Date() - context.startTime) || context.responseTime
-    logger.info(`${context.method} to ${context.url} ended - elapsed time: ${responseTime} ms`, {
+  logRequestEnd: (context: LoggingContext) => {
+    const responseTime = (context.startTime && new Date().getTime() - context.startTime) || context.responseTime
+    logger.info(`${context.method.toUpperCase()} to ${context.url} ended - elapsed time: ${responseTime} ms`, {
       service: context.service,
       method: context.method,
       url: context.url,
@@ -24,7 +26,7 @@ module.exports = {
     })
   },
 
-  logRequestFailure: (context) => {
+  logRequestFailure: (context: LoggingContext) => {
     let message = `Calling ${context.service} to ${context.description} failed`
     if (context.retry) {
       message = message + ' - request will be retried'
@@ -40,7 +42,7 @@ module.exports = {
     })
   },
 
-  logRequestError: (context, error) => {
+  logRequestError: (context: LoggingContext, error: Error) => {
     logger.error(`Calling ${context.service} to ${context.description} threw exception`, {
       service: context.service,
       method: context.method,

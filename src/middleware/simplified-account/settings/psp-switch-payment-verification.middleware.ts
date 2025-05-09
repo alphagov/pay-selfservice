@@ -4,7 +4,6 @@ import { NextFunction } from 'express'
 import WorldpayTasks from '@models/WorldpayTasks.class'
 import StripeTasks from '@models/StripeTasks.class'
 import { getConnectorStripeAccountSetup } from '@services/stripe-details.service'
-import StripeAccountSetup from '@models/StripeAccountSetup.class'
 import { InvalidConfigurationError, TaskAccessedOutOfSequenceError } from '@root/errors'
 import TaskStatus from '@models/constants/task-status'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
@@ -21,7 +20,7 @@ async function canStartPspPaymentVerificationTask(req: ServiceRequest, _: Servic
       errorPath = paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
       break
     case STRIPE:
-      tasks = new StripeTasks(await getConnectorStripeAccountSetup(service.externalId, gatewayAccount.type) as StripeAccountSetup, gatewayAccount, service.externalId)
+      tasks = new StripeTasks(await getConnectorStripeAccountSetup(service.externalId, gatewayAccount.type), gatewayAccount, service.externalId)
       errorPath = paths.simplifiedAccount.settings.switchPsp.switchToStripe.index
       break
     default:
