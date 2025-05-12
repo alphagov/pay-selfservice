@@ -1,5 +1,3 @@
-'use strict'
-
 const { Router } = require('express')
 const passport = require('passport')
 
@@ -18,11 +16,7 @@ const { enforceUserFirstFactor, redirectLoggedInUser } = require('./services/aut
 const trimUsername = require('./middleware/trim-username')
 const permission = require('./middleware/permission')
 const restrictToSandboxOrStripeTestAccount = require('./middleware/restrict-to-sandbox-or-stripe-test-account')
-const restrictToStripeAccountContext = require('./middleware/stripe-setup/restrict-to-stripe-account-context')
-const restrictToSwitchingAccount = require('./middleware/restrict-to-switching-account')
-const uploadGovernmentEntityDocument = require('./middleware/multer-middleware')
 const inviteCookieIsPresent = require('./middleware/invite-cookie-is-present')
-const simplifiedSettingsRedirect = require('./middleware/simplified-account/simplified-settings-redirect.middleware')
 
 // Controllers
 const staticController = require('./controllers/static.controller')
@@ -32,17 +26,11 @@ const transactionsListController = require('./controllers/transactions/transacti
 const transactionDetailController = require('./controllers/transactions/transaction-detail.controller')
 const transactionRefundController = require('./controllers/transactions/transaction-refund.controller')
 const transactionDetailRedirectController = require('./controllers/transactions/transaction-detail-redirect.controller')
-const credentialsController = require('./controllers/credentials.controller')
-const worldpayCredentialsController = require('./controllers/credentials/worldpay.controller')
 const loginController = require('./controllers/login')
 const dashboardController = require('./controllers/dashboard')
 const forgotPasswordController = require('./controllers/forgotten-password.controller')
-const editServiceNameController = require('./controllers/edit-service-name/edit-service-name.controller')
 const serviceUsersController = require('./controllers/service-users.controller')
-const organisationDetailsController = require('./controllers/organisation-details.controller')
-const inviteUserController = require('./controllers/invite-user.controller')
 const registerController = require('./controllers/subscribe-service.controller')
-const serviceRolesUpdateController = require('./controllers/service-roles-update.controller')
 const createServiceController = require('./controllers/create-service/create-service.controller')
 const selectOrgTypeController = require('./controllers/create-service/select-organisation-type/select-organisation-type.controller')
 const inviteValidationController = require('./controllers/invite-validation.controller')
@@ -59,25 +47,11 @@ const requestToGoLiveChooseTakesPaymentsOverPhoneController = require('./control
 const requestToGoLiveAgreementController = require('./controllers/request-to-go-live/agreement')
 const stripeTermsAndConditionsController = require('./controllers/stripeTermsAndConditions.controller.js')
 const policyDocumentsController = require('./controllers/policy')
-const stripeSetupBankDetailsController = require('./controllers/stripe-setup/bank-details')
-const stripeSetupCheckOrgDetailsController = require('./controllers/stripe-setup/check-org-details')
-const stripeSetupResponsiblePersonController = require('./controllers/stripe-setup/responsible-person')
-const stripeSetupVatNumberController = require('./controllers/stripe-setup/vat-number')
-const stripeSetupCompanyNumberController = require('./controllers/stripe-setup/company-number')
-const stripeSetupDirectorController = require('./controllers/stripe-setup/director')
-const stripeSetupGovernmentEntityDocument = require('./controllers/stripe-setup/government-entity-document')
-const stripeSetupAddPspAccountDetailsController = require('./controllers/stripe-setup/add-psp-account-details')
-const settingsController = require('./controllers/settings')
 const userPhoneNumberController = require('./controllers/user/phone-number')
-const yourPspController = require('./controllers/your-psp')
-const switchPSPController = require('./controllers/switch-psp/switch-psp.controller')
-const verifyPSPIntegrationController = require('./controllers/switch-psp/verify-psp-integration.controller')
 const allTransactionsController = require('./controllers/all-service-transactions/index')
 const payoutsController = require('./controllers/payouts/payout-list.controller')
-const stripeSetupDashboardRedirectController = require('./controllers/stripe-setup/stripe-setup-link')
 const requestPspTestAccountController = require('./controllers/request-psp-test-account')
 const agreementsController = require('./controllers/agreements/agreements.controller')
-const organisationUrlController = require('./controllers/switch-psp/organisation-url')
 const registrationController = require('./controllers/registration/registration.controller')
 const privacyController = require('./controllers/privacy/privacy.controller')
 const servicesController = require('./controllers/simplified-account/services')
@@ -100,27 +74,17 @@ const {
   user
 } = paths
 const {
-  credentials,
   dashboard,
-  notificationCredentials,
   paymentLinks,
   prototyping,
-  settings,
-  stripe,
   transactions,
-  yourPsp,
-  switchPSP
 } = paths.account
 const {
   agreements
 } = paths.futureAccountStrategy
 const {
-  editServiceName,
-  organisationDetails,
-  redirects,
   requestPspTestAccount,
   requestToGoLive,
-  teamMembers
 } = paths.service
 
 // Exports
@@ -257,26 +221,6 @@ module.exports.bind = function (app) {
   // SERVICE LEVEL ROUTES
   // --------------------
 
-  // Edit service name
-  service.get(editServiceName.index, simplifiedSettingsRedirect, permission('service-name:update'), editServiceNameController.get)
-  service.post(editServiceName.update, simplifiedSettingsRedirect, permission('service-name:update'), editServiceNameController.post)
-
-  // Team members
-  service.get(teamMembers.index, simplifiedSettingsRedirect, serviceUsersController.index)
-  service.get(teamMembers.show, simplifiedSettingsRedirect, permission('users-service:read'), serviceUsersController.show)
-  service.get(teamMembers.permissions, simplifiedSettingsRedirect, permission('users-service:create'), serviceRolesUpdateController.index)
-  service.post(teamMembers.permissions, simplifiedSettingsRedirect, permission('users-service:create'), serviceRolesUpdateController.update)
-  service.post(teamMembers.delete, simplifiedSettingsRedirect, permission('users-service:delete'), serviceUsersController.remove)
-
-  // Invite team member
-  service.get(teamMembers.invite, simplifiedSettingsRedirect, permission('users-service:create'), inviteUserController.index)
-  service.post(teamMembers.invite, simplifiedSettingsRedirect, permission('users-service:create'), inviteUserController.invite)
-
-  // Merchant details
-  service.get(organisationDetails.index, simplifiedSettingsRedirect, permission('merchant-details:read'), organisationDetailsController.showOrganisationDetails)
-  service.get(organisationDetails.edit, simplifiedSettingsRedirect, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.get)
-  service.post(organisationDetails.edit, simplifiedSettingsRedirect, permission('merchant-details:update'), requestToGoLiveOrganisationAddressController.post)
-
   // Request to go live
   service.get(requestToGoLive.index, permission('go-live-stage:read'), requestToGoLiveIndexController.get)
   service.post(requestToGoLive.index, permission('go-live-stage:update'), requestToGoLiveIndexController.post)
@@ -290,9 +234,6 @@ module.exports.bind = function (app) {
   service.post(requestToGoLive.chooseTakesPaymentsOverPhone, permission('go-live-stage:update'), requestToGoLiveChooseTakesPaymentsOverPhoneController.post)
   service.get(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.get)
   service.post(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.post)
-
-  // Service live account dashboard link
-  service.get(redirects.stripeSetupLiveDashboardRedirect, stripeSetupDashboardRedirectController.get)
 
   // Request Stripe test account
   service.get(requestPspTestAccount, permission('psp-test-account-stage:update'), requestPspTestAccountController.get)
@@ -312,29 +253,7 @@ module.exports.bind = function (app) {
   account.post(transactions.refund, permission('refunds:create'), transactionRefundController)
 
   // Settings
-  account.get(settings.index, simplifiedSettingsRedirect, permission('transactions-details:read'), settingsController.index)
-
-  // Your PSP
-  account.get(yourPsp.index, simplifiedSettingsRedirect, permission('gateway-credentials:read'), yourPspController.getIndex)
-  account.get([yourPsp.flex, switchPSP.flex], simplifiedSettingsRedirect, permission('gateway-credentials:update'), yourPspController.getFlex)
-  account.post([yourPsp.flex, switchPSP.flex], simplifiedSettingsRedirect, permission('gateway-credentials:update'), yourPspController.postFlex)
-
-  account.get(switchPSP.index, restrictToSwitchingAccount, simplifiedSettingsRedirect, permission('gateway-credentials:update'), switchPSPController.switchPSPPage)
-  account.post(switchPSP.index, restrictToSwitchingAccount, simplifiedSettingsRedirect, permission('gateway-credentials:update'), switchPSPController.submitSwitchPSP)
-  account.get(switchPSP.verifyPSPIntegrationPayment, simplifiedSettingsRedirect, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.verifyPSPIntegrationPaymentPage)
-  account.post(switchPSP.verifyPSPIntegrationPayment, simplifiedSettingsRedirect, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.startPaymentJourney)
-  account.get(switchPSP.receiveVerifyPSPIntegrationPayment, simplifiedSettingsRedirect, restrictToSwitchingAccount, permission('gateway-credentials:update'), verifyPSPIntegrationController.completePaymentJourney)
-
-  // Credentials
-  account.get(yourPsp.worldpayCredentialsWithGatewayCheck, simplifiedSettingsRedirect, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
-  account.post(yourPsp.worldpayCredentialsWithGatewayCheck, simplifiedSettingsRedirect, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
-  account.get(switchPSP.credentialsWithGatewayCheck, simplifiedSettingsRedirect, permission('gateway-credentials:read'), worldpayCredentialsController.showWorldpayCredentialsPage)
-  account.post(switchPSP.credentialsWithGatewayCheck, simplifiedSettingsRedirect, permission('gateway-credentials:read'), worldpayCredentialsController.updateWorldpayCredentials)
-
-  account.get(credentials.edit, simplifiedSettingsRedirect, permission('gateway-credentials:update'), credentialsController.editCredentials)
-  account.post(credentials.index, simplifiedSettingsRedirect, permission('gateway-credentials:update'), credentialsController.update)
-  account.get(notificationCredentials.edit, simplifiedSettingsRedirect, permission('gateway-credentials:update'), credentialsController.editNotificationCredentials)
-  account.post(notificationCredentials.update, simplifiedSettingsRedirect, permission('gateway-credentials:update'), credentialsController.updateNotificationCredentials)
+  app.use(paths.simplifiedAccount.root, simplifiedAccountRoutes)
 
   // Prototype links
   account.get(prototyping.demoService.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index)
@@ -388,29 +307,6 @@ module.exports.bind = function (app) {
   account.post(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.editMetadata)
   account.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
-  account.get(switchPSP.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, organisationUrlController.get)
-  account.post(switchPSP.organisationUrl, permission('merchant-details:update'), restrictToStripeAccountContext, organisationUrlController.post)
-
-  // Stripe setup
-  account.get([yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails], simplifiedSettingsRedirect, permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.get)
-  account.post([yourPsp.stripeSetup.bankDetails, switchPSP.stripeSetup.bankDetails], simplifiedSettingsRedirect, permission('stripe-bank-details:update'), restrictToStripeAccountContext, stripeSetupBankDetailsController.post)
-  account.get([yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson], simplifiedSettingsRedirect, permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.get)
-  account.post([yourPsp.stripeSetup.responsiblePerson, switchPSP.stripeSetup.responsiblePerson], simplifiedSettingsRedirect, permission('stripe-responsible-person:update'), restrictToStripeAccountContext, stripeSetupResponsiblePersonController.post)
-  account.get([yourPsp.stripeSetup.director, switchPSP.stripeSetup.director], simplifiedSettingsRedirect, permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.get)
-  account.post([yourPsp.stripeSetup.director, switchPSP.stripeSetup.director], simplifiedSettingsRedirect, permission('stripe-director:update'), restrictToStripeAccountContext, stripeSetupDirectorController.post)
-  account.get([yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber], simplifiedSettingsRedirect, permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.get)
-  account.post([yourPsp.stripeSetup.vatNumber, switchPSP.stripeSetup.vatNumber], simplifiedSettingsRedirect, permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupVatNumberController.post)
-  account.get([yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber], simplifiedSettingsRedirect, permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.get)
-  account.post([yourPsp.stripeSetup.companyNumber, switchPSP.stripeSetup.companyNumber], simplifiedSettingsRedirect, permission('stripe-vat-number-company-number:update'), restrictToStripeAccountContext, stripeSetupCompanyNumberController.post)
-  account.get([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument], simplifiedSettingsRedirect, permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, stripeSetupGovernmentEntityDocument.get)
-  account.post([yourPsp.stripeSetup.governmentEntityDocument, switchPSP.stripeSetup.governmentEntityDocument], simplifiedSettingsRedirect, permission('stripe-government-entity-document:update'), restrictToStripeAccountContext, uploadGovernmentEntityDocument, stripeSetupGovernmentEntityDocument.post)
-  account.get([yourPsp.stripeSetup.checkOrgDetails, switchPSP.stripeSetup.checkOrgDetails], simplifiedSettingsRedirect, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.get)
-  account.post([yourPsp.stripeSetup.checkOrgDetails, switchPSP.stripeSetup.checkOrgDetails], simplifiedSettingsRedirect, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, stripeSetupCheckOrgDetailsController.post)
-  account.get([yourPsp.stripeSetup.updateOrgDetails, switchPSP.stripeSetup.updateOrgDetails], simplifiedSettingsRedirect, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.get)
-  account.post([yourPsp.stripeSetup.updateOrgDetails, switchPSP.stripeSetup.updateOrgDetails], simplifiedSettingsRedirect, permission('stripe-organisation-details:update'), restrictToStripeAccountContext, requestToGoLiveOrganisationAddressController.post)
-
-  account.get(stripe.addPspAccountDetails, permission('stripe-account-details:update'), restrictToStripeAccountContext, stripeSetupAddPspAccountDetailsController.get)
-
   futureAccountStrategy.get(agreements.index, permission('agreements:read'), agreementsController.listAgreements)
   futureAccountStrategy.get(agreements.detail, permission('agreements:read'), agreementsController.agreementDetail)
   futureAccountStrategy.post(agreements.cancel, permission('agreements:update'), agreementsController.cancelAgreement)
@@ -418,7 +314,6 @@ module.exports.bind = function (app) {
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
   app.use(paths.futureAccountStrategy.root, futureAccountStrategy)
-  app.use(paths.simplifiedAccount.root, simplifiedAccountRoutes)
 
   // security.txt — https://gds-way.cloudapps.digital/standards/vulnerability-disclosure.html
   const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'
