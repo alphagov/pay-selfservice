@@ -4,6 +4,7 @@ export default interface ClientSessionsCookie {
   destroy: (callback?: (err?: unknown) => void) => void
   regenerate?: unknown
   save?: unknown
+  last_url?: string
 
   [key: string]: unknown
 }

@@ -1,4 +1,4 @@
-const { NotFoundError } = require('@root/errors')
+const { NotFoundError, NotAuthenticatedError } = require('@root/errors')
 const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE } = require('@root/paths').keys
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 const { addField } = require('@services/clients/base/request-context')
@@ -64,6 +64,10 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
       return next(new NotFoundError('Could not resolve service external ID or gateway account type from request params'))
     }
 
+    if (!req.user) {
+      return next(new NotAuthenticatedError('User not found on request'))
+    }
+
     const gatewayAccount = await getGatewayAccount(serviceExternalId, accountType)
     if (gatewayAccount) {
       req.account = gatewayAccount
@@ -86,6 +90,7 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
 }
 
 /**
+ * @deprecated use TS
  * An Express Request object extended with service, account, and user
  * @typedef {Object} SimplifiedAccountRequest // TODO rename this when simplified accounts are live
  * @property {GOVUKPayService} service
@@ -96,7 +101,7 @@ module.exports = async function getSimplifiedAccount (req, res, next) {
  */
 
 /**
- *
+ * @deprecated use TS
  * URL Params for Request object
  @typedef {Object} SimplifiedAccountRequestParams // TODO rename this when simplified accounts are live
  @property {String} serviceExternalId
