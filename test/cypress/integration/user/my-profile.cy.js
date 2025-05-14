@@ -4,6 +4,20 @@ describe('My profile page', () => {
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const testPhoneNumber = '+441234567890'
 
+  describe('accessibility check', () => {
+    beforeEach(() => {
+      cy.setEncryptedCookies(userExternalId)
+      cy.task('setupStubs', [
+        userStubs.getUserSuccess({ userExternalId, telephoneNumber: null })
+      ])
+    })
+
+    it('should check accessibility of the page', { defaultCommandTimeout: 15000 }, () => {
+      cy.visit('/my-profile')
+      cy.a11yCheck()
+    })
+  })
+
   describe('User does not have telephone number', () => {
     beforeEach(() => {
       cy.setEncryptedCookies(userExternalId)
