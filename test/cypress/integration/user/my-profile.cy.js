@@ -26,7 +26,7 @@ describe('My profile page', () => {
       ])
     })
 
-    it('should show telephone number row link to add number', () => {
+    it('should show telephone number row with link to add number', () => {
       cy.visit('/my-profile')
 
       cy.get('[data-cy=telephone-number-row]').should('exist')
