@@ -5,7 +5,6 @@ const lodash = require('lodash')
 const logger = require('@utils/logger')(__filename)
 const goLiveStageToNextPagePath = require('../go-live-stage-to-next-page-path')
 const goLiveStage = require('@models/constants/go-live-stage')
-const paths = require('@root/paths')
 const {
   validateMandatoryField,
   validateOptionalField,
@@ -18,12 +17,6 @@ const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
 const formatServicePathsFor = require('@utils/format-service-paths-for')
 const { response } = require('@utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
-const { getStripeAccountId } = require('@controllers/stripe-setup/stripe-setup.util')
-const formatAccountPathsFor = require('@utils/format-account-paths-for')
-const { ConnectorClient } = require('@services/clients/connector.client')
-const connector = new ConnectorClient(process.env.CONNECTOR_URL)
-const { updateOrganisationDetails } = require('@services/clients/stripe/stripe.client')
-const { isSwitchingCredentialsRoute, isEnableStripeOnboardingTaskListRoute, getCurrentCredential } = require('@utils/credentials')
 
 const clientFieldNames = {
   name: 'merchant-name',
@@ -34,13 +27,6 @@ const clientFieldNames = {
   addressCountry: 'address-country',
   telephoneNumber: 'telephone-number',
   url: 'url'
-}
-
-const validationRuleOrgName = {
-  field: clientFieldNames.name,
-  validator: validateMandatoryField,
-  maxLength: 100,
-  fieldDisplayName: 'name'
 }
 
 const validationRules = [
@@ -64,11 +50,6 @@ const validationRules = [
   }
 ]
 
-const validationRulesWithName = [
-  validationRuleOrgName,
-  ...validationRules
-]
-
 const validationRulesWithTelAndUrl = [
   {
     field: clientFieldNames.telephoneNumber,
@@ -81,10 +62,6 @@ const validationRulesWithTelAndUrl = [
   ...validationRules
 ]
 
-const validationRulesWithNameAndTelAndUrl = [
-  validationRuleOrgName,
-  ...validationRulesWithTelAndUrl
-]
 
 const trimField = (key, store) => lodash.get(store, key, '').trim()
 
@@ -113,10 +90,8 @@ function validateURLWithTracking (url) {
   return result
 }
 
-function validateForm (form, isRequestToGoLive, isStripeSetupUserJourney) {
-  const rules = isStripeSetupUserJourney ? validationRulesWithName : isRequestToGoLive ? validationRulesWithTelAndUrl : validationRulesWithNameAndTelAndUrl
-
-  const errors = rules.reduce((errors, validationRule) => {
+function validateForm (form) {
+  const errors = validationRulesWithTelAndUrl.reduce((errors, validationRule) => {
     const value = form[validationRule.field]
     const validationResponse = validationRule.validator(value, validationRule.maxLength,
       validationRule.fieldDisplayName, true)
@@ -139,32 +114,7 @@ function validateForm (form, isRequestToGoLive, isStripeSetupUserJourney) {
   return lodash.pick(errors, Object.values(clientFieldNames))
 }
 
-async function submitForm (form, req, isRequestToGoLive, isStripeSetupUserJourney, isSwitchingCredentials) {
-  if (isStripeSetupUserJourney) {
-    const stripeAccountId = await getStripeAccountId(req.account, isSwitchingCredentials)
-
-    const newOrgDetails = {
-      name: form[clientFieldNames.name],
-      address_line1: form[clientFieldNames.addressLine1],
-      address_city: form[clientFieldNames.addressCity],
-      address_postcode: form[clientFieldNames.addressPostcode],
-      address_country: form[clientFieldNames.addressCountry]
-    }
-
-    const addressLine2 = form[clientFieldNames.addressLine2]
-
-    if (addressLine2) {
-      newOrgDetails.address_line2 = addressLine2
-    }
-
-    await updateOrganisationDetails(stripeAccountId, newOrgDetails)
-
-    await connector.setStripeAccountSetupFlag(req.account.gateway_account_id, 'organisation_details')
-
-    logger.info('Organisation details updated for Stripe account', {
-      stripe_account_id: stripeAccountId
-    })
-  } else {
+async function submitForm (form, req) {
     const updateRequest = new ServiceUpdateRequest()
       .replace().merchantDetails.addressLine1(form[clientFieldNames.addressLine1])
       .replace().merchantDetails.addressLine2(form[clientFieldNames.addressLine2])
@@ -174,24 +124,14 @@ async function submitForm (form, req, isRequestToGoLive, isStripeSetupUserJourne
       .replace().merchantDetails.telephoneNumber(form[clientFieldNames.telephoneNumber])
       .replace().merchantDetails.url(form[clientFieldNames.url])
 
-    if (isRequestToGoLive) {
-      updateRequest.replace().currentGoLiveStage(goLiveStage.ENTERED_ORGANISATION_ADDRESS)
-    } else {
-      updateRequest.replace().merchantDetails.name(form[clientFieldNames.name])
-    }
-    return updateService(req.service.externalId, updateRequest.formatPayload())
-  }
+  updateRequest.replace().currentGoLiveStage(goLiveStage.ENTERED_ORGANISATION_ADDRESS)
+
+  return updateService(req.service.externalId, updateRequest.formatPayload())
 }
 
 function buildErrorsPageData (
   form,
-  errors,
-  isRequestToGoLive,
-  isStripeUpdateOrgDetails,
-  isSwitchingCredentials,
-  isStripeSetupUserJourney,
-  enableStripeOnboardingTaskList,
-  currentCredential
+  errors
 ) {
   return {
     errors,
@@ -203,58 +143,26 @@ function buildErrorsPageData (
     telephoneNumber: form[clientFieldNames.telephoneNumber],
     url: form[clientFieldNames.url],
     countries: countries.govukFrontendFormatted(form[clientFieldNames.addressCountry]),
-    isRequestToGoLive,
-    isStripeUpdateOrgDetails,
-    isSwitchingCredentials,
-    isStripeSetupUserJourney,
-    enableStripeOnboardingTaskList,
-    currentCredential
   }
 }
 
 module.exports = async function submitOrganisationAddress (req, res, next) {
   try {
-    const isRequestToGoLive = Object.values(paths.service.requestToGoLive).includes(req.route && req.route.path)
-    const isStripeUpdateOrgDetails = req.url ? req.url.startsWith('/your-psp/') : false
-    const isSwitchingCredentials = isSwitchingCredentialsRoute(req)
-    const enableStripeOnboardingTaskList = isEnableStripeOnboardingTaskListRoute(req)
-    const currentCredential = getCurrentCredential(req.account)
-
-    const isStripeSetupUserJourney = isStripeUpdateOrgDetails ? true : !!isSwitchingCredentials
-
     const form = normaliseForm(req.body)
-    const errors = validateForm(form, isRequestToGoLive, isStripeSetupUserJourney)
+    const errors = validateForm(form)
 
     if (lodash.isEmpty(errors)) {
-      const updatedService = await submitForm(form, req, isRequestToGoLive, isStripeSetupUserJourney, isSwitchingCredentials)
+      const updatedService = await submitForm(form, req)
 
-      if (isStripeUpdateOrgDetails) {
-        if (enableStripeOnboardingTaskList) {
-          res.redirect(303, formatAccountPathsFor(paths.account.yourPsp.index, req.account && req.account.external_id, req.params && req.params.credentialId))
-        } else {
-          res.redirect(303, formatAccountPathsFor(paths.account.stripe.addPspAccountDetails, req.account.external_id))
-        }
-      } else if (isSwitchingCredentials) {
-        res.redirect(303, formatAccountPathsFor(paths.account.switchPSP.index, req.account.external_id))
-      } else if (isRequestToGoLive) {
-        res.redirect(303, formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId))
-      } else {
-        res.redirect(303, formatServicePathsFor(paths.service.organisationDetails.index, req.service.externalId))
-      }
+      res.redirect(303, formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId))
+
     } else {
       const pageData = buildErrorsPageData(
         form,
-        errors,
-        isRequestToGoLive,
-        isStripeUpdateOrgDetails,
-        isSwitchingCredentials,
-        isStripeSetupUserJourney,
-        enableStripeOnboardingTaskList,
-        currentCredential
+        errors
       )
 
-      const templatePath = isStripeSetupUserJourney ? 'stripe-setup/update-org-details/index' : 'request-to-go-live/organisation-address'
-      return response(req, res, templatePath, pageData)
+      return response(req, res, 'request-to-go-live/organisation-address', pageData)
     }
   } catch (err) {
     next(err)
