@@ -39,19 +39,21 @@ My profile - GOV.UK Pay
         {{email}}
       </dd>
     </div>
-    {% if telephone_number %}
     <div class="profile-settings__row" data-cy="telephone-number-row">
       <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
         Mobile number
       </dt>
       <dd class="profile-settings__value govuk-table__cell" id="telephone-number">
-        {{telephone_number}}
-        <span class="profile-settings__change-link">
-          <a class="govuk-link govuk-link--no-visited-state" href="{{routes.user.profile.phoneNumber }}" id="change-phone-link">Change <span class="govuk-visually-hidden">mobile number</span></a>
-        </span>
+        {% if telephone_number %}
+          {{ telephone_number}}
+          <span class="profile-settings__change-link">
+            <a class="govuk-link govuk-link--no-visited-state" href="{{routes.user.profile.phoneNumber }}" id="change-phone-link">Change <span class="govuk-visually-hidden">mobile number</span></a>
+          </span>
+        {% else %}
+          <a class="govuk-link govuk-link--no-visited-state" href="{{routes.user.profile.phoneNumber }}" id="change-phone-link">Add mobile number</a>
+        {% endif %}
       </dd>
     </div>
-    {% endif %}
     <div class="profile-settings__row">
       <dt class="profile-settings__setting govuk-table__cell govuk-heading-s">
         Sign-in method

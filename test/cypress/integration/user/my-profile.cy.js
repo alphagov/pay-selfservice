@@ -12,9 +12,16 @@ describe('My profile page', () => {
       ])
     })
 
-    it('should not show telephone number row', () => {
+    it('should show telephone number row link to add number', () => {
       cy.visit('/my-profile')
-      cy.get('[data-cy=telephone-number-row]').should('not.exist')
+
+      cy.get('[data-cy=telephone-number-row]').should('exist')
+      cy.get('[data-cy=telephone-number-row]>dd').within(() => {
+        cy.get('a')
+          .should('contain', 'Add mobile number')
+          .click()
+      })
+      cy.location('pathname').should('eq', '/my-profile/phone-number')
     })
   })
 
@@ -28,8 +35,20 @@ describe('My profile page', () => {
 
     it('should show telephone number row', () => {
       cy.visit('/my-profile')
+
       cy.get('[data-cy=telephone-number-row]').should('exist')
       cy.get('[data-cy=telephone-number-row]>dd').should('contain', testPhoneNumber)
+    })
+
+    it('should have link to change phone number', () => {
+      cy.visit('/my-profile')
+
+      cy.get('[data-cy=telephone-number-row]>dd').within(() => {
+        cy.get('a')
+          .should('contain', 'Change')
+          .click()
+      })
+      cy.location('pathname').should('eq', '/my-profile/phone-number')
     })
   })
 })
