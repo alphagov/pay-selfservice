@@ -1,17 +1,18 @@
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const userStubs = require('../../../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../../../stubs/gateway-account-stubs')
 const serviceStubs = require('../../../../stubs/service-stubs')
 const {
   checkDisplayedSettings,
   checkServiceNameValidation,
-  checkServiceNameEditActionNavigation
+  checkServiceNameEditActionNavigation,
 } = require('./service-name-test-helpers')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = {
   en: 'My Cool Service',
-  cy: 'Fy Ngwasanaeth Cwl'
+  cy: 'Fy Ngwasanaeth Cwl',
 }
 const TEST_ACCOUNT_TYPE = 'test'
 const TEST_GATEWAY_ACCOUNT_ID = 10
@@ -25,10 +26,12 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
       serviceName: opts.serviceName || SERVICE_NAME,
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role: opts.role
+      role: opts.role,
     }),
-    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, TEST_ACCOUNT_TYPE, { gateway_account_id: TEST_GATEWAY_ACCOUNT_ID }),
-    ...additionalStubs
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, TEST_ACCOUNT_TYPE, {
+      gateway_account_id: TEST_GATEWAY_ACCOUNT_ID,
+    }),
+    ...additionalStubs,
   ])
 }
 
@@ -54,12 +57,8 @@ describe('Service name settings', () => {
         cy.get('h1').should('contain', 'Service name')
       })
       describe('The settings navigation', () => {
-        it('should show service name', () => {
-          cy.get('.service-settings-nav')
-            .find('li')
-            .should('contain', 'Service name')
-            .find('a')
-            .should('have.attr', 'href', `${SERVICE_SETTINGS_URL}/service-name`)
+        it('should show active "Service name" link in the setting navigation', () => {
+          checkSettingsNavigation('Service name', `${SERVICE_SETTINGS_URL}/service-name`)
         })
       })
     })
@@ -71,12 +70,12 @@ describe('Service name settings', () => {
           permissions: [
             {
               name: 'transactions:read',
-              description: 'Viewtransactionslist'
-            }
-          ]
+              description: 'Viewtransactionslist',
+            },
+          ],
         }
         setStubs({
-          role
+          role,
         })
         cy.visit(SERVICE_SETTINGS_URL)
       })
@@ -88,11 +87,7 @@ describe('Service name settings', () => {
       })
       describe('The settings navigation', () => {
         it('should not show service name', () => {
-          cy.get('.service-settings-nav')
-            .find('li')
-            .should('not.contain', 'Service name')
-            .find('a')
-            .should('not.have.attr', 'href', `${SERVICE_SETTINGS_URL}/service-name`)
+          cy.get('.service-nav').find('a').should('not.contain', 'Service name')
         })
       })
     })
@@ -107,17 +102,13 @@ describe('Service name settings', () => {
         {
           key: 'Service name',
           value: SERVICE_NAME.en,
-          actions: [
-            { text: 'Change', href: `${SERVICE_SETTINGS_URL}/service-name/edit` }
-          ]
+          actions: [{ text: 'Change', href: `${SERVICE_SETTINGS_URL}/service-name/edit` }],
         },
         {
           key: 'Welsh service name',
           value: SERVICE_NAME.cy,
-          actions: [
-            { text: 'Change', href: `${SERVICE_SETTINGS_URL}/service-name/edit?cy=true` }
-          ]
-        }
+          actions: [{ text: 'Change', href: `${SERVICE_SETTINGS_URL}/service-name/edit?cy=true` }],
+        },
       ]
 
       it('should correctly display the Service name settings', () => {
@@ -129,7 +120,7 @@ describe('Service name settings', () => {
           selector: '[data-cy="edit-english-name"]',
           expectedUrl: 'service-name/edit',
           expectedPageTitle: 'English service name - Settings - My Cool Service - GOV.UK Pay',
-          expectedHeader: 'Service name (English)'
+          expectedHeader: 'Service name (English)',
         })
       })
 
@@ -138,7 +129,7 @@ describe('Service name settings', () => {
           selector: '[data-cy="edit-welsh-name"]',
           expectedUrl: 'service-name/edit?cy=true',
           expectedPageTitle: 'Welsh service name - Settings - My Cool Service - GOV.UK Pay',
-          expectedHeader: 'Welsh service name (Cymraeg)'
+          expectedHeader: 'Welsh service name (Cymraeg)',
         })
       })
     })
@@ -147,8 +138,8 @@ describe('Service name settings', () => {
         setStubs({
           serviceName: {
             en: SERVICE_NAME.en,
-            cy: undefined
-          }
+            cy: undefined,
+          },
         })
         cy.visit(SERVICE_SETTINGS_URL)
       })
@@ -156,15 +147,13 @@ describe('Service name settings', () => {
         {
           key: 'Service name',
           value: SERVICE_NAME.en,
-          actions: [
-            { text: 'Change', href: `${SERVICE_SETTINGS_URL}/service-name/edit` }
-          ]
+          actions: [{ text: 'Change', href: `${SERVICE_SETTINGS_URL}/service-name/edit` }],
         },
         {
           key: 'Welsh service name',
           value: 'Add Welsh service name',
-          actions: []
-        }
+          actions: [],
+        },
       ]
 
       it('should correctly display the Service name settings', () => {
@@ -176,7 +165,7 @@ describe('Service name settings', () => {
           selector: '[data-cy="edit-english-name"]',
           expectedUrl: 'service-name/edit',
           expectedPageTitle: 'English service name - Settings - My Cool Service - GOV.UK Pay',
-          expectedHeader: 'Service name (English)'
+          expectedHeader: 'Service name (English)',
         })
       })
 
@@ -185,7 +174,7 @@ describe('Service name settings', () => {
           selector: '[data-cy="add-welsh-name"]',
           expectedUrl: 'service-name/edit?cy=true',
           expectedPageTitle: 'Welsh service name - Settings - My Cool Service - GOV.UK Pay',
-          expectedHeader: 'Welsh service name (Cymraeg)'
+          expectedHeader: 'Welsh service name (Cymraeg)',
         })
       })
     })
@@ -200,10 +189,10 @@ describe('Service name settings', () => {
             gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
             serviceName: {
               en: SERVICE_NAME.en,
-              cy: ''
-            }
+              cy: '',
+            },
           }),
-          gatewayAccountStubs.patchUpdateServiceNameSuccess(TEST_GATEWAY_ACCOUNT_ID, SERVICE_NAME.en) // connector doesn't store the Welsh name
+          gatewayAccountStubs.patchUpdateServiceNameSuccess(TEST_GATEWAY_ACCOUNT_ID, SERVICE_NAME.en), // connector doesn't store the Welsh name
         ])
       })
 
@@ -211,7 +200,7 @@ describe('Service name settings', () => {
         checkServiceNameValidation({
           settingsUrl: SERVICE_SETTINGS_URL + '/service-name/edit',
           expectedInputValue: 'A'.repeat(51),
-          expectedErrorMessage: 'Service name must be 50 characters or fewer'
+          expectedErrorMessage: 'Service name must be 50 characters or fewer',
         })
       })
 
@@ -219,7 +208,7 @@ describe('Service name settings', () => {
         checkServiceNameValidation({
           settingsUrl: SERVICE_SETTINGS_URL + '/service-name/edit',
           expectedInputValue: '',
-          expectedErrorMessage: 'Service name is required'
+          expectedErrorMessage: 'Service name is required',
         })
       })
 
@@ -227,7 +216,7 @@ describe('Service name settings', () => {
         checkServiceNameValidation({
           settingsUrl: SERVICE_SETTINGS_URL + '/service-name/edit?cy=true',
           expectedInputValue: 'A'.repeat(51),
-          expectedErrorMessage: 'Service name must be 50 characters or fewer'
+          expectedErrorMessage: 'Service name must be 50 characters or fewer',
         })
       })
 
@@ -248,10 +237,10 @@ describe('Service name settings', () => {
             gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
             serviceName: {
               en: 'My New Service Name',
-              cy: SERVICE_NAME.cy
-            }
+              cy: SERVICE_NAME.cy,
+            },
           }),
-          gatewayAccountStubs.patchUpdateServiceNameSuccess(TEST_GATEWAY_ACCOUNT_ID, 'My New Service Name')
+          gatewayAccountStubs.patchUpdateServiceNameSuccess(TEST_GATEWAY_ACCOUNT_ID, 'My New Service Name'),
         ])
         cy.visit(SERVICE_SETTINGS_URL + '/service-name/edit')
       })
@@ -270,7 +259,9 @@ describe('Service name settings', () => {
         cy.get('.govuk-button').should('not.contain.text', 'Remove Welsh service name')
       })
       it('should submit form', () => {
-        cy.get('input[name="serviceName"]').clear({ force: true }).type('My New Service Name')
+        cy.get('input[name="serviceName"]')
+          .clear({ force: true })
+          .type('My New Service Name')
           .should('have.value', 'My New Service Name')
         cy.get('button[form="edit-service-name"]').click()
         cy.title().should('eq', 'Service name - Settings - My Cool Service - GOV.UK Pay')
@@ -285,10 +276,10 @@ describe('Service name settings', () => {
               gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
               serviceName: {
                 en: SERVICE_NAME.en,
-                cy: 'Fy Enw Gwasanaeth Newydd'
-              }
+                cy: 'Fy Enw Gwasanaeth Newydd',
+              },
             }),
-            gatewayAccountStubs.patchUpdateServiceNameSuccess(TEST_GATEWAY_ACCOUNT_ID, SERVICE_NAME.en) // connector doesn't store the Welsh name
+            gatewayAccountStubs.patchUpdateServiceNameSuccess(TEST_GATEWAY_ACCOUNT_ID, SERVICE_NAME.en), // connector doesn't store the Welsh name
           ])
           cy.visit(SERVICE_SETTINGS_URL + '/service-name/edit?cy=true')
         })
@@ -307,7 +298,9 @@ describe('Service name settings', () => {
           cy.get('.govuk-button').should('contain.text', 'Remove Welsh service name')
         })
         it('should submit form', () => {
-          cy.get('input[name="serviceName"]').clear({ force: true }).type('Fy Enw Gwasanaeth Newydd')
+          cy.get('input[name="serviceName"]')
+            .clear({ force: true })
+            .type('Fy Enw Gwasanaeth Newydd')
             .should('have.value', 'Fy Enw Gwasanaeth Newydd')
           cy.get('button[form="edit-service-name"]').click()
           cy.title().should('eq', 'Service name - Settings - My Cool Service - GOV.UK Pay')
@@ -321,10 +314,10 @@ describe('Service name settings', () => {
               gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
               serviceName: {
                 en: SERVICE_NAME.en,
-                cy: ''
-              }
+                cy: '',
+              },
             }),
-            gatewayAccountStubs.patchUpdateServiceNameSuccess(TEST_GATEWAY_ACCOUNT_ID, SERVICE_NAME.en) // connector doesn't store the Welsh name
+            gatewayAccountStubs.patchUpdateServiceNameSuccess(TEST_GATEWAY_ACCOUNT_ID, SERVICE_NAME.en), // connector doesn't store the Welsh name
           ])
           cy.visit(SERVICE_SETTINGS_URL + '/service-name/edit?cy=true')
         })
@@ -344,22 +337,25 @@ describe('Service name settings', () => {
       })
       describe('When Welsh service name is not set', () => {
         beforeEach(() => {
-          setStubs({
-            serviceName: {
-              en: SERVICE_NAME.en,
-              cy: undefined
-            }
-          }, [
-            serviceStubs.patchUpdateServiceNameSuccess({
-              serviceExternalId: SERVICE_EXTERNAL_ID,
-              gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
+          setStubs(
+            {
               serviceName: {
                 en: SERVICE_NAME.en,
-                cy: ''
-              }
-            }),
-            gatewayAccountStubs.patchUpdateServiceNameSuccess(TEST_GATEWAY_ACCOUNT_ID, SERVICE_NAME.en) // connector doesn't store the Welsh name
-          ])
+                cy: undefined,
+              },
+            },
+            [
+              serviceStubs.patchUpdateServiceNameSuccess({
+                serviceExternalId: SERVICE_EXTERNAL_ID,
+                gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
+                serviceName: {
+                  en: SERVICE_NAME.en,
+                  cy: '',
+                },
+              }),
+              gatewayAccountStubs.patchUpdateServiceNameSuccess(TEST_GATEWAY_ACCOUNT_ID, SERVICE_NAME.en), // connector doesn't store the Welsh name
+            ]
+          )
           cy.visit(SERVICE_SETTINGS_URL + '/service-name/edit?cy=true')
         })
         it('should not show "Remove Welsh service name" button', () => {

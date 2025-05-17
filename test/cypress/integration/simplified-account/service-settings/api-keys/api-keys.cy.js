@@ -3,6 +3,7 @@ const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const apiKeysStubs = require('@test/cypress/stubs/api-keys-stubs')
 const { Token } = require('@models/Token.class')
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -19,11 +20,13 @@ const setupStubs = (role = 'admin', activeApiKeys = [], revokedApiKeys = []) => 
       serviceName: { en: 'My cool service' },
       serviceExternalId: SERVICE_EXTERNAL_ID,
       email: USER_EMAIL,
-      role: ROLES[role]
+      role: ROLES[role],
     }),
-    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, { gateway_account_id: GATEWAY_ACCOUNT_ID }),
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
+      gateway_account_id: GATEWAY_ACCOUNT_ID,
+    }),
     apiKeysStubs.getActiveApiKeysForGatewayAccount(GATEWAY_ACCOUNT_ID, activeApiKeys),
-    apiKeysStubs.getRevokedApiKeysForGatewayAccount(GATEWAY_ACCOUNT_ID, revokedApiKeys)
+    apiKeysStubs.getRevokedApiKeysForGatewayAccount(GATEWAY_ACCOUNT_ID, revokedApiKeys),
   ])
 }
 
@@ -36,12 +39,19 @@ describe('Settings - API keys', () => {
     describe('view the Revoked API keys page', () => {
       describe('when there are revoked keys', () => {
         const revokedKeys = [
-          new Token().withCreatedBy('Mr Smith').withDescription('description1')
-            .withIssuedDate('12 Dec 2024').withTokenLink('token-link-1')
+          new Token()
+            .withCreatedBy('Mr Smith')
+            .withDescription('description1')
+            .withIssuedDate('12 Dec 2024')
+            .withTokenLink('token-link-1')
             .withRevokedDate('12 Jan 2025'),
-          new Token().withCreatedBy('Mrs Smith').withDescription('description2')
-            .withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024').withTokenLink('token-link-2')
-            .withRevokedDate('10 Jan 2025')
+          new Token()
+            .withCreatedBy('Mrs Smith')
+            .withDescription('description2')
+            .withIssuedDate('10 Dec 2024')
+            .withLastUsed('10 Dec 2024')
+            .withTokenLink('token-link-2')
+            .withRevokedDate('10 Jan 2025'),
         ]
 
         beforeEach(() => {
@@ -61,24 +71,28 @@ describe('Settings - API keys', () => {
           verifySummaryCard(1, revokedKeys[1], true)
         })
 
-        function verifySummaryCard (pos, token, revoked) {
-          cy.get('div.govuk-summary-card').eq(pos)
+        function verifySummaryCard(pos, token, revoked) {
+          cy.get('div.govuk-summary-card')
+            .eq(pos)
             .within(() => {
               cy.get('.govuk-summary-card__title').should('contain', token.description)
 
-              cy.get('.govuk-summary-list__row').eq(0)
+              cy.get('.govuk-summary-list__row')
+                .eq(0)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Created by')
                   cy.get('.govuk-summary-list__value').should('contain', token.createdBy)
                 })
 
-              cy.get('.govuk-summary-list__row').eq(1)
+              cy.get('.govuk-summary-list__row')
+                .eq(1)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Date created')
                   cy.get('.govuk-summary-list__value').should('contain', token.issuedDate)
                 })
 
-              cy.get('.govuk-summary-list__row').eq(2)
+              cy.get('.govuk-summary-list__row')
+                .eq(2)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Last used')
                   if (token.lastUsed === undefined) {
@@ -88,7 +102,8 @@ describe('Settings - API keys', () => {
                   }
                 })
 
-              cy.get('.govuk-summary-list__row').eq(3)
+              cy.get('.govuk-summary-list__row')
+                .eq(3)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Date revoked')
                   cy.get('.govuk-summary-list__value').should('contain', token.revokedDate)
@@ -110,7 +125,7 @@ describe('Settings - API keys', () => {
         it('should return a 404 when trying to access the revoke page directly', () => {
           cy.request({
             url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoked`,
-            failOnStatusCode: false
+            failOnStatusCode: false,
           }).then((response) => {
             expect(response.status).to.eq(404)
           })
@@ -124,24 +139,25 @@ describe('Settings - API keys', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
       it('should show appropriate buttons and text', () => {
-        cy.get('#settings-navigation-api-keys').should('have.text', 'API keys')
-        cy.get('.service-settings-pane')
-          .find('a')
-          .contains('Create a new API key')
-          .should('exist')
-        cy.get('.service-settings-pane')
-          .find('h2')
-          .contains('There are no active test API keys')
-          .should('exist')
+        cy.get('#service-navigation-api-keys').should('have.text', 'API keys')
+        cy.get('.service-settings-pane').find('a').contains('Create a new API key').should('exist')
+        cy.get('.service-settings-pane').find('h2').contains('There are no active test API keys').should('exist')
       })
     })
 
     describe('when there are active API keys', () => {
       const apiKeys = [
-        new Token().withCreatedBy('system generated').withDescription('description')
-          .withIssuedDate('12 Dec 2024').withTokenLink('token-link-1'),
-        new Token().withCreatedBy('algae bra').withDescription('mathematical clothes')
-          .withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024').withTokenLink('token-link-2')
+        new Token()
+          .withCreatedBy('system generated')
+          .withDescription('description')
+          .withIssuedDate('12 Dec 2024')
+          .withTokenLink('token-link-1'),
+        new Token()
+          .withCreatedBy('algae bra')
+          .withDescription('mathematical clothes')
+          .withIssuedDate('10 Dec 2024')
+          .withLastUsed('10 Dec 2024')
+          .withTokenLink('token-link-2'),
       ]
 
       beforeEach(() => {
@@ -149,57 +165,61 @@ describe('Settings - API keys', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
 
+      it('should show active "API keys" link in the setting navigation', () => {
+        checkSettingsNavigation(
+          'API keys',
+          `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`
+        )
+      })
+
       it('should show appropriate buttons and text', () => {
-        cy.get('#settings-navigation-api-keys').should('have.text', 'API keys')
-        cy.get('.service-settings-pane')
-          .find('a')
-          .contains('Create a new API key')
-          .should('exist')
-        cy.get('.service-settings-pane')
-          .find('h2')
-          .contains('Active test API keys (2)')
-          .should('exist')
-        cy.get('.service-settings-pane')
-          .find('a')
-          .contains('Show revoked API keys')
-          .should('not.exist')
+        cy.get('#service-navigation-api-keys').should('have.text', 'API keys')
+        cy.get('.service-settings-pane').find('a').contains('Create a new API key').should('exist')
+        cy.get('.service-settings-pane').find('h2').contains('Active test API keys (2)').should('exist')
+        cy.get('.service-settings-pane').find('a').contains('Show revoked API keys').should('not.exist')
       })
 
       it('should list the api keys', () => {
         cy.get('div.govuk-summary-card').should('have.length', 2)
 
-        function verifySummaryCard (pos, token) {
-          cy.get('div.govuk-summary-card').eq(pos)
+        function verifySummaryCard(pos, token) {
+          cy.get('div.govuk-summary-card')
+            .eq(pos)
             .within(() => {
               cy.get('.govuk-summary-card__title').should('contain', token.description)
 
-              cy.get('.govuk-summary-card__action').eq(0)
+              cy.get('.govuk-summary-card__action')
+                .eq(0)
                 .within(() => {
                   cy.get('a')
                     .should('contain.text', 'Change name')
                     .and('have.attr', 'href', `${API_KEYS_SETTINGS_URL}/${token.tokenLink}/change-name`)
                 })
 
-              cy.get('.govuk-summary-card__action').eq(1)
+              cy.get('.govuk-summary-card__action')
+                .eq(1)
                 .within(() => {
                   cy.get('a')
                     .should('contain.text', 'Revoke')
                     .and('have.attr', 'href', `${API_KEYS_SETTINGS_URL}/${token.tokenLink}/revoke`)
                 })
 
-              cy.get('.govuk-summary-list__row').eq(0)
+              cy.get('.govuk-summary-list__row')
+                .eq(0)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Created by')
                   cy.get('.govuk-summary-list__value').should('contain', token.createdBy)
                 })
 
-              cy.get('.govuk-summary-list__row').eq(1)
+              cy.get('.govuk-summary-list__row')
+                .eq(1)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Date created')
                   cy.get('.govuk-summary-list__value').should('contain', token.issuedDate)
                 })
 
-              cy.get('.govuk-summary-list__row').eq(2)
+              cy.get('.govuk-summary-list__row')
+                .eq(2)
                 .within(() => {
                   cy.get('.govuk-summary-list__key').should('contain', 'Last used')
                   if (token.lastUsed === undefined) {
@@ -223,7 +243,7 @@ describe('Settings - API keys', () => {
       beforeEach(() => {
         setupStubs()
         cy.task('setupStubs', [
-          apiKeysStubs.createApiKey(GATEWAY_ACCOUNT_ID, USER_EMAIL, API_KEY_DESCRIPTION, EXPECTED_TOKEN)
+          apiKeysStubs.createApiKey(GATEWAY_ACCOUNT_ID, USER_EMAIL, API_KEY_DESCRIPTION, EXPECTED_TOKEN),
         ])
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
@@ -256,15 +276,19 @@ describe('Settings - API keys', () => {
       const TOKEN_LINK = 'token-link-2'
       const DESCRIPTION = 'my api key'
       const apiKeys = [
-        new Token().withCreatedBy('joe bloggs').withDescription(DESCRIPTION)
-          .withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024').withTokenLink(TOKEN_LINK)
+        new Token()
+          .withCreatedBy('joe bloggs')
+          .withDescription(DESCRIPTION)
+          .withIssuedDate('10 Dec 2024')
+          .withLastUsed('10 Dec 2024')
+          .withTokenLink(TOKEN_LINK),
       ]
 
       beforeEach(() => {
         setupStubs('admin', apiKeys)
         cy.task('setupStubs', [
           apiKeysStubs.getKeyByTokenLink(GATEWAY_ACCOUNT_ID, TOKEN_LINK, DESCRIPTION),
-          apiKeysStubs.revokeKey(GATEWAY_ACCOUNT_ID, TOKEN_LINK)
+          apiKeysStubs.revokeKey(GATEWAY_ACCOUNT_ID, TOKEN_LINK),
         ])
       })
 
@@ -275,7 +299,10 @@ describe('Settings - API keys', () => {
           cy.contains('a', 'Revoke').click()
         })
         cy.contains('button', 'Save changes').click()
-        cy.url().should('include', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/${TOKEN_LINK}/revoke`)
+        cy.url().should(
+          'include',
+          `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/${TOKEN_LINK}/revoke`
+        )
         cy.get('.govuk-error-summary').within(() => {
           cy.contains('h2', 'There is a problem').should('exist')
           cy.contains('a', `Confirm if you want to revoke ${DESCRIPTION}`).should('exist')
@@ -305,7 +332,9 @@ describe('Settings - API keys', () => {
         cy.contains('button', 'Save changes').click()
         cy.url().should('include', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
         cy.contains('h1', 'Test API keys').should('exist')
-        cy.contains('p.govuk-notification-banner__heading', `${DESCRIPTION} was successfully revoked`).should('not.exist')
+        cy.contains('p.govuk-notification-banner__heading', `${DESCRIPTION} was successfully revoked`).should(
+          'not.exist'
+        )
       })
     })
 
@@ -314,17 +343,28 @@ describe('Settings - API keys', () => {
       const TOKEN_LINK = 'token-link-1'
 
       const apiKeys = [
-        new Token().withCreatedBy('algae bra').withDescription('mathematical clothes')
-          .withIssuedDate('10 Dec 2024').withLastUsed('10 Dec 2024').withTokenLink(TOKEN_LINK)
+        new Token()
+          .withCreatedBy('algae bra')
+          .withDescription('mathematical clothes')
+          .withIssuedDate('10 Dec 2024')
+          .withLastUsed('10 Dec 2024')
+          .withTokenLink(TOKEN_LINK),
       ]
 
       beforeEach(() => {
         setupStubs('admin', apiKeys)
         cy.task('setupStubs', [
           apiKeysStubs.getKeyByTokenLink(GATEWAY_ACCOUNT_ID, TOKEN_LINK, 'mathematical clothes'),
-          apiKeysStubs.changeApiKeyName(TOKEN_LINK, NEW_API_KEY_NAME)
+          apiKeysStubs.changeApiKeyName(TOKEN_LINK, NEW_API_KEY_NAME),
         ])
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
+      })
+
+      it('should show active "API keys" link in the setting navigation', () => {
+        checkSettingsNavigation(
+          'API keys',
+          `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`
+        )
       })
 
       it('show the API key name page', () => {
@@ -340,9 +380,7 @@ describe('Settings - API keys', () => {
           cy.contains('h2', 'mathematical clothes').should('exist')
           cy.contains('a', 'Change name').click()
         })
-        cy.get('input[id="key-name"]')
-          .clear({ force: true })
-          .type(NEW_API_KEY_NAME)
+        cy.get('input[id="key-name"]').clear({ force: true }).type(NEW_API_KEY_NAME)
         cy.contains('button', 'Continue').click()
         cy.url().should('include', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
         cy.contains('h1', 'Test API keys').should('exist')
@@ -358,7 +396,7 @@ describe('Settings - API keys', () => {
     it('should return forbidden when visiting the url directly', () => {
       cy.request({
         url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`,
-        failOnStatusCode: false
+        failOnStatusCode: false,
       }).then((response) => {
         expect(response.status).to.eq(403)
       })
@@ -366,13 +404,13 @@ describe('Settings - API keys', () => {
 
     it('should not show API keys link in the navigation panel', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings`)
-      cy.get('#settings-navigation-api-keys').should('not.exist')
+      cy.get('#service-navigation-api-keys').should('not.exist')
     })
 
     it('should return forbidden when visiting the create api key url directly', () => {
       cy.request({
         url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/create`,
-        failOnStatusCode: false
+        failOnStatusCode: false,
       }).then((response) => {
         expect(response.status).to.eq(403)
       })

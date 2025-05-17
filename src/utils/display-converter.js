@@ -3,7 +3,8 @@ const url = require('url')
 const getHeldPermissions = require('./get-held-permissions')
 const { serviceNavigationItems, adminNavigationItems } = require('./nav-builder')
 const formatPSPname = require('./format-PSP-name')
-const serviceSettings = require('./simplified-account/settings/service-settings')
+const serviceNavigation = require('./simplified-account/navigation/service-navigation')
+const serviceSettingsNavigation = require('./simplified-account/navigation/service-settings-navigation')
 const GatewayAccount = require('@models/GatewayAccount.class')
 const { getActiveCredential } = require('@utils/credentials')
 
@@ -21,7 +22,7 @@ const hideServiceHeaderTemplates = [
   'policy/document/v2/contract-for-non-crown-bodies',
   'policy/document/v2/memorandum-of-understanding-for-crown-bodies',
   'policy/document/v2/stripe-connected-account-agreement',
-  'policy/stripe-terms-and-conditions/stripe-terms-and-conditions'
+  'policy/stripe-terms-and-conditions/stripe-terms-and-conditions',
 ]
 
 const hideServiceNavTemplates = [
@@ -45,14 +46,10 @@ const hideServiceNavTemplates = [
   'two-factor-auth/index',
   'two-factor-auth/phone-number',
   'two-factor-auth/configure',
-  'two-factor-auth/resend-sms-code'
+  'two-factor-auth/resend-sms-code',
 ]
 
-const digitalWalletsSupportedProviders = [
-  'sandbox',
-  'stripe',
-  'worldpay'
-]
+const digitalWalletsSupportedProviders = ['sandbox', 'stripe', 'worldpay']
 
 /**
  * converts users permission array of form
@@ -80,18 +77,18 @@ const getPermissions = (user, service) => {
   }
 }
 
-const hideServiceHeader = template => {
+const hideServiceHeader = (template) => {
   return hideServiceHeaderTemplates.indexOf(template) !== -1
 }
 
-const hideServiceNav = template => {
+const hideServiceNav = (template) => {
   return hideServiceNavTemplates.indexOf(template) !== -1
 }
 
-const addGatewayAccountProviderDisplayNames = data => {
+const addGatewayAccountProviderDisplayNames = (data) => {
   const gatewayAccounts = _.get(data, 'gatewayAccounts', null)
   if (gatewayAccounts) {
-    const convertedGateWayAccounts = gatewayAccounts.map(gatewayAccount => {
+    const convertedGateWayAccounts = gatewayAccounts.map((gatewayAccount) => {
       if (gatewayAccount.payment_provider) {
         gatewayAccount.payment_provider_display_name = _.startCase(gatewayAccount.payment_provider)
       }
@@ -101,16 +98,15 @@ const addGatewayAccountProviderDisplayNames = data => {
   }
 }
 
-const getAccount = account => {
+const getAccount = (account) => {
   if (account) {
-    account.full_type = account.type === 'test'
-      ? [formatPSPname(account.payment_provider), account.type].join(' ')
-      : account.type
+    account.full_type =
+      account.type === 'test' ? [formatPSPname(account.payment_provider), account.type].join(' ') : account.type
   }
   return account
 }
 
-const informationNeeded = account => {
+const informationNeeded = (account) => {
   if (account) {
     if (account instanceof GatewayAccount) {
       return account.getActiveCredential() === null
@@ -149,15 +145,30 @@ module.exports = function (req, data, template) {
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   const currentUrl = req.baseUrl && req.path ? req.baseUrl + req.path : 'unavailable'
   if (permissions) {
-    convertedData.serviceNavigationItems = serviceNavigationItems(currentPath, permissions, paymentMethod, currentUrl, service, account)
-    convertedData.adminNavigationItems = adminNavigationItems(currentPath, permissions, paymentMethod, paymentProvider, account)
+    convertedData.serviceNavigationItems = serviceNavigationItems(
+      currentPath,
+      permissions,
+      paymentMethod,
+      currentUrl,
+      service,
+      account
+    )
+    convertedData.adminNavigationItems = adminNavigationItems(
+      currentPath,
+      permissions,
+      paymentMethod,
+      paymentProvider,
+      account
+    )
+    // TODO PP-14060
+    // convertedData.serviceNavigation = serviceNavigation(account, service, currentUrl, permissions)
     if (currentUrl.match(/service\/[A-z0-9]+\/account\/test|live\/settings/)) {
-      convertedData.serviceSettings = serviceSettings(account, service, currentUrl, permissions)
+      convertedData.serviceSettings = serviceSettingsNavigation(account, service, currentUrl, permissions)
     }
   }
   convertedData._features = {}
   if (req.user && req.user.features) {
-    req.user.features.forEach(feature => {
+    req.user.features.forEach((feature) => {
       convertedData._features[feature.trim()] = true
     })
   }

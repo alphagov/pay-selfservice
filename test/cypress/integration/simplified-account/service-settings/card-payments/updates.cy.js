@@ -3,23 +3,23 @@ const {
   USER_EXTERNAL_ID,
   GATEWAY_ACCOUNT_ID,
   SERVICE_EXTERNAL_ID,
-  ACCOUNT_TYPE
+  ACCOUNT_TYPE,
 } = require('@test/cypress/integration/simplified-account/service-settings/card-payments/util')
 const {
   patchUpdateDefaultBillingAddressCountrySuccess,
-  patchUpdateCollectBillingAddressSuccess
+  patchUpdateCollectBillingAddressSuccess,
 } = require('@test/cypress/stubs/service-stubs')
 const {
   patchAccountByServiceExternalIdAndAccountTypeUpdateApplePaySuccess,
   patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePaySuccess,
   patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePayMerchantIdSuccess,
   patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardNumberSuccess,
-  patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardSecurityCodeSuccess
+  patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardSecurityCodeSuccess,
 } = require('@test/cypress/stubs/gateway-account-stubs')
 const { WORLDPAY, STRIPE } = require('@models/constants/payment-providers')
 const {
   WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE,
-  WORLDPAY_CREDENTIAL_IN_CREATED_STATE
+  WORLDPAY_CREDENTIAL_IN_CREATED_STATE,
 } = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
 const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 
@@ -33,14 +33,14 @@ describe('Card payment updates', () => {
 
   it('should allow update of Collect billing address - on', () => {
     setupStubs({
-      collectBillingAddress: false
+      collectBillingAddress: false,
     })
     cy.task('setupStubs', [
       patchUpdateCollectBillingAddressSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         serviceExternalId: SERVICE_EXTERNAL_ID,
-        collectBillingAddress: true
-      })
+        collectBillingAddress: true,
+      }),
     ])
     cy.visit(baseUrl + '/collect-billing-address')
     cy.get('h1').should('contain.text', 'Collect billing address')
@@ -52,14 +52,14 @@ describe('Card payment updates', () => {
 
   it('should allow update of Collect billing address - off', () => {
     setupStubs({
-      collectBillingAddress: true
+      collectBillingAddress: true,
     })
     cy.task('setupStubs', [
       patchUpdateCollectBillingAddressSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         serviceExternalId: SERVICE_EXTERNAL_ID,
-        collectBillingAddress: false
-      })
+        collectBillingAddress: false,
+      }),
     ])
     cy.visit(baseUrl + '/collect-billing-address')
     cy.get('h1').should('contain.text', 'Collect billing address')
@@ -70,20 +70,17 @@ describe('Card payment updates', () => {
 
   it('should allow update of Default billing address country - on', () => {
     setupStubs({
-      isDefaultBillingAddressCountryUK: false
+      isDefaultBillingAddressCountryUK: false,
     })
     cy.task('setupStubs', [
       patchUpdateDefaultBillingAddressCountrySuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         serviceExternalId: SERVICE_EXTERNAL_ID,
-        country: 'GB'
-      })
+        country: 'GB',
+      }),
     ])
     cy.visit(baseUrl + '/default-billing-address-country')
     cy.get('h1').should('contain.text', 'Default billing address country')
-    cy.get('.service-settings-nav__li--active').within(() => {
-      cy.get('#settings-navigation-card-payments').should('contain.text', 'Card payments')
-    })
     cy.get('input#default-billing-address-on').click()
     cy.contains('button', 'Save changes').click()
     cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
@@ -91,14 +88,14 @@ describe('Card payment updates', () => {
 
   it('should allow update of Default billing address country - off', () => {
     setupStubs({
-      isDefaultBillingAddressCountryUK: true
+      isDefaultBillingAddressCountryUK: true,
     })
     cy.task('setupStubs', [
       patchUpdateDefaultBillingAddressCountrySuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         serviceExternalId: SERVICE_EXTERNAL_ID,
-        country: null
-      })
+        country: null,
+      }),
     ])
     cy.visit(baseUrl + '/default-billing-address-country')
     cy.get('h1').should('contain.text', 'Default billing address country')
@@ -109,10 +106,10 @@ describe('Card payment updates', () => {
 
   it('should allow update of Apple Pay', () => {
     setupStubs({
-      allowApplePay: false
+      allowApplePay: false,
     })
     cy.task('setupStubs', [
-      patchAccountByServiceExternalIdAndAccountTypeUpdateApplePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
+      patchAccountByServiceExternalIdAndAccountTypeUpdateApplePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true),
     ])
     cy.visit(baseUrl + '/apple-pay')
     cy.get('h1').should('contain.text', 'Apple Pay')
@@ -125,10 +122,10 @@ describe('Card payment updates', () => {
   it('should allow update of Google Pay with active Stripe credential', () => {
     setupStubs({
       allowGooglePay: false,
-      gatewayAccountPaymentProvider: STRIPE
+      gatewayAccountPaymentProvider: STRIPE,
     })
     cy.task('setupStubs', [
-      patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
+      patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true),
     ])
     cy.visit(baseUrl + '/google-pay')
     cy.get('h1').should('contain.text', 'Google Pay')
@@ -144,9 +141,7 @@ describe('Card payment updates', () => {
     setupStubs({
       allowGooglePay: false,
       gatewayAccountPaymentProvider: WORLDPAY,
-      gatewayAccountCredentials: [
-        WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE
-      ]
+      gatewayAccountCredentials: [WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE],
     })
     cy.task('setupStubs', [
       patchAccountByServiceExternalIdAndAccountTypeUpdateGooglePaySuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true),
@@ -156,8 +151,9 @@ describe('Card payment updates', () => {
         WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE.external_id,
         {
           googlePayMerchantId,
-          userExternalId: USER_EXTERNAL_ID
-        })
+          userExternalId: USER_EXTERNAL_ID,
+        }
+      ),
     ])
     cy.visit(baseUrl + '/google-pay')
     cy.get('h1').should('contain.text', 'Google Pay')
@@ -165,16 +161,10 @@ describe('Card payment updates', () => {
     cy.get('.govuk-error-summary').should('not.exist')
     cy.get('input#google-pay-on').click()
     cy.contains('button', 'Save changes').click()
-    cy.get('.govuk-error-summary')
-      .should('exist')
-      .should('contain', googlePayMerchantIdError)
-    cy.get('input#google-pay-merchant-id')
-      .should('have.class', 'govuk-input--error')
-    cy.get('#google-pay-merchant-id-error')
-      .should('contain.text', googlePayMerchantIdError)
-    cy.get('input#google-pay-merchant-id').click()
-      .clear({ force: true })
-      .type(googlePayMerchantId)
+    cy.get('.govuk-error-summary').should('exist').should('contain', googlePayMerchantIdError)
+    cy.get('input#google-pay-merchant-id').should('have.class', 'govuk-input--error')
+    cy.get('#google-pay-merchant-id-error').should('contain.text', googlePayMerchantIdError)
+    cy.get('input#google-pay-merchant-id').click().clear({ force: true }).type(googlePayMerchantId)
     cy.contains('button', 'Save changes').click()
     cy.get('.govuk-heading-l').should('contain.text', 'Card payments')
   })
@@ -183,14 +173,12 @@ describe('Card payment updates', () => {
     setupStubs({
       allowGooglePay: false,
       gatewayAccountPaymentProvider: WORLDPAY,
-      gatewayAccountCredentials: [
-        WORLDPAY_CREDENTIAL_IN_CREATED_STATE
-      ]
+      gatewayAccountCredentials: [WORLDPAY_CREDENTIAL_IN_CREATED_STATE],
     })
     cy.request({
       method: 'GET',
       url: baseUrl + '/google-pay',
-      followRedirect: false
+      followRedirect: false,
     }).then((res) => {
       expect(res.status).to.eq(302)
       expect(res.headers.location).to.include('/card-payments')
@@ -202,10 +190,14 @@ describe('Card payment updates', () => {
     describe('Moto enabled gateway account', () => {
       it('should allow update of Hide card number', () => {
         setupStubs({
-          allowMoto: true
+          allowMoto: true,
         })
         cy.task('setupStubs', [
-          patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardNumberSuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
+          patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardNumberSuccess(
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE,
+            true
+          ),
         ])
         cy.task('setupStubs', [])
         cy.visit(baseUrl + '/moto-security/hide-card-number')
@@ -217,10 +209,14 @@ describe('Card payment updates', () => {
 
       it('should allow update of Hide card security code', () => {
         setupStubs({
-          allowMoto: true
+          allowMoto: true,
         })
         cy.task('setupStubs', [
-          patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardSecurityCodeSuccess(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, true)
+          patchAccountByServiceExternalIdAndAccountTypeUpdateMaskCardSecurityCodeSuccess(
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE,
+            true
+          ),
         ])
         cy.task('setupStubs', [])
         cy.visit(baseUrl + '/moto-security/hide-card-security-code')
@@ -234,11 +230,11 @@ describe('Card payment updates', () => {
     describe('Non-moto enabled gateway account', () => {
       it('should return 404 when accessing Hide card number', () => {
         setupStubs({
-          allowMoto: false
+          allowMoto: false,
         })
         cy.request({
           url: baseUrl + '/moto-security/hide-card-number',
-          failOnStatusCode: false
+          failOnStatusCode: false,
         }).then((resp) => {
           expect(resp.status).to.eq(404)
           cy.visit(baseUrl + '/moto-security/hide-card-number', { failOnStatusCode: false })
@@ -249,11 +245,11 @@ describe('Card payment updates', () => {
 
       it('should return 404 when accessing Hide card security code', () => {
         setupStubs({
-          allowMoto: false
+          allowMoto: false,
         })
         cy.request({
           url: baseUrl + '/moto-security/hide-card-security-code',
-          failOnStatusCode: false
+          failOnStatusCode: false,
         }).then((resp) => {
           expect(resp.status).to.eq(404)
           cy.visit(baseUrl + '/moto-security/hide-card-security-code', { failOnStatusCode: false })
@@ -273,11 +269,11 @@ describe('Card payment updates non-admin access', () => {
 
   it('should return 403 for non-admin user - collect billing address', () => {
     setupStubs({
-      role: 'view-only'
+      role: 'view-only',
     })
     cy.request({
       url: baseUrl + '/collect-billing-address',
-      failOnStatusCode: false
+      failOnStatusCode: false,
     }).then((resp) => {
       expect(resp.status).to.eq(403)
     })
@@ -285,11 +281,11 @@ describe('Card payment updates non-admin access', () => {
 
   it('should return 403 for non-admin user - default billing address', () => {
     setupStubs({
-      role: 'view-only'
+      role: 'view-only',
     })
     cy.request({
       url: baseUrl + '/default-billing-address-country',
-      failOnStatusCode: false
+      failOnStatusCode: false,
     }).then((resp) => {
       expect(resp.status).to.eq(403)
     })
@@ -297,11 +293,11 @@ describe('Card payment updates non-admin access', () => {
 
   it('should return 403 for non-admin user - apple pay', () => {
     setupStubs({
-      role: 'view-only'
+      role: 'view-only',
     })
     cy.request({
       url: baseUrl + '/apple-pay',
-      failOnStatusCode: false
+      failOnStatusCode: false,
     }).then((resp) => {
       expect(resp.status).to.eq(403)
     })
@@ -309,11 +305,11 @@ describe('Card payment updates non-admin access', () => {
 
   it('should return 403 for non-admin user - google pay', () => {
     setupStubs({
-      role: 'view-only'
+      role: 'view-only',
     })
     cy.request({
       url: baseUrl + '/google-pay',
-      failOnStatusCode: false
+      failOnStatusCode: false,
     }).then((resp) => {
       expect(resp.status).to.eq(403)
     })
@@ -322,11 +318,11 @@ describe('Card payment updates non-admin access', () => {
   it('should return 403 for non-admin user - hide card number', () => {
     setupStubs({
       role: 'view-only',
-      allowMoto: true
+      allowMoto: true,
     })
     cy.request({
       url: baseUrl + '/moto-security/hide-card-number',
-      failOnStatusCode: false
+      failOnStatusCode: false,
     }).then((resp) => {
       expect(resp.status).to.eq(403)
     })
@@ -335,11 +331,11 @@ describe('Card payment updates non-admin access', () => {
   it('should return 403 for non-admin user - hide card security code', () => {
     setupStubs({
       role: 'view-only',
-      allowMoto: true
+      allowMoto: true,
     })
     cy.request({
       url: baseUrl + '/moto-security/hide-card-security-code',
-      failOnStatusCode: false
+      failOnStatusCode: false,
     }).then((resp) => {
       expect(resp.status).to.eq(403)
     })

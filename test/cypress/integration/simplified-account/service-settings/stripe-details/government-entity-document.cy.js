@@ -1,15 +1,19 @@
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('@test/cypress/stubs/stripe-account-setup-stub')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const stripePspStubs = require('@test/cypress/stubs/stripe-psp-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
-const { STRIPE_CREDENTIAL_IN_ACTIVE_STATE } = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
+const {
+  STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
+} = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = {
-  en: 'McDuck Enterprises', cy: 'Mentrau McDuck'
+  en: 'McDuck Enterprises',
+  cy: 'Mentrau McDuck',
 }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
@@ -28,20 +32,19 @@ const setStubs = (opts = {}, additionalStubs = []) => {
         name: 'McDuck Enterprises',
         address_line1: 'McDuck Manor',
         address_city: 'Duckburg',
-        address_postcode: 'SW1A 1AA'
+        address_postcode: 'SW1A 1AA',
       },
-      role: ROLES[opts.role || 'admin']
+      role: ROLES[opts.role || 'admin'],
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       type: LIVE_ACCOUNT_TYPE,
       payment_provider: opts.paymentProvider || STRIPE,
       provider_switch_enabled: opts.providerSwitchEnabled || false,
-      gateway_account_credentials: [
-        STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
-      ]
+      gateway_account_credentials: [STRIPE_CREDENTIAL_IN_ACTIVE_STATE],
     }),
-    ...additionalStubs])
+    ...additionalStubs,
+  ])
 }
 
 describe('Stripe details settings', () => {
@@ -52,20 +55,23 @@ describe('Stripe details settings', () => {
     describe('For a non-admin', () => {
       beforeEach(() => {
         setStubs({
-          role: 'view-and-refund'
+          role: 'view-and-refund',
         })
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document', { failOnStatusCode: false })
       })
       it('should show admin only error', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
         cy.get('h1').should('contain.text', 'An error occurred')
-        cy.get('#errorMsg').should('contain.text', 'You do not have the administrator rights to perform this operation.')
+        cy.get('#errorMsg').should(
+          'contain.text',
+          'You do not have the administrator rights to perform this operation.'
+        )
       })
     })
     describe('For a non-stripe service', () => {
       beforeEach(() => {
         setStubs({
-          paymentProvider: WORLDPAY
+          paymentProvider: WORLDPAY,
         })
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document', { failOnStatusCode: false })
       })
@@ -86,14 +92,14 @@ describe('Stripe details settings', () => {
             director: true,
             responsiblePerson: true,
             organisationDetails: true,
-            governmentEntityDocument: true
-          })
+            governmentEntityDocument: true,
+          }),
         ])
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document', { failOnStatusCode: false })
       })
       it('should show the task already completed page', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
-        cy.get('h1').should('contain', 'You\'ve already completed this task')
+        cy.get('h1').should('contain', "You've already completed this task")
       })
     })
 
@@ -109,8 +115,8 @@ describe('Stripe details settings', () => {
             director: false,
             responsiblePerson: false,
             organisationDetails: false,
-            governmentEntityDocument: false
-          })
+            governmentEntityDocument: false,
+          }),
         ])
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document')
       })
@@ -132,21 +138,14 @@ describe('Stripe details settings', () => {
             director: true,
             responsiblePerson: true,
             organisationDetails: true,
-            governmentEntityDocument: false
-          })
+            governmentEntityDocument: false,
+          }),
         ])
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document')
       })
       describe('The settings navigation', () => {
-        it('should show stripe details', () => {
-          cy.get('.service-settings-nav')
-            .find('li')
-            .contains('Stripe details')
-            .then(li => {
-              cy.wrap(li)
-                .should('have.attr', 'href', STRIPE_DETAILS_SETTINGS_URL)
-                .parent().should('have.class', 'service-settings-nav__li--active')
-            })
+        it('should show active "Stripe details" link in the setting navigation', () => {
+          checkSettingsNavigation('Stripe details', STRIPE_DETAILS_SETTINGS_URL)
         })
       })
       describe('The task page', () => {
@@ -164,17 +163,14 @@ describe('Stripe details settings', () => {
 
             cy.get('input[name="governmentEntityDocument"]').selectFile({
               contents: Cypress.Buffer.from('file contents'),
-              fileName: 'file.json'
+              fileName: 'file.json',
             })
 
             cy.get('.govuk-error-summary').should('not.exist')
 
             cy.get('#government-entity-document-submit').click()
 
-            cy.get('.govuk-error-summary')
-              .should('exist')
-              .should('contain', '')
-              .should('contain', wrongFileTypeError)
+            cy.get('.govuk-error-summary').should('exist').should('contain', '').should('contain', wrongFileTypeError)
             cy.get('input[name="governmentEntityDocument"]').should('have.class', 'govuk-file-upload--error')
             cy.get('#government-entity-document-error').should('contain.text', wrongFileTypeError)
           })
@@ -182,24 +178,21 @@ describe('Stripe details settings', () => {
         describe('File too large', () => {
           it('should render error', () => {
             const fileTooLargeError = 'File size must be less than 10MB'
-            const moreThan10MB = (10 * 1024 * 1024) + 1
+            const moreThan10MB = 10 * 1024 * 1024 + 1
             const largeFile = Cypress.Buffer.alloc(moreThan10MB)
             largeFile.write('a', moreThan10MB)
 
             cy.get('input[name="governmentEntityDocument"]').selectFile({
               contents: largeFile,
               fileName: 'file.png',
-              mimeType: 'image/png'
+              mimeType: 'image/png',
             })
 
             cy.get('.govuk-error-summary').should('not.exist')
 
             cy.get('#government-entity-document-submit').click()
 
-            cy.get('.govuk-error-summary')
-              .should('exist')
-              .should('contain', '')
-              .should('contain', fileTooLargeError)
+            cy.get('.govuk-error-summary').should('exist').should('contain', '').should('contain', fileTooLargeError)
             cy.get('input[name="governmentEntityDocument"]').should('have.class', 'govuk-file-upload--error')
             cy.get('#government-entity-document-error').should('contain.text', fileTooLargeError)
           })
@@ -210,10 +203,7 @@ describe('Stripe details settings', () => {
             const fileMissingError = 'Select a file to upload'
             cy.get('.govuk-error-summary').should('not.exist')
             cy.get('#government-entity-document-submit').click()
-            cy.get('.govuk-error-summary')
-              .should('exist')
-              .should('contain', '')
-              .should('contain', fileMissingError)
+            cy.get('.govuk-error-summary').should('exist').should('contain', '').should('contain', fileMissingError)
             cy.get('input[name="governmentEntityDocument"]').should('have.class', 'govuk-file-upload--error')
             cy.get('#government-entity-document-error').should('contain.text', fileMissingError)
           })
@@ -222,37 +212,36 @@ describe('Stripe details settings', () => {
       describe('When uploading a valid file', () => {
         beforeEach(() => {
           setStubs({}, [
-            gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(
+            gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
+              stripeAccountId: STRIPE_ACCOUNT_ID,
+            }),
+            stripePspStubs.uploadFile(),
+            stripePspStubs.updateAccount({
+              stripeAccountId: STRIPE_ACCOUNT_ID,
+            }),
+            stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType(
               SERVICE_EXTERNAL_ID,
               LIVE_ACCOUNT_TYPE,
               {
-                stripeAccountId: STRIPE_ACCOUNT_ID
+                path: 'government_entity_document',
+                value: true,
               }
             ),
-            stripePspStubs.uploadFile(),
-            stripePspStubs.updateAccount({
-              stripeAccountId: STRIPE_ACCOUNT_ID
-            }),
-            stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE,
-              {
-                path: 'government_entity_document',
-                value: true
-              }),
             stripePspStubs.retrieveAccountDetails({
-              stripeAccountId: STRIPE_ACCOUNT_ID
+              stripeAccountId: STRIPE_ACCOUNT_ID,
             }),
             stripePspStubs.listPersons({
               stripeAccountId: STRIPE_ACCOUNT_ID,
               director: true,
               representative: true,
               firstName: 'Scrooge',
-              lastName: 'McDuck'
+              lastName: 'McDuck',
             }),
             stripePspStubs.listBankAccount({
               stripeAccountId: STRIPE_ACCOUNT_ID,
               director: true,
-              representative: true
-            })
+              representative: true,
+            }),
           ])
           cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/government-entity-document')
         })
@@ -261,7 +250,7 @@ describe('Stripe details settings', () => {
           cy.get('input[name="governmentEntityDocument"]').selectFile({
             contents: Cypress.Buffer.from('file contents'),
             fileName: 'file.png',
-            mimeType: 'image/png'
+            mimeType: 'image/png',
           })
 
           setStubs({}, [
@@ -274,8 +263,8 @@ describe('Stripe details settings', () => {
               director: true,
               responsiblePerson: true,
               organisationDetails: true,
-              governmentEntityDocument: true
-            })
+              governmentEntityDocument: true,
+            }),
           ])
 
           cy.get('#government-entity-document-submit').click()

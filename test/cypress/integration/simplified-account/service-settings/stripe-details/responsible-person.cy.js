@@ -1,15 +1,19 @@
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('@test/cypress/stubs/stripe-account-setup-stub')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const stripePspStubs = require('@test/cypress/stubs/stripe-psp-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
-const { STRIPE_CREDENTIAL_IN_ACTIVE_STATE } = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
+const {
+  STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
+} = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = {
-  en: 'McDuck Enterprises', cy: 'Mentrau McDuck'
+  en: 'McDuck Enterprises',
+  cy: 'Mentrau McDuck',
 }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
@@ -28,20 +32,19 @@ const setStubs = (opts = {}, additionalStubs = []) => {
         name: 'McDuck Enterprises',
         address_line1: 'McDuck Manor',
         address_city: 'Duckburg',
-        address_postcode: 'SW1A 1AA'
+        address_postcode: 'SW1A 1AA',
       },
-      role: ROLES[opts.role || 'admin']
+      role: ROLES[opts.role || 'admin'],
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       type: LIVE_ACCOUNT_TYPE,
       payment_provider: opts.paymentProvider || STRIPE,
       provider_switch_enabled: opts.providerSwitchEnabled || false,
-      gateway_account_credentials: [
-        STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
-      ]
+      gateway_account_credentials: [STRIPE_CREDENTIAL_IN_ACTIVE_STATE],
     }),
-    ...additionalStubs])
+    ...additionalStubs,
+  ])
 }
 
 describe('Stripe details settings', () => {
@@ -52,20 +55,23 @@ describe('Stripe details settings', () => {
     describe('For a non-admin', () => {
       beforeEach(() => {
         setStubs({
-          role: 'view-and-refund'
+          role: 'view-and-refund',
         })
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/responsible-person', { failOnStatusCode: false })
       })
       it('should show admin only error', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
         cy.get('h1').should('contain.text', 'An error occurred')
-        cy.get('#errorMsg').should('contain.text', 'You do not have the administrator rights to perform this operation.')
+        cy.get('#errorMsg').should(
+          'contain.text',
+          'You do not have the administrator rights to perform this operation.'
+        )
       })
     })
     describe('For a non-stripe service', () => {
       beforeEach(() => {
         setStubs({
-          paymentProvider: WORLDPAY
+          paymentProvider: WORLDPAY,
         })
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/responsible-person', { failOnStatusCode: false })
       })
@@ -80,14 +86,14 @@ describe('Stripe details settings', () => {
           stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE,
-            responsiblePerson: true
-          })
+            responsiblePerson: true,
+          }),
         ])
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/responsible-person')
       })
       it('should show the task already completed page', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
-        cy.get('h1').should('contain', 'You\'ve already completed this task')
+        cy.get('h1').should('contain', "You've already completed this task")
       })
     })
     describe('Not yet started', () => {
@@ -95,21 +101,14 @@ describe('Stripe details settings', () => {
         setStubs({}, [
           stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
-            accountType: LIVE_ACCOUNT_TYPE
-          })
+            accountType: LIVE_ACCOUNT_TYPE,
+          }),
         ])
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/responsible-person')
       })
       describe('The settings navigation', () => {
-        it('should show stripe details', () => {
-          cy.get('.service-settings-nav')
-            .find('li')
-            .contains('Stripe details')
-            .then(li => {
-              cy.wrap(li)
-                .should('have.attr', 'href', STRIPE_DETAILS_SETTINGS_URL)
-                .parent().should('have.class', 'service-settings-nav__li--active')
-            })
+        it('should show active "Stripe details" link in the setting navigation', () => {
+          checkSettingsNavigation('Stripe details', STRIPE_DETAILS_SETTINGS_URL)
         })
       })
       describe('The task page', () => {
@@ -129,19 +128,11 @@ describe('Stripe details settings', () => {
 
             cy.get('.govuk-error-summary').should('not.exist')
 
-            cy.get('input[name="firstName"]')
-              .clear({ force: true })
-            cy.get('input[name="lastName"]')
-              .clear({ force: true })
-            cy.get('input[name="dobDay"]')
-              .clear({ force: true })
-              .type('01')
-            cy.get('input[name="dobMonth"]')
-              .clear({ force: true })
-              .type('01')
-            cy.get('input[name="dobYear"]')
-              .clear({ force: true })
-              .type('1899')
+            cy.get('input[name="firstName"]').clear({ force: true })
+            cy.get('input[name="lastName"]').clear({ force: true })
+            cy.get('input[name="dobDay"]').clear({ force: true }).type('01')
+            cy.get('input[name="dobMonth"]').clear({ force: true }).type('01')
+            cy.get('input[name="dobYear"]').clear({ force: true }).type('1899')
 
             cy.get('#responsible-person-form button[type="submit"]').click()
             cy.get('.govuk-error-summary')
@@ -169,13 +160,9 @@ describe('Stripe details settings', () => {
 
             cy.get('.govuk-error-summary').should('not.exist')
 
-            cy.get('input[name="homeAddressLine1"]')
-              .clear({ force: true })
-            cy.get('input[name="homeAddressCity"]')
-              .clear({ force: true })
-            cy.get('input[name="homeAddressPostcode"]')
-              .clear({ force: true })
-              .type('hmmm')
+            cy.get('input[name="homeAddressLine1"]').clear({ force: true })
+            cy.get('input[name="homeAddressCity"]').clear({ force: true })
+            cy.get('input[name="homeAddressPostcode"]').clear({ force: true }).type('hmmm')
 
             cy.get('#responsible-person-home-address-form button[type="submit"]').click()
             cy.get('.govuk-error-summary')
@@ -203,12 +190,8 @@ describe('Stripe details settings', () => {
 
             cy.get('.govuk-error-summary').should('not.exist')
 
-            cy.get('input[name="workTelephoneNumber"]')
-              .clear({ force: true })
-              .type('hmmm')
-            cy.get('input[name="workEmail"]')
-              .clear({ force: true })
-              .type('hmmm')
+            cy.get('input[name="workTelephoneNumber"]').clear({ force: true }).type('hmmm')
+            cy.get('input[name="workEmail"]').clear({ force: true }).type('hmmm')
 
             cy.get('#responsible-person-contact-details-form button[type="submit"]').click()
             cy.get('.govuk-error-summary')
@@ -236,97 +219,75 @@ describe('Stripe details settings', () => {
       describe('When entering valid details', () => {
         beforeEach(() => {
           setStubs({}, [
-            gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(
-              SERVICE_EXTERNAL_ID,
-              LIVE_ACCOUNT_TYPE,
-              {
-                stripeAccountId: STRIPE_ACCOUNT_ID
-              }
-            ),
+            gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
+              stripeAccountId: STRIPE_ACCOUNT_ID,
+            }),
             stripePspStubs.listPersons({
-              stripeAccountId: STRIPE_ACCOUNT_ID
+              stripeAccountId: STRIPE_ACCOUNT_ID,
             }),
             stripePspStubs.createPerson({
               stripeAccountId: STRIPE_ACCOUNT_ID,
-              representative: true
+              representative: true,
             }),
             stripePspStubs.updateAccount({
-              stripeAccountId: STRIPE_ACCOUNT_ID
+              stripeAccountId: STRIPE_ACCOUNT_ID,
             }),
-            stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE,
+            stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType(
+              SERVICE_EXTERNAL_ID,
+              LIVE_ACCOUNT_TYPE,
               {
                 path: 'responsible_person',
-                value: true
-              })
+                value: true,
+              }
+            ),
           ])
           cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/responsible-person')
         })
 
         it('should redirect to the task summary page on success', () => {
-          cy.get('input[name="firstName"]')
-            .clear({ force: true })
-            .type('Scrooge')
-          cy.get('input[name="lastName"]')
-            .clear({ force: true })
-            .type('McDuck')
-          cy.get('input[name="dobDay"]')
-            .clear({ force: true })
-            .type('01')
-          cy.get('input[name="dobMonth"]')
-            .clear({ force: true })
-            .type('01')
-          cy.get('input[name="dobYear"]')
-            .clear({ force: true })
-            .type('1901')
+          cy.get('input[name="firstName"]').clear({ force: true }).type('Scrooge')
+          cy.get('input[name="lastName"]').clear({ force: true }).type('McDuck')
+          cy.get('input[name="dobDay"]').clear({ force: true }).type('01')
+          cy.get('input[name="dobMonth"]').clear({ force: true }).type('01')
+          cy.get('input[name="dobYear"]').clear({ force: true }).type('1901')
 
           cy.get('#responsible-person-form button[type="submit"]').click()
 
-          cy.get('input[name="homeAddressLine1"]')
-            .clear({ force: true })
-            .type('McDuck Manor')
-          cy.get('input[name="homeAddressCity"]')
-            .clear({ force: true })
-            .type('Duckburg')
-          cy.get('input[name="homeAddressPostcode"]')
-            .clear({ force: true })
-            .type('SW1A 1AA')
+          cy.get('input[name="homeAddressLine1"]').clear({ force: true }).type('McDuck Manor')
+          cy.get('input[name="homeAddressCity"]').clear({ force: true }).type('Duckburg')
+          cy.get('input[name="homeAddressPostcode"]').clear({ force: true }).type('SW1A 1AA')
 
           cy.get('#responsible-person-home-address-form button[type="submit"]').click()
 
-          cy.get('input[name="workTelephoneNumber"]')
-            .clear({ force: true })
-            .type('01611234567')
-          cy.get('input[name="workEmail"]')
-            .clear({ force: true })
-            .type('scrooge.mcduck@pay.gov.uk')
+          cy.get('input[name="workTelephoneNumber"]').clear({ force: true }).type('01611234567')
+          cy.get('input[name="workEmail"]').clear({ force: true }).type('scrooge.mcduck@pay.gov.uk')
 
           cy.get('#responsible-person-contact-details-form button[type="submit"]').click()
 
           cy.get('.govuk-summary-list__row').should('have.length', 5)
 
-          cy.get('.govuk-summary-list__row')
-            .should('contain.text', 'Scrooge McDuck')
+          cy.get('.govuk-summary-list__row').should('contain.text', 'Scrooge McDuck')
+
+          cy.get('.govuk-summary-list__row').should('contain.text', '01 January 1901')
 
           cy.get('.govuk-summary-list__row')
-            .should('contain.text', '01 January 1901')
+            .contains('McDuck Manor')
+            .should('exist')
+            .contains('Duckburg')
+            .should('exist')
+            .contains('SW1A 1AA')
+            .should('exist')
 
-          cy.get('.govuk-summary-list__row')
-            .contains('McDuck Manor').should('exist')
-            .contains('Duckburg').should('exist')
-            .contains('SW1A 1AA').should('exist')
+          cy.get('.govuk-summary-list__row').should('contain.text', '+44 161 123 4567')
 
-          cy.get('.govuk-summary-list__row')
-            .should('contain.text', '+44 161 123 4567')
-
-          cy.get('.govuk-summary-list__row')
-            .should('contain.text', 'scrooge.mcduck@pay.gov.uk')
+          cy.get('.govuk-summary-list__row').should('contain.text', 'scrooge.mcduck@pay.gov.uk')
 
           setStubs({}, [
             stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE,
-              responsiblePerson: true
-            })
+              responsiblePerson: true,
+            }),
           ])
 
           cy.get('#responsible-person-check-your-answers-form button[type="submit"]').click()

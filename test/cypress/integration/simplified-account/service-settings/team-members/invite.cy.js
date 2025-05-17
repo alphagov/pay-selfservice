@@ -1,3 +1,4 @@
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const userStubs = require('../../../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../../../stubs/gateway-account-stubs')
 const inviteStubs = require('../../../../stubs/invite-stubs')
@@ -9,32 +10,42 @@ const TEST_GATEWAY_ACCOUNT_ID = 10
 const TEAM_MEMBERS_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST_ACCOUNT_TYPE}/settings/team-members`
 
 const setStubs = (opts = {}, additionalStubs = []) => {
-  const adminUserStubOpts = userStubs.getUserWithServiceRoleStubOpts(ADMIN_USER_ID, 'admin-user@example.com', SERVICE_EXTERNAL_ID, 'admin')
+  const adminUserStubOpts = userStubs.getUserWithServiceRoleStubOpts(
+    ADMIN_USER_ID,
+    'admin-user@example.com',
+    SERVICE_EXTERNAL_ID,
+    'admin'
+  )
 
   cy.task('setupStubs', [
     userStubs.getServiceUsersSuccess({
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      users: [adminUserStubOpts]
+      users: [adminUserStubOpts],
     }),
     userStubs.getUserSuccess({
       userExternalId: ADMIN_USER_ID,
       gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
       serviceName: { en: 'My cool service' },
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role: { name: 'admin' }
+      role: { name: 'admin' },
     }),
     inviteStubs.getInvitedUsersSuccess({
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      invites: []
+      invites: [],
     }),
-    inviteStubs.createInviteToJoinService({
-      email: 'invited_user@users.gov.uk',
-      senderId: ADMIN_USER_ID,
-      serviceExternalId: SERVICE_EXTERNAL_ID,
-      roleName: 'view-only'
-    }, opts.userAlreadyInvited),
-    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, TEST_ACCOUNT_TYPE, { gateway_account_id: TEST_GATEWAY_ACCOUNT_ID }),
-    ...additionalStubs
+    inviteStubs.createInviteToJoinService(
+      {
+        email: 'invited_user@users.gov.uk',
+        senderId: ADMIN_USER_ID,
+        serviceExternalId: SERVICE_EXTERNAL_ID,
+        roleName: 'view-only',
+      },
+      opts.userAlreadyInvited
+    ),
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, TEST_ACCOUNT_TYPE, {
+      gateway_account_id: TEST_GATEWAY_ACCOUNT_ID,
+    }),
+    ...additionalStubs,
   ])
 }
 
@@ -45,6 +56,10 @@ describe('Team members settings', () => {
       cy.setEncryptedCookies(ADMIN_USER_ID)
       cy.visit(TEAM_MEMBERS_SETTINGS_URL)
       cy.get('#invite-team-member-link').click()
+    })
+
+    it('should show active "Team members" link in the setting navigation', () => {
+      checkSettingsNavigation('Team members', TEAM_MEMBERS_SETTINGS_URL)
     })
 
     it('should show the show the correct heading, title and form with correct elements', () => {
@@ -71,7 +86,10 @@ describe('Team members settings', () => {
       cy.get('button').contains('Send invitation email').click()
       cy.get('h1').should('contain', 'Team members')
       cy.title().should('eq', 'Team members - Settings - My cool service - GOV.UK Pay')
-      cy.get('[data-module=govuk-notification-banner]').should('contain.text', 'Team member invitation sent to invited_user@users.gov.uk')
+      cy.get('[data-module=govuk-notification-banner]').should(
+        'contain.text',
+        'Team member invitation sent to invited_user@users.gov.uk'
+      )
     })
   })
 
@@ -89,7 +107,10 @@ describe('Team members settings', () => {
       cy.get('.govuk-error-summary').should('not.exist')
       cy.get('button').contains('Send invitation email').click()
       cy.get('.govuk-error-summary').should('contain.text', 'This person has already been invited')
-      cy.get('#invited-user-email-error').should('contain.text', 'You cannot send an invitation to invited_user@users.gov.uk because they have received one already, or may be an existing team member')
+      cy.get('#invited-user-email-error').should(
+        'contain.text',
+        'You cannot send an invitation to invited_user@users.gov.uk because they have received one already, or may be an existing team member'
+      )
     })
   })
 })
