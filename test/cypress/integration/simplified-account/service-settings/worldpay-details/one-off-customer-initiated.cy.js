@@ -1,3 +1,4 @@
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const { SANDBOX, WORLDPAY } = require('@models/constants/payment-providers')
 const userStubs = require('@test/cypress/stubs/user-stubs')
@@ -16,11 +17,15 @@ const VALID_WORLDPAY_USERNAME_2 = 'worldpay-user-2'
 const VALID_WORLDPAY_PASSWORD_2 = 'worldpay-password-2' // pragma: allowlist secret
 
 const setupStubs = (opts = {}, additionalStubs = []) => {
-  const options = Object.assign({}, {
-    role: 'admin',
-    paymentProvider: WORLDPAY,
-    credentials: {}
-  }, opts)
+  const options = Object.assign(
+    {},
+    {
+      role: 'admin',
+      paymentProvider: WORLDPAY,
+      credentials: {},
+    },
+    opts
+  )
 
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
@@ -28,47 +33,59 @@ const setupStubs = (opts = {}, additionalStubs = []) => {
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       serviceName: { en: 'My cool service' },
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role: ROLES[options.role]
+      role: ROLES[options.role],
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       payment_provider: options.paymentProvider,
-      gateway_account_credentials: [{
-        payment_provider: options.paymentProvider,
-        credentials: options.credentials,
-        external_id: CREDENTIAL_EXTERNAL_ID
-      }],
-      allow_moto: true
+      gateway_account_credentials: [
+        {
+          payment_provider: options.paymentProvider,
+          credentials: options.credentials,
+          external_id: CREDENTIAL_EXTERNAL_ID,
+        },
+      ],
+      allow_moto: true,
     }),
     gatewayAccountStubs.postCheckWorldpayCredentialsByServiceExternalIdAndType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
       merchant_code: VALID_MOTO_MERCHANT_CODE,
       username: VALID_WORLDPAY_USERNAME,
-      password: VALID_WORLDPAY_PASSWORD
+      password: VALID_WORLDPAY_PASSWORD,
     }),
     gatewayAccountStubs.postCheckWorldpayCredentialsByServiceExternalIdAndType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
       merchant_code: VALID_MOTO_MERCHANT_CODE,
       username: VALID_WORLDPAY_USERNAME_2,
-      password: VALID_WORLDPAY_PASSWORD_2
+      password: VALID_WORLDPAY_PASSWORD_2,
     }),
-    gatewayAccountStubs.patchUpdateCredentialsSuccessByServiceExternalIdAndType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, CREDENTIAL_EXTERNAL_ID, {
-      path: 'credentials/worldpay/one_off_customer_initiated',
-      value: {
-        merchant_code: VALID_MOTO_MERCHANT_CODE,
-        username: VALID_WORLDPAY_USERNAME,
-        password: VALID_WORLDPAY_PASSWORD
-      },
-      userExternalId: USER_EXTERNAL_ID
-    }),
-    gatewayAccountStubs.patchUpdateCredentialsSuccessByServiceExternalIdAndType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, CREDENTIAL_EXTERNAL_ID, {
-      path: 'credentials/worldpay/one_off_customer_initiated',
-      value: {
-        merchant_code: VALID_MOTO_MERCHANT_CODE,
-        username: VALID_WORLDPAY_USERNAME_2,
-        password: VALID_WORLDPAY_PASSWORD_2
-      },
-      userExternalId: USER_EXTERNAL_ID
-    }),
-    ...additionalStubs
+    gatewayAccountStubs.patchUpdateCredentialsSuccessByServiceExternalIdAndType(
+      SERVICE_EXTERNAL_ID,
+      ACCOUNT_TYPE,
+      CREDENTIAL_EXTERNAL_ID,
+      {
+        path: 'credentials/worldpay/one_off_customer_initiated',
+        value: {
+          merchant_code: VALID_MOTO_MERCHANT_CODE,
+          username: VALID_WORLDPAY_USERNAME,
+          password: VALID_WORLDPAY_PASSWORD,
+        },
+        userExternalId: USER_EXTERNAL_ID,
+      }
+    ),
+    gatewayAccountStubs.patchUpdateCredentialsSuccessByServiceExternalIdAndType(
+      SERVICE_EXTERNAL_ID,
+      ACCOUNT_TYPE,
+      CREDENTIAL_EXTERNAL_ID,
+      {
+        path: 'credentials/worldpay/one_off_customer_initiated',
+        value: {
+          merchant_code: VALID_MOTO_MERCHANT_CODE,
+          username: VALID_WORLDPAY_USERNAME_2,
+          password: VALID_WORLDPAY_PASSWORD_2,
+        },
+        userExternalId: USER_EXTERNAL_ID,
+      }
+    ),
+    ...additionalStubs,
   ])
 }
 
@@ -84,23 +101,23 @@ describe('Worldpay details settings', () => {
         })
 
         it('should show the correct heading and title', () => {
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+          )
 
           cy.get('h1').should('contain', 'Your Worldpay credentials')
           cy.title().should('eq', 'Your Worldpay credentials - Settings - My cool service - GOV.UK Pay')
         })
 
         it('should show worldpay settings in the settings navigation', () => {
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+          )
 
-          cy.get('.service-settings-nav')
-            .find('li')
-            .contains('Worldpay details')
-            .then(li => {
-              cy.wrap(li)
-                .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
-                .parent().should('have.class', 'service-settings-nav__li--active')
-            })
+          checkSettingsNavigation(
+            'Worldpay details',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
+          )
         })
       })
 
@@ -108,13 +125,18 @@ describe('Worldpay details settings', () => {
         it('should return to the edit credentials page and show the validation errors', () => {
           setupStubs()
 
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+          )
 
           cy.get('input#merchant-code').type('this-is-not-a-valid-merchant-code', { delay: 0 })
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+          )
 
           cy.get('.govuk-error-summary')
             .should('exist')
@@ -122,7 +144,10 @@ describe('Worldpay details settings', () => {
             .should('contain', 'Enter your username')
             .should('contain', 'Enter your password')
 
-          cy.get('#merchant-code-error').should('contain.text', 'Enter a MOTO merchant code. MOTO payments are enabled for this account')
+          cy.get('#merchant-code-error').should(
+            'contain.text',
+            'Enter a MOTO merchant code. MOTO payments are enabled for this account'
+          )
           cy.get('#username-error').should('contain.text', 'Enter your username')
           cy.get('#password-error').should('contain.text', 'Enter your password')
         })
@@ -132,7 +157,9 @@ describe('Worldpay details settings', () => {
         it('should show the empty credentials form', () => {
           setupStubs()
 
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+          )
 
           cy.get('input#merchant-code').should('have.value', '')
           cy.get('input#username').should('have.value', '')
@@ -142,7 +169,9 @@ describe('Worldpay details settings', () => {
         it('should redirect to the worldpay details landing page on valid form submission', () => {
           setupStubs()
 
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+          )
 
           cy.get('input#merchant-code').type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').type(VALID_WORLDPAY_USERNAME, { delay: 0 })
@@ -150,41 +179,55 @@ describe('Worldpay details settings', () => {
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
+          )
         })
 
         it('should show a success banner on the landing page if this is the final task to complete', () => {
           setupStubs()
 
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+          )
 
           cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME, { delay: 0 })
           cy.get('input#password').clear().type(VALID_WORLDPAY_PASSWORD, { delay: 0 })
 
           cy.task('clearStubs')
-          const accountStubWithCredentials = gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
-            gateway_account_id: GATEWAY_ACCOUNT_ID,
-            payment_provider: 'worldpay',
-            gateway_account_credentials: [{
+          const accountStubWithCredentials = gatewayAccountStubs.getAccountByServiceIdAndAccountType(
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE,
+            {
+              gateway_account_id: GATEWAY_ACCOUNT_ID,
               payment_provider: 'worldpay',
-              credentials: {
-                one_off_customer_initiated: {
-                  merchant_code: VALID_MOTO_MERCHANT_CODE,
-                  username: VALID_WORLDPAY_USERNAME,
-                  password: VALID_WORLDPAY_PASSWORD
-                }
-              },
-              external_id: CREDENTIAL_EXTERNAL_ID
-            }],
-            allow_moto: true
-          })
+              gateway_account_credentials: [
+                {
+                  payment_provider: 'worldpay',
+                  credentials: {
+                    one_off_customer_initiated: {
+                      merchant_code: VALID_MOTO_MERCHANT_CODE,
+                      username: VALID_WORLDPAY_USERNAME,
+                      password: VALID_WORLDPAY_PASSWORD,
+                    },
+                  },
+                  external_id: CREDENTIAL_EXTERNAL_ID,
+                },
+              ],
+              allow_moto: true,
+            }
+          )
 
           setupStubs({}, [accountStubWithCredentials])
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
+          )
 
           cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages')
             .should('exist')
@@ -195,7 +238,9 @@ describe('Worldpay details settings', () => {
         it('should not show a success banner if other tasks are outstanding', () => {
           setupStubs()
 
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+          )
 
           cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME, { delay: 0 })
@@ -203,10 +248,12 @@ describe('Worldpay details settings', () => {
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
+          )
 
-          cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages')
-            .should('not.exist')
+          cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages').should('not.exist')
         })
       })
 
@@ -216,12 +263,14 @@ describe('Worldpay details settings', () => {
             credentials: {
               one_off_customer_initiated: {
                 merchant_code: VALID_MOTO_MERCHANT_CODE,
-                username: VALID_WORLDPAY_USERNAME
-              }
-            }
+                username: VALID_WORLDPAY_USERNAME,
+              },
+            },
           })
 
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+          )
 
           cy.get('input#merchant-code').should('have.value', VALID_MOTO_MERCHANT_CODE)
           cy.get('input#username').should('have.value', VALID_WORLDPAY_USERNAME)
@@ -235,12 +284,14 @@ describe('Worldpay details settings', () => {
               one_off_customer_initiated: {
                 merchant_code: VALID_MOTO_MERCHANT_CODE,
                 username: VALID_WORLDPAY_USERNAME,
-                password: VALID_WORLDPAY_PASSWORD
-              }
-            }
+                password: VALID_WORLDPAY_PASSWORD,
+              },
+            },
           })
 
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+          )
 
           cy.get('input#password').should('have.value', '')
         })
@@ -250,63 +301,83 @@ describe('Worldpay details settings', () => {
             credentials: {
               one_off_customer_initiated: {
                 merchant_code: VALID_MOTO_MERCHANT_CODE,
-                username: VALID_WORLDPAY_USERNAME
-              }
-            }
+                username: VALID_WORLDPAY_USERNAME,
+              },
+            },
           })
 
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+          )
 
           cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME_2, { delay: 0 })
           cy.get('input#password').clear().type(VALID_WORLDPAY_PASSWORD_2, { delay: 0 })
 
           cy.task('clearStubs')
-          const accountStubWithOldCredentials = gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
-            gateway_account_id: GATEWAY_ACCOUNT_ID,
-            payment_provider: 'worldpay',
-            gateway_account_credentials: [{
+          const accountStubWithOldCredentials = gatewayAccountStubs.getAccountByServiceIdAndAccountType(
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE,
+            {
+              gateway_account_id: GATEWAY_ACCOUNT_ID,
               payment_provider: 'worldpay',
+              gateway_account_credentials: [
+                {
+                  payment_provider: 'worldpay',
+                  credentials: {
+                    one_off_customer_initiated: {
+                      merchant_code: VALID_MOTO_MERCHANT_CODE,
+                      username: VALID_WORLDPAY_USERNAME,
+                      password: VALID_WORLDPAY_PASSWORD,
+                    },
+                  },
+                  external_id: CREDENTIAL_EXTERNAL_ID,
+                },
+              ],
+              allow_moto: true,
+            }
+          )
+          const accountStubWithNewCredentials = gatewayAccountStubs.getAccountByServiceIdAndAccountType(
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE,
+            {
+              gateway_account_id: GATEWAY_ACCOUNT_ID,
+              payment_provider: 'worldpay',
+              gateway_account_credentials: [
+                {
+                  payment_provider: 'worldpay',
+                  credentials: {
+                    one_off_customer_initiated: {
+                      merchant_code: VALID_MOTO_MERCHANT_CODE,
+                      username: VALID_WORLDPAY_USERNAME_2,
+                      password: VALID_WORLDPAY_PASSWORD_2,
+                    },
+                  },
+                  external_id: CREDENTIAL_EXTERNAL_ID,
+                },
+              ],
+              allow_moto: true,
+            }
+          )
+          setupStubs(
+            {
               credentials: {
                 one_off_customer_initiated: {
                   merchant_code: VALID_MOTO_MERCHANT_CODE,
                   username: VALID_WORLDPAY_USERNAME,
-                  password: VALID_WORLDPAY_PASSWORD
-                }
+                  password: VALID_WORLDPAY_PASSWORD,
+                },
               },
-              external_id: CREDENTIAL_EXTERNAL_ID
-            }],
-            allow_moto: true
-          })
-          const accountStubWithNewCredentials = gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
-            gateway_account_id: GATEWAY_ACCOUNT_ID,
-            payment_provider: 'worldpay',
-            gateway_account_credentials: [{
-              payment_provider: 'worldpay',
-              credentials: {
-                one_off_customer_initiated: {
-                  merchant_code: VALID_MOTO_MERCHANT_CODE,
-                  username: VALID_WORLDPAY_USERNAME_2,
-                  password: VALID_WORLDPAY_PASSWORD_2
-                }
-              },
-              external_id: CREDENTIAL_EXTERNAL_ID
-            }],
-            allow_moto: true
-          })
-          setupStubs({
-            credentials: {
-              one_off_customer_initiated: {
-                merchant_code: VALID_MOTO_MERCHANT_CODE,
-                username: VALID_WORLDPAY_USERNAME,
-                password: VALID_WORLDPAY_PASSWORD
-              }
-            }
-          }, [accountStubWithOldCredentials, accountStubWithNewCredentials])
+            },
+            [accountStubWithOldCredentials, accountStubWithNewCredentials]
+          )
 
           cy.get('button#submitCredentials').click()
 
-          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
+          )
 
           cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages').should('not.exist')
         })
@@ -316,15 +387,15 @@ describe('Worldpay details settings', () => {
     describe('for a non-admin user', () => {
       beforeEach(() => {
         setupStubs({
-          role: 'view-and-refund'
+          role: 'view-and-refund',
         })
       })
 
       it('should return a 403', () => {
         cy.request({
           url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`,
-          failOnStatusCode: false
-        }).then(response => expect(response.status).to.eq(403))
+          failOnStatusCode: false,
+        }).then((response) => expect(response.status).to.eq(403))
       })
     })
 
@@ -332,15 +403,15 @@ describe('Worldpay details settings', () => {
       beforeEach(() => {
         setupStubs({
           role: 'view-and-refund',
-          paymentProvider: SANDBOX
+          paymentProvider: SANDBOX,
         })
       })
 
       it('should return a 404', () => {
         cy.request({
           url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`,
-          failOnStatusCode: false
-        }).then(response => expect(response.status).to.eq(404))
+          failOnStatusCode: false,
+        }).then((response) => expect(response.status).to.eq(404))
       })
     })
   })
