@@ -1,63 +1,88 @@
 // https://getbem.com/naming/
 
-.service-settings-nav {
-  @include govuk-font(16);
+.service-nav {
+  margin-bottom: govuk-spacing(3);
 }
 
-.service-settings-nav__h3 {
+.nav__h3 {
+  padding: govuk-spacing(2) govuk-spacing(3) govuk-spacing(2) govuk-spacing(1);
   margin: 0;
-  padding: govuk-spacing(2) govuk-spacing(3) govuk-spacing(2) 0;
-  color: govuk-colour("dark-grey");
+  color: govuk-colour('dark-grey');
   @include govuk-font(19);
   @include govuk-typography-weight-regular();
 }
 
-.service-settings-nav__li {
-  position: relative;
-  margin-bottom: govuk-spacing(1);
-  padding-top: govuk-spacing(1);
-  padding-bottom: govuk-spacing(1);
-  @include govuk-font(16);
-
-  a {
-    &:hover {
-      color: govuk-colour("dark-blue");
-      text-decoration: underline;
-      text-decoration-thickness: max(3px, .1875rem, .12em);
-      text-decoration-skip-ink: none;
-      text-decoration-skip: none;
-    }
-
-    &:focus {
-      text-decoration: none;
-    }
-  }
+.nav__hr {
+  margin-top: govuk-spacing(2);
+  margin-bottom: govuk-spacing(2);
 }
 
-.service-settings-nav__li--active:before {
+.nav__button {
+  width: 100%;
+  text-align: left;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: none;
+  margin-bottom: govuk-spacing(1);
+  padding: govuk-spacing(1);
+  padding-right: 40px;
+  @include govuk-font(16);
+}
+
+.nav__button[current] {
+  @include govuk-typography-weight-bold();
+}
+
+.nav__button[current]::before {
   content: '';
   position: absolute;
-  left: -15px;
-  top: 0;
+  left: -10px;
+  top: -2px;
   height: 100%;
-  width: 5px;
-  background-color: $govuk-brand-colour;
+  width: 4px;
+  background-color: govuk-colour('blue');
+  border: solid govuk-colour('blue');
+  border-width: 2px 0 2px 0;
 }
 
-.service-settings-nav__li--active {
-  @include govuk-typography-weight-bold();
+.sub-nav {
+  padding-left: govuk-spacing(3);
+}
+
+.sub-nav__button::after {
+  content: '';
+  position: absolute;
+  right: 15px;
+  width: 10px;
+  height: 10px;
+  border: solid govuk-colour('dark-grey');
+  border-width: 0 2px 2px 0;
+  transform-origin: center;
+}
+
+/* pointing down */
+.sub-nav__button[open]::after {
+  transform: rotate(45deg);
+}
+
+/* pointing up */
+.sub-nav__button:not([open])::after {
+  transform: rotate(225deg);
 }
 
 .service-settings-pane {
   max-width: 630px;
 
-  h1, .govuk-error-summary, .govuk-error-message {
-    overflow-wrap: anywhere
+  h1,
+  .govuk-error-summary,
+  .govuk-error-message {
+    overflow-wrap: anywhere;
   }
 }
 
 .service-settings-inset-text--grey {
-  background-color: govuk-colour("light-grey");
+  background-color: govuk-colour('light-grey');
 }
 
 .team-member-email-list {
@@ -71,27 +96,29 @@
     width: 70% !important;
   }
 
-  a:visited, a:link {
-    color: govuk-colour("blue");
+  a:visited,
+  a:link {
+    color: govuk-colour('blue');
   }
 
   a:hover {
-    color: govuk-colour("dark-blue");
+    color: govuk-colour('dark-blue');
   }
 
-  a:active, a:focus {
-    color: govuk-colour("black");
+  a:active,
+  a:focus {
+    color: govuk-colour('black');
   }
 }
 
 .card-types {
   .govuk-checkboxes__item {
-    border-bottom: 1px solid govuk-colour("mid-grey");
+    border-bottom: 1px solid govuk-colour('mid-grey');
     padding-bottom: govuk-spacing(2);
   }
 
   .govuk-summary-list__row:first-of-type {
-    border-top: 1px solid govuk-colour("mid-grey");
+    border-top: 1px solid govuk-colour('mid-grey');
   }
 }
 
@@ -99,7 +126,7 @@
   .govuk-pagination__prev {
     a {
       &:visited {
-        color: govuk-colour("blue");
+        color: govuk-colour('blue');
       }
     }
   }
@@ -107,7 +134,7 @@
   .govuk-pagination__next {
     a {
       &:visited {
-        color: govuk-colour("blue");
+        color: govuk-colour('blue');
       }
     }
   }
@@ -115,7 +142,7 @@
   .govuk-pagination__item {
     a {
       &:visited {
-        color: govuk-colour("blue");
+        color: govuk-colour('blue');
       }
     }
   }
@@ -123,7 +150,7 @@
   .govuk-pagination__item--current {
     a {
       &:visited {
-        color: govuk-colour("white");
+        color: govuk-colour('white');
       }
     }
   }
@@ -171,16 +198,14 @@
       }
     }
   }
-
 }
 
 .responsive-margin-bottom-l {
-  @include govuk-responsive-margin(6, "bottom");
+  @include govuk-responsive-margin(6, 'bottom');
 }
 
-
 .json-block {
-  overflow: scroll
+  overflow: scroll;
 }
 
 .break-all {
