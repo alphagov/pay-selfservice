@@ -4,6 +4,7 @@ import { NavigationBuilder, NavigationCategories } from '@utils/simplified-accou
 import GatewayAccount from '@models/GatewayAccount.class'
 import Service from '@models/Service.class'
 import formatFutureStrategyAccountPathsFor from '@utils/format-future-strategy-account-paths-for'
+import UserPermissions from '@models/user/permissions'
 
 export = (account: GatewayAccount, service: Service, currentUrl: string, permissions: Record<string, boolean>) => {
   const navBuilder = new NavigationBuilder(currentUrl, permissions)
@@ -13,19 +14,19 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
       id: 'dashboard',
       name: 'dashboard',
       path: formatAccountPathsFor(paths.account.dashboard.index, account.externalId) as string,
-      permission: true,
+      hasPermission: UserPermissions.any,
     })
     .add({
       id: 'transactions',
       name: 'transactions',
       path: formatAccountPathsFor(paths.account.transactions.index, account.externalId) as string,
-      permission: permissions.transactions_read, // TODO find a better way of defining these
+      hasPermission: UserPermissions.transactions.transactionsRead,
     })
     .add({
       id: 'payment-links',
       name: 'payment links',
       path: formatAccountPathsFor(paths.account.paymentLinks.start, account.externalId) as string,
-      permission: permissions.transactions_read, // TODO find a better way of defining these
+      hasPermission: UserPermissions.transactions.transactionsRead,
     })
     .add({
       id: 'agreements',
@@ -36,7 +37,8 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.externalId
       ) as string,
-      permission: permissions.agreements_read && account.recurringEnabled,
+      hasPermission: UserPermissions.agreements.agreementsRead,
+      conditions: account.recurringEnabled,
       alwaysViewable: true,
     })
 

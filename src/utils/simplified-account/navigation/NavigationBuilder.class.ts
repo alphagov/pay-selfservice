@@ -1,3 +1,5 @@
+import UserPermissions from '@models/user/permissions'
+
 export type NavigationCategories = Record<
   string,
   {
@@ -21,9 +23,10 @@ interface NavItemProps {
   id: string | string[]
   altId?: string | string[]
   name: string
-  permission: string | boolean
+  hasPermission: string
   path: string
   alwaysViewable?: boolean
+  conditions?: boolean
 }
 
 export class NavigationBuilder {
@@ -31,7 +34,6 @@ export class NavigationBuilder {
   private currentUrl: string
   private permissions: Record<string, boolean>
   private currentCategory: undefined | string
-
   constructor(currentUrl: string, permissions: Record<string, boolean>) {
     this.categories = {}
     this.currentUrl = currentUrl
@@ -54,7 +56,7 @@ export class NavigationBuilder {
     return this
   }
 
-  add({ id, altId, name, permission, path, alwaysViewable = false }: NavItemProps) {
+  add({ id, altId, name, hasPermission, path, alwaysViewable = false, conditions = true }: NavItemProps) {
     if (!this.currentCategory) {
       throw new Error('Cannot add setting without category, use .category(name) first.')
     }
@@ -67,7 +69,7 @@ export class NavigationBuilder {
       current:
         urlParts.every((part) => this.currentUrl.includes(part)) ||
         altUrlParts.every((part) => this.currentUrl.includes(part)),
-      permitted: typeof permission === 'boolean' ? permission : this.permissions[permission],
+      permitted: (hasPermission === UserPermissions.any || this.permissions[hasPermission]) && conditions,
       alwaysViewable, // when true, this setting will appear on all account types
     }
 

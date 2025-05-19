@@ -5,6 +5,7 @@ import { WORLDPAY, STRIPE } from '@models/constants/payment-providers'
 import GatewayAccount from '@models/GatewayAccount.class'
 import Service from '@models/Service.class'
 import { LIVE } from '@models/constants/go-live-stage'
+import UserPermissions from '@models/user/permissions'
 
 export = (account: GatewayAccount, service: Service, currentUrl: string, permissions: Record<string, boolean>) => {
   const navBuilder = new NavigationBuilder(currentUrl, permissions)
@@ -18,7 +19,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission: 'service_name_update', // TODO find a better way of defining these
+      hasPermission: UserPermissions.settings.serviceName.serviceNameUpdate,
     })
     .add({
       id: 'email-notifications',
@@ -28,7 +29,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission: true, // everyone can view email notifications settings
+      hasPermission: UserPermissions.any,
       alwaysViewable: true,
     })
     .add({
@@ -39,7 +40,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission: true, // everyone can view team members settings
+      hasPermission: UserPermissions.any,
     })
     .add({
       id: 'organisation-details',
@@ -49,7 +50,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission: 'merchant_details_update', // TODO find a better way of defining these
+      hasPermission: UserPermissions.settings.merchantDetails.merchantDetailsUpdate,
     })
     .category('payment provider', { collapsible: true })
     .add({
@@ -60,10 +61,8 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission:
-        account.paymentProvider === 'stripe' &&
-        account.type === 'live' &&
-        Boolean(permissions?.stripe_account_details_update),
+      hasPermission: UserPermissions.settings.stripe.stripeAccountDetailsUpdate,
+      conditions: account.paymentProvider === 'stripe' && account.type === 'live',
     })
     .add({
       id: 'worldpay-details',
@@ -73,7 +72,8 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission: account.paymentProvider === 'worldpay' && 'gateway_credentials_read',
+      hasPermission: 'gateway_credentials_read',
+      conditions: account.paymentProvider === 'worldpay',
       alwaysViewable: true, // worldpay test accounts are user configurable so details should always be visible
     })
     .add({
@@ -84,7 +84,8 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission: account.isSwitchingToProvider(WORLDPAY) && 'gateway_credentials_update',
+      hasPermission: 'gateway_credentials_update',
+      conditions: account.isSwitchingToProvider(WORLDPAY),
     })
     .add({
       id: 'switch-psp', // sits under settings/switch-psp/switch-to-stripe
@@ -95,7 +96,8 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission: account.isSwitchingToProvider(STRIPE) && 'gateway_credentials_update',
+      hasPermission: 'gateway_credentials_update',
+      conditions: account.isSwitchingToProvider(STRIPE),
     })
     .category('payments', { collapsible: true })
     .add({
@@ -106,7 +108,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission: true, // everyone can view card payments settings
+      hasPermission: UserPermissions.any,
       alwaysViewable: true,
     })
     .add({
@@ -117,7 +119,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission: true, // everyone can view card types settings
+      hasPermission: UserPermissions.any,
       alwaysViewable: true,
     })
     .category('developers', { collapsible: true })
@@ -129,7 +131,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission: 'tokens_active_read',
+      hasPermission: UserPermissions.settings.tokens.tokensActiveRead,
       alwaysViewable: true,
     })
     .add({
@@ -140,7 +142,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      permission: 'webhooks_update', // TODO find a better way of defining these
+      hasPermission: UserPermissions.settings.webhooks.webhooksUpdate,
       alwaysViewable: true,
     })
     .build()
