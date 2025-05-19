@@ -38,12 +38,14 @@
   content: '';
   position: absolute;
   left: -10px;
-  top: -2px;
   height: 100%;
   width: 4px;
   background-color: govuk-colour('blue');
-  border: solid govuk-colour('blue');
-  border-width: 2px 0 2px 0;
+  border-top: solid govuk-colour('blue');
+  border-bottom: solid govuk-colour('blue');
+  border-left: transparent;
+  border-right: transparent;
+  border-width: 2px;
 }
 
 .sub-nav {
@@ -54,10 +56,10 @@
   content: '';
   position: absolute;
   right: 15px;
-  width: 10px;
-  height: 10px;
-  border: solid govuk-colour('dark-grey');
-  border-width: 0 2px 2px 0;
+  width: 7px;
+  height: 7px;
+  border: solid govuk-colour('black');
+  border-width: 0 3px 3px 0;
   transform-origin: center;
 }
 
