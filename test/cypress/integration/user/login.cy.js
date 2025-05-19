@@ -3,6 +3,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 
 describe('Login Page', () => {
   const gatewayAccountId = 42
+  const gatewayAccountExternalId = '101ece30d2ca4b868baca5677c41ef5f' // pragma: allowlist secret
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
   const validEmail = 'some-user@example.com'
   const validPassword = 'some-valid-password'
@@ -13,7 +14,8 @@ describe('Login Page', () => {
   beforeEach(() => {
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName: 'service-name' }),
-      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }),
+      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId, gatewayAccountExternalId }),
+      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
       userStubs.postUserAuthenticateSuccess(userExternalId, validEmail, validPassword),
       userStubs.postUserAuthenticateInvalidPassword(validEmail, invalidPassword),
       userStubs.postSecondFactorSuccess(userExternalId),
@@ -105,6 +107,32 @@ describe('Login Page', () => {
       cy.contains('Continue').click()
       cy.title().should('eq', 'Sign in to GOV.UK Pay')
       cy.url().should('include', '/login')
+    })
+  })
+
+  describe('login redirects', () => {
+    it('should redirect to original destination if user is not logged in', () => {
+      cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+
+      cy.location('pathname').should('eq', '/login')
+
+      // enter a valid username and password and submit
+      cy.getCookie('session')
+      cy.get('#username').type(validEmail, { delay: 0 })
+      cy.get('#password').type(validPassword, { delay: 0 })
+      cy.contains('Continue').click()
+
+      // should redirect to security code page
+      cy.title().should('eq', 'Enter security code - GOV.UK Pay')
+      cy.location('pathname').should('eq', '/otp-login')
+
+      // enter a valid code and submit
+      cy.get('#sms_code').type(validCode, { delay: 0 })
+      cy.get('button').contains('Continue').click()
+
+      // should redirect to account dashboard page
+      cy.location('pathname').should('eq', `/account/${gatewayAccountExternalId}/dashboard`)
+      cy.title().should('eq', 'Dashboard - service-name Sandbox test - GOV.UK Pay')
     })
   })
 })
