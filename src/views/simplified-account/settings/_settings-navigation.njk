@@ -11,24 +11,18 @@
     </div>
     {% else %}
         {% if details.settings.displayCategoryName %}
-        <h3 class="nav__h3">{{ key | smartCaps }}</h3>
+            <h3 class="nav__h3">{{ key | smartCaps }}</h3>
         {% endif %}
         {% for item in details.items %}
-        <a class="nav__button govuk-button govuk-button--inverse" id="settings-navigation-{{item.id}}" data-module="govuk-button" href="{{item.url}}" {% if item.current %}aria-current="page" current{% endif %}>{{item.name | smartCaps}}</a>
+            <a class="nav__button govuk-button govuk-button--inverse" id="settings-navigation-{{item.id}}" data-module="govuk-button" href="{{item.url}}" {% if item.current %}aria-current="page" current{% endif %}>{{item.name | smartCaps}}</a>
         {% endfor %}
     {% endif %}
 {% endif %}
 {% endmacro %}
 
-
 <div class="govuk-grid-column-one-quarter service-nav">
   <nav role="navigation" aria-labelledby="service-nav-heading">
     <h2 class="govuk-visually-hidden" id="service-nav-heading">Service navigation</h2>
-    <!-- {% for key, details in serviceNavigation %}
-        {{ navigation(key, details) }}
-    {% endfor %}
-    <hr class="nav__hr govuk-section-break govuk-section-break--visible">
-    <h3 class="nav__h3">Settings</h3> -->
     {% for key, details in serviceSettings %}
         {{ navigation(key, details) }}
     {% endfor %}

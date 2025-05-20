@@ -72,7 +72,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      hasPermission: 'gateway_credentials_read',
+      hasPermission: UserPermissions.settings.gatewayCredentials.gatewayCredentialsRead,
       conditions: account.paymentProvider === 'worldpay',
       alwaysViewable: true, // worldpay test accounts are user configurable so details should always be visible
     })
@@ -84,7 +84,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      hasPermission: 'gateway_credentials_update',
+      hasPermission: UserPermissions.settings.gatewayCredentials.gatewayCredentialsUpdate,
       conditions: account.isSwitchingToProvider(WORLDPAY),
     })
     .add({
@@ -96,7 +96,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         service.externalId,
         account.type
       ),
-      hasPermission: 'gateway_credentials_update',
+      hasPermission: UserPermissions.settings.gatewayCredentials.gatewayCredentialsUpdate,
       conditions: account.isSwitchingToProvider(STRIPE),
     })
     .category('payments', { collapsible: true })
@@ -183,6 +183,5 @@ const getViewableSettings = (serviceSettings: NavigationCategories, account: Gat
       }
     }
   }
-
   return viewableSettings
 }
