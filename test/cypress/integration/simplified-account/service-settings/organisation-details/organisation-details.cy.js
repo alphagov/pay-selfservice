@@ -1,3 +1,4 @@
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const serviceStubs = require('@test/cypress/stubs/service-stubs')
@@ -16,7 +17,7 @@ const VALID_ORG_DETAILS = {
   address_postcode: 'SP21NG',
   address_country: 'US',
   telephone_number: '01234567890',
-  url: 'https://www.cghmn.example.com'
+  url: 'https://www.cghmn.example.com',
 }
 
 const setupStubs = (role = 'admin', merchantDetails) => {
@@ -27,9 +28,11 @@ const setupStubs = (role = 'admin', merchantDetails) => {
       serviceName: { en: 'My cool service' },
       merchantDetails,
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role: ROLES[role]
+      role: ROLES[role],
     }),
-    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, { gateway_account_id: GATEWAY_ACCOUNT_ID }),
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
+      gateway_account_id: GATEWAY_ACCOUNT_ID,
+    }),
     serviceStubs.patchUpdateMerchantDetailsSuccess({
       serviceExternalId: SERVICE_EXTERNAL_ID,
       merchantDetails: {
@@ -40,9 +43,9 @@ const setupStubs = (role = 'admin', merchantDetails) => {
         address_postcode: 'SP21NG',
         address_country: 'US',
         telephone_number: '01234567890',
-        url: 'https://www.cghmn.example.com'
-      }
-    })
+        url: 'https://www.cghmn.example.com',
+      },
+    }),
   ])
 }
 
@@ -60,7 +63,10 @@ describe('Organisation details settings', () => {
 
         it('should redirect to the edit organisation details page', () => {
           cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
-          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`
+          )
         })
       })
 
@@ -71,7 +77,10 @@ describe('Organisation details settings', () => {
 
         it('should not redirect to the edit organisation details page', () => {
           cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
-          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`
+          )
         })
 
         it('should show the correct heading and title', () => {
@@ -80,38 +89,58 @@ describe('Organisation details settings', () => {
           cy.title().should('eq', 'Organisation details - Settings - My cool service - GOV.UK Pay')
         })
 
+        it('should show active "Organisation details" link in the setting navigation', () => {
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+          checkSettingsNavigation(
+            'Organisation details',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`
+          )
+        })
+
         it('should display the organisation details', () => {
           cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
           cy.get('.govuk-summary-card').within(() => {
             cy.get('.govuk-summary-card__title-wrapper > h2').should('contain', 'Organisation details')
-            cy.get('.govuk-summary-list__row').eq(0).within(() => {
-              cy.get('dt').should('contain', 'Name')
-              cy.get('dd').should('contain', 'Compu-Global-Hyper-Mega-Net')
-            })
-            cy.get('.govuk-summary-list__row').eq(1).within(() => {
-              cy.get('dt').should('contain', 'Address')
-              cy.get('dd')
-                .should('contain', '742 Evergreen Terrace')
-                .should('contain', 'Springfield')
-                .should('contain', 'SP21NG')
-            })
-            cy.get('.govuk-summary-list__row').eq(2).within(() => {
-              cy.get('dt').should('contain', 'Telephone number')
-              cy.get('dd').should('contain', '01234567890')
-            })
-            cy.get('.govuk-summary-list__row').eq(3).within(() => {
-              cy.get('dt').should('contain', 'Website address')
-              cy.get('dd').should('contain', 'https://www.cghmn.example.com')
-            })
+            cy.get('.govuk-summary-list__row')
+              .eq(0)
+              .within(() => {
+                cy.get('dt').should('contain', 'Name')
+                cy.get('dd').should('contain', 'Compu-Global-Hyper-Mega-Net')
+              })
+            cy.get('.govuk-summary-list__row')
+              .eq(1)
+              .within(() => {
+                cy.get('dt').should('contain', 'Address')
+                cy.get('dd')
+                  .should('contain', '742 Evergreen Terrace')
+                  .should('contain', 'Springfield')
+                  .should('contain', 'SP21NG')
+              })
+            cy.get('.govuk-summary-list__row')
+              .eq(2)
+              .within(() => {
+                cy.get('dt').should('contain', 'Telephone number')
+                cy.get('dd').should('contain', '01234567890')
+              })
+            cy.get('.govuk-summary-list__row')
+              .eq(3)
+              .within(() => {
+                cy.get('dt').should('contain', 'Website address')
+                cy.get('dd').should('contain', 'https://www.cghmn.example.com')
+              })
           })
         })
 
         it('should show a link to edit the organisation details', () => {
           cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
           cy.get('.govuk-summary-card').within(() => {
-            cy.get('.govuk-summary-card__actions > a.govuk-link').should('contain', 'Change')
-              .should('have.attr', 'href',
-                `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+            cy.get('.govuk-summary-card__actions > a.govuk-link')
+              .should('contain', 'Change')
+              .should(
+                'have.attr',
+                'href',
+                `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`
+              )
           })
         })
       })
@@ -125,8 +154,8 @@ describe('Organisation details settings', () => {
       it('should return a 403', () => {
         cy.request({
           url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`,
-          failOnStatusCode: false
-        }).then(response => expect(response.status).to.eq(403))
+          failOnStatusCode: false,
+        }).then((response) => expect(response.status).to.eq(403))
       })
     })
   })
@@ -144,8 +173,11 @@ describe('Organisation details settings', () => {
           cy.get('.govuk-back-link')
             .should('be.visible')
             .should('contain', 'Back')
-            .should('have.attr', 'href',
-              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+            .should(
+              'have.attr',
+              'href',
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`
+            )
         })
 
         it('should populate the form with the existing organisation details', () => {
@@ -171,6 +203,14 @@ describe('Organisation details settings', () => {
           cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
           cy.get('h1').should('contain', 'Change organisation details')
           cy.title().should('eq', 'Change organisation details - Settings - My cool service - GOV.UK Pay')
+        })
+
+        it('should show active "Organisation details" link in the setting navigation', () => {
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          checkSettingsNavigation(
+            'Organisation details',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`
+          )
         })
 
         it('should not show the back link to the organisation details landing page', () => {
@@ -209,7 +249,10 @@ describe('Organisation details settings', () => {
 
           cy.get('button#save-merchant-details').click()
 
-          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`)
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details`
+          )
         })
 
         it('should show validation errors on form submission if details are invalid', () => {
@@ -223,7 +266,10 @@ describe('Organisation details settings', () => {
 
           cy.get('#organisation-details-form').submit()
 
-          cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`)
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`
+          )
 
           cy.get('.govuk-error-summary')
             .should('exist')
@@ -238,7 +284,10 @@ describe('Organisation details settings', () => {
           cy.get('#address-line1-error').should('contain.text', 'Enter a building and street')
           cy.get('#address-city-error').should('contain.text', 'Enter a town or city')
           cy.get('#address-postcode-error').should('contain.text', 'Enter a real postcode')
-          cy.get('#telephone-number-error').should('contain.text', 'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
+          cy.get('#telephone-number-error').should(
+            'contain.text',
+            'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+          )
           cy.get('#url-error').should('contain.text', 'Enter a valid website address')
         })
       })
@@ -252,8 +301,8 @@ describe('Organisation details settings', () => {
       it('should return a 403', () => {
         cy.request({
           url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/organisation-details/edit`,
-          failOnStatusCode: false
-        }).then(response => expect(response.status).to.eq(403))
+          failOnStatusCode: false,
+        }).then((response) => expect(response.status).to.eq(403))
       })
     })
   })

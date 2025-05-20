@@ -1,3 +1,4 @@
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('@test/cypress/stubs/stripe-account-setup-stub')
@@ -5,12 +6,15 @@ const stripePspStubs = require('@test/cypress/stubs/stripe-psp-stubs')
 const serviceStubs = require('@test/cypress/stubs/service-stubs')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const ROLES = require('@test/fixtures/roles.fixtures')
-const { STRIPE_CREDENTIAL_IN_ACTIVE_STATE } = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
+const {
+  STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
+} = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = {
-  en: 'McDuck Enterprises', cy: 'Mentrau McDuck'
+  en: 'McDuck Enterprises',
+  cy: 'Mentrau McDuck',
 }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
@@ -29,20 +33,19 @@ const setStubs = (opts = {}, additionalStubs = []) => {
         name: 'McDuck Enterprises',
         address_line1: 'McDuck Manor',
         address_city: 'Duckburg',
-        address_postcode: 'SW1A 1AA'
+        address_postcode: 'SW1A 1AA',
       },
-      role: ROLES[opts.role || 'admin']
+      role: ROLES[opts.role || 'admin'],
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       type: LIVE_ACCOUNT_TYPE,
       payment_provider: opts.paymentProvider || STRIPE,
       provider_switch_enabled: opts.providerSwitchEnabled || false,
-      gateway_account_credentials: [
-        STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
-      ]
+      gateway_account_credentials: [STRIPE_CREDENTIAL_IN_ACTIVE_STATE],
     }),
-    ...additionalStubs])
+    ...additionalStubs,
+  ])
 }
 
 describe('Stripe details settings', () => {
@@ -53,20 +56,23 @@ describe('Stripe details settings', () => {
     describe('For a non-admin', () => {
       beforeEach(() => {
         setStubs({
-          role: 'view-and-refund'
+          role: 'view-and-refund',
         })
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/organisation-details/index', { failOnStatusCode: false })
       })
       it('should show admin only error', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
         cy.get('h1').should('contain.text', 'An error occurred')
-        cy.get('#errorMsg').should('contain.text', 'You do not have the administrator rights to perform this operation.')
+        cy.get('#errorMsg').should(
+          'contain.text',
+          'You do not have the administrator rights to perform this operation.'
+        )
       })
     })
     describe('For a non-stripe service', () => {
       beforeEach(() => {
         setStubs({
-          paymentProvider: WORLDPAY
+          paymentProvider: WORLDPAY,
         })
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/organisation-details/index', { failOnStatusCode: false })
       })
@@ -81,14 +87,14 @@ describe('Stripe details settings', () => {
           stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
             accountType: LIVE_ACCOUNT_TYPE,
-            organisationDetails: true
-          })
+            organisationDetails: true,
+          }),
         ])
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/organisation-details/index')
       })
       it('should show the task already completed page', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
-        cy.get('h1').should('contain', 'You\'ve already completed this task')
+        cy.get('h1').should('contain', "You've already completed this task")
       })
     })
     describe('Not yet started', () => {
@@ -96,21 +102,14 @@ describe('Stripe details settings', () => {
         setStubs({}, [
           stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
             serviceExternalId: SERVICE_EXTERNAL_ID,
-            accountType: LIVE_ACCOUNT_TYPE
-          })
+            accountType: LIVE_ACCOUNT_TYPE,
+          }),
         ])
         cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/organisation-details/index')
       })
       describe('The settings navigation', () => {
-        it('should show stripe details', () => {
-          cy.get('.service-settings-nav')
-            .find('li')
-            .contains('Stripe details')
-            .then(li => {
-              cy.wrap(li)
-                .should('have.attr', 'href', STRIPE_DETAILS_SETTINGS_URL)
-                .parent().should('have.class', 'service-settings-nav__li--active')
-            })
+        it('should show active "Stripe details" link in the setting navigation', () => {
+          checkSettingsNavigation('Stripe details', STRIPE_DETAILS_SETTINGS_URL)
         })
       })
       describe('The task page', () => {
@@ -126,28 +125,27 @@ describe('Stripe details settings', () => {
           setStubs({}, [
             stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
-              accountType: LIVE_ACCOUNT_TYPE
+              accountType: LIVE_ACCOUNT_TYPE,
             }),
-            gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(
+            gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
+              stripeAccountId: STRIPE_ACCOUNT_ID,
+            }),
+            stripePspStubs.updateAccount({
+              stripeAccountId: STRIPE_ACCOUNT_ID,
+            }),
+            stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType(
               SERVICE_EXTERNAL_ID,
               LIVE_ACCOUNT_TYPE,
               {
-                stripeAccountId: STRIPE_ACCOUNT_ID
+                path: 'organisation_details',
+                value: true,
               }
             ),
-            stripePspStubs.updateAccount({
-              stripeAccountId: STRIPE_ACCOUNT_ID
-            }),
-            stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE,
-              {
-                path: 'organisation_details',
-                value: true
-              }),
             stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
               serviceExternalId: SERVICE_EXTERNAL_ID,
               accountType: LIVE_ACCOUNT_TYPE,
-              organisationDetails: true
-            })
+              organisationDetails: true,
+            }),
           ])
           cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/organisation-details/index')
         })
@@ -155,15 +153,16 @@ describe('Stripe details settings', () => {
         it('should redirect to the task summary page on success', () => {
           cy.get('.govuk-summary-list__row').should('have.length', 2)
 
-          cy.get('.govuk-summary-list__row')
-            .first()
-            .should('contain.text', 'McDuck Enterprises')
+          cy.get('.govuk-summary-list__row').first().should('contain.text', 'McDuck Enterprises')
 
           cy.get('.govuk-summary-list__row')
             .last()
-            .contains('McDuck Manor').should('exist')
-            .contains('Duckburg').should('exist')
-            .contains('SW1A 1AA').should('exist')
+            .contains('McDuck Manor')
+            .should('exist')
+            .contains('Duckburg')
+            .should('exist')
+            .contains('SW1A 1AA')
+            .should('exist')
 
           cy.get('input[type="radio"]')
             .siblings('label')
@@ -176,7 +175,7 @@ describe('Stripe details settings', () => {
           cy.get('h1').should('contain', 'Stripe details')
           cy.location('pathname').should('not.contain', '/organisation-details/index')
           cy.get('.govuk-task-list__item')
-            .contains('Confirm your organisation\'s name and address match your government entity document')
+            .contains("Confirm your organisation's name and address match your government entity document")
             .parent()
             .parent()
             .within(() => {
@@ -188,25 +187,26 @@ describe('Stripe details settings', () => {
         describe('When submitting valid organisation details', () => {
           beforeEach(() => {
             setStubs({}, [
-              ...Array(3).fill(stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
-                serviceExternalId: SERVICE_EXTERNAL_ID,
-                accountType: LIVE_ACCOUNT_TYPE
-              })),
-              gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(
+              ...Array(3).fill(
+                stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
+                  serviceExternalId: SERVICE_EXTERNAL_ID,
+                  accountType: LIVE_ACCOUNT_TYPE,
+                })
+              ),
+              gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
+                stripeAccountId: STRIPE_ACCOUNT_ID,
+              }),
+              stripePspStubs.updateAccount({
+                stripeAccountId: STRIPE_ACCOUNT_ID,
+              }),
+              stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType(
                 SERVICE_EXTERNAL_ID,
                 LIVE_ACCOUNT_TYPE,
                 {
-                  stripeAccountId: STRIPE_ACCOUNT_ID
+                  path: 'organisation_details',
+                  value: true,
                 }
               ),
-              stripePspStubs.updateAccount({
-                stripeAccountId: STRIPE_ACCOUNT_ID
-              }),
-              stripeAccountSetupStubs.patchStripeProgressByServiceExternalIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE,
-                {
-                  path: 'organisation_details',
-                  value: true
-                }),
               serviceStubs.patchUpdateMerchantDetailsSuccess({
                 serviceExternalId: SERVICE_EXTERNAL_ID,
                 merchantDetails: {
@@ -215,14 +215,14 @@ describe('Stripe details settings', () => {
                   address_line2: '',
                   address_city: 'Duckburg',
                   address_postcode: 'SW1A 1AA',
-                  address_country: 'GB'
-                }
+                  address_country: 'GB',
+                },
               }),
               stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
                 serviceExternalId: SERVICE_EXTERNAL_ID,
                 accountType: LIVE_ACCOUNT_TYPE,
-                organisationDetails: true
-              })
+                organisationDetails: true,
+              }),
             ])
             cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/organisation-details/index')
           })
@@ -236,27 +236,24 @@ describe('Stripe details settings', () => {
 
             cy.get('#confirm-org-details-form button[type="submit"]').click()
             cy.location('pathname').should('contain', '/organisation-details/update')
-            cy.get('h1').should('contain', 'What is the name and address of your organisation on your government entity document?')
+            cy.get('h1').should(
+              'contain',
+              'What is the name and address of your organisation on your government entity document?'
+            )
 
-            cy.get('input[name="organisationName"]')
-              .should('have.value', 'McDuck Enterprises')
-            cy.get('input[name="addressLine1"]')
-              .should('have.value', 'McDuck Manor')
-            cy.get('input[name="addressCity"]')
-              .should('have.value', 'Duckburg')
-            cy.get('input[name="addressPostcode"]')
-              .should('have.value', 'SW1A 1AA')
+            cy.get('input[name="organisationName"]').should('have.value', 'McDuck Enterprises')
+            cy.get('input[name="addressLine1"]').should('have.value', 'McDuck Manor')
+            cy.get('input[name="addressCity"]').should('have.value', 'Duckburg')
+            cy.get('input[name="addressPostcode"]').should('have.value', 'SW1A 1AA')
 
-            cy.get('input[name="organisationName"]')
-              .clear({ force: true })
-              .type('Glomgold Industries')
+            cy.get('input[name="organisationName"]').clear({ force: true }).type('Glomgold Industries')
 
             cy.get('#update-organisation-details-submit').click()
             cy.title().should('eq', 'Stripe details - Settings - McDuck Enterprises - GOV.UK Pay')
             cy.get('h1').should('contain', 'Stripe details')
             cy.location('pathname').should('not.contain', '/organisation-details')
             cy.get('.govuk-task-list__item')
-              .contains('Confirm your organisation\'s name and address match your government entity document')
+              .contains("Confirm your organisation's name and address match your government entity document")
               .parent()
               .parent()
               .within(() => {
@@ -269,8 +266,8 @@ describe('Stripe details settings', () => {
             setStubs({}, [
               stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
                 serviceExternalId: SERVICE_EXTERNAL_ID,
-                accountType: LIVE_ACCOUNT_TYPE
-              })
+                accountType: LIVE_ACCOUNT_TYPE,
+              }),
             ])
             cy.visit(STRIPE_DETAILS_SETTINGS_URL + '/organisation-details/index')
           })
@@ -288,18 +285,18 @@ describe('Stripe details settings', () => {
 
             cy.get('#confirm-org-details-form button[type="submit"]').click()
             cy.location('pathname').should('contain', '/organisation-details/update')
-            cy.get('h1').should('contain', 'What is the name and address of your organisation on your government entity document?')
+            cy.get('h1').should(
+              'contain',
+              'What is the name and address of your organisation on your government entity document?'
+            )
 
             cy.get('.govuk-error-summary').should('not.exist')
 
-            cy.get('input[name="organisationName"]')
-              .clear({ force: true })
+            cy.get('input[name="organisationName"]').clear({ force: true })
 
-            cy.get('input[name="addressLine1"]')
-              .clear({ force: true })
+            cy.get('input[name="addressLine1"]').clear({ force: true })
 
-            cy.get('input[name="addressPostcode"]')
-              .clear({ force: true })
+            cy.get('input[name="addressPostcode"]').clear({ force: true })
 
             cy.get('#update-organisation-details-submit').click()
             cy.get('.govuk-error-summary')

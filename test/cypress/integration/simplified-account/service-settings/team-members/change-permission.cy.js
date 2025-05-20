@@ -1,3 +1,4 @@
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const userStubs = require('../../../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../../../stubs/gateway-account-stubs')
 const inviteStubs = require('../../../../stubs/invite-stubs')
@@ -10,38 +11,50 @@ const TEST_GATEWAY_ACCOUNT_ID = 10
 const TEAM_MEMBERS_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST_ACCOUNT_TYPE}/settings/team-members`
 
 const setStubs = (opts = {}, additionalStubs = []) => {
-  const adminUserStubOpts = userStubs.getUserWithServiceRoleStubOpts(ADMIN_USER_ID, 'admin-user@example.com', SERVICE_EXTERNAL_ID, 'admin')
-  const viewOnlyUserStubOpts = userStubs.getUserWithServiceRoleStubOpts(VIEW_ONLY_USER_ID, 'view-only-user@example.com', SERVICE_EXTERNAL_ID, 'view-only')
+  const adminUserStubOpts = userStubs.getUserWithServiceRoleStubOpts(
+    ADMIN_USER_ID,
+    'admin-user@example.com',
+    SERVICE_EXTERNAL_ID,
+    'admin'
+  )
+  const viewOnlyUserStubOpts = userStubs.getUserWithServiceRoleStubOpts(
+    VIEW_ONLY_USER_ID,
+    'view-only-user@example.com',
+    SERVICE_EXTERNAL_ID,
+    'view-only'
+  )
 
   cy.task('setupStubs', [
     userStubs.getServiceUsersSuccess({
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      users: [adminUserStubOpts, viewOnlyUserStubOpts]
+      users: [adminUserStubOpts, viewOnlyUserStubOpts],
     }),
     userStubs.getUserSuccess({
       userExternalId: VIEW_ONLY_USER_ID,
       serviceExternalId: SERVICE_EXTERNAL_ID,
       email: 'view-only-user@example.com',
-      role: { name: 'view-only' }
+      role: { name: 'view-only' },
     }),
     userStubs.getUserSuccess({
       userExternalId: ADMIN_USER_ID,
       gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
       serviceName: { en: 'My cool service' },
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role: { name: 'admin' }
+      role: { name: 'admin' },
     }),
     userStubs.putUpdateServiceRoleSuccess({
       serviceExternalId: SERVICE_EXTERNAL_ID,
       userExternalId: VIEW_ONLY_USER_ID,
-      role: 'view-and-refund'
+      role: 'view-and-refund',
     }),
     inviteStubs.getInvitedUsersSuccess({
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      invites: []
+      invites: [],
     }),
-    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, TEST_ACCOUNT_TYPE, { gateway_account_id: TEST_GATEWAY_ACCOUNT_ID }),
-    ...additionalStubs
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, TEST_ACCOUNT_TYPE, {
+      gateway_account_id: TEST_GATEWAY_ACCOUNT_ID,
+    }),
+    ...additionalStubs,
   ])
 }
 
@@ -52,6 +65,10 @@ describe('Team members settings', () => {
       cy.setEncryptedCookies(ADMIN_USER_ID)
       cy.visit(TEAM_MEMBERS_SETTINGS_URL)
       cy.get('#team-members-view-only-list').find('dl').first().find('a').contains('Change').click()
+    })
+
+    it('should show active "Team members" link in the setting navigation', () => {
+      checkSettingsNavigation('Team members', TEAM_MEMBERS_SETTINGS_URL)
     })
 
     it('should show the show the correct heading, title and form with correct elements', () => {

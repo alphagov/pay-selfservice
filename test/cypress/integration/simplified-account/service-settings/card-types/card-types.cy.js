@@ -2,6 +2,7 @@ const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const { WORLDPAY } = require('@models/constants/payment-providers')
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -49,7 +50,12 @@ describe('Card types setting', () => {
       cy.visit(CARD_TYPES_SETTINGS_URL)
     })
     describe('the settings nav', () => {
-      checkSettingsNavigation()
+      it('should show active "Card types" link in the setting navigation', () => {
+        checkSettingsNavigation(
+          'Card types',
+          CARD_TYPES_SETTINGS_URL
+        )
+      })
     })
     describe('the page', () => {
       checkTitleAndHeading()
@@ -110,7 +116,12 @@ describe('Card types setting', () => {
       cy.visit(CARD_TYPES_SETTINGS_URL)
     })
     describe('the settings nav', () => {
-      checkSettingsNavigation()
+      it('should show active "Card types" link in the setting navigation', () => {
+        checkSettingsNavigation(
+          'Card types',
+          CARD_TYPES_SETTINGS_URL
+        )
+      })
     })
     describe('the page', () => {
       checkTitleAndHeading()
@@ -153,18 +164,5 @@ function checkTitleAndHeading () {
   it('should have the correct title and heading', () => {
     cy.title().should('eq', 'Card types - Settings - McDuck Enterprises - GOV.UK Pay')
     cy.get('h1').should('have.text', 'Card types')
-  })
-}
-
-function checkSettingsNavigation () {
-  it('should show active card types link', () => {
-    cy.get('.service-settings-nav')
-      .find('li')
-      .contains('Card types')
-      .then(li => {
-        cy.wrap(li)
-          .should('have.attr', 'href', CARD_TYPES_SETTINGS_URL)
-          .parent().should('have.class', 'service-settings-nav__li--active')
-      })
   })
 }

@@ -2,10 +2,13 @@ const {
   setupStubs,
   USER_EXTERNAL_ID,
   SERVICE_EXTERNAL_ID,
-  ACCOUNT_TYPE
+  ACCOUNT_TYPE,
 } = require('@test/cypress/integration/simplified-account/service-settings/card-payments/util')
 const { WORLDPAY } = require('@models/constants/payment-providers')
-const { WORLDPAY_CREDENTIAL_IN_CREATED_STATE } = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
+const {
+  WORLDPAY_CREDENTIAL_IN_CREATED_STATE,
+} = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 
 const pageUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/card-payments`
 
@@ -15,29 +18,29 @@ const cardPaymentParams = [
     url: '/collect-billing-address',
     listLocation: [0, 0],
     onValue: 'On',
-    offValue: 'Off'
+    offValue: 'Off',
   },
   {
     title: 'Default billing address country',
     url: '/default-billing-address-country',
     listLocation: [0, 1],
     onValue: 'United Kingdom',
-    offValue: 'None'
+    offValue: 'None',
   },
   {
     title: 'Apple Pay',
     url: '/apple-pay',
     listLocation: [1, 0],
     onValue: 'On',
-    offValue: 'Off'
+    offValue: 'Off',
   },
   {
     title: 'Google Pay',
     url: '/google-pay',
     listLocation: [1, 1],
     onValue: 'On',
-    offValue: 'Off'
-  }
+    offValue: 'Off',
+  },
 ]
 
 describe('Card payments page', () => {
@@ -55,12 +58,13 @@ describe('Card payments page', () => {
         cy.title().should('eq', 'Card payments - Settings - My card payment service - GOV.UK Pay')
       })
 
-      it('should highlight the card payments navigation', () => {
+      it('should show active "Card payments" link in the setting navigation', () => {
         setupStubs()
         cy.visit(pageUrl)
-        cy.get('.service-settings-nav__li--active').within(() => {
-          cy.get('#settings-navigation-card-payments').should('contain.text', 'Card payments')
-        })
+        checkSettingsNavigation(
+          'Card payments',
+          pageUrl
+        )
       })
 
       it('should display the provided card payment details (version 1 - everything on)', () => {
@@ -70,12 +74,13 @@ describe('Card payments page', () => {
           isDefaultBillingAddressCountryUK: true,
           allowApplePay: true,
           allowGooglePay: true,
-          serviceName: 'version 1'
+          serviceName: 'version 1',
         })
         cy.visit(pageUrl)
         cardPaymentParams.forEach((param) => {
           cy.get(`.govuk-summary-list:eq(${param.listLocation[0]})`)
-            .find(`.govuk-summary-list__row:eq(${param.listLocation[1]})`).within(() => {
+            .find(`.govuk-summary-list__row:eq(${param.listLocation[1]})`)
+            .within(() => {
               cy.get('.govuk-summary-list__key').should('contain', param.title)
               cy.get('.govuk-summary-list__value').should('contain', param.onValue)
               cy.get('.govuk-summary-list__actions a')
@@ -92,13 +97,14 @@ describe('Card payments page', () => {
           isDefaultBillingAddressCountryUK: false,
           allowApplePay: false,
           allowGooglePay: false,
-          serviceName: 'version 2'
+          serviceName: 'version 2',
         })
 
         cy.visit(pageUrl)
         cardPaymentParams.forEach((param) => {
           cy.get(`.govuk-summary-list:eq(${param.listLocation[0]})`)
-            .find(`.govuk-summary-list__row:eq(${param.listLocation[1]})`).within(() => {
+            .find(`.govuk-summary-list__row:eq(${param.listLocation[1]})`)
+            .within(() => {
               cy.get('.govuk-summary-list__key').should('contain', param.title)
               cy.get('.govuk-summary-list__value').should('contain', param.offValue)
               cy.get('.govuk-summary-list__actions a')
@@ -115,7 +121,7 @@ describe('Card payments page', () => {
           isDefaultBillingAddressCountryUK: false,
           allowApplePay: false,
           allowGooglePay: false,
-          serviceName: 'version 2'
+          serviceName: 'version 2',
         })
         cy.visit(pageUrl)
         cardPaymentParams.forEach((param) => {
@@ -137,9 +143,7 @@ describe('Card payments page', () => {
           allowGooglePay: false,
           serviceName: 'worldpay service without active credential',
           gatewayAccountPaymentProvider: WORLDPAY,
-          gatewayAccountCredentials: [
-            WORLDPAY_CREDENTIAL_IN_CREATED_STATE
-          ]
+          gatewayAccountCredentials: [WORLDPAY_CREDENTIAL_IN_CREATED_STATE],
         })
 
         cy.visit(pageUrl)
@@ -160,12 +164,13 @@ describe('Card payments page', () => {
         cy.title().should('eq', 'Card payments - Settings - My card payment service - GOV.UK Pay')
       })
 
-      it('should highlight the card payments navigation ', () => {
+      it('should show active "Card payments" link in the setting navigation', () => {
         setupStubs()
         cy.visit(pageUrl)
-        cy.get('.service-settings-nav__li--active').within(() => {
-          cy.get('#settings-navigation-card-payments').should('contain.text', 'Card payments')
-        })
+        checkSettingsNavigation(
+          'Card payments',
+          pageUrl
+        )
       })
 
       it('should display the provided card payment details (version 1 - everything on)', () => {
@@ -175,12 +180,13 @@ describe('Card payments page', () => {
           isDefaultBillingAddressCountryUK: true,
           allowApplePay: true,
           allowGooglePay: true,
-          serviceName: 'version 1'
+          serviceName: 'version 1',
         })
         cy.visit(pageUrl)
         cardPaymentParams.forEach((param) => {
           cy.get(`.govuk-summary-list:eq(${param.listLocation[0]})`)
-            .find(`.govuk-summary-list__row:eq(${param.listLocation[1]})`).within(() => {
+            .find(`.govuk-summary-list__row:eq(${param.listLocation[1]})`)
+            .within(() => {
               cy.get('.govuk-summary-list__key').should('contain', param.title)
               cy.get('.govuk-summary-list__value').should('contain', param.onValue)
               cy.get('.govuk-summary-list__actions').should('not.exist')
@@ -195,13 +201,14 @@ describe('Card payments page', () => {
           isDefaultBillingAddressCountryUK: false,
           allowApplePay: false,
           allowGooglePay: false,
-          serviceName: 'version 2'
+          serviceName: 'version 2',
         })
 
         cy.visit(pageUrl)
         cardPaymentParams.forEach((param) => {
           cy.get(`.govuk-summary-list:eq(${param.listLocation[0]})`)
-            .find(`.govuk-summary-list__row:eq(${param.listLocation[1]})`).within(() => {
+            .find(`.govuk-summary-list__row:eq(${param.listLocation[1]})`)
+            .within(() => {
               cy.get('.govuk-summary-list__key').should('contain', param.title)
               cy.get('.govuk-summary-list__value').should('contain', param.offValue)
               cy.get('.govuk-summary-list__actions').should('not.exist')

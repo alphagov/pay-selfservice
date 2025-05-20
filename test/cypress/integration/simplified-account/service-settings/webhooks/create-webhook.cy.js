@@ -1,12 +1,18 @@
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
-const { getWebhooksListSuccess, createWebhookViolatesBackend, postCreateWebhookSuccess } = require('@test/cypress/stubs/webhooks-stubs')
+const {
+  getWebhooksListSuccess,
+  createWebhookViolatesBackend,
+  postCreateWebhookSuccess,
+} = require('@test/cypress/stubs/webhooks-stubs')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = {
-  en: 'McDuck Enterprises', cy: 'Mentrau McDuck'
+  en: 'McDuck Enterprises',
+  cy: 'Mentrau McDuck',
 }
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
@@ -21,14 +27,15 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       serviceName: SERVICE_NAME,
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role: ROLES[opts.role || 'admin']
+      role: ROLES[opts.role || 'admin'],
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       type: LIVE_ACCOUNT_TYPE,
-      provider_switch_enabled: opts.providerSwitchEnabled || false
+      provider_switch_enabled: opts.providerSwitchEnabled || false,
     }),
-    ...additionalStubs])
+    ...additionalStubs,
+  ])
 }
 
 describe('for an admin', () => {
@@ -40,26 +47,16 @@ describe('for an admin', () => {
           service_id: SERVICE_EXTERNAL_ID,
           gateway_account_id: GATEWAY_ACCOUNT_ID,
           live: true,
-          webhooks: []
+          webhooks: [],
         }),
-        postCreateWebhookSuccess()
+        postCreateWebhookSuccess(),
       ])
       cy.visit(WEBHOOKS_SETTINGS_URL)
-      cy.get('div.service-settings-pane')
-        .find('a')
-        .contains('Create a new webhook')
-        .click()
+      cy.get('div.service-settings-pane').find('a').contains('Create a new webhook').click()
     })
 
-    it('should show webhooks in the setting navigation', () => {
-      cy.get('.service-settings-nav')
-        .find('li')
-        .contains('Webhooks')
-        .then(li => {
-          cy.wrap(li)
-            .should('have.attr', 'href', WEBHOOKS_SETTINGS_URL)
-            .parent().should('have.class', 'service-settings-nav__li--active')
-        })
+    it('should show active "Webhooks" link in the setting navigation', () => {
+      checkSettingsNavigation('Webhooks', WEBHOOKS_SETTINGS_URL)
     })
 
     it('should show title and heading', () => {
@@ -75,8 +72,7 @@ describe('for an admin', () => {
       cy.title().should('eq', 'Webhooks - Settings - McDuck Enterprises - GOV.UK Pay')
       cy.get('h1').should('contain', 'Webhooks')
       cy.location('pathname').should('eq', WEBHOOKS_SETTINGS_URL)
-      cy.get('.govuk-error-summary')
-        .should('not.exist')
+      cy.get('.govuk-error-summary').should('not.exist')
     })
   })
 
@@ -88,16 +84,15 @@ describe('for an admin', () => {
           service_id: SERVICE_EXTERNAL_ID,
           gateway_account_id: GATEWAY_ACCOUNT_ID,
           live: true,
-          webhooks: []
+          webhooks: [],
         }),
-        createWebhookViolatesBackend()
+        createWebhookViolatesBackend(),
       ])
       cy.visit(WEBHOOKS_SETTINGS_URL + '/create')
     })
 
     it('should show errors for missing fields', () => {
-      cy.get('.govuk-error-summary')
-        .should('not.exist')
+      cy.get('.govuk-error-summary').should('not.exist')
       cy.get('button[type="submit"]').contains('Save').click()
       cy.get('.govuk-error-summary')
         .should('exist')
@@ -112,8 +107,7 @@ describe('for an admin', () => {
     })
 
     it('should show errors for callback url with domain not approved', () => {
-      cy.get('.govuk-error-summary')
-        .should('not.exist')
+      cy.get('.govuk-error-summary').should('not.exist')
       cy.get('input[type="text"][name="description"]').type(VALID_DESCRIPTION)
       cy.get('input[type="url"][name="callbackUrl"]').type('https://www.not-an-approved-domain.com')
       cy.get('input[type="checkbox"][value="card_payment_succeeded"]').check()
@@ -136,7 +130,7 @@ describe('for a non-admin user', () => {
   it('should return forbidden when visiting the url directly', () => {
     cy.request({
       url: WEBHOOKS_SETTINGS_URL + '/create',
-      failOnStatusCode: false
+      failOnStatusCode: false,
     }).then((response) => {
       expect(response.status).to.eq(403)
     })
