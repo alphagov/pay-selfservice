@@ -29,7 +29,7 @@ const transactionDetailRedirectController = require('./controllers/transactions/
 const loginController = require('./controllers/login')
 const dashboardController = require('./controllers/dashboard')
 const forgotPasswordController = require('./controllers/forgotten-password.controller')
-const serviceUsersController = require('./controllers/service-users.controller')
+const myProfileController = require('@controllers/user/my-profile/my-profile.controller')
 const registerController = require('./controllers/subscribe-service.controller')
 const createServiceController = require('./controllers/create-service/create-service.controller')
 const selectOrgTypeController = require('./controllers/create-service/select-organisation-type/select-organisation-type.controller')
@@ -203,7 +203,7 @@ module.exports.bind = function (app) {
   app.post(paths.feedback, userIsAuthorised, feedbackController.postIndex)
 
   // User profile
-  app.get(user.profile.index, userIsAuthorised, serviceUsersController.profile)
+  app.get(user.profile.index, userIsAuthorised, myProfileController.get)
   app.get(user.profile.phoneNumber, userIsAuthorised, userPhoneNumberController.get)
   app.post(user.profile.phoneNumber, userIsAuthorised, userPhoneNumberController.post)
 
