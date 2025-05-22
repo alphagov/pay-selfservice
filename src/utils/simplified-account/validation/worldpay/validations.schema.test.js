@@ -9,9 +9,9 @@ describe('One Off Customer Initiated Credentials Validation', () => {
     beforeEach(() => {
       req = {
         account: {
-          allowMoto: false
+          allowMoto: false,
         },
-        body: {}
+        body: {},
       }
     })
 
@@ -33,15 +33,16 @@ describe('One Off Customer Initiated Credentials Validation', () => {
     beforeEach(() => {
       req = {
         account: {
-          allowMoto: true
+          allowMoto: true,
         },
-        body: {}
+        body: {},
       }
     })
 
     const validTestCases = [
       { merchantCode: 'helloMOTO', desc: 'MOTO merchant code' },
-      { merchantCode: 'helloMOTOGBP', desc: 'MOTOGBP merchant code' }
+      { merchantCode: 'helloMOTOGBP', desc: 'MOTOGBP merchant code' },
+      { merchantCode: 'helloMOTONI', desc: 'MOTONI merchant code' },
     ]
 
     validTestCases.forEach(({ merchantCode, desc }) => {
@@ -52,7 +53,7 @@ describe('One Off Customer Initiated Credentials Validation', () => {
       })
     })
 
-    it('should fail when merchant code does not end with MOTO|MOTOGBP', async () => {
+    it('should fail when merchant code does not end with MOTO|MOTOGBP|MOTONI', async () => {
       req.body.merchantCode = 'hello'
       await ONE_OFF_CUSTOMER_INITIATED_SCHEMA.merchantCode.validate.run(req)
       const errors = validationResult(req)
@@ -71,9 +72,9 @@ describe('One Off Customer Initiated Credentials Validation', () => {
     beforeEach(() => {
       req = {
         account: {
-          allowMoto: false
+          allowMoto: false,
         },
-        body: {}
+        body: {},
       }
     })
 
@@ -95,9 +96,9 @@ describe('One Off Customer Initiated Credentials Validation', () => {
     beforeEach(() => {
       req = {
         account: {
-          allowMoto: false
+          allowMoto: false,
         },
-        body: {}
+        body: {},
       }
     })
 
