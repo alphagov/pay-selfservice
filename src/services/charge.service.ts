@@ -5,7 +5,7 @@ const connectorClient = new ConnectorClient()
 
 export = {
   createCharge: (serviceExternalId: string, accountType: string, chargeRequest: ChargeRequest) =>
-    connectorClient.postChargeByServiceExternalIdAndAccountType(serviceExternalId, accountType, chargeRequest),
+    connectorClient.charges.postChargeByServiceExternalIdAndAccountType(serviceExternalId, accountType, chargeRequest),
   getCharge: (serviceExternalId: string, accountType: string, chargeExternalId: string) =>
-    connectorClient.getChargeByServiceExternalIdAndAccountType(serviceExternalId, accountType, chargeExternalId),
+    connectorClient.charges.getChargeByServiceExternalIdAndAccountType(serviceExternalId, accountType, chargeExternalId),
 }

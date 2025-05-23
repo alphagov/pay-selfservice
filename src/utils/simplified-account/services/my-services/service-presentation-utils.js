@@ -10,10 +10,26 @@ const { WORLDPAY } = require('@models/constants/payment-providers')
  */
 const accountLinksGenerator = (account, service) => {
   return {
-    dashboardLink: formatAccountPathsFor(paths.account.dashboard.index, account.externalId),
-    editServiceNameLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.serviceName.index, service.externalId, account.type),
-    manageTeamMembersLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.teamMembers.index, service.externalId, account.type),
-    organisationDetailsLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.index, service.externalId, account.type)
+    dashboardLink: formatSimplifiedAccountPathsFor(
+      paths.simplifiedAccount.dashboard.index,
+      service.externalId,
+      account.type
+    ),
+    editServiceNameLink: formatSimplifiedAccountPathsFor(
+      paths.simplifiedAccount.settings.serviceName.index,
+      service.externalId,
+      account.type
+    ),
+    manageTeamMembersLink: formatSimplifiedAccountPathsFor(
+      paths.simplifiedAccount.settings.teamMembers.index,
+      service.externalId,
+      account.type
+    ),
+    organisationDetailsLink: formatSimplifiedAccountPathsFor(
+      paths.simplifiedAccount.settings.organisationDetails.index,
+      service.externalId,
+      account.type
+    ),
   }
 }
 
@@ -24,8 +40,8 @@ const accountLinksGenerator = (account, service) => {
  * @returns {number} Sorting order: objects with live accounts first, then alphabetical
  */
 const sortByLiveThenName = (a, b) => {
-  const aHasLive = a.gatewayAccounts.some(account => account.type === 'live')
-  const bHasLive = b.gatewayAccounts.some(account => account.type === 'live')
+  const aHasLive = a.gatewayAccounts.some((account) => account.type === 'live')
+  const bHasLive = b.gatewayAccounts.some((account) => account.type === 'live')
   if (aHasLive !== bHasLive) return bHasLive ? 1 : -1
   return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
 }
@@ -35,12 +51,15 @@ const sortByLiveThenName = (a, b) => {
  * @returns {boolean}
  */
 const isWorldpayTestService = (gatewayAccounts) => {
-  return gatewayAccounts.length === 1 && gatewayAccounts[0].type === 'test' &&
+  return (
+    gatewayAccounts.length === 1 &&
+    gatewayAccounts[0].type === 'test' &&
     gatewayAccounts[0].paymentProvider === WORLDPAY
+  )
 }
 
 module.exports = {
   accountLinksGenerator,
   sortByLiveThenName,
-  isWorldpayTestService
+  isWorldpayTestService,
 }

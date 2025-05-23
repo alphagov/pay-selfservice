@@ -1,0 +1,111 @@
+<form method="get" novalidate>
+
+  {{ govukSelect({
+    formGroup: {
+      classes: "dashboard-date-range-container govuk-!-margin-right-2"
+    },
+    classes: "dashboard-date-range-container__select",
+    id: "activity-period",
+    name: "period",
+    label: {
+      text: "Select a date range",
+      classes: "govuk-visually-hidden"
+    },
+    items: [
+      {
+        value: "today",
+        text: "Today",
+        selected: period === 'today'
+      },
+      {
+        value: "yesterday",
+        text: "Yesterday",
+        selected: period === 'yesterday'
+      },
+      {
+        value: "previous-seven-days",
+        text: "Previous 7 days",
+        selected: period === 'previous-seven-days'
+      },
+      {
+        value: "previous-thirty-days",
+        text: "Previous 30 days",
+        selected: period === 'previous-thirty-days'
+      }
+    ]
+  }) }}
+
+  {{ govukButton({
+    classes: "govuk-button--secondary dashboard-date-range__select",
+    text: "Update"
+  }) }}
+</form>
+
+<div class="govuk-grid-row" data-click-events data-click-category="Dashboard" data-click-action="Activity link clicked">
+{% if not activityError %}
+  <article class="dashboard-total-group govuk-grid-column-one-third">
+    <header class="dashboard-total-group__heading">
+      <h2 class="dashboard-total-group__title">
+        <a class="govuk-link" href="{{ links.payments }}" title="View successful payment transactions for chosen time period">
+          Successful payments
+        </a>
+      </h2>
+    </header>
+    <dl class="dashboard-total-group__values dashboard-total-group__values--blue">
+      <dt class="govuk-visually-hidden">Count</dt>
+      <dd class="dashboard-total-group__count">{{ activity.successfulPayments.count }}</dd>
+      <dt class="govuk-visually-hidden">Amount</dt>
+      <dd class="dashboard-total-group__amount">{{ activity.successfulPayments.totalInPence | penceToPoundsWithCurrency }}</dd>
+    </dl>
+  </article>
+  <article class="dashboard-total-group govuk-grid-column-one-third">
+    <header class="dashboard-total-group__heading">
+      <h2 class="dashboard-total-group__title">
+        <a class="govuk-link" href="{{ links.refunds }}" title="View refunded transactions for chosen time period">
+          Successful refunds
+        </a>
+      </h2>
+    </header>
+    <dl class="dashboard-total-group__values dashboard-total-group__values--red">
+      <dt class="govuk-visually-hidden">Count</dt>
+      <dd class="dashboard-total-group__count">{{ activity.refundedPayments.count }}</dd>
+      <dt class="govuk-visually-hidden">Amount</dt>
+      <dd class="dashboard-total-group__amount">{{ activity.refundedPayments.totalInPence | penceToPoundsWithCurrency }}</dd>
+    </dl>
+  </article>
+  <article class="dashboard-total-group govuk-grid-column-one-third">
+    <header class="dashboard-total-group__heading">
+      <h2 class="dashboard-total-group__title">
+        <a class="govuk-link" href="{{ links.net }}" title="View successful payments and refunded transactions for chosen time period">
+          Net income
+        </a>
+      </h2>
+    </header>
+    <dl class="dashboard-total-group__values">
+      <dt class="govuk-visually-hidden">Amount</dt>
+      <dd class="dashboard-total-group__amount">{{ activity.netIncome.totalInPence | penceToPoundsWithCurrency }}</dd>
+    </dl>
+
+    {% set detailsHTML %}
+      <p>Net income was calculated by subtracting the successful refunds from the successful payments for {{ humanDates.start }} to {{ humanDates.end }}</p>
+    {% endset %}
+
+    {{
+      govukDetails({
+        summaryText: "How these numbers are calculated",
+        classes: "dashboard-total-explainer",
+        html: detailsHTML
+      })
+    }}
+  </article>
+{% else %}
+  <article class="dashboard-total-group govuk-grid-column-one-half">
+    <header class="dashboard-total-group__heading">
+      <h2 class="dashboard-total-group__title">Error fetching totals</h2>
+    </header>
+    <div class="dashboard-total-group__values dashboard-total-group__values--red">
+      <span>Transaction activity data cannot be retrieved at this time.</span>
+    </div>
+  </article>
+{% endif %}
+</div>

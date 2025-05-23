@@ -69,7 +69,9 @@ const setupSimplifiedAccountStrategyTest = function (options) {
   })
 
   const connectorStub = sinon.stub().returns({
-    getGatewayAccountByServiceExternalIdAndAccountType: connectorGetAccountMock,
+    gatewayAccounts: {
+      getGatewayAccountByServiceExternalIdAndAccountType: connectorGetAccountMock,
+    }
   })
 
   const simplifiedAccountStrategy = proxyquire(path.join(__dirname, './simplified-account-strategy.middleware'), {

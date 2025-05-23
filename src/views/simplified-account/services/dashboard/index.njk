@@ -1,0 +1,14 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+
+{% set servicePageTitle = "Dashboard" %}
+
+{% block serviceContent %}
+  <h1 class="govuk-heading-l page-title">
+    {{ servicePageTitle }}
+  </h1>
+
+  {% if paymentMethod === 'card' %}
+    {% include "./partials/_activity.njk" %}
+  {% endif %}
+  {% include "./partials/_links.njk" %}
+{% endblock %}

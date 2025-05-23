@@ -9,7 +9,7 @@
   margin: 0;
   color: govuk-colour('dark-grey');
   @include govuk-font(19);
-  @include govuk-typography-weight-regular();
+  @include govuk-typography-weight-regular;
 }
 
 .nav__hr {
@@ -25,16 +25,15 @@
   align-items: center;
   box-shadow: none;
   margin-bottom: govuk-spacing(1);
-  padding: govuk-spacing(1);
-  padding-right: 40px;
+  padding: govuk-spacing(1) 40px govuk-spacing(1) govuk-spacing(1);
   @include govuk-font(16);
 }
 
-.nav__button[current] {
-  @include govuk-typography-weight-bold();
+.nav__button[data-current] {
+  @include govuk-typography-weight-bold;
 }
 
-.nav__button[current]::before {
+.nav__button[data-current]::before {
   content: '';
   position: absolute;
   left: -10px;
@@ -63,14 +62,24 @@
   transform-origin: center;
 }
 
-/* pointing down */
-.sub-nav__button[open]::after {
+// pointing down
+.sub-nav__button[data-open]::after {
   transform: rotate(45deg);
 }
 
-/* pointing up */
-.sub-nav__button:not([open])::after {
+// pointing up
+.sub-nav__button:not([data-open])::after {
   transform: rotate(225deg);
+}
+
+.service-pane {
+  max-width: 100%;
+
+  h1,
+  .govuk-error-summary,
+  .govuk-error-message {
+    overflow-wrap: anywhere;
+  }
 }
 
 .service-settings-pane {
