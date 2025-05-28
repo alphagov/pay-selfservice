@@ -11,7 +11,7 @@ const GATEWAY_ACCOUNT = {
   type: 'live',
   id: '1337'
 }
-const SERVICE_EXTERNAL_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service123abc'
 const NEW_API_KEY = 'api_live_123' // pragma: allowlist secret
 const mockResponse = sinon.spy()
 const mockApiKeysService = {
@@ -69,6 +69,7 @@ describe('Controller: settings/api-keys/create', () => {
       it('should call createKey with args', () => {
         sinon.assert.calledOnceWithExactly(mockApiKeysService.createKey,
           GATEWAY_ACCOUNT,
+          SERVICE_EXTERNAL_ID,
           'a test api key',
           'potter@wand.com',
           TOKEN_SOURCE.API

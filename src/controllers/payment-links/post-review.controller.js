@@ -38,7 +38,9 @@ module.exports = async function createPaymentLink (req, res) {
         created_by: req.user.email,
         type: 'PRODUCTS',
         description: `Token for “${paymentLinkTitle}” payment link`,
-        token_account_type: req.account.type
+        token_account_type: req.account.type,
+        service_external_id: req.service.externalId,
+        service_mode: req.account.type
       }
     })
 

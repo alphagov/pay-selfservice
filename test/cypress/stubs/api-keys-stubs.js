@@ -35,17 +35,20 @@ function getRevokedApiKeysForGatewayAccount (gatewayAccountId, tokens = []) {
  * @param {string} email
  * @param {string} description
  * @param {string} expectedToken
+ * @param {object} options
  */
-function createApiKey (gatewayAccountId, email, description, expectedToken) {
+function createApiKey (gatewayAccountId, email, description, expectedToken, options = {}) {
   const path = '/v1/frontend/auth'
   return stubBuilder('POST', path, 200, {
     request: {
       account_id: gatewayAccountId,
       created_by: email,
       description,
-      token_account_type: 'test',
-      token_type: 'CARD',
-      type: 'API'
+      token_account_type: options.tokenAccountType,
+      token_type: options.tokenType,
+      type: options.type || 'API',
+      service_mode: options.serviceMode || 'test',
+      service_external_id: options.serviceExternalId
     },
     response: {
       token: expectedToken

@@ -8,19 +8,22 @@ const TOKEN_SOURCE = {
 
 /**
  * @param {GatewayAccount} gatewayAccount
+ * @param {string} serviceExternalId
  * @param {string} name
  * @param {string} email - the user email
  * @param {'API' | 'PRODUCTS'} tokenSource - The type of the token (must match one of TOKEN_TYPE values).
  * @returns {Promise<string>} the new api key
  */
-const createKey = async (gatewayAccount, name, email, tokenSource) => {
+const createKey = async (gatewayAccount, serviceExternalId, name, email, tokenSource) => {
   const payload = {
     description: name,
     account_id: gatewayAccount.id,
     created_by: email,
     type: tokenSource,
     token_type: 'CARD',
-    token_account_type: gatewayAccount.type
+    token_account_type: gatewayAccount.type,
+    service_external_id: serviceExternalId,
+    service_mode: gatewayAccount.type
   }
   const response = await publicAuthClient.createTokenForAccount({ payload })
   return response.token
