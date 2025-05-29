@@ -4,23 +4,25 @@
 {% from "govuk/components/skip-link/macro.njk" import govukSkipLink %}
 
 {% block pageTitle %}
-  {{ settingsPageTitle }} - Settings - {{ currentService.name }} - GOV.UK Pay
+  {{ servicePageTitle }} - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block skipLink %}
   {{ govukSkipLink({
     text: "Skip to main content",
-    href: "#service-settings-content"
+    href: "#service-content"
   }) }}
 {% endblock %}
 
 {% block sideNavigation %}
-  {% include "../includes/_service-navigation.njk" %}
+  {% if NEW_SERVICE_NAV %}
+    {% include "simplified-account/includes/_service-navigation.njk" %}
+  {% endif %}
 {% endblock %}
 
 {% block mainContent %}
-  <div class="govuk-grid-column-three-quarters">
-    <div class="service-settings-pane">
+  <div class="{% if NEW_SERVICE_NAV %}govuk-grid-column-three-quarters{% else %}govuk-grid-column-full{% endif %}">
+    <div class="service-pane">
       {% if backLink %}
         {{ govukBackLink({
           text: "Back",
@@ -36,8 +38,8 @@
           errorList: errors.summary
         }) }}
       {% endif %}
-      <div id="service-settings-content">
-        {% block settingsContent %}
+      <div id="service-content">
+        {% block serviceContent %}
         {% endblock %}
       </div>
     </div>

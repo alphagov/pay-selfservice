@@ -9,13 +9,14 @@ const {
   enforceMotoAccountOnly,
   defaultViewDecider,
   pspSwitchRedirect,
-  canStartPspPaymentVerificationTask
+  canStartPspPaymentVerificationTask,
 } = require('@middleware/simplified-account')
 const restrictToSwitchingAccount = require('@middleware/restrict-to-switching-account')
 const userIsAuthorised = require('@middleware/user-is-authorised')
 const permission = require('@middleware/permission')
 const paths = require('./paths')
 const serviceSettingsController = require('@controllers/simplified-account/settings')
+const serviceDashboardController = require('@controllers/simplified-account/dashboard')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const {
   GOV_ENTITY_DOC_FORM_FIELD_NAME,
@@ -26,6 +27,9 @@ const upload = multer({ storage: multer.memoryStorage() })
 const simplifiedAccount = new Router({ mergeParams: true })
 
 simplifiedAccount.use(simplifiedAccountStrategy, userIsAuthorised)
+
+// dashboard
+simplifiedAccount.get(paths.simplifiedAccount.dashboard.index, serviceDashboardController.dashboard.get)
 
 // settings index
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)
@@ -497,13 +501,23 @@ const stripeDetailsRouter = new Router({ mergeParams: true }).use(
   permission('stripe-account-details:update'),
   stripeAccountSetupStrategy
 )
-stripeDetailsRouter.get(stripeDetailsPath.index, ((req, res, next) => {
-  // only in the case of Stripe do we reuse the details routes when switching PSP, however we still want to return to the switching page
-  if (req.account.isSwitchingToProvider(STRIPE)) {
-    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToStripe.index, req.service.externalId, req.account.type))
-  }
-  next()
-}), serviceSettingsController.stripeDetails.get)
+stripeDetailsRouter.get(
+  stripeDetailsPath.index,
+  (req, res, next) => {
+    // only in the case of Stripe do we reuse the details routes when switching PSP, however we still want to return to the switching page
+    if (req.account.isSwitchingToProvider(STRIPE)) {
+      return res.redirect(
+        formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.settings.switchPsp.switchToStripe.index,
+          req.service.externalId,
+          req.account.type
+        )
+      )
+    }
+    next()
+  },
+  serviceSettingsController.stripeDetails.get
+)
 stripeDetailsRouter.get(stripeDetailsPath.accountDetails, serviceSettingsController.stripeDetails.getAccountDetails)
 
 stripeDetailsRouter.get(stripeDetailsPath.bankDetails, serviceSettingsController.stripeDetails.bankDetails.get)

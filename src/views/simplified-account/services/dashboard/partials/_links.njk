@@ -1,0 +1,101 @@
+{% if dashboardActions.length % 3 == 0 %}
+  {% set columnClass = "flex-grid--column-third" %}
+{% else %}
+  {% set columnClass = "flex-grid--column-half" %}
+{% endif %}
+
+<div class="flex-grid links-container" data-click-events data-click-category="Dashboard"
+     data-click-action="First steps link clicked">
+
+  <div class="flex-grid--row">
+    {% if possibleActions.telephonePaymentLink in dashboardActions %}
+      <article class="{{ columnClass }} links__box" id="take-a-telephone-payment-link">
+        <a href="{{ links.dashboardActions.telephonePaymentLink }}">
+          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Take a telephone payment</h2>
+          <p class="govuk-body govuk-!-margin-bottom-0">Take a payment now by having a user give their card details over
+            the phone.</p>
+        </a>
+      </article>
+    {% endif %}
+
+    {% if possibleActions.demoPayment in dashboardActions %}
+      <article class="{{ columnClass }} links__box" id="demo-payment-link">
+        <a href="{{ links.dashboardActions.demoPayment }}">
+          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Make a demo payment</h2>
+          <p class="govuk-body govuk-!-margin-bottom-0">Try the payment experience as a user. Then view the completed
+            payment as an administrator on GOV.UK&nbsp;Pay.</p>
+        </a>
+      </article>
+    {% endif %}
+
+    {% if possibleActions.testPaymentLink in dashboardActions %}
+      <article class="{{ columnClass }} links__box" id="test-payment-link-link">
+        <a href="{{ links.dashboardActions.demoPaymentLink }}">
+          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Test with your users</h2>
+          <p class="govuk-body govuk-!-margin-bottom-0">Create a reusable link to integrate your service prototype with
+            GOV.UK&nbsp;Pay and test with users.</p>
+        </a>
+      </article>
+    {% endif %}
+
+    {% if possibleActions.paymentLinks in dashboardActions %}
+      <article class="{{ columnClass }} links__box" id="payment-links-link">
+        {% if permissions.tokens_create %}
+          <a href="{{ links.dashboardActions.createPaymentLink }}">
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Create and manage payment links</h2>
+            <p class="govuk-body govuk-!-margin-bottom-0">A payment link lets you take card payments online, even if you
+              don't have a digital service.</p>
+          </a>
+        {% else %}
+          <a href="{{ links.dashboardActions.managePaymentLinks }}">
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-2">View payment links</h2>
+            <p class="govuk-body govuk-!-margin-bottom-0">A payment link lets you take card payments online, even if you
+              don't have a digital service.</p>
+          </a>
+        {% endif %}
+      </article>
+    {% endif %}
+
+    {% if possibleActions.requestPspTestAccount in dashboardActions %}
+      {% if requestedStripeTestAccount %}
+        <article class="{{ columnClass }} links__box" id="stripe-test-account-requested">
+          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Stripe test account requested</h2>
+          <p class="govuk-body govuk-!-margin-bottom-0">
+            You’ve requested a stripe account from the GOV.UK&nbsp;Pay team.
+            We’re setting up your test account. It will be ready within 2 working days.
+          </p>
+        </article>
+      {% else %}
+        <article class="{{ columnClass }} links__box" id="request-stripe-test-account">
+          <a href="{{ links.dashboardActions.requestPspTestAccount }}"
+             class="govuk-link">
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Test Stripe’s reporting functionality</h2>
+            <p class="govuk-body govuk-!-margin-bottom-0">Access transaction fee and payments to your bank account
+              reports to test reconciliation.</p>
+          </a>
+        </article>
+      {% endif %}
+    {% endif %}
+    {% if possibleActions.goLive in dashboardActions %}
+      <article class="{{ columnClass }} links__box" id="request-to-go-live-link">
+        {% if goLiveStatus === 'go-live-not-started' and not isWorldpayTestService %}
+          <a href="{{ links.dashboardActions.requestLiveAccount }}">
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Request a live account</h2>
+            <p class="govuk-body govuk-!-margin-bottom-0">To request a live account, tell us your organisation’s name,
+              your payment service provider and agree to our terms and conditions. Once that’s done our team will email
+              you.</p>
+          </a>
+          {% elif goLiveStatus === 'go-live-started' %}
+          <a href="{{ links.dashboardActions.requestLiveAccount }}">
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Setting up your live account</h2>
+            <p class="govuk-body govuk-!-margin-bottom-0">You’ve started to set up your live account. There are still
+              some steps you need to complete.</p>
+          </a>
+          {% elif goLiveStatus === 'go-live-requested' %}
+          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Your live account</h2>
+          <p class="govuk-body govuk-!-margin-bottom-0">You’ve requested a live account from the GOV.UK&nbsp;Pay team.</p>
+        {% endif %}
+      </article>
+    {% endif %}
+  </div>
+</div>

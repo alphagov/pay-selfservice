@@ -12,67 +12,92 @@ const SERVICE_NAME = 'connector'
 const SERVICE_BASE_URL = process.env.CONNECTOR_URL!
 
 class ConnectorClient extends BaseClient {
+  public charges
+  public gatewayAccounts
+
   constructor() {
     super(SERVICE_BASE_URL, SERVICE_NAME)
+    this.charges = this.chargesClient
+    this.gatewayAccounts = this.gatewayAccountsClient
   }
 
-  // charges
+  private get chargesClient() {
+    return {
+      getChargeByServiceExternalIdAndAccountType: async (
+        serviceExternalId: string,
+        accountType: string,
+        chargeExternalId: string
+      ) => {
+        const path = '/v1/api/service/{serviceExternalId}/account/{accountType}/charges/{chargeExternalId}'
+          .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+          .replace('{accountType}', encodeURIComponent(accountType))
+          .replace('{chargeExternalId}', encodeURIComponent(chargeExternalId))
+        const response = await this.get<ChargeData>(path, 'get a charge')
+        return new Charge(response.data)
+      },
 
-  async getChargeByServiceExternalIdAndAccountType(
-    serviceExternalId: string,
-    accountType: string,
-    chargeExternalId: string
-  ) {
-    const path = '/v1/api/service/{serviceExternalId}/account/{accountType}/charges/{chargeExternalId}'
-      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
-      .replace('{accountType}', encodeURIComponent(accountType))
-      .replace('{chargeExternalId}', encodeURIComponent(chargeExternalId))
-    const response = await this.get<ChargeData>(path, 'get a charge')
-    return new Charge(response.data)
+      postChargeByServiceExternalIdAndAccountType: async (
+        serviceExternalId: string,
+        accountType: string,
+        chargeRequest: ChargeRequest
+      ) => {
+        const path = '/v1/api/service/{serviceExternalId}/account/{accountType}/charges'
+          .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+          .replace('{accountType}', encodeURIComponent(accountType))
+        const response = await this.post<ChargeRequestData, ChargeData>(
+          path,
+          chargeRequest.toPayload(),
+          'create a charge'
+        )
+        return new Charge(response.data)
+      },
+    }
   }
 
-  async postChargeByServiceExternalIdAndAccountType(
-    serviceExternalId: string,
-    accountType: string,
-    chargeRequest: ChargeRequest
-  ) {
-    const path = '/v1/api/service/{serviceExternalId}/account/{accountType}/charges'
-      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
-      .replace('{accountType}', encodeURIComponent(accountType))
-    const response = await this.post<ChargeRequestData, ChargeData>(path, chargeRequest.toPayload(), 'create a charge')
-    return new Charge(response.data)
-  }
-
-  // gateway accounts
-
-  async getGatewayAccountByServiceExternalIdAndAccountType(serviceExternalId: string, accountType: string) {
-    const path = '/v1/api/service/{serviceExternalId}/account/{accountType}'
-      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
-      .replace('{accountType}', encodeURIComponent(accountType))
-    const response = await this.get<GatewayAccountData>(path, 'get a gateway account')
-    return new GatewayAccount(response.data)
-  }
-
-  async getStripeAccountSetupByServiceExternalIdAndAccountType(serviceExternalId: string, accountType: string) {
-    const path = '/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-setup'
-      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
-      .replace('{accountType}', encodeURIComponent(accountType))
-    const response = await this.get<StripeAccountSetupData>(path, 'get stripe account onboarding progress')
-    return new StripeAccountSetup(response.data)
-  }
-
-  async updateStripeAccountSetupByServiceExternalIdAndAccountType(serviceExternalId: string, accountType: string, stripeAccountSetupStep: string) {
-    const url = '/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-setup'
-      .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
-      .replace('{accountType}', encodeURIComponent(accountType))
-    const body = [
-      {
-        op: 'replace',
-        path: stripeAccountSetupStep,
-        value: true
-      }
-    ]
-    await this.patch<{op: string, path: string, value: boolean}[], void>(url, body, 'set stripe account onboarding step to done')
+  private get gatewayAccountsClient() {
+    return {
+      getGatewayAccountByServiceExternalIdAndAccountType: async (serviceExternalId: string, accountType: string) => {
+        const path = '/v1/api/service/{serviceExternalId}/account/{accountType}'
+          .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+          .replace('{accountType}', encodeURIComponent(accountType))
+        const response = await this.get<GatewayAccountData>(path, 'get a gateway account')
+        return new GatewayAccount(response.data)
+      },
+      getStripeAccountSetupByServiceExternalIdAndAccountType: async (
+        serviceExternalId: string,
+        accountType: string
+      ) => {
+        const path = '/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-setup'
+          .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+          .replace('{accountType}', encodeURIComponent(accountType))
+        const response = await this.get<StripeAccountSetupData>(path, 'get stripe account onboarding progress')
+        return new StripeAccountSetup(response.data)
+      },
+      updateStripeAccountSetupByServiceExternalIdAndAccountType: async (
+        serviceExternalId: string,
+        accountType: string,
+        stripeAccountSetupStep: string
+      ) => {
+        const url = '/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-setup'
+          .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+          .replace('{accountType}', encodeURIComponent(accountType))
+        const body = [
+          {
+            op: 'replace',
+            path: stripeAccountSetupStep,
+            value: true,
+          },
+        ]
+        await this.patch<
+          {
+            op: string
+            path: string
+            value: boolean
+          }[],
+          void
+        >(url, body, 'set stripe account onboarding step to done')
+      },
+    }
   }
 }
 

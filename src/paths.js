@@ -7,7 +7,7 @@ const keys = {
   ENVIRONMENT_ID: 'environmentId',
   SERVICE_EXTERNAL_ID: 'serviceExternalId',
   GATEWAY_ACCOUNT_EXTERNAL_ID: 'gatewayAccountExternalId',
-  ACCOUNT_TYPE: 'accountType'
+  ACCOUNT_TYPE: 'accountType',
 }
 
 module.exports = {
@@ -16,17 +16,17 @@ module.exports = {
     root: `/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}`,
     credentials: {
       index: '/your-psp/:credentialId/credentials',
-      edit: '/your-psp/:credentialId/credentials/edit'
+      edit: '/your-psp/:credentialId/credentials/edit',
     },
     dashboard: {
-      index: '/dashboard'
+      index: '/dashboard',
     },
     defaultBillingAddressCountry: {
-      index: '/default-billing-address-country'
+      index: '/default-billing-address-country',
     },
     digitalWallet: {
       applePay: '/digital-wallet/apple-pay',
-      googlePay: '/digital-wallet/google-pay'
+      googlePay: '/digital-wallet/google-pay',
     },
     emailNotifications: {
       index: '/email-notifications',
@@ -37,11 +37,11 @@ module.exports = {
       off: '/email-notifications/off',
       collection: '/email-settings-collection',
       confirmation: '/email-settings-confirmation',
-      refund: '/email-settings-refund'
+      refund: '/email-settings-refund',
     },
     notificationCredentials: {
       edit: '/your-psp/:credentialId/notification-credentials/edit',
-      update: '/your-psp/:credentialId/notification-credentials'
+      update: '/your-psp/:credentialId/notification-credentials',
     },
     paymentLinks: {
       start: '/create-payment-link',
@@ -63,11 +63,11 @@ module.exports = {
         editAmount: '/create-payment-link/manage/edit/amount/:productExternalId',
         addMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column',
         editMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey',
-        deleteMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey/delete'
-      }
+        deleteMetadata: '/create-payment-link/manage/:productExternalId/add-reporting-column/:metadataKey/delete',
+      },
     },
     paymentTypes: {
-      index: '/payment-types'
+      index: '/payment-types',
     },
     prototyping: {
       demoService: {
@@ -75,7 +75,7 @@ module.exports = {
         links: '/test-with-your-users/links',
         create: '/test-with-your-users/create',
         confirm: '/test-with-your-users/confirm',
-        disable: '/test-with-your-users/links/disable/:productExternalId'
+        disable: '/test-with-your-users/links/disable/:productExternalId',
       },
       demoPayment: {
         index: '/make-a-demo-payment',
@@ -83,14 +83,14 @@ module.exports = {
         editAmount: '/make-a-demo-payment/edit-amount',
         mockCardDetails: '/make-a-demo-payment/mock-card-numbers',
         goToPaymentScreens: '/make-a-demo-payment/go-to-payment',
-        goToTransaction: '/make-a-demo-payment/:productExternalId/go-to-transactions'
-      }
+        goToTransaction: '/make-a-demo-payment/:productExternalId/go-to-transactions',
+      },
     },
     settings: {
-      index: '/settings'
+      index: '/settings',
     },
     stripe: {
-      addPspAccountDetails: '/stripe/add-psp-account-details'
+      addPspAccountDetails: '/stripe/add-psp-account-details',
     },
     switchPSP: {
       index: '/switch-psp',
@@ -107,21 +107,21 @@ module.exports = {
         director: '/switch-psp/:credentialId/director',
         checkOrgDetails: '/switch-psp/:credentialId/check-organisation-details',
         updateOrgDetails: '/switch-psp/:credentialId/update-organisation-details',
-        governmentEntityDocument: '/switch-psp/:credentialId/government-entity-document'
-      }
+        governmentEntityDocument: '/switch-psp/:credentialId/government-entity-document',
+      },
     },
     toggleBillingAddress: {
-      index: '/billing-address'
+      index: '/billing-address',
     },
     toggleMotoMaskCardNumberAndSecurityCode: {
       cardNumber: '/moto-hide-card-number',
-      securityCode: '/moto-hide-security-code'
+      securityCode: '/moto-hide-security-code',
     },
     transactions: {
       index: '/transactions',
       download: '/transactions/download',
       detail: '/transactions/:chargeId',
-      refund: '/transactions/:chargeId/refund'
+      refund: '/transactions/:chargeId/refund',
     },
     yourPsp: {
       index: '/your-psp/:credentialId',
@@ -136,9 +136,9 @@ module.exports = {
         governmentEntityDocument: '/your-psp/:credentialId/government-entity-document',
         director: '/your-psp/:credentialId/director',
         checkOrgDetails: '/your-psp/:credentialId/check-organisation-details',
-        updateOrgDetails: '/your-psp/:credentialId/update-organisation-details'
-      }
-    }
+        updateOrgDetails: '/your-psp/:credentialId/update-organisation-details',
+      },
+    },
   },
   futureAccountStrategy: {
     // remove account when hybrid gateway account root no longer required
@@ -147,17 +147,20 @@ module.exports = {
     agreements: {
       index: '/agreements',
       detail: '/agreements/:agreementId',
-      cancel: '/agreements/:agreementId/cancel'
-    }
+      cancel: '/agreements/:agreementId/cancel',
+    },
   },
   simplifiedAccount: {
     root: `/service/:${keys.SERVICE_EXTERNAL_ID}/account/:${keys.ACCOUNT_TYPE}`,
+    dashboard: {
+      index: '/dashboard',
+    },
     settings: {
       index: '/settings',
       serviceName: {
         index: '/settings/service-name',
         edit: '/settings/service-name/edit',
-        removeCy: '/settings/service-name/cy/remove'
+        removeCy: '/settings/service-name/cy/remove',
       },
       emailNotifications: {
         index: '/settings/email-notifications',
@@ -166,17 +169,17 @@ module.exports = {
         paymentConfirmationEmailToggle: '/settings/email-notifications/payment-confirmation-email-toggle',
         templates: '/settings/email-notifications/templates',
         customParagraph: '/settings/email-notifications/templates/custom-paragraph',
-        removeCustomParagraph: '/settings/email-notifications/templates/custom-paragraph/remove'
+        removeCustomParagraph: '/settings/email-notifications/templates/custom-paragraph/remove',
       },
       teamMembers: {
         index: '/settings/team-members',
         delete: '/settings/team-members/:externalUserId/delete',
         permission: '/settings/team-members/:externalUserId/permission',
-        invite: '/settings/team-members/invite'
+        invite: '/settings/team-members/invite',
       },
       organisationDetails: {
         index: '/settings/organisation-details',
-        edit: '/settings/organisation-details/edit'
+        edit: '/settings/organisation-details/edit',
       },
       stripeDetails: {
         index: '/settings/stripe-details',
@@ -186,7 +189,7 @@ module.exports = {
           index: '/settings/stripe-details/responsible-person',
           homeAddress: '/settings/stripe-details/responsible-person/home-address',
           contactDetails: '/settings/stripe-details/responsible-person/contact-details',
-          checkYourAnswers: '/settings/stripe-details/responsible-person/check-your-answers'
+          checkYourAnswers: '/settings/stripe-details/responsible-person/check-your-answers',
         },
         vatNumber: '/settings/stripe-details/vat-number',
         companyNumber: '/settings/stripe-details/company-number',
@@ -194,15 +197,15 @@ module.exports = {
         governmentEntityDocument: '/settings/stripe-details/government-entity-document',
         organisationDetails: {
           index: '/settings/stripe-details/organisation-details/index',
-          update: '/settings/stripe-details/organisation-details/update'
-        }
+          update: '/settings/stripe-details/organisation-details/update',
+        },
       },
       worldpayDetails: {
         index: '/settings/worldpay-details',
         flexCredentials: '/settings/worldpay-details/flex-credentials',
         oneOffCustomerInitiated: '/settings/worldpay-details/one-off-customer-initiated',
         recurringCustomerInitiated: '/settings/worldpay-details/recurring-customer-initiated',
-        recurringMerchantInitiated: '/settings/worldpay-details/recurring-merchant-initiated'
+        recurringMerchantInitiated: '/settings/worldpay-details/recurring-merchant-initiated',
       },
       cardPayments: {
         index: '/settings/card-payments',
@@ -212,25 +215,25 @@ module.exports = {
         googlePay: '/settings/card-payments/google-pay',
         motoSecurity: {
           hideCardNumber: '/settings/card-payments/moto-security/hide-card-number',
-          hideCardSecurityCode: '/settings/card-payments/moto-security/hide-card-security-code'
-        }
+          hideCardSecurityCode: '/settings/card-payments/moto-security/hide-card-security-code',
+        },
       },
       cardTypes: {
-        index: '/settings/card-types'
+        index: '/settings/card-types',
       },
       apiKeys: {
         index: '/settings/api-keys',
         create: {
           index: '/settings/api-keys/create',
-          newKeyDetails: '/settings/api-keys/create/new-key-details'
+          newKeyDetails: '/settings/api-keys/create/new-key-details',
         },
         edit: {
-          changeName: '/settings/api-keys/:tokenLink/change-name'
+          changeName: '/settings/api-keys/:tokenLink/change-name',
         },
         revoke: {
           index: '/settings/api-keys/:tokenLink/revoke',
-          revokedKeys: '/settings/api-keys/revoked-keys'
-        }
+          revokedKeys: '/settings/api-keys/revoked-keys',
+        },
       },
       webhooks: {
         index: '/settings/webhooks',
@@ -238,7 +241,7 @@ module.exports = {
         detail: '/settings/webhooks/:webhookExternalId',
         update: '/settings/webhooks/:webhookExternalId/update',
         toggle: '/settings/webhooks/:webhookExternalId/toggle-status',
-        event: '/settings/webhooks/:webhookExternalId/event/:eventId'
+        event: '/settings/webhooks/:webhookExternalId/event/:eventId',
       },
       switchPsp: {
         switchToStripe: {
@@ -248,7 +251,7 @@ module.exports = {
             index: '/settings/switch-psp/switch-to-stripe/responsible-person',
             homeAddress: '/settings/switch-psp/switch-to-stripe/responsible-person/home-address',
             contactDetails: '/settings/switch-psp/switch-to-stripe/responsible-person/contact-details',
-            checkYourAnswers: '/settings/switch-psp/switch-to-stripe/responsible-person/check-your-answers'
+            checkYourAnswers: '/settings/switch-psp/switch-to-stripe/responsible-person/check-your-answers',
           },
           vatNumber: '/settings/switch-psp/switch-to-stripe/vat-number',
           companyNumber: '/settings/switch-psp/switch-to-stripe/company-number',
@@ -256,33 +259,34 @@ module.exports = {
           governmentEntityDocument: '/settings/switch-psp/switch-to-stripe/government-entity-document',
           organisationDetails: {
             index: '/settings/switch-psp/switch-to-stripe/organisation-details/index',
-            update: '/settings/switch-psp/switch-to-stripe/organisation-details/update'
-          }
+            update: '/settings/switch-psp/switch-to-stripe/organisation-details/update',
+          },
         },
         switchToWorldpay: {
           index: '/settings/switch-psp/switch-to-worldpay',
-          oneOffCustomerInitiated: '/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated',
+          oneOffCustomerInitiated:
+            '/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated',
           flexCredentials: '/settings/switch-psp/switch-to-worldpay/worldpay-details/flex-credentials',
         },
         makeTestPayment: {
           outbound: '/settings/switch-psp/make-a-payment',
-          inbound: '/settings/switch-psp/make-a-payment/verify'
-        }
-      }
-    }
+          inbound: '/settings/switch-psp/make-a-payment/verify',
+        },
+      },
+    },
   },
   service: {
     root: `/service/:${keys.SERVICE_EXTERNAL_ID}`,
     editServiceName: {
       index: '/edit-name',
-      update: '/edit-name'
+      update: '/edit-name',
     },
     organisationDetails: {
       index: '/organisation-details',
-      edit: '/organisation-details/edit'
+      edit: '/organisation-details/edit',
     },
     redirects: {
-      stripeSetupLiveDashboardRedirect: '/dashboard/live'
+      stripeSetupLiveDashboardRedirect: '/dashboard/live',
     },
     requestPspTestAccount: '/request-stripe-test-account',
     requestToGoLive: {
@@ -291,22 +295,22 @@ module.exports = {
       organisationAddress: '/request-to-go-live/organisation-address',
       chooseHowToProcessPayments: '/request-to-go-live/choose-how-to-process-payments',
       chooseTakesPaymentsOverPhone: '/request-to-go-live/choose-takes-payments-over-phone',
-      agreement: '/request-to-go-live/agreement'
+      agreement: '/request-to-go-live/agreement',
     },
     teamMembers: {
       index: '/team-members',
       show: '/team-member/:externalUserId',
       delete: '/team-member/:externalUserId/delete',
       permissions: '/team-member/:externalUserId/permissions',
-      invite: '/team-members/invite'
-    }
+      invite: '/team-members/invite',
+    },
   },
   services: {
     index: '/my-services',
     create: {
       index: '/services/create',
-      selectOrgType: '/services/create/select-org-type'
-    }
+      selectOrgType: '/services/create/select-org-type',
+    },
   },
   index: '/',
   allServiceTransactions: {
@@ -315,7 +319,7 @@ module.exports = {
     indexStatusFilterWithoutSearch: '/all-service-transactions/nosearch/:statusFilter(test|live)',
     download: '/all-service-transactions/download',
     downloadStatusFilter: '/all-service-transactions/download/:statusFilter(test|live)',
-    redirectDetail: '/redirect/transactions/:chargeId'
+    redirectDetail: '/redirect/transactions/:chargeId',
   },
   user: {
     logIn: '/login',
@@ -334,13 +338,13 @@ module.exports = {
         index: '/my-profile/two-factor-auth',
         phoneNumber: '/my-profile/two-factor-auth/phone-number',
         configure: '/my-profile/two-factor-auth/configure',
-        resend: '/my-profile/two-factor-auth/resend'
-      }
-    }
+        resend: '/my-profile/two-factor-auth/resend',
+      },
+    },
   },
   invite: {
     validateInvite: '/invites/:code',
-    subscribeService: '/subscribe'
+    subscribeService: '/subscribe',
   },
   register: {
     email: '/register/email-address',
@@ -351,13 +355,13 @@ module.exports = {
     phoneNumber: '/register/phone-number',
     smsCode: '/register/sms-code',
     resendCode: '/register/resend-code',
-    success: '/register/success'
+    success: '/register/success',
   },
   healthcheck: {
-    path: '/healthcheck'
+    path: '/healthcheck',
   },
   staticPaths: {
-    naxsiError: '/request-denied'
+    naxsiError: '/request-denied',
   },
   feedback: '/feedback',
   generateRoute,
@@ -366,10 +370,10 @@ module.exports = {
   policyPage: '/policy/:key',
   payouts: {
     list: '/payments-to-your-bank-account',
-    listStatusFilter: '/payments-to-your-bank-account/:statusFilter(test|live)'
+    listStatusFilter: '/payments-to-your-bank-account/:statusFilter(test|live)',
   },
   privacy: '/privacy',
   demoPaymentFwd: {
-    goToTransaction: '/make-a-demo-payment/:productExternalId/go-to-transactions'
-  }
+    goToTransaction: '/make-a-demo-payment/:productExternalId/go-to-transactions',
+  },
 }

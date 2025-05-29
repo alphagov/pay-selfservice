@@ -10,10 +10,10 @@ export interface GatewayAccountData {
   allow_apple_pay: boolean
   allow_google_pay: boolean
   allow_moto: boolean
-  analytics_id: string
-  description: string
+  analytics_id?: string
+  description?: string
   payment_provider: string
-  gateway_account_credentials: GatewayAccountCredentialData[]
+  gateway_account_credentials?: GatewayAccountCredentialData[]
   email_collection_mode: string
   email_notifications: {
     PAYMENT_CONFIRMED: EmailNotificationsData
@@ -24,7 +24,7 @@ export interface GatewayAccountData {
   service_name: string
   provider_switch_enabled: boolean
   recurring_enabled: boolean
-  requires3ds: boolean
-  toggle_3ds: boolean
-  worldpay_3ds_flex: Worldpay3dsFlexCredentialData
+  requires3ds: boolean // 🥴
+  toggle_3ds?: boolean
+  worldpay_3ds_flex?: Worldpay3dsFlexCredentialData
 }

@@ -6,6 +6,7 @@ const publicAuthClient = require('../../services/clients/public-auth.client')
 const { ConnectorClient } = require('../../services/clients/connector.client')
 const logger = require('../../utils/logger')(__filename)
 const { CREATED, NOT_STARTED, REQUEST_SUBMITTED } = require('@models/constants/psp-test-account-stage')
+const formatPSPName = require('@utils/format-PSP-name')
 const adminUsersClient = getAdminUsersClient()
 const { CONNECTOR_URL } = process.env
 const connectorClient = new ConnectorClient(CONNECTOR_URL)
@@ -46,6 +47,11 @@ module.exports = async function submitRequestForPspTestAccount (req, res, next) 
     logger.error(`There was an error revoking tokens for sandbox account with id ${sandboxGatewayAccountId}. ${error}`)
   }
 
-  req.flash('requestStripeTestAccount', 'success')
+  req.flash('messages', {
+    state: 'success',
+    icon: '&check;',
+    heading: 'This test account has been changed to a Stripe test account',
+    body: 'If you use the GOV.UK Pay API, you will need to create new API keys',
+  })
   res.redirect(`/account/${gatewayAccountExternalId}/dashboard`)
 }

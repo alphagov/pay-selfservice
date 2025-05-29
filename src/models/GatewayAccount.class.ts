@@ -20,8 +20,8 @@ class GatewayAccount {
   readonly allowApplePay: boolean
   readonly allowGooglePay: boolean
   readonly allowMoto: boolean
-  readonly analyticsId: string
-  readonly description: string
+  readonly analyticsId?: string
+  readonly description?: string
   readonly disableToggle3ds: boolean
   readonly emailCollectionMode: string
   readonly emailNotifications: EmailNotifications
