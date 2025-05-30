@@ -6,10 +6,11 @@ import type StripeAccountSetup from '@models/StripeAccountSetup.class'
 import ClientSessionsCookie from '@utils/types/client-sessions/ClientSessionsCookie'
 
 type MessageState = 'success' | 'error' | 'info'
+type Icon = '&check;'
 
 interface Message {
   state: MessageState
-  icon?: string
+  icon?: Icon
   heading: string
   body?: string
 }
@@ -20,6 +21,6 @@ export default interface ServiceRequest<T = never> extends Request {
   account: GatewayAccount
   gatewayAccountStripeProgress?: StripeAccountSetup
   flash(type: string, message: Message): void
-  body: T,
+  body: T
   session: ClientSessionsCookie
 }

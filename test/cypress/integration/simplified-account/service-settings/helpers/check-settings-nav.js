@@ -4,7 +4,7 @@ function checkSettingsNavigation(settingName, settingUrl) {
     .contains(settingName)
     .should('have.attr', 'href', settingUrl)
     .should('have.attr', 'aria-current', 'page')
-    .should('have.attr', 'current', '')
+    .should('have.attr', 'data-current', '')
 }
 
 module.exports = checkSettingsNavigation

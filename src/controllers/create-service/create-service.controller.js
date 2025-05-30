@@ -7,6 +7,7 @@ const paths = require('../../paths')
 const serviceService = require('../../services/service.service')
 const userService = require('../../services/user.service')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 
 function get (req, res) {
   const createServiceState = _.get(req, 'session.pageData.createService', {})
@@ -33,13 +34,12 @@ async function post (req, res, next) {
 
   try {
     const {
-      service,
-      externalAccountId
+      service
     } = await serviceService.createService(serviceName, serviceNameCy, organisationType)
     await userService.assignServiceRole(req.user.externalId, service.externalId, 'admin')
     _.unset(req, 'session.pageData.createService')
     req.flash('messages', { state: 'success', icon: '&check;', heading: 'We\'ve created your service.' })
-    res.redirect(formatAccountPathsFor(paths.account.dashboard.index, externalAccountId))
+    res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.dashboard.index, service.externalId, 'test'))
   } catch (err) {
     next(err)
   }

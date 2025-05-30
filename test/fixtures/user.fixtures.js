@@ -239,6 +239,10 @@ const defaultPermissions = [
   {
     name: 'agreements:update',
     description: 'Update agreements'
+  },
+  {
+    name: 'agent-initiated-moto:create',
+    description: 'Create agent initiated moto payments'
   }
 ]
 

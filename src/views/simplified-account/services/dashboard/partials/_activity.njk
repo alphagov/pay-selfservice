@@ -1,5 +1,4 @@
-<form class="govuk-grid-column-full" action="{{formatAccountPathsFor(routes.account.dashboard.index, currentGatewayAccount.external_id)}}" method="get" novalidate>
-
+<form method="get" novalidate>
   {{ govukSelect({
     formGroup: {
       classes: "dashboard-date-range-container govuk-!-margin-right-2"
@@ -15,22 +14,22 @@
       {
         value: "today",
         text: "Today",
-        selected: period === 'today'
+        selected: currentPeriod === 'today'
       },
       {
         value: "yesterday",
         text: "Yesterday",
-        selected: period === 'yesterday'
+        selected: currentPeriod === 'yesterday'
       },
       {
         value: "previous-seven-days",
         text: "Previous 7 days",
-        selected: period === 'previous-seven-days'
+        selected: currentPeriod === 'previous-seven-days'
       },
       {
         value: "previous-thirty-days",
         text: "Previous 30 days",
-        selected: period === 'previous-thirty-days'
+        selected: currentPeriod === 'previous-thirty-days'
       }
     ]
   }) }}
@@ -41,53 +40,53 @@
   }) }}
 </form>
 
-<div data-click-events data-click-category="Dashboard" data-click-action="Activity link clicked">
-{% if not activityError %}
+<div class="govuk-grid-row" data-click-events data-click-category="Dashboard" data-click-action="Activity link clicked">
+{% if not activity.error %}
   <article class="dashboard-total-group govuk-grid-column-one-third">
     <header class="dashboard-total-group__heading">
       <h2 class="dashboard-total-group__title">
-        <a class="govuk-link" href="{{formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id)}}?state=Success&amp;{{ transactionsPeriodString }}" title="View successful payment transactions for chosen time period">
+        <a class="govuk-link" href="{{ links.activity.payments }}" title="View successful payment transactions for chosen time period">
           Successful payments
         </a>
       </h2>
     </header>
     <dl class="dashboard-total-group__values dashboard-total-group__values--blue">
       <dt class="govuk-visually-hidden">Count</dt>
-      <dd class="dashboard-total-group__count">{{ activity.successful_payments.count }}</dd>
+      <dd class="dashboard-total-group__count">{{ activity.successfulPayments.count }}</dd>
       <dt class="govuk-visually-hidden">Amount</dt>
-      <dd class="dashboard-total-group__amount">{{ activity.successful_payments.total_in_pence | penceToPoundsWithCurrency }}</dd>
+      <dd class="dashboard-total-group__amount">{{ activity.successfulPayments.totalInPence | penceToPoundsWithCurrency }}</dd>
     </dl>
   </article>
   <article class="dashboard-total-group govuk-grid-column-one-third">
     <header class="dashboard-total-group__heading">
       <h2 class="dashboard-total-group__title">
-        <a class="govuk-link" href="{{formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id)}}?state=Refund+success&amp;{{ transactionsPeriodString }}" title="View refunded transactions for chosen time period">
+        <a class="govuk-link" href="{{ links.activity.refunds }}" title="View refunded transactions for chosen time period">
           Successful refunds
         </a>
       </h2>
     </header>
     <dl class="dashboard-total-group__values dashboard-total-group__values--red">
       <dt class="govuk-visually-hidden">Count</dt>
-      <dd class="dashboard-total-group__count">{{ activity.refunded_payments.count }}</dd>
+      <dd class="dashboard-total-group__count">{{ activity.refundedPayments.count }}</dd>
       <dt class="govuk-visually-hidden">Amount</dt>
-      <dd class="dashboard-total-group__amount">{{ activity.refunded_payments.total_in_pence | penceToPoundsWithCurrency }}</dd>
+      <dd class="dashboard-total-group__amount">{{ activity.refundedPayments.totalInPence | penceToPoundsWithCurrency }}</dd>
     </dl>
   </article>
   <article class="dashboard-total-group govuk-grid-column-one-third">
     <header class="dashboard-total-group__heading">
       <h2 class="dashboard-total-group__title">
-        <a class="govuk-link" href="{{formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id)}}?state=Success&amp;state=Refund+success&amp;{{ transactionsPeriodString }}" title="View successful payments and refunded transactions for chosen time period">
+        <a class="govuk-link" href="{{ links.activity.net }}" title="View successful payments and refunded transactions for chosen time period">
           Net income
         </a>
       </h2>
     </header>
     <dl class="dashboard-total-group__values">
       <dt class="govuk-visually-hidden">Amount</dt>
-      <dd class="dashboard-total-group__amount">{{ activity.net_income.total_in_pence | penceToPoundsWithCurrency }}</dd>
+      <dd class="dashboard-total-group__amount">{{ activity.netIncome.totalInPence | penceToPoundsWithCurrency }}</dd>
     </dl>
 
     {% set detailsHTML %}
-      <p>Net income was calculated by subtracting the successful refunds from the successful payments for {{ fromDateTime | datetime('full') }} to {{ toDateTime | datetime('full') }}</p>
+      <p>Net income was calculated by subtracting the successful refunds from the successful payments for {{ humanDates.start }} to {{ humanDates.end }}</p>
     {% endset %}
 
     {{
@@ -104,7 +103,7 @@
       <h2 class="dashboard-total-group__title">Error fetching totals</h2>
     </header>
     <div class="dashboard-total-group__values dashboard-total-group__values--red">
-      <span>Transaction activity data cannot be retrieved at this time.</span>
+      <span class="govuk-body govuk-!-margin-0">Transaction activity data cannot be retrieved at this time.</span>
     </div>
   </article>
 {% endif %}

@@ -23,7 +23,7 @@ class Service {
   readonly createdDate: string
   readonly currentPspTestAccountStage: string
   readonly agentInitiatedMotoEnabled: boolean
-  readonly defaultBillingAddressCountry: string
+  readonly defaultBillingAddressCountry?: string
   readonly takesPaymentsOverPhone: boolean
 
   constructor(serviceData: ServiceData) {

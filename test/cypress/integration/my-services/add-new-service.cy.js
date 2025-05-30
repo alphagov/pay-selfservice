@@ -4,52 +4,54 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const userStubs = require('../../stubs/user-stubs')
 const serviceStubs = require('../../stubs/service-stubs')
 const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
+const ROLES = require('@test/fixtures/roles.fixtures')
 
 const authenticatedUserId = 'authenticated-user-id'
 const newServiceName = 'Pay for a thing'
 const newServiceWelshName = 'Talu am beth'
-const newServiceId = 'new-service-id'
+const newServiceExternalId = 'new-service-id'
 const newGatewayAccountId = 38
 
 const createGatewayAccountStub =
   gatewayAccountStubs.postCreateGatewayAccountSuccess({
     serviceName: newServiceName,
-    serviceId: newServiceId,
+    serviceId: newServiceExternalId,
     paymentProvider: 'sandbox',
     type: 'test',
     gatewayAccountId: `${newGatewayAccountId}`
   })
 
 const assignUserRoleStub =
-  userStubs.postAssignServiceRoleSuccess({ userExternalId: authenticatedUserId, serviceExternalId: newServiceId })
+  userStubs.postAssignServiceRoleSuccess({ userExternalId: authenticatedUserId, serviceExternalId: newServiceExternalId })
 
 describe('Add a new service', () => {
   describe('Add a new service without a Welsh name', () => {
     it('should display the service dashboard', () => {
       cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
-        gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1' }),
-        createGatewayAccountStub,
-        assignUserRoleStub,
-        serviceStubs.postCreateServiceSuccess({
-          serviceExternalId: newServiceId,
+        userStubs.getUserSuccess({
+          userExternalId: authenticatedUserId,
           gatewayAccountId: `${newGatewayAccountId}`,
+          serviceName: { en: newServiceName },
+          serviceExternalId: newServiceExternalId,
+          role: ROLES.admin,
+        }),
+        serviceStubs.postCreateServiceSuccess({
+          serviceExternalId: newServiceExternalId,
+          gatewayAccountId: newGatewayAccountId,
           serviceName: { en: newServiceName }
         }),
-        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId, gatewayAccountIds: [newGatewayAccountId] }),
-        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
-          gatewayAccountExternalId: 'a-valid-external-id',
-          gatewayAccountId: '1'
+        createGatewayAccountStub,
+        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceExternalId, gatewayAccountIds: [newGatewayAccountId] }),
+        assignUserRoleStub,
+        gatewayAccountStubs.getAccountByServiceIdAndAccountType(newServiceExternalId, 'test', {
+          gateway_account_id: newGatewayAccountId,
         }),
         transactionsSummaryStubs.getDashboardStatistics()
       ])
 
       cy.setEncryptedCookies(authenticatedUserId)
 
-      cy.visit('/my-services')
-      cy.title().should('eq', 'My services - GOV.UK Pay')
-
-      cy.get('a').contains('Add a new service').click()
+      cy.visit('/services/create')
 
       cy.title().should('eq', 'Service name - GOV.UK Pay')
       cy.get('#checkbox-service-name-cy').should('have.attr', 'aria-expanded', 'false')
@@ -97,27 +99,28 @@ describe('Add a new service', () => {
     it('should display the service dashboard', () => {
       cy.setEncryptedCookies(authenticatedUserId)
       cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId: authenticatedUserId, gatewayAccountId: '1' }),
-        gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId: '1' }),
-        createGatewayAccountStub,
-        assignUserRoleStub,
+        userStubs.getUserSuccess({
+          userExternalId: authenticatedUserId,
+          gatewayAccountId: `${newGatewayAccountId}`,
+          serviceName: { en: newServiceName, cy: newServiceWelshName },
+          serviceExternalId: newServiceExternalId,
+          role: ROLES.admin,
+        }),
         serviceStubs.postCreateServiceSuccess({
-          serviceExternalId: newServiceId,
+          serviceExternalId: newServiceExternalId,
           gatewayAccountId: newGatewayAccountId,
           serviceName: { en: newServiceName, cy: newServiceWelshName }
         }),
-        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceId, gatewayAccountIds: [newGatewayAccountId] }),
-        gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
-          gatewayAccountExternalId: 'a-valid-external-id',
-          gatewayAccountId: '1'
+        createGatewayAccountStub,
+        serviceStubs.patchUpdateServiceGatewayAccounts({ serviceExternalId: newServiceExternalId, gatewayAccountIds: [newGatewayAccountId] }),
+        assignUserRoleStub,
+        gatewayAccountStubs.getAccountByServiceIdAndAccountType(newServiceExternalId, 'test', {
+          gateway_account_id: newGatewayAccountId,
         }),
         transactionsSummaryStubs.getDashboardStatistics()
       ])
 
-      cy.visit('/my-services')
-      cy.title().should('eq', 'My services - GOV.UK Pay')
-
-      cy.get('a').contains('Add a new service').click()
+      cy.visit('/services/create')
 
       cy.title().should('eq', 'Service name - GOV.UK Pay')
       cy.get('#checkbox-service-name-cy').should('have.attr', 'aria-expanded', 'false')

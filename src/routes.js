@@ -4,7 +4,7 @@ const passport = require('passport')
 const logger = require('./utils/logger')(__filename)
 const response = require('./utils/response.js').response
 const generateRoute = require('./utils/generate-route')
-const paths = require('./paths.js')
+const paths = require('./paths')
 const accountUrls = require('./utils/gateway-account-urls')
 
 const userIsAuthorised = require('./middleware/user-is-authorised')
@@ -27,7 +27,6 @@ const transactionDetailController = require('./controllers/transactions/transact
 const transactionRefundController = require('./controllers/transactions/transaction-refund.controller')
 const transactionDetailRedirectController = require('./controllers/transactions/transaction-detail-redirect.controller')
 const loginController = require('./controllers/login')
-const dashboardController = require('./controllers/dashboard')
 const forgotPasswordController = require('./controllers/forgotten-password.controller')
 const serviceUsersController = require('./controllers/service-users.controller')
 const registerController = require('./controllers/subscribe-service.controller')
@@ -58,6 +57,8 @@ const servicesController = require('./controllers/simplified-account/services')
 
 const simplifiedAccountRoutes = require('./simplified-account-routes')
 const { registrationSuccess } = require('@services/auth.service')
+const { account: routes} = require('@root/paths')
+const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 
 // Assignments
 const {
@@ -244,7 +245,10 @@ module.exports.bind = function (app) {
   // ----------------------------
 
   // Dashboard
-  account.get(dashboard.index, dashboardController.dashboardActivity)
+  // TODO: remove this redirect once all service views are migrated to service/acct model
+  account.get(dashboard.index, (req, res, next) => {
+    return res.redirect(301, formatServiceAndAccountPathsFor(paths.simplifiedAccount.dashboard.index, req.service.externalId, req.account.type))
+  })
 
   // Transactions
   account.get(transactions.index, permission('transactions:read'), transactionsListController)

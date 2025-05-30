@@ -1,6 +1,6 @@
 interface ServiceNameData {
   en: string
-  cy: string
+  cy?: string
 }
 
 interface MerchantDetailsData {
@@ -28,7 +28,7 @@ interface ServiceData {
   created_date: string
   current_psp_test_account_stage: string
   agent_initiated_moto_enabled: boolean
-  default_billing_address_country: string
+  default_billing_address_country?: string
   takes_payments_over_phone: boolean
 }
 

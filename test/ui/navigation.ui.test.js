@@ -1,6 +1,5 @@
 const { render } = require('@test/test-helpers/html-assertions')
 const { serviceNavigationItems } = require('@utils/nav-builder')
-const formatAccountPathsFor = require('@utils/format-account-paths-for')
 
 describe('navigation menu', function () {
   it('should render only Home link when user does have any of the required permissions to show the navigation links', function () {
@@ -18,12 +17,11 @@ describe('navigation menu', function () {
       hideServiceHeader: false,
       loggedIn: true,
       serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card', '/account/account-id/dashboard'),
-      links: [],
-      linksToDisplay: [],
-      formatAccountPathsFor
+      possibleActions: [],
+      dashboardActions: [],
     }
 
-    const body = render('dashboard/index', templateData)
+    const body = render('simplified-account/services/dashboard/index', templateData)
     body.should.containSelector('.govuk-service-navigation__item:nth-child(1)').withExactText('Dashboard')
   })
 
@@ -42,11 +40,11 @@ describe('navigation menu', function () {
       hideServiceHeader: false,
       loggedIn: true,
       serviceNavigationItems: serviceNavigationItems('/', testPermissions, 'card', '/account/account-id/dashboard'),
-      links: [],
-      linksToDisplay: []
+      possibleActions: [],
+      dashboardActions: []
     }
 
-    const body = render('dashboard/index', templateData)
+    const body = render('simplified-account/services/dashboard/index', templateData)
     body.should.containSelector('.govuk-service-navigation__item:nth-child(2)').withExactText('Transactions')
   })
 })

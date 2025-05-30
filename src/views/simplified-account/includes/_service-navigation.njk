@@ -1,0 +1,73 @@
+{% macro navigation(key, details) %}
+  {% if details.items and details.items.length > 0 %}
+    {% if details.settings.collapsible %}
+      <div class="collapsible-section">
+        <button class="nav__button sub-nav__button govuk-button govuk-button--inverse" type="button"
+                data-open {% if details.settings.defaultState == 'open' %} data-active{% endif %}>{{ key | smartCaps }}</button>
+        <div class="sub-nav">
+          {% for item in details.items %}
+            <a class="nav__button govuk-button govuk-button--inverse" id="settings-navigation-{{ item.id }}"
+               data-module="govuk-button" href="{{ item.url }}" {% if item.current %}aria-current="page"
+               data-current{% endif %}>{{ item.name | smartCaps }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      {% if details.settings.displayCategoryName %}
+        <h3 class="nav__h3">{{ key | smartCaps }}</h3>
+      {% endif %}
+      {% for item in details.items %}
+        <a class="nav__button govuk-button govuk-button--inverse" id="settings-navigation-{{ item.id }}"
+           data-module="govuk-button" href="{{ item.url }}" {% if item.current %}aria-current="page"
+           data-current{% endif %}>{{ item.name | smartCaps }}</a>
+      {% endfor %}
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+<div class="govuk-grid-column-one-quarter service-nav">
+  <nav role="navigation" aria-labelledby="service-nav-heading">
+    <h2 class="govuk-visually-hidden" id="service-nav-heading">Service navigation</h2>
+    {% if NEW_SERVICE_NAV %}
+      {% for key, details in serviceNavigation %}
+        {{ navigation(key, details) }}
+      {% endfor %}
+      <hr class="nav__hr govuk-section-break govuk-section-break--visible">
+      <h3 class="nav__h3">Settings</h3>
+    {% endif %}
+    {% for key, details in serviceSettings %}
+      {{ navigation(key, details) }}
+    {% endfor %}
+  </nav>
+</div>
+
+<script>
+  const onButtonClick = (event) => {
+    const { target } = event
+    event.stopPropagation()
+    const parent = target.closest('.collapsible-section')
+    const subNav = parent.querySelector('.sub-nav')
+    const subNavButton = parent.querySelector('.sub-nav__button')
+    const expandedState = subNavButton.getAttribute('aria-expanded')
+    subNav.style.display = expandedState === 'true' ? 'none' : 'block'
+    subNavButton.setAttribute('aria-expanded', expandedState === 'true' ? 'false' : 'true')
+    subNavButton.hasAttribute('data-open') ? subNavButton.removeAttribute('data-open') : subNavButton.setAttribute('data-open', '')
+  }
+  // init
+  const enhance = () => {
+    document.querySelectorAll('.collapsible-section').forEach(section => {
+      const subNavButton = section.querySelector('.sub-nav__button')
+      const subNav = section.querySelector('.sub-nav')
+      if (!subNavButton.hasAttribute('data-active')) {
+        subNav.style.display = 'none'
+        subNavButton.setAttribute('aria-expanded', 'false')
+        subNavButton.removeAttribute('data-open')
+      } else {
+        subNavButton.setAttribute('aria-expanded', 'true')
+      }
+      subNavButton.addEventListener('click', onButtonClick)
+    })
+  }
+
+  enhance()
+</script>

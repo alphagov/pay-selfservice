@@ -15,6 +15,20 @@ function getUserAndAccountStubs (type, paymentProvider) {
   ]
 }
 
+describe('My Services view', () => {
+  it('should show create new service button that is navigable', () => {
+    cy.task('setupStubs', getUserAndAccountStubs('live', 'worldpay'))
+
+    cy.setEncryptedCookies(authenticatedUserId)
+    cy.visit('/my-services')
+    cy.title().should('eq', myServicesPageTitle)
+    cy.get('a').contains('Add a new service').click()
+    cy.title().should('eq', 'Service name - GOV.UK Pay')
+    cy.get('a').contains('Back').click()
+    cy.title().should('eq', myServicesPageTitle)
+  })
+})
+
 describe('User has access to Worldpay services', () => {
   it('should display WORLDPAY TEST SERVICE label on the Worldpay Test Service only', () => {
     cy.task('setupStubs', [

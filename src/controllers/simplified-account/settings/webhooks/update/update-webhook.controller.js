@@ -11,7 +11,7 @@ const WebhookUpdateRequest = require('@models/webhooks/WebhookUpdateRequest.clas
 
 /**
  *
- * @param req {SimplifiedAccountRequest} // TODO rename this when simplified accounts are live
+ * @param req
  * @param res
  * @returns {Promise<void>}
  */
@@ -29,7 +29,7 @@ async function get (req, res) {
 
 /**
  *
- * @param req {SimplifiedAccountRequest} // TODO rename this when simplified accounts are live
+ * @param req
  * @param res
  * @param next {function}
  * @returns {Promise<void>}

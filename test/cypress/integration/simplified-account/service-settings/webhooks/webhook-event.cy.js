@@ -6,8 +6,8 @@ const moment = require('moment-timezone')
 const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const transactionFixtures = require('@test/fixtures/ledger-transaction.fixtures')
 
-const USER_EXTERNAL_ID = 'user-123-abc'
-const SERVICE_EXTERNAL_ID = 'service-456-def'
+const USER_EXTERNAL_ID = 'user123abc'
+const SERVICE_EXTERNAL_ID = 'service456def'
 const SERVICE_NAME = {
   en: 'McDuck Enterprises', cy: 'Mentrau McDuck'
 }

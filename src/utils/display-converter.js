@@ -109,7 +109,7 @@ const getAccount = (account) => {
 const informationNeeded = (account) => {
   if (account) {
     if (account instanceof GatewayAccount) {
-      return account.getActiveCredential() === null
+      return account.getActiveCredential() === undefined
     } else {
       // TODO: bin me, back compat code
       return getActiveCredential(account) === null
@@ -160,9 +160,9 @@ module.exports = function (req, data, template) {
       paymentProvider,
       account
     )
-    // TODO PP-14060
-    // convertedData.serviceNavigation = serviceNavigation(account, service, currentUrl, permissions)
-    if (currentUrl.match(/service\/[A-z0-9]+\/account\/test|live\/settings/)) {
+    if (currentUrl.match(/service\/\w+\/account\/(test|live)\//)) {
+      convertedData.NEW_SERVICE_NAV = process.env.NEW_SERVICE_NAV_FLAG === 'true'
+      convertedData.serviceNavigation = serviceNavigation(account, service, currentUrl, permissions)
       convertedData.serviceSettings = serviceSettingsNavigation(account, service, currentUrl, permissions)
     }
   }

@@ -15,11 +15,11 @@ const logger = createLogger(__filename)
 const connectorClient = new ConnectorClient()
 
 const getConnectorStripeAccountSetup = async (serviceExternalId: string, accountType: string) => {
-  return connectorClient.getStripeAccountSetupByServiceExternalIdAndAccountType(serviceExternalId, accountType)
+  return connectorClient.gatewayAccounts.getStripeAccountSetupByServiceExternalIdAndAccountType(serviceExternalId, accountType)
 }
 
 const updateConnectorStripeProgress = async (service: Service, gatewayAccount: GatewayAccount, step: string) => {
-  await connectorClient.updateStripeAccountSetupByServiceExternalIdAndAccountType(
+  await connectorClient.gatewayAccounts.updateStripeAccountSetupByServiceExternalIdAndAccountType(
     service.externalId,
     gatewayAccount.type,
     step
@@ -211,6 +211,22 @@ const getStripeAccountOnboardingDetails = async (_service: Service, gatewayAccou
   }
 }
 
+const getStripeAccountCapabilities = async (gatewayAccount: GatewayAccount) => {
+  const stripeAccountId = getStripeAccountIdForGatewayAccount(gatewayAccount)
+
+  try {
+    const connectAccount = await stripeClient.retrieveAccountDetails(stripeAccountId)
+    return {
+      chargesEnabled: connectAccount.charges_enabled,
+      hasLegacyPaymentsCapability: connectAccount.capabilities?.legacy_payments,
+    }
+  } catch (err) {
+    logger.error(err)
+  }
+
+  return undefined
+}
+
 function getStripeAccountIdForGatewayAccount(gatewayAccount: GatewayAccount) {
   let stripeAccountId
   if (gatewayAccount.isSwitchingToProvider(STRIPE)) {
@@ -237,5 +253,6 @@ export {
   updateStripeDetailsOrganisationNameAndAddress,
   updateConnectorStripeProgress,
   getStripeAccountOnboardingDetails,
+  getStripeAccountCapabilities,
   getConnectorStripeAccountSetup,
 }

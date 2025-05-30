@@ -1,0 +1,13 @@
+{% set html %}
+  <p class="govuk-notification-banner__heading">
+    Finish setting up your service to start taking payments
+  </p>
+  <p class="govuk-body">
+    You've started to set up your live account. There are still some <a class="govuk-notification-banner__link"
+                                                                        href="{{ links.dashboardActions.configurePSPAccount }}">steps you
+      need to complete</a>.
+  </p>
+{% endset %}
+  {{ govukNotificationBanner({
+    html: html
+  }) }}
