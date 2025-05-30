@@ -5,6 +5,8 @@ describe('Login Page', () => {
   const gatewayAccountId = 42
   const gatewayAccountExternalId = '101ece30d2ca4b868baca5677c41ef5f' // pragma: allowlist secret
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
+  const serviceExternalId = 'service123abc'
+  const accountType = 'test'
   const validEmail = 'some-user@example.com'
   const validPassword = 'some-valid-password'
   const invalidPassword = 'some-invalid-password'
@@ -13,9 +15,10 @@ describe('Login Page', () => {
 
   beforeEach(() => {
     cy.task('setupStubs', [
-      userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName: 'service-name' }),
+      userStubs.getUserSuccess({ userExternalId, gatewayAccountId, serviceName: 'service-name', serviceExternalId }),
       gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId, gatewayAccountExternalId }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
+      gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, accountType),
       userStubs.postUserAuthenticateSuccess(userExternalId, validEmail, validPassword),
       userStubs.postUserAuthenticateInvalidPassword(validEmail, invalidPassword),
       userStubs.postSecondFactorSuccess(userExternalId),
@@ -131,8 +134,8 @@ describe('Login Page', () => {
       cy.get('button').contains('Continue').click()
 
       // should redirect to account dashboard page
-      cy.location('pathname').should('eq', `/account/${gatewayAccountExternalId}/dashboard`)
-      cy.title().should('eq', 'Dashboard - service-name Sandbox test - GOV.UK Pay')
+      cy.location('pathname').should('eq', `/service/${serviceExternalId}/account/${accountType}/dashboard`)
+      cy.title().should('eq', 'Dashboard - service-name - GOV.UK Pay')
     })
   })
 })
