@@ -2,9 +2,12 @@
 
 const utils = require('../../utils/request-to-go-live-utils')
 const transactionStubs = require('../../stubs/transaction-stubs')
+const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
+const GoLiveStage = require('@models/constants/go-live-stage')
+const PaymentProviders = require('@models/constants/payment-providers')
 const { userExternalId, gatewayAccountExternalId, serviceExternalId } = utils.variables
 
-const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
+const dashboardUrl = (gatewayAccountType = GatewayAccountType.TEST) => `/service/${serviceExternalId}/account/${gatewayAccountType}/dashboard`
 
 describe('Go live link on dashboard', () => {
   beforeEach(() => {
@@ -14,8 +17,8 @@ describe('Go live link on dashboard', () => {
   describe('Card gateway account', () => {
     describe('Go live link shown', () => {
       beforeEach(() => {
-        setupStubs('NOT_STARTED')
-        cy.visit(dashboardUrl)
+        setupStubs(GoLiveStage.NOT_STARTED)
+        cy.visit(dashboardUrl())
       })
 
       it('should show request to go live link when go-live stage is NOT_STARTED', () => {
@@ -27,8 +30,8 @@ describe('Go live link on dashboard', () => {
 
     describe('Continue link shown', () => {
       it('should show continue link when go-live stage is ENTERED_ORGANISATION_NAME', () => {
-        setupStubs('ENTERED_ORGANISATION_NAME')
-        cy.visit(dashboardUrl)
+        setupStubs(GoLiveStage.ENTERED_ORGANISATION_NAME)
+        cy.visit(dashboardUrl())
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
@@ -36,8 +39,8 @@ describe('Go live link on dashboard', () => {
       })
 
       it('should show continue link when go-live stage is CHOSEN_PSP_STRIPE', () => {
-        setupStubs('CHOSEN_PSP_STRIPE')
-        cy.visit(dashboardUrl)
+        setupStubs(GoLiveStage.CHOSEN_PSP_STRIPE)
+        cy.visit(dashboardUrl())
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
@@ -45,8 +48,8 @@ describe('Go live link on dashboard', () => {
       })
 
       it('should show continue link when go-live stage is CHOSEN_PSP_GOV_BANKING_WORLDPAY', () => {
-        setupStubs('CHOSEN_PSP_GOV_BANKING_WORLDPAY')
-        cy.visit(dashboardUrl)
+        setupStubs(GoLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY)
+        cy.visit(dashboardUrl())
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
@@ -56,16 +59,16 @@ describe('Go live link on dashboard', () => {
 
     describe('Waiting to go live text shown', () => {
       it('should show waiting to go live text when go-live stage is TERMS_AGREED_STRIPE', () => {
-        setupStubs('TERMS_AGREED_STRIPE')
-        cy.visit(dashboardUrl)
+        setupStubs(GoLiveStage.TERMS_AGREED_STRIPE)
+        cy.visit(dashboardUrl())
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Your live account')
       })
 
       it('should show waiting to go live text when go-live stage is TERMS_AGREED_GOV_BANKING_WORLDPAY', () => {
-        setupStubs('TERMS_AGREED_GOV_BANKING_WORLDPAY')
-        cy.visit(dashboardUrl)
+        setupStubs(GoLiveStage.TERMS_AGREED_GOV_BANKING_WORLDPAY)
+        cy.visit(dashboardUrl())
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Your live account')
@@ -74,28 +77,28 @@ describe('Go live link on dashboard', () => {
 
     describe('Go live link not shown', () => {
       it('should not show Request a live account link when go-live stage is NOT_STARTED and account is a Worldpay test account', () => {
-        setupStubs('NOT_STARTED', 'worldpay')
-        cy.visit(dashboardUrl)
+        setupStubs(GoLiveStage.NOT_STARTED, PaymentProviders.WORLDPAY)
+        cy.visit(dashboardUrl())
 
-        cy.get('#request-to-go-live-link').should('not.contain', 'Request a live account')
+        cy.get('#request-to-go-live-link').should('not.exist')
       })
 
       it('should not show request to go live link when go-live stage is LIVE', () => {
-        setupStubs('LIVE')
-        cy.visit(dashboardUrl)
+        setupStubs(GoLiveStage.LIVE)
+        cy.visit(dashboardUrl())
 
         cy.get('#request-to-go-live-link').should('not.exist')
       })
 
       it('should not show request to go live link when go-live stage is DENIED', () => {
-        setupStubs('DENIED')
-        cy.visit(dashboardUrl)
+        setupStubs(GoLiveStage.DENIED)
+        cy.visit(dashboardUrl())
 
         cy.get('#request-to-go-live-link').should('not.exist')
       })
 
       it('should not show request to go live link when user is not an admin', () => {
-        const serviceRole = utils.buildServiceRoleForGoLiveStage('NOT_STARTED')
+        const serviceRole = utils.buildServiceRoleForGoLiveStage(GoLiveStage.NOT_STARTED)
         serviceRole.role = {
           permissions: []
         }

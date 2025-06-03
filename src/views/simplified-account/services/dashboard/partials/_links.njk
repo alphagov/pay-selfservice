@@ -57,24 +57,14 @@
     {% endif %}
 
     {% if possibleActions.requestPspTestAccount in dashboardActions %}
-      {% if requestedStripeTestAccount %}
-        <article class="{{ columnClass }} links__box" id="stripe-test-account-requested">
-          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Stripe test account requested</h2>
-          <p class="govuk-body govuk-!-margin-bottom-0">
-            You’ve requested a stripe account from the GOV.UK&nbsp;Pay team.
-            We’re setting up your test account. It will be ready within 2 working days.
-          </p>
-        </article>
-      {% else %}
-        <article class="{{ columnClass }} links__box" id="request-stripe-test-account">
-          <a href="{{ links.dashboardActions.requestPspTestAccount }}"
-             class="govuk-link">
-            <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Test Stripe’s reporting functionality</h2>
-            <p class="govuk-body govuk-!-margin-bottom-0">Access transaction fee and payments to your bank account
-              reports to test reconciliation.</p>
-          </a>
-        </article>
-      {% endif %}
+      <article class="{{ columnClass }} links__box" id="request-stripe-test-account">
+        <a href="{{ links.dashboardActions.requestPspTestAccount }}"
+           class="govuk-link">
+          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Test Stripe’s reporting functionality</h2>
+          <p class="govuk-body govuk-!-margin-bottom-0">Access transaction fee and payments to your bank account
+            reports to test reconciliation.</p>
+        </a>
+      </article>
     {% endif %}
     {% if possibleActions.goLive in dashboardActions %}
       <article class="{{ columnClass }} links__box" id="request-to-go-live-link">
@@ -98,4 +88,12 @@
       </article>
     {% endif %}
   </div>
+  <code>debug</code>
+  <br>
+  <code>
+    dashboard actions: {{ dashboardActions | dump }}
+    getGoLiveStatus: {{ goLiveStatus | dump }}
+    isWorldpayTestService: {{ isWorldpayTestService | dump }}
+    accountStatus: {{ accountStatus | dump }}
+  </code>
 </div>

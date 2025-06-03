@@ -10,19 +10,18 @@ export class TransactionSummary {
   readonly motoPayments: SummaryDetail
   readonly refunds: SummaryDetail
   readonly netIncome: number
+
   constructor(data: TransactionSummaryData) {
-    this.payments = {
-      count: data.payments.count,
-      grossAmount: data.payments.gross_amount
+    this.payments = this.createSummaryDetail(data.payments)
+    this.motoPayments = this.createSummaryDetail(data.moto_payments)
+    this.refunds = this.createSummaryDetail(data.refunds)
+    this.netIncome = data?.net_income ?? 0
+  }
+
+  private createSummaryDetail(detail?: { count?: number, gross_amount?: number }) {
+    return {
+      count: detail?.count ?? 0,
+      grossAmount: detail?.gross_amount ?? 0,
     }
-    this.motoPayments = {
-      count: data.moto_payments.count,
-      grossAmount: data.moto_payments.gross_amount
-    }
-    this.refunds = {
-      count: data.refunds.count,
-      grossAmount: data.refunds.gross_amount
-    }
-    this.netIncome = data.net_income
   }
 }

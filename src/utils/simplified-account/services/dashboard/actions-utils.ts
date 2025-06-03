@@ -10,6 +10,7 @@ import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import CredentialState from '@models/constants/credential-state'
 import { getConnectorStripeAccountSetup, getStripeAccountCapabilities } from '@services/stripe-details.service'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 
 const logger = createLogger(__filename)
 
@@ -50,7 +51,7 @@ const displayRequestTestStripeAccountLink = (service: Service, account: GatewayA
 
 const displayGoLiveLink = (service: Service, account: GatewayAccount, user: User) => {
   return (
-    account.type === 'test' &&
+    account.type === GatewayAccountType.TEST &&
     !goLiveLinkNotDisplayedStages.includes(service.currentGoLiveStage) &&
     user.hasPermission(service.externalId, 'go-live-stage:read')
   )
@@ -59,7 +60,7 @@ const displayGoLiveLink = (service: Service, account: GatewayAccount, user: User
 const displayDemoAndTestPaymentLinks = (account: GatewayAccount) => {
   return (
     account.paymentProvider === PaymentProviders.SANDBOX ||
-    (account.paymentProvider === PaymentProviders.STRIPE && account.type === 'test')
+    (account.paymentProvider === PaymentProviders.STRIPE && account.type === GatewayAccountType.TEST)
   )
 }
 
@@ -175,7 +176,7 @@ const isWorldpayTestService = (service: Service, account: GatewayAccount) => {
   return (
     service.gatewayAccountIds.length === 1 &&
     account.id === parseInt(service.gatewayAccountIds[0]) &&
-    account.type === 'test' &&
+    account.type === GatewayAccountType.TEST &&
     account.paymentProvider === PaymentProviders.WORLDPAY
   )
 }
