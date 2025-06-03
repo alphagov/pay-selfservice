@@ -1,28 +1,35 @@
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionStubs = require('../../stubs/transaction-stubs')
+const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = '42'
 const gatewayAccountExternalId = 'a-valid-external-id'
+const serviceExternalId = 'service123abc'
 
 describe('Show Mock cards screen', () => {
   beforeEach(() => {
     cy.task('setupStubs', [
-      userStubs.getUserSuccess({ gatewayAccountId, userExternalId }),
+      userStubs.getUserSuccess({ gatewayAccountId, userExternalId, serviceExternalId }),
+
+      gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, GatewayAccountType.TEST, {
+        gateway_account_id: gatewayAccountId,
+        payment_provider: 'sandbox'
+      }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
         gatewayAccountId,
         gatewayAccountExternalId,
         paymentProvider: 'sandbox'
       }),
-      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }),
+
       transactionStubs.getTransactionsSummarySuccess()
     ])
   })
 
   it('should load the mock cards page and show non stripe card', () => {
     cy.setEncryptedCookies(userExternalId)
-    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.visit(`/service/${serviceExternalId}/account/${GatewayAccountType.TEST}/dashboard`)
     cy.get('a').contains('Make a demo payment').click()
     cy.get('h1').should('have.text', 'Make a demo payment')
 

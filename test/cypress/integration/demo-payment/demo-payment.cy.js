@@ -3,22 +3,30 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionStubs = require('../../stubs/transaction-stubs')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
-const gatewayAccountId = '42'
+const gatewayAccountId = 42
+const gatewayAccountType = 'test'
+const serviceExternalId = 'service123abc'
 const gatewayAccountExternalId = 'a-valid-external-id'
 
 describe('Make a demo payment', () => {
   beforeEach(() => {
     cy.task('setupStubs', [
-      userStubs.getUserSuccess({ gatewayAccountId, userExternalId }),
+      userStubs.getUserSuccess({
+        userExternalId,
+        gatewayAccountId,
+        serviceExternalId
+      }),
+      gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, gatewayAccountType, {
+        gateway_account_id: gatewayAccountId
+      }),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
-      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }),
       transactionStubs.getTransactionsSummarySuccess()
     ])
   })
 
   it('should load the demo payment details page', () => {
     cy.setEncryptedCookies(userExternalId)
-    cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    cy.visit(`/service/${serviceExternalId}/account/${gatewayAccountType}/dashboard`)
     cy.get('a').contains('Make a demo payment').click()
     cy.get('h1').should('have.text', 'Make a demo payment')
 
