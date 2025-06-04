@@ -1,0 +1,47 @@
+{% extends "layout.njk" %}
+{% from "macro/system-messages.njk" import systemMessages %}
+{% from "govuk/components/task-list/macro.njk" import govukTaskList %}
+{% from "govuk/components/skip-link/macro.njk" import govukSkipLink %}
+
+{% block pageTitle %}
+  {{ servicePageTitle }} - {{ currentService.name }} - GOV.UK Pay
+{% endblock %}
+
+{% block skipLink %}
+  {{ govukSkipLink({
+    text: "Skip to main content",
+    href: "#service-content"
+  }) }}
+{% endblock %}
+
+{% block sideNavigation %}
+  {% if NEW_SERVICE_NAV %}
+    {% include "simplified-account/includes/_service-navigation.njk" %}
+  {% endif %}
+{% endblock %}
+
+{% block mainContent %}
+  <div class="{% if NEW_SERVICE_NAV %}govuk-grid-column-three-quarters{% else %}govuk-grid-column-full{% endif %}">
+    <div class="service-pane">
+      {% if backLink %}
+        {{ govukBackLink({
+          text: "Back",
+          href: backLink
+        }) }}
+      {% endif %}
+      {% if messages is defined and messages is iterable and messages|length > 0 %}
+        {{ systemMessages({ messages: messages }) }}
+      {% endif %}
+      {% if errors %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errors.summary
+        }) }}
+      {% endif %}
+      <div id="service-content">
+        {% block serviceContent %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

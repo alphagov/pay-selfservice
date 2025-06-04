@@ -5,6 +5,7 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const paths = require('../../paths')
+const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 const mockResponses = {}
 const mockServiceService = {}
 const mockUserService = {}
@@ -35,8 +36,7 @@ describe('Controller: createService, Method: post', () => {
     mockServiceService.createService = sinon.stub().resolves({
       service: {
         externalId: 'def456'
-      },
-      externalAccountId: 'abc123'
+      }
     })
     mockUserService.assignServiceRole = sinon.stub().resolves()
 
@@ -67,7 +67,7 @@ describe('Controller: createService, Method: post', () => {
       sinon.assert.calledWith(mockUserService.assignServiceRole, '38475y38q4758ow4', 'def456', 'admin')
       sinon.assert.calledWith(req.flash, 'messages', { state: 'success', icon: '&check;', heading: 'We\'ve created your service.' })
       expect(res.redirect.called).to.equal(true)
-      expect(res.redirect.args[0][0]).to.equal(formatAccountPathsFor(paths.account.dashboard.index, 'abc123'))
+      expect(res.redirect.args[0][0]).to.equal(formatServiceAndAccountPathsFor(paths.simplifiedAccount.dashboard.index, 'def456', 'test'))
     })
   })
 
@@ -104,8 +104,7 @@ describe('Controller: createService, Method: post', () => {
       mockServiceService.createService = sinon.stub().resolves({
         service: {
           externalId: 'def456'
-        },
-        externalAccountId: 'abc123'
+        }
       })
       mockUserService.assignServiceRole = sinon.stub().rejects(new Error('something went wrong'))
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)

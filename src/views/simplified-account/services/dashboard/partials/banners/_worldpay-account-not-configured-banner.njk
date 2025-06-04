@@ -1,5 +1,4 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
-
-{% if isAdminUser and worldpayAccountAndSetupIncomplete %}
+{% if isAdminUser and accountStatus.paymentProvider === 'worldpay' and accountStatus.unconfigured %}
   {% include './_service-setup-banner.njk' %}
 {% endif %}

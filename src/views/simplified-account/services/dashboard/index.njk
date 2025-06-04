@@ -1,0 +1,24 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
+
+{% set servicePageTitle = "Dashboard" %}
+
+{% block serviceContent %}
+  <h1 class="govuk-heading-l page-title">
+    {{ servicePageTitle }}
+  </h1>
+
+  {% if accountStatus.disabled %}
+    {% include "./partials/banners/_account-disabled-banner.njk" %}
+  {% else %}
+    {% include "./partials/banners/_live-account-requested-banner.njk" %}
+    {% include "./partials/banners/_worldpay-account-not-configured-banner.njk" %}
+    {% include "./partials/banners/_stripe-account-not-configured-banner.njk" %}
+    {% include "./partials/banners/_switching-psp-banner.njk" %}
+  {% endif %}
+
+  {% if paymentMethod === 'card' %}
+    {% include "./partials/_activity.njk" %}
+  {% endif %}
+  {% include "./partials/_links.njk" %}
+{% endblock %}

@@ -20,7 +20,7 @@ export default interface IClient {
 }
 
 export abstract class BaseClient {
-  protected readonly client: IClient
+  private readonly client: IClient
 
   protected constructor(baseUrl: string, serviceName: string) {
     if (!baseUrl) {

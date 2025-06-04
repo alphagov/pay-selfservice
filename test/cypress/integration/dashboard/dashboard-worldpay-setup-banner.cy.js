@@ -8,7 +8,6 @@ const { WORLDPAY } = require('@models/constants/payment-providers')
 describe('Worldpay account setup banner', () => {
   const gatewayAccountId = '22'
   const gatewayAccountType = 'live'
-  const gatewayAccountExternalId = 'a-valid-external-id'
   const serviceExternalId = 'service123abc'
   const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 
@@ -23,33 +22,30 @@ describe('Worldpay account setup banner', () => {
       userStubs.getUserSuccess({
         userExternalId,
         gatewayAccountId,
-        gatewayAccountExternalId,
         serviceExternalId,
         role: { name: roleName },
         features: userFeatures
       }),
-      gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
-        gatewayAccountId,
-        gatewayAccountExternalId,
+      gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, gatewayAccountType, {
+        gateway_account_id: gatewayAccountId,
         type: gatewayAccountType,
-        paymentProvider: WORLDPAY,
-        gatewayAccountCredentials
+        payment_provider: WORLDPAY,
+        gateway_account_credentials: gatewayAccountCredentials
       }),
       gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, gatewayAccountType, {
         gateway_account_id: gatewayAccountId,
         type: gatewayAccountType,
         payment_provider: WORLDPAY
       }),
-      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }),
       transactionsSummaryStubs.getDashboardStatistics()
     ])
   }
 
   describe('Admin user', () => {
-    it('banner should link to payment provider stripe details', () => {
+    it('banner should link to payment provider worldpay details', () => {
       setupStubs('admin', 'degatewayaccountification')
 
-      cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+      cy.visit(`/service/${serviceExternalId}/account/${gatewayAccountType}/dashboard`)
       cy.get('.govuk-notification-banner__title').contains('Important')
       cy.get('.govuk-notification-banner__content')
         .contains('Finish setting up your service to start taking payments')
@@ -67,7 +63,7 @@ describe('Worldpay account setup banner', () => {
   describe('View only user', () => {
     it('should not display banner for view only user if worldpay account is not fully setup', () => {
       setupStubs('view-only')
-      cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+      cy.visit(`/service/${serviceExternalId}/account/${gatewayAccountType}/dashboard`)
 
       cy.get('.govuk-notification-banner').should('not.exist')
     })

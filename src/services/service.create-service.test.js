@@ -52,9 +52,9 @@ describe('service service', function () {
       sinon.resetHistory()
     })
 
-    it('should return external id of stripe account if org type is local', async function () {
-      const { externalAccountId } = await serviceService.createService(SERVICE_NAME, WELSH_SERVICE_NAME, 'local')
-      expect(externalAccountId).to.equal('stripe-test-external-id')
+    it('should assign gateway account id of stripe account to service if org type is local', async function () {
+      const { service } = await serviceService.createService(SERVICE_NAME, WELSH_SERVICE_NAME, 'local')
+      expect(service.externalId).to.equal(SERVICE_EXTERNAL_ID)
       expect(requestStripeTestAccount.callCount).to.equal(1)
       expect(updatePspTestAccountStage.callCount).to.equal(1)
       sinon.assert.calledWith(createService, SERVICE_NAME, WELSH_SERVICE_NAME)
@@ -64,9 +64,9 @@ describe('service service', function () {
       sinon.assert.calledWith(updatePspTestAccountStage, SERVICE_EXTERNAL_ID, CREATED)
     })
 
-    it('should return external id of sandbox account if org type is central', async function () {
-      const { externalAccountId } = await serviceService.createService(SERVICE_NAME, WELSH_SERVICE_NAME, 'central')
-      expect(externalAccountId).to.equal('sandbox-external-id')
+    it('should assign gateway account id of sandbox account to service if org type is central', async function () {
+      const { service } = await serviceService.createService(SERVICE_NAME, WELSH_SERVICE_NAME, 'central')
+      expect(service.externalId).to.equal(SERVICE_EXTERNAL_ID)
       sinon.assert.calledWith(createService, SERVICE_NAME, WELSH_SERVICE_NAME)
       sinon.assert.calledWith(createGatewayAccount, 'sandbox', 'test', SERVICE_NAME, null, SERVICE_EXTERNAL_ID)
       sinon.assert.calledWith(addGatewayAccountsToService, SERVICE_EXTERNAL_ID, ['1'])

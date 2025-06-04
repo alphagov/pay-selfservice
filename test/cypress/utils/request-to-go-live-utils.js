@@ -6,7 +6,7 @@ const serviceStubs = require('../stubs/service-stubs')
 
 const variables = {
   userExternalId: 'userExternalId',
-  gatewayAccountId: '42',
+  gatewayAccountId: 42,
   gatewayAccountExternalId: 'a-gateway-account-external-id',
   serviceExternalId: 'afe452323dd04d1898672bfaba25e3a6'
 }
@@ -16,7 +16,7 @@ function buildServiceRoleForGoLiveStage (goLiveStage) {
     service: {
       external_id: variables.serviceExternalId,
       current_go_live_stage: goLiveStage,
-      gateway_account_ids: [variables.gatewayAccountId]
+      gateway_account_ids: [`${variables.gatewayAccountId}`]
     }
   }
 }
@@ -55,6 +55,11 @@ function getUserAndGatewayAccountsStubs (serviceRole) {
 function getUserAndGatewayAccountByExternalIdStubs (serviceRole, paymentProvider, accountType) {
   return [
     userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(variables.serviceExternalId, accountType, {
+      gateway_account_id: variables.gatewayAccountId,
+      external_id: variables.gatewayAccountExternalId,
+      payment_provider: paymentProvider || 'sandbox'
+    }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId: variables.gatewayAccountId,
       gatewayAccountExternalId: variables.gatewayAccountExternalId,

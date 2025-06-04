@@ -1,38 +1,36 @@
-'use strict'
-
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
-const stripeAccountSetupStubs = require('../../stubs/stripe-account-setup-stub')
+const GoLiveStage = require('@models/constants/go-live-stage')
+const PaymentProviders = require('@models/constants/payment-providers')
+const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = '42'
 const gatewayAccountExternalId = 'a-gateway-account-external-id'
-const dashboardUrl = `/account/${gatewayAccountExternalId}/dashboard`
+const serviceExternalId = 'service123abc'
+const dashboardUrl =  (gatewayAccountType) => `/service/${serviceExternalId}/account/${gatewayAccountType}/dashboard`
 
 function getStubsForDashboard (gatewayAccountId, type, paymentProvider, goLiveStage, pspTestAccountStage, createdDate) {
   const stubs = []
 
-  stubs.push(userStubs.getUserSuccess({ userExternalId, gatewayAccountId, goLiveStage, pspTestAccountStage, createdDate }),
-    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
+  stubs.push(
+    userStubs.getUserSuccess({
+      userExternalId,
       gatewayAccountId,
-      gatewayAccountExternalId,
-      type,
-      paymentProvider
+      serviceExternalId,
+      goLiveStage,
+      pspTestAccountStage,
+      createdDate
+    }),
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, type, {
+      gateway_account_id: gatewayAccountId,
+      type: type,
+      payment_provider: paymentProvider,
+      external_id: gatewayAccountExternalId
     }),
     transactionsSummaryStubs.getDashboardStatistics(),
     gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }))
-
-  if (paymentProvider === 'stripe') {
-    stubs.push(stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
-      gatewayAccountId,
-      responsiblePerson: false,
-      bankAccount: false,
-      vatNumber: false,
-      companyNumber: false
-    }))
-  }
-
   return stubs
 }
 
@@ -42,10 +40,10 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.setEncryptedCookies(userExternalId)
     })
 
-    it('should display 2 links for a live sandbox account', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'live', 'sandbox', 'LIVE'))
+    it('should display 2 links for a live service sandbox account', () => {
+      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.SANDBOX, GoLiveStage.LIVE))
 
-      cy.visit(dashboardUrl)
+      cy.visit(dashboardUrl(GatewayAccountType.TEST))
       cy.get('.links__box').should('have.length', 2)
 
       cy.get('#demo-payment-link').should('exist')
@@ -57,10 +55,10 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.get('#test-payment-link-link').should('not.have.class', 'border-bottom')
     })
 
-    it('should display 1 link for a live non-sandbox account', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'live', 'worldpay', 'LIVE'))
+    it('should display 1 link for a live service non-sandbox account', () => {
+      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.LIVE, PaymentProviders.WORLDPAY, GoLiveStage.LIVE))
 
-      cy.visit(dashboardUrl)
+      cy.visit(dashboardUrl(GatewayAccountType.LIVE))
       cy.get('.links__box').should('have.length', 1)
 
       cy.get('#payment-links-link').should('exist')
@@ -68,9 +66,9 @@ describe('the links are displayed correctly on the dashboard', () => {
     })
 
     it('should display 3 links for a test sandbox account created since onboarding flow changed on 29/08/2024', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'sandbox', 'NOT_STARTED', null, '2024-08-30'))
+      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.SANDBOX, GoLiveStage.NOT_STARTED, null, '2024-08-30'))
 
-      cy.visit(dashboardUrl)
+      cy.visit(dashboardUrl(GatewayAccountType.TEST))
       cy.get('.links__box').should('have.length', 3)
 
       cy.get('#demo-payment-link').should('exist')
@@ -86,9 +84,9 @@ describe('the links are displayed correctly on the dashboard', () => {
     })
 
     it('should display 4 links for a test sandbox account created before 29/08/2024', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'sandbox', 'NOT_STARTED', null, '2024-08-28'))
+      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.SANDBOX, GoLiveStage.NOT_STARTED, null, '2024-08-28'))
 
-      cy.visit(dashboardUrl)
+      cy.visit(dashboardUrl(GatewayAccountType.TEST))
       cy.get('.links__box').should('have.length', 4)
 
       cy.get('#demo-payment-link').should('exist')
@@ -105,9 +103,9 @@ describe('the links are displayed correctly on the dashboard', () => {
     })
 
     it('should display 2 links for a test non-sandbox account (except Stripe)', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'worldpay', 'NOT_STARTED'))
+      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.WORLDPAY, GoLiveStage.NOT_STARTED))
 
-      cy.visit(dashboardUrl)
+      cy.visit(dashboardUrl(GatewayAccountType.TEST))
       cy.get('.links__box').should('have.length', 2)
 
       cy.get('#payment-links-link').should('exist')
@@ -118,9 +116,9 @@ describe('the links are displayed correctly on the dashboard', () => {
     })
 
     it('should display 3 links (demo payment, test with users and request to go live) for a Stripe test account', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'stripe', 'NOT_STARTED'))
+      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.STRIPE, GoLiveStage.NOT_STARTED))
 
-      cy.visit(dashboardUrl)
+      cy.visit(dashboardUrl(GatewayAccountType.TEST))
       cy.get('.links__box').should('have.length', 3)
 
       cy.get('#demo-payment-link').should('exist')
@@ -131,25 +129,6 @@ describe('the links are displayed correctly on the dashboard', () => {
 
       cy.get('#request-to-go-live-link').should('exist')
       cy.get('#request-to-go-live-link').should('have.class', 'flex-grid--column-third')
-    })
-
-    it('should display `Stripe test account requested` section if request has been submitted', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, 'test', 'sandbox', 'NOT_STARTED', 'REQUEST_SUBMITTED', '2024-08-28'))
-
-      cy.visit(dashboardUrl)
-      cy.get('.links__box').should('have.length', 4)
-
-      cy.get('#demo-payment-link').should('exist')
-      cy.get('#demo-payment-link').should('have.class', 'flex-grid--column-half')
-
-      cy.get('#test-payment-link-link').should('exist')
-      cy.get('#test-payment-link-link').should('have.class', 'flex-grid--column-half')
-
-      cy.get('#request-to-go-live-link').should('exist')
-      cy.get('#request-to-go-live-link').should('have.class', 'flex-grid--column-half')
-
-      cy.get('#stripe-test-account-requested').should('exist')
-      cy.get('#stripe-test-account-requested').should('have.class', 'flex-grid--column-half')
     })
   })
 })

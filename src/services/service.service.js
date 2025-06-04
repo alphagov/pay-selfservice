@@ -64,8 +64,7 @@ async function createService (serviceName, serviceNameCy, serviceOrgType = 'cent
   logger.info('Service associated with internal gateway account ID with legacy mapping')
 
   return {
-    service,
-    externalAccountId: stripeTestGatewayAccount ? stripeTestGatewayAccount.gateway_account_external_id : sandboxGatewayAccount.externalId
+    service
   }
 }
 

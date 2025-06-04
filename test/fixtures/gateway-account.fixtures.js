@@ -104,11 +104,8 @@ function validGatewayAccount (opts) {
     recurring_enabled: opts.recurring_enabled || false,
     requires3ds: opts.requires3ds || false,
     integration_version_3ds: opts.integrationVersion3ds || 1,
-    disabled: opts.disabled || false
-  }
-
-  if (opts.recurring_enabled !== undefined) {
-    gatewayAccount.recurring_enabled = opts.recurring_enabled
+    disabled: opts.disabled || false,
+    provider_switch_enabled: opts.provider_switch_enabled || false,
   }
 
   if (opts.description) {
@@ -133,11 +130,6 @@ function validGatewayAccount (opts) {
   }
   if (opts.worldpay_3ds_flex) {
     gatewayAccount.worldpay_3ds_flex = validWorldpay3dsFlexCredentials(opts.worldpay_3ds_flex)
-  }
-
-  // provider switch enabled is only available to the frontend resource, it isn't always guaranteed
-  if (opts.provider_switch_enabled !== undefined) {
-    gatewayAccount.provider_switch_enabled = opts.provider_switch_enabled
   }
 
   if (opts.service_id) {
