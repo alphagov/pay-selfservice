@@ -56,7 +56,7 @@ describe('test with your users', () => {
       })
 
       it('should be possible to access the "Test with you users" page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/dashboard`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Test with your users').click()
         cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
       })
@@ -70,7 +70,7 @@ describe('test with your users', () => {
       })
 
       it('should be possible to access the "Test with you users" page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/dashboard`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Test with your users').click()
         cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
       })
@@ -86,7 +86,7 @@ describe('test with your users', () => {
       })
 
       it('should be possible to access the "Test with you users" page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/dashboard`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Test with your users').click()
         cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
       })
@@ -102,7 +102,7 @@ describe('test with your users', () => {
       })
 
       it('should be possible to access the "Test with you users" page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/dashboard`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Test with your users').click()
         cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
       })
@@ -118,7 +118,7 @@ describe('test with your users', () => {
       })
 
       it('should not be possible to access the "Test with you users" page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/dashboard`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/dashboard`)
         cy.contains('a', 'Test with your users').should('not.exist')
 
         cy.request({
@@ -137,7 +137,7 @@ describe('test with your users', () => {
     })
 
     it('should not be possible to access the "Test with you users" page', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/dashboard`)
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
       cy.get('a').contains( 'Test with your users').should('not.exist')
 
       cy.request({

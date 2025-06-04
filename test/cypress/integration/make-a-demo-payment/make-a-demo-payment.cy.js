@@ -31,6 +31,12 @@ const setupStubs = (options = {}) => {
       paymentProvider: options.paymentProvider || 'sandbox',
       type: options.type || 'test'
     }),
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, options.type || 'test', {
+      gateway_account_id: GATEWAY_ACCOUNT_ID,
+      external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
+      payment_provider: options.paymentProvider || 'sandbox',
+      type: options.type || 'test'
+    }),
     transactionsSummaryStubs.getDashboardStatistics(),
     stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
@@ -56,7 +62,7 @@ describe('make a demo payment tests', () => {
       })
 
       it('should be possible to access the "make a demo payment" page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/dashboard`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Make a demo payment').should('exist').click()
         cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
       })
@@ -70,7 +76,7 @@ describe('make a demo payment tests', () => {
       })
 
       it('should be possible to access the "make a demo payment" page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/dashboard`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Make a demo payment').should('exist').click()
         cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
       })
@@ -86,7 +92,7 @@ describe('make a demo payment tests', () => {
       })
 
       it('should be possible to access the "make a demo payment" page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/dashboard`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Make a demo payment').should('exist').click()
         cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
       })
@@ -102,7 +108,7 @@ describe('make a demo payment tests', () => {
       })
 
       it('should be possible to access the "make a demo payment" page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/dashboard`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Make a demo payment').should('exist').click()
         cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
       })
