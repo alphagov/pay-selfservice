@@ -86,7 +86,7 @@
     "module-alias": "^2.2.3",
     "moment-timezone": "0.5.43",
     "morgan": "1.10.0",
-    "multer": "^2.0.0",
+    "multer": "^2.0.1",
     "nunjucks": "3.2.4",
     "passport": "^0.7.0",
     "passport-custom": "^1.1.1",
