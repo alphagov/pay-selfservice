@@ -30,7 +30,7 @@ async function post (req, res) {
   }
 
   const name = req.body.keyName
-  const key = await createKey(req.account, name, req.user.email, TOKEN_SOURCE.API)
+  const key = await createKey(req.account, req.service.externalId, name, req.user.email, TOKEN_SOURCE.API)
 
   _.set(req, FORM_STATE_KEY, {
     details: {

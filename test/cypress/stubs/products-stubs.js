@@ -2,6 +2,7 @@
 
 const productFixtures = require('../../fixtures/product.fixtures')
 const { stubBuilder } = require('./stub-builder')
+const { validProductResponse } = require('@test/fixtures/product.fixtures')
 
 function getProductsByGatewayAccountIdAndTypeStub (products, gatewayAccountId, productType) {
   const path = `/v1/api/gateway-account/${gatewayAccountId}/products`
@@ -26,6 +27,11 @@ function deleteProductStub (product, gatewayAccountId) {
   return stubBuilder('DELETE', path, 200)
 }
 
+function disableProductStub (gatewayAccountId, productExternalId) {
+  const path = `/v1/api/gateway-account/${gatewayAccountId}/products/${productExternalId}/disable`
+  return stubBuilder('PATCH', path, 200)
+}
+
 function getProductsByGatewayAccountIdAndTypeFailure (gatewayAccountId, productType) {
   const path = `/v1/api/gateway-account/${gatewayAccountId}/products`
   return stubBuilder('GET', path, 500, {
@@ -35,11 +41,11 @@ function getProductsByGatewayAccountIdAndTypeFailure (gatewayAccountId, productT
   })
 }
 
-function postCreateProductSuccess () {
+function postCreateProductSuccess (opts) {
   const path = '/v1/api/products'
   return stubBuilder('POST', path, 200, {
     deepMatchRequest: false,
-    response: productFixtures.validAdhocProductResponse()
+    response: productFixtures.validAdhocProductResponse(opts)
   })
 }
 
@@ -59,6 +65,13 @@ function patchUpdateProductSuccess (opts) {
   })
 }
 
+function getProductByExternalId (productExternalId, productResponse = {}) {
+  const path = `/v1/api/products/${productExternalId}`
+  return stubBuilder('GET', path, 200, {
+    response: validProductResponse(productResponse)
+  })
+}
+
 module.exports = {
   getProductsByGatewayAccountIdAndTypeStub,
   getProductByExternalIdAndGatewayAccountIdStub,
@@ -66,5 +79,7 @@ module.exports = {
   getProductsByGatewayAccountIdAndTypeFailure,
   postCreateProductSuccess,
   postCreateProductSuccessWithRequestBody,
-  patchUpdateProductSuccess
+  patchUpdateProductSuccess,
+  disableProductStub,
+  getProductByExternalId
 }

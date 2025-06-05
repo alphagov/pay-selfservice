@@ -24,7 +24,9 @@ module.exports = async function makeDemoPayment (req, res) {
         account_id: gatewayAccountId,
         created_by: req.user.email,
         description: 'Token for Demo Payment',
-        type: 'PRODUCTS'
+        type: 'PRODUCTS',
+        service_external_id: req.service.externalId,
+        service_mode: req.account.type
       }
     })
     const createProductResponse = await productsClient.product.create({

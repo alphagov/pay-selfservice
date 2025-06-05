@@ -240,7 +240,12 @@ describe('Settings - API keys', () => {
       beforeEach(() => {
         setupStubs()
         cy.task('setupStubs', [
-          apiKeysStubs.createApiKey(GATEWAY_ACCOUNT_ID, USER_EMAIL, API_KEY_DESCRIPTION, EXPECTED_TOKEN),
+          apiKeysStubs.createApiKey(GATEWAY_ACCOUNT_ID, USER_EMAIL, API_KEY_DESCRIPTION, EXPECTED_TOKEN, {
+            type: 'API',
+            serviceExternalId: SERVICE_EXTERNAL_ID,
+            tokenType: 'CARD',
+            tokenAccountType: 'test'
+          }),
         ])
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })

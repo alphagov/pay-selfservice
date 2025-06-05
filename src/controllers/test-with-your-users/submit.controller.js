@@ -40,7 +40,9 @@ module.exports = async (req, res) => {
         account_id: gatewayAccountId,
         created_by: req.user.email,
         description: `Token for Prototype: ${req.body['payment-description']}`,
-        type: 'PRODUCTS'
+        type: 'PRODUCTS',
+        service_external_id: req.service.externalId,
+        service_mode: req.account.type
       }
     })
 
