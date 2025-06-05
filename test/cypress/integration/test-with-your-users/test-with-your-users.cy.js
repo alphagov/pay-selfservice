@@ -24,6 +24,12 @@ const setupStubs = (options = {}) => {
       paymentProvider: options.paymentProvider || 'sandbox',
       type: options.type || 'test'
     }),
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, options.type || 'test', {
+      gateway_account_id: GATEWAY_ACCOUNT_ID,
+      external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
+      payment_provider: options.paymentProvider || 'sandbox',
+      type: options.type || 'test'
+    }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
