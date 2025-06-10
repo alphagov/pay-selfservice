@@ -31,7 +31,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   )
 }
 
-export = {
+export {
   get,
   edit,
   removeWelshServiceName,

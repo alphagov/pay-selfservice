@@ -140,8 +140,8 @@ describe('Settings - API keys', () => {
       })
       it('should show appropriate buttons and text', () => {
         cy.get('#settings-navigation-api-keys').should('have.text', 'API keys')
-        cy.get('.service-settings-pane').find('a').contains('Create a new API key').should('exist')
-        cy.get('.service-settings-pane').find('h2').contains('There are no active test API keys').should('exist')
+        cy.get('.service-pane').find('a').contains('Create a new API key').should('exist')
+        cy.get('.service-pane').find('h2').contains('There are no active test API keys').should('exist')
       })
     })
 
@@ -171,9 +171,9 @@ describe('Settings - API keys', () => {
 
       it('should show appropriate buttons and text', () => {
         cy.get('#settings-navigation-api-keys').should('have.text', 'API keys')
-        cy.get('.service-settings-pane').find('a').contains('Create a new API key').should('exist')
-        cy.get('.service-settings-pane').find('h2').contains('Active test API keys (2)').should('exist')
-        cy.get('.service-settings-pane').find('a').contains('Show revoked API keys').should('not.exist')
+        cy.get('.service-pane').find('a').contains('Create a new API key').should('exist')
+        cy.get('.service-pane').find('h2').contains('Active test API keys (2)').should('exist')
+        cy.get('.service-pane').find('a').contains('Show revoked API keys').should('not.exist')
       })
 
       it('should list the api keys', () => {

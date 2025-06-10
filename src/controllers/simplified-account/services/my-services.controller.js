@@ -3,14 +3,18 @@ const paths = require('@root/paths')
 const { STRIPE, SANDBOX, WORLDPAY } = require('@models/constants/payment-providers')
 const getHeldPermissions = require('@utils/get-held-permissions')
 const logger = require('@utils/logger')(__filename)
-const gatewayAccountsService = require('@services/gateway-accounts.service')
+const { getGatewayAccountsByIds } = require('@services/gateway-accounts.service')
 const { DEFAULT_SERVICE_NAME } = require('@utils/constants')
 const { formattedPathFor } = require('@root/paths')
-const { accountLinksGenerator, sortByLiveThenName, isWorldpayTestService } = require('@utils/simplified-account/services/my-services/service-presentation-utils')
+const {
+  accountLinksGenerator,
+  sortByLiveThenName,
+  isWorldpayTestService,
+} = require('@utils/simplified-account/services/my-services/service-presentation-utils')
 
 const SUPPORTED_ACCOUNT_PROVIDERS = [STRIPE, SANDBOX, WORLDPAY]
 
-async function get (req, res) {
+async function get(req, res) {
   const userServiceRoles = req.user.serviceRoles
   const flags = {}
 
@@ -18,7 +22,7 @@ async function get (req, res) {
     flags.recentlyInvitedServiceExternalId = res.locals.flash.inviteSuccessServiceId[0]
   }
 
-  const gatewayAccountIds = userServiceRoles.flatMap(role => {
+  const gatewayAccountIds = userServiceRoles.flatMap((role) => {
     if (role?.service?.gatewayAccountIds && Array.isArray(role.service.gatewayAccountIds)) {
       return role.service.gatewayAccountIds
     }
@@ -27,9 +31,10 @@ async function get (req, res) {
 
   let services = []
   if (gatewayAccountIds.length > 0) {
-    const gatewayAccounts = await gatewayAccountsService.getGatewayAccountsByIds(gatewayAccountIds)
-    services = mergeServicesWithGatewayAccounts(userServiceRoles, gatewayAccounts, flags)
-      .sort((a, b) => sortByLiveThenName(a, b))
+    const gatewayAccounts = await getGatewayAccountsByIds(gatewayAccountIds)
+    services = mergeServicesWithGatewayAccounts(userServiceRoles, gatewayAccounts, flags).sort((a, b) =>
+      sortByLiveThenName(a, b)
+    )
   }
 
   const pathFilter = flags.hasLiveAccount ? 'live' : 'test'
@@ -39,12 +44,12 @@ async function get (req, res) {
     allServiceTransactionsPath: formattedPathFor(paths.allServiceTransactions.indexStatusFilter, pathFilter),
     payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, pathFilter),
     services,
-    flags
+    flags,
   })
 }
 
 const mergeServicesWithGatewayAccounts = (services, gatewayAccounts, flags) => {
-  return services.map(serviceRole => {
+  return services.map((serviceRole) => {
     const { service, role } = serviceRole
 
     if (flags.recentlyInvitedServiceExternalId === service.externalId) {
@@ -52,15 +57,13 @@ const mergeServicesWithGatewayAccounts = (services, gatewayAccounts, flags) => {
     }
 
     const mappedGatewayAccounts = service.gatewayAccountIds
-      .map(id => gatewayAccounts[id])
-      .filter(account => account !== undefined)
-      .filter(account => !account.disabled)
+      .map((id) => gatewayAccounts[id])
+      .filter((account) => account !== undefined)
+      .filter((account) => !account.disabled)
 
-    const mappedLiveGatewayAccounts = mappedGatewayAccounts
-      .filter(account => account.type === 'live')
+    const mappedLiveGatewayAccounts = mappedGatewayAccounts.filter((account) => account.type === 'live')
 
-    let mappedTestGatewayAccounts = mappedGatewayAccounts
-      .filter(account => account.type === 'test')
+    let mappedTestGatewayAccounts = mappedGatewayAccounts.filter((account) => account.type === 'test')
 
     mappedTestGatewayAccounts = filterTestGatewaysDegatewayView(mappedTestGatewayAccounts, service)
 
@@ -68,24 +71,22 @@ const mergeServicesWithGatewayAccounts = (services, gatewayAccounts, flags) => {
       flags.hasLiveAccount = true
     }
 
-    const associatedGatewayAccounts = [
-      ...mappedLiveGatewayAccounts,
-      ...mappedTestGatewayAccounts
-    ].map(account => {
-      if (account.paymentProvider === STRIPE) {
-        flags.hasAccountWithPayouts = true
-      }
-      return {
-        id: account.id,
-        externalId: account.externalId,
-        type: account.type,
-        paymentProvider: account.paymentProvider,
-        allowMoto: account.allowMoto,
-        providerSwitchEnabled: account.providerSwitchEnabled,
-        recurringEnabled: account.recurringEnabled,
-        links: accountLinksGenerator(account, service)
-      }
-    })
+    const associatedGatewayAccounts = [...mappedLiveGatewayAccounts, ...mappedTestGatewayAccounts]
+      .map((account) => {
+        if (account.paymentProvider === STRIPE) {
+          flags.hasAccountWithPayouts = true
+        }
+        return {
+          id: account.id,
+          externalId: account.externalId,
+          type: account.type,
+          paymentProvider: account.paymentProvider,
+          allowMoto: account.allowMoto,
+          providerSwitchEnabled: account.providerSwitchEnabled,
+          recurringEnabled: account.recurringEnabled,
+          links: accountLinksGenerator(account, service),
+        }
+      })
       .sort((a, b) => {
         // ensure live gateway is first in array
         if (a.type === 'live') return -1
@@ -102,40 +103,43 @@ const mergeServicesWithGatewayAccounts = (services, gatewayAccounts, flags) => {
       createdDate: service.createdDate,
       isWorldpayTestService: isWorldpayTestService(associatedGatewayAccounts),
       userIsAdminForService: role.name === 'admin',
-      permissions: getHeldPermissions(role.permissions.map(permission => permission.name)),
-      gatewayAccounts: associatedGatewayAccounts
+      permissions: getHeldPermissions(role.permissions.map((permission) => permission.name)),
+      gatewayAccounts: associatedGatewayAccounts,
     }
   })
 }
 
 // PP-13525 return exactly one test account. PSP preference: Stripe -> Sandbox -> Worldpay
 const filterTestGatewaysDegatewayView = (testGatewayAccounts, service) => {
-  return testGatewayAccounts
-    .filter((account, _, accounts) => {
-      if (accounts.length === 0) {
-        logger.warn(`Service has no associated test gateway [service_external_id: ${service.externalId}]`)
-        return false
-      }
-      if (accounts.length === 1) {
-        if (SUPPORTED_ACCOUNT_PROVIDERS.includes(accounts[0].paymentProvider)) return true
-        logger.warn(`Resolved test account is not of supported type [service_external_id: ${service.externalId}, payment_provider: ${accounts[0].paymentProvider}]`)
-        return false
-      }
-      for (const provider of SUPPORTED_ACCOUNT_PROVIDERS) {
-        const accountsByProvider = accounts.filter(testAccount => testAccount.paymentProvider === provider)
-        if (accountsByProvider.length > 0) {
-          if (accountsByProvider.length > 1) {
-            logger.warn(`Multiple ${provider} test accounts found for service [service_external_id: ${service.externalId}]`)
-            // if for some reason there is more than one test account with the same provider, use the ID to work out the newest one
-            accountsByProvider.sort((a, b) => parseInt(b.id) - parseInt(a.id))
-          }
-          return account.id === accountsByProvider[0].id
-        }
-      }
+  return testGatewayAccounts.filter((account, _, accounts) => {
+    if (accounts.length === 0) {
+      logger.warn(`Service has no associated test gateway [service_external_id: ${service.externalId}]`)
       return false
-    })
+    }
+    if (accounts.length === 1) {
+      if (SUPPORTED_ACCOUNT_PROVIDERS.includes(accounts[0].paymentProvider)) return true
+      logger.warn(
+        `Resolved test account is not of supported type [service_external_id: ${service.externalId}, payment_provider: ${accounts[0].paymentProvider}]`
+      )
+      return false
+    }
+    for (const provider of SUPPORTED_ACCOUNT_PROVIDERS) {
+      const accountsByProvider = accounts.filter((testAccount) => testAccount.paymentProvider === provider)
+      if (accountsByProvider.length > 0) {
+        if (accountsByProvider.length > 1) {
+          logger.warn(
+            `Multiple ${provider} test accounts found for service [service_external_id: ${service.externalId}]`
+          )
+          // if for some reason there is more than one test account with the same provider, use the ID to work out the newest one
+          accountsByProvider.sort((a, b) => parseInt(b.id) - parseInt(a.id))
+        }
+        return account.id === accountsByProvider[0].id
+      }
+    }
+    return false
+  })
 }
 
 module.exports = {
-  get
+  get,
 }

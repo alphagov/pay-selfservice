@@ -52,7 +52,7 @@ describe('for an admin', () => {
         postCreateWebhookSuccess(),
       ])
       cy.visit(WEBHOOKS_SETTINGS_URL)
-      cy.get('div.service-settings-pane').find('a').contains('Create a new webhook').click()
+      cy.get('div.service-pane').find('a').contains('Create a new webhook').click()
     })
 
     it('should show active "Webhooks" link in the setting navigation', () => {

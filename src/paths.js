@@ -78,11 +78,6 @@ module.exports = {
         disable: '/test-with-your-users/links/disable/:productExternalId',
       },
       demoPayment: {
-        index: '/make-a-demo-payment',
-        editDescription: '/make-a-demo-payment/edit-description',
-        editAmount: '/make-a-demo-payment/edit-amount',
-        mockCardDetails: '/make-a-demo-payment/mock-card-numbers',
-        goToPaymentScreens: '/make-a-demo-payment/go-to-payment',
         goToTransaction: '/make-a-demo-payment/:productExternalId/go-to-transactions',
       },
     },
@@ -154,6 +149,11 @@ module.exports = {
     root: `/service/:${keys.SERVICE_EXTERNAL_ID}/account/:${keys.ACCOUNT_TYPE}`,
     dashboard: {
       index: '/dashboard',
+    },
+    demoPayment: {
+      index: '/demo-payment',
+      edit: '/demo-payment/edit',
+      mockCard: '/demo-payment/mock-card-number',
     },
     settings: {
       index: '/settings',

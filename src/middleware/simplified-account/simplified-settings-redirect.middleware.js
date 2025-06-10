@@ -1,6 +1,6 @@
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 const paths = require('@root/paths')
-const gatewayAccountsService = require('@services/gateway-accounts.service')
+const { getGatewayAccountByServiceExternalIdAndType } = require('@services/gateway-accounts.service')
 const logger = require('@utils/logger')('simplified-settings-redirect.middleware.js')
 
 module.exports = async (req, res, next) => {
@@ -14,7 +14,7 @@ module.exports = async (req, res, next) => {
     return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.index, req.service.externalId, req.account.type))
   }
 
-  const liveAccountExists = await (gatewayAccountsService.getGatewayAccountByServiceExternalIdAndType(req.service.externalId, 'live')
+  const liveAccountExists = await (getGatewayAccountByServiceExternalIdAndType(req.service.externalId, 'live')
     .then(() => true)
     .catch(() => false))
 

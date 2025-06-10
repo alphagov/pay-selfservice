@@ -77,7 +77,7 @@ describe('for an admin', () => {
   it('should show title, heading and create Webhook button', () => {
     cy.title().should('eq', 'Webhooks - Settings - McDuck Enterprises - GOV.UK Pay')
     cy.get('h1').should('have.text', 'Webhooks')
-    cy.get('div.service-settings-pane')
+    cy.get('div.service-pane')
       .find('a')
       .contains('Create a new webhook')
       .should('have.attr', 'href', `${WEBHOOKS_SETTINGS_URL}/create`)

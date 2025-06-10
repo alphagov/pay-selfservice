@@ -16,7 +16,7 @@ const userIsAuthorised = require('@middleware/user-is-authorised')
 const permission = require('@middleware/permission')
 const paths = require('./paths')
 const serviceSettingsController = require('@controllers/simplified-account/settings')
-const serviceDashboardController = require('@controllers/simplified-account/dashboard')
+const servicesController = require('@controllers/simplified-account/services')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const {
   GOV_ENTITY_DOC_FORM_FIELD_NAME,
@@ -29,7 +29,14 @@ const simplifiedAccount = new Router({ mergeParams: true })
 simplifiedAccount.use(simplifiedAccountStrategy, userIsAuthorised)
 
 // dashboard
-simplifiedAccount.get(paths.simplifiedAccount.dashboard.index, serviceDashboardController.dashboard.get)
+simplifiedAccount.get(paths.simplifiedAccount.dashboard.index, servicesController.dashboard.get)
+
+simplifiedAccount.get(paths.simplifiedAccount.demoPayment.index, servicesController.demoPayment.get)
+simplifiedAccount.get(paths.simplifiedAccount.demoPayment.edit, servicesController.demoPayment.edit.get)
+simplifiedAccount.post(paths.simplifiedAccount.demoPayment.edit, servicesController.demoPayment.edit.post)
+simplifiedAccount.get(paths.simplifiedAccount.demoPayment.mockCard, servicesController.demoPayment.getMockCardNumber)
+simplifiedAccount.post(paths.simplifiedAccount.demoPayment.mockCard, servicesController.demoPayment.post)
+
 
 // settings index
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)

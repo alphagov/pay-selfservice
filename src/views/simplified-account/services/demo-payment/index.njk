@@ -1,0 +1,50 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+
+{% set servicePageTitle = "Make a demo payment" %}
+
+{% block serviceContent %}
+  <h1 class="govuk-heading-l page-title">
+    {{ servicePageTitle }}
+  </h1>
+
+  <p class="govuk-body">Try the payment experience as a user. Then view the completed payment as an administrator on
+    GOV.UK Pay.</p>
+
+  {{ govukSummaryList({
+    card: {
+      title: {
+        text: "Demo payment details"
+      },
+      actions: {
+        items: [
+          {
+            href: editLink,
+            text: "Change",
+            classes: "govuk-link--no-visited-state",
+            visuallyHiddenText: "payment details"
+          }
+        ]
+      }
+    },
+    rows: [
+      {
+        key: {
+        text: "Payment description"
+      },
+        value: {
+        text: demoPayment.description
+      }
+      },
+      {
+        key: {
+        text: "Payment amount"
+      },
+        value: {
+        text: demoPayment.amount | penceToPoundsWithCurrency
+      }
+      }
+    ]
+  }) }}
+
+  {{ govukButton({ text: "Continue", href: continueLink }) }}
+{% endblock %}

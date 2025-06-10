@@ -16,6 +16,7 @@ import {
 } from '@utils/simplified-account/services/dashboard/actions-utils'
 import createLogger from '@utils/logger'
 import type { DateTime } from 'luxon'
+import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 
 const logger = createLogger(__filename)
 
@@ -57,10 +58,11 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         net: `${formatAccountPathsFor(paths.account.transactions.index, req.account.externalId)}?state=Success&state=Refund+success&${transactionsPeriodQueryParams}`,
       },
       dashboardActions: {
-        demoPayment: formatAccountPathsFor(
-          paths.account.prototyping.demoPayment.index,
-          req.account.externalId
-        ) as string,
+        demoPayment: formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.demoPayment.index,
+          req.service.externalId,
+          req.account.type
+        ),
         demoPaymentLink: formatAccountPathsFor(
           paths.account.prototyping.demoService.index,
           req.account.externalId

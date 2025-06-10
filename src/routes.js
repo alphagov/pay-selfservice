@@ -34,7 +34,6 @@ const createServiceController = require('./controllers/create-service/create-ser
 const selectOrgTypeController = require('./controllers/create-service/select-organisation-type/select-organisation-type.controller')
 const inviteValidationController = require('./controllers/invite-validation.controller')
 const testWithYourUsersController = require('./controllers/test-with-your-users')
-const makeADemoPaymentController = require('./controllers/make-a-demo-payment')
 const paymentLinksController = require('./controllers/payment-links')
 const twoFactorAuthController = require('./controllers/user/two-factor-auth')
 const feedbackController = require('./controllers/feedback')
@@ -186,8 +185,8 @@ module.exports.bind = function (app) {
   app.get(allServiceTransactions.downloadStatusFilter, userIsAuthorised, allTransactionsController.downloadTransactions)
   app.get(allServiceTransactions.redirectDetail, userIsAuthorised, transactionDetailRedirectController)
 
-  // demo payment  return route
-  app.get(demoPaymentFwd.goToTransaction, userIsAuthorised, makeADemoPaymentController.goToTransaction)
+  // demo payment return route
+  app.get(demoPaymentFwd.goToTransaction, userIsAuthorised, servicesController.demoPayment.inbound.get)
 
   // Payouts
   app.get(payouts.list, userIsAuthorised, payoutsController.listAllServicesPayouts)
@@ -265,15 +264,6 @@ module.exports.bind = function (app) {
   account.get(prototyping.demoService.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create)
   account.post(prototyping.demoService.confirm, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.submit)
   account.get(prototyping.demoService.disable, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.disable)
-
-  // Demo payment
-  account.get(prototyping.demoPayment.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.index)
-  account.get(prototyping.demoPayment.editDescription, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit.getEditDescription)
-  account.post(prototyping.demoPayment.editDescription, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit.updateDescription)
-  account.get(prototyping.demoPayment.editAmount, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit.getEditAmount)
-  account.post(prototyping.demoPayment.editAmount, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.edit.updateAmount)
-  account.get(prototyping.demoPayment.mockCardDetails, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.mockCardDetails)
-  account.post(prototyping.demoPayment.goToPaymentScreens, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, makeADemoPaymentController.goToPayment)
 
   // Create payment link
   account.get(paymentLinks.start, permission('tokens:create'), paymentLinksController.getStart)

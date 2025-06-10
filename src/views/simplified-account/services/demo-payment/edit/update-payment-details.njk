@@ -1,0 +1,46 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+
+{% set servicePageTitle = "Update details for demo payment" %}
+
+{% block serviceContent %}
+  <h1 class="govuk-heading-l page-title">
+    {{ servicePageTitle }}
+  </h1>
+
+  <form method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+
+    {{ govukInput({
+      id: "payment-description",
+      name: "paymentDescription",
+      label: {
+        text: "Payment description",
+        classes: "govuk-label--s"
+      },
+      hint: {
+        text: "Tell users what they are paying for"
+      },
+      classes: "govuk-!-width-two-thirds",
+      value: demoPayment.description,
+      errorMessage: { text: errors.formErrors["paymentDescription"] } if errors.formErrors["paymentDescription"] else false
+    }) }}
+
+    {{ govukInput({
+      id: "payment-amount",
+      name: "paymentAmount",
+      label: {
+        text: "Payment amount",
+        classes: "govuk-label--s"
+      },
+      prefix: {
+        text: "£"
+      },
+      classes: "govuk-input--width-5",
+      spellcheck: false,
+      value: demoPayment.amount,
+      errorMessage: { text: errors.formErrors["paymentAmount"] } if errors.formErrors["paymentAmount"] else false
+    }) }}
+
+    {{ govukButton({ text: "Save changes" }) }}
+  </form>
+{% endblock %}

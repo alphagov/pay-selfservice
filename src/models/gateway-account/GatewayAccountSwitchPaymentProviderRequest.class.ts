@@ -1,7 +1,4 @@
-interface GatewayAccountSwitchPaymentProviderRequestData {
-  user_external_id?: string
-  gateway_account_credential_external_id?: string
-}
+import { GatewayAccountSwitchPaymentProviderRequestData } from '@models/gateway-account/dto/GatewayAccountSwitchPaymentProviderRequest.dto'
 
 class GatewayAccountSwitchPaymentProviderRequest {
   public userExternalId?: string
