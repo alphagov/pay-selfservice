@@ -52,7 +52,14 @@ function getMockCardNumber(req: ServiceRequest, res: ServiceResponse) {
     )
   }
 
-  return response(req, res, 'simplified-account/services/demo-payment/mock-card-number', {})
+  return response(req, res, 'simplified-account/services/demo-payment/mock-card-number', {
+    paymentProvider: req.account.paymentProvider,
+    backLink: formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.demoPayment.index,
+      req.service.externalId,
+      req.account.type
+    )
+  })
 }
 
 async function post(req: ServiceRequest, res: ServiceResponse) {

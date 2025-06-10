@@ -1,6 +1,6 @@
 import { TokenData } from '@models/public-auth/dto/Token.dto'
 
-type TokenType = 'CARD' | 'DIRECT_DEBIT'
+// type TokenType = 'CARD' | 'DIRECT_DEBIT'
 
 export class Token {
   readonly description: string

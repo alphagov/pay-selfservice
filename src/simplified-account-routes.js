@@ -12,6 +12,7 @@ const {
   canStartPspPaymentVerificationTask,
 } = require('@middleware/simplified-account')
 const restrictToSwitchingAccount = require('@middleware/restrict-to-switching-account')
+const restrictToSandboxOrStripeTestAccount = require('@middleware/restrict-to-sandbox-or-stripe-test-account')
 const userIsAuthorised = require('@middleware/user-is-authorised')
 const permission = require('@middleware/permission')
 const paths = require('./paths')
@@ -31,11 +32,11 @@ simplifiedAccount.use(simplifiedAccountStrategy, userIsAuthorised)
 // dashboard
 simplifiedAccount.get(paths.simplifiedAccount.dashboard.index, servicesController.dashboard.get)
 
-simplifiedAccount.get(paths.simplifiedAccount.demoPayment.index, servicesController.demoPayment.get)
-simplifiedAccount.get(paths.simplifiedAccount.demoPayment.edit, servicesController.demoPayment.edit.get)
-simplifiedAccount.post(paths.simplifiedAccount.demoPayment.edit, servicesController.demoPayment.edit.post)
-simplifiedAccount.get(paths.simplifiedAccount.demoPayment.mockCard, servicesController.demoPayment.getMockCardNumber)
-simplifiedAccount.post(paths.simplifiedAccount.demoPayment.mockCard, servicesController.demoPayment.post)
+simplifiedAccount.get(paths.simplifiedAccount.demoPayment.index, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.get)
+simplifiedAccount.get(paths.simplifiedAccount.demoPayment.edit, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.edit.get)
+simplifiedAccount.post(paths.simplifiedAccount.demoPayment.edit, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.edit.post)
+simplifiedAccount.get(paths.simplifiedAccount.demoPayment.mockCard, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.getMockCardNumber)
+simplifiedAccount.post(paths.simplifiedAccount.demoPayment.mockCard, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.post)
 
 
 // settings index
