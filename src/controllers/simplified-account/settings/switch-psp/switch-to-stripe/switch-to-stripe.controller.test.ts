@@ -34,7 +34,7 @@ const mockStripeDetailsService = {
   getConnectorStripeAccountSetup: sinon.stub().resolves(new StripeAccountSetup(buildGetStripeAccountSetupResponse())),
 }
 const mockGatewayAccountsService = {
-  postSwitchPSP: sinon.stub().resolves(),
+  completePspSwitch: sinon.stub().resolves(),
 }
 
 const { req, res, next, nextRequest, nextResponse, call } = new ControllerTestBuilder(
@@ -251,11 +251,11 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
         await call('post')
       })
 
-      it('should call postSwitchPSP', () => {
+      it('should call completePspSwitch', () => {
         const expectedRequest = new GatewayAccountSwitchPaymentProviderRequest()
           .withUserExternalId(USER_EXTERNAL_ID)
           .withGatewayAccountCredentialExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
-        sinon.assert.calledOnceWithExactly(mockGatewayAccountsService.postSwitchPSP,
+        sinon.assert.calledOnceWithExactly(mockGatewayAccountsService.completePspSwitch,
           SERVICE_EXTERNAL_ID,
           ACCOUNT_TYPE,
           expectedRequest
@@ -317,7 +317,7 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
         // pay js commons is not typescript ready
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
         const error = new RESTClientError('whoops')
-        mockGatewayAccountsService.postSwitchPSP.rejects(error)
+        mockGatewayAccountsService.completePspSwitch.rejects(error)
         await call('post')
       })
 

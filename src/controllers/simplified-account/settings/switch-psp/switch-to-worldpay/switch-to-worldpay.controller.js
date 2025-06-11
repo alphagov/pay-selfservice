@@ -5,7 +5,7 @@ const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const paths = require('@root/paths')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 const formatPSPName = require('@utils/format-PSP-name')
-const { postSwitchPSP } = require('@services/gateway-accounts.service')
+const { completePspSwitch } = require('@services/gateway-accounts.service')
 
 function get (req, res) {
   const account = req.account
@@ -39,7 +39,7 @@ function post (req, res, next) {
     .withUserExternalId(user.externalId)
     .withGatewayAccountCredentialExternalId(targetCredential.externalId)
 
-  postSwitchPSP(service.externalId, account.type, switchProviderRequest)
+  completePspSwitch(service.externalId, account.type, switchProviderRequest)
     .then(() => {
       req.flash('messages', { state: 'success', icon: '&check;', heading: `Service connected to ${formatPSPName(targetCredential.paymentProvider)}`, body: 'This service can now take payments' })
       res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, service.externalId, account.type))

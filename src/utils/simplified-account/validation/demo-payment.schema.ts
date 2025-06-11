@@ -1,6 +1,6 @@
 import { body } from 'express-validator'
 
-const VALID_PAYMENT_AMOUNT_ERR_MSG = 'Enter a valid payment amount between £0.30 and £10000'
+const VALID_PAYMENT_AMOUNT_ERR_MSG = 'Enter a valid payment amount between £0.30 and £100000'
 
 const demoPaymentSchema = {
   paymentDescription: {
@@ -18,7 +18,7 @@ const demoPaymentSchema = {
       .isNumeric()
       .withMessage('Enter a valid payment amount')
       .bail()
-      .isFloat({ min: 0.30, max: 10000 })
+      .isFloat({ min: 0.30, max: 100000 })
       .withMessage(VALID_PAYMENT_AMOUNT_ERR_MSG)
       .bail()
       .custom((value: string) => {
