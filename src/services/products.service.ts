@@ -1,6 +1,6 @@
 import ProductsClient from '@services/clients/pay/ProductsClient.class'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
-import ProductType from '@models/products/product-types'
+import ProductType from '@models/products/product-type'
 
 const productsClient = new ProductsClient()
 
