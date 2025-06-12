@@ -35,7 +35,7 @@ simplifiedAccount.get(paths.simplifiedAccount.dashboard.index, servicesControlle
 simplifiedAccount.get(paths.simplifiedAccount.demoPayment.index, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.get)
 simplifiedAccount.get(paths.simplifiedAccount.demoPayment.edit, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.edit.get)
 simplifiedAccount.post(paths.simplifiedAccount.demoPayment.edit, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.edit.post)
-simplifiedAccount.get(paths.simplifiedAccount.demoPayment.mockCard, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.getMockCardNumber)
+simplifiedAccount.get(paths.simplifiedAccount.demoPayment.mockCard, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.mockCardNumber.get)
 simplifiedAccount.post(paths.simplifiedAccount.demoPayment.mockCard, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.post)
 
 

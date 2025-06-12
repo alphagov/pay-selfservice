@@ -7,9 +7,11 @@ import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import {
   DemoPaymentSessionData,
-  PAYMENT_DEFAULTS, SESSION_KEY,
+  PAYMENT_DEFAULTS,
+  SESSION_KEY,
 } from '@controllers/simplified-account/services/make-a-demo-payment/constants'
 import { demoPaymentSchema } from '@utils/simplified-account/validation/demo-payment.schema'
+import { penceToPounds, poundsToPence } from '@utils/currency-formatter'
 
 const DEMO_PAYMENT_INDEX = paths.simplifiedAccount.demoPayment.index
 
@@ -19,7 +21,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     backLink: formatServiceAndAccountPathsFor(DEMO_PAYMENT_INDEX, req.service.externalId, req.account.type),
     demoPayment: {
       description: demoPayment.description,
-      amount: (demoPayment.amount! / 100).toFixed(2),
+      amount: penceToPounds(demoPayment.amount!),
     },
   })
 }
@@ -51,7 +53,7 @@ async function post(req: ServiceRequest<EditPaymentDetailsBody>, res: ServiceRes
 
   lodash.set(req, SESSION_KEY, {
     description: req.body.paymentDescription,
-    amount: Math.floor((parseFloat(req.body.paymentAmount) * 100)),
+    amount: poundsToPence(parseFloat(req.body.paymentAmount)),
   } as DemoPaymentSessionData)
 
   res.redirect(formatServiceAndAccountPathsFor(DEMO_PAYMENT_INDEX, req.service.externalId, req.account.type))

@@ -1,5 +1,6 @@
 import * as edit from './edit/edit-demo-payment-details.controller'
 import * as inbound from './inbound.controller'
+import * as mockCardNumber from './mock-card-number.controller'
 import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
@@ -40,28 +41,6 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   })
 }
 
-function getMockCardNumber(req: ServiceRequest, res: ServiceResponse) {
-  const { description, amount } = lodash.get(req, SESSION_KEY, {} as DemoPaymentSessionData)
-  if (!description || !amount) {
-    return res.redirect(
-      formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.demoPayment.index,
-        req.service.externalId,
-        req.account.type
-      )
-    )
-  }
-
-  return response(req, res, 'simplified-account/services/demo-payment/mock-card-number', {
-    paymentProvider: req.account.paymentProvider,
-    backLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.demoPayment.index,
-      req.service.externalId,
-      req.account.type
-    )
-  })
-}
-
 async function post(req: ServiceRequest, res: ServiceResponse) {
   const { description, amount } = lodash.get(req, SESSION_KEY, {} as DemoPaymentSessionData)
   if (!description || !amount) {
@@ -82,4 +61,4 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
   res.redirect(demoProduct.links.pay.href)
 }
 
-export { get, getMockCardNumber, post, edit, inbound }
+export { get, post, edit, mockCardNumber, inbound }
