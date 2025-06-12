@@ -1,21 +1,21 @@
-'use strict'
-
-// Local contants
 const AMOUNT_FORMAT = /^([0-9]+)(?:\.([0-9]{1,2}))?$/
 
-const penceToPounds = amount => {
+const penceToPounds = (amount: number) => {
   return (amount / 100).toFixed(2)
 }
 
-const poundsToPence = amount => {
-  return (amount * 100).toFixed(0)
+const poundsToPence = (amount: number) => {
+  return Math.floor(amount * 100)
 }
 
-const penceToPoundsWithCurrency = amount => {
-  return new Intl.NumberFormat('en-gb', { style: 'currency', currency: 'GBP' }).format(penceToPounds(amount))
+const penceToPoundsWithCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-gb', {
+    style: 'currency',
+    currency: 'GBP',
+  }).format(+penceToPounds(amount))
 }
 
-const safeConvertPoundsStringToPence = amount => {
+const safeConvertPoundsStringToPence = (amount: string) => {
   if (amount) {
     const cleanedCurrencyString = amount.replace(/[^0-9.-]+/g, '')
     const result = AMOUNT_FORMAT.exec(cleanedCurrencyString)
@@ -36,9 +36,4 @@ const safeConvertPoundsStringToPence = amount => {
   }
 }
 
-module.exports = {
-  penceToPounds,
-  poundsToPence,
-  penceToPoundsWithCurrency,
-  safeConvertPoundsStringToPence
-}
+export { penceToPounds, poundsToPence, penceToPoundsWithCurrency, safeConvertPoundsStringToPence }

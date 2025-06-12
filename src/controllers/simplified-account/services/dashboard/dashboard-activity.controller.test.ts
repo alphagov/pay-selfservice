@@ -123,7 +123,7 @@ const actionsUtilsProxy = proxyquire('@utils/simplified-account/services/dashboa
 }) as object
 
 const { nextRequest, call } = new ControllerTestBuilder(
-  '@controllers/simplified-account/dashboard/dashboard.controller'
+  '@controllers/simplified-account/services/dashboard/dashboard.controller'
 )
   .withUser(
     new User(

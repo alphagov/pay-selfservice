@@ -5,14 +5,13 @@ import createLogger from '@utils/logger'
 import User from '@models/User.class'
 import { addField } from '@services/clients/base/request-context'
 import _ from 'lodash'
-import ConnectorClient from '@services/clients/pay/ConnectorClient.class'
 // @ts-expect-error js commons is not updated for typescript support yet
 import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
 import GatewayAccount from '@models/GatewayAccount.class'
 import Service from '@models/Service.class'
+import { getGatewayAccountByServiceExternalIdAndType } from '@services/gateway-accounts.service'
 const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, GATEWAY_ACCOUNT_EXTERNAL_ID } = keys
 
-const connectorClient = new ConnectorClient()
 const logger = createLogger(__filename)
 
 function getService(user: User, serviceExternalId: string, gatewayAccountId: number) {
@@ -52,7 +51,7 @@ async function getGatewayAccount(serviceExternalId: string, accountType: string)
       serviceExternalId,
       accountType,
     }
-    return await connectorClient.gatewayAccounts.getGatewayAccountByServiceExternalIdAndAccountType(
+    return await getGatewayAccountByServiceExternalIdAndType(
       params.serviceExternalId,
       params.accountType
     )

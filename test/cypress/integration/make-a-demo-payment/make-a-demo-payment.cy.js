@@ -19,31 +19,11 @@ const setupStubs = (options = {}) => {
       serviceExternalId: SERVICE_EXTERNAL_ID,
       role: ROLES[options.role || 'admin'],
     }),
-    gatewayAccountStubs.getGatewayAccountSuccess({
-      gatewayAccountId: GATEWAY_ACCOUNT_ID,
-      gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
-      paymentProvider: options.paymentProvider || 'sandbox',
-      type: options.type || 'test'
-    }),
-    gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
-      gatewayAccountId: GATEWAY_ACCOUNT_ID,
-      gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
-      paymentProvider: options.paymentProvider || 'sandbox',
-      type: options.type || 'test'
-    }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, options.type || 'test', {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
       payment_provider: options.paymentProvider || 'sandbox',
       type: options.type || 'test'
-    }),
-    transactionsSummaryStubs.getDashboardStatistics(),
-    stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
-      gatewayAccountId: GATEWAY_ACCOUNT_ID,
-      responsiblePerson: false,
-      bankAccount: false,
-      vatNumber: false,
-      companyNumber: false
     }),
   ])
 }
@@ -61,10 +41,15 @@ describe('make a demo payment tests', () => {
         })
       })
 
+      it('should check accessibility of the page', { defaultCommandTimeout: 15000 }, () => {
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
+        cy.a11yCheck()
+      })
+
       it('should be possible to access the "make a demo payment" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Make a demo payment').should('exist').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       })
     })
 
@@ -75,10 +60,15 @@ describe('make a demo payment tests', () => {
         })
       })
 
+      it('should check accessibility of the page', { defaultCommandTimeout: 15000 }, () => {
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
+        cy.a11yCheck()
+      })
+
       it('should be possible to access the "make a demo payment" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Make a demo payment').should('exist').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       })
     })
 
@@ -94,7 +84,7 @@ describe('make a demo payment tests', () => {
       it('should be possible to access the "make a demo payment" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Make a demo payment').should('exist').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       })
     })
 
@@ -110,7 +100,7 @@ describe('make a demo payment tests', () => {
       it('should be possible to access the "make a demo payment" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Make a demo payment').should('exist').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       })
     })
 
@@ -125,7 +115,7 @@ describe('make a demo payment tests', () => {
 
       it('should not be possible to access the "make a demo payment" page', () => {
         cy.request({
-          url: `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/live/demo-payment`,
           failOnStatusCode: false,
         }).then((response) => expect(response.status).to.eq(404))
       })
@@ -142,7 +132,7 @@ describe('make a demo payment tests', () => {
 
       it('should not be possible to access the "make a demo payment" page', () => {
         cy.request({
-          url: `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`,
           failOnStatusCode: false,
         }).then((response) => expect(response.status).to.eq(404))
       })
@@ -154,82 +144,60 @@ describe('make a demo payment tests', () => {
       setupStubs()
     })
 
-    it('should allow navigate to the "edit description" page', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
+    it('should allow navigate to the "update payment details" page', () => {
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
 
-      cy.get('#payment-description').find('a').contains('Edit').click()
-      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment/edit-description`)
-      cy.get('h1').should('have.text', 'Edit payment description')
-      cy.get('textarea').should('have.value', 'An example payment description')
+      cy.get('.govuk-summary-card').find('a').contains('Change').click()
+      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment/edit`)
+      cy.get('a.govuk-back-link').should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
+      cy.get('h1').should('contain.text', 'Update details for demo payment')
+      cy.get('label').eq(0)
+        .should('contain.text', 'Payment description')
+      cy.get('label').eq(1)
+        .should('contain.text', 'Payment amount')
+      cy.get('input[name=paymentDescription]').should('have.value', 'An example payment description')
+      cy.get('input[name=paymentAmount]').should('have.value', '20.00')
     })
 
-    it('should show an error when submitting an empty description', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
-      cy.get('#payment-description').find('a').contains('Edit').click()
+    it('should show an error when submitting empty inputs', () => {
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
+      cy.get('.govuk-summary-card').find('a').contains('Change').click()
 
-      cy.get('textarea').clear()
+      cy.get('input[name=paymentDescription]').clear({force: true})
+      cy.get('input[name=paymentAmount]').clear({force: true})
       cy.get('button').contains('Save changes').click()
       cy.get('.govuk-error-summary').should('exist').within(() => {
         cy.get('h2').should('contain', 'There is a problem')
-        cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
-        cy.get('[data-cy=error-summary-list-item]').first()
+        cy.get('.govuk-error-summary__list').get('li').should('have.length', 2)
           .contains('Enter a payment description')
           .should('have.attr', 'href', '#payment-description')
-      })
-      cy.get('textarea').should('have.value', '')
-    })
-
-    it('should update the description when submitting a valid description', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
-      cy.get('#payment-description').find('a').contains('Edit').click()
-
-      cy.get('textarea').clear().type('New description', { delay: 0 })
-      cy.get('button').contains('Save changes').click()
-      cy.get('h1').should('have.text', 'Make a demo payment')
-      cy.get('#payment-description').contains('New description')
-      cy.get('#payment-amount').contains('£20.00')
-    })
-  })
-
-  describe('edit payment amount', () => {
-    beforeEach(() => {
-      setupStubs()
-    })
-
-    it('should allow navigate to the "edit payment amount" page', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
-
-      cy.get('#payment-amount').find('a').contains('Edit').click()
-      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment/edit-amount`)
-      cy.get('h1').should('have.text', 'Edit payment amount')
-      cy.get('#payment-amount').should('have.value', '20.00')
-    })
-
-    it('should show an error when submitting an invalid amount', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
-      cy.get('#payment-amount').find('a').contains('Edit').click()
-
-      cy.get('#payment-amount').type('a')
-      cy.get('button').contains('Save changes').click()
-      cy.get('.govuk-error-summary').should('exist').within(() => {
-        cy.get('h2').should('contain', 'There is a problem')
-        cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
-        cy.get('[data-cy=error-summary-list-item]').first()
-          .contains('Enter an amount in pounds and pence')
+          .parent()
+          .parent()
+          .contains('Enter a payment amount')
           .should('have.attr', 'href', '#payment-amount')
       })
-      cy.get('#payment-amount').should('have.value', '20.00')
+      cy.get('input[name=paymentDescription]').should('have.value', '')
+      cy.get('input[name=paymentAmount]').should('have.value', '')
     })
 
-    it('should update the amount when submitting a valid amount', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
-      cy.get('#payment-amount').find('a').contains('Edit').click()
+    it('should update the payment details when submitting a valid description', () => {
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
+      cy.get('.govuk-summary-card').find('a').contains('Change').click()
 
-      cy.get('#payment-amount').clear().type('1.00')
+      cy.get('input[name=paymentDescription]').clear({force: true})
+        .type('New description', { delay: 0 })
+
+      cy.get('input[name=paymentAmount]').clear({force: true})
+        .type('1337', { delay: 0 })
+
       cy.get('button').contains('Save changes').click()
-      cy.get('h1').should('have.text', 'Make a demo payment')
-      cy.get('#payment-description').contains('An example payment description')
-      cy.get('#payment-amount').contains('£1.00')
+      cy.get('h1').should('contain.text', 'Make a demo payment')
+      cy.get('dt.govuk-summary-list__key').contains('Payment description')
+        .parent()
+        .contains('New description')
+      cy.get('dt.govuk-summary-list__key').contains('Payment amount')
+        .parent()
+        .contains('£1,337.00')
     })
   })
 
@@ -239,9 +207,9 @@ describe('make a demo payment tests', () => {
     })
 
     it('should navigate to the "mock card numbers" page', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment`)
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       cy.contains('a', 'Continue').click()
-      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/make-a-demo-payment/mock-card-numbers`)
+      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment/mock-card-number`)
     })
   })
 })

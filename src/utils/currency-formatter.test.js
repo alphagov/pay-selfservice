@@ -26,7 +26,7 @@ describe('Pence to pounds', () => {
 describe('Pounds to pence', () => {
   describe(`when given valid pounds amount ${validPoundsAndPenceAmount}`, () => {
     it(`should return ${validPenceAmount}`, () => {
-      expect(poundsToPence(validPoundsAndPenceAmount)).to.equal('1050')
+      expect(poundsToPence(validPoundsAndPenceAmount)).to.equal(1050)
     })
   })
 })

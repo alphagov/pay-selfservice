@@ -10,7 +10,7 @@
 {% block skipLink %}
   {{ govukSkipLink({
     text: "Skip to main content",
-    href: "#service-settings-content"
+    href: "#service-content"
   }) }}
 {% endblock %}
 
@@ -20,7 +20,7 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-three-quarters">
-    <div class="service-settings-pane">
+    <div class="service-pane">
       {% if backLink %}
         {{ govukBackLink({
           text: "Back",
@@ -36,7 +36,7 @@
           errorList: errors.summary
         }) }}
       {% endif %}
-      <div id="service-settings-content">
+      <div id="service-content">
         {% block settingsContent %}
         {% endblock %}
       </div>

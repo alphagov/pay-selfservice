@@ -44,11 +44,11 @@ const setupSimplifiedAccountStrategyTest = function (options) {
   }
   next = sinon.spy()
 
-  let connectorGetAccountMock
+  let getGatewayAccountMock
   if (errorCode) {
-    connectorGetAccountMock = sinon.stub().rejects({ errorCode })
+    getGatewayAccountMock = sinon.stub().rejects({ errorCode })
   } else {
-    connectorGetAccountMock = sinon.stub().resolves(
+    getGatewayAccountMock = sinon.stub().resolves(
       new GatewayAccount({
         gateway_account_id: gatewayAccountId,
         external_id: gatewayAccountExternalId,
@@ -68,27 +68,25 @@ const setupSimplifiedAccountStrategyTest = function (options) {
     return loggerMock
   })
 
-  const connectorStub = sinon.stub().returns({
-    gatewayAccounts: {
-      getGatewayAccountByServiceExternalIdAndAccountType: connectorGetAccountMock,
-    }
-  })
+  const mockGatewayAccountsService = {
+    getGatewayAccountByServiceExternalIdAndType: getGatewayAccountMock
+  }
 
   const simplifiedAccountStrategy = proxyquire(path.join(__dirname, './simplified-account-strategy.middleware'), {
-    '@services/clients/pay/ConnectorClient.class': connectorStub,
+    '@services/gateway-accounts.service': mockGatewayAccountsService,
     '@utils/logger': loggerStub,
   })
 
   return {
     simplifiedAccountStrategy,
-    connectorGetAccountMock,
+    getGatewayAccountMock,
     loggerMock,
   }
 }
 
 describe('Middleware: getSimplifiedAccount', () => {
   it('should set gateway account and service on request object', async () => {
-    const { simplifiedAccountStrategy, connectorGetAccountMock } = setupSimplifiedAccountStrategyTest({
+    const { simplifiedAccountStrategy, getGatewayAccountMock } = setupSimplifiedAccountStrategyTest({
       gatewayAccountId: '1',
       gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
       paymentProvider: 'worldpay',
@@ -98,7 +96,7 @@ describe('Middleware: getSimplifiedAccount', () => {
     await simplifiedAccountStrategy(req, res, next)
 
     sinon.assert.calledOnce(next)
-    sinon.assert.calledOnceWithExactly(connectorGetAccountMock, A_SERVICE_EXTERNAL_ID, 'test')
+    sinon.assert.calledOnceWithExactly(getGatewayAccountMock, A_SERVICE_EXTERNAL_ID, 'test')
     expect(req.account.externalId).to.equal(A_GATEWAY_EXTERNAL_ID)
     expect(req.service.externalId).to.equal(A_SERVICE_EXTERNAL_ID)
   })

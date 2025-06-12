@@ -74,7 +74,7 @@ describe('Card types setting', () => {
           ['Discover', 'Diners Club', 'JCB', 'Union Pay']
         ]
 
-        cy.get('div.service-settings-pane h2')
+        cy.get('div.service-pane h2')
           .should('have.length', 4)
           .each(($h2, index) => {
             cy.wrap($h2).should('contain.text', expectedHeadings[index])
@@ -126,19 +126,19 @@ describe('Card types setting', () => {
     describe('the page', () => {
       checkTitleAndHeading()
       it('should show the all card types as toggle-able checkboxes', () => {
-        cy.get('div.service-settings-pane input[type="checkbox"]').should('have.length', 10)
+        cy.get('div.service-pane input[type="checkbox"]').should('have.length', 10)
         const expectedHeadings = [
           'Debit cards',
           'Credit cards'
         ]
-        cy.get('div.service-settings-pane legend')
+        cy.get('div.service-pane legend')
           .should('have.length', 2)
           .each(($legend, index) => {
             cy.wrap($legend).should('contain.text', expectedHeadings[index])
           })
       })
       it('should update the selected card types on submit', () => {
-        cy.get('div.service-settings-pane')
+        cy.get('div.service-pane')
           .find('input[type="checkbox"]')
           .next()
           .contains('American Express')
@@ -149,7 +149,7 @@ describe('Card types setting', () => {
 
         cy.get('.system-messages')
           .should('not.exist')
-        cy.get('div.service-settings-pane')
+        cy.get('div.service-pane')
           .find('button[type="submit"]')
           .click()
         cy.get('.system-messages')

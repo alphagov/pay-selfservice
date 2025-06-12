@@ -7,6 +7,8 @@ import GatewayAccount from '@models/GatewayAccount.class'
 import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
 import StripeAccountSetup from '@models/StripeAccountSetup.class'
 import StripeAccountSetupData from '@models/gateway-account/dto/StripeAccountSetup.dto'
+import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'
+import { GatewayAccountSwitchPaymentProviderRequestData } from '@models/gateway-account/dto/GatewayAccountSwitchPaymentProviderRequest.dto'
 
 const SERVICE_NAME = 'connector'
 const SERVICE_BASE_URL = process.env.CONNECTOR_URL!
@@ -56,13 +58,32 @@ class ConnectorClient extends BaseClient {
 
   private get gatewayAccountsClient() {
     return {
-      getGatewayAccountByServiceExternalIdAndAccountType: async (serviceExternalId: string, accountType: string) => {
+      findByGatewayAccountIds: async (gatewayAccountIds: number[]) => {
+        const path = '/v1/api/accounts?accountIds={gatewayAccountIds}'.replace(
+          '{gatewayAccountIds}',
+          encodeURIComponent(gatewayAccountIds.join(','))
+        )
+        const response = await this.get<{ accounts: GatewayAccountData[] }>(path, 'get gateway accounts')
+        return response.data
+      },
+
+      getByGatewayAccountId: async (gatewayAccountId: number) => {
+        const path = '/v1/api/accounts/{gatewayAccountId}'.replace(
+          '{gatewayAccountId}',
+          encodeURIComponent(gatewayAccountId)
+        )
+        const response = await this.get<GatewayAccountData>(path, 'get a gateway account')
+        return new GatewayAccount(response.data)
+      },
+
+      getByServiceExternalIdAndAccountType: async (serviceExternalId: string, accountType: string) => {
         const path = '/v1/api/service/{serviceExternalId}/account/{accountType}'
           .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
           .replace('{accountType}', encodeURIComponent(accountType))
         const response = await this.get<GatewayAccountData>(path, 'get a gateway account')
         return new GatewayAccount(response.data)
       },
+
       getStripeAccountSetupByServiceExternalIdAndAccountType: async (
         serviceExternalId: string,
         accountType: string
@@ -73,12 +94,13 @@ class ConnectorClient extends BaseClient {
         const response = await this.get<StripeAccountSetupData>(path, 'get stripe account onboarding progress')
         return new StripeAccountSetup(response.data)
       },
+
       updateStripeAccountSetupByServiceExternalIdAndAccountType: async (
         serviceExternalId: string,
         accountType: string,
         stripeAccountSetupStep: string
       ) => {
-        const url = '/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-setup'
+        const path = '/v1/api/service/{serviceExternalId}/account/{accountType}/stripe-setup'
           .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
           .replace('{accountType}', encodeURIComponent(accountType))
         const body = [
@@ -95,7 +117,22 @@ class ConnectorClient extends BaseClient {
             value: boolean
           }[],
           void
-        >(url, body, 'set stripe account onboarding step to done')
+        >(path, body, 'set stripe account onboarding step to done')
+      },
+
+      switchPSPByServiceExternalIdAndAccountType: async (
+        serviceExternalId: string,
+        accountType: string,
+        gatewayAccountSwitchProviderRequest: GatewayAccountSwitchPaymentProviderRequest
+      ) => {
+        const path = '/v1/api/service/{serviceExternalId}/account/{accountType}/switch-psp'
+          .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+          .replace('{accountType}', encodeURIComponent(accountType))
+        await this.post<GatewayAccountSwitchPaymentProviderRequestData, void>(
+          path,
+          gatewayAccountSwitchProviderRequest.toPayload(),
+          'switch gateway account PSP'
+        )
       },
     }
   }

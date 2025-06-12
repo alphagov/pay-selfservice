@@ -12,11 +12,12 @@ const {
   canStartPspPaymentVerificationTask,
 } = require('@middleware/simplified-account')
 const restrictToSwitchingAccount = require('@middleware/restrict-to-switching-account')
+const restrictToSandboxOrStripeTestAccount = require('@middleware/restrict-to-sandbox-or-stripe-test-account')
 const userIsAuthorised = require('@middleware/user-is-authorised')
 const permission = require('@middleware/permission')
 const paths = require('./paths')
 const serviceSettingsController = require('@controllers/simplified-account/settings')
-const serviceDashboardController = require('@controllers/simplified-account/dashboard')
+const servicesController = require('@controllers/simplified-account/services')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const {
   GOV_ENTITY_DOC_FORM_FIELD_NAME,
@@ -29,7 +30,14 @@ const simplifiedAccount = new Router({ mergeParams: true })
 simplifiedAccount.use(simplifiedAccountStrategy, userIsAuthorised)
 
 // dashboard
-simplifiedAccount.get(paths.simplifiedAccount.dashboard.index, serviceDashboardController.dashboard.get)
+simplifiedAccount.get(paths.simplifiedAccount.dashboard.index, servicesController.dashboard.get)
+
+simplifiedAccount.get(paths.simplifiedAccount.demoPayment.index, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.get)
+simplifiedAccount.get(paths.simplifiedAccount.demoPayment.edit, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.edit.get)
+simplifiedAccount.post(paths.simplifiedAccount.demoPayment.edit, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.edit.post)
+simplifiedAccount.get(paths.simplifiedAccount.demoPayment.mockCard, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.mockCardNumber.get)
+simplifiedAccount.post(paths.simplifiedAccount.demoPayment.mockCard, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.post)
+
 
 // settings index
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)

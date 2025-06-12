@@ -73,7 +73,7 @@
 }
 
 .service-pane {
-  max-width: 100%;
+  max-width: 630px;
 
   h1,
   .govuk-error-summary,
@@ -82,14 +82,8 @@
   }
 }
 
-.service-settings-pane {
-  max-width: 630px;
-
-  h1,
-  .govuk-error-summary,
-  .govuk-error-message {
-    overflow-wrap: anywhere;
-  }
+.service-pane--full-width {
+  max-width: 100%;
 }
 
 .service-settings-inset-text--grey {

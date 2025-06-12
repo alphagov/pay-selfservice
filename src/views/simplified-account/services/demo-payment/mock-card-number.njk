@@ -1,0 +1,37 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+
+{% set servicePageTitle = "Mock card number" %}
+
+{% set mockCard %}
+  {% if paymentProvider === 'stripe' %}
+    <p class="govuk-!-font-size-24 govuk-!-font-weight-bold">4000<span
+        class="govuk-!-padding-left-3 govuk-!-padding-right-3">0582</span><span
+        class="govuk-!-padding-right-3">6000</span>0005</p>
+  {% else %}
+    <p class="govuk-!-font-size-24 govuk-!-font-weight-bold">4000<span
+        class="govuk-!-padding-left-3 govuk-!-padding-right-3">0566</span><span
+        class="govuk-!-padding-right-3">5566</span>5556</p>
+  {% endif %}
+{% endset %}
+
+{% block serviceContent %}
+  <h1 class="govuk-heading-l page-title">
+    {{ servicePageTitle }}
+  </h1>
+
+  {{ govukInsetText({
+    html: mockCard
+  }) }}
+
+  <p class="govuk-body">Use this card number to test a successful payment. Don’t use real card numbers.</p>
+  <p class="govuk-body">You can enter any valid value for the other details. For example, it doesn’t matter what expiry
+    date you enter, but it must be in the future.</p>
+  <p class="govuk-body">You can also use other card types and see
+    errors. {{ "See more card types in our documentation" | docsLink("switch_payment_service_provider/testing_govuk_pay/#mock-card-numbers-for-testing-purposes") | safe }}
+    .</p>
+
+  <form method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+    {{ govukButton({ text: "Make a demo payment" }) }}
+  </form>
+{% endblock %}

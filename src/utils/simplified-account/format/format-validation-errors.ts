@@ -29,12 +29,12 @@ function formatValidationErrors (validationResult: Result<ValidationError>) {
     }
   })
 
-  const formErrors = validationResult.array().reduce((acc, error) => {
+  const formErrors = validationResult.array().reduce<FormError>((acc, error) => {
     if (error.type === 'field') {
       acc[error.path] ??= error.msg
     }
     return acc
-  }, {} as FormError)
+  }, {})
   return {
     errorSummary,
     formErrors,

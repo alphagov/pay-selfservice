@@ -7,7 +7,7 @@ import StripeTasks from '@models/StripeTasks.class'
 import TaskStatus from '@models/constants/task-status'
 import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'
 import { getConnectorStripeAccountSetup } from '@services/stripe-details.service'
-import gatewayAccountsService from '@services/gateway-accounts.service'
+import { completePspSwitch } from '@services/gateway-accounts.service'
 import paths from '@root/paths'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
@@ -54,8 +54,7 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
     .withUserExternalId(user.externalId)
     .withGatewayAccountCredentialExternalId(targetCredential.externalId)
 
-  gatewayAccountsService
-    .postSwitchPSP(service.externalId, account.type, switchProviderRequest)
+  completePspSwitch(service.externalId, account.type, switchProviderRequest)
     .then(() => {
       req.flash('messages', {
         state: 'success',
