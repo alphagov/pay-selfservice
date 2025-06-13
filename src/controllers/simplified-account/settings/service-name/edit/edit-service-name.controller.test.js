@@ -1,5 +1,5 @@
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const Service = require('@models/Service.class')
+const Service = require('@models/service/Service.class')
 const sinon = require('sinon')
 const paths = require('@root/paths')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')

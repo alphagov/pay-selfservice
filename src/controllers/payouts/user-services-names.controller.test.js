@@ -1,7 +1,7 @@
 const chai = require('chai')
 const { expect } = chai
 const { indexServiceNamesByGatewayAccountId } = require('./user-services-names.controller')
-const User = require('../../models/User.class')
+const User = require('@models/user/User.class')
 const fixtures = require('../../../test/fixtures/user.fixtures')
 
 describe('user services to gateway account id map utility', () => {

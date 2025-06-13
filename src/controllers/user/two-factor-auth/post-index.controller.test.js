@@ -3,7 +3,7 @@ const proxyquire = require('proxyquire')
 const { expect } = require('chai')
 
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const User = require('../../../models/User.class')
+const User = require('@models/user/User.class')
 const paths = require('../../../paths')
 
 const userExternalId = 'user-id'

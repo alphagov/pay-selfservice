@@ -8,7 +8,7 @@ const {
   DENIED, GOV_BANKING_MOTO_OPTION_COMPLETED
 } = require('@models/constants/go-live-stage')
 
-const User = require('../../../models/User.class')
+const User = require('@models/user/User.class')
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
 
 describe('Request to go live - choose takes payments over phone - GET controller', () => {

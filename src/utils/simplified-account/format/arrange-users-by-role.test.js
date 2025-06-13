@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 const { mapTeamMembersByRoles, mapInvitedTeamMembersByRoles } = require('./arrange-users-by-role')
-const User = require('../../../models/User.class')
+const User = require('@models/user/User.class')
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
 const paths = require('../../../paths')
 const ACCOUNT_TYPE = 'test'

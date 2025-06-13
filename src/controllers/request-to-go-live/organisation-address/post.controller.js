@@ -13,7 +13,7 @@ const {
   validateUrl
 } = require('@utils/validation/server-side-form-validations')
 const { updateService } = require('@services/service.service')
-const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
+const { ServiceUpdateRequest } = require('@models/service/ServiceUpdateRequest.class')
 const formatServicePathsFor = require('@utils/format-service-paths-for')
 const { response } = require('@utils/response')
 const { countries } = require('@govuk-pay/pay-js-commons').utils

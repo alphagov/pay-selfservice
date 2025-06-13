@@ -1,4 +1,4 @@
-import Service from '@models/Service.class'
+import Service from '@models/service/Service.class'
 import { ServiceRoleData, Role } from '@models/service/dto/ServiceRole.dto'
 
 class ServiceRole {

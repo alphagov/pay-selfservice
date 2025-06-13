@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import UserData from '@models/user/dto/User.dto'
-import ServiceRole from '@models/ServiceRole.class'
+import ServiceRole from '@models/service/ServiceRole.class'
 import { isInternalGDSEmail } from '@utils/email-tools'
 
 class User {

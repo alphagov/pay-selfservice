@@ -1,4 +1,4 @@
-import GatewayAccount from '@models/GatewayAccount.class'
+import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import StripeAccountSetup from '@models/StripeAccountSetup.class'
 import TaskStatus from '@models/constants/task-status'
 import paths from '@root/paths'

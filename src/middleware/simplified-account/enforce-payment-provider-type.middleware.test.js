@@ -3,7 +3,7 @@ const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const { NotFoundError } = require('@root/errors')
-const GatewayAccount = require('@models/GatewayAccount.class')
+const GatewayAccount = require('@models/gateway-account/GatewayAccount.class')
 const gatewayAccountFixtures = require('@test/fixtures/gateway-account.fixtures')
 
 describe('Middleware: enforcePaymentProviderType', () => {

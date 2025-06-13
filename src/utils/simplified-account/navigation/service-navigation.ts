@@ -1,7 +1,7 @@
 import paths from '@root/paths'
 import { NavigationBuilder, NavigationCategories } from '@utils/simplified-account/navigation/NavigationBuilder.class'
-import GatewayAccount from '@models/GatewayAccount.class'
-import Service from '@models/Service.class'
+import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
+import Service from '@models/service/Service.class'
 import UserPermissions from '@models/user/permissions'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 

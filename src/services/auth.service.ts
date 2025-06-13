@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction, Application } from 'express'
 import type { VerifyFunction } from 'passport-local'
 import type ClientSessionsCookie from '@utils/types/client-sessions/ClientSessionsCookie'
-import type User from '@models/User.class'
+import type User from '@models/user/User.class'
 import secondFactorMethod from '@models/constants/second-factor-method'
 import lodash from 'lodash'
 import passport, { AuthenticateCallback } from 'passport'

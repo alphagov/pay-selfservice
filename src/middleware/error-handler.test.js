@@ -6,8 +6,8 @@ const {
   ExpiredInviteError
 } = require('../errors')
 const paths = require('../paths')
-const User = require('../models/User.class')
-const Service = require('../models/Service.class')
+const User = require('@models/user/User.class')
+const Service = require('@models/service/Service.class')
 const userFixtures = require('../../test/fixtures/user.fixtures')
 const serviceFixtures = require('../../test/fixtures/service.fixtures')
 const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixtures')

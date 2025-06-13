@@ -1,10 +1,10 @@
 const sinon = require('sinon')
-const User = require('../../../../../models/User.class')
+const User = require('@models/user/User.class')
 const { expect } = require('chai')
 const paths = require('../../../../../paths')
 const proxyquire = require('proxyquire')
 const { validServiceResponse } = require('@test/fixtures/service.fixtures')
-const Service = require('@models/Service.class')
+const Service = require('@models/service/Service.class')
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'

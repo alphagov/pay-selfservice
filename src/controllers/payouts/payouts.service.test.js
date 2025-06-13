@@ -1,7 +1,7 @@
 const chai = require('chai')
 const { expect } = chai
 const { groupPayoutsByDate } = require('./payouts.service')
-const User = require('../../models/User.class')
+const User = require('@models/user/User.class')
 const payoutFixtures = require('../../../test/fixtures/payout.fixtures')
 const userFixtures = require('../../../test/fixtures/user.fixtures')
 

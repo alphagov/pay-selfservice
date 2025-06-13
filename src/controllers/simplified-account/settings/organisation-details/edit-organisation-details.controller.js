@@ -7,7 +7,7 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const paths = require('@root/paths')
 const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const { organisationDetailsSchema } = require('@utils/simplified-account/validation/organisation-details.schema')
-const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
+const { ServiceUpdateRequest } = require('@models/service/ServiceUpdateRequest.class')
 const { updateService } = require('@services/service.service')
 
 function get (req, res) {

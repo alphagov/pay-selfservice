@@ -1,4 +1,4 @@
-import GatewayAccount from '@models/GatewayAccount.class'
+import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import ConnectorClient from '@services/clients/pay/ConnectorClient.class'
 import GatewayAccountSwitchPaymentProviderRequest
   from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'

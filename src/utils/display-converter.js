@@ -5,7 +5,7 @@ const { serviceNavigationItems, adminNavigationItems } = require('./nav-builder'
 const formatPSPname = require('./format-PSP-name')
 const serviceNavigation = require('./simplified-account/navigation/service-navigation')
 const serviceSettingsNavigation = require('./simplified-account/navigation/service-settings-navigation')
-const GatewayAccount = require('@models/GatewayAccount.class')
+const GatewayAccount = require('@models/gateway-account/GatewayAccount.class')
 const { getActiveCredential } = require('@utils/credentials')
 
 const hideServiceHeaderTemplates = [

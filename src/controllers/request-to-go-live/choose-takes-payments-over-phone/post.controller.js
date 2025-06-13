@@ -7,7 +7,7 @@ const goLiveStage = require('@models/constants/go-live-stage')
 const formatServicePathsFor = require('@utils/format-service-paths-for')
 const { response } = require('@utils/response')
 const { requestToGoLive } = require('@root/paths').service
-const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
+const { ServiceUpdateRequest } = require('@models/service/ServiceUpdateRequest.class')
 
 const CHOOSE_TAKES_PAYMENTS_OVER_PHONE = 'choose-takes-payments-over-phone'
 
