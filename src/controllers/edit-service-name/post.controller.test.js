@@ -3,7 +3,7 @@
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
-const Service = require('../../models/Service.class')
+const Service = require('@models/service/Service.class')
 const random = require('../../utils/random')
 const { validServiceResponse } = require('@test/fixtures/service.fixtures')
 const mockResponses = {}

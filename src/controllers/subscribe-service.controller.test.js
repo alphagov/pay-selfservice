@@ -6,7 +6,7 @@ const proxyquire = require('proxyquire')
 const userFixtures = require('../../test/fixtures/user.fixtures')
 const inviteFixtures = require('../../test/fixtures/invite.fixtures')
 const paths = require('../paths')
-const User = require('../models/User.class')
+const User = require('@models/user/User.class')
 const { ExpiredInviteError } = require('../errors')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 

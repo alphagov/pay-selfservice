@@ -3,7 +3,7 @@
 const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 
-const User = require('@models/User.class')
+const User = require('@models/user/User.class')
 const userFixtures = require('@test/fixtures/user.fixtures')
 const { expect } = require('chai')
 const { GOV_BANKING_MOTO_OPTION_COMPLETED } = require('@models/constants/go-live-stage')

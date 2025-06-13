@@ -1,6 +1,6 @@
 const sinon = require('sinon')
 const { expect } = require('chai')
-const User = require('@models/User.class')
+const User = require('@models/user/User.class')
 const userFixtures = require('@test/fixtures/user.fixtures')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 

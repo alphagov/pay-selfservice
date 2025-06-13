@@ -2,7 +2,7 @@ const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const User = require('../../../models/User.class')
+const User = require('@models/user/User.class')
 const paths = require('../../../paths')
 const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 

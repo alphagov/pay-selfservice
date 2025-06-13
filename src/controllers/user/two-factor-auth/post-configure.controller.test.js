@@ -3,7 +3,7 @@ const proxyquire = require('proxyquire')
 const { expect } = require('chai')
 
 const userFixtures = require('../../../../test/fixtures/user.fixtures')
-const User = require('../../../models/User.class')
+const User = require('@models/user/User.class')
 const paths = require('../../../paths')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const secondFactorMethod = require('@models/constants/second-factor-method')

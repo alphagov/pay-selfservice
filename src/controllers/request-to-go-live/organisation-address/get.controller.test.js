@@ -5,7 +5,7 @@ const sinon = require('sinon')
 const { expect } = require('chai')
 
 const goLiveStage = require('@models/constants/go-live-stage')
-const Service = require('../../../models/Service.class')
+const Service = require('@models/service/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
 
 const mockResponse = sinon.spy()

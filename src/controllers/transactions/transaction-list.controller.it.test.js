@@ -8,9 +8,9 @@ const transactionListController = require('./transaction-list.controller')
 const proxyquire = require('proxyquire')
 const ledgerTransactionFixture = require('../../../test/fixtures/ledger-transaction.fixtures')
 const gatewayAccountFixture = require('../../../test/fixtures/gateway-account.fixtures')
-const Service = require('../../models/Service.class')
+const Service = require('@models/service/Service.class')
 const serviceFixtures = require('../../../test/fixtures/service.fixtures')
-const User = require('../../models/User.class')
+const User = require('@models/user/User.class')
 const userFixtures = require('../../../test/fixtures/user.fixtures')
 
 // Setup

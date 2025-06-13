@@ -8,11 +8,11 @@ const serviceFixtures = require('../../../test/fixtures/service.fixtures')
 const gatewayAccountFixtures = require('../../../test/fixtures/gateway-account.fixtures')
 const agreementFixtures = require('../../../test/fixtures/agreement.fixtures')
 const transactionFixtures = require('../../../test/fixtures/ledger-transaction.fixtures')
-const Service = require('../../models/Service.class')
+const Service = require('@models/service/Service.class')
 const { NotFoundError } = require('../../errors')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const { buildPaymentList } = require('../../utils/transaction-view')
-const User = require('../../models/User.class')
+const User = require('@models/user/User.class')
 const userFixtures = require('../../../test/fixtures/user.fixtures')
 
 const agreementsServiceSpy = {

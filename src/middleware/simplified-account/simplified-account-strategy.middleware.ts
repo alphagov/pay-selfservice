@@ -2,13 +2,13 @@ import type { Request, Response, NextFunction } from 'express'
 import { NotFoundError, NotAuthenticatedError } from '@root/errors'
 import { keys } from '@root/paths'
 import createLogger from '@utils/logger'
-import User from '@models/User.class'
+import User from '@models/user/User.class'
 import { addField } from '@services/clients/base/request-context'
 import _ from 'lodash'
 // @ts-expect-error js commons is not updated for typescript support yet
 import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
-import GatewayAccount from '@models/GatewayAccount.class'
-import Service from '@models/Service.class'
+import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
+import Service from '@models/service/Service.class'
 import { getGatewayAccountByServiceExternalIdAndType } from '@services/gateway-accounts.service'
 const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, GATEWAY_ACCOUNT_EXTERNAL_ID } = keys
 

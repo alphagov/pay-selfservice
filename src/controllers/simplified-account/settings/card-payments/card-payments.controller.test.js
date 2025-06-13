@@ -1,7 +1,7 @@
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const { expect } = require('chai')
 const sinon = require('sinon')
-const User = require('@models/User.class')
+const User = require('@models/user/User.class')
 const userFixtures = require('@test/fixtures/user.fixtures')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')

@@ -3,7 +3,7 @@ const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
 const { ConnectorClient } = require('../services/clients/connector.client')
-const User = require('../models/User.class')
+const User = require('@models/user/User.class')
 
 const { validUser } = require('../../test/fixtures/user.fixtures')
 const { validGatewayAccountResponse } = require('../../test/fixtures/gateway-account.fixtures')

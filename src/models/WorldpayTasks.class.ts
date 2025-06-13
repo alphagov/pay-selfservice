@@ -1,4 +1,4 @@
-import GatewayAccount from '@models/GatewayAccount.class'
+import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import paths from '@root/paths'
 import { ConnectorClient } from '@services/clients/connector.client'
 import TaskStatus from '@models/constants/task-status'

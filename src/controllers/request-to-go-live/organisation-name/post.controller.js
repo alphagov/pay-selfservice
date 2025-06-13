@@ -7,7 +7,7 @@ const goLiveStage = require('@models/constants/go-live-stage')
 const paths = require('@root/paths')
 const { validateMandatoryField } = require('@utils/validation/server-side-form-validations')
 const { updateCurrentGoLiveStage, updateService } = require('@services/service.service')
-const { ServiceUpdateRequest } = require('@models/ServiceUpdateRequest.class')
+const { ServiceUpdateRequest } = require('@models/service/ServiceUpdateRequest.class')
 const formatServicePathsFor = require('@utils/format-service-paths-for')
 
 const ORGANISATION_NAME_MAX_LENGTH = 100
