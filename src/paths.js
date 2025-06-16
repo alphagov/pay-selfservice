@@ -155,6 +155,12 @@ module.exports = {
       edit: '/demo-payment/edit',
       mockCard: '/demo-payment/mock-card-number',
     },
+    paymentLinks: {
+      index: '/payment-links',
+      create: '/payment-links/create',
+      edit: '/payment-links/:productExternalId/edit',
+      delete: '/payment-links/:productExternalId/delete',
+    },
     settings: {
       index: '/settings',
       serviceName: {
