@@ -24,6 +24,7 @@ const {
   GOV_ENTITY_DOC_FORM_FIELD_NAME,
 } = require('@controllers/simplified-account/settings/stripe-details/government-entity-document/constants')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
+const testWithYourUsersController = require('@controllers/test-with-your-users')
 
 const upload = multer({ storage: multer.memoryStorage() })
 const simplifiedAccount = new Router({ mergeParams: true })
@@ -60,7 +61,6 @@ simplifiedAccount.post(
 )
 
 // payment links
-
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.index,
   experimentalFeature,
@@ -90,6 +90,13 @@ simplifiedAccount.post(
   permission('tokens:create'),
   servicesController.paymentLinks.remove.post
 )
+
+// test with your users
+simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index)
+simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.links, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.links)
+simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create)
+simplifiedAccount.post(paths.simplifiedAccount.testWithYourUsers.confirm, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.submit)
+simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.disable, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.disable)
 
 // settings index
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)

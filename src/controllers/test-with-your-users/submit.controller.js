@@ -10,10 +10,10 @@ const productTypes = require('../../utils/product-types')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 const { isCurrency, isHttps, isAboveMaxAmount } = require('../../utils/validation/field-validation-checks')
 const { penceToPounds, safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
+const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 
 module.exports = async (req, res) => {
-  const gatewayAccountId = req.account.gateway_account_id
+  const gatewayAccountId = req.account.id
   const confirmationPage = req.body['confirmation-page']
   const paymentDescription = req.body['payment-description']
   const paymentAmountInPence = safeConvertPoundsStringToPence(req.body['payment-amount'], true)
@@ -30,7 +30,7 @@ module.exports = async (req, res) => {
   }
 
   if (lodash.get(req, 'session.flash.genericError.length')) {
-    return res.redirect(formatAccountPathsFor(paths.account.prototyping.demoService.create, req.account.external_id))
+    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.create, req.service.externalId, req.account.type))
   }
 
   try {
@@ -57,10 +57,17 @@ module.exports = async (req, res) => {
 
     const prototypeLink = lodash.get(product, 'links.pay.href')
     lodash.set(req, 'session.pageData.createPrototypeLink', {})
-    return response(req, res, 'dashboard/demo-service/confirm', { prototypeLink })
+
+    const context = {
+      prototypeLink,
+      backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links, req.service.externalId, req.account.type),
+      prototypesLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  req.service.externalId, req.account.type),
+    }
+
+    return response(req, res, 'dashboard/demo-service/confirm', context)
   } catch (err) {
     logger.error(`Create product failed - ${err.message}`)
     req.flash('genericError', 'Something went wrong. Please try again or contact support.')
-    return res.redirect(formatAccountPathsFor(paths.account.prototyping.demoService.create, req.account.external_id))
+    return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.create, req.service.externalId, req.account.type))
   }
 }
