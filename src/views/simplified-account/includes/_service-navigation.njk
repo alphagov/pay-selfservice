@@ -2,22 +2,18 @@
   {% if details.items and details.items.length > 0 %}
     {% if details.settings.collapsible %}
 
-      {% set section_id = 'sub-nav-' + key | lower
-        | replace('&', '') | replace('/', '-') | replace('.', '')
-        | replace(' ', '-') | replace('--', '-') %}
-
       <div class="collapsible-section">
         <button
           class="nav__button sub-nav__button govuk-button govuk-button--inverse"
           type="button"
           data-open
           {% if details.settings.defaultState == 'open' %} data-active{% endif %}
-          data-controls="{{ section_id }}"
+          data-section-name="{{ key }}"
         >
           {{ key | smartCaps }}
         </button>
 
-        <div class="sub-nav" id="{{ section_id }}">
+        <div class="sub-nav">
           {% for item in details.items %}
             <a class="nav__button govuk-button govuk-button--inverse" id="settings-navigation-{{ item.id }}"
                data-module="govuk-button" href="{{ item.url }}"
@@ -82,7 +78,15 @@
       const subNavButton = section.querySelector('.sub-nav__button')
       const subNav = section.querySelector('.sub-nav')
 
-      const sectionId = subNavButton.getAttribute('data-controls')
+      const sectionName = subNavButton.getAttribute('data-section-name')
+      const sectionId = 'sub-nav-' + sectionName.toLowerCase()
+        .replace(/&/g, '')
+        .replace(/\//g, '-')
+        .replace(/\./g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+
+      subNav.id = sectionId
       subNavButton.setAttribute('aria-controls', sectionId)
 
       if (!subNavButton.hasAttribute('data-active')) {
