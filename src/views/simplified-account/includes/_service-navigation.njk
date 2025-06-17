@@ -1,36 +1,29 @@
 {% macro navigation(key, details) %}
   {% if details.items and details.items.length > 0 %}
     {% if details.settings.collapsible %}
-
       <div class="collapsible-section">
-        <button
-          class="nav__button sub-nav__button govuk-button govuk-button--inverse"
-          type="button"
-          data-open
-          {% if details.settings.defaultState == 'open' %} data-active{% endif %}
-        >
+        <button class="nav__button sub-nav__button govuk-button govuk-button--inverse" type="button"
+                data-open{% if details.settings.defaultState == 'open' %} data-active{% endif %}>
           {{ key | smartCaps }}
         </button>
-
         <div class="sub-nav">
           {% for item in details.items %}
             <a class="nav__button govuk-button govuk-button--inverse" id="settings-navigation-{{ item.id }}"
-               data-module="govuk-button" href="{{ item.url }}"
-               {% if item.current %}aria-current="page" data-current{% endif %}>
+               data-module="govuk-button" href="{{ item.url }}" {% if item.current %}aria-current="page"
+               data-current{% endif %}>
               {{ item.name | smartCaps }}
             </a>
           {% endfor %}
         </div>
       </div>
-
     {% else %}
       {% if details.settings.displayCategoryName %}
         <h3 class="nav__h3">{{ key | smartCaps }}</h3>
       {% endif %}
       {% for item in details.items %}
         <a class="nav__button govuk-button govuk-button--inverse" id="settings-navigation-{{ item.id }}"
-           data-module="govuk-button" href="{{ item.url }}"
-           {% if item.current %}aria-current="page" data-current{% endif %}>
+           data-module="govuk-button" href="{{ item.url }}" {% if item.current %}aria-current="page"
+           data-current{% endif %}>
           {{ item.name | smartCaps }}
         </a>
       {% endfor %}
@@ -71,27 +64,21 @@
       : subNavButton.setAttribute('data-open', '')
   }
 
-  // init
   const enhance = () => {
     document.querySelectorAll('.collapsible-section').forEach((section, index) => {
+      const subNavId = `sub-nav-${index}`
       const subNavButton = section.querySelector('.sub-nav__button')
       const subNav = section.querySelector('.sub-nav')
-
-      const subNavId = `sub-nav-${index}`
-
-      subNav.id = subNavId
-      subNavButton.setAttribute('aria-controls', subNavId)
 
       if (!subNavButton.hasAttribute('data-active')) {
         subNav.style.display = 'none'
         subNavButton.setAttribute('aria-expanded', 'false')
         subNavButton.removeAttribute('data-open')
       } else {
-        subNav.style.display = 'block'
         subNavButton.setAttribute('aria-expanded', 'true')
-        subNavButton.setAttribute('data-open', '')
       }
-
+      subNav.id = subNavId
+      subNavButton.setAttribute('aria-controls', subNavId)
       subNavButton.addEventListener('click', onButtonClick)
     })
   }
