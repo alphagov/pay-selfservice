@@ -53,9 +53,9 @@
     subNavButton.setAttribute('aria-expanded', expandedState === 'true' ? 'false' : 'true')
     subNavButton.hasAttribute('data-open') ? subNavButton.removeAttribute('data-open') : subNavButton.setAttribute('data-open', '')
   }
-  // init
   const enhance = () => {
-    document.querySelectorAll('.collapsible-section').forEach(section => {
+    document.querySelectorAll('.collapsible-section').forEach((section, index) => {
+      const subNavId = `sub-nav-${index}`
       const subNavButton = section.querySelector('.sub-nav__button')
       const subNav = section.querySelector('.sub-nav')
       if (!subNavButton.hasAttribute('data-active')) {
@@ -65,9 +65,10 @@
       } else {
         subNavButton.setAttribute('aria-expanded', 'true')
       }
+      subNav.id = subNavId
+      subNavButton.setAttribute('aria-controls', subNavId)
       subNavButton.addEventListener('click', onButtonClick)
     })
   }
-
   enhance()
 </script>

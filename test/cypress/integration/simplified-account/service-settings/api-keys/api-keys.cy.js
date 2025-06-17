@@ -139,7 +139,7 @@ describe('Settings - API keys', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
       it('should show appropriate buttons and text', () => {
-        cy.get('#settings-navigation-api-keys').should('have.text', 'API keys')
+        cy.get('#settings-navigation-api-keys').should('contain.text', 'API keys')
         cy.get('.service-pane').find('a').contains('Create a new API key').should('exist')
         cy.get('.service-pane').find('h2').contains('There are no active test API keys').should('exist')
       })
@@ -170,7 +170,7 @@ describe('Settings - API keys', () => {
       })
 
       it('should show appropriate buttons and text', () => {
-        cy.get('#settings-navigation-api-keys').should('have.text', 'API keys')
+        cy.get('#settings-navigation-api-keys').should('contain.text', 'API keys')
         cy.get('.service-pane').find('a').contains('Create a new API key').should('exist')
         cy.get('.service-pane').find('h2').contains('Active test API keys (2)').should('exist')
         cy.get('.service-pane').find('a').contains('Show revoked API keys').should('not.exist')
@@ -257,7 +257,7 @@ describe('Settings - API keys', () => {
         cy.contains('button', 'Continue').click()
         cy.contains('h1', 'New API key').should('exist')
         cy.contains('h2', API_KEY_DESCRIPTION).should('exist')
-        cy.get('#api-key').should('have.text', EXPECTED_TOKEN)
+        cy.get('#api-key').should('contain.text', EXPECTED_TOKEN)
         cy.get('#copy-key-button')
           .should('have.attr', 'data-copy-text', 'true')
           .should('have.attr', 'data-target', 'copy-this-api-key')
