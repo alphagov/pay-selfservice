@@ -19,7 +19,16 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
       ),
       hasPermission: UserPermissions.any,
     })
-
+    .add({
+      id: 'payment-links',
+      name: 'payment links',
+      path: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.paymentLinks.index,
+        service.externalId,
+        account.type
+      ),
+      hasPermission: UserPermissions.any,
+    })
     .build()
   return getViewableNav(serviceNavigation)
 }

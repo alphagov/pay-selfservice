@@ -10,6 +10,7 @@ const {
   defaultViewDecider,
   pspSwitchRedirect,
   canStartPspPaymentVerificationTask,
+  experimentalFeature
 } = require('@middleware/simplified-account')
 const restrictToSwitchingAccount = require('@middleware/restrict-to-switching-account')
 const restrictToSandboxOrStripeTestAccount = require('@middleware/restrict-to-sandbox-or-stripe-test-account')
@@ -38,6 +39,12 @@ simplifiedAccount.post(paths.simplifiedAccount.demoPayment.edit, restrictToSandb
 simplifiedAccount.get(paths.simplifiedAccount.demoPayment.mockCard, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.mockCardNumber.get)
 simplifiedAccount.post(paths.simplifiedAccount.demoPayment.mockCard, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.post)
 
+// payment links
+
+simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.index, experimentalFeature, servicesController.paymentLinks.get)
+simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.create, experimentalFeature, servicesController.paymentLinks.create.get)
+simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.edit, experimentalFeature, servicesController.paymentLinks.edit.get)
+simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.delete, experimentalFeature, servicesController.paymentLinks.remove.get)
 
 // settings index
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)
