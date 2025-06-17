@@ -23,4 +23,34 @@ describe('The index page', () => {
       expect(location.pathname).to.eq('/my-services')
     })
   })
+
+  describe('footer content when logged in', () => {
+    beforeEach(() => {
+      cy.visit('/')
+    })
+
+    it('should display the About section with 6 links', () => {
+      cy.get('footer .govuk-footer__section')
+        .contains('About')
+        .parent()
+        .find('a')
+        .should('have.length', 6)
+    })
+
+    it('should display the Support section with 4 links', () => {
+      cy.get('footer .govuk-footer__section')
+        .contains('Support')
+        .parent()
+        .find('a')
+        .should('have.length', 4)
+    })
+
+    it('should display the Legal Terms section with 5 links when logged in', () => {
+      cy.get('footer .govuk-footer__section')
+        .contains('Legal Terms')
+        .parent()
+        .find('a')
+        .should('have.length', 4)
+    })
+  })
 })

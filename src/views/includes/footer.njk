@@ -1,34 +1,102 @@
-<footer class="govuk-footer" role="contentinfo">
-  <div class="govuk-width-container">
-    {% include "includes/footer-categories.njk" %}
-    <hr class="govuk-footer__section-break">
-    <div class="govuk-footer__meta">
-      <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
-        <h2 class="govuk-visually-hidden">Support links</h2>
-          <ul class="govuk-footer__inline-list">
-            <li class="govuk-footer__inline-list-item">Built by the <a class="govuk-footer__link" href="https://www.gov.uk/government/organisations/government-digital-service">Government Digital Service</a></li>
-            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="/privacy">Privacy notice</a></li>
-            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="https://www.payments.service.gov.uk/cookies/">Cookies</a></li>
-            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="https://www.payments.service.gov.uk/accessibility-statement/">Accessibility statement</a></li>
-          </ul>
-        <svg aria-hidden="true" focusable="false" class="govuk-footer__licence-logo" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 483.2 195.7" height="17" width="41">
-          <path
-            fill="currentColor"
-            d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145"
-          />
-        </svg>
-        <span class="govuk-footer__licence-description">
-          All content is available under the
-          <a
-            class="govuk-footer__link"
-            href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-            rel="license"
-          >Open Government Licence v3.0</a>, except where otherwise stated
-        </span>
-      </div>
-      <div class="govuk-footer__meta-item">
-        <a class="govuk-footer__link govuk-footer__copyright-logo" href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">© Crown copyright</a>
-      </div>
-    </div>
-  </div>
-</footer>
+{% set footerNavigation = [
+  {
+    title: "About",
+    width: "one-third",
+    items: [
+    {
+      href: "https://www.payments.service.gov.uk/",
+      text: "About"
+    },
+    {
+      href: "https://www.payments.service.gov.uk/getstarted/",
+      text: "Get started"
+    },
+    {
+      href: "https://www.payments.service.gov.uk/features/",
+      text: "Features"
+    },
+    {
+      href: "https://www.payments.service.gov.uk/roadmap/",
+      text: "Roadmap"
+    },
+    {
+      href: "https://www.payments.service.gov.uk/performance/",
+      text: "Performance"
+    },
+    {
+      href: "https://docs.google.com/forms/d/e/1FAIpQLSdJRj0asGOu3VJZ-0UPmx0T6w7FMsdduRAS51k18TS2XlNC7w/viewform",
+      text: "Newsletter"
+    }
+  ]
+  },
+  {
+    title: "Support",
+    width: "one-third",
+    items: [
+    {
+      href: "https://ukgovernmentdigital.slack.com/messages/C0L3AB342/",
+      text: "Chat with GOV.UK Pay on Slack"
+    },
+    {
+      href: "https://docs.payments.service.gov.uk",
+      text: "Documentation"
+    },
+    {
+      href: "https://payments.statuspage.io/",
+      text: "System status"
+    },
+    {
+      href: "https://www.payments.service.gov.uk/support/",
+      text: "Support"
+    }
+  ]
+  }
+] %}
+
+{% if loggedIn %}
+  {% set footerNavigation = footerNavigation.concat([
+    {
+      title: "Legal Terms",
+      width: "one-third",
+      items: [
+      {
+        href: "/policy/memorandum-of-understanding-for-crown-bodies",
+        text: "Memorandum of understanding for Crown bodies"
+      },
+      {
+        href: "/policy/contract-for-non-crown-bodies",
+        text: "Contract for non-Crown bodies"
+      },
+      {
+        href: "/policy/stripe-connected-account-agreement",
+        text: "Stripe Connected Account Agreement"
+      },
+      {
+        href: "/policy/pci-dss-attestation-of-compliance",
+        text: "Attestation of Compliance for PCI"
+      }
+    ]
+    }
+  ]) %}
+{% endif %}
+
+{{ govukFooter({
+  navigation: footerNavigation,
+  meta: {
+    items: [
+      {
+        href: "/privacy",
+        text: "Privacy notice"
+      },
+      {
+        href: "//www.payments.service.gov.uk/cookies/",
+        text: "Cookies"
+      },
+      {
+        href: "//www.payments.service.gov.uk/accessibility-statement/",
+        text: "Accessibility statement"
+      }
+    ],
+    html: 'Built by the <a class="govuk-footer__link" href="#">Government Digital Service</a>'
+  }
+}) }}
