@@ -3,16 +3,12 @@
     {% if details.settings.collapsible %}
       <div class="collapsible-section">
         <button class="nav__button sub-nav__button govuk-button govuk-button--inverse" type="button"
-                data-open{% if details.settings.defaultState == 'open' %} data-active{% endif %}>
-          {{ key | smartCaps }}
-        </button>
+                data-open {% if details.settings.defaultState == 'open' %} data-active{% endif %}>{{ key | smartCaps }}</button>
         <div class="sub-nav">
           {% for item in details.items %}
             <a class="nav__button govuk-button govuk-button--inverse" id="settings-navigation-{{ item.id }}"
                data-module="govuk-button" href="{{ item.url }}" {% if item.current %}aria-current="page"
-               data-current{% endif %}>
-              {{ item.name | smartCaps }}
-            </a>
+               data-current{% endif %}>{{ item.name | smartCaps }}</a>
           {% endfor %}
         </div>
       </div>
@@ -23,9 +19,7 @@
       {% for item in details.items %}
         <a class="nav__button govuk-button govuk-button--inverse" id="settings-navigation-{{ item.id }}"
            data-module="govuk-button" href="{{ item.url }}" {% if item.current %}aria-current="page"
-           data-current{% endif %}>
-          {{ item.name | smartCaps }}
-        </a>
+           data-current{% endif %}>{{ item.name | smartCaps }}</a>
       {% endfor %}
     {% endif %}
   {% endif %}
@@ -55,21 +49,15 @@
     const subNav = parent.querySelector('.sub-nav')
     const subNavButton = parent.querySelector('.sub-nav__button')
     const expandedState = subNavButton.getAttribute('aria-expanded')
-    const isExpanded = expandedState === 'true'
-
-    subNav.style.display = isExpanded ? 'none' : 'block'
-    subNavButton.setAttribute('aria-expanded', isExpanded ? 'false' : 'true')
-    subNavButton.hasAttribute('data-open')
-      ? subNavButton.removeAttribute('data-open')
-      : subNavButton.setAttribute('data-open', '')
+    subNav.style.display = expandedState === 'true' ? 'none' : 'block'
+    subNavButton.setAttribute('aria-expanded', expandedState === 'true' ? 'false' : 'true')
+    subNavButton.hasAttribute('data-open') ? subNavButton.removeAttribute('data-open') : subNavButton.setAttribute('data-open', '')
   }
-
   const enhance = () => {
     document.querySelectorAll('.collapsible-section').forEach((section, index) => {
       const subNavId = `sub-nav-${index}`
       const subNavButton = section.querySelector('.sub-nav__button')
       const subNav = section.querySelector('.sub-nav')
-
       if (!subNavButton.hasAttribute('data-active')) {
         subNav.style.display = 'none'
         subNavButton.setAttribute('aria-expanded', 'false')
@@ -82,6 +70,5 @@
       subNavButton.addEventListener('click', onButtonClick)
     })
   }
-
   enhance()
 </script>

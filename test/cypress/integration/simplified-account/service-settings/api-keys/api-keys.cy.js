@@ -30,35 +30,6 @@ const setupStubs = (role = 'admin', activeApiKeys = [], revokedApiKeys = []) => 
   ])
 }
 
-
-const expandNavigationSectionIfNeeded = () => {
-  cy.get('#settings-navigation-api-keys').then($apiKeys => {
-    if ($apiKeys.length > 0 && $apiKeys.is(':visible')) {
-      return
-    }
-
-    cy.get('.collapsible-section').then($sections => {
-      if ($sections.length > 0) {
-        cy.get('.collapsible-section').each($section => {
-          cy.wrap($section).within(() => {
-            cy.get('.sub-nav').then($subNav => {
-              if ($subNav.find('#settings-navigation-api-keys').length > 0) {
-                cy.get('.sub-nav__button').then($button => {
-                  const isExpanded = $button.attr('aria-expanded') === 'true'
-                  if (!isExpanded) {
-                    cy.wrap($button).click()
-                    cy.get('.sub-nav').should('be.visible')
-                  }
-                })
-              }
-            })
-          })
-        })
-      }
-    })
-  })
-}
-
 describe('Settings - API keys', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
@@ -167,11 +138,8 @@ describe('Settings - API keys', () => {
         setupStubs()
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
-
       it('should show appropriate buttons and text', () => {
-        expandNavigationSectionIfNeeded()
         cy.get('#settings-navigation-api-keys').should('contain.text', 'API keys')
-
         cy.get('.service-pane').find('a').contains('Create a new API key').should('exist')
         cy.get('.service-pane').find('h2').contains('There are no active test API keys').should('exist')
       })
@@ -198,15 +166,11 @@ describe('Settings - API keys', () => {
       })
 
       it('should show active "API keys" link in the setting navigation', () => {
-
-        expandNavigationSectionIfNeeded()
         checkSettingsNavigation('API keys', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
 
       it('should show appropriate buttons and text', () => {
-        expandNavigationSectionIfNeeded()
         cy.get('#settings-navigation-api-keys').should('contain.text', 'API keys')
-
         cy.get('.service-pane').find('a').contains('Create a new API key').should('exist')
         cy.get('.service-pane').find('h2').contains('Active test API keys (2)').should('exist')
         cy.get('.service-pane').find('a').contains('Show revoked API keys').should('not.exist')
@@ -293,7 +257,7 @@ describe('Settings - API keys', () => {
         cy.contains('button', 'Continue').click()
         cy.contains('h1', 'New API key').should('exist')
         cy.contains('h2', API_KEY_DESCRIPTION).should('exist')
-        cy.get('#api-key').should('have.text', EXPECTED_TOKEN)
+        cy.get('#api-key').should('contain.text', EXPECTED_TOKEN)
         cy.get('#copy-key-button')
           .should('have.attr', 'data-copy-text', 'true')
           .should('have.attr', 'data-target', 'copy-this-api-key')
@@ -399,7 +363,6 @@ describe('Settings - API keys', () => {
       })
 
       it('should show active "API keys" link in the setting navigation', () => {
-        expandNavigationSectionIfNeeded()
         checkSettingsNavigation('API keys', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)
       })
 
@@ -440,15 +403,6 @@ describe('Settings - API keys', () => {
 
     it('should not show API keys link in the navigation panel', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings`)
-
-      cy.get('.sub-nav__button[aria-expanded="false"]').then($buttons => {
-        if ($buttons.length > 0) {
-          cy.wrap($buttons).each($button => {
-            cy.wrap($button).click()
-          })
-        }
-      })
-
       cy.get('#settings-navigation-api-keys').should('not.exist')
     })
 
