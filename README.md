@@ -58,6 +58,8 @@ This command will watch changes in your workspace and rebuild them in a Pay CLI 
 
 ## Running tests
 
+This is a test
+
 #### To run tests
 
 ```bash
