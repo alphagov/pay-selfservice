@@ -8,7 +8,6 @@
           type="button"
           data-open
           {% if details.settings.defaultState == 'open' %} data-active{% endif %}
-          data-section-name="{{ key }}"
         >
           {{ key | smartCaps }}
         </button>
@@ -74,20 +73,14 @@
 
   // init
   const enhance = () => {
-    document.querySelectorAll('.collapsible-section').forEach(section => {
+    document.querySelectorAll('.collapsible-section').forEach((section, index) => {
       const subNavButton = section.querySelector('.sub-nav__button')
       const subNav = section.querySelector('.sub-nav')
 
-      const sectionName = subNavButton.getAttribute('data-section-name')
-      const sectionId = 'sub-nav-' + sectionName.toLowerCase()
-        .replace(/&/g, '')
-        .replace(/\//g, '-')
-        .replace(/\./g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
+      const subNavId = `sub-nav-${index}`
 
-      subNav.id = sectionId
-      subNavButton.setAttribute('aria-controls', sectionId)
+      subNav.id = subNavId
+      subNavButton.setAttribute('aria-controls', subNavId)
 
       if (!subNavButton.hasAttribute('data-active')) {
         subNav.style.display = 'none'
