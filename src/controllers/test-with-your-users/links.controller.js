@@ -8,9 +8,10 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 module.exports = async function getIndex (req, res, next) {
   const params = {
     productsTab: true,
-    createPage: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.create, req.service.externalId, req.account.type),
-    indexPage: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, req.service.externalId, req.account.type),
-    linksPage: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links, req.service.externalId, req.account.type)
+    createLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.create, req.service.externalId, req.account.type),
+    indexLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, req.service.externalId, req.account.type),
+    prototypesLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links, req.service.externalId, req.account.type),
+    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, req.service.externalId, req.account.type)
   }
 
   try {
