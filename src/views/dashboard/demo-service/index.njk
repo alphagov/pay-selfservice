@@ -9,7 +9,7 @@
   {{
     govukBackLink({
       text: "Back to dashboard",
-      href: backLink
+      href: formatAccountPathsFor(routes.account.dashboard.index,  currentGatewayAccount.external_id)
     })
   }}
 {% endblock %}
@@ -22,7 +22,7 @@
   {{
     govukButton({
       text: "Create prototype link",
-      href: createLink,
+      href: formatAccountPathsFor(routes.account.prototyping.demoService.create,  currentGatewayAccount.external_id),
       attributes: {
         id: "prototyping__links-button-create"
       }
@@ -33,13 +33,13 @@
     <ul class="govuk-tabs__list">
       <li class="govuk-tabs__list-item">
         <a class="govuk-tabs__tab {% if not productsTab %}
-govuk-tabs__tab--selected{% endif %}" href="{{ indexLink }}">
+govuk-tabs__tab--selected{% endif %}" href="{{formatAccountPathsFor(routes.account.prototyping.demoService.index,  currentGatewayAccount.external_id)}}">
           Mock card numbers
         </a>
       </li>
       <li class="govuk-tabs__list-item">
         <a class="govuk-tabs__tab {% if productsTab %}
-govuk-tabs__tab--selected{% endif %}" href="{{ prototypesLink }}">
+govuk-tabs__tab--selected{% endif %}" href="{{formatAccountPathsFor(routes.account.prototyping.demoService.links,  currentGatewayAccount.external_id)}}">
           Prototype links
         </a>
       </li>
