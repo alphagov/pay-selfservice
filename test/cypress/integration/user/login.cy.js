@@ -138,4 +138,28 @@ describe('Login Page', () => {
       cy.title().should('eq', 'Dashboard - service-name - GOV.UK Pay')
     })
   })
+  describe('footer when logged out', () => {
+    beforeEach(() => {
+      cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
+    })
+    it('should display the About section with 6 links', () => {
+      cy.get('footer .govuk-footer__section')
+        .contains('About')
+        .parent()
+        .find('a')
+        .should('have.length', 6)
+    })
+
+    it('should display the Support section with 4 links', () => {
+      cy.get('footer .govuk-footer__section')
+        .contains('Support')
+        .parent()
+        .find('a')
+        .should('have.length', 4)
+    })
+    it('should not display Legal terms when logged out', () => {
+      cy.get('footer .govuk-footer__section')
+        .should('not.contain', 'Legal Terms')
+    })
+  })
 })
