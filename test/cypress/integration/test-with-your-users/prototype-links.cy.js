@@ -24,6 +24,12 @@ const setupStubs = (options = {}) => {
       paymentProvider: options.paymentProvider || 'sandbox',
       type: options.type || 'test'
     }),
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, options.type || 'test', {
+      gateway_account_id: GATEWAY_ACCOUNT_ID,
+      external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
+      payment_provider: options.paymentProvider || 'sandbox',
+      type: options.type || 'test'
+    }),
     stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       responsiblePerson: false,
@@ -51,9 +57,9 @@ describe('prototype links page', () => {
       })
 
       it('should be possible to access the prototype links page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
         cy.contains('a', 'Prototype links').should('exist').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
       })
     })
 
@@ -65,9 +71,9 @@ describe('prototype links page', () => {
       })
 
       it('should be possible to access the prototype links page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
         cy.contains('a', 'Prototype links').should('exist').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
       })
     })
 
@@ -81,9 +87,9 @@ describe('prototype links page', () => {
       })
 
       it('should be possible to access the prototype links page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
         cy.contains('a', 'Prototype links').should('exist').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
       })
     })
 
@@ -97,9 +103,9 @@ describe('prototype links page', () => {
       })
 
       it('should be possible to access the prototype links page', () => {
-        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
         cy.contains('a', 'Prototype links').should('exist').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
       })
     })
 
@@ -114,7 +120,7 @@ describe('prototype links page', () => {
 
       it('should not be possible to access the prototype links page', () => {
         cy.request({
-          url: `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/live/test-with-your-users/links`,
           failOnStatusCode: false,
         }).then((response) => expect(response.status).to.eq(404))
       })
@@ -131,7 +137,7 @@ describe('prototype links page', () => {
 
       it('should not be possible to access the prototype links page', () => {
         cy.request({
-          url: `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`,
           failOnStatusCode: false,
         }).then((response) => expect(response.status).to.eq(404))
       })
@@ -159,7 +165,7 @@ describe('prototype links page', () => {
     })
 
     it('should show the list of prototype links', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`)
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
 
       cy.get('#prototyping__links-header').should('contain.text', 'There are 2 prototype links')
 
@@ -194,7 +200,7 @@ describe('prototype links page', () => {
     })
 
     it('should allow disabling a prototype link', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`)
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
 
       cy.get('.key-list').within(() => {
         cy.get('.key-list-item').eq(0).within(() => {
@@ -202,7 +208,7 @@ describe('prototype links page', () => {
         })
       })
 
-      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`)
+      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
 
       cy.get('.govuk-notification-banner')
         .should('contain.text', 'Prototype link deleted')
@@ -217,7 +223,7 @@ describe('prototype links page', () => {
     })
 
     it('should show there are no prototype links', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`)
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
 
       cy.get('#prototyping__links-header').should('contain.text', 'There are no prototype links')
     })
