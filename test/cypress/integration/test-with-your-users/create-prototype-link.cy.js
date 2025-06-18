@@ -35,17 +35,11 @@ const setupStubs = (options = {}) => {
       vatNumber: false,
       companyNumber: false
     }),
-    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, options.type || 'test', {
-      gateway_account_id: GATEWAY_ACCOUNT_ID,
-      external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
-      payment_provider: options.paymentProvider || 'sandbox',
-      type: options.type || 'test'
-    }),
     // create api key
     apiKeysStubs.createApiKey(GATEWAY_ACCOUNT_ID, USER_EMAIL, `Token for Prototype: Test prototype link description`, API_KEY_TOKEN, {
       type: 'PRODUCTS',
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      serviceMode: options.type || 'test'
+      serviceMode: 'test'
     }),
     // create product
     productsStubs.postCreateProductSuccess(),
@@ -67,9 +61,9 @@ describe('create prototype links page', () => {
       })
 
       it('should be possible to access the "Create prototype link" page', () => {
-        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
+        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
         cy.contains('a', 'Create prototype link').should('exist').click()
-        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
       })
     })
 
@@ -81,9 +75,9 @@ describe('create prototype links page', () => {
       })
 
       it('should be possible to access the "Create prototype link" page', () => {
-        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
+        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
         cy.contains('a', 'Create prototype link').should('exist').click()
-        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
       })
     })
 
@@ -97,9 +91,9 @@ describe('create prototype links page', () => {
       })
 
       it('should be possible to access the "Create prototype link" page', () => {
-        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
+        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
         cy.contains('a', 'Create prototype link').should('exist').click()
-        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
       })
     })
 
@@ -113,9 +107,9 @@ describe('create prototype links page', () => {
       })
 
       it('should be possible to access the "Create prototype link" page', () => {
-        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
+        cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
         cy.contains('a', 'Create prototype link').should('exist').click()
-        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
       })
     })
 
@@ -130,7 +124,7 @@ describe('create prototype links page', () => {
 
       it('should not be possible to access the "Create prototype link" page', () => {
         cy.request({
-          url: `/service/${SERVICE_EXTERNAL_ID}/account/live/test-with-your-users/create`,
+          url: `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`,
           failOnStatusCode: false,
         }).then((response) => expect(response.status).to.eq(404))
       })
@@ -147,7 +141,7 @@ describe('create prototype links page', () => {
 
       it('should not be possible to access the "Create prototype link" page', () => {
         cy.request({
-          url: `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`,
+          url: `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`,
           failOnStatusCode: false,
         }).then((response) => expect(response.status).to.eq(404))
       })
@@ -160,58 +154,58 @@ describe('create prototype links page', () => {
     })
 
     it('should return an error if no description is entered', () => {
-      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
 
       cy.contains('button', 'Create prototype link').click()
-      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
 
       cy.get('.flash-container>.generic-error')
         .should('contain.text', 'Enter a description')
     })
 
     it('should return an error if no amount is entered', () => {
-      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
       cy.get('input#prototyping__links-input-description').type('Test prototype link description', { delay: 0 })
 
       cy.contains('button', 'Create prototype link').click()
-      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
 
       cy.get('.flash-container>.generic-error')
         .should('contain.text', 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”')
     })
 
     it('should return an error if the amount is too high', () => {
-      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
       cy.get('input#prototyping__links-input-description').type('Test prototype link description', { delay: 0 })
       cy.get('input#prototyping__links-input-amount').type('100000.01', { delay: 0 })
 
       cy.contains('button', 'Create prototype link').click()
-      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
 
       cy.get('.flash-container>.generic-error')
         .should('contain.text', 'Enter an amount under £100,000')
     })
 
     it('should return an error if no confirmation page URL is entered', () => {
-      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
       cy.get('input#prototyping__links-input-description').type('Test prototype link description', { delay: 0 })
       cy.get('input#prototyping__links-input-amount').type('100.00', { delay: 0 })
 
       cy.contains('button', 'Create prototype link').click()
-      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
 
       cy.get('.flash-container>.generic-error')
         .should('contain.text', 'URL must begin with https://')
     })
 
     it('should return an error if the confirmation page URL is not https', () => {
-      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
       cy.get('input#prototyping__links-input-description').type('Test prototype link description', { delay: 0 })
       cy.get('input#prototyping__links-input-amount').type('100.00', { delay: 0 })
       cy.get('input#prototyping__links-input-confirmation-page').type('http://www.gov.uk', { delay: 0 })
 
       cy.contains('button', 'Create prototype link').click()
-      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
 
       cy.get('.flash-container>.generic-error')
         .should('contain.text', 'URL must begin with https://')
@@ -224,20 +218,20 @@ describe('create prototype links page', () => {
     })
 
     it('should redirect to the "Your prototype link" page', () => {
-      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
+      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
       cy.get('input#prototyping__links-input-description').type('Test prototype link description', { delay: 0 })
       cy.get('input#prototyping__links-input-amount').type('100.00', { delay: 0 })
       cy.get('input#prototyping__links-input-confirmation-page').type('https://www.gov.uk', { delay: 0 })
 
       cy.contains('button', 'Create prototype link').click()
-      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/confirm`)
+      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/confirm`)
 
       cy.contains('a', 'http://products-ui.url/pay/cf3hp2')
         .should('have.attr', 'href', 'http://products-ui.url/pay/cf3hp2')
 
       cy.contains('a', 'See prototype links').click()
 
-      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
+      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`)
     })
   })
 })

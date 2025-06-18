@@ -161,13 +161,6 @@ module.exports = {
       edit: '/payment-links/:productExternalId/edit',
       delete: '/payment-links/:productExternalId/delete',
     },
-    testWithYourUsers: {
-      index: '/test-with-your-users',
-      links: '/test-with-your-users/links',
-      create: '/test-with-your-users/create',
-      confirm: '/test-with-your-users/confirm',
-      disable: '/test-with-your-users/links/disable/:productExternalId',
-    },
     settings: {
       index: '/settings',
       serviceName: {
