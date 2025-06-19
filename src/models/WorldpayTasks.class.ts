@@ -6,7 +6,6 @@ import CredentialState from '@models/constants/credential-state'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import GatewayAccountCredential from '@models/gateway-account-credential/GatewayAccountCredential.class'
 import { Task, Tasks } from '@models/task-workflows/Tasks.class'
-import { WORLDPAY } from '@models/constants/payment-providers'
 import {NotFoundError} from "@root/errors";
 
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL!)
