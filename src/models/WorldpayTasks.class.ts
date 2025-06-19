@@ -7,6 +7,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import GatewayAccountCredential from '@models/gateway-account-credential/GatewayAccountCredential.class'
 import { Task, Tasks } from '@models/task-workflows/Tasks.class'
 import { WORLDPAY } from '@models/constants/payment-providers'
+import {NotFoundError} from "@root/errors";
 
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL!)
 
@@ -15,11 +16,11 @@ class WorldpayTasks extends Tasks<WorldpayTask> {
     super(tasks);
   }
 
-  public static forAccount (gatewayAccount) {
+  public static forAccount (gatewayAccount: GatewayAccount) {
     return new WorldpayTasks(WorldpayTasks.generateTasks(gatewayAccount))
   }
 
-  public static forSwitching (gatewayAccount) {
+  public static forSwitching (gatewayAccount: GatewayAccount) {
     return new WorldpayTasks(WorldpayTasks.generateTasksForSwitching(gatewayAccount))
   }
 
@@ -46,7 +47,7 @@ class WorldpayTasks extends Tasks<WorldpayTask> {
   private static generateTasks(gatewayAccount: GatewayAccount) {
     const credential = gatewayAccount.getCurrentCredential()
     if (!credential) {
-      throw new Error('Gateway account has no current credential')
+      throw new NotFoundError(`No current credential found for Gateway account [gateway_account_id: ${gatewayAccount.id}]`)
     }
 
     return WorldpayTasks.generateTasksForCredential(gatewayAccount, credential, false)

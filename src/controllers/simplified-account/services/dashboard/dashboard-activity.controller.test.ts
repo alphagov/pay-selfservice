@@ -57,6 +57,7 @@ const ACCOUNT = (accountType: string, paymentProvider: string, credentialState: 
           credentials,
         },
       ],
+      service_id: SERVICE_EXTERNAL_ID
     })
   )
 }
@@ -601,6 +602,7 @@ describe('controller: services/dashboard', () => {
                   credentials: {},
                 },
               ],
+              service_id: SERVICE_EXTERNAL_ID,
             })
           ),
         })
