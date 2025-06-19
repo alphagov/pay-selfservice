@@ -106,6 +106,7 @@ function validGatewayAccount (opts) {
     integration_version_3ds: opts.integrationVersion3ds || 1,
     disabled: opts.disabled || false,
     provider_switch_enabled: opts.provider_switch_enabled || false,
+    service_id: opts.service_id
   }
 
   if (opts.description) {
@@ -130,10 +131,6 @@ function validGatewayAccount (opts) {
   }
   if (opts.worldpay_3ds_flex) {
     gatewayAccount.worldpay_3ds_flex = validWorldpay3dsFlexCredentials(opts.worldpay_3ds_flex)
-  }
-
-  if (opts.service_id) {
-    gatewayAccount.service_id = opts.service_id
   }
 
   return gatewayAccount
