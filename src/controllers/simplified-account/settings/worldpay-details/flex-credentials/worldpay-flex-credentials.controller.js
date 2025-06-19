@@ -14,8 +14,11 @@ function get (req, res) {
       organisationalUnitId: req.account?.worldpay3dsFlex?.organisationalUnitId,
       issuer: req.account?.worldpay3dsFlex?.issuer
     },
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
-      req.service.externalId, req.account.type)
+    backLink: formatSimplifiedAccountPathsFor(
+      req.url.includes('switch-psp')
+      ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
+      : paths.simplifiedAccount.settings.worldpayDetails.index,
+      req.service.externalId, req.account.type),
   })
 }
 
@@ -77,8 +80,11 @@ const errorResponse = (req, res, errors) => {
       issuer: req.body.issuer,
       jwtMacKey: req.body.jwtMacKey
     },
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
-      req.service.externalId, req.account.type)
+    backLink: formatSimplifiedAccountPathsFor(
+      req.url.includes('switch-psp')
+      ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
+      : paths.simplifiedAccount.settings.worldpayDetails.index,
+      req.service.externalId, req.account.type),
   })
 }
 

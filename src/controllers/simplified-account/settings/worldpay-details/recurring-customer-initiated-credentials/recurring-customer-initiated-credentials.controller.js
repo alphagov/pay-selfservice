@@ -8,12 +8,15 @@ const worldpayDetailsService = require('@services/worldpay-details.service')
 const WorldpayTasks = require('@models/WorldpayTasks.class')
 
 function get (req, res) {
-  const existingCredentials = req.account.getCurrentCredential().credentials?.recurringCustomerInitiated || {}
+  const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId).credentials.recurringCustomerInitiated || {}
 
   return response(req, res, 'simplified-account/settings/worldpay-details/recurring-customer-initiated-credentials', {
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
+    backLink: formatSimplifiedAccountPathsFor(
+      req.url.includes('switch-psp')
+      ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
+      : paths.simplifiedAccount.settings.worldpayDetails.index,
       req.service.externalId, req.account.type),
-    credentials: existingCredentials
+    credentials: credential
   })
 }
 
@@ -86,7 +89,10 @@ const errorResponse = (req, res, errors) => {
       username: req.body.username,
       password: req.body.password
     },
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
+    backLink: formatSimplifiedAccountPathsFor(
+      req.url.includes('switch-psp')
+      ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
+      : paths.simplifiedAccount.settings.worldpayDetails.index,
       req.service.externalId, req.account.type)
   })
 }

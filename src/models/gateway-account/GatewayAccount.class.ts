@@ -6,11 +6,7 @@ import { EmailNotificationsData } from '@models/gateway-account/dto/EmailNotific
 import GatewayAccountCredential from '@models/gateway-account-credential/GatewayAccountCredential.class'
 import PaymentProvider from '@models/constants/payment-providers'
 
-const pendingCredentialStates = [
-  CredentialState.CREATED,
-  CredentialState.ENTERED,
-  CredentialState.VERIFIED,
-]
+const pendingCredentialStates = [CredentialState.CREATED, CredentialState.ENTERED, CredentialState.VERIFIED]
 
 class GatewayAccount {
   readonly id: number
@@ -77,11 +73,7 @@ class GatewayAccount {
   }
 
   getActiveCredential() {
-    return (
-      this.gatewayAccountCredentials.find(
-        (credential) => credential.state === CredentialState.ACTIVE
-      ) ?? undefined
-    )
+    return this.gatewayAccountCredentials.find((credential) => credential.state === CredentialState.ACTIVE) ?? undefined
   }
 
   getSwitchingCredential() {
@@ -102,6 +94,11 @@ class GatewayAccount {
     }
 
     return pendingCredentials[0]
+  }
+
+  findCredentialByExternalId(externalId: string) {
+    // todo return 404 error if not found
+    return this.gatewayAccountCredentials.find((credential) => credential.externalId === externalId)
   }
 
   isSwitchingToProvider(paymentProvider: string): boolean {
@@ -130,10 +127,7 @@ class EmailNotifications {
   readonly paymentConfirmed: EmailNotificationSetting
   readonly refundIssued: EmailNotificationSetting
 
-  constructor(data: {
-    PAYMENT_CONFIRMED: EmailNotificationsData
-    REFUND_ISSUED: EmailNotificationsData
-  }) {
+  constructor(data: { PAYMENT_CONFIRMED: EmailNotificationsData; REFUND_ISSUED: EmailNotificationsData }) {
     this.paymentConfirmed = new EmailNotificationSetting(data?.PAYMENT_CONFIRMED)
     this.refundIssued = new EmailNotificationSetting(data?.REFUND_ISSUED)
   }

@@ -4,10 +4,16 @@
 
 {% block settingsContent %}
   {% if providerSwitchEnabled %}
-    {{ govukInsetText({
-      html: "Your service is ready to switch PSP from Worldpay to Stripe.<br>" + "Find out how to switch to Stripe" | docsLink("switch_payment_service_provider/switch_psp_to_stripe") | safe,
-      classes: "service-settings-inset-text--grey"
-    }) }}
+  {% set switchMessage %}
+    Your service is ready to switch PSP from {{ currentPsp | smartCaps }} to {{ switchingPsp | smartCaps }}.<br>
+    Find out how to switch to {{ switchingPsp | smartCaps | docsLink("switch_payment_service_provider") | safe }}
+  {% endset %}
+
+  {{ govukInsetText({
+    html: switchMessage,
+    classes: "service-settings-inset-text--grey"
+  }) }}
+
   {% endif %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 

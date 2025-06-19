@@ -9,12 +9,15 @@ const WorldpayTasks = require('@models/WorldpayTasks.class')
 const { ONE_OFF_CUSTOMER_INITIATED_SCHEMA } = require('@utils/simplified-account/validation/worldpay/validations.schema')
 
 function get (req, res) {
-  const existingCredentials = req.account.getCurrentCredential().credentials?.oneOffCustomerInitiated || {}
+  const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId).credentials.oneOffCustomerInitiated || {}
 
   return response(req, res, 'simplified-account/settings/worldpay-details/one-off-customer-initiated-credentials', {
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
+    backLink: formatSimplifiedAccountPathsFor(
+      req.url.includes('switch-psp')
+      ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
+      : paths.simplifiedAccount.settings.worldpayDetails.index,
       req.service.externalId, req.account.type),
-    credentials: existingCredentials
+    credentials: credential
   })
 }
 
@@ -87,8 +90,11 @@ const errorResponse = (req, res, errors) => {
       username: req.body.username,
       password: req.body.password
     },
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
-      req.service.externalId, req.account.type)
+    backLink: formatSimplifiedAccountPathsFor(
+      req.url.includes('switch-psp')
+      ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
+      : paths.simplifiedAccount.settings.worldpayDetails.index,
+      req.service.externalId, req.account.type),
   })
 }
 

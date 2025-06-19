@@ -209,9 +209,9 @@ module.exports = {
       worldpayDetails: {
         index: '/settings/worldpay-details',
         flexCredentials: '/settings/worldpay-details/flex-credentials',
-        oneOffCustomerInitiated: '/settings/worldpay-details/one-off-customer-initiated',
-        recurringCustomerInitiated: '/settings/worldpay-details/recurring-customer-initiated',
-        recurringMerchantInitiated: '/settings/worldpay-details/recurring-merchant-initiated',
+        oneOffCustomerInitiated: '/settings/worldpay-details/one-off-customer-initiated/:credentialExternalId',
+        recurringCustomerInitiated: '/settings/worldpay-details/recurring-customer-initiated/:credentialExternalId',
+        recurringMerchantInitiated: '/settings/worldpay-details/recurring-merchant-initiated/:credentialExternalId',
       },
       cardPayments: {
         index: '/settings/card-payments',
@@ -270,9 +270,10 @@ module.exports = {
         },
         switchToWorldpay: {
           index: '/settings/switch-psp/switch-to-worldpay',
-          oneOffCustomerInitiated:
-            '/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated',
-          flexCredentials: '/settings/switch-psp/switch-to-worldpay/worldpay-details/flex-credentials',
+          flexCredentials: '/settings/switch-psp/switch-to-worldpay/flex-credentials',
+          oneOffCustomerInitiated: '/settings/switch-psp/switch-to-worldpay/one-off-customer-initiated/:credentialExternalId',
+          recurringCustomerInitiated: '/settings/switch-psp/switch-to-worldpay/recurring-customer-initiated/:credentialExternalId',
+          recurringMerchantInitiated: '/settings/switch-psp/switch-to-worldpay/recurring-merchant-initiated/:credentialExternalId',
         },
         makeTestPayment: {
           outbound: '/settings/switch-psp/make-a-payment',

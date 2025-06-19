@@ -4,13 +4,18 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const paths = require('@root/paths')
 
 function get (req, res) {
-  const worldpayTasks = new WorldpayTasks(req.account, req.service.externalId)
+  const credential = req.account.getCurrentCredential()
+  const worldpayTasks = new WorldpayTasks(req.account, req.service.externalId, credential)
 
   const context = {
+    currentPsp: req.account.paymentProvider,
     tasks: worldpayTasks.tasks,
     incompleteTasks: worldpayTasks.incompleteTasks(),
     messages: res.locals.flash?.messages ?? [],
-    providerSwitchEnabled: req.account.providerSwitchEnabled
+    providerSwitchEnabled: req.account.providerSwitchEnabled,
+    ...(req.account.providerSwitchEnabled && {
+      switchingPsp: req.account.getSwitchingCredential().paymentProvider
+    })
   }
 
   if (!worldpayTasks.incompleteTasks()) {
@@ -26,23 +31,23 @@ function get (req, res) {
       context.answers.tasksWithMerchantCodeAndUsername = [{
         title: 'Recurring customer initiated transaction (CIT) credentials',
         href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
-          req.service.externalId, req.account.type),
-        merchantCode: req.account.getCurrentCredential().credentials.recurringCustomerInitiated.merchantCode,
-        username: req.account.getCurrentCredential().credentials.recurringCustomerInitiated.username
+          req.service.externalId, req.account.type, credential.externalId),
+        merchantCode: credential.credentials.recurringCustomerInitiated.merchantCode,
+        username: credential.credentials.recurringCustomerInitiated.username
       }, {
         title: 'Recurring merchant initiated transaction (MIT) credentials',
         href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated,
-          req.service.externalId, req.account.type),
-        merchantCode: req.account.getCurrentCredential().credentials.recurringMerchantInitiated.merchantCode,
-        username: req.account.getCurrentCredential().credentials.recurringMerchantInitiated.username
+          req.service.externalId, req.account.type, credential.externalId),
+        merchantCode: credential.credentials.recurringMerchantInitiated.merchantCode,
+        username: credential.credentials.recurringMerchantInitiated.username
       }]
     } else {
       context.answers.tasksWithMerchantCodeAndUsername = [{
         title: 'Account credentials',
         href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
-          req.service.externalId, req.account.type),
-        merchantCode: req.account.getCurrentCredential().credentials.oneOffCustomerInitiated.merchantCode,
-        username: req.account.getCurrentCredential().credentials.oneOffCustomerInitiated.username
+          req.service.externalId, req.account.type, credential.externalId),
+        merchantCode: credential.credentials.oneOffCustomerInitiated.merchantCode,
+        username: credential.credentials.oneOffCustomerInitiated.username
       }]
     }
   }
