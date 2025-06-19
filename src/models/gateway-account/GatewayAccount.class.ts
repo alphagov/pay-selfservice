@@ -33,6 +33,7 @@ class GatewayAccount {
   readonly providerSwitchEnabled: boolean
   readonly recurringEnabled: boolean
   readonly requires3ds: boolean
+  readonly serviceExternalId: string
   readonly supports3ds: boolean
   readonly worldpay3dsFlex?: Worldpay3dsFlexCredential
   readonly rawResponse: GatewayAccountData
@@ -61,6 +62,7 @@ class GatewayAccount {
     this.providerSwitchEnabled = gatewayAccountData.provider_switch_enabled
     this.recurringEnabled = gatewayAccountData.recurring_enabled
     this.requires3ds = gatewayAccountData.requires3ds
+    this.serviceExternalId = gatewayAccountData.service_id
     this.supports3ds = [PaymentProvider.WORLDPAY, PaymentProvider.STRIPE].includes(gatewayAccountData.payment_provider)
     this.worldpay3dsFlex = gatewayAccountData.worldpay_3ds_flex
       ? Worldpay3dsFlexCredential.fromJson(gatewayAccountData.worldpay_3ds_flex)

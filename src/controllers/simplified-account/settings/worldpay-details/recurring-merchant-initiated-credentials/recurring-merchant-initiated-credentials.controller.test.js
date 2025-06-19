@@ -21,9 +21,10 @@ const gatewayAccount = new GatewayAccount({
     created_date: '2024-11-29T11:58:36.214Z',
     gateway_account_id: 1,
     credentials: {}
-  }]
+  }],
+  service_id: SERVICE_EXTERNAL_ID
 })
-const worldpayTasks = new WorldpayTasks(gatewayAccount, SERVICE_EXTERNAL_ID)
+const worldpayTasks = WorldpayTasks.forAccount(gatewayAccount)
 WorldpayTasks.recalculate = () => { return worldpayTasks }
 
 const worldpayDetailsServiceStubs = {

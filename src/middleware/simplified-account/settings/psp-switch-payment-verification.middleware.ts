@@ -16,7 +16,7 @@ async function canStartPspPaymentVerificationTask(req: ServiceRequest, _: Servic
   let errorPath: string
   switch (gatewayAccount.getSwitchingCredential().paymentProvider) {
     case WORLDPAY:
-      tasks = new WorldpayTasks(gatewayAccount, service.externalId)
+      tasks = WorldpayTasks.forSwitching(req.account)
       errorPath = paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
       break
     case STRIPE:

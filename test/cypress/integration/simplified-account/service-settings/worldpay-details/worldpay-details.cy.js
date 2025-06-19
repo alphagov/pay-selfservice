@@ -51,6 +51,7 @@ const setupStubs = (opts = {}, additionalStubs = []) => {
       ],
       worldpay_3ds_flex: options.worldpay3dsFlex,
       allow_moto: options.allowMoto,
+      service_id: SERVICE_EXTERNAL_ID,
     }),
     ...additionalStubs,
   ])

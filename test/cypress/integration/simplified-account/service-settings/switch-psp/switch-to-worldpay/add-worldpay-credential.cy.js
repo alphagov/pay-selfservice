@@ -39,7 +39,8 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       gateway_account_credentials: [
         STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
         pendingCredential
-      ]
+      ],
+      service_id: SERVICE_EXTERNAL_ID
     }),
     ...additionalStubs])
 }

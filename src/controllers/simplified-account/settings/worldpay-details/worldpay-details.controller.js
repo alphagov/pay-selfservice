@@ -4,7 +4,7 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const paths = require('@root/paths')
 
 function get (req, res) {
-  const worldpayTasks = new WorldpayTasks(req.account, req.service.externalId)
+  const worldpayTasks = WorldpayTasks.forAccount(req.account)
 
   const context = {
     tasks: worldpayTasks.tasks,

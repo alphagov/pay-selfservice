@@ -56,6 +56,7 @@ const setupStubs = (opts = {}, additionalStubs = []) => {
       ],
       worldpay_3ds_flex: options.worldpay3dsFlex,
       allow_moto: false,
+      service_id: SERVICE_EXTERNAL_ID,
     }),
     gatewayAccountStubs.postCheckWorldpay3dsFlexByServiceExternalIdAndType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
       organisational_unit_id: VALID_ORGANISATIONAL_UNIT_ID,

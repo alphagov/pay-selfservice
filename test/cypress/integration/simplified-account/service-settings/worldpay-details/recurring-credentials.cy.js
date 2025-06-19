@@ -38,7 +38,8 @@ const setupStubs = (opts = {}) => {
         credentials: options.credentials,
         external_id: CREDENTIAL_EXTERNAL_ID
       }],
-      allow_moto: false
+      allow_moto: false,
+      service_id: SERVICE_EXTERNAL_ID,
     }),
     gatewayAccountStubs.postCheckWorldpayCredentialsByServiceExternalIdAndType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
       merchant_code: VALID_CIT_MERCHANT_CODE,

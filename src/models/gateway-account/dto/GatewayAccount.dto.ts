@@ -22,6 +22,7 @@ export interface GatewayAccountData {
   moto_mask_card_number_input: boolean
   moto_mask_card_security_code_input: boolean
   service_name: string
+  service_id: string
   provider_switch_enabled: boolean
   recurring_enabled: boolean
   requires3ds: boolean // 🥴

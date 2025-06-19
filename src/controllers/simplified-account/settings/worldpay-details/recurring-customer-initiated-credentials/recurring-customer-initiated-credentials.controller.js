@@ -61,7 +61,7 @@ async function post (req, res) {
 
   // if this is the last task to be completed
   // show a success banner
-  const previousTasks = new WorldpayTasks(req.account, req.service.externalId)
+  const previousTasks = WorldpayTasks.forAccount(req.account)
   if (previousTasks.incompleteTasks()) {
     const recalculatedTasks = await WorldpayTasks.recalculate(req.service.externalId, req.account.type)
     if (!recalculatedTasks.incompleteTasks()) {

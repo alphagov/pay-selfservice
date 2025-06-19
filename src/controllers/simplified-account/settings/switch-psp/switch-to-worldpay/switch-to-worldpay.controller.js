@@ -9,8 +9,7 @@ const { completePspSwitch } = require('@services/gateway-accounts.service')
 
 function get (req, res) {
   const account = req.account
-  const service = req.service
-  const worldpayTasks = new WorldpayTasks(account, service.externalId, true)
+  const worldpayTasks = WorldpayTasks.forSwitching(req.account)
 
   const context = {
     messages: res.locals?.flash?.messages ?? [],
@@ -28,7 +27,7 @@ function post (req, res, next) {
   const service = req.service
   const user = req.user
   const targetCredential = account.getSwitchingCredential()
-  const worldpayTasks = new WorldpayTasks(account, service.externalId)
+  const worldpayTasks = WorldpayTasks.forSwitching(account)
 
   if (worldpayTasks.incompleteTasks()) {
     req.flash('messages', { state: 'error', heading: 'There is a problem', body: 'You cannot switch providers until all required tasks are completed' })

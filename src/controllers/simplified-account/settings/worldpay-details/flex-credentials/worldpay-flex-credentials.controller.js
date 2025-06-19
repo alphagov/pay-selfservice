@@ -20,7 +20,7 @@ function get (req, res) {
 }
 
 async function post (req, res) {
-  const worldpayTasks = new WorldpayTasks(req.account, req.service.externalId)
+  const worldpayTasks = WorldpayTasks.forAccount(req.account)
 
   await Promise.all(THREE_DS_FLEX_VALIDATION.map(validation => validation.run(req)))
   const validationErrors = validationResult(req)

@@ -23,7 +23,8 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/
       created_date: '2024-11-29T11:58:36.214Z',
       gateway_account_id: 1,
       credentials: {}
-    }]
+    }],
+    service_id: SERVICE_EXTERNAL_ID
   }))
   .withStubs({
     '@utils/response': { response: mockResponse }

@@ -11,8 +11,16 @@ import { WORLDPAY } from '@models/constants/payment-providers'
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL!)
 
 class WorldpayTasks extends Tasks<WorldpayTask> {
-  constructor(gatewayAccount: GatewayAccount, serviceExternalId: string) {
-    super(WorldpayTasks.generateTasks(gatewayAccount, serviceExternalId))
+  constructor(tasks: WorldpayTask[]) {
+    super(tasks);
+  }
+
+  public static forAccount (gatewayAccount) {
+    return new WorldpayTasks(WorldpayTasks.generateTasks(gatewayAccount))
+  }
+
+  public static forSwitching (gatewayAccount) {
+    return new WorldpayTasks(WorldpayTasks.generateTasksForSwitching(gatewayAccount))
   }
 
   hasRecurringTasks() {
@@ -24,29 +32,48 @@ class WorldpayTasks extends Tasks<WorldpayTask> {
       serviceExternalId,
       accountType,
     })
-    return new WorldpayTasks(gatewayAccount, serviceExternalId)
+    return WorldpayTasks.forAccount(gatewayAccount)
   }
 
-  private static generateTasks(gatewayAccount: GatewayAccount, serviceExternalId: string) {
+  static async recalculateForSwitching(serviceExternalId: string, accountType: string) {
+    const gatewayAccount = await connectorClient.getAccountByServiceExternalIdAndAccountType({
+      serviceExternalId,
+      accountType,
+    })
+    return WorldpayTasks.forSwitching(gatewayAccount)
+  }
+
+  private static generateTasks(gatewayAccount: GatewayAccount) {
+    const credential = gatewayAccount.getCurrentCredential()
+    if (!credential) {
+      throw new Error('Gateway account has no current credential')
+    }
+
+    return WorldpayTasks.generateTasksForCredential(gatewayAccount, credential, false)
+  }
+
+  private static generateTasksForSwitching (gatewayAccount: GatewayAccount) {
+    const credential = gatewayAccount.getSwitchingCredential()
+    return WorldpayTasks.generateTasksForCredential(gatewayAccount, credential, true)
+  }
+
+  private static generateTasksForCredential (gatewayAccount: GatewayAccount, credential: GatewayAccountCredential, isSwitchingPsp: boolean) {
     const tasks: WorldpayTask[] = []
-    const switchingPsp = gatewayAccount.providerSwitchEnabled && gatewayAccount.paymentProvider !== WORLDPAY
-    const credential = switchingPsp ? gatewayAccount.getSwitchingCredential() : gatewayAccount.getCurrentCredential()
 
     if (gatewayAccount.recurringEnabled) {
-      tasks.push(WorldpayTask.recurringCustomerInitiatedCredentialsTask(serviceExternalId, gatewayAccount, credential))
-      tasks.push(WorldpayTask.recurringMerchantInitiatedCredentialsTask(serviceExternalId, gatewayAccount, credential))
+      tasks.push(WorldpayTask.recurringCustomerInitiatedCredentialsTask(gatewayAccount.serviceExternalId, gatewayAccount, credential))
+      tasks.push(WorldpayTask.recurringMerchantInitiatedCredentialsTask(gatewayAccount.serviceExternalId, gatewayAccount, credential))
     } else {
-      tasks.push(WorldpayTask.oneOffCustomerInitiatedCredentialsTask(serviceExternalId, gatewayAccount, credential))
+      tasks.push(WorldpayTask.oneOffCustomerInitiatedCredentialsTask(gatewayAccount.serviceExternalId, gatewayAccount, credential))
     }
 
     if (!gatewayAccount.allowMoto) {
-      tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount))
+      tasks.push(WorldpayTask.flexCredentialsTask(gatewayAccount.serviceExternalId, gatewayAccount))
     }
 
-    if (switchingPsp) {
-      tasks.push(WorldpayTask.makeALivePaymentTask(serviceExternalId, gatewayAccount))
+    if (isSwitchingPsp) {
+      tasks.push(WorldpayTask.makeALivePaymentTask(gatewayAccount.serviceExternalId, gatewayAccount))
     }
-
     return tasks
   }
 }
