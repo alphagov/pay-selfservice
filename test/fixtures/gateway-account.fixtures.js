@@ -106,7 +106,7 @@ function validGatewayAccount (opts) {
     integration_version_3ds: opts.integrationVersion3ds || 1,
     disabled: opts.disabled || false,
     provider_switch_enabled: opts.provider_switch_enabled || false,
-    service_id: opts.service_id
+    service_id: opts.service_id || 'valid-service-id'
   }
 
   if (opts.description) {
