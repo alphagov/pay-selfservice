@@ -1,4 +1,4 @@
-import * as oneOffCustomerInitiatedCredentials from './credentials/worldpay-credentials.controller'
+import * as oneOffCustomerInitiatedCredentials from './credentials/one-off-customer-initiated.controller'
 import * as flexCredentials from './flex-credentials/worldpay-flex-credentials.controller'
 import * as recurringCustomerInitiatedCredentials from './recurring-customer-initiated-credentials/recurring-customer-initiated-credentials.controller'
 import * as recurringMerchantInitiatedCredentials from './recurring-merchant-initiated-credentials/recurring-merchant-initiated-credentials.controller'

@@ -1,20 +1,22 @@
-const { response } = require('@utils/response')
-const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
-const paths = require('@root/paths')
-const { validationResult } = require('express-validator')
-const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
-const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
-const worldpayDetailsService = require('@services/worldpay-details.service')
-const WorldpayTasks = require('@models/task-workflows/WorldpayTasks.class')
-const { THREE_DS_FLEX_VALIDATION } = require('@utils/simplified-account/validation/worldpay/validations.schema')
+import {ServiceRequest, ServiceResponse} from "@utils/types/express";
+import paths from "@root/paths"
+import {response} from "@utils/response"
+import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import {validationResult} from "express-validator"
+import {Errors, formatValidationErrors} from "@utils/simplified-account/format/format-validation-errors"
+import Worldpay3dsFlexCredential from "@models/gateway-account-credential/Worldpay3dsFlexCredential.class"
+import worldpayDetailsService from "@services/worldpay-details.service"
+import { THREE_DS_FLEX_VALIDATION } from '@utils/simplified-account/validation/worldpay/validations.schema'
+import _ from "lodash";
+import {SESSION_KEY} from "@controllers/simplified-account/settings/worldpay-details/constants";
 
-function get (req, res) {
+function get (req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/settings/worldpay-details/flex-credentials', {
     credentials: {
       organisationalUnitId: req.account?.worldpay3dsFlex?.organisationalUnitId,
       issuer: req.account?.worldpay3dsFlex?.issuer
     },
-    backLink: formatSimplifiedAccountPathsFor(
+    backLink: formatServiceAndAccountPathsFor(
       req.url.includes('switch-psp')
       ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
       : paths.simplifiedAccount.settings.worldpayDetails.index,
@@ -22,9 +24,13 @@ function get (req, res) {
   })
 }
 
-async function post (req, res) {
-  const worldpayTasks = new WorldpayTasks(req.account, req.service.externalId)
+interface WorldpayFlexCredentialsBody {
+  organisationalUnitId: string
+  issuer: string
+  jwtMacKey: string
+}
 
+async function post (req: ServiceRequest<WorldpayFlexCredentialsBody>, res: ServiceResponse) {
   await Promise.all(THREE_DS_FLEX_VALIDATION.map(validation => validation.run(req)))
   const validationErrors = validationResult(req)
   if (!validationErrors.isEmpty()) {
@@ -34,6 +40,8 @@ async function post (req, res) {
       formErrors: formattedErrors.formErrors
     })
   }
+
+  const isSwitchingJourney = req.url.includes('switch-psp')
 
   const flexCredential = new Worldpay3dsFlexCredential()
     .withOrganisationalUnitId(req.body.organisationalUnitId)
@@ -56,23 +64,18 @@ async function post (req, res) {
 
   await worldpayDetailsService.updateIntegrationVersion3ds(req.service.externalId, req.account.type)
 
-  if (worldpayTasks.incompleteTasks()) {
-    const recalculatedTasks = await WorldpayTasks.recalculate(req.service.externalId, req.account.type)
-    if (!recalculatedTasks.incompleteTasks()) {
-      req.flash('messages', {
-        state: 'success',
-        icon: '&check;',
-        heading: 'Service connected to Worldpay',
-        body: 'This service can now take payments'
-      })
-    }
-  }
+  _.set(req, SESSION_KEY, {
+    TASK_COMPLETED: true,
+  })
 
-  return res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index,
+  return res.redirect(formatServiceAndAccountPathsFor(
+    req.url.includes('switch-psp')
+      ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
+      : paths.simplifiedAccount.settings.worldpayDetails.index,
     req.service.externalId, req.account.type))
 }
 
-const errorResponse = (req, res, errors) => {
+const errorResponse = (req: ServiceRequest<WorldpayFlexCredentialsBody>, res: ServiceResponse, errors: Errors) => {
   return response(req, res, 'simplified-account/settings/worldpay-details/flex-credentials', {
     errors,
     credentials: {
@@ -80,7 +83,7 @@ const errorResponse = (req, res, errors) => {
       issuer: req.body.issuer,
       jwtMacKey: req.body.jwtMacKey
     },
-    backLink: formatSimplifiedAccountPathsFor(
+    backLink: formatServiceAndAccountPathsFor(
       req.url.includes('switch-psp')
       ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
       : paths.simplifiedAccount.settings.worldpayDetails.index,
@@ -88,7 +91,7 @@ const errorResponse = (req, res, errors) => {
   })
 }
 
-module.exports = {
+export {
   get,
   post
 }

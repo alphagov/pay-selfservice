@@ -17,7 +17,7 @@ const VALID_MOTO_MERCHANT_CODE = WORLDPAY_CREDENTIAL_IN_ENTERED_STATE.credential
 const VALID_WORLDPAY_USERNAME = WORLDPAY_CREDENTIAL_IN_ENTERED_STATE.credentials.one_off_customer_initiated.username
 const VALID_WORLDPAY_PASSWORD = WORLDPAY_CREDENTIAL_IN_ENTERED_STATE.credentials.one_off_customer_initiated.password
 const SWITCH_TO_WORLDPAY_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay`
-const SWITCH_TO_WORLDPAY_ADD_CREDENTIAL_TASK_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated`
+const SWITCH_TO_WORLDPAY_ADD_CREDENTIAL_TASK_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/one-off-customer-initiated/${SWITCHING_CREDENTIAL_EXTERNAL_ID}`
 // ---
 
 const setStubs = (opts = {}, additionalStubs = []) => {

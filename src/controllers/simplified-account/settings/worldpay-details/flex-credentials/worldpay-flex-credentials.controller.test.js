@@ -41,6 +41,7 @@ const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@c
       credentials: { one_off_customer_initiated: {} }
     }]
   }))
+  .withUrl(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/worldpay-details.service': worldpayDetailsServiceStubs
@@ -50,8 +51,8 @@ const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@c
 describe('Controller: settings/worldpay-details/flex-credentials', () => {
   describe('get', () => {
     describe('when no credentials have yet been set', () => {
-      beforeEach(() => {
-        call('get')
+      beforeEach(async () => {
+        await call('get')
       })
 
       it('should call the response method', () => {
