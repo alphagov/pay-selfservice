@@ -6,16 +6,10 @@ import CredentialState from '@models/constants/credential-state'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import GatewayAccountCredential from '@models/gateway-account-credential/GatewayAccountCredential.class'
 import { Task, Tasks } from '@models/task-workflows/Tasks.class'
+import WorldpayTaskIdentifiers from './task-identifiers/worldpay-task-identifiers'
+import GenericTaskIdentifiers from './task-identifiers/generic-task-identifiers'
 
 const connectorClient = new ConnectorClient()
-
-const WORLDPAY_TASKS = {
-  CIT: 'worldpay-cit-credentials',
-  MIT: 'worldpay-mit-credentials',
-  FLEX: 'worldpay-3ds-flex-credentials',
-  CRED: 'worldpay-credentials',
-  PAYMENT: 'make-a-live-payment',
-}
 
 type JourneyContext = 'SWITCHING' | 'CREATING'
 
@@ -30,7 +24,7 @@ class WorldpayTasks extends Tasks<WorldpayTask> {
   }
 
   hasRecurringTasks() {
-    return [WORLDPAY_TASKS.CIT, WORLDPAY_TASKS.MIT].every((id) => this.tasks.some((t) => t.id === id))
+    return [WorldpayTaskIdentifiers.CIT, WorldpayTaskIdentifiers.MIT].every((id) => this.tasks.some((t) => t.id === id))
   }
 
   static async recalculate(
@@ -107,7 +101,7 @@ class WorldpayTask extends Task {
   ) {
     const task = new WorldpayTask(
       'Configure 3DS',
-      WORLDPAY_TASKS.FLEX,
+      WorldpayTaskIdentifiers.FLEX,
       formatServiceAndAccountPathsFor(
         journeyContext === 'SWITCHING'
           ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.flexCredentials
@@ -135,7 +129,7 @@ class WorldpayTask extends Task {
   ) {
     const task = new WorldpayTask(
       'Recurring customer initiated transaction (CIT) credentials',
-      WORLDPAY_TASKS.CIT,
+      WorldpayTaskIdentifiers.CIT,
       formatServiceAndAccountPathsFor(
         journeyContext === 'SWITCHING'
           ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.recurringCustomerInitiated
@@ -162,7 +156,7 @@ class WorldpayTask extends Task {
   ) {
     const task = new WorldpayTask(
       'Recurring merchant initiated transaction (MIT) credentials',
-      WORLDPAY_TASKS.MIT,
+      WorldpayTaskIdentifiers.MIT,
       formatServiceAndAccountPathsFor(
         journeyContext === 'SWITCHING'
           ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.recurringMerchantInitiated
@@ -189,7 +183,7 @@ class WorldpayTask extends Task {
   ) {
     const task = new WorldpayTask(
       'Link your Worldpay account with GOV.UK Pay',
-      WORLDPAY_TASKS.CRED,
+      WorldpayTaskIdentifiers.CRED,
       formatServiceAndAccountPathsFor(
         journeyContext === 'SWITCHING'
           ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.oneOffCustomerInitiated
@@ -217,7 +211,7 @@ class WorldpayTask extends Task {
   ) {
     const task = new WorldpayTask(
       'Make a live payment to test your Worldpay PSP',
-      WORLDPAY_TASKS.PAYMENT,
+      GenericTaskIdentifiers.PAY,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.switchPsp.makeTestPayment.outbound,
         serviceExternalId,
