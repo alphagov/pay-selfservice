@@ -25,9 +25,23 @@ const mockPaymentLink = {
   referenceEnabled: true,
   referenceLabel: 'Test Reference',
 }
-
 interface ValidationError {
   summary: { href: string; text: string }[]
+}
+interface SessionData {
+  pageData?: {
+    deleteSuccess?: {
+      type: string
+      id: string
+    }
+    deleteError?: {
+      type: string
+      id: string
+      message: string
+    }
+    [key: string]: unknown
+  }
+  [key: string]: unknown
 }
 
 const { req, res, nextRequest, call } = new ControllerTestBuilder(
@@ -270,8 +284,8 @@ describe('controller: services/payment-links/delete', () => {
       })
 
       it('should set success message in session and redirect', () => {
-        const request = mockRedirect.getCall(0).thisValue || {}
-        expect(request.session?.pageData?.deleteSuccess).to.deep.equal({
+        const request = mockRedirect.getCall(0).thisValue as { session?: SessionData } | undefined
+        expect(request?.session?.pageData?.deleteSuccess).to.deep.equal({
           type: 'payment-link',
           id: PRODUCT_EXTERNAL_ID,
         })
@@ -317,8 +331,8 @@ describe('controller: services/payment-links/delete', () => {
       })
 
       it('should set error message in session and redirect back', () => {
-        const request = mockRedirect.getCall(0).thisValue || {}
-        expect(request.session?.pageData?.deleteError).to.deep.include({
+        const request = mockRedirect.getCall(0).thisValue as { session?: SessionData } | undefined
+        expect(request?.session?.pageData?.deleteError).to.deep.include({
           type: 'payment-link',
           message: 'Unable to delete payment link. Please try again.',
         })
