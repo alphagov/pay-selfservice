@@ -8,6 +8,7 @@ import { InvalidConfigurationError, TaskAccessedOutOfSequenceError } from '@root
 import TaskStatus from '@models/constants/task-status'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
+import GenericTaskIdentifiers from '@models/task-workflows/task-identifiers/generic-task-identifiers'
 
 async function canStartPspPaymentVerificationTask(req: ServiceRequest, _: ServiceResponse, next: NextFunction) {
   const gatewayAccount = req.account
@@ -17,7 +18,7 @@ async function canStartPspPaymentVerificationTask(req: ServiceRequest, _: Servic
   let errorPath: string
   switch (credential.paymentProvider) {
     case WORLDPAY:
-      tasks = new WorldpayTasks(gatewayAccount, service.externalId, credential)
+      tasks = new WorldpayTasks(gatewayAccount, service.externalId, credential, 'SWITCHING')
       errorPath = paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
       break
     case STRIPE:
@@ -35,7 +36,7 @@ async function canStartPspPaymentVerificationTask(req: ServiceRequest, _: Servic
         )
       )
   }
-  const thisTask = tasks.findTaskById('make-a-live-payment')
+  const thisTask = tasks.findTaskById(GenericTaskIdentifiers.PAY)
   if (thisTask.status === TaskStatus.NOT_STARTED) {
     return next()
   } else {
