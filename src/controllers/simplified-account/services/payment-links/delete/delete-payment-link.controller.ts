@@ -20,6 +20,22 @@ interface ValidationError {
   summary: { href: string; text: string }[]
 }
 
+interface SessionData {
+  pageData?: {
+    deleteSuccess?: {
+      type: string
+      id: string
+    }
+    deleteError?: {
+      type: string
+      id: string
+      message: string
+    }
+    [key: string]: unknown
+  }
+  [key: string]: unknown
+}
+
 async function get(req: ServiceRequest, res: ServiceResponse) {
   try {
     const { productExternalId } = req.params
@@ -157,8 +173,9 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
       throw deleteError
     }
 
-    req.session.pageData = {
-      ...(req.session.pageData ?? {}),
+    const session = req.session as SessionData
+    session.pageData = {
+      ...(session.pageData ?? {}),
       deleteSuccess: {
         type: 'payment-link',
         id: productExternalId,
@@ -175,8 +192,9 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
   } catch (error) {
     logger.error('Error deleting payment link', error)
 
-    req.session.pageData = {
-      ...(req.session.pageData ?? {}),
+    const session = req.session as SessionData
+    session.pageData = {
+      ...(session.pageData ?? {}),
       deleteError: {
         type: 'payment-link',
         id: req.params.productExternalId,
