@@ -2,7 +2,7 @@ import * as oneOffCustomerInitiated from './add-worldpay-credentials.controller'
 import * as flexCredentials from './add-flex-credentials.controller'
 
 import { response } from '@utils/response'
-import WorldpayTasks from '@models/WorldpayTasks.class'
+import WorldpayTasks from '@models/task-workflows/WorldpayTasks.class'
 import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'
 import formatAccountPathsFor from '@utils/format-account-paths-for'
 import paths from '@root/paths'

@@ -1,5 +1,5 @@
 const { response } = require('@utils/response')
-const WorldpayTasks = require('@models/WorldpayTasks.class')
+const WorldpayTasks = require('@models/task-workflows/WorldpayTasks.class')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 

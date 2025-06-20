@@ -5,7 +5,7 @@ const { validationResult } = require('express-validator')
 const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
 const worldpayDetailsService = require('@services/worldpay-details.service')
 const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
-const WorldpayTasks = require('@models/WorldpayTasks.class')
+const WorldpayTasks = require('@models/task-workflows/WorldpayTasks.class')
 const { ONE_OFF_CUSTOMER_INITIATED_SCHEMA } = require('@utils/simplified-account/validation/worldpay/validations.schema')
 
 function get (req, res) {

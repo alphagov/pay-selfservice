@@ -4,7 +4,7 @@ import { body, validationResult } from 'express-validator'
 import { Errors, formatValidationErrors } from '@utils/simplified-account/format/format-validation-errors'
 import WorldpayCredential from '@models/gateway-account-credential/WorldpayCredential.class'
 import worldpayDetailsService from '@services/worldpay-details.service'
-import WorldpayTasks from '@models/WorldpayTasks.class'
+import WorldpayTasks from '@models/task-workflows/WorldpayTasks.class'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 

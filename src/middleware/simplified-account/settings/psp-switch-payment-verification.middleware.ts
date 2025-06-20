@@ -1,7 +1,7 @@
 import { STRIPE, WORLDPAY } from '@models/constants/payment-providers'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { NextFunction } from 'express'
-import WorldpayTasks from '@models/WorldpayTasks.class'
+import WorldpayTasks from '@models/task-workflows/WorldpayTasks.class'
 import StripeTasks from '@models/StripeTasks.class'
 import { getConnectorStripeAccountSetup } from '@services/stripe-details.service'
 import { InvalidConfigurationError, TaskAccessedOutOfSequenceError } from '@root/errors'
