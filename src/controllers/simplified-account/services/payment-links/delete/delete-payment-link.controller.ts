@@ -35,7 +35,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     return response(req, res, 'simplified-account/services/payment-links/delete/index', {
       service,
       account,
-      csrf: res.locals.csrf || req.body._csrf,
+      csrf: res.locals.csrf || (req.body as any)?._csrf,
       backLink: backLinkUrl,
       paymentLink: {
         externalId: paymentLink.externalId,
@@ -70,7 +70,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
 
     let errors: { summary: Array<{ href: string; text: string }> } | null = null
 
-    if (req.body['confirm-delete'] === 'no') {
+    if ((req.body as any)['confirm-delete'] === 'no') {
       const redirectUrl = formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.paymentLinks.index,
         service.externalId,
@@ -79,7 +79,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
       return res.redirect(redirectUrl)
     }
 
-    const confirmDelete = req.body['confirm-delete']
+    const confirmDelete = (req.body as any)['confirm-delete']
 
     if (!confirmDelete || confirmDelete !== 'yes') {
       const paymentLink = await getProductByExternalId(productExternalId)
@@ -117,7 +117,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
       return response(req, res, 'simplified-account/services/payment-links/delete/index', {
         service,
         account,
-        csrf: res.locals.csrf || req.body.csrfToken,
+        csrf: res.locals.csrf || (req.body as any)?.csrfToken,
         errors,
         formData: req.body,
         backLink: backLinkUrl,
