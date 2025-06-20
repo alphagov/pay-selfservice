@@ -26,6 +26,10 @@ const mockPaymentLink = {
   referenceLabel: 'Test Reference',
 }
 
+interface ValidationError {
+  summary: { href: string; text: string }[]
+}
+
 const { req, res, nextRequest, call } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/payment-links/delete/delete-payment-link.controller'
 )
@@ -369,7 +373,7 @@ describe('controller: services/payment-links/delete', () => {
           'simplified-account/services/payment-links/delete/index',
           sinon.match({
             errors: sinon.match({
-              summary: sinon.match((errors: any[]) => {
+              summary: sinon.match((errors: ValidationError['summary']) => {
                 expect(errors).to.be.an('array')
                 expect(errors[0]).to.include({
                   href: '#confirm-delete',
@@ -434,7 +438,7 @@ describe('controller: services/payment-links/delete', () => {
           'simplified-account/services/payment-links/delete/index',
           sinon.match({
             errors: sinon.match({
-              summary: sinon.match((errors: any[]) => {
+              summary: sinon.match((errors: ValidationError['summary']) => {
                 expect(errors).to.be.an('array')
                 expect(errors[0].text).to.include('Confirm if you want to delete Test Payment Link')
                 return true
