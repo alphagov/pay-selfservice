@@ -17,29 +17,40 @@ const WORLDPAY_TASKS = {
   PAYMENT: 'make-a-live-payment',
 }
 
-const pendingCredentialStates = [CredentialState.CREATED, CredentialState.ENTERED, CredentialState.VERIFIED]
+type JourneyContext = 'SWITCHING' | 'CREATING'
 
 class WorldpayTasks extends Tasks<WorldpayTask> {
-  constructor(gatewayAccount: GatewayAccount, serviceExternalId: string, credential: GatewayAccountCredential) {
-    super(WorldpayTasks.generateTasks(gatewayAccount, serviceExternalId, credential))
+  constructor(
+    gatewayAccount: GatewayAccount,
+    serviceExternalId: string,
+    credential: GatewayAccountCredential,
+    journeyContext: JourneyContext = 'CREATING'
+  ) {
+    super(WorldpayTasks.generateTasks(gatewayAccount, serviceExternalId, credential, journeyContext))
   }
 
   hasRecurringTasks() {
     return [WORLDPAY_TASKS.CIT, WORLDPAY_TASKS.MIT].every((id) => this.tasks.some((t) => t.id === id))
   }
 
-  static async recalculate(serviceExternalId: string, accountType: string, credential: GatewayAccountCredential) {
+  static async recalculate(
+    serviceExternalId: string,
+    accountType: string,
+    credential: GatewayAccountCredential,
+    journeyContext: JourneyContext = 'CREATING'
+  ) {
     const gatewayAccount = await connectorClient.gatewayAccounts.getByServiceExternalIdAndAccountType(
       serviceExternalId,
       accountType
     )
-    return new WorldpayTasks(gatewayAccount, serviceExternalId, credential)
+    return new WorldpayTasks(gatewayAccount, serviceExternalId, credential, journeyContext)
   }
 
   private static generateTasks(
     gatewayAccount: GatewayAccount,
     serviceExternalId: string,
-    credential: GatewayAccountCredential
+    credential: GatewayAccountCredential,
+    journeyContext: JourneyContext
   ) {
     const tasks: WorldpayTask[] = []
 
@@ -54,7 +65,7 @@ class WorldpayTasks extends Tasks<WorldpayTask> {
       tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount, credential))
     }
 
-    if (gatewayAccount.providerSwitchEnabled && pendingCredentialStates.includes(credential.state)) {
+    if (journeyContext === 'SWITCHING') {
       tasks.push(WorldpayTask.makeALivePaymentTask(serviceExternalId, gatewayAccount, credential))
     }
 

@@ -16,7 +16,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   const account = req.account
   const service = req.service
   const credential = account.getSwitchingCredential()
-  const worldpayTasks = new WorldpayTasks(account, service.externalId, credential)
+  const worldpayTasks = new WorldpayTasks(account, service.externalId, credential, 'SWITCHING')
 
   const context = {
     messages: res.locals?.flash?.messages ?? [],
@@ -34,7 +34,7 @@ function post(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
   const service = req.service
   const user = req.user
   const targetCredential = account.getSwitchingCredential()
-  const worldpayTasks = new WorldpayTasks(account, service.externalId, targetCredential)
+  const worldpayTasks = new WorldpayTasks(account, service.externalId, targetCredential, 'SWITCHING')
 
   if (worldpayTasks.incompleteTasks()) {
     req.flash('messages', {
