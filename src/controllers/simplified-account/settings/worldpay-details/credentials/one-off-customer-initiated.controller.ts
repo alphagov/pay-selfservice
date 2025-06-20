@@ -4,11 +4,12 @@ import {response} from "@utils/response"
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import {ONE_OFF_CUSTOMER_INITIATED_SCHEMA} from "@utils/simplified-account/validation/worldpay/validations.schema";
 import {validationResult} from "express-validator";
-import {Errors, formatValidationErrors} from "@utils/simplified-account/format/format-validation-errors";
+import formatValidationErrors from "@utils/simplified-account/format/format-validation-errors";
 import WorldpayCredential from "@models/gateway-account-credential/WorldpayCredential.class";
 import worldpayDetailsService from "@services/worldpay-details.service";
 import _ from "lodash";
 import {SESSION_KEY} from "@controllers/simplified-account/settings/worldpay-details/constants";
+import { Errors } from '@utils/simplified-account/format/format-validation-errors-types'
 
 
 function get(req: ServiceRequest, res: ServiceResponse) {

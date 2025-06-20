@@ -3,12 +3,13 @@ import paths from '@root/paths'
 import { response } from '@utils/response'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { validationResult } from 'express-validator'
-import { Errors, formatValidationErrors } from '@utils/simplified-account/format/format-validation-errors'
+import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import Worldpay3dsFlexCredential from '@models/gateway-account-credential/Worldpay3dsFlexCredential.class'
 import worldpayDetailsService from '@services/worldpay-details.service'
 import { THREE_DS_FLEX_VALIDATION } from '@utils/simplified-account/validation/worldpay/validations.schema'
 import _ from 'lodash'
 import { SESSION_KEY } from '@controllers/simplified-account/settings/worldpay-details/constants'
+import { Errors } from '@utils/simplified-account/format/format-validation-errors-types'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/settings/worldpay-details/flex-credentials', {

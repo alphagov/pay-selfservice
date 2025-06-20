@@ -3,7 +3,7 @@ const paths = require('@root/paths')
 const { response } = require('@utils/response')
 const webhooksService = require('@services/webhooks.service')
 const { validationResult } = require('express-validator')
-const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
+const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const { webhookSchema } = require('@utils/simplified-account/validation/webhook.schema')
 
 /**

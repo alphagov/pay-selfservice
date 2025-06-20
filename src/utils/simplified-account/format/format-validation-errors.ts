@@ -1,24 +1,11 @@
 import { kebabCase } from 'change-case'
-import type { FieldValidationError, Result, ValidationError } from 'express-validator'
+import type { Result, ValidationError } from 'express-validator'
+import type {
+  FieldValidationWithPathOverrideError, FormError,
+  SummaryError,
+} from '@utils/simplified-account/format/format-validation-errors-types'
 
-interface FieldValidationWithPathOverrideError extends FieldValidationError {
-  pathOverride?: string
-  msg: string
-}
-
-interface SummaryError {
-  text: string
-  href: string
-}
-
-type FormError = Record<string, string>
-
-export interface Errors {
-  summary: SummaryError[]
-  formErrors?: FormError
-}
-
-export function formatValidationErrors(validationResult: Result<ValidationError>) {
+function formatValidationErrors(validationResult: Result<ValidationError>) {
   const errorSummary: SummaryError[] = validationResult.array().map((error) => {
     if (error.type === 'field') {
       const err = error as FieldValidationWithPathOverrideError
@@ -45,3 +32,6 @@ export function formatValidationErrors(validationResult: Result<ValidationError>
     formErrors,
   }
 }
+
+// cjs/esm interop export
+export = formatValidationErrors

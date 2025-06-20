@@ -6,7 +6,7 @@ import { response } from '@utils/response'
 import { body, validationResult } from 'express-validator'
 import { SERVICE_NAME_MAX_LENGTH } from '@utils/validation/server-side-form-validations'
 import { updateServiceName } from '@services/service.service'
-import { formatValidationErrors } from '@utils/simplified-account/format/format-validation-errors'
+import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const editCy = req.query.cy === 'true'

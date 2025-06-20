@@ -3,7 +3,7 @@ const { response, renderErrorView } = require('@utils/response')
 const { body, validationResult } = require('express-validator')
 const paths = require('@root/paths')
 const userService = require('@services/user.service')
-const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
+const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 
 async function get (req, res, next) {

@@ -1,13 +1,14 @@
 import { response } from '@utils/response'
 import paths from '@root/paths'
 import { body, validationResult } from 'express-validator'
-import { Errors, formatValidationErrors } from '@utils/simplified-account/format/format-validation-errors'
+import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import WorldpayCredential from '@models/gateway-account-credential/WorldpayCredential.class'
 import worldpayDetailsService from '@services/worldpay-details.service'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { SESSION_KEY } from '@controllers/simplified-account/settings/worldpay-details/constants'
 import _ from 'lodash'
+import { Errors } from '@utils/simplified-account/format/format-validation-errors-types'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId)

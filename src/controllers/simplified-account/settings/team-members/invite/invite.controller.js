@@ -3,7 +3,7 @@ const { getAvailableRolesForService } = require('@utils/roles')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const { body, validationResult } = require('express-validator')
-const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
+const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
 const userService = require('@services/user.service')
 
 async function get (req, res) {
