@@ -45,6 +45,8 @@ simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.index, experimentalFe
 simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.create, experimentalFeature, servicesController.paymentLinks.create.get)
 simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.edit, experimentalFeature, servicesController.paymentLinks.edit.get)
 simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.delete, experimentalFeature, servicesController.paymentLinks.remove.get)
+simplifiedAccount.post(paths.simplifiedAccount.paymentLinks.delete, experimentalFeature, servicesController.paymentLinks.remove.post)
+
 
 // settings index
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)
