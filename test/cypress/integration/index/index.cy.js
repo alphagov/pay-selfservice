@@ -24,29 +24,49 @@ describe('The index page', () => {
     })
   })
 
-  describe('footer content when logged in', () => {
-    beforeEach(() => {
+  describe('Header and footer', () => {
+    it('should display the header and footer correctly when logged in', () => {
       cy.visit('/')
-    })
 
-    it('should display the About section with 6 links', () => {
-      cy.get('footer .govuk-footer__section')
+      cy.log('should display the GOV.UK header correctly')
+
+      cy.get('[data-cy=header]').should('have.css', 'background-color', 'rgb(11, 12, 12)')
+      cy.get('[data-cy=header]').should('have.css', 'color', 'rgb(255, 255, 255)')
+      cy.get('[data-cy=header]')
+        .find('.govuk-header__container')
+        .should('have.css', 'border-bottom-color', 'rgb(29, 112, 184)')
+      cy.get('[data-cy=header]')
+        .find('.govuk-header__product-name')
+        .should('contain', 'Pay')
+
+      cy.log('should display the GOV.UK footer correctly')
+       
+      cy.get('[data-cy=footer]')
+        .should('have.css', 'background-color', 'rgb(243, 242, 241)')
+        .should('have.css', 'border-top-color', 'rgb(29, 112, 184)')
+
+      cy.log('footer - should display the About section with 6 links')
+
+      cy.get('[data-cy=footer]')
+        .find('.govuk-footer__section')
         .contains('About')
         .parent()
         .find('a')
         .should('have.length', 6)
-    })
 
-    it('should display the Support section with 4 links', () => {
-      cy.get('footer .govuk-footer__section')
+      cy.log('footer - should display the Support section with 4 links')
+
+      cy.get('[data-cy=footer]')
+        .find('.govuk-footer__section')
         .contains('Support')
         .parent()
         .find('a')
         .should('have.length', 4)
-    })
+    
+      cy.log('should display the Legal Terms section with 5 links when logged in')
 
-    it('should display the Legal Terms section with 5 links when logged in', () => {
-      cy.get('footer .govuk-footer__section')
+      cy.get('[data-cy=footer]')
+        .find('.govuk-footer__section')
         .contains('Legal Terms')
         .parent()
         .find('a')
