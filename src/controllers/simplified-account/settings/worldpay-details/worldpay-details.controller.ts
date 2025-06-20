@@ -8,6 +8,11 @@ import WorldpayTasks from '@models/task-workflows/WorldpayTasks.class'
 import paths from '@root/paths'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import {
+  SESSION_KEY,
+  WorldpayDetailsSessionData,
+} from '@controllers/simplified-account/settings/worldpay-details/constants'
+import _ from 'lodash'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const credential = req.account.getCurrentCredential()
@@ -29,6 +34,17 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   }
 
   if (!worldpayTasks.incompleteTasks()) {
+    const { TASK_COMPLETED } = _.get(req, SESSION_KEY, {} as WorldpayDetailsSessionData)
+    if (TASK_COMPLETED) {
+      context.messages.push({
+        state: 'success',
+        icon: '&check;',
+        heading: 'Service connected to Worldpay',
+        body: 'This service can now take payments',
+      })
+    }
+    _.unset(req, SESSION_KEY)
+
     Object.assign(context.answers, {
       worldpay3dsFlex: req.account.worldpay3dsFlex && {
         href: formatServiceAndAccountPathsFor(

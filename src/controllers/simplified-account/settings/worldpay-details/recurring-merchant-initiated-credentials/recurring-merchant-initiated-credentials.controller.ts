@@ -4,9 +4,10 @@ import { body, validationResult } from 'express-validator'
 import { Errors, formatValidationErrors } from '@utils/simplified-account/format/format-validation-errors'
 import WorldpayCredential from '@models/gateway-account-credential/WorldpayCredential.class'
 import worldpayDetailsService from '@services/worldpay-details.service'
-import WorldpayTasks from '@models/task-workflows/WorldpayTasks.class'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
+import { SESSION_KEY } from '@controllers/simplified-account/settings/worldpay-details/constants'
+import _ from 'lodash'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId)
@@ -77,30 +78,9 @@ async function post(req: ServiceRequest<RecurringMerchantInitiatedBody>, res: Se
     updatedCredential
   )
 
-  // if this is the last task to be completed
-  // show a success banner
-  const previousTasks = new WorldpayTasks(
-    req.account,
-    req.service.externalId,
-    credential,
-    req.url.includes('switch-psp') ? 'SWITCHING' : 'CREATING'
-  )
-  if (previousTasks.incompleteTasks()) {
-    const recalculatedTasks = await WorldpayTasks.recalculate(
-      req.service.externalId,
-      req.account.type,
-      credential,
-      req.url.includes('switch-psp') ? 'SWITCHING' : 'CREATING'
-    )
-    if (!recalculatedTasks.incompleteTasks()) {
-      req.flash('messages', {
-        state: 'success',
-        icon: '&check;',
-        heading: 'Service connected to Worldpay',
-        body: 'This service can now take payments',
-      })
-    }
-  }
+  _.set(req, SESSION_KEY, {
+    TASK_COMPLETED: true,
+  })
 
   return res.redirect(
     formatServiceAndAccountPathsFor(

@@ -456,7 +456,7 @@ simplifiedAccount.post(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.oneOffCustomerInitiated,
   restrictToSwitchingAccount,
   permission('gateway-credentials:update'),
-  serviceSettingsController.worldpayDetails.oneOffCustomerInitiatedCredentials.get
+  serviceSettingsController.worldpayDetails.oneOffCustomerInitiatedCredentials.post
 )
 
 simplifiedAccount.get(
