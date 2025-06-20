@@ -33,14 +33,43 @@ describe('Login Page', () => {
     it('should have the page title \'Sign in to GOV.UK Pay\'', () => {
       cy.title().should('eq', 'Sign in to GOV.UK Pay')
     })
+
     it('should redirect to the login page', () => {
       cy.url().should('include', '/login')
     })
+
     it('should have a link to the register page', () => {
       cy.contains('create one now').should('have.attr', 'href', '/register/email-address')
     })
+
     it('should have a link to the forgotten password page', () => {
       cy.contains('Forgot your password?').should('have.attr', 'href', '/reset-password')
+    })
+
+    it('should display the footer correctly when logged out', () => {
+      cy.log('should display the About section with 6 links')
+
+      cy.get('[data-cy=footer]')
+        .find('.govuk-footer__section')
+        .contains('About')
+        .parent()
+        .find('a')
+        .should('have.length', 6)
+
+      cy.log('should display the Support section with 4 links')
+
+      cy.get('[data-cy=footer]')
+        .find('.govuk-footer__section')
+        .contains('Support')
+        .parent()
+        .find('a')
+        .should('have.length', 4)
+    
+      cy.log('should not display Legal terms when logged out')
+      
+      cy.get('[data-cy=footer]')
+        .find('.govuk-footer__section')
+        .should('not.contain', 'Legal Terms')
     })
   })
 
@@ -136,30 +165,6 @@ describe('Login Page', () => {
       // should redirect to account dashboard page
       cy.location('pathname').should('eq', `/service/${serviceExternalId}/account/${accountType}/dashboard`)
       cy.title().should('eq', 'Dashboard - service-name - GOV.UK Pay')
-    })
-  })
-  describe('footer when logged out', () => {
-    beforeEach(() => {
-      cy.visit(`/account/${gatewayAccountExternalId}/dashboard`)
-    })
-    it('should display the About section with 6 links', () => {
-      cy.get('footer .govuk-footer__section')
-        .contains('About')
-        .parent()
-        .find('a')
-        .should('have.length', 6)
-    })
-
-    it('should display the Support section with 4 links', () => {
-      cy.get('footer .govuk-footer__section')
-        .contains('Support')
-        .parent()
-        .find('a')
-        .should('have.length', 4)
-    })
-    it('should not display Legal terms when logged out', () => {
-      cy.get('footer .govuk-footer__section')
-        .should('not.contain', 'Legal Terms')
     })
   })
 })
