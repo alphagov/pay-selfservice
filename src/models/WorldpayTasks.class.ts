@@ -55,14 +55,35 @@ class WorldpayTasks extends Tasks<WorldpayTask> {
     const tasks: WorldpayTask[] = []
 
     if (gatewayAccount.recurringEnabled) {
-      tasks.push(WorldpayTask.recurringCustomerInitiatedCredentialsTask(serviceExternalId, gatewayAccount, credential))
-      tasks.push(WorldpayTask.recurringMerchantInitiatedCredentialsTask(serviceExternalId, gatewayAccount, credential))
+      tasks.push(
+        WorldpayTask.recurringCustomerInitiatedCredentialsTask(
+          serviceExternalId,
+          gatewayAccount,
+          credential,
+          journeyContext
+        )
+      )
+      tasks.push(
+        WorldpayTask.recurringMerchantInitiatedCredentialsTask(
+          serviceExternalId,
+          gatewayAccount,
+          credential,
+          journeyContext
+        )
+      )
     } else {
-      tasks.push(WorldpayTask.oneOffCustomerInitiatedCredentialsTask(serviceExternalId, gatewayAccount, credential))
+      tasks.push(
+        WorldpayTask.oneOffCustomerInitiatedCredentialsTask(
+          serviceExternalId,
+          gatewayAccount,
+          credential,
+          journeyContext
+        )
+      )
     }
 
     if (!gatewayAccount.allowMoto) {
-      tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount, credential))
+      tasks.push(WorldpayTask.flexCredentialsTask(serviceExternalId, gatewayAccount, credential, journeyContext))
     }
 
     if (journeyContext === 'SWITCHING') {
@@ -81,13 +102,14 @@ class WorldpayTask extends Task {
   static flexCredentialsTask(
     serviceExternalId: string,
     gatewayAccount: GatewayAccount,
-    credential: GatewayAccountCredential
+    credential: GatewayAccountCredential,
+    journeyContext: JourneyContext
   ) {
     const task = new WorldpayTask(
       'Configure 3DS',
       WORLDPAY_TASKS.FLEX,
       formatServiceAndAccountPathsFor(
-        gatewayAccount.providerSwitchEnabled
+        journeyContext === 'SWITCHING'
           ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.flexCredentials
           : paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
         serviceExternalId,
@@ -108,13 +130,14 @@ class WorldpayTask extends Task {
   static recurringCustomerInitiatedCredentialsTask(
     serviceExternalId: string,
     gatewayAccount: GatewayAccount,
-    credential: GatewayAccountCredential
+    credential: GatewayAccountCredential,
+    journeyContext: JourneyContext
   ) {
     const task = new WorldpayTask(
       'Recurring customer initiated transaction (CIT) credentials',
       WORLDPAY_TASKS.CIT,
       formatServiceAndAccountPathsFor(
-        gatewayAccount.providerSwitchEnabled
+        journeyContext === 'SWITCHING'
           ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.recurringCustomerInitiated
           : paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
         serviceExternalId,
@@ -134,13 +157,14 @@ class WorldpayTask extends Task {
   static recurringMerchantInitiatedCredentialsTask(
     serviceExternalId: string,
     gatewayAccount: GatewayAccount,
-    credential: GatewayAccountCredential
+    credential: GatewayAccountCredential,
+    journeyContext: JourneyContext
   ) {
     const task = new WorldpayTask(
       'Recurring merchant initiated transaction (MIT) credentials',
       WORLDPAY_TASKS.MIT,
       formatServiceAndAccountPathsFor(
-        gatewayAccount.providerSwitchEnabled
+        journeyContext === 'SWITCHING'
           ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.recurringMerchantInitiated
           : paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated,
         serviceExternalId,
@@ -160,13 +184,14 @@ class WorldpayTask extends Task {
   static oneOffCustomerInitiatedCredentialsTask(
     serviceExternalId: string,
     gatewayAccount: GatewayAccount,
-    credential: GatewayAccountCredential
+    credential: GatewayAccountCredential,
+    journeyContext: JourneyContext
   ) {
     const task = new WorldpayTask(
       'Link your Worldpay account with GOV.UK Pay',
       WORLDPAY_TASKS.CRED,
       formatServiceAndAccountPathsFor(
-        gatewayAccount.providerSwitchEnabled
+        journeyContext === 'SWITCHING'
           ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.oneOffCustomerInitiated
           : paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
         serviceExternalId,

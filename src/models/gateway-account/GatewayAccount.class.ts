@@ -1,5 +1,5 @@
 import Worldpay3dsFlexCredential from '@models/gateway-account-credential/Worldpay3dsFlexCredential.class'
-import { InvalidConfigurationError } from '@root/errors'
+import { InvalidConfigurationError, NotFoundError } from '@root/errors'
 import CredentialState from '@models/constants/credential-state'
 import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
 import { EmailNotificationsData } from '@models/gateway-account/dto/EmailNotifications.dto'
@@ -97,8 +97,13 @@ class GatewayAccount {
   }
 
   findCredentialByExternalId(externalId: string) {
-    // todo return 404 error if not found
-    return this.gatewayAccountCredentials.find((credential) => credential.externalId === externalId)
+    const credential = this.gatewayAccountCredentials.find((credential) => credential.externalId === externalId)
+    if (!credential) {
+      throw new NotFoundError(
+        `Credential not found on gateway account [credential_external_id: ${externalId}, gateway_account_id: ${this.id}]`
+      )
+    }
+    return credential
   }
 
   isSwitchingToProvider(paymentProvider: string): boolean {
