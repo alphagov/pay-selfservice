@@ -4,7 +4,7 @@ const { getAllCardTypes, getAcceptedCardTypesForServiceAndAccountType, postAccep
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 const { body, validationResult } = require('express-validator')
 const paths = require('@root/paths')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
 
 async function get (req, res, next) {
   const serviceExternalId = req.service.externalId

@@ -7,7 +7,7 @@ const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 const amountValidations = require('@controllers/payment-links/validations/amount-validations')
 const { validationResult } = require('express-validator')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
 
 module.exports = async function postEditAmount (req, res) {
   const { productExternalId } = req.params

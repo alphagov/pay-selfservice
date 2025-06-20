@@ -3,7 +3,7 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const paths = require('@root/paths')
 const { updateCustomParagraphByServiceIdAndAccountType } = require('@services/email.service')
 const { body, validationResult } = require('express-validator')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
 const CUSTOM_PARAGRAPH_MAX_LENGTH = 5000
 
 function get (req, res) {

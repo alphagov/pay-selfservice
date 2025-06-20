@@ -3,7 +3,7 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const { response } = require('@utils/response')
 const { getKeyByTokenLink, revokeKey } = require('@services/api-keys.service')
 const { body, validationResult } = require('express-validator')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
 
 async function get (req, res) {
   const tokenLink = req.params.tokenLink

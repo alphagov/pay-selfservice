@@ -5,7 +5,7 @@ const { constants } = require('@govuk-pay/pay-js-commons')
 const webhooksService = require('@services/webhooks.service')
 const { webhookErrorIdentifiers, CREATE_AND_UPDATE_WEBHOOK_VALIDATIONS } = require('@utils/simplified-account/validation/webhook.schema')
 const { validationResult } = require('express-validator')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
 const { responseWithErrors } = require('@controllers/simplified-account/settings/webhooks/create/create.controller')
 const WebhookUpdateRequest = require('@models/webhooks/WebhookUpdateRequest.class')
 

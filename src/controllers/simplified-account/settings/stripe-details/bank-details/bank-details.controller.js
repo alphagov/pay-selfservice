@@ -1,6 +1,6 @@
 const paths = require('@root/paths')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
 const { checkTaskCompletion } = require('@middleware/simplified-account')
 const { response } = require('@utils/response')
 const { body, validationResult } = require('express-validator')

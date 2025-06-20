@@ -1,7 +1,7 @@
 const paths = require('@root/paths')
 const { validationResult } = require('express-validator')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
 const { response } = require('@utils/response')
 const { changeKeyName, getKeyByTokenLink } = require('@services/api-keys.service')
 const { apiKeySchema } = require('@utils/simplified-account/validation/api-key.schema')

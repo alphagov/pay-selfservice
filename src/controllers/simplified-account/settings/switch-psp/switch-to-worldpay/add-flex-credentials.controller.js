@@ -3,7 +3,7 @@ const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified
 const paths = require('@root/paths')
 const { THREE_DS_FLEX_VALIDATION } = require('@utils/simplified-account/validation/worldpay/validations.schema')
 const { validationResult } = require('express-validator')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
 const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
 const worldpayDetailsService = require('@services/worldpay-details.service')
 

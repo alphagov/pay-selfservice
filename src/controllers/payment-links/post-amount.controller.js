@@ -6,7 +6,7 @@ const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const { safeConvertPoundsStringToPence } = require('../../utils/currency-formatter')
 const { validationResult } = require('express-validator')
-const formatValidationErrors = require('@utils/simplified-account/format/format-validation-errors')
+const { formatValidationErrors } = require('@utils/simplified-account/format/format-validation-errors')
 const amountValidations = require('./validations/amount-validations')
 
 module.exports = async function postAmount (req, res, next) {

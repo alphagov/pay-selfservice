@@ -13,7 +13,12 @@ interface SummaryError {
 
 type FormError = Record<string, string>
 
-function formatValidationErrors (validationResult: Result<ValidationError>) {
+export interface Errors {
+  summary: SummaryError[]
+  formErrors?: FormError
+}
+
+export function formatValidationErrors(validationResult: Result<ValidationError>) {
   const errorSummary: SummaryError[] = validationResult.array().map((error) => {
     if (error.type === 'field') {
       const err = error as FieldValidationWithPathOverrideError
@@ -40,6 +45,3 @@ function formatValidationErrors (validationResult: Result<ValidationError>) {
     formErrors,
   }
 }
-
-// cjs/esm interop export
-export = formatValidationErrors

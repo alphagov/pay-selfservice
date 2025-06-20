@@ -4,7 +4,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 import lodash from 'lodash'
 import { validationResult } from 'express-validator'
-import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
+import { formatValidationErrors } from '@utils/simplified-account/format/format-validation-errors'
 import {
   DemoPaymentSessionData,
   PAYMENT_DEFAULTS,
