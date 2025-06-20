@@ -1,9 +1,57 @@
 {% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 {% set servicePageTitle = "Delete payment link" %}
 
 {% block serviceContent %}
-  <h1 class="govuk-heading-l page-title">
-    {{ servicePageTitle }}
-  </h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form method="post" action="{{ deleteUrl }}">
+        <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+        {{ govukRadios({
+          name: "confirm-delete",
+          id: "confirm-delete",
+          fieldset: {
+            legend: {
+              text: "Are you sure you want to delete " + paymentLink.name + "?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          errorMessage: {
+            text: "Confirm if you want to delete " + paymentLink.name
+          } if errors and errors.summary and errors.summary.length > 0,
+          items: [
+            {
+              value: "yes",
+              text: "Yes",
+              checked: formData and formData["confirm-delete"] == "yes"
+            },
+            {
+              value: "no",
+              text: "No",
+              checked: formData and formData["confirm-delete"] == "no"
+            }
+          ]
+        }) }}
+
+        <div class="govuk-button-group govuk-!-margin-top-6">
+          {{ govukButton({
+            text: "Save changes",
+            classes: "govuk-button--warning"
+          }) }}
+
+          <a class="govuk-link" href="{{ cancelUrl }}">
+            Cancel
+          </a>
+        </div>
+      </form>
+
+    </div>
+  </div>
 {% endblock %}
