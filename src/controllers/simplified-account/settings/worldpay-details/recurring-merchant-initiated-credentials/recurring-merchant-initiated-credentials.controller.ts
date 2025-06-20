@@ -5,13 +5,13 @@ import { Errors, formatValidationErrors } from '@utils/simplified-account/format
 import WorldpayCredential from '@models/gateway-account-credential/WorldpayCredential.class'
 import worldpayDetailsService from '@services/worldpay-details.service'
 import WorldpayTasks from '@models/task-workflows/WorldpayTasks.class'
-import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId)
 
-  return response(req, res, 'simplified-account/settings/worldpay-details/recurring-customer-initiated-credentials', {
+  return response(req, res, 'simplified-account/settings/worldpay-details/recurring-merchant-initiated-credentials', {
     backLink: formatServiceAndAccountPathsFor(
       req.url.includes('switch-psp')
         ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
@@ -19,7 +19,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       req.service.externalId,
       req.account.type
     ),
-    credentials: credential.credentials.recurringCustomerInitiated ?? {},
+    credentials: credential.credentials.recurringMerchantInitiated ?? {},
   })
 }
 
@@ -29,13 +29,13 @@ const credentialsValidations = [
   body('password').not().isEmpty().withMessage('Enter your password'),
 ]
 
-interface RecurringCustomerInitiatedBody {
+interface RecurringMerchantInitiatedBody {
   merchantCode: string
   username: string
   password: string
 }
 
-async function post(req: ServiceRequest<RecurringCustomerInitiatedBody>, res: ServiceResponse) {
+async function post(req: ServiceRequest<RecurringMerchantInitiatedBody>, res: ServiceResponse) {
   const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId)
 
   await Promise.all(credentialsValidations.map((validation) => validation.run(req)))
@@ -69,7 +69,7 @@ async function post(req: ServiceRequest<RecurringCustomerInitiatedBody>, res: Se
     })
   }
 
-  await worldpayDetailsService.updateRecurringCustomerInitiatedCredentials(
+  await worldpayDetailsService.updateRecurringMerchantInitiatedCredentials(
     req.service.externalId,
     req.account.type,
     credential.externalId,
@@ -113,8 +113,8 @@ async function post(req: ServiceRequest<RecurringCustomerInitiatedBody>, res: Se
   )
 }
 
-const errorResponse = (req: ServiceRequest<RecurringCustomerInitiatedBody>, res: ServiceResponse, errors: Errors) => {
-  return response(req, res, 'simplified-account/settings/worldpay-details/recurring-customer-initiated-credentials', {
+const errorResponse = (req: ServiceRequest<RecurringMerchantInitiatedBody>, res: ServiceResponse, errors: Errors) => {
+  return response(req, res, 'simplified-account/settings/worldpay-details/recurring-merchant-initiated-credentials', {
     errors,
     credentials: {
       merchantCode: req.body.merchantCode,
