@@ -9,6 +9,9 @@ const getProducts = (gatewayAccountId: number, productType: string) =>
 
 const getProductByExternalId = (productExternalId: string) => productsClient.products.getByExternalId(productExternalId)
 
+const deleteProduct = (gatewayAccountId: number, productExternalId: string) =>
+  productsClient.products.delete(gatewayAccountId, productExternalId)
+
 const createDemoProduct = async (
   token: string,
   gatewayAccountId: number,
@@ -26,4 +29,4 @@ const createDemoProduct = async (
   return productsClient.products.create(createProductRequest)
 }
 
-export { getProducts, getProductByExternalId, createDemoProduct }
+export { getProducts, getProductByExternalId, deleteProduct, createDemoProduct }

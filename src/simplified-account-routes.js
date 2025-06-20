@@ -69,17 +69,26 @@ simplifiedAccount.get(
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.create,
   experimentalFeature,
+  permission('tokens:create'),
   servicesController.paymentLinks.create.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit,
   experimentalFeature,
+  permission('tokens:create'),
   servicesController.paymentLinks.edit.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.delete,
   experimentalFeature,
+  permission('tokens:create'),
   servicesController.paymentLinks.remove.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.delete,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.remove.post
 )
 
 // settings index

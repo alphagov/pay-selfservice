@@ -41,6 +41,13 @@ class ProductsClient extends BaseClient {
         )
         return new Product(response.data)
       },
+
+      delete: async (gatewayAccountId: number, productExternalId: string) => {
+        const path = '/v1/api/gateway-account/{gatewayAccountId}/products/{productExternalId}'
+          .replace('{gatewayAccountId}', encodeURIComponent(gatewayAccountId.toString()))
+          .replace('{productExternalId}', encodeURIComponent(productExternalId))
+        await this.delete<void>(path, 'delete a product')
+      },
     }
   }
 }
