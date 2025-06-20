@@ -10,6 +10,16 @@ import createLogger from '@utils/logger'
 const logger = createLogger(__filename)
 const productsClient = new ProductsClient()
 
+interface DeletePaymentLinkBody {
+  'confirm-delete'?: string
+  _csrf?: string
+  csrfToken?: string
+}
+
+interface ValidationError {
+  summary: { href: string; text: string }[]
+}
+
 async function get(req: ServiceRequest, res: ServiceResponse) {
   try {
     const { productExternalId } = req.params
@@ -35,7 +45,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     return response(req, res, 'simplified-account/services/payment-links/delete/index', {
       service,
       account,
-      csrf: res.locals.csrf || (req.body as any)?._csrf,
+      csrf: res.locals.csrf ?? (req.body as DeletePaymentLinkBody)?._csrf,
       backLink: backLinkUrl,
       paymentLink: {
         externalId: paymentLink.externalId,
@@ -67,10 +77,11 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
   try {
     const { productExternalId } = req.params
     const { service, account } = req
+    const body = req.body as DeletePaymentLinkBody
 
-    let errors: { summary: Array<{ href: string; text: string }> } | null = null
+    let errors: ValidationError | null = null
 
-    if ((req.body as any)['confirm-delete'] === 'no') {
+    if (body['confirm-delete'] === 'no') {
       const redirectUrl = formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.paymentLinks.index,
         service.externalId,
@@ -79,7 +90,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
       return res.redirect(redirectUrl)
     }
 
-    const confirmDelete = (req.body as any)['confirm-delete']
+    const confirmDelete = body['confirm-delete']
 
     if (!confirmDelete || confirmDelete !== 'yes') {
       const paymentLink = await getProductByExternalId(productExternalId)
@@ -117,7 +128,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
       return response(req, res, 'simplified-account/services/payment-links/delete/index', {
         service,
         account,
-        csrf: res.locals.csrf || (req.body as any)?.csrfToken,
+        csrf: res.locals.csrf ?? body.csrfToken,
         errors,
         formData: req.body,
         backLink: backLinkUrl,
@@ -147,7 +158,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     }
 
     req.session.pageData = {
-      ...(req.session.pageData || {}),
+      ...(req.session.pageData ?? {}),
       deleteSuccess: {
         type: 'payment-link',
         id: productExternalId,
@@ -165,7 +176,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     logger.error('Error deleting payment link', error)
 
     req.session.pageData = {
-      ...(req.session.pageData || {}),
+      ...(req.session.pageData ?? {}),
       deleteError: {
         type: 'payment-link',
         id: req.params.productExternalId,
