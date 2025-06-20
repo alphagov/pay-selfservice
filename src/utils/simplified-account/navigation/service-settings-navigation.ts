@@ -86,6 +86,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
       ),
       hasPermission: UserPermissions.settings.gatewayCredentials.gatewayCredentialsUpdate,
       conditions: account.isSwitchingToProvider(WORLDPAY),
+      alwaysViewable: true,
     })
     .add({
       id: 'switch-psp', // sits under settings/switch-psp/switch-to-stripe

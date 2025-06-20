@@ -101,18 +101,16 @@ describe('Worldpay details settings', () => {
         })
 
         it('should show the correct heading and title', () => {
-          cy.visit(
-            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
-          )
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.contains('a', 'Link your Worldpay account with GOV.UK Pay').click()
 
           cy.get('h1').should('contain', 'Your Worldpay credentials')
           cy.title().should('eq', 'Your Worldpay credentials - Settings - My cool service - GOV.UK Pay')
         })
 
         it('should show worldpay settings in the settings navigation', () => {
-          cy.visit(
-            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
-          )
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.contains('a', 'Link your Worldpay account with GOV.UK Pay').click()
 
           checkSettingsNavigation(
             'Worldpay details',
@@ -125,9 +123,8 @@ describe('Worldpay details settings', () => {
         it('should return to the edit credentials page and show the validation errors', () => {
           setupStubs()
 
-          cy.visit(
-            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
-          )
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.contains('a', 'Link your Worldpay account with GOV.UK Pay').click()
 
           cy.get('input#merchant-code').type('this-is-not-a-valid-merchant-code', { delay: 0 })
 
@@ -135,7 +132,7 @@ describe('Worldpay details settings', () => {
 
           cy.location('pathname').should(
             'eq',
-            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`
           )
 
           cy.get('.govuk-error-summary')
@@ -157,9 +154,8 @@ describe('Worldpay details settings', () => {
         it('should show the empty credentials form', () => {
           setupStubs()
 
-          cy.visit(
-            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
-          )
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.contains('a', 'Link your Worldpay account with GOV.UK Pay').click()
 
           cy.get('input#merchant-code').should('have.value', '')
           cy.get('input#username').should('have.value', '')
@@ -169,9 +165,8 @@ describe('Worldpay details settings', () => {
         it('should redirect to the worldpay details landing page on valid form submission', () => {
           setupStubs()
 
-          cy.visit(
-            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
-          )
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.contains('a', 'Link your Worldpay account with GOV.UK Pay').click()
 
           cy.get('input#merchant-code').type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').type(VALID_WORLDPAY_USERNAME, { delay: 0 })
@@ -188,9 +183,8 @@ describe('Worldpay details settings', () => {
         it('should show a success banner on the landing page if this is the final task to complete', () => {
           setupStubs()
 
-          cy.visit(
-            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
-          )
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.contains('a', 'Link your Worldpay account with GOV.UK Pay').click()
 
           cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME, { delay: 0 })
@@ -238,9 +232,8 @@ describe('Worldpay details settings', () => {
         it('should not show a success banner if other tasks are outstanding', () => {
           setupStubs()
 
-          cy.visit(
-            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
-          )
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`)
+          cy.contains('a', 'Link your Worldpay account with GOV.UK Pay').click()
 
           cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME, { delay: 0 })
@@ -268,9 +261,7 @@ describe('Worldpay details settings', () => {
             },
           })
 
-          cy.visit(
-            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
-          )
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`)
 
           cy.get('input#merchant-code').should('have.value', VALID_MOTO_MERCHANT_CODE)
           cy.get('input#username').should('have.value', VALID_WORLDPAY_USERNAME)
@@ -289,14 +280,12 @@ describe('Worldpay details settings', () => {
             },
           })
 
-          cy.visit(
-            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
-          )
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`)
 
           cy.get('input#password').should('have.value', '')
         })
 
-        it('should not show a success banner when submitting updated credentials', () => {
+        it('should show a success banner when submitting updated credentials', () => {
           setupStubs({
             credentials: {
               one_off_customer_initiated: {
@@ -306,9 +295,7 @@ describe('Worldpay details settings', () => {
             },
           })
 
-          cy.visit(
-            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
-          )
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`)
 
           cy.get('input#merchant-code').clear().type(VALID_MOTO_MERCHANT_CODE, { delay: 0 })
           cy.get('input#username').clear().type(VALID_WORLDPAY_USERNAME_2, { delay: 0 })
@@ -379,7 +366,10 @@ describe('Worldpay details settings', () => {
             `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
           )
 
-          cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages').should('not.exist')
+          cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages')
+            .should('exist')
+            .should('contain.text', 'Service connected to Worldpay')
+            .should('contain.text', 'This service can now take payments')
         })
       })
     })
@@ -393,7 +383,7 @@ describe('Worldpay details settings', () => {
 
       it('should return a 403', () => {
         cy.request({
-          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`,
           failOnStatusCode: false,
         }).then((response) => expect(response.status).to.eq(403))
       })
@@ -409,7 +399,7 @@ describe('Worldpay details settings', () => {
 
       it('should return a 404', () => {
         cy.request({
-          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`,
           failOnStatusCode: false,
         }).then((response) => expect(response.status).to.eq(404))
       })

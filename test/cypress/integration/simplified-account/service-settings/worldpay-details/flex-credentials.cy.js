@@ -247,8 +247,6 @@ describe('Worldpay details settings', () => {
         })
 
         it('should redirect to the index page', () => {
-          setupStubs()
-
           cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
           cy.get('input#organisational-unit-id').type(VALID_ORGANISATIONAL_UNIT_ID, { delay: 0 })
           cy.get('input#issuer').type(VALID_ISSUER, { delay: 0 })
@@ -288,45 +286,45 @@ describe('Worldpay details settings', () => {
           it('should show a success banner on the landing page', () => {
             setupStubs()
 
-            cy.visit(
-              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`
-            )
-            cy.get('input#organisational-unit-id').type(VALID_ORGANISATIONAL_UNIT_ID, { delay: 0 })
-            cy.get('input#issuer').type(VALID_ISSUER, { delay: 0 })
-            cy.get('input#jwt-mac-key').type(VALID_JWT_MAC_KEY, { delay: 0 })
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`
+          )
+          cy.get('input#organisational-unit-id').type(VALID_ORGANISATIONAL_UNIT_ID, { delay: 0 })
+          cy.get('input#issuer').type(VALID_ISSUER, { delay: 0 })
+          cy.get('input#jwt-mac-key').type(VALID_JWT_MAC_KEY, { delay: 0 })
 
-            cy.task('clearStubs')
-            setupStubs({}, [
-              gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
-                gateway_account_id: GATEWAY_ACCOUNT_ID,
-                payment_provider: 'worldpay',
-                gateway_account_credentials: [
-                  {
-                    payment_provider: 'worldpay',
-                    credentials: {
-                      one_off_customer_initiated: {
-                        merchant_code: VALID_WORLDPAY_MERCHANT_CODE,
-                        username: VALID_WORLDPAY_USERNAME,
-                        password: VALID_WORLDPAY_PASSWORD,
-                      },
+          cy.task('clearStubs')
+          setupStubs({}, [
+            gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
+              gateway_account_id: GATEWAY_ACCOUNT_ID,
+              payment_provider: 'worldpay',
+              gateway_account_credentials: [
+                {
+                  payment_provider: 'worldpay',
+                  credentials: {
+                    one_off_customer_initiated: {
+                      merchant_code: VALID_WORLDPAY_MERCHANT_CODE,
+                      username: VALID_WORLDPAY_USERNAME,
+                      password: VALID_WORLDPAY_PASSWORD,
                     },
-                    external_id: CREDENTIAL_EXTERNAL_ID,
                   },
-                ],
-                allow_moto: false,
-                worldpay_3ds_flex: {
-                  organisational_unit_id: VALID_ORGANISATIONAL_UNIT_ID,
-                  issuer: VALID_ISSUER,
-                  jwt_mac_key: VALID_JWT_MAC_KEY,
+                  external_id: CREDENTIAL_EXTERNAL_ID,
                 },
-              }),
-            ])
-            cy.get('button#submitCredentials').click()
+              ],
+              allow_moto: false,
+              worldpay_3ds_flex: {
+                organisational_unit_id: VALID_ORGANISATIONAL_UNIT_ID,
+                issuer: VALID_ISSUER,
+                jwt_mac_key: VALID_JWT_MAC_KEY,
+              },
+            }),
+          ])
+          cy.get('button#submitCredentials').click()
 
-            cy.location('pathname').should(
-              'eq',
-              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
-            )
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details`
+          )
 
             cy.get('.govuk-notification-banner.govuk-notification-banner--success.system-messages')
               .should('exist')

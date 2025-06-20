@@ -60,6 +60,11 @@ module.exports = class ControllerTestBuilder {
     return this
   }
 
+  withUrl (url) {
+    this.req.url = url
+    return this
+  }
+
   nextRequest (params) {
     this.nextReq = _.merge({}, this.req, params)
     return this
@@ -76,7 +81,7 @@ module.exports = class ControllerTestBuilder {
   }
 
   build () {
-    const controller = proxyquire(this.controllerPath, {
+    let controller = proxyquire(this.controllerPath, {
       ...this.stubs
     })
     return {
@@ -90,7 +95,7 @@ module.exports = class ControllerTestBuilder {
         sinon.resetHistory() // ensure fresh mock data for each call
         if (this.nextStubsData) {
           Object.assign(this.stubs, this.nextStubsData) // copy by ref
-          Object.assign(controller, proxyquire(this.controllerPath, {
+          controller = Object.assign({}, controller, proxyquire(this.controllerPath, {
             ...this.stubs
           }))
           this.nextStubsData = null

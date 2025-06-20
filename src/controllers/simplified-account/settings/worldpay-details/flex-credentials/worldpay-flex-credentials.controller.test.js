@@ -7,9 +7,12 @@ const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/forma
 const paths = require('@root/paths')
 const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Worldpay3dsFlexCredential.class')
 const { validServiceResponse } = require('@test/fixtures/service.fixtures')
+const PaymentProviders = require('@models/constants/payment-providers')
+const CredentialState = require('@models/constants/credential-state')
 
 const ACCOUNT_TYPE = 'live'
-const SERVICE_EXTERNAL_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service123abc'
+const CREDENTIAL_EXTERNAL_ID = 'credential456def'
 
 const mockResponse = sinon.spy()
 
@@ -33,14 +36,15 @@ const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@c
     allow_moto: false,
     gateway_account_id: 1,
     gateway_account_credentials: [{
-      external_id: 'creds-id',
-      payment_provider: 'worldpay',
-      state: 'CREATED',
+      external_id: CREDENTIAL_EXTERNAL_ID,
+      payment_provider: PaymentProviders.WORLDPAY,
+      state: CredentialState.CREATED,
       created_date: '2024-11-29T11:58:36.214Z',
       gateway_account_id: 1,
       credentials: { one_off_customer_initiated: {} }
     }]
   }))
+  .withUrl(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/flex-credentials`)
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/worldpay-details.service': worldpayDetailsServiceStubs
@@ -50,8 +54,8 @@ const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@c
 describe('Controller: settings/worldpay-details/flex-credentials', () => {
   describe('get', () => {
     describe('when no credentials have yet been set', () => {
-      beforeEach(() => {
-        call('get')
+      beforeEach(async () => {
+        await call('get')
       })
 
       it('should call the response method', () => {
