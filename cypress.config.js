@@ -60,7 +60,10 @@ module.exports = defineConfig({
     },
 
     baseUrl: 'http://127.0.0.1:3000',
-    specPattern: './test/cypress/integration/**/*.cy.{js,ts}',
+    specPattern: [
+      './test/cypress/integration/**/*.cy.{js,ts}',
+      './test/cypress/integration/**/*.rebrand.{js,ts}',
+    ],
     supportFile: './test/cypress/support'
   }
 })
