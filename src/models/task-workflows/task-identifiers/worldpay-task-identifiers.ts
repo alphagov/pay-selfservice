@@ -5,4 +5,4 @@ const WorldpayTaskIdentifiers = {
   CRED: 'worldpay-credentials',
 }
 
-export default WorldpayTaskIdentifiers
+export = WorldpayTaskIdentifiers

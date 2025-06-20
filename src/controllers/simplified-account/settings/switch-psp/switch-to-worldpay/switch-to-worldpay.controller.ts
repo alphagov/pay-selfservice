@@ -1,6 +1,3 @@
-import * as oneOffCustomerInitiated from './add-worldpay-credentials.controller'
-import * as flexCredentials from './add-flex-credentials.controller'
-
 import { response } from '@utils/response'
 import WorldpayTasks from '@models/task-workflows/WorldpayTasks.class'
 import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'
@@ -76,7 +73,5 @@ function post(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
 
 module.exports = {
   get,
-  post,
-  oneOffCustomerInitiated,
-  flexCredentials,
+  post
 }

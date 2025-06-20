@@ -12,7 +12,7 @@ import {SESSION_KEY} from "@controllers/simplified-account/settings/worldpay-det
 
 
 function get(req: ServiceRequest, res: ServiceResponse) {
-  const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId).credentials.oneOffCustomerInitiated || {}
+  const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId).credentials.oneOffCustomerInitiated ?? {}
 
   return response(req, res, 'simplified-account/settings/worldpay-details/one-off-customer-initiated-credentials', {
     backLink: formatServiceAndAccountPathsFor(
