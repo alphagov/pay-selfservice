@@ -63,10 +63,11 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
           req.service.externalId,
           req.account.type
         ),
-        demoPaymentLink: formatAccountPathsFor(
-          paths.account.prototyping.demoService.index,
-          req.account.externalId
-        ) as string,
+        demoPaymentLink: formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.testWithYourUsers.index,
+          req.service.externalId,
+          req.account.type
+        ),
         createPaymentLink: formatAccountPathsFor(paths.account.paymentLinks.start, req.account.externalId) as string,
         managePaymentLinks: formatAccountPathsFor(
           paths.account.paymentLinks.manage.index,
