@@ -1,0 +1,34 @@
+'use strict'
+
+const userStubs = require('../../stubs/user-stubs')
+
+const userExternalId = 'authenticated-user-id'
+
+describe('Error pages', () => {
+  describe('User not logged in', () => {
+    beforeEach(() => {
+      cy.clearCookies()
+    })
+    it('should display logged out header on 404 page and display the header and footer with the new branding', () => {
+      cy.visit('/a-route-that-does-not-exist', { failOnStatusCode: false })
+
+      cy.log('Should display the header with new branding')
+
+      cy.get('[data-cy=header]').should('have.css', 'background-color', 'rgb(29, 112, 184)')
+      cy.get('[data-cy=header]').should('have.css', 'color', 'rgb(255, 255, 255)')
+      cy.get('[data-cy=header]')
+        .find('.govuk-header__container')
+        .should('have.css', 'border-bottom-color', 'rgb(255, 255, 255)')
+
+      cy.log('Should display the footer with new branding')
+
+      cy.get('[data-cy=footer]')
+        .should('have.css', 'background-color', 'rgb(244, 248, 251)')
+        .should('have.css', 'border-top-color', 'rgb(29, 112, 184)')
+
+      cy.get('h1').should('have.text', 'Page not found')
+      cy.get('nav').contains('Sign in')
+      cy.get('.govuk-breadcrumbs').should('not.exist')
+    })
+  })
+})
