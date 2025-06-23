@@ -80,7 +80,7 @@ describe('Worldpay details settings', () => {
       setupStubs({ role: 'view-only' })
     })
     it('should return a 403', () => {
-      [`${WORLDPAY_DETAILS_URL}/recurring-customer-initiated`, `${WORLDPAY_DETAILS_URL}/recurring-merchant-initiated`].forEach(
+      [`${WORLDPAY_DETAILS_URL}/recurring-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`, `${WORLDPAY_DETAILS_URL}/recurring-merchant-initiated/${CREDENTIAL_EXTERNAL_ID}`].forEach(
         url => cy.request({
           url,
           failOnStatusCode: false
@@ -108,9 +108,9 @@ describe('Worldpay details settings', () => {
 
       it('should show CIT and MIT credentials tasks', () => {
         cy.contains('a.govuk-link', 'Recurring customer initiated transaction (CIT) credentials').should('exist')
-          .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-customer-initiated`)
+          .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`)
         cy.contains('a.govuk-link', 'Recurring merchant initiated transaction (MIT) credentials').should('exist')
-          .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-merchant-initiated`)
+          .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-merchant-initiated/${CREDENTIAL_EXTERNAL_ID}`)
         cy.contains('a.govuk-link', 'Link your Worldpay account with GOV.UK Pay').should('not.exist')
         cy.contains('a.govuk-link', 'Configure 3DS').should('exist')
       })
@@ -155,7 +155,7 @@ describe('Worldpay details settings', () => {
         it('should return to the edit MIT credentials page and show the validation errors', () => {
           cy.contains('a', 'Recurring merchant initiated transaction (MIT) credentials').click()
           cy.get('#submitCredentials').click()
-          cy.url().should('include', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-merchant-initiated`)
+          cy.url().should('include', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-merchant-initiated/${CREDENTIAL_EXTERNAL_ID}`)
           cy.contains('h2', 'There is a problem').should('exist')
           cy.get('.govuk-error-summary__body').within(() => {
             cy.get('a').eq(0).should('have.attr', 'href', '#merchant-code')
@@ -167,7 +167,7 @@ describe('Worldpay details settings', () => {
         it('should return to the edit CIT credentials page and show the validation errors', () => {
           cy.contains('a', 'Recurring customer initiated transaction (CIT) credentials').click()
           cy.get('#submitCredentials').click()
-          cy.url().should('include', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-customer-initiated`)
+          cy.url().should('include', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/recurring-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`)
           cy.contains('h2', 'There is a problem').should('exist')
           cy.get('.govuk-error-summary__body').within(() => {
             cy.get('a').eq(0).should('have.attr', 'href', '#merchant-code')

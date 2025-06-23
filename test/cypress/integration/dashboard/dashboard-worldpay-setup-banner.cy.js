@@ -32,11 +32,6 @@ describe('Worldpay account setup banner', () => {
         payment_provider: WORLDPAY,
         gateway_account_credentials: gatewayAccountCredentials
       }),
-      gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, gatewayAccountType, {
-        gateway_account_id: gatewayAccountId,
-        type: gatewayAccountType,
-        payment_provider: WORLDPAY
-      }),
       transactionsSummaryStubs.getDashboardStatistics()
     ])
   }
