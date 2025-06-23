@@ -7,8 +7,13 @@
 
 {% block settingsContent %}
   {% if providerSwitchEnabled %}
+    {% set switchMessage %}
+      Your service is ready to switch PSP from {{ currentPsp | smartCaps }} to {{ switchingPsp | smartCaps }}.<br>
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ switchPspLink }}">Switch to {{ switchingPsp | smartCaps }}.</a>
+    {% endset %}
+
     {{ govukInsetText({
-      html: "Your service is ready to switch PSP from Stripe to Worldpay.<br>" + "Find out how to switch to Worldpay" | docsLink("switch_payment_service_provider/switch_psp_to_worldpay") | safe,
+      html: switchMessage,
       classes: "service-settings-inset-text--grey"
     }) }}
   {% endif %}

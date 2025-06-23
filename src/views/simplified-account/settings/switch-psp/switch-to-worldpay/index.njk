@@ -1,7 +1,7 @@
 {% extends "simplified-account/settings/settings-layout.njk" %}
 {% from "macro/task-list.njk" import taskList %}
 
-{% set settingsPageTitle = "Switch to Worldpay" %}
+{% set settingsPageTitle = "Switch Worldpay credentials" if isMigratingWorldpayCredentials else "Switch to Worldpay" %}
 
 {% block settingsContent %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>

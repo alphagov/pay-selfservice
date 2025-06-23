@@ -8,6 +8,7 @@ import { completePspSwitch } from '@services/gateway-accounts.service'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { NextFunction } from 'client-sessions'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import PaymentProviders from '@models/constants/payment-providers'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const account = req.account
@@ -17,6 +18,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 
   const context = {
     messages: res.locals?.flash?.messages ?? [],
+    isMigratingWorldpayCredentials: account.isSwitchingToProvider(PaymentProviders.WORLDPAY) && account.paymentProvider === PaymentProviders.WORLDPAY,
     isMoto: account.allowMoto,
     currentPsp: account.paymentProvider,
     incompleteTasks: worldpayTasks.incompleteTasks(),

@@ -1,6 +1,5 @@
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import paths from '@root/paths'
-import ConnectorClient from '@services/clients/pay/ConnectorClient.class'
 import TaskStatus from '@models/constants/task-status'
 import CredentialState from '@models/constants/credential-state'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
@@ -8,8 +7,6 @@ import GatewayAccountCredential from '@models/gateway-account-credential/Gateway
 import { Task, Tasks } from '@models/task-workflows/Tasks.class'
 import WorldpayTaskIdentifiers from './task-identifiers/worldpay-task-identifiers'
 import GenericTaskIdentifiers from './task-identifiers/generic-task-identifiers'
-
-const connectorClient = new ConnectorClient()
 
 type JourneyContext = 'SWITCHING' | 'CREATING'
 
@@ -25,19 +22,6 @@ class WorldpayTasks extends Tasks<WorldpayTask> {
 
   hasRecurringTasks() {
     return [WorldpayTaskIdentifiers.CIT, WorldpayTaskIdentifiers.MIT].every((id) => this.tasks.some((t) => t.id === id))
-  }
-
-  static async recalculate(
-    serviceExternalId: string,
-    accountType: string,
-    credential: GatewayAccountCredential,
-    journeyContext: JourneyContext = 'CREATING'
-  ) {
-    const gatewayAccount = await connectorClient.gatewayAccounts.getByServiceExternalIdAndAccountType(
-      serviceExternalId,
-      accountType
-    )
-    return new WorldpayTasks(gatewayAccount, serviceExternalId, credential, journeyContext)
   }
 
   private static generateTasks(
@@ -139,7 +123,7 @@ class WorldpayTask extends Task {
         credential.externalId
       )
     )
-    if (!credential?.credentials?.recurringCustomerInitiated) {
+    if (!credential.credentials.recurringCustomerInitiated) {
       task.setStatus(TaskStatus.NOT_STARTED)
     } else {
       task.setStatus(TaskStatus.COMPLETED)
@@ -166,7 +150,7 @@ class WorldpayTask extends Task {
         credential.externalId
       )
     )
-    if (!credential?.credentials?.recurringMerchantInitiated) {
+    if (!credential.credentials.recurringMerchantInitiated) {
       task.setStatus(TaskStatus.NOT_STARTED)
     } else {
       task.setStatus(TaskStatus.COMPLETED)
@@ -193,7 +177,7 @@ class WorldpayTask extends Task {
         credential.externalId
       )
     )
-    if (!credential?.credentials?.oneOffCustomerInitiated) {
+    if (!credential.credentials.oneOffCustomerInitiated) {
       task.setStatus(TaskStatus.NOT_STARTED)
     } else if (credential.state === CredentialState.VERIFIED) {
       task.setStatus(TaskStatus.COMPLETED_CANNOT_START)
@@ -219,8 +203,14 @@ class WorldpayTask extends Task {
       )
     )
 
-    if (!credential?.credentials?.oneOffCustomerInitiated) {
-      task.setStatus(TaskStatus.CANNOT_START)
+    if(gatewayAccount.recurringEnabled) {
+      if (!credential.credentials.recurringCustomerInitiated && !credential.credentials.recurringMerchantInitiated) {
+        task.setStatus(TaskStatus.CANNOT_START)
+      }
+    } else {
+      if (!credential.credentials.oneOffCustomerInitiated) {
+        task.setStatus(TaskStatus.CANNOT_START)
+      }
     }
 
     if (credential.state === CredentialState.VERIFIED) {

@@ -48,6 +48,10 @@ const {
       return new GatewayAccountCredential()
         .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
         .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
+        .withCredentials({})
+    },
+    isSwitchingToProvider: () => {
+      return false
     }
   })
   .withUser({

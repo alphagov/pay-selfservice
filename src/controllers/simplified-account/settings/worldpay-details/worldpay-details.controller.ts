@@ -13,6 +13,7 @@ import {
   WorldpayDetailsSessionData,
 } from '@controllers/simplified-account/settings/worldpay-details/constants'
 import _ from 'lodash'
+import PaymentProviders from '@models/constants/payment-providers'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const credential = req.account.getCurrentCredential()
@@ -30,6 +31,21 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     providerSwitchEnabled: req.account.providerSwitchEnabled,
     ...(req.account.providerSwitchEnabled && {
       switchingPsp: req.account.getSwitchingCredential().paymentProvider,
+      isMigratingWorldpayCredentials:
+        req.account.isSwitchingToProvider(PaymentProviders.WORLDPAY) &&
+        req.account.paymentProvider === PaymentProviders.WORLDPAY,
+      switchPspLink: // Worldpay can switch to another Worldpay credential or Stripe
+        req.account.getSwitchingCredential().paymentProvider === PaymentProviders.WORLDPAY
+          ? formatServiceAndAccountPathsFor(
+              paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
+              req.service.externalId,
+              req.account.type
+            )
+          : formatServiceAndAccountPathsFor(
+              paths.simplifiedAccount.settings.switchPsp.switchToStripe.index,
+              req.service.externalId,
+              req.account.type
+            ),
     }),
   }
 

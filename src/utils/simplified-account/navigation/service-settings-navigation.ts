@@ -6,6 +6,7 @@ import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import Service from '@models/service/Service.class'
 import { LIVE } from '@models/constants/go-live-stage'
 import UserPermissions from '@models/user/permissions'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 
 export = (account: GatewayAccount, service: Service, currentUrl: string, permissions: Record<string, boolean>) => {
   const navBuilder = new NavigationBuilder(currentUrl, permissions)
@@ -62,7 +63,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         account.type
       ),
       hasPermission: UserPermissions.settings.stripe.stripeAccountDetailsUpdate,
-      conditions: account.paymentProvider === 'stripe' && account.type === 'live',
+      conditions: account.paymentProvider === STRIPE && account.type === GatewayAccountType.LIVE,
     })
     .add({
       id: 'worldpay-details',
@@ -73,12 +74,12 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         account.type
       ),
       hasPermission: UserPermissions.settings.gatewayCredentials.gatewayCredentialsRead,
-      conditions: account.paymentProvider === 'worldpay',
+      conditions: account.paymentProvider === WORLDPAY,
       alwaysViewable: true, // worldpay test accounts are user configurable so details should always be visible
     })
     .add({
       id: 'switch-psp', // sits under settings/switch-psp/switch-to-worldpay
-      name: 'switch to Worldpay',
+      name: isMigratingWorldpayCredentials(account) ? 'switch Worldpay credentials' : 'switch to Worldpay',
       path: formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
         service.externalId,
@@ -185,4 +186,8 @@ const getViewableSettings = (serviceSettings: NavigationCategories, account: Gat
     }
   }
   return viewableSettings
+}
+
+const isMigratingWorldpayCredentials = (account: GatewayAccount) => {
+  return account.isSwitchingToProvider(WORLDPAY) && account.paymentProvider === WORLDPAY
 }

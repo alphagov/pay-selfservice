@@ -5,8 +5,13 @@
 {% block settingsContent %}
   {% if providerSwitchEnabled %}
   {% set switchMessage %}
-    Your service is ready to switch PSP from {{ currentPsp | smartCaps }} to {{ switchingPsp | smartCaps }}.<br>
-    Find out how to switch to {{ switchingPsp | smartCaps | docsLink("switch_payment_service_provider") | safe }}
+    {%  if isMigratingWorldpayCredentials %}
+      Your service is ready to switch from your old Worldpay credentials to your new ones.<br>
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ switchPspLink }}">Switch to the new credentials.</a>
+    {% else %}
+      Your service is ready to switch PSP from {{ currentPsp | smartCaps }} to {{ switchingPsp | smartCaps }}.<br>
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ switchPspLink }}">Switch to {{ switchingPsp | smartCaps }}.</a>
+    {% endif %}
   {% endset %}
 
   {{ govukInsetText({

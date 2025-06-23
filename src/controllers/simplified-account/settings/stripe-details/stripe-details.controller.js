@@ -3,6 +3,8 @@ const { getStripeAccountOnboardingDetails } = require('@services/stripe-details.
 const paths = require('@root/paths')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 const StripeTasks = require('@models/StripeTasks.class')
+const PaymentProviders = require('@models/constants/payment-providers')
+const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 
 async function getAccountDetails (req, res) {
   const account = req.account
@@ -37,7 +39,16 @@ async function get (req, res) {
     incompleteTasks: stripeTasks.incompleteTasks(),
     serviceExternalId: service.externalId,
     answers,
-    providerSwitchEnabled: account.providerSwitchEnabled
+    currentPsp: req.account.paymentProvider,
+    providerSwitchEnabled: account.providerSwitchEnabled,
+    ...(req.account.providerSwitchEnabled && {
+      switchingPsp: PaymentProviders.WORLDPAY, // Stripe can only switch to Worldpay (currently)
+      switchPspLink: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
+        req.service.externalId,
+        req.account.type
+      )
+    })
   })
 }
 
