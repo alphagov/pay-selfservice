@@ -10,11 +10,12 @@ const logger = createLogger(__filename)
 
 function pspSwitchRedirect(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
   if (req.account.providerSwitchEnabled) {
-    switch (req.account.paymentProvider) {
+    const paymentProvider  = req.account.getSwitchingCredential().paymentProvider
+    switch (paymentProvider) {
       case STRIPE:
-        return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, req.service.externalId, req.account.type))
-      case WORLDPAY:
         return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToStripe.index, req.service.externalId, req.account.type))
+      case WORLDPAY:
+        return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, req.service.externalId, req.account.type))
       default:
         return next(new InvalidConfigurationError(`Could not determine switching payment provider for service [service_external_id: ${req.service.externalId}, gateway_account_external_id: ${req.account.externalId}]`))
     }
