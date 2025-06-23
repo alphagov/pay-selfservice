@@ -6,6 +6,8 @@ import CredentialState from '@models/constants/credential-state'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { Tasks, Task } from '@models/task-workflows/Tasks.class'
 import { STRIPE } from '@models/constants/payment-providers'
+import StripeTaskIdentifiers from '@models/task-workflows/task-identifiers/stripe-task-identifiers'
+import GenericTaskIdentifiers from '@models/task-workflows/task-identifiers/generic-task-identifiers'
 
 class StripeTasks extends Tasks<StripeTask> {
   constructor(
@@ -51,7 +53,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       "Organisation's bank details",
-      'stripe-bank-details',
+      StripeTaskIdentifiers.BANK,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.bankDetails,
         serviceExternalId,
@@ -73,7 +75,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       'Responsible person',
-      'stripe-responsible-person',
+      StripeTaskIdentifiers.RES_PERSON,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.index,
         serviceExternalId,
@@ -95,7 +97,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       'Service director',
-      'stripe-service-director',
+      StripeTaskIdentifiers.DIRECTOR,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.director,
         serviceExternalId,
@@ -117,7 +119,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       'VAT registration number',
-      'stripe-vat-number',
+      StripeTaskIdentifiers.VAT_NUMBER,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.vatNumber,
         serviceExternalId,
@@ -139,7 +141,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       'Company registration number',
-      'stripe-company-number',
+      StripeTaskIdentifiers.COMPANY_NUMBER,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.companyNumber,
         serviceExternalId,
@@ -161,7 +163,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       "Confirm your organisation's name and address match your government entity document",
-      'stripe-org-details',
+      StripeTaskIdentifiers.ORG,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.organisationDetails.index,
         serviceExternalId,
@@ -183,7 +185,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       'Government entity document',
-      'stripe-gov-entity-doc',
+      StripeTaskIdentifiers.DOC,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.governmentEntityDocument,
         serviceExternalId,
@@ -209,7 +211,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       'Make a live payment to test your Stripe PSP',
-      'make-a-live-payment',
+      GenericTaskIdentifiers.PAY,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.switchPsp.makeTestPayment.outbound,
         serviceExternalId,
