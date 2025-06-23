@@ -9,8 +9,11 @@ import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { NextFunction } from 'client-sessions'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import PaymentProviders from '@models/constants/payment-providers'
+import { SESSION_KEY } from '@controllers/simplified-account/settings/worldpay-details/constants'
+import _ from 'lodash'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
+  _.unset(req, SESSION_KEY) // prevent duplication of service connected success banner
   const account = req.account
   const service = req.service
   const credential = account.getSwitchingCredential()
@@ -18,7 +21,8 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 
   const context = {
     messages: res.locals?.flash?.messages ?? [],
-    isMigratingWorldpayCredentials: account.isSwitchingToProvider(PaymentProviders.WORLDPAY) && account.paymentProvider === PaymentProviders.WORLDPAY,
+    isMigratingWorldpayCredentials:
+      account.isSwitchingToProvider(PaymentProviders.WORLDPAY) && account.paymentProvider === PaymentProviders.WORLDPAY,
     isMoto: account.allowMoto,
     currentPsp: account.paymentProvider,
     incompleteTasks: worldpayTasks.incompleteTasks(),
@@ -75,5 +79,5 @@ function post(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
 
 module.exports = {
   get,
-  post
+  post,
 }
