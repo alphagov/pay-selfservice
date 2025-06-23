@@ -436,67 +436,67 @@ simplifiedAccount.post(
 // switch psp
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),
   serviceSettingsController.switchPsp.switchToWorldpay.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),
   serviceSettingsController.switchPsp.switchToWorldpay.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.oneOffCustomerInitiated,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),
   serviceSettingsController.worldpayDetails.oneOffCustomerInitiatedCredentials.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.oneOffCustomerInitiated,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),
   serviceSettingsController.worldpayDetails.oneOffCustomerInitiatedCredentials.post
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.recurringCustomerInitiated,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),
   serviceSettingsController.worldpayDetails.recurringCustomerInitiatedCredentials.get
 )
 
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.recurringCustomerInitiated,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),
   serviceSettingsController.worldpayDetails.recurringCustomerInitiatedCredentials.post
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.recurringMerchantInitiated,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),
   serviceSettingsController.worldpayDetails.recurringMerchantInitiatedCredentials.get
 )
 
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.recurringMerchantInitiated,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),
   serviceSettingsController.worldpayDetails.recurringMerchantInitiatedCredentials.post
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.flexCredentials,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),
   serviceSettingsController.worldpayDetails.flexCredentials.get
 )
 
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.flexCredentials,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),
   serviceSettingsController.worldpayDetails.flexCredentials.post
 )
@@ -505,34 +505,31 @@ simplifiedAccount.post(
 
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToStripe.index,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(STRIPE),
   permission('gateway-credentials:update'),
   serviceSettingsController.switchPsp.switchToStripe.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.switchPsp.switchToStripe.index,
-  restrictToSwitchingAccount,
+  restrictToSwitchingAccount(STRIPE),
   permission('gateway-credentials:update'),
   serviceSettingsController.switchPsp.switchToStripe.post
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.makeTestPayment.outbound,
-  restrictToSwitchingAccount,
   permission('gateway-credentials:update'),
   canStartPspPaymentVerificationTask,
   serviceSettingsController.switchPsp.makeTestPayment.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.switchPsp.makeTestPayment.outbound,
-  restrictToSwitchingAccount,
   permission('gateway-credentials:update'),
   canStartPspPaymentVerificationTask,
   serviceSettingsController.switchPsp.makeTestPayment.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.makeTestPayment.inbound,
-  restrictToSwitchingAccount,
   permission('gateway-credentials:update'),
   canStartPspPaymentVerificationTask,
   serviceSettingsController.switchPsp.makeTestPayment.getInbound,
