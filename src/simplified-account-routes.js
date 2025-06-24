@@ -10,7 +10,7 @@ const {
   defaultViewDecider,
   pspSwitchRedirect,
   canStartPspPaymentVerificationTask,
-  experimentalFeature
+  experimentalFeature,
 } = require('@middleware/simplified-account')
 const restrictToSwitchingAccount = require('@middleware/restrict-to-switching-account')
 const restrictToSandboxOrStripeTestAccount = require('@middleware/restrict-to-sandbox-or-stripe-test-account')
@@ -33,18 +33,54 @@ simplifiedAccount.use(simplifiedAccountStrategy, userIsAuthorised)
 // dashboard
 simplifiedAccount.get(paths.simplifiedAccount.dashboard.index, servicesController.dashboard.get)
 
-simplifiedAccount.get(paths.simplifiedAccount.demoPayment.index, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.get)
-simplifiedAccount.get(paths.simplifiedAccount.demoPayment.edit, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.edit.get)
-simplifiedAccount.post(paths.simplifiedAccount.demoPayment.edit, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.edit.post)
-simplifiedAccount.get(paths.simplifiedAccount.demoPayment.mockCard, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.mockCardNumber.get)
-simplifiedAccount.post(paths.simplifiedAccount.demoPayment.mockCard, restrictToSandboxOrStripeTestAccount, servicesController.demoPayment.post)
+simplifiedAccount.get(
+  paths.simplifiedAccount.demoPayment.index,
+  restrictToSandboxOrStripeTestAccount,
+  servicesController.demoPayment.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.demoPayment.edit,
+  restrictToSandboxOrStripeTestAccount,
+  servicesController.demoPayment.edit.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.demoPayment.edit,
+  restrictToSandboxOrStripeTestAccount,
+  servicesController.demoPayment.edit.post
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.demoPayment.mockCard,
+  restrictToSandboxOrStripeTestAccount,
+  servicesController.demoPayment.mockCardNumber.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.demoPayment.mockCard,
+  restrictToSandboxOrStripeTestAccount,
+  servicesController.demoPayment.post
+)
 
 // payment links
 
-simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.index, experimentalFeature, servicesController.paymentLinks.get)
-simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.create, experimentalFeature, servicesController.paymentLinks.create.get)
-simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.edit, experimentalFeature, servicesController.paymentLinks.edit.get)
-simplifiedAccount.get(paths.simplifiedAccount.paymentLinks.delete, experimentalFeature, servicesController.paymentLinks.remove.get)
+simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.index,
+  experimentalFeature,
+  servicesController.paymentLinks.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.create,
+  experimentalFeature,
+  servicesController.paymentLinks.create.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.edit,
+  experimentalFeature,
+  servicesController.paymentLinks.edit.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.delete,
+  experimentalFeature,
+  servicesController.paymentLinks.remove.get
+)
 
 // settings index
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)
@@ -500,8 +536,6 @@ simplifiedAccount.post(
   permission('gateway-credentials:update'),
   serviceSettingsController.worldpayDetails.flexCredentials.post
 )
-
-// --------
 
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToStripe.index,

@@ -26,7 +26,7 @@ async function getGatewayAccountById(gatewayAccountId: number) {
   return connectorClient.gatewayAccounts.getByGatewayAccountId(gatewayAccountId)
 }
 
-async function completePspSwitch(serviceExternalId: string, accountType: string, payload: GatewayAccountSwitchPaymentProviderRequest) {
+async function completePaymentServiceProviderSwitch(serviceExternalId: string, accountType: string, payload: GatewayAccountSwitchPaymentProviderRequest) {
   return connectorClient.gatewayAccounts.switchPSPByServiceExternalIdAndAccountType(
     serviceExternalId,
     accountType,
@@ -38,5 +38,5 @@ export {
   getGatewayAccountsByIds,
   getGatewayAccountById,
   getGatewayAccountByServiceExternalIdAndType,
-  completePspSwitch
+  completePaymentServiceProviderSwitch
 }

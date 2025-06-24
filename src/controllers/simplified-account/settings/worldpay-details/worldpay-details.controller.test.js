@@ -8,10 +8,11 @@ const PaymentProviders = require('@models/constants/payment-providers')
 const CredentialState = require('@models/constants/credential-state')
 const WorldpayTaskIdentifiers = require('@models/task-workflows/task-identifiers/worldpay-task-identifiers')
 const TaskStatus = require('@models/constants/task-status')
+const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 
 const mockResponse = sinon.spy()
 
-const ACCOUNT_TYPE = 'live'
+const ACCOUNT_TYPE = GatewayAccountType.LIVE
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const CREDENTIAL_EXTERNAL_ID = 'credential456def'
 

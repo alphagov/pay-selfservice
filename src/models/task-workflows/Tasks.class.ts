@@ -25,7 +25,7 @@ abstract class Tasks<T extends Task> {
     this.tasks = tasks
   }
 
-  incompleteTasks() {
+  hasIncompleteTasks() {
     return (
       this.tasks.filter(
         (task) => task.status !== TaskStatus.COMPLETED_CANNOT_START && task.status !== TaskStatus.COMPLETED

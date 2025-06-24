@@ -26,7 +26,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     answers: {},
     currentPsp: req.account.paymentProvider,
     tasks: worldpayTasks.tasks,
-    incompleteTasks: worldpayTasks.incompleteTasks(),
+    incompleteTasks: worldpayTasks.hasIncompleteTasks(),
     messages: res.locals.flash?.messages ?? [],
     providerSwitchEnabled: req.account.providerSwitchEnabled,
     ...(req.account.providerSwitchEnabled && {
@@ -49,7 +49,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     }),
   }
 
-  if (!worldpayTasks.incompleteTasks()) {
+  if (!worldpayTasks.hasIncompleteTasks()) {
     const { TASK_COMPLETED } = _.get(req, SESSION_KEY, {} as WorldpayDetailsSessionData)
     if (TASK_COMPLETED) {
       context.messages.push({

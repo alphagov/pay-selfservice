@@ -4,9 +4,10 @@ import sinon from 'sinon'
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 
 const CREDENTIAL_EXTERNAL_ID = 'credential123'
-const ACCOUNT_TYPE = 'live'
+const ACCOUNT_TYPE = GatewayAccountType.LIVE
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 const ACCOUNT_CREDENTIAL = {
   externalId: CREDENTIAL_EXTERNAL_ID,

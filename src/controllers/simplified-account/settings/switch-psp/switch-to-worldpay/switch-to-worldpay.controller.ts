@@ -4,7 +4,7 @@ import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/
 import formatAccountPathsFor from '@utils/format-account-paths-for'
 import paths from '@root/paths'
 import formatPSPName from '@utils/format-PSP-name'
-import { completePspSwitch } from '@services/gateway-accounts.service'
+import { completePaymentServiceProviderSwitch } from '@services/gateway-accounts.service'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { NextFunction } from 'client-sessions'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
@@ -25,7 +25,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       account.isSwitchingToProvider(PaymentProviders.WORLDPAY) && account.paymentProvider === PaymentProviders.WORLDPAY,
     isMoto: account.allowMoto,
     currentPsp: account.paymentProvider,
-    incompleteTasks: worldpayTasks.incompleteTasks(),
+    incompleteTasks: worldpayTasks.hasIncompleteTasks(),
     tasks: worldpayTasks.tasks,
     transactionsUrl: formatAccountPathsFor(paths.account.transactions.index, account.externalId) as string,
   }
@@ -39,7 +39,7 @@ function post(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
   const targetCredential = account.getSwitchingCredential()
   const worldpayTasks = new WorldpayTasks(account, service.externalId, targetCredential, 'SWITCHING')
 
-  if (worldpayTasks.incompleteTasks()) {
+  if (worldpayTasks.hasIncompleteTasks()) {
     req.flash('messages', {
       state: 'error',
       heading: 'There is a problem',
@@ -58,7 +58,7 @@ function post(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
     .withUserExternalId(user.externalId)
     .withGatewayAccountCredentialExternalId(targetCredential.externalId)
 
-  completePspSwitch(service.externalId, account.type, switchProviderRequest)
+  completePaymentServiceProviderSwitch(service.externalId, account.type, switchProviderRequest)
     .then(() => {
       req.flash('messages', {
         state: 'success',

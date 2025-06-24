@@ -25,7 +25,7 @@ async function get (req, res) {
   const stripeTasks = new StripeTasks(gatewayAccountStripeProgress, account, service.externalId)
   let answers = {}
   // load account onboarding details synchronously if javascript is unavailable
-  if (!stripeTasks.incompleteTasks() && javascriptUnavailable) {
+  if (!stripeTasks.hasIncompleteTasks() && javascriptUnavailable) {
     const stripeAccountOnboardingDetails = await getStripeAccountOnboardingDetails(service, account)
     answers = {
       ...stripeAccountOnboardingDetails
@@ -36,7 +36,7 @@ async function get (req, res) {
     accountDetailsPath: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.accountDetails, service.externalId, account.type),
     messages: res.locals?.flash?.messages ?? [],
     tasks: stripeTasks.tasks,
-    incompleteTasks: stripeTasks.incompleteTasks(),
+    incompleteTasks: stripeTasks.hasIncompleteTasks(),
     serviceExternalId: service.externalId,
     answers,
     currentPsp: req.account.paymentProvider,

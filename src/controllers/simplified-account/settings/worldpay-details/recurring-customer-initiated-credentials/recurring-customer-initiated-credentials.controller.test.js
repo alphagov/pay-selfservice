@@ -7,9 +7,13 @@ const { expect } = require('chai')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
 const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
+const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 const mockResponse = sinon.spy()
 
-const ACCOUNT_TYPE = 'live'
+const USERNAME = 'a-username'
+const PASSWORD = 'a-password' // pragma: allowlist secret
+const MERCHANT_CODE = 'a-merchant-code'
+const ACCOUNT_TYPE = GatewayAccountType.LIVE
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const USER_EXTERNAL_ID = 'user123abc'
 const CREDENTIAL_EXTERNAL_ID = 'credential456def'
@@ -95,8 +99,8 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
               {
                 credentials: {
                   recurringCustomerInitiated: {
-                    merchantCode: 'a-merchant-code',
-                    username: 'a-username',
+                    merchantCode: MERCHANT_CODE,
+                    username: USERNAME,
                   },
                 },
               },
@@ -120,8 +124,8 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
       it('should pass context data with no credentials to the response method', () => {
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
           credentials: {
-            merchantCode: 'a-merchant-code',
-            username: 'a-username',
+            merchantCode: MERCHANT_CODE,
+            username: USERNAME,
           },
           backLink: formatSimplifiedAccountPathsFor(
             paths.simplifiedAccount.settings.worldpayDetails.index,
@@ -137,9 +141,9 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
     beforeEach(() => {
       nextRequest({
         body: {
-          merchantCode: 'a-merchant-code',
-          username: 'a-username',
-          password: 'a-password', // pragma: allowlist secret
+          merchantCode: MERCHANT_CODE,
+          username: USERNAME,
+          password: PASSWORD,
         },
       })
     })
@@ -170,9 +174,9 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
               ],
             },
             credentials: {
-              merchantCode: 'a-merchant-code',
-              username: 'a-username',
-              password: 'a-password', // pragma: allowlist secret
+              merchantCode: MERCHANT_CODE,
+              username: USERNAME,
+              password: PASSWORD,
             },
             backLink: formatSimplifiedAccountPathsFor(
               paths.simplifiedAccount.settings.worldpayDetails.index,
@@ -191,9 +195,9 @@ describe('Controller: settings/worldpay-details/recurring-customer-initiated-cre
       it('should call the worldpay details service to update the recurring customer initiated credentials', () => {
         worldpayDetailsServiceStubs.updateRecurringCustomerInitiatedCredentials.should.have.been.calledOnce
         const credential = new WorldpayCredential()
-          .withMerchantCode('a-merchant-code')
-          .withUsername('a-username')
-          .withPassword('a-password') // pragma: allowlist secret
+          .withMerchantCode(MERCHANT_CODE)
+          .withUsername(USERNAME)
+          .withPassword(PASSWORD)
         worldpayDetailsServiceStubs.updateRecurringCustomerInitiatedCredentials.should.have.been.calledWith(
           SERVICE_EXTERNAL_ID,
           ACCOUNT_TYPE,

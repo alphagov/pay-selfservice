@@ -19,7 +19,7 @@ const GatewayAccountType = require('@models/gateway-account/gateway-account-type
 const mockResponse = sinon.spy()
 
 const mockGatewayAccountsService = {
-  completePspSwitch: sinon.stub().resolves()
+  completePaymentServiceProviderSwitch: sinon.stub().resolves()
 }
 
 const ACCOUNT_TYPE = GatewayAccountType.LIVE
@@ -146,7 +146,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
         const expectedRequest = new GatewayAccountSwitchPaymentProviderRequest()
           .withUserExternalId(USER_EXTERNAL_ID)
           .withGatewayAccountCredentialExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
-        sinon.assert.calledOnceWithExactly(mockGatewayAccountsService.completePspSwitch,
+        sinon.assert.calledOnceWithExactly(mockGatewayAccountsService.completePaymentServiceProviderSwitch,
           SERVICE_EXTERNAL_ID,
           ACCOUNT_TYPE,
           expectedRequest
@@ -208,7 +208,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
           }
         })
         const error = new RESTClientError('whoops')
-        mockGatewayAccountsService.completePspSwitch.rejects(error)
+        mockGatewayAccountsService.completePaymentServiceProviderSwitch.rejects(error)
         call('post')
       })
 
