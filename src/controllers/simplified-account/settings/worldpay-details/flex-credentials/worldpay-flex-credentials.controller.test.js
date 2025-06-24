@@ -9,6 +9,7 @@ const Worldpay3dsFlexCredential = require('@models/gateway-account-credential/Wo
 const { validServiceResponse } = require('@test/fixtures/service.fixtures')
 const PaymentProviders = require('@models/constants/payment-providers')
 const CredentialState = require('@models/constants/credential-state')
+const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 
 const ACCOUNT_TYPE = 'live'
 const SERVICE_EXTERNAL_ID = 'service123abc'
@@ -53,6 +54,27 @@ const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@c
 
 describe('Controller: settings/worldpay-details/flex-credentials', () => {
   describe('get', () => {
+    describe('switch psp journey', () => {
+      before(async () => {
+        nextRequest({
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/switch-psp/flex-credentials`,
+        })
+
+        await call('get')
+      })
+
+      it('should call the response method with the switch PSP backlink', () => {
+        sinon.assert.calledWith(mockResponse, sinon.match.any, sinon.match.any, sinon.match.any, {
+          backLink: formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          ),
+          credentials: sinon.match.any,
+        })
+      })
+    })
+
     describe('when no credentials have yet been set', () => {
       beforeEach(async () => {
         await call('get')
@@ -105,6 +127,36 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
   describe('post', () => {
     describe('for MOTO gateway accounts', () => {
       describe('when submitting invalid data', () => {
+        describe('switch psp journey', () => {
+          it('should call the response method with the switch PSP backlink', async () => {
+            nextRequest({
+              url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/switch-psp/flex-credentials`,
+              body: {
+                organisationalUnitId: '',
+                issuer: '',
+                jwtMacKey: ''
+              },
+            })
+            await call('post')
+
+            sinon.assert.calledWith(
+              mockResponse,
+              sinon.match.any,
+              sinon.match.any,
+              sinon.match.any,
+              {
+                errors: sinon.match.any,
+                credentials: sinon.match.any,
+                backLink: formatServiceAndAccountPathsFor(
+                  paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
+                  SERVICE_EXTERNAL_ID,
+                  ACCOUNT_TYPE
+                ),
+              }
+            )
+          })
+        })
+
         it('should render the form with validation errors when input fields are missing', async () => {
           nextRequest({
             body: {

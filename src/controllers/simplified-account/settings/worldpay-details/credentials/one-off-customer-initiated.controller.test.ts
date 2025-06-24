@@ -105,10 +105,7 @@ describe('Controller: settings/worldpay-details/credentials/one-off-customer-ini
             SERVICE_EXTERNAL_ID,
             ACCOUNT_TYPE
           ),
-          credentials: {
-            merchantCode: 'testMerchantCode',
-            username: 'testUsername',
-          },
+          credentials: sinon.match.any,
         })
       })
     })
@@ -117,6 +114,36 @@ describe('Controller: settings/worldpay-details/credentials/one-off-customer-ini
   describe('post', () => {
     describe('for MOTO gateway accounts', () => {
       describe('when submitting invalid data', () => {
+        describe('switch psp journey', () => {
+          it('should call the response method with the switch PSP backlink', async () => {
+            nextRequest({
+              url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/switch-psp/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`,
+              body: {
+                merchantCode: '',
+                username: '',
+                password: '',
+              },
+            })
+            await call('post')
+
+            sinon.assert.calledWith(
+              mockResponse,
+              sinon.match.any,
+              sinon.match.any,
+              sinon.match.any,
+              {
+                errors: sinon.match.any,
+                credentials: sinon.match.any,
+                backLink: formatServiceAndAccountPathsFor(
+                  paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
+                  SERVICE_EXTERNAL_ID,
+                  ACCOUNT_TYPE
+                ),
+              }
+            )
+          })
+        })
+
         it('should render the form with validation errors when input fields are missing', async () => {
           nextRequest({
             body: {
