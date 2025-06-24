@@ -64,7 +64,7 @@ describe('test with your users', () => {
       it('should be possible to access the "Test with you users" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Test with your users').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
       })
     })
 
@@ -78,7 +78,7 @@ describe('test with your users', () => {
       it('should be possible to access the "Test with you users" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Test with your users').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
       })
     })
 
@@ -94,7 +94,7 @@ describe('test with your users', () => {
       it('should be possible to access the "Test with you users" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Test with your users').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
       })
     })
 
@@ -110,7 +110,7 @@ describe('test with your users', () => {
       it('should be possible to access the "Test with you users" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
         cy.contains('a', 'Test with your users').click()
-        cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
+        cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
       })
     })
 
@@ -128,7 +128,7 @@ describe('test with your users', () => {
         cy.contains('a', 'Test with your users').should('not.exist')
 
         cy.request({
-          url: `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`,
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/live/test-with-your-users`,
           failOnStatusCode: false,
         }).then((response) => expect(response.status).to.eq(404))    })
     })
@@ -147,7 +147,7 @@ describe('test with your users', () => {
       cy.get('a').contains( 'Test with your users').should('not.exist')
 
       cy.request({
-        url: `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`,
+        url: `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`,
         failOnStatusCode: false,
       }).then((response) => expect(response.status).to.eq(404))
     })
@@ -161,25 +161,25 @@ describe('test with your users', () => {
     })
 
     it('should show the mock card number by default', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
 
       cy.contains('div', '4000056655665556').should('exist')
     })
 
     it('should link to the existing prototype links page', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
 
       cy.contains('a', 'Prototype links').should('exist').click()
 
-      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/links`)
+      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
     })
 
     it('should link to the "create prototype links" page', () => {
-      cy.visit(`/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users`)
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users`)
 
       cy.contains('a.govuk-button', 'Create prototype link').click()
 
-      cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/test-with-your-users/create`)
+      cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
     })
   })
 
