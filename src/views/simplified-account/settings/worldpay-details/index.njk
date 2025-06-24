@@ -4,10 +4,22 @@
 
 {% block settingsContent %}
   {% if providerSwitchEnabled %}
+    {% set switchMessage %}
+      {% if isMigratingWorldpayCredentials %}
+        Your service is ready to switch from your old Worldpay credentials to your new ones.<br>
+        <a class="govuk-link govuk-link--no-visited-state" href="{{ switchPspLink }}">Switch to the new credentials.</a>
+      {% else %}
+        Your service is ready to switch PSP from {{ currentPsp | smartCaps }} to {{ switchingPsp | smartCaps }}.<br>
+        <a class="govuk-link govuk-link--no-visited-state" href="{{ switchPspLink }}">Switch
+          to {{ switchingPsp | smartCaps }}.</a>
+      {% endif %}
+    {% endset %}
+
     {{ govukInsetText({
-      html: "Your service is ready to switch PSP from Worldpay to Stripe.<br>" + "Find out how to switch to Stripe" | docsLink("switch_payment_service_provider/switch_psp_to_stripe") | safe,
+      html: switchMessage,
       classes: "service-settings-inset-text--grey"
     }) }}
+
   {% endif %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
@@ -30,11 +42,12 @@
             text: task.title
           },
           actions: {
-            items: [{
-              href: task.href,
-              text: 'Change',
-              classes: 'govuk-link--no-visited-state'
-            }]
+            items: [
+              {} if isMigratingWorldpayCredentials else {
+                href: task.href,
+                text: 'Change',
+                classes: 'govuk-link--no-visited-state'
+              }]
           }
         },
         rows: [{
@@ -59,11 +72,12 @@
             text: '3DS Flex credentials'
           },
           actions: {
-            items: [{
-              href: answers.worldpay3dsFlex.href,
-              text: 'Change',
-              classes: 'govuk-link--no-visited-state'
-            }]
+            items: [
+              {} if isMigratingWorldpayCredentials else {
+                href: answers.worldpay3dsFlex.href,
+                text: 'Change',
+                classes: 'govuk-link--no-visited-state'
+              }]
           }
         },
         rows: [{
@@ -78,7 +92,7 @@
         }]
       }) }}
 
-      {% endif %}
+    {% endif %}
 
   {% endif %}
 

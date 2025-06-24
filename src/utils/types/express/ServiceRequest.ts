@@ -8,7 +8,7 @@ import ClientSessionsCookie from '@utils/types/client-sessions/ClientSessionsCoo
 type MessageState = 'success' | 'error' | 'info'
 type Icon = '&check;'
 
-interface Message {
+export interface Message {
   state: MessageState
   icon?: Icon
   heading: string

@@ -7,7 +7,7 @@ import StripeTasks from '@models/StripeTasks.class'
 import TaskStatus from '@models/constants/task-status'
 import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'
 import { getConnectorStripeAccountSetup } from '@services/stripe-details.service'
-import { completePspSwitch } from '@services/gateway-accounts.service'
+import { completePaymentServiceProviderSwitch } from '@services/gateway-accounts.service'
 import paths from '@root/paths'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
@@ -21,7 +21,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/settings/switch-psp/switch-to-stripe/index', {
     messages: res.locals.flash?.messages ?? [],
     currentPsp: req.account.paymentProvider,
-    incompleteTasks: stripesTasks.incompleteTasks(),
+    incompleteTasks: stripesTasks.hasIncompleteTasks(),
     tasks: stripesTasks.tasks,
     stripeVerificationPending,
   })
@@ -35,7 +35,7 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
   const connectorStripeAccountSetup = await getConnectorStripeAccountSetup(service.externalId, account.type)
   const stripeTasks = new StripeTasks(connectorStripeAccountSetup, account, service.externalId)
 
-  if (stripeTasks.incompleteTasks()) {
+  if (stripeTasks.hasIncompleteTasks()) {
     req.flash('messages', {
       state: 'error',
       heading: 'There is a problem',
@@ -54,7 +54,7 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
     .withUserExternalId(user.externalId)
     .withGatewayAccountCredentialExternalId(targetCredential.externalId)
 
-  completePspSwitch(service.externalId, account.type, switchProviderRequest)
+  completePaymentServiceProviderSwitch(service.externalId, account.type, switchProviderRequest)
     .then(() => {
       req.flash('messages', {
         state: 'success',

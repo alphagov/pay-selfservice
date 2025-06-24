@@ -121,7 +121,7 @@ describe('Worldpay details settings', () => {
                     .should(
                       'have.attr',
                       'href',
-                      `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+                      `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`
                     )
                   cy.get('.govuk-task-list__status').within(() => {
                     cy.get('strong.govuk-tag.govuk-tag--blue').should('contain.text', 'Not yet started')
@@ -195,7 +195,7 @@ describe('Worldpay details settings', () => {
                 .should(
                   'have.attr',
                   'href',
-                  `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+                  `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`
                 )
             })
           })
@@ -228,12 +228,12 @@ describe('Worldpay details settings', () => {
                 {
                   index: 0,
                   text: 'Recurring customer initiated transaction (CIT) credentials',
-                  href: `${worldpayDetailsUrl}/recurring-customer-initiated`,
+                  href: `${worldpayDetailsUrl}/recurring-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`,
                 },
                 {
                   index: 1,
                   text: 'Recurring merchant initiated transaction (MIT) credentials',
-                  href: `${worldpayDetailsUrl}/recurring-merchant-initiated`,
+                  href: `${worldpayDetailsUrl}/recurring-merchant-initiated/${CREDENTIAL_EXTERNAL_ID}`,
                 },
                 {
                   index: 2,
@@ -283,12 +283,12 @@ describe('Worldpay details settings', () => {
               {
                 index: 0,
                 text: 'Recurring customer initiated transaction (CIT) credentials',
-                href: `${worldpayDetailsUrl}/recurring-customer-initiated`,
+                href: `${worldpayDetailsUrl}/recurring-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`,
               },
               {
                 index: 1,
                 text: 'Recurring merchant initiated transaction (MIT) credentials',
-                href: `${worldpayDetailsUrl}/recurring-merchant-initiated`,
+                href: `${worldpayDetailsUrl}/recurring-merchant-initiated/${CREDENTIAL_EXTERNAL_ID}`,
               },
             ].forEach((value) => {
               cy.get('.govuk-summary-card')
@@ -348,7 +348,7 @@ describe('Worldpay details settings', () => {
                     .should(
                       'have.attr',
                       'href',
-                      `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+                      `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`
                     )
                   cy.get('.govuk-task-list__status').within(() => {
                     cy.get('strong.govuk-tag.govuk-tag--blue').should('contain.text', 'Not yet started')
@@ -401,7 +401,7 @@ describe('Worldpay details settings', () => {
                       .should(
                         'have.attr',
                         'href',
-                        `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+                        `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`
                       )
 
                     cy.get('.govuk-task-list__status')
@@ -498,7 +498,7 @@ describe('Worldpay details settings', () => {
                     .should(
                       'have.attr',
                       'href',
-                      `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated`
+                      `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/worldpay-details/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`
                     )
                 })
 

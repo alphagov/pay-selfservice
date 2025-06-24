@@ -1,16 +1,12 @@
 import Worldpay3dsFlexCredential from '@models/gateway-account-credential/Worldpay3dsFlexCredential.class'
-import { InvalidConfigurationError } from '@root/errors'
+import { InvalidConfigurationError, NotFoundError } from '@root/errors'
 import CredentialState from '@models/constants/credential-state'
 import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
 import { EmailNotificationsData } from '@models/gateway-account/dto/EmailNotifications.dto'
 import GatewayAccountCredential from '@models/gateway-account-credential/GatewayAccountCredential.class'
 import PaymentProvider from '@models/constants/payment-providers'
 
-const pendingCredentialStates = [
-  CredentialState.CREATED,
-  CredentialState.ENTERED,
-  CredentialState.VERIFIED,
-]
+const pendingCredentialStates = [CredentialState.CREATED, CredentialState.ENTERED, CredentialState.VERIFIED]
 
 class GatewayAccount {
   readonly id: number
@@ -77,11 +73,7 @@ class GatewayAccount {
   }
 
   getActiveCredential() {
-    return (
-      this.gatewayAccountCredentials.find(
-        (credential) => credential.state === CredentialState.ACTIVE
-      ) ?? undefined
-    )
+    return this.gatewayAccountCredentials.find((credential) => credential.state === CredentialState.ACTIVE) ?? undefined
   }
 
   getSwitchingCredential() {
@@ -102,6 +94,16 @@ class GatewayAccount {
     }
 
     return pendingCredentials[0]
+  }
+
+  findCredentialByExternalId(externalId: string) {
+    const credential = this.gatewayAccountCredentials.find((credential) => credential.externalId === externalId)
+    if (!credential) {
+      throw new NotFoundError(
+        `Credential not found on gateway account [credential_external_id: ${externalId}, gateway_account_id: ${this.id}]`
+      )
+    }
+    return credential
   }
 
   isSwitchingToProvider(paymentProvider: string): boolean {
@@ -130,10 +132,7 @@ class EmailNotifications {
   readonly paymentConfirmed: EmailNotificationSetting
   readonly refundIssued: EmailNotificationSetting
 
-  constructor(data: {
-    PAYMENT_CONFIRMED: EmailNotificationsData
-    REFUND_ISSUED: EmailNotificationsData
-  }) {
+  constructor(data: { PAYMENT_CONFIRMED: EmailNotificationsData; REFUND_ISSUED: EmailNotificationsData }) {
     this.paymentConfirmed = new EmailNotificationSetting(data?.PAYMENT_CONFIRMED)
     this.refundIssued = new EmailNotificationSetting(data?.REFUND_ISSUED)
   }

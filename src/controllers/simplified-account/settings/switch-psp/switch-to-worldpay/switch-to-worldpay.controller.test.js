@@ -11,19 +11,23 @@ const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const CredentialState = require('@models/constants/credential-state')
 const Credential = require('@models/gateway-account-credential/Credential.class')
 const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
+const WorldpayTaskIdentifiers = require('@models/task-workflows/task-identifiers/worldpay-task-identifiers')
+const GenericTaskIdentifiers = require('@models/task-workflows/task-identifiers/generic-task-identifiers')
+const TaskStatus = require('@models/constants/task-status')
+const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 
 const mockResponse = sinon.spy()
 
 const mockGatewayAccountsService = {
-  completePspSwitch: sinon.stub().resolves()
+  completePaymentServiceProviderSwitch: sinon.stub().resolves()
 }
 
-const ACCOUNT_TYPE = 'live'
-const ACCOUNT_EXTERNAL_ID = 'account-id-123abc'
-const USER_EXTERNAL_ID = 'user-id-123abc'
-const SWITCHING_CREDENTIAL_EXTERNAL_ID = 'credential-id-123abc'
+const ACCOUNT_TYPE = GatewayAccountType.LIVE
+const ACCOUNT_EXTERNAL_ID = 'account123abc'
+const USER_EXTERNAL_ID = 'user456def'
+const SWITCHING_CREDENTIAL_EXTERNAL_ID = 'credential789ghi'
 const SWITCHING_CREDENTIAL_PAYMENT_PROVIDER = WORLDPAY
-const SERVICE_EXTERNAL_ID = 'service-id-123abc'
+const SERVICE_EXTERNAL_ID = 'service123abc'
 
 const {
   req,
@@ -44,6 +48,10 @@ const {
       return new GatewayAccountCredential()
         .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
         .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
+        .withCredentials({})
+    },
+    isSwitchingToProvider: () => {
+      return false
     }
   })
   .withUser({
@@ -76,21 +84,22 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
     it('should pass the context data to the response method', () => {
       const context = mockResponse.args[0][3]
       sinon.assert.match(context, {
+        messages: [],
         isMoto: true,
         currentPsp: STRIPE,
         incompleteTasks: true,
         tasks: [
           sinon.match({
             linkText: 'Link your Worldpay account with GOV.UK Pay',
-            href: '/service/service-id-123abc/account/live/settings/switch-psp/switch-to-worldpay/worldpay-details/one-off-customer-initiated',
-            id: 'worldpay-credentials',
-            status: 'NOT_STARTED'
+            href: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/one-off-customer-initiated/${SWITCHING_CREDENTIAL_EXTERNAL_ID}`,
+            id: WorldpayTaskIdentifiers.CRED,
+            status: TaskStatus.NOT_STARTED
           }),
           sinon.match({
             linkText: 'Make a live payment to test your Worldpay PSP',
-            href: '/service/service-id-123abc/account/live/settings/switch-psp/make-a-payment',
-            id: 'make-a-live-payment',
-            status: 'CANNOT_START'
+            href: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/switch-psp/make-a-payment`,
+            id: GenericTaskIdentifiers.PAY,
+            status: TaskStatus.CANNOT_START
           })
         ],
         transactionsUrl: formatAccountPathsFor(paths.account.transactions.index, ACCOUNT_EXTERNAL_ID)
@@ -137,7 +146,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
         const expectedRequest = new GatewayAccountSwitchPaymentProviderRequest()
           .withUserExternalId(USER_EXTERNAL_ID)
           .withGatewayAccountCredentialExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
-        sinon.assert.calledOnceWithExactly(mockGatewayAccountsService.completePspSwitch,
+        sinon.assert.calledOnceWithExactly(mockGatewayAccountsService.completePaymentServiceProviderSwitch,
           SERVICE_EXTERNAL_ID,
           ACCOUNT_TYPE,
           expectedRequest
@@ -199,7 +208,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
           }
         })
         const error = new RESTClientError('whoops')
-        mockGatewayAccountsService.completePspSwitch.rejects(error)
+        mockGatewayAccountsService.completePaymentServiceProviderSwitch.rejects(error)
         call('post')
       })
 
