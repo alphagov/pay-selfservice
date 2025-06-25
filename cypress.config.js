@@ -31,12 +31,12 @@ module.exports = defineConfig({
         webpackOptions: {
           resolve: {
             alias: webpackAliases,
-            extensions: ['.ts', '.tsx', '.js', '.jsx', '.json']
+            extensions: ['.ts', '.js', '.json']
           },
           module: {
             rules: [
               {
-                test: /\.tsx?$/,
+                test: /\.ts$/,
                 use: [
                   {
                     loader: 'ts-loader',
