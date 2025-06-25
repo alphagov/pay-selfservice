@@ -1,0 +1,82 @@
+{{ govukInsetText({
+  text: "You don't have permission to create or edit payment links. Contact your service admin if you would like to manage payment links",
+  classes: "service-settings-inset-text--grey"
+}) }}
+
+<h1 class="govuk-heading-l page-title">
+  {{ servicePageTitle }}
+</h1>
+
+{% if products.length > 0 %}
+  {% if serviceMode === 'test' %}
+    {{ govukWarningText({
+      text: "Test payment links will not work for paying users. Do not send them to users as they will be unable to pay for your service.",
+      iconFallbackText: "Warning"
+    }) }}
+    <p class="govuk-body">You can use test payment links to see how your service will work. You can use
+      {{ "mock card numbers" | docsLink("testing_govuk_pay/#mock-card-numbers-and-email-addresses") | safe }}
+      to test payment links.</p>
+  {% else %}
+    <p class="govuk-body">You can send payment links to your users so they can pay you. The same payment
+      link can be used by all users of your service.</p>
+  {% endif %}
+
+  <h2 class="govuk-heading-m">Prefill payment link fields</h2>
+  <p class="govuk-body">You can test prefilling the amount, reference or both for users. Learn
+    {{ "how to create prefilled links" | docsLink("prefill_payment_links") | safe }}.</p>
+{% endif %}
+
+
+
+{% if products.length > 0 %}
+  <h2 class="govuk-heading-m">{{ serviceMode | smartCaps }} payment links ({{ products.length }})</h2>
+  {% for product in products %}
+    {{ govukSummaryList({
+      card: {
+        title: {
+          text: product.name,
+          headingLevel: 3
+        },
+        actions: {
+          items: []
+        }
+      },
+      rows: [
+        {
+          key: {
+          text: 'Web address'
+        },
+          value: {
+          html: '<a href="' + product.href + '" class="govuk-link govuk-link--no-visited-state">' + product.href + '</a>'
+        }
+        },
+        {
+          key: {
+          text: 'Reference'
+        },
+          value: {
+          text: product.reference
+        }
+        },
+        {
+          key: {
+          text: 'More details'
+        },
+          value: {
+          html: product.details
+        }
+        },
+        {
+          key: {
+          text: 'Payment amount'
+        },
+          value: {
+          text: product.amount
+        }
+        }
+      ]
+    }) }}
+  {% endfor %}
+{% else %}
+  <p class="govuk-body">There are no payment links.</p>
+{% endif %}
