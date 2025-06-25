@@ -1,6 +1,7 @@
 const { defineConfig } = require('cypress')
 const path = require('path')
 const addAccessibilityTasks = require('wick-a11y/accessibility-tasks')
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
 const packageJson = require('./package.json')
 const aliases = packageJson._moduleAliases || {}
@@ -24,20 +25,18 @@ module.exports = defineConfig({
   videosFolder: './test/cypress/videos',
   video: false,
   e2e: {
-    // We've imported your old cypress plugins here.
-    // You may want to clean this up later by importing these.
     setupNodeEvents (on, config) {
       addAccessibilityTasks(on)
       on('file:preprocessor', require('@cypress/webpack-preprocessor')({
         webpackOptions: {
           resolve: {
             alias: webpackAliases,
-            extensions: ['.ts', '.js', '.json']
+            extensions: ['.ts', '.tsx', '.js', '.jsx', '.json']
           },
           module: {
             rules: [
               {
-                test: /\.ts$/,
+                test: /\.tsx?$/,
                 use: [
                   {
                     loader: 'ts-loader',
@@ -45,7 +44,14 @@ module.exports = defineConfig({
                       transpileOnly: true,
                       compilerOptions: {
                         esModuleInterop: true,
-                        module: 'NodeNext'
+                        allowSyntheticDefaultImports: true,
+                        target: 'es2017',
+                        lib: ['es2017', 'dom', 'dom.iterable'],
+                        types: ['cypress', 'node'],
+                        moduleResolution: 'nodenext',
+                        module: 'NodeNext',
+                        strict: false,
+                        skipLibCheck: true
                       }
                     }
                   }
@@ -54,6 +60,11 @@ module.exports = defineConfig({
               },
             ],
           },
+          plugins: [
+            new NodePolyfillPlugin({
+              additionalAliases: ['process'],
+            })
+          ],
         }
       }))
       return require('./test/cypress/plugins')(on, config)

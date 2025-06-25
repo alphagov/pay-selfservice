@@ -143,6 +143,7 @@
     "lint-staged": "^15.5.1",
     "mocha": "^10.2.0",
     "nock": "13.3.3",
+    "node-polyfill-webpack-plugin": "^4.1.0",
     "notp": "2.0.3",
     "portfinder": "1.0.32",
     "prettier": "3.5.3",
