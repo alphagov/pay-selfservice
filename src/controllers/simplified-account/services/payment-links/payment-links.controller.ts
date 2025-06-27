@@ -20,8 +20,8 @@ async function get (req: ServiceRequest, res: ServiceResponse) {
       acc.push({
         name: product.name,
         href: product.links.friendly.href,
-        reference: product.referenceEnabled ? product.referenceLabel! : 'Created by GOV.UK Pay',
-        details: product.description ? product.description : 'None given',
+        reference: product.referenceLabel ?? 'Created by GOV.UK Pay',
+        details: product.description ?? 'None given',
         amount: product.price ? penceToPoundsWithCurrency(product.price) : 'User can choose',
         editLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.edit, req.service.externalId, req.account.type, product.externalId),
         deleteLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.delete, req.service.externalId, req.account.type, product.externalId)
