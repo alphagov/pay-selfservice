@@ -155,6 +155,20 @@ function listen(app) {
  */
 function initialise() {
   const app = unconfiguredApp
+
+  if (NODE_ENV === 'development') {
+    const sessionId = crypto.randomUUID()
+    app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
+      logger.debug(req.url)
+      res.json({
+        workspace: {
+              root: process.env.PROJECT_DIR,
+              uuid: sessionId
+            }
+      })
+    })
+  }
+
   if (NODE_ENV !== 'test') {
     app.use(metrics.initialise())
   }
