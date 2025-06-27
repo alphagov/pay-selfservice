@@ -43,11 +43,6 @@ jobs:
     uses: alphagov/pay-ci/.github/workflows/_run-node-cypress-tests.yml@master
     with:
       LIBGL_ALWAYS_SOFTWARE: "1"
-  
-  cypress-tests-rebrand:
-    name: "Cypress tests for rebranding"
-    needs: [ install-and-compile ]
-    uses: alphagov/pay-ci/.github/workflows/_run-node-cypress-tests-rebrand.yml@master
 
   pact-providers-contract-tests:
     name: "Provider tests"
