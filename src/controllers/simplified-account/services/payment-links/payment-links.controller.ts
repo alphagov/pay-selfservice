@@ -12,15 +12,16 @@ import paths from '@root/paths'
 async function get (req: ServiceRequest, res: ServiceResponse) {
   const products = await getProducts(req.account.id, ProductType.ADHOC)
   return response(req, res, 'simplified-account/services/payment-links/index', {
+    isAdmin: req.user.isAdminUserForService(req.service.externalId),
     messages: res.locals.flash?.messages ?? [],
     serviceMode: req.account.type,
     createLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.create, req.service.externalId, req.account.type),
     products: products.reduce<Record<string, string>[]>((acc, product) => {
       acc.push({
         name: product.name,
-        href: product.links.pay.href,
-        reference: product.referenceEnabled ? product.referenceLabel! : 'Created by GOV.UK Pay',
-        details: product.description ? product.description : 'None given',
+        href: product.links.friendly.href,
+        reference: product.referenceLabel ?? 'Created by GOV.UK Pay',
+        details: product.description ?? 'None given',
         amount: product.price ? penceToPoundsWithCurrency(product.price) : 'User can choose',
         editLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.edit, req.service.externalId, req.account.type, product.externalId),
         deleteLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.delete, req.service.externalId, req.account.type, product.externalId)

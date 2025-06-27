@@ -16,6 +16,8 @@ const startServer = async () => {
 }
 
 async function startDevServer() {
+  process.env.PROJECT_DIR = process.cwd()
+
   const clientCtx = await context(clientBuild)
 
   const serverCtx = await context({
