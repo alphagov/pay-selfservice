@@ -28,10 +28,8 @@
     "test:pact": "rm -rf ./pacts && NODE_ENV=test mocha **/*.pact.test.js",
     "cypress:server": "run-amock --port=8000 | node -r dotenv/config dist/application.js dotenv_config_path=test/cypress/test.env",
     "cypress:dev-server": "run-amock --port=8000 | NODE_ENV=test node dev-server.mjs",
-    "cypress:test": "cypress run --spec './test/cypress/integration/**/*.cy.js'",
+    "cypress:test": "cypress run",
     "cypress:test-headed": "cypress open",
-    "cypress:server-rebrand": "run-amock --port=8000 | ENABLE_REBRAND=true node -r dotenv/config dist/application.js dotenv_config_path=test/cypress/test.env",
-    "cypress:test-rebrand": "cypress run --spec './test/cypress/integration/rebrand/rebrand-header-footer.cy.rebrand.js,./test/cypress/integration/rebrand/errors.cy.rebrand.js'",
     "publish-pacts": "./bin/publish-pacts.js"
   },
   "lint-staged": {
