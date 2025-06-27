@@ -19,6 +19,8 @@
     {{ servicePageTitle }}
   </h1>
 
+  <p class="govuk-body">Use this card number to test a successful payment. Don’t use real card numbers.</p>
+
   {{ govukInsetText({
     html: mockCard
   }) }}
@@ -32,6 +34,6 @@
 
   <form method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
-    {{ govukButton({ text: "Make a demo payment", id: "prototyping__make-demo-payment" }) }}
+    {{ govukButton({ text: "Make a test payment", id: "prototyping__make-demo-payment" }) }}
   </form>
 {% endblock %}
