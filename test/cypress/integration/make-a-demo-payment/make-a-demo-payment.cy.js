@@ -46,9 +46,9 @@ describe('make a demo payment tests', () => {
         cy.a11yCheck()
       })
 
-      it('should be possible to access the "make a demo payment" page', () => {
+      it('should be possible to access the "make a test payment" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
-        cy.contains('a', 'Make a demo payment').should('exist').click()
+        cy.contains('a', 'Make a test payment').should('exist').click()
         cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       })
     })
@@ -65,9 +65,9 @@ describe('make a demo payment tests', () => {
         cy.a11yCheck()
       })
 
-      it('should be possible to access the "make a demo payment" page', () => {
+      it('should be possible to access the "make a test payment" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
-        cy.contains('a', 'Make a demo payment').should('exist').click()
+        cy.contains('a', 'Make a test payment').should('exist').click()
         cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       })
     })
@@ -81,9 +81,9 @@ describe('make a demo payment tests', () => {
         })
       })
 
-      it('should be possible to access the "make a demo payment" page', () => {
+      it('should be possible to access the "make a test payment" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
-        cy.contains('a', 'Make a demo payment').should('exist').click()
+        cy.contains('a', 'Make a test payment').should('exist').click()
         cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       })
     })
@@ -97,9 +97,9 @@ describe('make a demo payment tests', () => {
         })
       })
 
-      it('should be possible to access the "make a demo payment" page', () => {
+      it('should be possible to access the "make a test payment" page', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/dashboard`)
-        cy.contains('a', 'Make a demo payment').should('exist').click()
+        cy.contains('a', 'Make a test payment').should('exist').click()
         cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       })
     })
@@ -113,7 +113,7 @@ describe('make a demo payment tests', () => {
         })
       })
 
-      it('should not be possible to access the "make a demo payment" page', () => {
+      it('should not be possible to access the "make a test payment" page', () => {
         cy.request({
           url: `/service/${SERVICE_EXTERNAL_ID}/account/live/demo-payment`,
           failOnStatusCode: false,
@@ -130,7 +130,7 @@ describe('make a demo payment tests', () => {
         })
       })
 
-      it('should not be possible to access the "make a demo payment" page', () => {
+      it('should not be possible to access the "make a test payment" page', () => {
         cy.request({
           url: `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`,
           failOnStatusCode: false,
@@ -150,7 +150,7 @@ describe('make a demo payment tests', () => {
       cy.get('.govuk-summary-card').find('a').contains('Change').click()
       cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment/edit`)
       cy.get('a.govuk-back-link').should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
-      cy.get('h1').should('contain.text', 'Update details for demo payment')
+      cy.get('h1').should('contain.text', 'Update details for test payment')
       cy.get('label').eq(0)
         .should('contain.text', 'Payment description')
       cy.get('label').eq(1)
@@ -191,7 +191,7 @@ describe('make a demo payment tests', () => {
         .type('1337', { delay: 0 })
 
       cy.get('button').contains('Save changes').click()
-      cy.get('h1').should('contain.text', 'Make a demo payment')
+      cy.get('h1').should('contain.text', 'Make a test payment')
       cy.get('dt.govuk-summary-list__key').contains('Payment description')
         .parent()
         .contains('New description')

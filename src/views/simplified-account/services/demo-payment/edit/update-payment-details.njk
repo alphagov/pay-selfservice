@@ -1,6 +1,6 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 
-{% set servicePageTitle = "Update details for demo payment" %}
+{% set servicePageTitle = "Update details for test payment" %}
 
 {% block serviceContent %}
   <h1 class="govuk-heading-l page-title">
@@ -18,7 +18,7 @@
         classes: "govuk-label--s"
       },
       hint: {
-        text: "Tell users what they are paying for"
+        text: 'Briefly describe what the user is paying for. For example, "Pay for a parking permit".'
       },
       classes: "govuk-!-width-two-thirds",
       value: demoPayment.description,

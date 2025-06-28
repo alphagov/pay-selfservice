@@ -83,12 +83,12 @@ describe('mock card numbers page tests', () => {
     })
   })
 
-  describe('making a demo payment', () => {
+  describe('making a test payment', () => {
     beforeEach(() => {
       setupStubs()
     })
 
-    it('should redirect to the demo payment link when clicking the "make a demo payment" button', () => {
+    it('should redirect to the test payment link when clicking the "make a test payment" button', () => {
       cy.intercept('GET', `http://products-ui.url/pay/${PAYMENT_LINK_EXTERNAL_ID}`, {
         statusCode: 200
       }).as('paymentLinkRedirect')
@@ -96,7 +96,7 @@ describe('mock card numbers page tests', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       cy.contains('a', 'Continue').click()
 
-      cy.contains('button', 'Make a demo payment').click()
+      cy.contains('button', 'Make a test payment').click()
 
       cy.wait('@paymentLinkRedirect')
     })
