@@ -8,7 +8,7 @@ const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const ROLES = require('@test/fixtures/roles.fixtures')
 const {
   STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
-} = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
+} = require('@test/fixtures/credential-states')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'

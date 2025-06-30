@@ -7,7 +7,7 @@ const {
 const { WORLDPAY } = require('@models/constants/payment-providers')
 const {
   WORLDPAY_CREDENTIAL_IN_CREATED_STATE,
-} = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
+} = require('@test/fixtures/credential-states')
 const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 
 const pageUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/card-payments`
