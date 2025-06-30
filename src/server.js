@@ -10,7 +10,6 @@ const staticify = require('staticify')(__dirname)
 const router = require('@root/routes')
 const cookieUtil = require('@utils/cookie')
 const noCache = require('@utils/no-cache')
-const addRebrandFlagToNunjucks = require('@utils/add-rebrand-flag-to-nunjucks')
 const auth = require('@services/auth.service')
 const middlewareUtils = require('@utils/middleware')
 const errorHandler = require('@middleware/error-handler')
@@ -106,8 +105,7 @@ function initialiseTemplateEngine(app) {
   // if it's not production we want to re-evaluate the assets on each file change
   nunjucksEnvironment.addGlobal('css_path', staticify.getVersionedPath('/assets/stylesheets/application.css'))
   nunjucksEnvironment.addGlobal('js_path', staticify.getVersionedPath('/assets/js/client.js'))
-
-  addRebrandFlagToNunjucks(nunjucksEnvironment)
+  nunjucksEnvironment.addGlobal('govukRebrand', true)
 
   // Load custom Nunjucks filters
   for (const name in nunjucksFilters) {

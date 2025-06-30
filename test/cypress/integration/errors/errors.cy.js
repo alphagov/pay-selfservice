@@ -14,11 +14,11 @@ describe('Error pages', () => {
 
       cy.log('should display the GOV.UK header correctly')
 
-      cy.get('[data-cy=header]').should('have.css', 'background-color', 'rgb(11, 12, 12)')
+      cy.get('[data-cy=header]').should('have.css', 'background-color', 'rgb(29, 112, 184)')
       cy.get('[data-cy=header]').should('have.css', 'color', 'rgb(255, 255, 255)')
       cy.get('[data-cy=header]')
         .find('.govuk-header__container')
-        .should('have.css', 'border-bottom-color', 'rgb(29, 112, 184)')
+        .should('have.css', 'border-bottom-color', 'rgb(255, 255, 255)')
       cy.get('[data-cy=header]')
         .find('.govuk-header__product-name')
         .should('contain', 'Pay')
@@ -26,7 +26,7 @@ describe('Error pages', () => {
       cy.log('should display the GOV.UK footer correctly')
        
       cy.get('[data-cy=footer]')
-        .should('have.css', 'background-color', 'rgb(243, 242, 241)')
+        .should('have.css', 'background-color', 'rgb(244, 248, 251)')
         .should('have.css', 'border-top-color', 'rgb(29, 112, 184)')
 
       cy.get('h1').should('have.text', 'Page not found')
