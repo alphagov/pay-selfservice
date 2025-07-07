@@ -9,6 +9,7 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 import 'wick-a11y'
+import '@percy/cypress'
 
 Cypress.Commands.add('setEncryptedCookies', (userId, pageData = {}) => {
   cy.task('getCookies', {
