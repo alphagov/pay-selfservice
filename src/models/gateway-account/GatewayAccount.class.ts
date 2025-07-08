@@ -32,6 +32,8 @@ class GatewayAccount {
   readonly supports3ds: boolean
   readonly worldpay3dsFlex?: Worldpay3dsFlexCredential
   readonly rawResponse: GatewayAccountData
+  readonly sendPayerEmailToGateway: boolean
+  readonly sendPayerIPAddressToGateway: boolean
 
   constructor(gatewayAccountData: GatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
@@ -61,6 +63,8 @@ class GatewayAccount {
     this.worldpay3dsFlex = gatewayAccountData.worldpay_3ds_flex
       ? Worldpay3dsFlexCredential.fromJson(gatewayAccountData.worldpay_3ds_flex)
       : undefined
+    this.sendPayerEmailToGateway = gatewayAccountData.send_payer_email_to_gateway
+    this.sendPayerIPAddressToGateway = gatewayAccountData.send_payer_ip_address_to_gateway
     /** @deprecated you should add any rawResponse data as part of the constructor */
     this.rawResponse = gatewayAccountData
   }

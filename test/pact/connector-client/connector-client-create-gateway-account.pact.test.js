@@ -57,7 +57,9 @@ describe('connector client - create gateway account', function () {
         validCreateGatewayAccountRequest.type,
         validCreateGatewayAccountRequest.service_name,
         validCreateGatewayAccountRequest.analytics_id,
-        validCreateGatewayAccountRequest.service_id
+        validCreateGatewayAccountRequest.service_id,
+        validCreateGatewayAccountRequest.send_payer_email_to_gateway,
+        validCreateGatewayAccountRequest.send_payer_ip_address_to_gateway
       ).should.be.fulfilled.should.notify(done)
     })
   })
@@ -91,7 +93,9 @@ describe('connector client - create gateway account', function () {
         invalidCreateGatewayAccountRequest.type,
         invalidCreateGatewayAccountRequest.service_name,
         invalidCreateGatewayAccountRequest.analytics_id,
-        invalidCreateGatewayAccountRequest.service_id
+        invalidCreateGatewayAccountRequest.service_id,
+        invalidCreateGatewayAccountRequest.send_payer_email_to_gateway,
+        invalidCreateGatewayAccountRequest.send_payer_ip_address_to_gateway
       ).should.be.rejected.then(function (response) {
         expect(response.errorCode).to.equal(422)
         expect(response.message).to.equal(errorResponse.message[0])
