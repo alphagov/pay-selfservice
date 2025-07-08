@@ -20,7 +20,7 @@ const STRIPE_CREDENTIAL_IN_ACTIVE_STATE = {
 const WORLDPAY_CREDENTIAL_IN_CREATED_STATE = {
   state: CREATED,
   payment_provider: WORLDPAY,
-  external_id: CREDENTIAL_EXTERNAL_ID_1,
+  external_id: CREDENTIAL_EXTERNAL_ID_2,
   credentials: {}
 }
 
