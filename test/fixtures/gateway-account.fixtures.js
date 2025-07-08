@@ -106,6 +106,8 @@ function validGatewayAccount (opts) {
     integration_version_3ds: opts.integrationVersion3ds || 1,
     disabled: opts.disabled || false,
     provider_switch_enabled: opts.provider_switch_enabled || false,
+    send_payer_email_to_gateway: opts.send_payer_email_to_gateway || true,
+    send_payer_ip_address_to_gateway: opts.send_payer_ip_address_to_gateway || true
   }
 
   if (opts.description) {
@@ -217,7 +219,9 @@ function validCreateGatewayAccountRequest (opts = {}) {
     payment_provider: opts.payment_provider || 'sandbox',
     service_name: opts.service_name || 'This is an account for the GOV.UK Pay team',
     type: opts.type || 'test',
-    service_id: opts.service_id || '46eb1b601348499196c99de90482ee68'
+    service_id: opts.service_id || '46eb1b601348499196c99de90482ee68',
+    send_payer_email_to_gateway: opts.send_payer_email_to_gateway || true,
+    send_payer_ip_address_to_gateway: opts.send_payer_ip_address_to_gateway || true
   }
   if (opts.analytics_id) {
     data.analytics_id = opts.analytics_id

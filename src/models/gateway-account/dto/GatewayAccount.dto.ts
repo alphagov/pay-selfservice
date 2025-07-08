@@ -27,4 +27,6 @@ export interface GatewayAccountData {
   requires3ds: boolean // 🥴
   toggle_3ds?: boolean
   worldpay_3ds_flex?: Worldpay3dsFlexCredentialData
+  send_payer_email_to_gateway: boolean
+  send_payer_ip_address_to_gateway: boolean
 }

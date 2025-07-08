@@ -44,7 +44,7 @@ async function createService (serviceName, serviceNameCy, serviceOrgType = 'cent
   const service = await adminUsersClient.createService(serviceName, serviceNameCy)
   logger.info('New service added by existing user')
 
-  const sandboxGatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, service.externalId)
+  const sandboxGatewayAccount = await connectorClient.createGatewayAccount('sandbox', 'test', serviceName, null, service.externalId, true, true)
   logger.info('New test card gateway account registered with service')
 
   let stripeTestGatewayAccount

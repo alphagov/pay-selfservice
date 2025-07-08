@@ -78,6 +78,14 @@ function parseGatewayAccountOptions (opts) {
     stubOptions.disabled = opts.disabled
   }
 
+  if (opts.sendPayerEmailToGateway) {
+    stubOptions.send_payer_email_to_gateway = opts.sendPayerEmailToGateway
+  }
+
+  if (opts.sendPayerIPAddressToGateway) {
+    stubOptions.send_payer_ip_address_to_gateway = opts.sendPayerIPAddressToGateway
+  }
+
   return stubOptions
 }
 

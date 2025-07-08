@@ -90,7 +90,7 @@ ConnectorClient.prototype = {
    *
    * @returns {Promise<GatewayAccount>}
    */
-  createGatewayAccount: async function (paymentProvider, type, serviceName, analyticsId, serviceId) {
+  createGatewayAccount: async function (paymentProvider, type, serviceName, analyticsId, serviceId, sendPayerEmailToGateway, sendPayerIPAddressToGateway) {
     const payload = {
       payment_provider: paymentProvider
     }
@@ -105,6 +105,12 @@ ConnectorClient.prototype = {
     }
     if (analyticsId) {
       payload.analytics_id = analyticsId
+    }
+    if (sendPayerEmailToGateway) {
+      payload.send_payer_email_to_gateway = true
+    }
+    if (sendPayerIPAddressToGateway) {
+      payload.send_payer_ip_address_to_gateway = true
     }
 
     const url = `${this.connectorUrl}/v1/api/accounts`
