@@ -7,7 +7,7 @@ const checkSettingsNavigation = require('@test/cypress/integration/simplified-ac
 const {
   WORLDPAY_CREDENTIAL_IN_CREATED_STATE, STRIPE_CREDENTIAL_IN_ACTIVE_STATE, WORLDPAY_CREDENTIAL_IN_ENTERED_STATE,
   WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE, WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE
-} = require('@test/fixtures/credential-states')
+} = require('@test/fixtures/credentials.fixtures')
 
 // test constants
 const USER_EXTERNAL_ID = 'user-123-abc'

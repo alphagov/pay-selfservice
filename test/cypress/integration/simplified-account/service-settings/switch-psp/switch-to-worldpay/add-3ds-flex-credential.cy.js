@@ -4,7 +4,7 @@ const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const { STRIPE } = require('@models/constants/payment-providers')
-const { STRIPE_CREDENTIAL_IN_ACTIVE_STATE, WORLDPAY_CREDENTIAL_IN_CREATED_STATE } = require('@test/fixtures/credential-states')
+const { STRIPE_CREDENTIAL_IN_ACTIVE_STATE, WORLDPAY_CREDENTIAL_IN_CREATED_STATE } = require('@test/fixtures/credentials.fixtures')
 
 // test constants
 const USER_EXTERNAL_ID = 'user-123-abc'
