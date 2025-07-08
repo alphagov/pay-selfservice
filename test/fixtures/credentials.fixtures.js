@@ -1,5 +1,5 @@
-import { ACTIVE, CREATED, ENTERED, VERIFIED, RETIRED } from '@models/constants/credential-state'
-import { STRIPE, WORLDPAY } from '@models/constants/payment-providers'
+const { ACTIVE, CREATED, ENTERED, VERIFIED, RETIRED } = require('@models/constants/credential-state')
+const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 
 const CREDENTIAL_EXTERNAL_ID_1 = 'credential-123-abc'
 const CREDENTIAL_EXTERNAL_ID_2 = 'credential-456-def'
@@ -102,7 +102,7 @@ const WORLDPAY_CREDENTIALS = {
 
 
 
-export {
+module.exports = {
   STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
   WORLDPAY_CREDENTIAL_IN_CREATED_STATE,
   WORLDPAY_CREDENTIAL_IN_ENTERED_STATE,
