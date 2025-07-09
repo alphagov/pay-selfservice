@@ -130,11 +130,7 @@ describe('Switch Worldpay credentials setting', () => {
         beforeEach(() => {
           setupStubs({
             moto: false,
-            worldpay_3ds_flex: {
-              organisational_unit_id: '5bd9b55e4444761ac0af1c80',
-              issuer: '5bd9e0e4444dce15fed8c940', // pragma: allowlist secret
-              jwt_mac_key: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e0'
-            },
+            worldpay_3ds_flex: VALID_FLEX_CREDENTIALS,
             accountCredentials: [WORLDPAY_CREDENTIALS.ONE_OFF.ACTIVE, WORLDPAY_CREDENTIALS.ONE_OFF.PENDING]
           })
           cy.visit(SWITCH_TO_WORLDPAY_SETTINGS_URL)
@@ -340,11 +336,7 @@ describe('Switch Worldpay credentials setting', () => {
           ])
           setupStubs({
             moto: false,
-            worldpay_3ds_flex: {
-              organisational_unit_id: '5bd9b55e4444761ac0af1c80',
-              issuer: '5bd9e0e4444dce15fed8c940', // pragma: allowlist secret
-              jwt_mac_key: 'fa2daee2-1fbb-45ff-4444-52805d5cd9e0'
-            },
+            worldpay_3ds_flex: VALID_FLEX_CREDENTIALS,
             accountCredentials: [WORLDPAY_CREDENTIALS.ONE_OFF.ACTIVE, WORLDPAY_CREDENTIALS.ONE_OFF.VERIFIED]
           }, [
 
