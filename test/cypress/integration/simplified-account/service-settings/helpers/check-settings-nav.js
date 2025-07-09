@@ -1,5 +1,5 @@
 function checkSettingsNavigation(settingName, settingUrl) {
-  cy.get('.service-nav')
+  return cy.get('.service-nav')
     .find('a')
     .contains(settingName)
     .should('have.attr', 'href', settingUrl)

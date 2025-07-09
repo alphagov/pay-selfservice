@@ -33,7 +33,7 @@ module.exports = (on, config) => {
      * Note: this task can only be called once per test, so all stubs for a test must be set up in
      * the same call.
      */
-    setupStubs (stubs) {
+    async setupStubs (stubs) {
       return axios.post(stubSetupUrl,
         {
           port: config.env.MOCK_HTTP_SERVER_PORT,

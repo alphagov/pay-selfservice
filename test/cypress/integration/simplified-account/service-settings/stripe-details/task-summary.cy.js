@@ -7,7 +7,7 @@ const { SANDBOX, STRIPE } = require('@models/constants/payment-providers')
 const stripePspStubs = require('@test/cypress/stubs/stripe-psp-stubs')
 const {
   STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
-} = require('@test/cypress/integration/simplified-account/service-settings/helpers/credential-states')
+} = require('@test/fixtures/credentials.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
