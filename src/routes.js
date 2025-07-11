@@ -258,13 +258,6 @@ module.exports.bind = function (app) {
   // Settings
   app.use(paths.simplifiedAccount.root, simplifiedAccountRoutes)
 
-  // Prototype links
-  account.get(prototyping.demoService.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index)
-  account.get(prototyping.demoService.links, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.links)
-  account.get(prototyping.demoService.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create)
-  account.post(prototyping.demoService.confirm, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.submit)
-  account.get(prototyping.demoService.disable, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.disable)
-
   // Create payment link
   account.get(paymentLinks.start, permission('tokens:create'), paymentLinksController.getStart)
   account.get(paymentLinks.information, permission('tokens:create'), paymentLinksController.getInformation)
