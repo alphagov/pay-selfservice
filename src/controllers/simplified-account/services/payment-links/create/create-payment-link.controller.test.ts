@@ -1,27 +1,497 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import formatAccountPathsFor from '@utils/format-account-paths-for'
+import paths from '@root/paths'
+import { expect } from 'chai'
+
+interface SessionWithPageData {
+  pageData?: {
+    createPaymentLink?: {
+      paymentLinkTitle?: string
+      paymentLinkDescription?: string
+      serviceNamePath?: string
+      productNamePath?: string
+      isWelsh?: boolean
+      payApiToken?: string
+      gatewayAccountId?: number
+      paymentLinkAmount?: number
+      paymentReferenceType?: string
+      paymentReferenceLabel?: string
+      paymentReferenceHint?: string
+      amountHint?: string
+    }
+  }
+}
+
+const SERVICE_EXTERNAL_ID = 'service123abc'
+const GATEWAY_ACCOUNT_ID = 117
+const GATEWAY_ACCOUNT_EXTERNAL_ID = 'gateway-account-external-id-123'
 
 const mockResponse = sinon.spy()
 
-const { call, nextRequest } = new ControllerTestBuilder(
-  '@controllers/simplified-account/services/payment-links/create/create-payment-link.controller',
+const mockTokensCreate = sinon.stub().resolves({
+  token: 'api_test_token123',
+})
+
+const mockPublicAuthClient = {
+  tokens: {
+    create: mockTokensCreate
+  }
+}
+
+const mockCreateTokenRequest = {
+  withGatewayAccountId: sinon.stub().returnsThis(),
+  withServiceExternalId: sinon.stub().returnsThis(),
+  withServiceMode: sinon.stub().returnsThis(),
+  withDescription: sinon.stub().returnsThis(),
+  withCreatedBy: sinon.stub().returnsThis(),
+  withTokenUsageType: sinon.stub().returnsThis(),
+  toPayload: sinon.stub().returns({
+    account_id: GATEWAY_ACCOUNT_ID,
+    service_external_id: SERVICE_EXTERNAL_ID,
+    service_mode: GatewayAccountType.TEST,
+    description: 'Token for "Test Payment Link" payment link',
+    created_by: 'test@example.com',
+    type: 'PRODUCTS'
+  })
+}
+
+const MockCreateTokenRequestClass = sinon.stub().returns(mockCreateTokenRequest)
+
+const mockNunjucksFilters = {
+  slugify: sinon.stub().callsFake((str: string) => str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')),
+  removeIndefiniteArticles: sinon.stub().callsFake((str: string) => str.replace(/^(a|an|the)\s+/i, ''))
+}
+
+const { res, req, call, nextRequest } = new ControllerTestBuilder(
+  '@controllers/simplified-account/services/payment-links/create/create-payment-link.controller'
 )
+  .withServiceExternalId(SERVICE_EXTERNAL_ID)
+  .withAccount({
+    id: GATEWAY_ACCOUNT_ID,
+    externalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
+    type: GatewayAccountType.TEST,
+  })
+  .withService({
+    externalId: SERVICE_EXTERNAL_ID,
+    name: 'Test Service',
+    serviceName: {
+      en: 'Test Service',
+      cy: 'Test Service Welsh',
+    },
+  })
+  .withUser({
+    email: 'test@example.com',
+  })
   .withStubs({
     '@utils/response': { response: mockResponse },
+    '@services/clients/pay/PublicAuthClient.class': {
+      PublicAuthClient: sinon.stub().returns(mockPublicAuthClient)
+    },
+    '@models/public-auth/CreateTokenRequest.class': {
+      CreateTokenRequest: MockCreateTokenRequestClass
+    },
+    '@govuk-pay/pay-js-commons': { nunjucksFilters: mockNunjucksFilters },
   })
   .build()
 
-describe('controller: services/payment-links/create', () => {
+req.session = req.session || {}
+
+describe('Controller: services/payment-links/create', () => {
+  beforeEach(() => {
+    mockResponse.resetHistory()
+    mockTokensCreate.resetHistory()
+    MockCreateTokenRequestClass.resetHistory()
+
+    Object.values(mockCreateTokenRequest).forEach(stub => {
+      if (typeof stub.resetHistory === 'function') {
+        stub.resetHistory()
+      }
+    })
+
+    mockNunjucksFilters.slugify.resetHistory()
+    mockNunjucksFilters.removeIndefiniteArticles.resetHistory()
+
+    process.env.PRODUCTS_FRIENDLY_BASE_URI = 'https://payments.gov.uk'
+
+    req.session = req.session || {}
+    const sessionWithPageData = req.session as SessionWithPageData
+    if (sessionWithPageData.pageData) {
+      delete sessionWithPageData.pageData
+    }
+  })
+
+  afterEach(() => {
+    delete process.env.PRODUCTS_FRIENDLY_BASE_URI
+
+    const sessionWithPageData = req.session as SessionWithPageData
+    if (sessionWithPageData.pageData) {
+      delete sessionWithPageData.pageData
+    }
+  })
+
   describe('get', () => {
     beforeEach(async () => {
-      nextRequest({
-        // modify the request
-      })
       await call('get')
     })
 
-    it('should call the response method', () => {
-      sinon.assert.calledOnce(mockResponse)
+    it('should call the response method with correct parameters', () => {
+      sinon.assert.calledWith(
+        mockResponse,
+        sinon.match.any,
+        sinon.match.any,
+        'simplified-account/services/payment-links/create/index',
+        sinon.match({
+          service: sinon.match.object,
+          account: sinon.match.object,
+          backLink: formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.index,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST
+          ),
+          formValues: {},
+          friendlyURL: 'https://payments.gov.uk',
+          serviceName: 'Test Service',
+        })
+      )
+    })
+  })
+
+  describe('post', () => {
+    describe('successful creation with name and description', () => {
+      beforeEach(async () => {
+        nextRequest({
+          body: {
+            name: 'Test Payment Link',
+            description: 'A description',
+          },
+        })
+        await call('post')
+      })
+
+      it('should create CreateTokenRequest with correct parameters', () => {
+        sinon.assert.calledOnce(MockCreateTokenRequestClass)
+
+        sinon.assert.calledWith(mockCreateTokenRequest.withGatewayAccountId, GATEWAY_ACCOUNT_ID)
+        sinon.assert.calledWith(mockCreateTokenRequest.withServiceExternalId, SERVICE_EXTERNAL_ID)
+        sinon.assert.calledWith(mockCreateTokenRequest.withServiceMode, GatewayAccountType.TEST)
+        sinon.assert.calledWith(mockCreateTokenRequest.withDescription, 'Token for "Test Payment Link" payment link')
+        sinon.assert.calledWith(mockCreateTokenRequest.withCreatedBy, 'test@example.com')
+        sinon.assert.calledWith(mockCreateTokenRequest.withTokenUsageType, 'PRODUCTS')
+      })
+
+      it('should call tokens.create with CreateTokenRequest instance', () => {
+        sinon.assert.calledOnce(mockTokensCreate)
+        sinon.assert.calledWith(mockTokensCreate, mockCreateTokenRequest)
+      })
+
+      it('should save session data with hardcoded values', () => {
+        sinon.assert.calledOnce(mockTokensCreate)
+        sinon.assert.calledOnce(res.redirect)
+
+        const sessionWithPageData = req.session as SessionWithPageData
+        const sessionData = sessionWithPageData.pageData?.createPaymentLink
+
+        expect(sessionData?.paymentReferenceType).to.equal(undefined);
+        expect(sessionData?.paymentReferenceLabel).to.equal(undefined);
+        expect(sessionData?.paymentReferenceHint).to.equal(undefined);
+        expect(sessionData?.amountHint).to.equal(undefined);
+        expect(sessionData?.paymentLinkTitle).to.equal('Test Payment Link')
+        expect(sessionData?.paymentLinkDescription).to.equal('A description')
+        expect(sessionData?.serviceNamePath).to.equal('test-service')
+        expect(sessionData?.productNamePath).to.equal('test-payment-link')
+        expect(sessionData?.isWelsh).to.equal(false)
+        expect(sessionData?.payApiToken).to.equal('api_test_token123')
+        expect(sessionData?.gatewayAccountId).to.equal(GATEWAY_ACCOUNT_ID)
+        expect(sessionData?.paymentLinkAmount).to.equal(1500)
+      })
+
+      it('should redirect to review page', () => {
+        sinon.assert.calledWith(
+          res.redirect,
+          formatAccountPathsFor(paths.account.paymentLinks.review, GATEWAY_ACCOUNT_EXTERNAL_ID)
+        )
+      })
+    })
+
+    describe('successful creation with name only', () => {
+      beforeEach(async () => {
+        nextRequest({
+          body: {
+            name: 'Simple Payment Link',
+          },
+        })
+        await call('post')
+      })
+
+      it('should save session data with empty description', () => {
+        sinon.assert.calledOnce(mockTokensCreate)
+        sinon.assert.calledOnce(res.redirect)
+
+        const sessionWithPageData = req.session as SessionWithPageData
+        const sessionData = sessionWithPageData.pageData?.createPaymentLink
+
+        expect(sessionData).to.not.equal(undefined);
+        expect(sessionData?.paymentLinkTitle).to.equal('Simple Payment Link')
+        expect(sessionData?.paymentLinkDescription).to.equal(undefined);
+        expect(sessionData?.paymentLinkAmount).to.equal(1500)
+      })
+
+      it('should redirect to review page', () => {
+        sinon.assert.calledWith(
+          res.redirect,
+          formatAccountPathsFor(paths.account.paymentLinks.review, GATEWAY_ACCOUNT_EXTERNAL_ID)
+        )
+      })
+    })
+
+    describe('validation errors', () => {
+      describe('missing required name field', () => {
+        beforeEach(async () => {
+          nextRequest({
+            body: {
+              name: '',
+              description: 'Some description',
+            },
+          })
+          await call('post')
+        })
+
+        it('should call response with errors', () => {
+          sinon.assert.calledWith(
+            mockResponse,
+            sinon.match.any,
+            sinon.match.any,
+            'simplified-account/services/payment-links/create/index',
+            sinon.match({
+              errors: sinon.match.object,
+              formValues: sinon.match.object,
+              friendlyURL: 'https://payments.gov.uk',
+              serviceName: 'Test Service',
+            })
+          )
+        })
+
+        it('should not create a token', () => {
+          sinon.assert.notCalled(mockTokensCreate)
+        })
+
+        it('should not save session data', () => {
+          const sessionWithPageData = req.session as SessionWithPageData
+          expect(sessionWithPageData.pageData).to.equal(undefined)
+        })
+      })
+
+      describe('title too long', () => {
+        beforeEach(async () => {
+          nextRequest({
+            body: {
+              name: 'a'.repeat(231),
+              description: 'Valid description',
+            },
+          })
+          await call('post')
+        })
+
+        it('should return validation error', () => {
+          sinon.assert.calledWith(
+            mockResponse,
+            sinon.match.any,
+            sinon.match.any,
+            'simplified-account/services/payment-links/create/index',
+            sinon.match({
+              errors: sinon.match.object,
+              friendlyURL: 'https://payments.gov.uk',
+              serviceName: 'Test Service',
+            })
+          )
+        })
+      })
+
+      describe('title at maximum length', () => {
+        beforeEach(async () => {
+          nextRequest({
+            body: {
+              name: 'a'.repeat(230),
+              description: 'Valid description',
+            },
+          })
+          await call('post')
+        })
+
+        it('should create token successfully', () => {
+          sinon.assert.calledOnce(mockTokensCreate)
+        })
+
+        it('should redirect to review page', () => {
+          sinon.assert.calledWith(
+            res.redirect,
+            formatAccountPathsFor(paths.account.paymentLinks.review, GATEWAY_ACCOUNT_EXTERNAL_ID)
+          )
+        })
+      })
+
+      describe('description too long', () => {
+        beforeEach(async () => {
+          nextRequest({
+            body: {
+              name: 'Valid name',
+              description: 'a'.repeat(256),
+            },
+          })
+          await call('post')
+        })
+
+        it('should return validation error', () => {
+          sinon.assert.calledWith(
+            mockResponse,
+            sinon.match.any,
+            sinon.match.any,
+            'simplified-account/services/payment-links/create/index',
+            sinon.match({
+              errors: sinon.match.object,
+              friendlyURL: 'https://payments.gov.uk',
+              serviceName: 'Test Service',
+            })
+          )
+        })
+      })
+
+      describe('description at maximum length', () => {
+        beforeEach(async () => {
+          nextRequest({
+            body: {
+              name: 'Valid name',
+              description: 'a'.repeat(255),
+            },
+          })
+          await call('post')
+        })
+
+        it('should create token successfully', () => {
+          sinon.assert.calledOnce(mockTokensCreate)
+        })
+
+        it('should redirect to review page', () => {
+          sinon.assert.calledWith(
+            res.redirect,
+            formatAccountPathsFor(paths.account.paymentLinks.review, GATEWAY_ACCOUNT_EXTERNAL_ID)
+          )
+        })
+      })
+    })
+
+    describe('URL path generation with article removal', () => {
+      describe('service name with articles', () => {
+        beforeEach(async () => {
+          req.service = {
+            ...req.service,
+            name: 'The Test Service',
+            serviceName: {
+              en: 'The Test Service',
+              cy: 'The Test Service Welsh',
+            },
+          }
+
+          nextRequest({
+            body: {
+              name: 'Test Payment Link',
+              description: 'A description',
+            },
+          })
+          await call('post')
+        })
+
+        it('should remove articles from service name path', () => {
+          const sessionWithPageData = req.session as SessionWithPageData
+          const sessionData = sessionWithPageData.pageData?.createPaymentLink
+
+          expect(sessionData).to.not.equal(undefined)
+          expect(sessionData?.serviceNamePath).to.equal('test-service')
+        })
+      })
+
+      describe('product name with articles', () => {
+        beforeEach(async () => {
+          nextRequest({
+            body: {
+              name: 'A Payment for The Application',
+              description: 'Test description',
+            },
+          })
+          await call('post')
+        })
+
+        it('should remove articles from product name path', () => {
+          const sessionWithPageData = req.session as SessionWithPageData
+          const sessionData = sessionWithPageData.pageData?.createPaymentLink
+
+          expect(sessionData).to.not.equal(undefined)
+          expect(sessionData?.productNamePath).to.equal('payment-for-application')
+        })
+      })
+
+      describe('product name starting with "An"', () => {
+        beforeEach(async () => {
+          nextRequest({
+            body: {
+              name: 'An Important Payment',
+              description: 'Test description',
+            },
+          })
+          await call('post')
+        })
+
+        it('should remove "An" article from product name path', () => {
+          const sessionWithPageData = req.session as SessionWithPageData
+          const sessionData = sessionWithPageData.pageData?.createPaymentLink
+
+          expect(sessionData).to.not.equal(undefined)
+          expect(sessionData?.productNamePath).to.equal('important-payment')
+        })
+      })
+
+      describe('complex name with multiple articles and special characters', () => {
+        beforeEach(async () => {
+          nextRequest({
+            body: {
+              name: 'A Big Payment & The Small Fee',
+              description: 'Test description',
+            },
+          })
+          await call('post')
+        })
+
+        it('should remove articles and handle special characters', () => {
+          const sessionWithPageData = req.session as SessionWithPageData
+          const sessionData = sessionWithPageData.pageData?.createPaymentLink
+
+          expect(sessionData).to.not.equal(undefined)
+          expect(sessionData?.productNamePath).to.equal('big-payment-small-fee')
+        })
+      })
+
+      describe('name without articles', () => {
+        beforeEach(async () => {
+          nextRequest({
+            body: {
+              name: 'Registration Fee',
+              description: 'Test description',
+            },
+          })
+          await call('post')
+        })
+
+        it('should slugify normally when no articles present', () => {
+          const sessionWithPageData = req.session as SessionWithPageData
+          const sessionData = sessionWithPageData.pageData?.createPaymentLink
+
+          expect(sessionData).to.not.equal(undefined)
+          expect(sessionData?.productNamePath).to.equal('registration-fee')
+        })
+      })
     })
   })
 })
