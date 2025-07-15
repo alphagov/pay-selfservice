@@ -72,6 +72,24 @@ simplifiedAccount.get(
   permission('tokens:create'),
   servicesController.paymentLinks.create.get
 )
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.create,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.create.post
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.reference,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.reference.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.reference,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.reference.post
+)
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit,
   experimentalFeature,
