@@ -1,9 +1,71 @@
 {% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set servicePageTitle = "Create payment link" %}
+{% set servicePageTitle = "Enter test payment link details" %}
+{% set confirmationLabel %}{{friendlyURL}}/{{serviceName | removeIndefiniteArticles | slugify}}/{% endset %}
 
 {% block serviceContent %}
-  <h1 class="govuk-heading-l page-title">
-    {{ servicePageTitle }}
-  </h1>
+  <h1 class="govuk-heading-l">{{ servicePageTitle }}</h1>
+
+  <form method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+    {{ govukInput({
+      label: {
+        text: "Title",
+        classes: "govuk-label--m"
+      },
+      hint: {
+        html: "<p>The title of your payment reference should:</p>
+               <ul class='govuk-list govuk-list--bullet govuk-hint'>
+                <li>briefly describe what the user is paying for</li>
+                <li>use plain language</li>
+                <li>spell out acronyms in the description if necessary</li>
+                <li>not include names or personal information</li>
+               </ul>
+               <p>For example<br>
+                  Bad: RI<br>
+                  Good: Pay for your registration on the Register of Overseas Entities (RI)</p>"
+      },
+      id: "name",
+      name: "name",
+      value: formValues.name,
+      classes: "govuk-!-width-full",
+      errorMessage: { text: errors.formErrors['name'] } if errors.formErrors['name'] else false,
+      attributes: {
+        "data-confirmation": true,
+        "data-confirmation-title": "Website address",
+        "data-confirmation-label": confirmationLabel,
+        "data-confirmation-filter": "slugify",
+        "data-confirmation-display": "onload" if formValues.name else false
+      }
+    }) }}
+
+    {{ govukTextarea({
+      label: {
+        text: "Details (optional)",
+        classes: "govuk-label--m"
+      },
+      hint: {
+        text: "Give your users more information. For example, you could tell them how long it takes for their application to be processed."
+      },
+      id: "description",
+      name: "description",
+      value: formValues.description,
+      classes: "govuk-!-width-full",
+      rows: 3,
+      errorMessage: { text: errors.formErrors['description'] } if errors.formErrors['description'] else false
+    }) }}
+
+    {{ govukButton({
+      text: "Continue",
+      classes: "govuk-!-margin-top-0"
+    }) }}
+  </form>
+
+  <h2 class="govuk-heading-m govuk-!-margin-top-9">Example of what users will see</h2>
+
+  <img src="/assets/images/payment-links/start-page.svg" alt="Screenshot of payment link start page">
 {% endblock %}
