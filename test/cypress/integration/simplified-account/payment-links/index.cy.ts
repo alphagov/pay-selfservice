@@ -250,7 +250,7 @@ describe('PaymentLinks dashboard', () => {
               })
 
             cy.get('.govuk-body')
-              .should('have.length', 10)
+              .should('have.length', 11)
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -264,15 +264,13 @@ describe('PaymentLinks dashboard', () => {
                   'contain.text',
                   'You can test adding metadata like cost centre codes or business area to your test payment links.'
                 )
+                cy.wrap($elements.eq(10)).should(
+                  'contain.text',
+                  'Create a ' + SERVICE_MODE + ' payment link in Welsh'
+                )
               })
 
-            cy.get('.govuk-button-group')
-              .find('a')
-              .should('have.length', 2)
-              .then(($elements) => {
-                cy.wrap($elements.eq(0)).contains('Create a test payment link')
-                cy.wrap($elements.eq(1)).contains('Create a test payment link in Welsh')
-              })
+            cy.get('.govuk-button-group').find('a').should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
 
             cy.get('.govuk-summary-card')
               .should('have.length', 2)
@@ -324,7 +322,7 @@ describe('PaymentLinks dashboard', () => {
               })
 
             cy.get('.govuk-body')
-              .should('have.length', 10)
+              .should('have.length', 11)
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -338,15 +336,13 @@ describe('PaymentLinks dashboard', () => {
                   'contain.text',
                   'You can test adding metadata like cost centre codes or business area to your test payment links.'
                 )
+                cy.wrap($elements.eq(10)).should(
+                  'contain.text',
+                  'Create a ' + SERVICE_MODE + ' payment link in Welsh' 
+                )
               })
 
-            cy.get('.govuk-button-group')
-              .find('a')
-              .should('have.length', 2)
-              .then(($elements) => {
-                cy.wrap($elements.eq(0)).contains('Create a test payment link')
-                cy.wrap($elements.eq(1)).contains('Create a test payment link in Welsh')
-              })
+            cy.get('.govuk-button-group').find('a').should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
 
             cy.get('.govuk-summary-card').should('not.exist')
           })
@@ -354,7 +350,7 @@ describe('PaymentLinks dashboard', () => {
       })
     })
 
-    describe.only('Live mode', () => {
+    describe('Live mode', () => {
       const SERVICE_MODE = 'live'
       describe('Existing payment links', () => {
         beforeEach(() => {
@@ -380,7 +376,7 @@ describe('PaymentLinks dashboard', () => {
             cy.get('.govuk-warning-text').should('not.exist')
 
             cy.get('.govuk-body')
-              .should('have.length', 10) // accordion paragraphs are visually hidden but still in the DOM
+              .should('have.length', 11) // accordion paragraphs are visually hidden but still in the DOM
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -394,7 +390,13 @@ describe('PaymentLinks dashboard', () => {
                   'contain.text',
                   'You can test adding metadata like cost centre codes or business area to your test payment links.'
                 )
+                cy.wrap($elements.eq(10)).should(
+                  'contain.text',
+                  'Create a ' + SERVICE_MODE + ' payment link in Welsh' 
+                )
               })
+
+            cy.get('.govuk-button-group').find('a').should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
 
             cy.get('.govuk-summary-card')
               .should('have.length', 1)
@@ -405,14 +407,6 @@ describe('PaymentLinks dashboard', () => {
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).contains('Edit') // todo navigate to the page once implemented
                 cy.wrap($elements.eq(1)).contains('Delete') // todo navigate to the page once implemented
-              })
-
-            cy.get('.govuk-button-group')
-              .find('a')
-              .should('have.length', 2)
-              .then(($elements) => {
-                cy.wrap($elements.eq(0)).contains('Create a live payment link')
-                cy.wrap($elements.eq(1)).contains('Create a live payment link in Welsh')
               })
           })
         })
@@ -442,7 +436,7 @@ describe('PaymentLinks dashboard', () => {
             cy.get('.govuk-warning-text').should('not.exist')
 
             cy.get('.govuk-body')
-              .should('have.length', 10) // accordion paragraphs are visually hidden but still in the DOM
+              .should('have.length', 11) // accordion paragraphs are visually hidden but still in the DOM
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -456,18 +450,15 @@ describe('PaymentLinks dashboard', () => {
                   'contain.text',
                   'You can test adding metadata like cost centre codes or business area to your test payment links.'
                 )
+                cy.wrap($elements.eq(10)).should(
+                  'contain.text',
+                  'Create a ' + SERVICE_MODE + ' payment link in Welsh' 
+                )
               })
 
-            cy.get('.govuk-summary-card')
-              .should('not.exist')
+            cy.get('.govuk-button-group').find('a').should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
 
-            cy.get('.govuk-button-group')
-              .find('a')
-              .should('have.length', 2)
-              .then(($elements) => {
-                cy.wrap($elements.eq(0)).contains('Create a live payment link')
-                cy.wrap($elements.eq(1)).contains('Create a live payment link in Welsh')
-              })
+            cy.get('.govuk-summary-card').should('not.exist')
           })
         })
       })
