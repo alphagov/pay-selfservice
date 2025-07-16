@@ -4,14 +4,8 @@ import { body, validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
-import ProductType from '@models/products/product-type'
-import supportedLanguage from '@models/constants/supported-language'
 import { NextFunction } from 'express'
-import ProductsClient from '@services/clients/pay/ProductsClient.class'
-import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
-import * as publicAuthClient from '@services/clients/public-auth.client'
-
-const productsClient = new ProductsClient()
+import formatAccountPathsFor from '@utils/format-account-paths-for'
 
 interface CreatePaymentLinkBody {
   name?: string
@@ -22,43 +16,6 @@ interface CreatePaymentLinkBody {
   amount?: string
   amountType?: 'fixed' | 'variable'
   amountHint?: string
-}
-
-interface CreateTokenResponse {
-  token: string
-}
-
-interface CreateTokenPayload {
-  accountId: number
-  payload: {
-    account_id: number
-    created_by: string
-    type: string
-    description: string
-    token_account_type: string
-    service_external_id: string
-    service_mode: string
-  }
-}
-
-interface ProductPayload {
-  service_name_path: string
-  product_name_path: string
-  reference_enabled: boolean
-  language: string
-  gateway_account_id: number
-  pay_api_token: string
-  name: string
-  description: string
-  price: number | null
-  type: string
-  reference_label?: string
-  reference_hint?: string
-  amount_hint?: string
-}
-
-interface ExtendedCreateProductRequest {
-  toPayload: () => ProductPayload
 }
 
 const validations = [
@@ -177,11 +134,7 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
   }
 
   try {
-    let priceInPence: number | null = null
-    if (body.amountType === 'fixed' && body.amount) {
-      priceInPence = Math.round(parseFloat(body.amount) * 100)
-    }
-
+    // Transform form data to old session format
     const serviceNamePath = service.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
@@ -194,67 +147,38 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
       .replace(/^-+|-+$/g, '')
       .substring(0, 50)
 
-    const createTokenResponse = await (publicAuthClient as { createTokenForAccount: (payload: CreateTokenPayload) => Promise<CreateTokenResponse> }).createTokenForAccount({
-      accountId: account.id,
-      payload: {
-        account_id: account.id,
-        created_by: req.user.email,
-        type: 'PRODUCTS',
-        description: `Token for "${body.name ?? ''}" payment link`,
-        token_account_type: account.type,
-        service_external_id: service.externalId,
-        service_mode: account.type
-      }
-    })
-
-    const createProductRequest = new CreateProductRequest()
-      .withApiToken(createTokenResponse.token)
-      .withGatewayAccountId(account.id)
-      .withName(body.name ?? '')
-      .withDescription(body.description ?? '')
-      .withType(ProductType.ADHOC)
-
-    if (priceInPence !== null) {
-      createProductRequest.withPrice(priceInPence)
+    const sessionData: any = {
+      paymentLinkTitle: body.name,
+      paymentLinkDescription: body.description,
+      serviceNamePath,
+      productNamePath,
+      isWelsh: false,
+      metadata: {}
     }
 
-    const payload: ProductPayload = {
-      ...createProductRequest.toPayload(),
-      service_name_path: serviceNamePath,
-      product_name_path: productNamePath,
-      reference_enabled: body.reference === 'yes',
-      language: supportedLanguage.ENGLISH
-    }
-
-    if (body.amountType === 'variable') {
-      payload.price = null
-    }
-
+    // Handle reference
     if (body.reference === 'yes') {
-      if (body.referenceLabel) {
-        payload.reference_label = body.referenceLabel
-      }
-      if (body.referenceHint) {
-        payload.reference_hint = body.referenceHint
-      }
+      sessionData.paymentReferenceType = 'custom'
+      sessionData.paymentReferenceLabel = body.referenceLabel
+      sessionData.paymentReferenceHint = body.referenceHint
     }
 
-    if (body.amountType === 'variable' && body.amountHint) {
-      payload.amount_hint = body.amountHint
+    // Handle amount based on amountType
+    if (body.amountType === 'fixed' && body.amount) {
+      sessionData.paymentLinkAmount = Math.round(parseFloat(body.amount) * 100)
+    } else if (body.amountType === 'variable') {
+      sessionData.amountHint = body.amountHint
     }
 
-    const extendedRequest: ExtendedCreateProductRequest = {
-      toPayload: () => payload
-    }
+    // Save to session
+    req.session.pageData = req.session.pageData || {}
+    req.session.pageData.createPaymentLink = sessionData
 
-    await productsClient.products.create(extendedRequest as CreateProductRequest)
-
-    const redirectUrl = formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.paymentLinks.index,
-      service.externalId,
-      account.type
+    // Redirect to old review page using the external ID
+    const redirectUrl = formatAccountPathsFor(
+      paths.account.paymentLinks.review,
+      account.externalId
     )
-
     return res.redirect(redirectUrl)
   } catch (error) {
     next(error)
