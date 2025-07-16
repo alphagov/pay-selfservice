@@ -2,47 +2,20 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import formatAccountPathsFor from '@utils/format-account-paths-for'
 import paths from '@root/paths'
-import Product from '@models/products/Product.class'
-import ProductType from '@models/products/product-type'
 import { expect } from 'chai'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
+const GATEWAY_ACCOUNT_EXTERNAL_ID = 'gateway-account-external-id-123'
 
 const mockResponse = sinon.spy()
-const mockProduct = new Product({
-  external_id: 'test-product-id',
-  gateway_account_id: GATEWAY_ACCOUNT_ID,
-  name: 'Test Payment Link',
-  type: ProductType.ADHOC,
-  price: 1000,
-  status: 'ACTIVE',
-  description: 'Test description',
-  reference_enabled: true,
-  reference_label: 'Reference',
-  reference_hint: '',
-  amount_hint: '',
-  language: 'en',
-  _links: [],
-  pay_api_token: 'test-token',
-  return_url: '',
-  service_name_path: 'test-service',
-  product_name_path: 'test-payment-link',
-  requires_captcha: false,
-  metadata: {}
-} as any)
 
 const mockPublicAuthClient = {
   createTokenForAccount: sinon.stub().resolves({
-    token: 'api_test_token123'
-  })
-}
-
-const mockProductsClient = {
-  products: {
-    create: sinon.stub().resolves(mockProduct)
-  }
+    token: 'api_test_token123',
+  }),
 }
 
 const { res, req, call, nextRequest } = new ControllerTestBuilder(
@@ -51,27 +24,39 @@ const { res, req, call, nextRequest } = new ControllerTestBuilder(
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount({
     id: GATEWAY_ACCOUNT_ID,
+    externalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
     type: GatewayAccountType.TEST,
   })
   .withService({
     externalId: SERVICE_EXTERNAL_ID,
-    name: 'Test Service'
+    name: 'Test Service',
   })
   .withUser({
-    email: 'test@example.com'
+    email: 'test@example.com',
   })
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/clients/public-auth.client': mockPublicAuthClient,
-    '@services/clients/pay/ProductsClient.class': sinon.stub().returns(mockProductsClient)
   })
   .build()
 
+req.session = req.session || {}
+
 describe('Controller: services/payment-links/create', () => {
-  afterEach(() => {
+  beforeEach(() => {
     mockResponse.resetHistory()
     mockPublicAuthClient.createTokenForAccount.resetHistory()
-    mockProductsClient.products.create.resetHistory()
+
+    req.session = req.session || {}
+    if (req.session.pageData) {
+      delete req.session.pageData
+    }
+  })
+
+  afterEach(() => {
+    if (req.session && req.session.pageData) {
+      delete req.session.pageData
+    }
   })
 
   describe('get', () => {
@@ -93,7 +78,7 @@ describe('Controller: services/payment-links/create', () => {
             SERVICE_EXTERNAL_ID,
             GatewayAccountType.TEST
           ),
-          formValues: {}
+          formValues: {},
         }
       )
     })
@@ -110,8 +95,8 @@ describe('Controller: services/payment-links/create', () => {
             referenceLabel: 'Invoice number',
             referenceHint: 'Enter your invoice number',
             amountType: 'fixed',
-            amount: '10.50'
-          }
+            amount: '10.50',
+          },
         })
         await call('post')
       })
@@ -130,33 +115,31 @@ describe('Controller: services/payment-links/create', () => {
         expect(tokenParams.payload.service_mode).to.equal(GatewayAccountType.TEST)
       })
 
-      it('should create a product with correct parameters', () => {
-        sinon.assert.calledOnce(mockProductsClient.products.create)
-        const createRequest = mockProductsClient.products.create.firstCall.args[0]
-        const payload = createRequest.toPayload()
+      it('should save session data in correct format', () => {
+        sinon.assert.calledOnce(mockPublicAuthClient.createTokenForAccount)
 
-        expect(payload.pay_api_token).to.equal('api_test_token123')
-        expect(payload.gateway_account_id).to.equal(GATEWAY_ACCOUNT_ID)
-        expect(payload.name).to.equal('Test Payment Link')
-        expect(payload.description).to.equal('A description')
-        expect(payload.price).to.equal(1050)
-        expect(payload.type).to.equal(ProductType.ADHOC)
-        expect(payload.service_name_path).to.equal('test-service')
-        expect(payload.product_name_path).to.equal('test-payment-link')
-        expect(payload.reference_enabled).to.equal(true)
-        expect(payload.reference_label).to.equal('Invoice number')
-        expect(payload.reference_hint).to.equal('Enter your invoice number')
-        expect(payload.language).to.equal('en')
+        sinon.assert.calledOnce(res.redirect)
+
+        if (req.session.pageData && req.session.pageData.createPaymentLink) {
+          const sessionData = req.session.pageData.createPaymentLink
+          expect(sessionData.paymentLinkTitle).to.equal('Test Payment Link')
+          expect(sessionData.paymentLinkDescription).to.equal('A description')
+          expect(sessionData.serviceNamePath).to.equal('test-service')
+          expect(sessionData.productNamePath).to.equal('test-payment-link')
+          expect(sessionData.isWelsh).to.equal(false)
+          expect(sessionData.payApiToken).to.equal('api_test_token123')
+          expect(sessionData.gatewayAccountId).to.equal(GATEWAY_ACCOUNT_ID)
+          expect(sessionData.paymentReferenceType).to.equal('custom')
+          expect(sessionData.paymentReferenceLabel).to.equal('Invoice number')
+          expect(sessionData.paymentReferenceHint).to.equal('Enter your invoice number')
+          expect(sessionData.paymentLinkAmount).to.equal(1050)
+        }
       })
 
-      it('should redirect to payment links index', () => {
+      it('should redirect to old review page', () => {
         sinon.assert.calledWith(
           res.redirect,
-          formatServiceAndAccountPathsFor(
-            paths.simplifiedAccount.paymentLinks.index,
-            SERVICE_EXTERNAL_ID,
-            GatewayAccountType.TEST
-          )
+          formatAccountPathsFor(paths.account.paymentLinks.review, GATEWAY_ACCOUNT_EXTERNAL_ID)
         )
       })
     })
@@ -169,20 +152,33 @@ describe('Controller: services/payment-links/create', () => {
             description: '',
             reference: 'no',
             amountType: 'variable',
-            amountHint: 'Please give generously'
-          }
+            amountHint: 'Please give generously',
+          },
         })
         await call('post')
       })
 
-      it('should create a product without price', () => {
-        const createRequest = mockProductsClient.products.create.firstCall.args[0]
-        const payload = createRequest.toPayload()
+      it('should save session data without fixed amount', () => {
+        sinon.assert.calledOnce(mockPublicAuthClient.createTokenForAccount)
 
-        expect(payload.name).to.equal('Donation Link')
-        expect(payload.price).to.be.null
-        expect(payload.reference_enabled).to.equal(false)
-        expect(payload.amount_hint).to.equal('Please give generously')
+        sinon.assert.calledOnce(res.redirect)
+
+        if (req.session.pageData && req.session.pageData.createPaymentLink) {
+          const sessionData = req.session.pageData.createPaymentLink
+
+          expect(sessionData.paymentLinkTitle).to.equal('Donation Link')
+          expect(sessionData.paymentLinkDescription).to.equal('')
+          expect(sessionData.paymentLinkAmount).to.be.undefined
+          expect(sessionData.amountHint).to.equal('Please give generously')
+          expect(sessionData.paymentReferenceType).to.be.undefined
+        }
+      })
+
+      it('should redirect to old review page', () => {
+        sinon.assert.calledWith(
+          res.redirect,
+          formatAccountPathsFor(paths.account.paymentLinks.review, GATEWAY_ACCOUNT_EXTERNAL_ID)
+        )
       })
     })
 
@@ -192,8 +188,8 @@ describe('Controller: services/payment-links/create', () => {
           nextRequest({
             body: {
               name: '',
-              amountType: ''
-            }
+              amountType: '',
+            },
           })
           await call('post')
         })
@@ -206,14 +202,17 @@ describe('Controller: services/payment-links/create', () => {
             'simplified-account/services/payment-links/create/index',
             sinon.match({
               errors: sinon.match.object,
-              formValues: sinon.match.object
+              formValues: sinon.match.object,
             })
           )
         })
 
-        it('should not create a token or product', () => {
+        it('should not create a token', () => {
           sinon.assert.notCalled(mockPublicAuthClient.createTokenForAccount)
-          sinon.assert.notCalled(mockProductsClient.products.create)
+        })
+
+        it('should not save session data', () => {
+          expect(req.session.pageData).to.be.undefined
         })
       })
 
@@ -223,8 +222,8 @@ describe('Controller: services/payment-links/create', () => {
             body: {
               name: 'Test',
               amountType: 'fixed',
-              amount: 'invalid'
-            }
+              amount: 'invalid',
+            },
           })
           await call('post')
         })
@@ -246,8 +245,8 @@ describe('Controller: services/payment-links/create', () => {
             body: {
               name: 'Test',
               amountType: 'fixed',
-              amount: '0.00'
-            }
+              amount: '0.00',
+            },
           })
           await call('post')
         })
@@ -269,8 +268,8 @@ describe('Controller: services/payment-links/create', () => {
             body: {
               name: 'Test',
               amountType: 'fixed',
-              amount: '100001'
-            }
+              amount: '100001',
+            },
           })
           await call('post')
         })
@@ -292,8 +291,8 @@ describe('Controller: services/payment-links/create', () => {
             body: {
               name: 'a'.repeat(231),
               amountType: 'fixed',
-              amount: '10'
-            }
+              amount: '10',
+            },
           })
           await call('post')
         })
@@ -315,24 +314,20 @@ describe('Controller: services/payment-links/create', () => {
             body: {
               name: 'a'.repeat(230),
               amountType: 'fixed',
-              amount: '10'
-            }
+              amount: '10',
+            },
           })
           await call('post')
         })
 
-        it('should create product successfully', () => {
-          sinon.assert.calledOnce(mockProductsClient.products.create)
+        it('should create token successfully', () => {
+          sinon.assert.calledOnce(mockPublicAuthClient.createTokenForAccount)
         })
 
-        it('should redirect to payment links index', () => {
+        it('should redirect to old review page', () => {
           sinon.assert.calledWith(
             res.redirect,
-            formatServiceAndAccountPathsFor(
-              paths.simplifiedAccount.paymentLinks.index,
-              SERVICE_EXTERNAL_ID,
-              GatewayAccountType.TEST
-            )
+            formatAccountPathsFor(paths.account.paymentLinks.review, GATEWAY_ACCOUNT_EXTERNAL_ID)
           )
         })
       })
@@ -345,8 +340,8 @@ describe('Controller: services/payment-links/create', () => {
               reference: 'yes',
               referenceLabel: '',
               amountType: 'fixed',
-              amount: '10'
-            }
+              amount: '10',
+            },
           })
           await call('post')
         })

@@ -6,6 +6,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 import { NextFunction } from 'express'
 import formatAccountPathsFor from '@utils/format-account-paths-for'
+import * as publicAuthClient from '@services/clients/public-auth.client'
 
 interface CreatePaymentLinkBody {
   name?: string
@@ -16,6 +17,23 @@ interface CreatePaymentLinkBody {
   amount?: string
   amountType?: 'fixed' | 'variable'
   amountHint?: string
+}
+
+interface CreateTokenResponse {
+  token: string
+}
+
+interface CreateTokenPayload {
+  accountId: number
+  payload: {
+    account_id: number
+    created_by: string
+    type: string
+    description: string
+    token_account_type: string
+    service_external_id: string
+    service_mode: string
+  }
 }
 
 const validations = [
@@ -134,7 +152,19 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
   }
 
   try {
-    // Transform form data to old session format
+    const createTokenResponse = await (publicAuthClient as { createTokenForAccount: (payload: CreateTokenPayload) => Promise<CreateTokenResponse> }).createTokenForAccount({
+      accountId: account.id,
+      payload: {
+        account_id: account.id,
+        created_by: req.user.email,
+        type: 'PRODUCTS',
+        description: `Token for "${body.name ?? ''}" payment link`,
+        token_account_type: account.type,
+        service_external_id: service.externalId,
+        service_mode: account.type
+      }
+    })
+
     const serviceNamePath = service.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
@@ -153,28 +183,25 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
       serviceNamePath,
       productNamePath,
       isWelsh: false,
-      metadata: {}
+      payApiToken: createTokenResponse.token,
+      gatewayAccountId: account.id
     }
 
-    // Handle reference
     if (body.reference === 'yes') {
       sessionData.paymentReferenceType = 'custom'
       sessionData.paymentReferenceLabel = body.referenceLabel
       sessionData.paymentReferenceHint = body.referenceHint
     }
 
-    // Handle amount based on amountType
     if (body.amountType === 'fixed' && body.amount) {
       sessionData.paymentLinkAmount = Math.round(parseFloat(body.amount) * 100)
     } else if (body.amountType === 'variable') {
       sessionData.amountHint = body.amountHint
     }
 
-    // Save to session
     req.session.pageData = req.session.pageData || {}
     req.session.pageData.createPaymentLink = sessionData
 
-    // Redirect to old review page using the external ID
     const redirectUrl = formatAccountPathsFor(
       paths.account.paymentLinks.review,
       account.externalId
