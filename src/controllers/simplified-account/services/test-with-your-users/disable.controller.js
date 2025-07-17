@@ -1,8 +1,8 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
-const paths = require('../../paths')
-const productsClient = require('../../services/clients/products.client.js')
+const logger = require('@utils/logger')(__filename)
+const paths = require('../../../../paths')
+const productsClient = require('@services/clients/products.client.js')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 
 module.exports = (req, res) => {

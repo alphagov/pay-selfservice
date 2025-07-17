@@ -1,8 +1,8 @@
 'use strict'
 
-const { response } = require('../../utils/response.js')
-const paths = require('../../paths')
-const productsClient = require('../../services/clients/products.client.js')
+const { response } = require('@utils/response.js')
+const paths = require('../../../../paths')
+const productsClient = require('@services/clients/products.client.js')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
 
 module.exports = async function getIndex (req, res, next) {
