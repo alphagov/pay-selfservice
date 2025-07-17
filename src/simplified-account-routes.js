@@ -24,7 +24,7 @@ const {
   GOV_ENTITY_DOC_FORM_FIELD_NAME,
 } = require('@controllers/simplified-account/settings/stripe-details/government-entity-document/constants')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
-const testWithYourUsersController = require('@controllers/test-with-your-users')
+const testWithYourUsersController = require('src/controllers/simplified-account/services/test-with-your-users')
 
 const upload = multer({ storage: multer.memoryStorage() })
 const simplifiedAccount = new Router({ mergeParams: true })
