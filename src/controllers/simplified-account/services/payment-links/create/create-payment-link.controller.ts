@@ -10,28 +10,24 @@ import * as publicAuthClient from '@services/clients/public-auth.client'
 import * as lodash from 'lodash'
 
 import { nunjucksFilters } from '@govuk-pay/pay-js-commons'
-const { slugify, removeIndefiniteArticles } = nunjucksFilters
+
+const safeSlugify = (input: string): string => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+  const result = nunjucksFilters.slugify(input)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return String(result || '')
+}
+
+const safeRemoveIndefiniteArticles = (input: string): string => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+  const result = nunjucksFilters.removeIndefiniteArticles(input)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return String(result || input)
+}
 
 interface CreatePaymentLinkBody {
   name?: string
   description?: string
-}
-
-interface CreateTokenResponse {
-  token: string
-}
-
-interface CreateTokenPayload {
-  accountId: number
-  payload: {
-    account_id: number
-    created_by: string
-    type: string
-    description: string
-    token_account_type: string
-    service_external_id: string
-    service_mode: string
-  }
 }
 
 interface SessionWithPageData {
@@ -76,8 +72,20 @@ const validations = [
     .withMessage('Details must be 255 characters or fewer'),
 ]
 
-const makeNiceURL = (string: string): string => {
-  return slugify(removeIndefiniteArticles(string))
+const makeNiceURL = (str: string): string => {
+  if (!str || typeof str !== 'string') {
+    return ''
+  }
+
+  const input = str.trim()
+  if (!input) {
+    return ''
+  }
+
+  const withoutArticles = safeRemoveIndefiniteArticles(input)
+  const result = safeSlugify(withoutArticles)
+
+  return typeof result === 'string' ? result : ''
 }
 
 function get(req: ServiceRequest, res: ServiceResponse) {
@@ -145,21 +153,40 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
   }
 
   try {
-    const createTokenResponse = await (publicAuthClient as any).createTokenForAccount({
+    let safeName = ''
+    let safeServiceName = ''
+
+    if (body.name && typeof body.name === 'string') {
+      safeName = body.name
+    }
+
+    if (service.name && typeof service.name === 'string') {
+      safeServiceName = service.name
+    }
+
+    console.log('About to call createTokenForAccount with:', {
+      accountId: account.id,
+      hasCreateTokenForAccount: typeof publicAuthClient.createTokenForAccount
+    })
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const createTokenResponse = await publicAuthClient.createTokenForAccount({
       accountId: account.id,
       payload: {
         account_id: account.id,
         created_by: req.user.email,
         type: 'PRODUCTS',
-        description: `Token for "${body.name ?? ''}" payment link`,
+        description: `Token for "${safeName}" payment link`,
         token_account_type: account.type,
         service_external_id: service.externalId,
         service_mode: account.type,
       },
     })
 
-    const serviceNamePath = makeNiceURL(service.name)
-    const productNamePath = makeNiceURL(body.name ?? '')
+    console.log('createTokenForAccount response:', createTokenResponse)
+
+    const serviceNamePath = makeNiceURL(safeServiceName)
+    const productNamePath = makeNiceURL(safeName)
 
     const sessionData = {
       paymentLinkTitle: body.name,
@@ -167,13 +194,14 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
       serviceNamePath,
       productNamePath,
       isWelsh: false,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       payApiToken: createTokenResponse.token,
       gatewayAccountId: account.id,
       paymentLinkAmount: 1500,
     }
 
     const session = req.session as SessionWithPageData
-    session.pageData = session.pageData || {}
+    session.pageData ??= {}
     session.pageData.createPaymentLink = sessionData
 
     const redirectUrl = formatAccountPathsFor(paths.account.paymentLinks.review, account.externalId)

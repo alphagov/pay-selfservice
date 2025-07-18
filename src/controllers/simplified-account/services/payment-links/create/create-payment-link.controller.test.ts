@@ -4,7 +4,7 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import formatAccountPathsFor from '@utils/format-account-paths-for'
 import paths from '@root/paths'
-import { expect } from 'chai'
+import { strict as assert } from 'assert'
 
 interface SessionWithPageData {
   pageData?: {
@@ -25,6 +25,19 @@ interface SessionWithPageData {
   }
 }
 
+interface CreateTokenParams {
+  accountId: number
+  payload: {
+    account_id: number
+    created_by: string
+    type: string
+    description: string
+    token_account_type: string
+    service_external_id: string
+    service_mode: string
+  }
+}
+
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'gateway-account-external-id-123'
@@ -38,8 +51,12 @@ const mockPublicAuthClient = {
 }
 
 const mockNunjucksFilters = {
-  slugify: sinon.stub().callsFake((str) => str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')),
-  removeIndefiniteArticles: sinon.stub().callsFake((str) => str.replace(/^(a|an|the)\s+/i, ''))
+  slugify: sinon.stub().callsFake((str: string): string =>
+    str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+  ),
+  removeIndefiniteArticles: sinon.stub().callsFake((str: string): string =>
+    str.replace(/^(a|an|the)\s+/i, '')
+  )
 }
 
 const { res, req, call, nextRequest } = new ControllerTestBuilder(
@@ -137,16 +154,16 @@ describe('Controller: services/payment-links/create', () => {
 
       it('should create API token with correct parameters', () => {
         sinon.assert.calledOnce(mockPublicAuthClient.createTokenForAccount)
-        const tokenParams = mockPublicAuthClient.createTokenForAccount.firstCall.args[0]
+        const tokenParams = mockPublicAuthClient.createTokenForAccount.firstCall.args[0] as CreateTokenParams
 
-        expect(tokenParams.accountId).to.equal(GATEWAY_ACCOUNT_ID)
-        expect(tokenParams.payload.account_id).to.equal(GATEWAY_ACCOUNT_ID)
-        expect(tokenParams.payload.created_by).to.equal('test@example.com')
-        expect(tokenParams.payload.type).to.equal('PRODUCTS')
-        expect(tokenParams.payload.description).to.equal('Token for "Test Payment Link" payment link')
-        expect(tokenParams.payload.token_account_type).to.equal(GatewayAccountType.TEST)
-        expect(tokenParams.payload.service_external_id).to.equal(SERVICE_EXTERNAL_ID)
-        expect(tokenParams.payload.service_mode).to.equal(GatewayAccountType.TEST)
+        assert.strictEqual(tokenParams.accountId, GATEWAY_ACCOUNT_ID)
+        assert.strictEqual(tokenParams.payload.account_id, GATEWAY_ACCOUNT_ID)
+        assert.strictEqual(tokenParams.payload.created_by, 'test@example.com')
+        assert.strictEqual(tokenParams.payload.type, 'PRODUCTS')
+        assert.strictEqual(tokenParams.payload.description, 'Token for "Test Payment Link" payment link')
+        assert.strictEqual(tokenParams.payload.token_account_type, GatewayAccountType.TEST)
+        assert.strictEqual(tokenParams.payload.service_external_id, SERVICE_EXTERNAL_ID)
+        assert.strictEqual(tokenParams.payload.service_mode, GatewayAccountType.TEST)
       })
 
       it('should save session data with hardcoded values', () => {
@@ -154,21 +171,21 @@ describe('Controller: services/payment-links/create', () => {
         sinon.assert.calledOnce(res.redirect)
 
         const sessionWithPageData = req.session as SessionWithPageData
-        if (sessionWithPageData.pageData && sessionWithPageData.pageData.createPaymentLink) {
-          const sessionData = sessionWithPageData.pageData.createPaymentLink
-          expect(sessionData.paymentLinkTitle).to.equal('Test Payment Link')
-          expect(sessionData.paymentLinkDescription).to.equal('A description')
-          expect(sessionData.serviceNamePath).to.equal('test-service')
-          expect(sessionData.productNamePath).to.equal('test-payment-link')
-          expect(sessionData.isWelsh).to.equal(false)
-          expect(sessionData.payApiToken).to.equal('api_test_token123')
-          expect(sessionData.gatewayAccountId).to.equal(GATEWAY_ACCOUNT_ID)
-          expect(sessionData.paymentLinkAmount).to.equal(1500)
-          expect(sessionData.paymentReferenceType).to.be.undefined
-          expect(sessionData.paymentReferenceLabel).to.be.undefined
-          expect(sessionData.paymentReferenceHint).to.be.undefined
-          expect(sessionData.amountHint).to.be.undefined
-        }
+        const sessionData = sessionWithPageData.pageData?.createPaymentLink
+
+        assert.ok(sessionData)
+        assert.strictEqual(sessionData.paymentLinkTitle, 'Test Payment Link')
+        assert.strictEqual(sessionData.paymentLinkDescription, 'A description')
+        assert.strictEqual(sessionData.serviceNamePath, 'test-service')
+        assert.strictEqual(sessionData.productNamePath, 'test-payment-link')
+        assert.strictEqual(sessionData.isWelsh, false)
+        assert.strictEqual(sessionData.payApiToken, 'api_test_token123')
+        assert.strictEqual(sessionData.gatewayAccountId, GATEWAY_ACCOUNT_ID)
+        assert.strictEqual(sessionData.paymentLinkAmount, 1500)
+        assert.strictEqual(sessionData.paymentReferenceType, undefined)
+        assert.strictEqual(sessionData.paymentReferenceLabel, undefined)
+        assert.strictEqual(sessionData.paymentReferenceHint, undefined)
+        assert.strictEqual(sessionData.amountHint, undefined)
       })
 
       it('should redirect to review page', () => {
@@ -194,12 +211,12 @@ describe('Controller: services/payment-links/create', () => {
         sinon.assert.calledOnce(res.redirect)
 
         const sessionWithPageData = req.session as SessionWithPageData
-        if (sessionWithPageData.pageData && sessionWithPageData.pageData.createPaymentLink) {
-          const sessionData = sessionWithPageData.pageData.createPaymentLink
-          expect(sessionData.paymentLinkTitle).to.equal('Simple Payment Link')
-          expect(sessionData.paymentLinkDescription).to.be.undefined
-          expect(sessionData.paymentLinkAmount).to.equal(1500)
-        }
+        const sessionData = sessionWithPageData.pageData?.createPaymentLink
+
+        assert.ok(sessionData)
+        assert.strictEqual(sessionData.paymentLinkTitle, 'Simple Payment Link')
+        assert.strictEqual(sessionData.paymentLinkDescription, undefined)
+        assert.strictEqual(sessionData.paymentLinkAmount, 1500)
       })
 
       it('should redirect to review page', () => {
@@ -243,7 +260,7 @@ describe('Controller: services/payment-links/create', () => {
 
         it('should not save session data', () => {
           const sessionWithPageData = req.session as SessionWithPageData
-          expect(sessionWithPageData.pageData).to.be.undefined
+          assert.strictEqual(sessionWithPageData.pageData, undefined)
         })
       })
 
@@ -369,10 +386,8 @@ describe('Controller: services/payment-links/create', () => {
 
         it('should remove articles from service name path', () => {
           const sessionWithPageData = req.session as SessionWithPageData
-          if (sessionWithPageData.pageData && sessionWithPageData.pageData.createPaymentLink) {
-            const sessionData = sessionWithPageData.pageData.createPaymentLink
-            expect(sessionData.serviceNamePath).to.equal('test-service')
-          }
+          const sessionData = sessionWithPageData.pageData?.createPaymentLink
+          assert.strictEqual(sessionData?.serviceNamePath, 'test-service')
         })
       })
 
@@ -389,10 +404,8 @@ describe('Controller: services/payment-links/create', () => {
 
         it('should remove articles from product name path', () => {
           const sessionWithPageData = req.session as SessionWithPageData
-          if (sessionWithPageData.pageData && sessionWithPageData.pageData.createPaymentLink) {
-            const sessionData = sessionWithPageData.pageData.createPaymentLink
-            expect(sessionData.productNamePath).to.equal('payment-for-application')
-          }
+          const sessionData = sessionWithPageData.pageData?.createPaymentLink
+          assert.strictEqual(sessionData?.productNamePath, 'payment-for-application')
         })
       })
 
@@ -409,10 +422,8 @@ describe('Controller: services/payment-links/create', () => {
 
         it('should remove "An" article from product name path', () => {
           const sessionWithPageData = req.session as SessionWithPageData
-          if (sessionWithPageData.pageData && sessionWithPageData.pageData.createPaymentLink) {
-            const sessionData = sessionWithPageData.pageData.createPaymentLink
-            expect(sessionData.productNamePath).to.equal('important-payment')
-          }
+          const sessionData = sessionWithPageData.pageData?.createPaymentLink
+          assert.strictEqual(sessionData?.productNamePath, 'important-payment')
         })
       })
 
@@ -429,10 +440,8 @@ describe('Controller: services/payment-links/create', () => {
 
         it('should remove articles and handle special characters', () => {
           const sessionWithPageData = req.session as SessionWithPageData
-          if (sessionWithPageData.pageData && sessionWithPageData.pageData.createPaymentLink) {
-            const sessionData = sessionWithPageData.pageData.createPaymentLink
-            expect(sessionData.productNamePath).to.equal('big-payment-small-fee')
-          }
+          const sessionData = sessionWithPageData.pageData?.createPaymentLink
+          assert.strictEqual(sessionData?.productNamePath, 'big-payment-small-fee')
         })
       })
 
@@ -449,10 +458,8 @@ describe('Controller: services/payment-links/create', () => {
 
         it('should slugify normally when no articles present', () => {
           const sessionWithPageData = req.session as SessionWithPageData
-          if (sessionWithPageData.pageData && sessionWithPageData.pageData.createPaymentLink) {
-            const sessionData = sessionWithPageData.pageData.createPaymentLink
-            expect(sessionData.productNamePath).to.equal('registration-fee')
-          }
+          const sessionData = sessionWithPageData.pageData?.createPaymentLink
+          assert.strictEqual(sessionData?.productNamePath, 'registration-fee')
         })
       })
     })
