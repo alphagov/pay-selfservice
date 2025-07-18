@@ -5,6 +5,7 @@ import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/fo
 
 function get (req: ServiceRequest, res: ServiceResponse) {
   const context = {
+    messages: res.locals?.flash?.messages ?? [],
     productsTab: false,
     createLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.create, req.service.externalId, req.account.type),
     prototypesLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  req.service.externalId, req.account.type),
