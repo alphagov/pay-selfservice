@@ -13,7 +13,7 @@ async function post (req: ServiceRequest, res: ServiceResponse) {
       req.flash('messages', Message.Success('Prototype link deleted'))
       res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  req.service.externalId, req.account.type))
     })
-    .catch((err) => {
+    .catch((err: Error) => {
       logger.error(`Disable product failed - ${err.message}`)
       req.flash('messages', Message.GenericError('Something went wrong when deleting the prototype link. Please try again or contact support.'))
       res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  req.service.externalId, req.account.type))
