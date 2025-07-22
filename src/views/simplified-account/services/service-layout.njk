@@ -25,7 +25,7 @@
     <div class="service-pane {% if fullWidth %}service-pane--full-width{% endif %}">
       {% if backLink %}
         {{ govukBackLink({
-          text: "Back",
+          text: backLinkText or "Back",
           href: backLink
         }) }}
       {% endif %}

@@ -12,7 +12,7 @@ function get (req: ServiceRequest, res: ServiceResponse) {
     backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.dashboard.index, req.service.externalId, req.account.type)
   }
 
-  return response(req, res, 'dashboard/demo-service/index', context)
+  return response(req, res, 'simplified-account/services/test-with-your-users/index', context)
 }
 
 export {
