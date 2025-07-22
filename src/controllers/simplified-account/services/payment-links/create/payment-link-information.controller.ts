@@ -5,13 +5,11 @@ import formatValidationErrors from '@utils/simplified-account/format/format-vali
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { NextFunction } from 'express'
-import formatAccountPathsFor from '@utils/format-account-paths-for'
 import Service from '@models/service/Service.class'
 
 // @ts-expect-error: Missing type definitions for @govuk-pay/pay-js-commons module
 import payJsCommons from '@govuk-pay/pay-js-commons'
 
-const typedFormatAccountPathsFor = formatAccountPathsFor as (path: string, externalId: string, ...params: unknown[]) => string
 const typedFormatServiceAndAccountPathsFor = formatServiceAndAccountPathsFor as (path: string, externalId: string, accountType: string) => string
 
 const { slugify, removeIndefiniteArticles } = (payJsCommons as unknown as {
@@ -43,12 +41,6 @@ interface SessionWithPageData {
       serviceNamePath?: string
       productNamePath?: string
       isWelsh?: boolean
-      gatewayAccountId?: number
-      paymentLinkAmount?: number
-      paymentReferenceType?: string
-      paymentReferenceLabel?: string
-      paymentReferenceHint?: string
-      amountHint?: string
     }
   }
 }
@@ -99,11 +91,19 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     ? String(service.serviceName.cy)
     : String(service.serviceName.en)
 
+  const session = req.session as unknown as SessionWithPageData
+  const sessionData = session.pageData?.createPaymentLink
+
+  const formValues = {
+    name: sessionData?.paymentLinkTitle ?? '',
+    description: sessionData?.paymentLinkDescription ?? '',
+  }
+
   return response(req, res, 'simplified-account/services/payment-links/create/index', {
     service,
     account,
     backLink: backLinkUrl,
-    formValues: {},
+    formValues,
     friendlyURL,
     serviceName,
   })
@@ -112,6 +112,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 async function post(req: ServiceRequest<CreatePaymentLinkBody>, res: ServiceResponse, next: NextFunction) {
   const service = req.service
   const { account } = req
+  const body: CreatePaymentLinkBody = req.body
 
   for (const validation of validations) {
     await validation.run(req)
@@ -150,26 +151,30 @@ async function post(req: ServiceRequest<CreatePaymentLinkBody>, res: ServiceResp
   }
 
   try {
-    const requestBody = req.body
     const serviceName: string = getServiceName(service)
     const serviceNamePath: string = makeNiceURL(serviceName)
-    const productNamePath: string = makeNiceURL(String(requestBody.name ?? ''))
+    const productNamePath: string = makeNiceURL(String(body.name ?? ''))
+    const languageValue: string = getLanguageFromQuery(req)
+    const isWelsh: boolean = languageValue === supportedLanguage.WELSH
 
     const sessionData = {
-      paymentLinkTitle: requestBody.name,
-      paymentLinkDescription: requestBody.description,
+      paymentLinkTitle: body.name,
+      paymentLinkDescription: body.description,
       serviceNamePath,
       productNamePath,
-      isWelsh: false,
-      gatewayAccountId: account.id,
-      paymentLinkAmount: 1500,
+      isWelsh,
     }
 
     const session = req.session as unknown as SessionWithPageData
     session.pageData ??= {}
     session.pageData.createPaymentLink = sessionData
 
-    const redirectUrl = typedFormatAccountPathsFor(paths.account.paymentLinks.review, account.externalId)
+    const redirectUrl = formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.reference,
+      service.externalId,
+      account.type
+    )
+
     return res.redirect(redirectUrl)
   } catch (error) {
     next(error)

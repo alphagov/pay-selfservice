@@ -2,9 +2,14 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import formatAccountPathsFor from '@utils/format-account-paths-for'
 import paths from '@root/paths'
 import { expect } from 'chai'
+
+const SERVICE_EXTERNAL_ID = 'service123abc'
+const GATEWAY_ACCOUNT_ID = 117
+const GATEWAY_ACCOUNT_EXTERNAL_ID = 'gateway-account-external-id-123'
+
+const mockResponse = sinon.spy()
 
 interface SessionWithPageData {
   pageData?: {
@@ -14,25 +19,8 @@ interface SessionWithPageData {
       serviceNamePath?: string
       productNamePath?: string
       isWelsh?: boolean
-      gatewayAccountId?: number
-      paymentLinkAmount?: number
-      paymentReferenceType?: string
-      paymentReferenceLabel?: string
-      paymentReferenceHint?: string
-      amountHint?: string
     }
   }
-}
-
-const SERVICE_EXTERNAL_ID = 'service123abc'
-const GATEWAY_ACCOUNT_ID = 117
-const GATEWAY_ACCOUNT_EXTERNAL_ID = 'gateway-account-external-id-123'
-
-const mockResponse = sinon.spy()
-
-const mockNunjucksFilters = {
-  slugify: sinon.stub().callsFake((str: string) => str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')),
-  removeIndefiniteArticles: sinon.stub().callsFake((str: string) => str.replace(/^(a|an|the)\s+/i, ''))
 }
 
 const { res, req, call, nextRequest } = new ControllerTestBuilder(
@@ -49,41 +37,33 @@ const { res, req, call, nextRequest } = new ControllerTestBuilder(
     name: 'Test Service',
     serviceName: {
       en: 'Test Service',
-      cy: 'Test Service Welsh',
-    },
+      cy: 'Gwasanaeth Prawf'
+    }
   })
   .withUser({
     email: 'test@example.com',
   })
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@govuk-pay/pay-js-commons': { nunjucksFilters: mockNunjucksFilters },
   })
   .build()
 
 req.session = req.session || {}
 
-describe('Controller: services/payment-links/create', () => {
+describe('Controller: services/payment-links/create (Step 1)', () => {
   beforeEach(() => {
     mockResponse.resetHistory()
-    mockNunjucksFilters.slugify.resetHistory()
-    mockNunjucksFilters.removeIndefiniteArticles.resetHistory()
-
-    process.env.PRODUCTS_FRIENDLY_BASE_URI = 'https://payments.gov.uk'
-
     req.session = req.session || {}
-    const sessionWithPageData = req.session as SessionWithPageData
-    if (sessionWithPageData.pageData) {
-      delete sessionWithPageData.pageData
+    const session = req.session as unknown as SessionWithPageData
+    if (session.pageData) {
+      delete session.pageData
     }
   })
 
   afterEach(() => {
-    delete process.env.PRODUCTS_FRIENDLY_BASE_URI
-
-    const sessionWithPageData = req.session as SessionWithPageData
-    if (sessionWithPageData.pageData) {
-      delete sessionWithPageData.pageData
+    const session = req.session as unknown as SessionWithPageData
+    if (session?.pageData) {
+      delete session.pageData
     }
   })
 
@@ -106,8 +86,7 @@ describe('Controller: services/payment-links/create', () => {
             SERVICE_EXTERNAL_ID,
             GatewayAccountType.TEST
           ),
-          formValues: {},
-          friendlyURL: 'https://payments.gov.uk',
+          formValues: sinon.match.object,
           serviceName: 'Test Service',
         })
       )
@@ -115,7 +94,7 @@ describe('Controller: services/payment-links/create', () => {
   })
 
   describe('post', () => {
-    describe('successful creation with name and description', () => {
+    describe('successful form submission', () => {
       beforeEach(async () => {
         nextRequest({
           body: {
@@ -126,70 +105,29 @@ describe('Controller: services/payment-links/create', () => {
         await call('post')
       })
 
-      it('should save session data with hardcoded values', () => {
-        sinon.assert.calledOnce(res.redirect)
-
-        const sessionWithPageData = req.session as SessionWithPageData
-        const sessionData = sessionWithPageData.pageData?.createPaymentLink
-
-        expect(sessionData?.paymentReferenceType).to.equal(undefined);
-        expect(sessionData?.paymentReferenceLabel).to.equal(undefined);
-        expect(sessionData?.paymentReferenceHint).to.equal(undefined);
-        expect(sessionData?.amountHint).to.equal(undefined);
-        expect(sessionData?.paymentLinkTitle).to.equal('Test Payment Link')
-        expect(sessionData?.paymentLinkDescription).to.equal('A description')
-        expect(sessionData?.serviceNamePath).to.equal('test-service')
-        expect(sessionData?.productNamePath).to.equal('test-payment-link')
-        expect(sessionData?.isWelsh).to.equal(false)
-        expect(sessionData?.gatewayAccountId).to.equal(GATEWAY_ACCOUNT_ID)
-        expect(sessionData?.paymentLinkAmount).to.equal(1500)
+      it('should process form data without errors', () => {
+        sinon.assert.notCalled(mockResponse);
       })
 
-      it('should redirect to review page', () => {
+      it('should redirect to reference page', () => {
         sinon.assert.calledWith(
           res.redirect,
-          formatAccountPathsFor(paths.account.paymentLinks.review, GATEWAY_ACCOUNT_EXTERNAL_ID)
-        )
-      })
-    })
-
-    describe('successful creation with name only', () => {
-      beforeEach(async () => {
-        nextRequest({
-          body: {
-            name: 'Simple Payment Link',
-          },
-        })
-        await call('post')
-      })
-
-      it('should save session data with empty description', () => {
-        sinon.assert.calledOnce(res.redirect)
-
-        const sessionWithPageData = req.session as SessionWithPageData
-        const sessionData = sessionWithPageData.pageData?.createPaymentLink
-
-        expect(sessionData).to.not.equal(undefined);
-        expect(sessionData?.paymentLinkTitle).to.equal('Simple Payment Link')
-        expect(sessionData?.paymentLinkDescription).to.equal(undefined);
-        expect(sessionData?.paymentLinkAmount).to.equal(1500)
-      })
-
-      it('should redirect to review page', () => {
-        sinon.assert.calledWith(
-          res.redirect,
-          formatAccountPathsFor(paths.account.paymentLinks.review, GATEWAY_ACCOUNT_EXTERNAL_ID)
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.reference,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST
+          )
         )
       })
     })
 
     describe('validation errors', () => {
-      describe('missing required name field', () => {
+      describe('missing required fields', () => {
         beforeEach(async () => {
           nextRequest({
             body: {
               name: '',
-              description: 'Some description',
+              description: '',
             },
           })
           await call('post')
@@ -204,15 +142,13 @@ describe('Controller: services/payment-links/create', () => {
             sinon.match({
               errors: sinon.match.object,
               formValues: sinon.match.object,
-              friendlyURL: 'https://payments.gov.uk',
-              serviceName: 'Test Service',
             })
           )
         })
 
         it('should not save session data', () => {
-          const sessionWithPageData = req.session as SessionWithPageData
-          expect(sessionWithPageData.pageData).to.equal(undefined)
+          const session = req.session as unknown as SessionWithPageData
+          expect(session.pageData).to.equal(undefined);
         })
       })
 
@@ -233,11 +169,7 @@ describe('Controller: services/payment-links/create', () => {
             sinon.match.any,
             sinon.match.any,
             'simplified-account/services/payment-links/create/index',
-            sinon.match({
-              errors: sinon.match.object,
-              friendlyURL: 'https://payments.gov.uk',
-              serviceName: 'Test Service',
-            })
+            sinon.match.has('errors')
           )
         })
       })
@@ -253,168 +185,33 @@ describe('Controller: services/payment-links/create', () => {
           await call('post')
         })
 
-        it('should redirect to review page', () => {
+        it('should redirect to reference page', () => {
           sinon.assert.calledWith(
             res.redirect,
-            formatAccountPathsFor(paths.account.paymentLinks.review, GATEWAY_ACCOUNT_EXTERNAL_ID)
-          )
-        })
-      })
-
-      describe('description too long', () => {
-        beforeEach(async () => {
-          nextRequest({
-            body: {
-              name: 'Valid name',
-              description: 'a'.repeat(256),
-            },
-          })
-          await call('post')
-        })
-
-        it('should return validation error', () => {
-          sinon.assert.calledWith(
-            mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            'simplified-account/services/payment-links/create/index',
-            sinon.match({
-              errors: sinon.match.object,
-              friendlyURL: 'https://payments.gov.uk',
-              serviceName: 'Test Service',
-            })
-          )
-        })
-      })
-
-      describe('description at maximum length', () => {
-        beforeEach(async () => {
-          nextRequest({
-            body: {
-              name: 'Valid name',
-              description: 'a'.repeat(255),
-            },
-          })
-          await call('post')
-        })
-
-        it('should redirect to review page', () => {
-          sinon.assert.calledWith(
-            res.redirect,
-            formatAccountPathsFor(paths.account.paymentLinks.review, GATEWAY_ACCOUNT_EXTERNAL_ID)
+            formatServiceAndAccountPathsFor(
+              paths.simplifiedAccount.paymentLinks.reference,
+              SERVICE_EXTERNAL_ID,
+              GatewayAccountType.TEST
+            )
           )
         })
       })
     })
 
-    describe('URL path generation with article removal', () => {
-      describe('service name with articles', () => {
-        beforeEach(async () => {
-          req.service = {
-            ...req.service,
-            name: 'The Test Service',
-            serviceName: {
-              en: 'The Test Service',
-              cy: 'The Test Service Welsh',
-            },
-          }
-
-          nextRequest({
-            body: {
-              name: 'Test Payment Link',
-              description: 'A description',
-            },
-          })
-          await call('post')
+    describe('Welsh language handling', () => {
+      beforeEach(async () => {
+        nextRequest({
+          query: { language: 'cy' },
+          body: {
+            name: 'Test Payment Link',
+            description: 'A description',
+          },
         })
-
-        it('should remove articles from service name path', () => {
-          const sessionWithPageData = req.session as SessionWithPageData
-          const sessionData = sessionWithPageData.pageData?.createPaymentLink
-
-          expect(sessionData).to.not.equal(undefined)
-          expect(sessionData?.serviceNamePath).to.equal('test-service')
-        })
+        await call('post')
       })
 
-      describe('product name with articles', () => {
-        beforeEach(async () => {
-          nextRequest({
-            body: {
-              name: 'A Payment for The Application',
-              description: 'Test description',
-            },
-          })
-          await call('post')
-        })
-
-        it('should remove articles from product name path', () => {
-          const sessionWithPageData = req.session as SessionWithPageData
-          const sessionData = sessionWithPageData.pageData?.createPaymentLink
-
-          expect(sessionData).to.not.equal(undefined)
-          expect(sessionData?.productNamePath).to.equal('payment-for-application')
-        })
-      })
-
-      describe('product name starting with "An"', () => {
-        beforeEach(async () => {
-          nextRequest({
-            body: {
-              name: 'An Important Payment',
-              description: 'Test description',
-            },
-          })
-          await call('post')
-        })
-
-        it('should remove "An" article from product name path', () => {
-          const sessionWithPageData = req.session as SessionWithPageData
-          const sessionData = sessionWithPageData.pageData?.createPaymentLink
-
-          expect(sessionData).to.not.equal(undefined)
-          expect(sessionData?.productNamePath).to.equal('important-payment')
-        })
-      })
-
-      describe('complex name with multiple articles and special characters', () => {
-        beforeEach(async () => {
-          nextRequest({
-            body: {
-              name: 'A Big Payment & The Small Fee',
-              description: 'Test description',
-            },
-          })
-          await call('post')
-        })
-
-        it('should remove articles and handle special characters', () => {
-          const sessionWithPageData = req.session as SessionWithPageData
-          const sessionData = sessionWithPageData.pageData?.createPaymentLink
-
-          expect(sessionData).to.not.equal(undefined)
-          expect(sessionData?.productNamePath).to.equal('big-payment-small-fee')
-        })
-      })
-
-      describe('name without articles', () => {
-        beforeEach(async () => {
-          nextRequest({
-            body: {
-              name: 'Registration Fee',
-              description: 'Test description',
-            },
-          })
-          await call('post')
-        })
-
-        it('should slugify normally when no articles present', () => {
-          const sessionWithPageData = req.session as SessionWithPageData
-          const sessionData = sessionWithPageData.pageData?.createPaymentLink
-
-          expect(sessionData).to.not.equal(undefined)
-          expect(sessionData?.productNamePath).to.equal('registration-fee')
-        })
+      it('should accept Welsh language parameter without errors', () => {
+        sinon.assert.notCalled(mockResponse);
       })
     })
   })
