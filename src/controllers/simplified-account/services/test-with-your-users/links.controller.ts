@@ -18,7 +18,7 @@ async function get (req: ServiceRequest, res: ServiceResponse) {
     products: prototypeProducts
   }
 
-  return response(req, res, 'dashboard/demo-service/index', context)
+  return response(req, res, 'simplified-account/services/test-with-your-users/index', context)
 }
 
 export {
