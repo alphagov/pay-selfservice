@@ -11,7 +11,7 @@ function get (req: ServiceRequest, res: ServiceResponse) {
     ...lodash.get(req, 'session.pageData.createPrototypeLink', {})
   }
 
-  return response(req, res, 'dashboard/demo-service/create', context)
+  return response(req, res, 'simplified-account/services/test-with-your-users/create', context)
 }
 
 export {
