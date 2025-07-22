@@ -55,8 +55,12 @@ const clientBuild = {
       resolveFrom: 'cwd',
       assets: [
         {
-          from: ['node_modules/govuk-frontend/dist/govuk/assets/**/*'],
+          from: ['node_modules/govuk-frontend/dist/govuk/assets/rebrand/**/*'],
           to: ['dist/govuk-frontend-assets']
+        },
+        {
+          from: ['node_modules/govuk-frontend/dist/govuk/assets/fonts/**/*'],
+          to: ['dist/govuk-frontend-assets/fonts']
         },
         {
           from: ['src/assets/images/**/*'],

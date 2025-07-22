@@ -1,4 +1,5 @@
-{% extends "../../layout.njk" %}
+{% extends "layout.njk" %}
+{% from "macro/system-messages.njk" import systemMessages %}
 
 {% block pageTitle %}
   Test with your users - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
@@ -16,6 +17,10 @@
 
 {% block mainContent %}
 <div class="govuk-grid-column-two-thirds">
+  {% if messages is defined and messages is iterable and messages|length > 0 %}
+    {{ systemMessages({ messages: messages }) }}
+  {% endif %}
+
   <h1 class="govuk-heading-l">Test with your users</h1>
   <p class="govuk-body">Create a reusable link to integrate your service prototype with GOV.UK Pay and test with users.</p>
 
