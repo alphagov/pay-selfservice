@@ -66,7 +66,7 @@ const mockNunjucksFilters = {
 }
 
 const { res, req, call, nextRequest } = new ControllerTestBuilder(
-  '@controllers/simplified-account/services/payment-links/create/create-payment-link.controller'
+  '@controllers/simplified-account/services/payment-links/create/payment-link-information.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount({
