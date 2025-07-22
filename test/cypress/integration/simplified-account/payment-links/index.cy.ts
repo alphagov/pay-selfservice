@@ -394,10 +394,6 @@ describe('PaymentLinks dashboard', () => {
                   'contain.text',
                   'Create a ' + SERVICE_MODE + ' payment link in Welsh' 
                 )
-                cy.wrap($elements.eq(10)).should(
-                  'contain.text',
-                  'Create a ' + SERVICE_MODE + ' payment link in Welsh' 
-                )
               })
 
             cy.get('.govuk-button-group').find('a').should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
@@ -453,10 +449,6 @@ describe('PaymentLinks dashboard', () => {
                 cy.wrap($elements.eq(2)).should(
                   'contain.text',
                   'You can add metadata like cost centre codes or business area to your payment links.'
-                )
-                cy.wrap($elements.eq(10)).should(
-                  'contain.text',
-                  'Create a ' + SERVICE_MODE + ' payment link in Welsh' 
                 )
                 cy.wrap($elements.eq(10)).should(
                   'contain.text',
