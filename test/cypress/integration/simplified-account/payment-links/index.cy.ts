@@ -5,6 +5,7 @@ import { SANDBOX } from '@models/constants/payment-providers'
 import { beforeEach } from 'mocha'
 import productStubs from '@test/cypress/stubs/products-stubs'
 import { buildPaymentLinkOptions } from '@test/cypress/integration/simplified-account/payment-links/helpers/product-builder'
+import { should } from 'chai'
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -384,11 +385,11 @@ describe('PaymentLinks dashboard', () => {
                 )
                 cy.wrap($elements.eq(1)).should(
                   'contain.text',
-                  'You can test prefilling the amount, reference or both for users.'
+                  'You can prefill the amount, reference or both for users.'
                 )
                 cy.wrap($elements.eq(2)).should(
                   'contain.text',
-                  'You can test adding metadata like cost centre codes or business area to your test payment links.'
+                  'You can add metadata like cost centre codes or business area to your payment links.'
                 )
                 cy.wrap($elements.eq(10)).should(
                   'contain.text',
@@ -444,11 +445,11 @@ describe('PaymentLinks dashboard', () => {
                 )
                 cy.wrap($elements.eq(1)).should(
                   'contain.text',
-                  'You can test prefilling the amount, reference or both for users.'
+                  'You can prefill the amount, reference or both for users.'
                 )
                 cy.wrap($elements.eq(2)).should(
                   'contain.text',
-                  'You can test adding metadata like cost centre codes or business area to your test payment links.'
+                  'You can add metadata like cost centre codes or business area to your payment links.'
                 )
                 cy.wrap($elements.eq(10)).should(
                   'contain.text',
