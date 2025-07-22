@@ -64,7 +64,7 @@ module.exports = async (req, res) => {
       prototypesLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  req.service.externalId, req.account.type),
     }
 
-    return response(req, res, 'dashboard/demo-service/confirm', context)
+    return response(req, res, 'simplified-account/services/test-with-your-users/confirm', context)
   } catch (err) {
     logger.error(`Create product failed - ${err.message}`)
     req.flash('genericError', 'Something went wrong. Please try again or contact support.')
