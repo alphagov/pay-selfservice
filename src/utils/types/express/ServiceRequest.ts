@@ -4,16 +4,7 @@ import type Service from '@models/service/Service.class'
 import type GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import type StripeAccountSetup from '@models/StripeAccountSetup.class'
 import ClientSessionsCookie from '@utils/types/client-sessions/ClientSessionsCookie'
-
-type MessageState = 'success' | 'error' | 'info'
-type Icon = '&check;'
-
-export interface Message {
-  state: MessageState
-  icon?: Icon
-  heading: string
-  body?: string
-}
+import { Message } from "@utils/types/express/Message";
 
 export default interface ServiceRequest<T = never> extends express.Request {
   user: User

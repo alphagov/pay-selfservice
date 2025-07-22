@@ -110,7 +110,8 @@
           <legend class="govuk-visually-hidden">
               Card brand
           </legend>
-          <fieldset class="govuk-fieldset">
+          {# When JavaScript enhances the select to a multi-select, the label element’s for attribute will reference a button element #}
+          {# WAVE complains about this but it is valid according to the HTML standard and the label will activate the button #}
           {{
             govukSelect({
               id: "card-brand",
@@ -130,7 +131,6 @@
               items: cardBrands
             })
           }}
-          </fieldset>
         </fieldset>
       </div>
       <div class="govuk-grid-column-one-quarter">
@@ -138,6 +138,8 @@
           <legend class="govuk-visually-hidden">
               Payment status
           </legend>
+          {# When JavaScript enhances the select to a multi-select, the label element’s for attribute will reference a button element #}
+          {# WAVE complains about this but it is valid according to the HTML standard and the label will activate the button #}
           {{
             govukSelect({
               id: "state",

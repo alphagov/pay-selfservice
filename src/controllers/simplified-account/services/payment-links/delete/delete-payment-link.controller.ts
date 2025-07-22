@@ -92,6 +92,11 @@ async function post(req: ServiceRequest<DeletePaymentLinkBody>, res: ServiceResp
   }
   deleteProduct(account.id, productExternalId)
     .then(() => {
+      req.flash('messages', {
+              state: 'success',
+              icon: '&check;',
+              heading: `Successfully deleted ${paymentLink.name}`
+            })
       res.redirect(
         formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
       )

@@ -1,5 +1,5 @@
 import express from 'express'
-import { Message } from './ServiceRequest'
+import { Message } from './Message'
 
 export default interface ServiceResponse extends express.Response {
   locals: express.Response['locals'] & {
