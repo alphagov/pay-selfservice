@@ -5,9 +5,6 @@ import formatValidationErrors from '@utils/simplified-account/format/format-vali
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { NextFunction } from 'express'
-import formatAccountPathsFor from '@utils/format-account-paths-for'
-import { PublicAuthClient } from '@services/clients/pay/PublicAuthClient.class'
-import { CreateTokenRequest } from '@models/public-auth/CreateTokenRequest.class'
 import Service from '@models/service/Service.class'
 
 // @ts-expect-error: Missing type definitions for @govuk-pay/pay-js-commons module
@@ -34,10 +31,6 @@ interface CreatePaymentLinkBody {
   description?: string
 }
 
-interface CreateTokenResponse {
-  token: string
-}
-
 interface SessionWithPageData {
   pageData?: {
     createPaymentLink?: {
@@ -46,13 +39,6 @@ interface SessionWithPageData {
       serviceNamePath?: string
       productNamePath?: string
       isWelsh?: boolean
-      payApiToken?: string
-      gatewayAccountId?: number
-      paymentLinkAmount?: number
-      paymentReferenceType?: string
-      paymentReferenceLabel?: string
-      paymentReferenceHint?: string
-      amountHint?: string
     }
   }
 }
@@ -84,8 +70,6 @@ const makeNiceURL = (string: string): string => {
   return slugify(removeIndefiniteArticles(string))
 }
 
-const publicAuthClient = new PublicAuthClient()
-
 function get(req: ServiceRequest, res: ServiceResponse) {
   const service = req.service
   const { account } = req
@@ -105,11 +89,19 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     ? String(service.serviceName.cy)
     : String(service.serviceName.en)
 
+  const session = req.session as unknown as SessionWithPageData
+  const sessionData = session.pageData?.createPaymentLink
+
+  const formValues = {
+    name: sessionData?.paymentLinkTitle ?? '',
+    description: sessionData?.paymentLinkDescription ?? '',
+  }
+
   return response(req, res, 'simplified-account/services/payment-links/create/index', {
     service,
     account,
     backLink: backLinkUrl,
-    formValues: {},
+    formValues,
     friendlyURL,
     serviceName,
   })
@@ -155,36 +147,30 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
   }
 
   try {
-    const createTokenRequest = new CreateTokenRequest()
-      .withGatewayAccountId(account.id)
-      .withServiceExternalId(service.externalId)
-      .withServiceMode(account.type)
-      .withDescription(`Token for "${body.name ?? ''}" payment link`)
-      .withCreatedBy((req.user as { email: string }).email)
-      .withTokenUsageType('PRODUCTS')
-
-    const createTokenResponse: CreateTokenResponse = await publicAuthClient.tokens.create(createTokenRequest)
-
     const serviceName: string = getServiceName(service)
     const serviceNamePath: string = makeNiceURL(serviceName)
     const productNamePath: string = makeNiceURL(String(body.name ?? ''))
+    const languageValue: string = getLanguageFromQuery(req)
+    const isWelsh: boolean = languageValue === supportedLanguage.WELSH
 
     const sessionData = {
       paymentLinkTitle: body.name,
       paymentLinkDescription: body.description,
       serviceNamePath,
       productNamePath,
-      isWelsh: false,
-      payApiToken: createTokenResponse.token,
-      gatewayAccountId: account.id,
-      paymentLinkAmount: 1500,
+      isWelsh,
     }
 
     const session = req.session as unknown as SessionWithPageData
     session.pageData ??= {}
     session.pageData.createPaymentLink = sessionData
 
-    const redirectUrl = formatAccountPathsFor(paths.account.paymentLinks.review, account.externalId) as string
+    const redirectUrl = formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.reference,
+      service.externalId,
+      account.type
+    )
+
     return res.redirect(redirectUrl)
   } catch (error) {
     next(error)

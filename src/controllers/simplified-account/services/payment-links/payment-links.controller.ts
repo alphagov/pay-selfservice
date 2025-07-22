@@ -1,4 +1,5 @@
 import * as create from './create/payment-link-information.controller'
+import * as reference from './create/payment-link-reference.controller'
 import * as edit from './edit/edit-payment-link.controller'
 import * as remove from './delete/delete-payment-link.controller'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
@@ -34,6 +35,7 @@ async function get (req: ServiceRequest, res: ServiceResponse) {
 export {
   get,
   create,
+  reference,
   edit,
   remove
 }
