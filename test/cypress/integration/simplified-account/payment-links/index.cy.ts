@@ -5,7 +5,6 @@ import { SANDBOX } from '@models/constants/payment-providers'
 import { beforeEach } from 'mocha'
 import productStubs from '@test/cypress/stubs/products-stubs'
 import { buildPaymentLinkOptions } from '@test/cypress/integration/simplified-account/payment-links/helpers/product-builder'
-import { should } from 'chai'
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
