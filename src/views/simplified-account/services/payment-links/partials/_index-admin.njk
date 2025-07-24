@@ -13,22 +13,29 @@
   <p class="govuk-body">You can create test payment links to see how your service will work. You can use
     {{ "mock card numbers" | docsLink("testing_govuk_pay/#mock-card-numbers-and-email-addresses") | safe }}
     to test payment links.</p>
+  <h2 class="govuk-heading-m">Prefill payment link fields</h2>
+  <p class="govuk-body">You can test prefilling the amount, reference or both for users. Learn
+    {{ "how to create prefilled links" | docsLink("prefill_payment_links") | safe }}.</p>
+
+  <h2 class="govuk-heading-m">Add metadata for reconciliation and reporting</h2>
+  <p class="govuk-body">You can test adding metadata like cost centre codes or business area to your test payment links.</p>
+
 {% else %}
   <p class="govuk-body">You can create payment links and send them to your users so they can pay you. The
     same payment link can be used by all users of your service. You can create payment links without any technical
     knowledge.</p>
+  <h2 class="govuk-heading-m">Prefill payment link fields</h2>
+  <p class="govuk-body">You can prefill the amount, reference or both for users. Learn
+    {{ "how to create prefilled links" | docsLink("prefill_payment_links") | safe }}.</p>
+
+  <h2 class="govuk-heading-m">Add metadata for reconciliation and reporting</h2>
+  <p class="govuk-body">You can add metadata like cost centre codes or business area to your payment links.</p>
 {% endif %}
-
-<h2 class="govuk-heading-m">Prefill payment link fields</h2>
-<p class="govuk-body">You can test prefilling the amount, reference or both for users. Learn
-  {{ "how to create prefilled links" | docsLink("prefill_payment_links") | safe }}.</p>
-
-<h2 class="govuk-heading-m">Add metadata for reconciliation and reporting</h2>
-<p class="govuk-body">You can test adding metadata like cost centre codes or business area to your test payment links.</p>
 
 {{ govukAccordion({
   id: "accordion-default",
   classes: "disable-accordion-controls",
+  rememberExpanded: false,
   items: [
     {
       heading: {
@@ -89,12 +96,12 @@
         },
         {
           key: {
-          text: 'More details'
+          text: 'Details'
         },
           value: {
           html: product.details
         }
-        },
+        } if product.details,
         {
           key: {
           text: 'Reference number'
