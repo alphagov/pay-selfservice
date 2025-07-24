@@ -168,6 +168,11 @@ module.exports = {
       confirm: '/test-with-your-users/confirm',
       disable: '/test-with-your-users/links/disable/:productExternalId',
     },
+    agreements: {
+      index: '/agreements',
+      detail: '/agreements/:agreementId',
+      cancel: '/agreements/:agreementId/cancel',
+    },
     settings: {
       index: '/settings',
       serviceName: {
@@ -278,9 +283,12 @@ module.exports = {
         switchToWorldpay: {
           index: '/settings/switch-psp/switch-to-worldpay',
           flexCredentials: '/settings/switch-psp/switch-to-worldpay/flex-credentials',
-          oneOffCustomerInitiated: '/settings/switch-psp/switch-to-worldpay/one-off-customer-initiated/:credentialExternalId',
-          recurringCustomerInitiated: '/settings/switch-psp/switch-to-worldpay/recurring-customer-initiated/:credentialExternalId',
-          recurringMerchantInitiated: '/settings/switch-psp/switch-to-worldpay/recurring-merchant-initiated/:credentialExternalId',
+          oneOffCustomerInitiated:
+            '/settings/switch-psp/switch-to-worldpay/one-off-customer-initiated/:credentialExternalId',
+          recurringCustomerInitiated:
+            '/settings/switch-psp/switch-to-worldpay/recurring-customer-initiated/:credentialExternalId',
+          recurringMerchantInitiated:
+            '/settings/switch-psp/switch-to-worldpay/recurring-merchant-initiated/:credentialExternalId',
         },
         makeTestPayment: {
           outbound: '/settings/switch-psp/make-a-payment',

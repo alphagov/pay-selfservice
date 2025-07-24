@@ -29,6 +29,16 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
       ),
       hasPermission: UserPermissions.any,
     })
+    .add({
+      id: 'agreements',
+      name: 'agreements',
+      path: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.agreements.index,
+        service.externalId,
+        account.type
+      ),
+      hasPermission: UserPermissions.agreements.agreementsRead,
+    })
     .build()
   return getViewableNav(serviceNavigation)
 }

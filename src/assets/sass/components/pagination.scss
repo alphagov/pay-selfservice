@@ -56,3 +56,14 @@
     }
   }
 }
+
+.pagination-with-count {
+  margin-top: govuk-spacing(3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  @include govuk-media-query($until: tablet) {
+    flex-direction: column;
+  }
+}
