@@ -1,4 +1,4 @@
-import * as create from './create/create-payment-link.controller'
+import * as create from './create/payment-link-information.controller'
 import * as edit from './edit/edit-payment-link.controller'
 import * as remove from './delete/delete-payment-link.controller'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
