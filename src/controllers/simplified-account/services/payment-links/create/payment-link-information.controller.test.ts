@@ -14,7 +14,6 @@ interface SessionWithPageData {
       serviceNamePath?: string
       productNamePath?: string
       isWelsh?: boolean
-      payApiToken?: string
       gatewayAccountId?: number
       paymentLinkAmount?: number
       paymentReferenceType?: string
@@ -30,35 +29,6 @@ const GATEWAY_ACCOUNT_ID = 117
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'gateway-account-external-id-123'
 
 const mockResponse = sinon.spy()
-
-const mockTokensCreate = sinon.stub().resolves({
-  token: 'api_test_token123',
-})
-
-const mockPublicAuthClient = {
-  tokens: {
-    create: mockTokensCreate
-  }
-}
-
-const mockCreateTokenRequest = {
-  withGatewayAccountId: sinon.stub().returnsThis(),
-  withServiceExternalId: sinon.stub().returnsThis(),
-  withServiceMode: sinon.stub().returnsThis(),
-  withDescription: sinon.stub().returnsThis(),
-  withCreatedBy: sinon.stub().returnsThis(),
-  withTokenUsageType: sinon.stub().returnsThis(),
-  toPayload: sinon.stub().returns({
-    account_id: GATEWAY_ACCOUNT_ID,
-    service_external_id: SERVICE_EXTERNAL_ID,
-    service_mode: GatewayAccountType.TEST,
-    description: 'Token for "Test Payment Link" payment link',
-    created_by: 'test@example.com',
-    type: 'PRODUCTS'
-  })
-}
-
-const MockCreateTokenRequestClass = sinon.stub().returns(mockCreateTokenRequest)
 
 const mockNunjucksFilters = {
   slugify: sinon.stub().callsFake((str: string) => str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')),
@@ -87,12 +57,6 @@ const { res, req, call, nextRequest } = new ControllerTestBuilder(
   })
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/clients/pay/PublicAuthClient.class': {
-      PublicAuthClient: sinon.stub().returns(mockPublicAuthClient)
-    },
-    '@models/public-auth/CreateTokenRequest.class': {
-      CreateTokenRequest: MockCreateTokenRequestClass
-    },
     '@govuk-pay/pay-js-commons': { nunjucksFilters: mockNunjucksFilters },
   })
   .build()
@@ -102,15 +66,6 @@ req.session = req.session || {}
 describe('Controller: services/payment-links/create', () => {
   beforeEach(() => {
     mockResponse.resetHistory()
-    mockTokensCreate.resetHistory()
-    MockCreateTokenRequestClass.resetHistory()
-
-    Object.values(mockCreateTokenRequest).forEach(stub => {
-      if (typeof stub.resetHistory === 'function') {
-        stub.resetHistory()
-      }
-    })
-
     mockNunjucksFilters.slugify.resetHistory()
     mockNunjucksFilters.removeIndefiniteArticles.resetHistory()
 
@@ -171,24 +126,7 @@ describe('Controller: services/payment-links/create', () => {
         await call('post')
       })
 
-      it('should create CreateTokenRequest with correct parameters', () => {
-        sinon.assert.calledOnce(MockCreateTokenRequestClass)
-
-        sinon.assert.calledWith(mockCreateTokenRequest.withGatewayAccountId, GATEWAY_ACCOUNT_ID)
-        sinon.assert.calledWith(mockCreateTokenRequest.withServiceExternalId, SERVICE_EXTERNAL_ID)
-        sinon.assert.calledWith(mockCreateTokenRequest.withServiceMode, GatewayAccountType.TEST)
-        sinon.assert.calledWith(mockCreateTokenRequest.withDescription, 'Token for "Test Payment Link" payment link')
-        sinon.assert.calledWith(mockCreateTokenRequest.withCreatedBy, 'test@example.com')
-        sinon.assert.calledWith(mockCreateTokenRequest.withTokenUsageType, 'PRODUCTS')
-      })
-
-      it('should call tokens.create with CreateTokenRequest instance', () => {
-        sinon.assert.calledOnce(mockTokensCreate)
-        sinon.assert.calledWith(mockTokensCreate, mockCreateTokenRequest)
-      })
-
       it('should save session data with hardcoded values', () => {
-        sinon.assert.calledOnce(mockTokensCreate)
         sinon.assert.calledOnce(res.redirect)
 
         const sessionWithPageData = req.session as SessionWithPageData
@@ -203,7 +141,6 @@ describe('Controller: services/payment-links/create', () => {
         expect(sessionData?.serviceNamePath).to.equal('test-service')
         expect(sessionData?.productNamePath).to.equal('test-payment-link')
         expect(sessionData?.isWelsh).to.equal(false)
-        expect(sessionData?.payApiToken).to.equal('api_test_token123')
         expect(sessionData?.gatewayAccountId).to.equal(GATEWAY_ACCOUNT_ID)
         expect(sessionData?.paymentLinkAmount).to.equal(1500)
       })
@@ -227,7 +164,6 @@ describe('Controller: services/payment-links/create', () => {
       })
 
       it('should save session data with empty description', () => {
-        sinon.assert.calledOnce(mockTokensCreate)
         sinon.assert.calledOnce(res.redirect)
 
         const sessionWithPageData = req.session as SessionWithPageData
@@ -274,10 +210,6 @@ describe('Controller: services/payment-links/create', () => {
           )
         })
 
-        it('should not create a token', () => {
-          sinon.assert.notCalled(mockTokensCreate)
-        })
-
         it('should not save session data', () => {
           const sessionWithPageData = req.session as SessionWithPageData
           expect(sessionWithPageData.pageData).to.equal(undefined)
@@ -319,10 +251,6 @@ describe('Controller: services/payment-links/create', () => {
             },
           })
           await call('post')
-        })
-
-        it('should create token successfully', () => {
-          sinon.assert.calledOnce(mockTokensCreate)
         })
 
         it('should redirect to review page', () => {
@@ -368,10 +296,6 @@ describe('Controller: services/payment-links/create', () => {
             },
           })
           await call('post')
-        })
-
-        it('should create token successfully', () => {
-          sinon.assert.calledOnce(mockTokensCreate)
         })
 
         it('should redirect to review page', () => {
