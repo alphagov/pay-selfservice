@@ -5,6 +5,10 @@ import { SANDBOX } from '@models/constants/payment-providers'
 import { beforeEach } from 'mocha'
 import productStubs from '@test/cypress/stubs/products-stubs'
 import { buildPaymentLinkOptions } from '@test/cypress/integration/simplified-account/payment-links/helpers/product-builder'
+import {
+  checkServiceNavigation,
+  checkTitleAndHeading,
+} from '@test/cypress/integration/simplified-account/common/assertions'
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -338,7 +342,7 @@ describe('PaymentLinks dashboard', () => {
                 )
                 cy.wrap($elements.eq(10)).should(
                   'contain.text',
-                  'Create a ' + SERVICE_MODE + ' payment link in Welsh' 
+                  'Create a ' + SERVICE_MODE + ' payment link in Welsh'
                 )
               })
 
@@ -392,7 +396,7 @@ describe('PaymentLinks dashboard', () => {
                 )
                 cy.wrap($elements.eq(10)).should(
                   'contain.text',
-                  'Create a ' + SERVICE_MODE + ' payment link in Welsh' 
+                  'Create a ' + SERVICE_MODE + ' payment link in Welsh'
                 )
               })
 
@@ -452,7 +456,7 @@ describe('PaymentLinks dashboard', () => {
                 )
                 cy.wrap($elements.eq(10)).should(
                   'contain.text',
-                  'Create a ' + SERVICE_MODE + ' payment link in Welsh' 
+                  'Create a ' + SERVICE_MODE + ' payment link in Welsh'
                 )
               })
 
@@ -465,17 +469,3 @@ describe('PaymentLinks dashboard', () => {
     })
   })
 })
-
-const checkServiceNavigation = (name: string, url: string) => {
-  cy.get('.service-nav')
-    .find('a')
-    .contains(name)
-    .should('have.attr', 'href', url)
-    .should('have.attr', 'aria-current', 'page')
-    .should('have.attr', 'data-current', '')
-}
-
-const checkTitleAndHeading = (title: string, serviceName: string) => {
-  cy.title().should('eq', `${title} - ${serviceName} - GOV.UK Pay`)
-  cy.get('h1').should('contain.text', title)
-}

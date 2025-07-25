@@ -38,6 +38,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         account.type
       ),
       hasPermission: UserPermissions.agreements.agreementsRead,
+      conditions: account.recurringEnabled,
     })
     .build()
   return getViewableNav(serviceNavigation)
