@@ -5,6 +5,18 @@
 
 {% set servicePageTitle = "Enter test payment link details" %}
 {% set confirmationLabel %}{{friendlyURL}}/{{serviceName | removeIndefiniteArticles | slugify}}/{% endset %}
+{% set paymentReferenceHint %}
+  <p>The title of your payment reference should:</p>
+  <ul class='govuk-list govuk-list--bullet govuk-hint'>
+    <li>briefly describe what the user is paying for</li>
+    <li>use plain language</li>
+    <li>spell out acronyms in the description if necessary</li>
+    <li>not include names or personal information</li>
+  </ul>
+  <p>For example<br>
+      Bad: RI<br>
+      Good: Pay for your registration on the Register of Overseas Entities (RI)</p>
+{% endset %}
 
 {% block serviceContent %}
   <h1 class="govuk-heading-l">{{ servicePageTitle }}</h1>
@@ -18,16 +30,7 @@
         classes: "govuk-label--m"
       },
       hint: {
-        html: "<p>The title of your payment reference should:</p>
-               <ul class='govuk-list govuk-list--bullet govuk-hint'>
-                <li>briefly describe what the user is paying for</li>
-                <li>use plain language</li>
-                <li>spell out acronyms in the description if necessary</li>
-                <li>not include names or personal information</li>
-               </ul>
-               <p>For example<br>
-                  Bad: RI<br>
-                  Good: Pay for your registration on the Register of Overseas Entities (RI)</p>"
+        html: paymentReferenceHint
       },
       id: "name",
       name: "name",
