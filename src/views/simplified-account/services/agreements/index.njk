@@ -90,7 +90,7 @@
         agreements
       </p>
       <div>
-        {{ govukPagination(pagination) }}
+        {{ govukPagination(pagination | addKey('landmarkLabel', 'Top of table pagination')) }}
       </div>
     </div>
 
@@ -139,7 +139,7 @@
         agreements
       </p>
       <div>
-        {{ govukPagination(pagination) }}
+        {{ govukPagination(pagination | addKey('landmarkLabel', 'Bottom of table pagination')) }}
       </div>
     </div>
   {% else %}

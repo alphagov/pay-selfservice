@@ -73,7 +73,7 @@ describe('Agreements', () => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
 
-  it.skip('accessibility check', () => {
+  it('accessibility check', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       agreementStubs.getLedgerAgreementsSuccess({
