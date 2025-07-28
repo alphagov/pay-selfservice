@@ -3,8 +3,13 @@
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set servicePageTitle = "Enter test payment link details" %}
+{% set languageAdjective = "Welsh " if isWelsh else "" %}
+{% set servicePageTitle = "Enter " + languageAdjective + serviceMode + " payment link details" %}
 {% set confirmationLabel %}{{friendlyURL}}/{{serviceName | removeIndefiniteArticles | slugify}}/{% endset %}
+
+{% set exampleText = "Talu am drwydded barcio" if isWelsh else "Pay for your registration on the Register of Overseas Entities (RI)" %}
+{% set badExample = "RI" if not isWelsh else "" %}
+
 {% set paymentReferenceHint %}
   <p>The title of your payment reference should:</p>
   <ul class='govuk-list govuk-list--bullet govuk-hint'>
@@ -13,10 +18,16 @@
     <li>spell out acronyms in the description if necessary</li>
     <li>not include names or personal information</li>
   </ul>
-  <p>For example<br>
-      Bad: RI<br>
-      Good: Pay for your registration on the Register of Overseas Entities (RI)</p>
+  {% if isWelsh %}
+    <p>For example "{{ exampleText }}".</p>
+  {% else %}
+    <p>For example<br>
+        Bad: {{ badExample }}<br>
+        Good: {{ exampleText }}</p>
+  {% endif %}
 {% endset %}
+
+{% set detailsHintText = "Give your users more information" + (" in Welsh" if isWelsh else "") + ". For example, you could tell them how long it takes for their application to be processed." %}
 
 {% block serviceContent %}
   <h1 class="govuk-heading-l">{{ servicePageTitle }}</h1>
@@ -52,7 +63,7 @@
         classes: "govuk-label--m"
       },
       hint: {
-        text: "Give your users more information. For example, you could tell them how long it takes for their application to be processed."
+        text: detailsHintText
       },
       id: "description",
       name: "description",
@@ -68,7 +79,9 @@
     }) }}
   </form>
 
-  <h2 class="govuk-heading-m govuk-!-margin-top-9">Example of what users will see</h2>
+  {% if not isWelsh %}
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">Example of what users will see</h2>
 
-  <img src="/assets/images/payment-links/start-page.svg" alt="Screenshot of payment link start page">
+    <img src="/assets/images/payment-links/start-page.svg" alt="Screenshot of payment link start page">
+  {% endif %}
 {% endblock %}

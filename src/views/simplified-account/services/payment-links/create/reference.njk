@@ -75,8 +75,9 @@
     }) }}
   </form>
 
-  <h2 class="govuk-heading-m govuk-!-margin-top-9">Example of what users will see</h2>
+  {% if not isWelsh %}
+    <h2 class="govuk-heading-m govuk-!-margin-top-9">Example of what users will see</h2>
 
-  <img src="/assets/images/payment-links/reference-page.svg" alt="Screenshot of payment link start page">
-
+    <img src="/assets/images/payment-links/reference-page.svg" alt="Screenshot of payment link start page">
+  {% endif %}
 {% endblock %}

@@ -106,6 +106,8 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     formValues,
     friendlyURL,
     serviceName,
+    isWelsh,
+    serviceMode: account.type
   })
 }
 
@@ -147,6 +149,8 @@ async function post(req: ServiceRequest<CreatePaymentLinkBody>, res: ServiceResp
       formValues: req.body,
       friendlyURL,
       serviceName,
+      isWelsh,
+      serviceMode: account.type
     })
   }
 

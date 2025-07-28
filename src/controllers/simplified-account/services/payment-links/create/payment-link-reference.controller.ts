@@ -68,15 +68,20 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     account.type
   )
 
+  const session = req.session as unknown as SessionWithPageData
+  const isWelsh = session.pageData?.createPaymentLink?.isWelsh ?? false
+
   return response(req, res, 'simplified-account/services/payment-links/create/reference', {
     service,
     account,
     backLink: backLinkUrl,
     formValues: {},
+    isWelsh,
+    serviceMode: account.type
   })
 }
 
-async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
+async function post(req: ServiceRequest<CreatePaymentLinkReferenceBody>, res: ServiceResponse, next: NextFunction) {
   const service = req.service
   const { account } = req
   const body: CreatePaymentLinkReferenceBody = req.body
@@ -92,6 +97,9 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
       account.type
     )
 
+    const session = req.session as unknown as SessionWithPageData
+    const isWelsh = session.pageData?.createPaymentLink?.isWelsh ?? false
+
     return response(req, res, 'simplified-account/services/payment-links/create/reference', {
       service,
       account,
@@ -101,6 +109,8 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
       },
       backLink: backLinkUrl,
       formValues: body,
+      isWelsh,
+      serviceMode: account.type
     })
   }
 
