@@ -123,6 +123,9 @@ function initialiseTemplateEngine(app) {
   })
   nunjucksEnvironment.addFilter('boolToText', boolToText)
   nunjucksEnvironment.addFilter('boolToOnOrOff', boolToOnOrOff)
+  nunjucksEnvironment.addFilter('addKey', (obj, key, value) => {
+    return Object.assign({}, obj, {[key]: value})
+  })
 }
 
 function initialiseRoutes(app) {

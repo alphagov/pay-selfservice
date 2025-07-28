@@ -1,0 +1,16 @@
+{% set statusStyleMap = {
+"CREATED": "govuk-tag",
+"ACTIVE": "govuk-tag--green",
+"CANCELLED": "govuk-tag--red",
+"INACTIVE": "govuk-tag--grey"
+} %}
+{% set statusTextMap = {
+"CREATED": "Created",
+"ACTIVE": "Active",
+"CANCELLED": "Cancelled",
+"INACTIVE": "Inactive"
+} %}
+
+{% macro agreementStatusTag(status) %}
+<strong class="govuk-tag {{ statusStyleMap[status] }}">{{ statusTextMap[status] }}</strong>
+{% endmacro %}

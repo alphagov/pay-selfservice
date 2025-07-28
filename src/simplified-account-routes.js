@@ -98,6 +98,15 @@ simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.create, permissi
 simplifiedAccount.post(paths.simplifiedAccount.testWithYourUsers.confirm, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.submit)
 simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.disable, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.disable.post)
 
+// agreements
+simplifiedAccount.get(
+  paths.simplifiedAccount.agreements.index,
+  permission('agreements:read'),
+  experimentalFeature,
+  servicesController.agreements.get
+)
+
+
 // settings index
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)
 
