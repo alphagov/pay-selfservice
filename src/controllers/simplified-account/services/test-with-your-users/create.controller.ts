@@ -4,12 +4,11 @@ import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/format-service-and-account-paths-for";
 import {ServiceRequest, ServiceResponse} from "@utils/types/express";
 import {
+  CreatePrototypeLinkData,
   prototypeLinkSchema
 } from "@controllers/simplified-account/services/test-with-your-users/validation/prototype-link.schema";
 import {validationResult} from "express-validator";
 import formatValidationErrors from "@utils/simplified-account/format/format-validation-errors";
-import formatSimplifiedAccountPathsFor
-  from "../../../../utils/simplified-account/format/format-simplified-account-paths-for";
 import { createToken } from '@services/tokens.service'
 import {CreateTokenRequest} from "@models/public-auth/CreateTokenRequest.class";
 import TokenUsageType from "@models/public-auth/token-usage-type";
@@ -28,12 +27,6 @@ function get (req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/services/test-with-your-users/create', context)
 }
 
-interface CreatePrototypeLinkData {
-  description: string
-  amount: string
-  parsedAmount: number
-  confirmationPage: string
-}
 
 const postValidation = [
   prototypeLinkSchema.description,
@@ -56,7 +49,7 @@ async function post (req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceR
         parsedAmount: req.body.parsedAmount,
         confirmationPage: req.body.confirmationPage
       },
-      backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, req.service.externalId, req.account.type)
+      backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, req.service.externalId, req.account.type)
     })
   }
 

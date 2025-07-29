@@ -3,7 +3,6 @@ import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/fo
 import paths from "@root/paths";
 import lodash from "lodash";
 import {response} from "@utils/response";
-import {formatSimplifiedAccountPathsFor} from "@utils/simplified-account/format";
 import { SESSION_KEY } from "./constants";
 
 
@@ -13,7 +12,7 @@ function get (req: ServiceRequest, res: ServiceResponse) {
   const context = {
     prototypeLink,
     backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  req.service.externalId, req.account.type),
-    prototypesLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  req.service.externalId, req.account.type),
+    prototypesLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  req.service.externalId, req.account.type),
   }
 
   return response(req, res, 'simplified-account/services/test-with-your-users/confirm', context)
