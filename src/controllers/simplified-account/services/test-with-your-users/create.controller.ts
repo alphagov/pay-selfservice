@@ -3,6 +3,20 @@ import { response } from'@utils/response.js'
 import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/format-service-and-account-paths-for";
 import {ServiceRequest, ServiceResponse} from "@utils/types/express";
+import {
+  prototypeLinkSchema
+} from "@controllers/simplified-account/services/test-with-your-users/validation/prototype-link.schema";
+import {validationResult} from "express-validator";
+import formatValidationErrors from "@utils/simplified-account/format/format-validation-errors";
+import formatSimplifiedAccountPathsFor
+  from "../../../../utils/simplified-account/format/format-simplified-account-paths-for";
+import { createToken } from '@services/tokens.service'
+import {CreateTokenRequest} from "@models/public-auth/CreateTokenRequest.class";
+import TokenUsageType from "@models/public-auth/token-usage-type";
+import {CreateProductRequest} from "@models/products/CreateProductRequest.class";
+import { createProduct } from '@services/products.service'
+import { PROTOTYPE } from '@utils/product-types'
+import { SESSION_KEY } from "./constants";
 
 function get (req: ServiceRequest, res: ServiceResponse) {
   const context = {
@@ -14,6 +28,64 @@ function get (req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/services/test-with-your-users/create', context)
 }
 
+interface CreatePrototypeLinkData {
+  description: string
+  amount: string
+  parsedAmount: number
+  confirmationPage: string
+}
+
+const postValidation = [
+  prototypeLinkSchema.description,
+  prototypeLinkSchema.amount,
+  prototypeLinkSchema.confirmationPage
+]
+
+async function post (req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceResponse){
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    const formattedErrors = formatValidationErrors(errors)
+    return response(req, res, 'simplified-account/services/test-with-your-users/create', {
+      errors: {
+        summary: formattedErrors.errorSummary,
+        formErrors: formattedErrors.formErrors
+      },
+      prototypeLinkData: {
+        description: req.body.description,
+        amount: req.body.amount,
+        parsedAmount: req.body.parsedAmount,
+        confirmationPage: req.body.confirmationPage
+      },
+      backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, req.service.externalId, req.account.type)
+    })
+  }
+
+  const token = await createToken (new CreateTokenRequest()
+    .withGatewayAccountId(req.account.id)
+    .withServiceExternalId(req.service.externalId)
+    .withServiceMode(req.account.type)
+    .withDescription(`Token for Prototype: ${req.body.description}`)
+    .withCreatedBy(req.user.email)
+    .withTokenUsageType(TokenUsageType.PRODUCTS)
+  )
+
+  const prototypeLink = await createProduct(
+    new CreateProductRequest()
+      .withName(req.body.description)
+      .withPrice(req.body.parsedAmount)
+      .withReturnUrl(req.body.confirmationPage)
+      .withType(PROTOTYPE)
+      .withGatewayAccountId(req.account.id)
+      .withApiToken(token)
+  )
+
+  lodash.set(req, SESSION_KEY, prototypeLink.links.pay.href)
+
+  return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.confirm, req.service.externalId, req.account.type))
+}
+
 export {
-  get
+  get,
+  post,
+  postValidation
 }

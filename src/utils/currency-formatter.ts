@@ -17,6 +17,7 @@ const penceToPoundsWithCurrency = (amount: number) => {
 
 const safeConvertPoundsStringToPence = (amount: string) => {
   if (amount) {
+    console.log(amount)
     const cleanedCurrencyString = amount.replace(/[^0-9.-]+/g, '')
     const result = AMOUNT_FORMAT.exec(cleanedCurrencyString)
 
