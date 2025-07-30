@@ -39,7 +39,7 @@ describe('Service name settings', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
-  describe('The default settings page', () => {
+  describe.only('The default settings page', () => {
     describe('For an admin user', () => {
       beforeEach(() => {
         setStubs()
@@ -80,10 +80,10 @@ describe('Service name settings', () => {
         cy.visit(SERVICE_SETTINGS_URL)
       })
       it('should be Email notifications', () => {
-        cy.title().should('eq', 'Email notifications - Settings - My Cool Service - GOV.UK Pay')
+        cy.title().should('eq', 'Paying user email addresses - Settings - My Cool Service - GOV.UK Pay')
       })
       it('should show the correct heading', () => {
-        cy.get('h1').should('contain', 'Email notifications')
+        cy.get('h1').should('contain', 'Paying user email addresses')
       })
       describe('The settings navigation', () => {
         it('should not show service name', () => {

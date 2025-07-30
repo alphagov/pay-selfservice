@@ -3,15 +3,19 @@
 {% set settingsPageTitle = "Ask users for their email address" %}
 
 {% block settingsContent %}
+  <h1 class="govuk-heading-l">Ask users for their email address on payment pages</h1>
+  <p class="govuk-body">Email addresses can be collected on payment pages or collected elsewhere in your service.
+    <a class="govuk-link" href="https://docs.payments.service.gov.uk/optional_features/prefill_user_details/">Read about how to prefill payment fields</a></p>
+  <p class="govuk-body">If you ask for email addresses, users are less likely to encounter a 3D Secure challenge.</p>
+
   <form id="email-collection-mode" method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-
     {{ govukRadios({
       idPrefix: 'mode',
       name: 'emailCollectionMode',
       fieldset: {
         legend: {
-          text: 'Ask users for their email address',
+          text: '',
           isPageHeading: true,
           classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
         }

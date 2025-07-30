@@ -1,6 +1,6 @@
 {% extends "../settings-layout.njk" %}
 
-{% set settingsPageTitle = "Email notifications" %}
+{% set settingsPageTitle = "Paying user email addresses" %}
 
 
 {% block settingsContent %}
@@ -9,6 +9,8 @@
   {% endif %}
 
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+  <p class="govuk-body">You can ask users for their email address to send confirmation and refund emails, or you can
+    communicate with them separately. Email addresses are also used by Payment Service Providers (PSPs) to carry out fraud checks.</p>
 
   {{ govukSummaryList({
     rows: [
