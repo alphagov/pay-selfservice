@@ -1,7 +1,0 @@
-const PRODUCT_TYPES = {
-  DEMO: 'DEMO',
-  PROTOTYPE: 'PROTOTYPE',
-  ADHOC: 'ADHOC'
-}
-
-module.exports = PRODUCT_TYPES

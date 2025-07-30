@@ -1,5 +1,6 @@
 import ProductsClient from '@services/clients/pay/ProductsClient.class'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
+import Product from '@models/products/Product.class'
 import ProductType from '@models/products/product-type'
 
 const productsClient = new ProductsClient()
@@ -11,6 +12,10 @@ const getProductByExternalId = (productExternalId: string) => productsClient.pro
 
 const deleteProduct = (gatewayAccountId: number, productExternalId: string) =>
   productsClient.products.delete(gatewayAccountId, productExternalId)
+
+async function createProduct (createProductRequest: CreateProductRequest): Promise<Product> {
+  return productsClient.products.create(createProductRequest)
+}
 
 const createDemoProduct = async (
   token: string,
@@ -29,4 +34,10 @@ const createDemoProduct = async (
   return productsClient.products.create(createProductRequest)
 }
 
-export { getProducts, getProductByExternalId, deleteProduct, createDemoProduct }
+export {
+  getProducts,
+  getProductByExternalId,
+  deleteProduct,
+  createDemoProduct,
+  createProduct
+}
