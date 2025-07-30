@@ -24,10 +24,14 @@ async function get (req: ServiceRequest, res: ServiceResponse) {
         details: product.description,
         amount: product.price ? penceToPoundsWithCurrency(product.price) : 'User can choose',
         editLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.edit, req.service.externalId, req.account.type, product.externalId),
-        deleteLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.delete, req.service.externalId, req.account.type, product.externalId)
+        deleteLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.delete, req.service.externalId, req.account.type, product.externalId),
+        dateCreated: product.dateCreated
       })
       return acc
     }, [])
+    .sort((a, b) => {
+        return Date.parse(b.dateCreated) - Date.parse(a.dateCreated);
+      })
   })
 }
 
