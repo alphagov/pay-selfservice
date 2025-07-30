@@ -84,14 +84,17 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 
   const friendlyURL = process.env.PRODUCTS_FRIENDLY_BASE_URI
   const languageValue: string = getLanguageFromQuery(req)
-  const isWelsh: boolean = languageValue === supportedLanguage.WELSH
+  const session = req.session as unknown as SessionWithPageData
+  const sessionIsWelsh = session.pageData?.createPaymentLink?.isWelsh ?? false
+
+  const isWelsh: boolean = languageValue === supportedLanguage.WELSH ||
+    (languageValue === '' && sessionIsWelsh)
   const language: SupportedLanguage = isWelsh ? supportedLanguage.WELSH : supportedLanguage.ENGLISH
 
   const serviceName: string = (language === 'cy' && service.serviceName.cy)
     ? String(service.serviceName.cy)
     : String(service.serviceName.en)
 
-  const session = req.session as unknown as SessionWithPageData
   const sessionData = session.pageData?.createPaymentLink
 
   const formValues = {
@@ -131,7 +134,11 @@ async function post(req: ServiceRequest<CreatePaymentLinkBody>, res: ServiceResp
 
     const friendlyURL = process.env.PRODUCTS_FRIENDLY_BASE_URI
     const languageValue: string = getLanguageFromQuery(req)
-    const isWelsh: boolean = languageValue === supportedLanguage.WELSH
+    const session = req.session as unknown as SessionWithPageData
+    const sessionIsWelsh = session.pageData?.createPaymentLink?.isWelsh ?? false
+
+    const isWelsh: boolean = languageValue === supportedLanguage.WELSH ||
+      (languageValue === '' && sessionIsWelsh)
     const language: SupportedLanguage = isWelsh ? supportedLanguage.WELSH : supportedLanguage.ENGLISH
 
     const serviceName: string = (language === 'cy' && service.serviceName.cy)
@@ -159,7 +166,11 @@ async function post(req: ServiceRequest<CreatePaymentLinkBody>, res: ServiceResp
     const serviceNamePath: string = makeNiceURL(serviceName)
     const productNamePath: string = makeNiceURL(String(body.name ?? ''))
     const languageValue: string = getLanguageFromQuery(req)
-    const isWelsh: boolean = languageValue === supportedLanguage.WELSH
+    const session = req.session as unknown as SessionWithPageData
+    const sessionIsWelsh = session.pageData?.createPaymentLink?.isWelsh ?? false
+
+    const isWelsh: boolean = languageValue === supportedLanguage.WELSH ||
+      (languageValue === '' && sessionIsWelsh)
 
     const sessionData = {
       paymentLinkTitle: body.name,
@@ -169,7 +180,6 @@ async function post(req: ServiceRequest<CreatePaymentLinkBody>, res: ServiceResp
       isWelsh,
     }
 
-    const session = req.session as unknown as SessionWithPageData
     session.pageData ??= {}
     session.pageData.createPaymentLink = sessionData
 
