@@ -13,8 +13,8 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {{ govukInput({
-      name: "description",
-      id: "description",
+      name: "paymentDescription",
+      id: "payment-description",
       label: {
         text: "Payment description",
         classes: "govuk-label--s"
@@ -22,15 +22,15 @@
       hint: {
         text: "Tell users what they are paying for"
       },
-      value: prototypeLinkData.description,
+      value: prototypeLinkData.paymentDescription,
       spellcheck: true,
-      errorMessage: { text: errors.formErrors['description'] } if errors.formErrors['description'] else false
+      errorMessage: { text: errors.formErrors['paymentDescription'] } if errors.formErrors['paymentDescription'] else false
     }) }}
 
 
     {{ govukInput({
-      name: "amount",
-      id: "amount",
+      name: "paymentAmount",
+      id: "payment-amount",
       label: {
         html: "Payment amount <span class='govuk-visually-hidden'>in &pound;</span>",
         classes: "govuk-label--s"
@@ -43,8 +43,8 @@
         'data-trim': true,
         spellcheck: false
       },
-      value: prototypeLinkData.parsedAmount | penceToPounds if prototypeLinkData.parsedAmount !== undefined else prototypeLinkData.amount,
-      errorMessage: { text: errors.formErrors['amount'] } if errors.formErrors['amount'] else false
+      value: prototypeLinkData.paymentAmount,
+      errorMessage: { text: errors.formErrors['paymentAmount'] } if errors.formErrors['paymentAmount'] else false
     }) }}
 
     {{

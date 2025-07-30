@@ -3,10 +3,7 @@ import { response } from'@utils/response.js'
 import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/format-service-and-account-paths-for";
 import {ServiceRequest, ServiceResponse} from "@utils/types/express";
-import {
-  CreatePrototypeLinkData,
-  prototypeLinkSchema
-} from "@controllers/simplified-account/services/test-with-your-users/validation/prototype-link.schema";
+import { prototypeLinkSchema } from "@controllers/simplified-account/services/test-with-your-users/validation/prototype-link.schema";
 import {validationResult} from "express-validator";
 import formatValidationErrors from "@utils/simplified-account/format/format-validation-errors";
 import { createToken } from '@services/tokens.service'
@@ -16,6 +13,8 @@ import {CreateProductRequest} from "@models/products/CreateProductRequest.class"
 import { createProduct } from '@services/products.service'
 import { PROTOTYPE } from '@utils/product-types'
 import { SESSION_KEY } from "./constants";
+import {demoPaymentSchema} from "@utils/simplified-account/validation/demo-payment.schema";
+import {safeConvertPoundsStringToPence} from "@utils/currency-formatter";
 
 function get (req: ServiceRequest, res: ServiceResponse) {
   const context = {
@@ -29,10 +28,16 @@ function get (req: ServiceRequest, res: ServiceResponse) {
 
 
 const postValidation = [
-  prototypeLinkSchema.description,
-  prototypeLinkSchema.amount,
-  prototypeLinkSchema.confirmationPage
+  prototypeLinkSchema.paymentDescription.validate,
+  demoPaymentSchema.paymentAmount.validate,
+  prototypeLinkSchema.confirmationPage.validate
 ]
+
+interface CreatePrototypeLinkData {
+  paymentDescription: string
+  paymentAmount: string
+  confirmationPage: string
+}
 
 async function post (req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceResponse){
   const errors = validationResult(req)
@@ -44,28 +49,29 @@ async function post (req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceR
         formErrors: formattedErrors.formErrors
       },
       prototypeLinkData: {
-        description: req.body.description,
-        amount: req.body.amount,
-        parsedAmount: req.body.parsedAmount,
+        paymentDescription: req.body.paymentDescription,
+        paymentAmount: req.body.paymentAmount,
         confirmationPage: req.body.confirmationPage
       },
       backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, req.service.externalId, req.account.type)
     })
   }
 
+  const parsedAmount = safeConvertPoundsStringToPence(req.body.paymentAmount) as number
+
   const token = await createToken (new CreateTokenRequest()
     .withGatewayAccountId(req.account.id)
     .withServiceExternalId(req.service.externalId)
     .withServiceMode(req.account.type)
-    .withDescription(`Token for Prototype: ${req.body.description}`)
+    .withDescription(`Token for Prototype: ${req.body.paymentDescription}`)
     .withCreatedBy(req.user.email)
     .withTokenUsageType(TokenUsageType.PRODUCTS)
   )
 
   const prototypeLink = await createProduct(
     new CreateProductRequest()
-      .withName(req.body.description)
-      .withPrice(req.body.parsedAmount)
+      .withName(req.body.paymentDescription)
+      .withPrice(parsedAmount)
       .withReturnUrl(req.body.confirmationPage)
       .withType(PROTOTYPE)
       .withGatewayAccountId(req.account.id)
