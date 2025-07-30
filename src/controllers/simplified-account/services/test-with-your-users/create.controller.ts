@@ -57,7 +57,7 @@ async function post (req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceR
     })
   }
 
-  const parsedAmount = safeConvertPoundsStringToPence(req.body.paymentAmount) as number
+  const parsedAmount = safeConvertPoundsStringToPence(req.body.paymentAmount)!
 
   const token = await createToken (new CreateTokenRequest()
     .withGatewayAccountId(req.account.id)

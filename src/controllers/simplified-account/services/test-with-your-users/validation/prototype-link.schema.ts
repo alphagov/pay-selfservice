@@ -1,6 +1,4 @@
-import {body, Meta} from 'express-validator'
-import {safeConvertPoundsStringToPence} from "@utils/currency-formatter";
-import {ServiceRequest} from "@utils/types/express";
+import { body } from 'express-validator'
 
 const MAX_DESCRIPTION_LENGTH = 230
 
