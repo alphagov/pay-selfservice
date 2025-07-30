@@ -28,13 +28,13 @@ function get (req: ServiceRequest, res: ServiceResponse) {
 
 
 const postValidation = [
-  prototypeLinkSchema.paymentDescription.validate,
+  prototypeLinkSchema.description.validate,
   demoPaymentSchema.paymentAmount.validate,
   prototypeLinkSchema.confirmationPage.validate
 ]
 
 interface CreatePrototypeLinkData {
-  paymentDescription: string
+  description: string
   paymentAmount: string
   confirmationPage: string
 }
@@ -49,7 +49,7 @@ async function post (req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceR
         formErrors: formattedErrors.formErrors
       },
       prototypeLinkData: {
-        paymentDescription: req.body.paymentDescription,
+        description: req.body.description,
         paymentAmount: req.body.paymentAmount,
         confirmationPage: req.body.confirmationPage
       },
@@ -63,14 +63,14 @@ async function post (req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceR
     .withGatewayAccountId(req.account.id)
     .withServiceExternalId(req.service.externalId)
     .withServiceMode(req.account.type)
-    .withDescription(`Token for Prototype: ${req.body.paymentDescription}`)
+    .withDescription(`Token for Prototype: ${req.body.description}`)
     .withCreatedBy(req.user.email)
     .withTokenUsageType(TokenUsageType.PRODUCTS)
   )
 
   const prototypeLink = await createProduct(
     new CreateProductRequest()
-      .withName(req.body.paymentDescription)
+      .withName(req.body.description)
       .withPrice(parsedAmount)
       .withReturnUrl(req.body.confirmationPage)
       .withType(PROTOTYPE)

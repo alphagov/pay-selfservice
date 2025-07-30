@@ -3,8 +3,8 @@ import { body } from 'express-validator'
 const MAX_DESCRIPTION_LENGTH = 230
 
 const prototypeLinkSchema = {
-  paymentDescription: {
-    validate: body('paymentDescription')
+  description: {
+    validate: body('description')
       .not().isEmpty().withMessage('Enter a description').bail()
       .isLength({max: MAX_DESCRIPTION_LENGTH}).withMessage('Description must be 230 characters or fewer')
   },

@@ -13,8 +13,8 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
     {{ govukInput({
-      name: "paymentDescription",
-      id: "payment-description",
+      name: "description",
+      id: "description",
       label: {
         text: "Payment description",
         classes: "govuk-label--s"
@@ -22,9 +22,9 @@
       hint: {
         text: "Tell users what they are paying for"
       },
-      value: prototypeLinkData.paymentDescription,
+      value: prototypeLinkData.description,
       spellcheck: true,
-      errorMessage: { text: errors.formErrors['paymentDescription'] } if errors.formErrors['paymentDescription'] else false
+      errorMessage: { text: errors.formErrors['description'] } if errors.formErrors['description'] else false
     }) }}
 
 
