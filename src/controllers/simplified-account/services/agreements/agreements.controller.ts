@@ -1,3 +1,5 @@
+import * as detail from './detail/agreement-detail.controller'
+import * as cancel from './cancel/cancel-agreement.controller'
 import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { searchAgreements } from '@services/agreements.service'
@@ -30,7 +32,9 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       .trim()
       .optional({ checkFalsy: true })
       .isAlphanumeric('en-GB', { ignore: ' -_' })
-      .withMessage('Reference number must contain at least one letter or number, and may also include spaces, hyphens, and underscores'),
+      .withMessage(
+        'Reference number must contain at least one letter or number, and may also include spaces, hyphens, and underscores'
+      ),
   ]
 
   await Promise.all(validations.map(async (validation) => validation.run(req)))
@@ -44,7 +48,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         summary: formattedErrors.errorSummary,
         formErrors: formattedErrors.formErrors,
       },
-      ...await loadAgreements(req.service.externalId, req.account.id, req.account.type, Number(req.query.page)),
+      ...(await loadAgreements(req.service.externalId, req.account.id, req.account.type, Number(req.query.page))),
     })
   }
 
@@ -53,8 +57,17 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     ...(req.query.reference && { reference: req.query.reference as string }),
   }
 
+  // place the current query string in the session so we return to this state from any agreement detail view
+  req.session.agreementsFilter = req.url.split('?')[1] || ''
+
   return response(req, res, 'simplified-account/services/agreements/index', {
-    ...await loadAgreements(req.service.externalId, req.account.id, req.account.type, Number(req.query.page), filters),
+    ...(await loadAgreements(
+      req.service.externalId,
+      req.account.id,
+      req.account.type,
+      Number(req.query.page),
+      filters
+    )),
   })
 }
 
@@ -73,7 +86,7 @@ const loadAgreements = async (
 
   const results = await searchAgreements(serviceExternalId, gatewayAccountId, gatewayAccountType, currentPage, filters)
 
-  results.agreements = results.agreements.map(agreement => {
+  results.agreements = results.agreements.map((agreement) => {
     return {
       ...agreement,
       detailUrl: formatServiceAndAccountPathsFor(
@@ -81,7 +94,7 @@ const loadAgreements = async (
         serviceExternalId,
         gatewayAccountType,
         agreement.externalId
-      )
+      ),
     }
   })
 
@@ -90,19 +103,14 @@ const loadAgreements = async (
     currentPage = totalPages
   }
 
-  const pagination = getPagination(
-    currentPage,
-    PAGE_SIZE,
-    results.total,
-    (pageNumber) => {
-      let path = `${agreementsUrl}?page=${pageNumber}`
-      if (filters && Object.keys(filters).length !== 0) {
-        const filterParams = new URLSearchParams(filters).toString()
-        path = `${path}&${filterParams}`
-      }
-      return path
+  const pagination = getPagination(currentPage, PAGE_SIZE, results.total, (pageNumber) => {
+    let path = `${agreementsUrl}?page=${pageNumber}`
+    if (filters && Object.keys(filters).length !== 0) {
+      const filterParams = new URLSearchParams(filters).toString()
+      path = `${path}&${filterParams}`
     }
-  )
+    return path
+  })
 
   return {
     pagination,
@@ -112,4 +120,4 @@ const loadAgreements = async (
   }
 }
 
-export { get }
+export { get, detail, cancel }

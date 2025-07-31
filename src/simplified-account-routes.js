@@ -106,6 +106,26 @@ simplifiedAccount.get(
   servicesController.agreements.get
 )
 
+simplifiedAccount.get(
+  paths.simplifiedAccount.agreements.detail,
+  permission('agreements:read'),
+  experimentalFeature,
+  servicesController.agreements.detail.get
+)
+
+simplifiedAccount.get(
+  paths.simplifiedAccount.agreements.cancel,
+  permission('agreements:update'),
+  experimentalFeature,
+  servicesController.agreements.cancel.get
+)
+
+simplifiedAccount.post(
+  paths.simplifiedAccount.agreements.cancel,
+  permission('agreements:update'),
+  experimentalFeature,
+  servicesController.agreements.cancel.post
+)
 
 // settings index
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)
