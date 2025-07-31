@@ -43,7 +43,7 @@ describe('Card payment updates', () => {
       }),
     ])
     cy.visit(baseUrl + '/collect-billing-address')
-    cy.get('h1').should('contain.text', 'Collect billing address')
+    cy.get('h1').should('contain.text', 'Ask users for their billing address')
     checkSettingsNavigation('Card payments', baseUrl)
     cy.get('input#collect-billing-address-on').click()
     cy.contains('button', 'Save changes').click()
@@ -62,7 +62,7 @@ describe('Card payment updates', () => {
       }),
     ])
     cy.visit(baseUrl + '/collect-billing-address')
-    cy.get('h1').should('contain.text', 'Collect billing address')
+    cy.get('h1').should('contain.text', 'Ask users for their billing address')
     cy.get('input#collect-billing-address-off').click()
     cy.contains('button', 'Save changes').click()
     cy.get('.govuk-heading-l').should('contain.text', 'Card payments')

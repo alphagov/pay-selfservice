@@ -14,7 +14,7 @@ const pageUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/setting
 
 const cardPaymentParams = [
   {
-    title: 'Collect billing address',
+    title: 'Ask users for their billing address',
     url: '/collect-billing-address',
     listLocation: [0, 0],
     onValue: 'On',

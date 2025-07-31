@@ -39,7 +39,7 @@ describe('Service name settings', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
-  describe.only('The default settings page', () => {
+  describe('The default settings page', () => {
     describe('For an admin user', () => {
       beforeEach(() => {
         setStubs()
