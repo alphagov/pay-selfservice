@@ -2,6 +2,7 @@ export interface ProductData {
   external_id: string
   gateway_account_id: number
   pay_api_token: string
+  date_created: string
   name: string
   price: number
   status: string
