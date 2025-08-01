@@ -102,28 +102,24 @@ simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.disable, permiss
 simplifiedAccount.get(
   paths.simplifiedAccount.agreements.index,
   permission('agreements:read'),
-  experimentalFeature,
   servicesController.agreements.get
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.agreements.detail,
   permission('agreements:read'),
-  experimentalFeature,
   servicesController.agreements.detail.get
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.agreements.cancel,
   permission('agreements:update'),
-  experimentalFeature,
   servicesController.agreements.cancel.get
 )
 
 simplifiedAccount.post(
   paths.simplifiedAccount.agreements.cancel,
   permission('agreements:update'),
-  experimentalFeature,
   servicesController.agreements.cancel.post
 )
 
