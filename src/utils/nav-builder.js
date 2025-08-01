@@ -4,7 +4,6 @@ const process = require('process')
 const paths = require('./../paths')
 const formatAccountPathsFor = require('./format-account-paths-for')
 const formatSimplifiedAccountPathsFor = require('./simplified-account/format/format-simplified-account-paths-for')
-const formatFutureStrategyAccountPathsFor = require('./format-future-strategy-account-paths-for')
 const pathLookup = require('./path-lookup')
 const formatPSPname = require('./format-PSP-name')
 const { getPSPPageLinks } = require('./credentials')
@@ -43,8 +42,8 @@ const serviceNavigationItems = (currentPath, permissions, type, currentUrl, serv
   navigationItems.push({
     id: 'navigation-menu-agreements',
     name: 'Agreements',
-    url: formatFutureStrategyAccountPathsFor(paths.futureAccountStrategy.agreements.index, account.type, serviceExternalId, gatewayAccountExternalId),
-    current: pathLookup(currentPath, paths.futureAccountStrategy.agreements.index),
+    url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.agreements.index, serviceExternalId, account.type),
+    current: pathLookup(currentPath, paths.simplifiedAccount.agreements.index),
     permissions: permissions.agreements_read && (account.recurring_enabled ?? account.recurringEnabled)
   })
   if (type === 'card') {
