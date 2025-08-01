@@ -22,7 +22,6 @@ const formatPSPName = require('@utils/format-PSP-name')
 const smartCaps = require('@utils/custom-nunjucks-filters/smart-caps')
 const govukDate = require('@utils/custom-nunjucks-filters/govuk-date')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
-const formatFutureStrategyAccountPathsFor = require('@utils/format-future-strategy-account-paths-for')
 const formatServicePathsFor = require('@utils/format-service-paths-for')
 const healthcheckController = require('@controllers/healthcheck.controller')
 const { healthcheck } = require('@root/paths.js')
@@ -60,7 +59,6 @@ function initialiseGlobalMiddleware(app) {
     res.locals.asset_path = '/assets/'
     res.locals.routes = router.paths
     res.locals.formatAccountPathsFor = formatAccountPathsFor
-    res.locals.formatFutureStrategyAccountPathsFor = formatFutureStrategyAccountPathsFor
     res.locals.formatServicePathsFor = formatServicePathsFor
     res.locals.analyticsTrackingId = ANALYTICS_TRACKING_ID
     noCache(res)

@@ -47,7 +47,6 @@ const userPhoneNumberController = require('./controllers/user/phone-number')
 const allTransactionsController = require('./controllers/all-service-transactions/index')
 const payoutsController = require('./controllers/payouts/payout-list.controller')
 const requestPspTestAccountController = require('./controllers/request-psp-test-account')
-const agreementsController = require('./controllers/agreements/agreements.controller')
 const registrationController = require('./controllers/registration/registration.controller')
 const privacyController = require('./controllers/privacy/privacy.controller')
 const servicesController = require('./controllers/simplified-account/services')
@@ -78,9 +77,6 @@ const {
   transactions,
 } = paths.account
 const {
-  agreements
-} = paths.futureAccountStrategy
-const {
   requestPspTestAccount,
   requestToGoLive,
 } = paths.service
@@ -92,9 +88,6 @@ module.exports.paths = paths
 module.exports.bind = function (app) {
   const account = new Router({ mergeParams: true })
   account.use(getServiceAndAccount, userIsAuthorised)
-
-  const futureAccountStrategy = new Router({ mergeParams: true })
-  futureAccountStrategy.use(getServiceAndAccount, userIsAuthorised)
 
   const service = new Router({ mergeParams: true })
   service.use(getServiceAndAccount, userIsAuthorised)
@@ -292,13 +285,8 @@ module.exports.bind = function (app) {
   account.post(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.editMetadata)
   account.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
 
-  futureAccountStrategy.get(agreements.index, permission('agreements:read'), agreementsController.listAgreements)
-  futureAccountStrategy.get(agreements.detail, permission('agreements:read'), agreementsController.agreementDetail)
-  futureAccountStrategy.post(agreements.cancel, permission('agreements:update'), agreementsController.cancelAgreement)
-
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
-  app.use(paths.futureAccountStrategy.root, futureAccountStrategy)
 
   // security.txt — https://gds-way.cloudapps.digital/standards/vulnerability-disclosure.html
   const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'
