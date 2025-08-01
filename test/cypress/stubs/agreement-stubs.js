@@ -43,9 +43,20 @@ function postConnectorCancelAgreementFailure (opts = {}) {
   return stubBuilder('POST', path, 500)
 }
 
+function postCancelAgreementByServiceExternalIdAndAccountType (opts = {}) {
+  const path = `/v1/api/service/${opts.serviceExternalId}/account/${opts.accountType}/agreements/${opts.agreementExternalId}/cancel`
+  return stubBuilder('POST', path, 200, {
+    request: {
+      user_email: opts.userEmail,
+      user_external_id: opts.userExternalId
+    }
+  })
+}
+
 module.exports = {
   getLedgerAgreementsSuccess,
   getLedgerAgreementSuccess,
   postConnectorCancelAgreementSuccess,
-  postConnectorCancelAgreementFailure
+  postConnectorCancelAgreementFailure,
+  postCancelAgreementByServiceExternalIdAndAccountType
 }
