@@ -9,6 +9,8 @@ import StripeAccountSetup from '@models/StripeAccountSetup.class'
 import StripeAccountSetupData from '@models/gateway-account/dto/StripeAccountSetup.dto'
 import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'
 import { GatewayAccountSwitchPaymentProviderRequestData } from '@models/gateway-account/dto/GatewayAccountSwitchPaymentProviderRequest.dto'
+import { AgreementCancelRequest } from '@models/agreements/AgreementCancelRequest.class'
+import { AgreementCancelRequestData } from '@models/agreements/dto/AgreementCancelRequest.dto'
 
 const SERVICE_NAME = 'connector'
 const SERVICE_BASE_URL = process.env.CONNECTOR_URL!
@@ -16,11 +18,25 @@ const SERVICE_BASE_URL = process.env.CONNECTOR_URL!
 class ConnectorClient extends BaseClient {
   public charges
   public gatewayAccounts
+  public agreements
 
   constructor() {
     super(SERVICE_BASE_URL, SERVICE_NAME)
     this.charges = this.chargesClient
     this.gatewayAccounts = this.gatewayAccountsClient
+    this.agreements = this.agreementClient
+  }
+
+  private get agreementClient() {
+    return {
+      cancel: async (serviceExternalId: string, accountType: string, agreementExternalId: string, request: AgreementCancelRequest) => {
+        const path = '/v1/api/service/{serviceExternalId}/account/{accountType}/agreements/{agreementExternalId}/cancel'
+          .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+          .replace('{accountType}', encodeURIComponent(accountType))
+          .replace('{agreementExternalId}', encodeURIComponent(agreementExternalId))
+        await this.post<AgreementCancelRequestData, null>(path, request.toPayload(), 'cancel an agreement')
+      }
+    }
   }
 
   private get chargesClient() {

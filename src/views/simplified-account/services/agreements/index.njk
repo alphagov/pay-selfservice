@@ -101,7 +101,7 @@
         { html: '<a class="govuk-link govuk-link--no-visited-state" href="'+agreement.detailUrl+'">'+agreement.reference+'</a>', classes: 'break-all' },
         { html: agreementStatusTag(agreement.status) },
         { html: (paymentInstrument(agreement.paymentInstrument) if agreement.paymentInstrument else 'Awaiting payment') },
-        { text: agreement.createdDate | govukDate({ preserveTime: true }), classes: 'break-all' }
+        { text: agreement.createdDate | govukDate({ preserveTime: true }) }
       ] %}
       {% set agreementRows = (agreementRows.push(agreementRow), agreementRows) %}
     {% endfor %}

@@ -1,0 +1,45 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+
+{% set servicePageTitle %}
+  Cancel agreement for {{ agreement.paymentInstrument.cardDetails.cardholderName }}
+{% endset %}
+
+{% set legendText %}
+  Are you sure you want to cancel the agreement for {{ agreement.paymentInstrument.cardDetails.cardholderName }}?
+{% endset %}
+
+
+{% block serviceContent %}
+  <form id="cancel-agreement" method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {{ govukRadios({
+      name: 'cancelAgreement',
+      idPrefix: 'cancel-agreement',
+      errorMessage: { text: errors.formErrors['cancelAgreement'] } if errors.formErrors['cancelAgreement'] else false,
+      fieldset: {
+        legend: {
+          text: legendText,
+          isPageHeading: true,
+          classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
+        }
+      },
+      hint: {
+        text: 'You cannot undo this action'
+      },
+      items: [
+        {
+          value: 'yes',
+          text: 'Yes'
+        },
+        {
+          value: 'no',
+          text: 'No'
+        }
+      ]
+    }) }}
+    {{ govukButton({
+      text: 'Save changes'
+    }) }}
+  </form>
+{% endblock %}
