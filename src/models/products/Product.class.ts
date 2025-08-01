@@ -11,7 +11,7 @@ type Links = Record<
 class Product {
   readonly externalId: string
   readonly gatewayAccountId: number
-  readonly dateCreated: string
+  readonly dateCreated: number
   readonly name: string
   readonly price: number
   readonly status: string
@@ -31,7 +31,7 @@ class Product {
   constructor(data: ProductData) {
     this.externalId = data.external_id
     this.gatewayAccountId = data.gateway_account_id
-    this.dateCreated = data.date_created
+    this.dateCreated = Date.parse(data.date_created)
     this.name = data.name
     this.price = data.price
     this.status = data.status
