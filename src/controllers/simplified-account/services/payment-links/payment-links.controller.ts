@@ -17,7 +17,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     serviceMode: req.account.type,
     createLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.create, req.service.externalId, req.account.type),
     products: products
-      .sort((a, b) => b.dateCreated - a.dateCreated)
+      .sort((a, b) => b.dateCreated.toMillis() - a.dateCreated.toMillis())
       .map(product => ({
         name: product.name,
         href: product.links.friendly.href,

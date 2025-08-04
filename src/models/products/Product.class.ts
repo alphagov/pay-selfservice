@@ -1,4 +1,5 @@
 import { ProductData } from '@models/products/dto/Product.dto'
+import { DateTime } from 'luxon'
 
 type Links = Record<
   string,
@@ -11,7 +12,7 @@ type Links = Record<
 class Product {
   readonly externalId: string
   readonly gatewayAccountId: number
-  readonly dateCreated: number
+  readonly dateCreated: DateTime
   readonly name: string
   readonly price: number
   readonly status: string
@@ -31,7 +32,7 @@ class Product {
   constructor(data: ProductData) {
     this.externalId = data.external_id
     this.gatewayAccountId = data.gateway_account_id
-    this.dateCreated = Date.parse(data.date_created)
+    this.dateCreated = DateTime.fromISO(data.date_created)
     this.name = data.name
     this.price = data.price
     this.status = data.status
