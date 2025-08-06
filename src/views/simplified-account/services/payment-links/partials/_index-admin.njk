@@ -53,11 +53,9 @@
     text: "Create a " + serviceMode + " payment link",
     href: createLink
   }) }}
-</div>
 
-<p class="govuk-body">
   <a class="govuk-link govuk-link--no-visited-state" href="#">Create a {{ serviceMode }} payment link in Welsh</a>
-</p>
+</div>
 
 {% if products.length > 0 %}
   <h2 class="govuk-heading-m">{{ serviceMode | smartCaps }} payment links ({{ products.length }})</h2>

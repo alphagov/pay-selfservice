@@ -1,13 +1,10 @@
 import { NotFoundError } from '@root/errors'
 import PaymentProviders from '@models/constants/payment-providers'
 import { NextFunction } from 'express'
+import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 
-interface RequestWithPossibleRawAccount extends Express.Request{
-  account: Record<string, string>
-}
-
-const restrictToSandboxOrStripeTestAccount = (req: RequestWithPossibleRawAccount, res: Express.Response, next: NextFunction) => {
-  const provider = getProvider(req.account)
+const restrictToSandboxOrStripeTestAccount = (req: ServiceRequest, _: ServiceResponse, next: NextFunction) => {
+  const provider = req.account.paymentProvider
   const type = req.account.type ?? ''
   if (provider.toLowerCase() === PaymentProviders.SANDBOX ||
     (type.toLowerCase() === 'test' && provider.toLowerCase() === PaymentProviders.STRIPE)) {
@@ -17,9 +14,6 @@ const restrictToSandboxOrStripeTestAccount = (req: RequestWithPossibleRawAccount
   }
 }
 
-const getProvider = (account: Record<string, string>) => {
-  // todo: remove the guard for raw account object once test-with-your-users routes are migrated to service / account strategy
-  return account.paymentProvider ?? account.payment_provider ?? ''
-}
+
 
 export = restrictToSandboxOrStripeTestAccount
