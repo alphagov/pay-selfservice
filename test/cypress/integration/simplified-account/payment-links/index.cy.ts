@@ -254,7 +254,7 @@ describe('PaymentLinks dashboard', () => {
               })
 
             cy.get('.govuk-body')
-              .should('have.length', 11)
+              .should('have.length', 10)
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -268,13 +268,15 @@ describe('PaymentLinks dashboard', () => {
                   'contain.text',
                   'You can test adding metadata like cost centre codes or business area to your test payment links.'
                 )
-                cy.wrap($elements.eq(10)).should(
-                  'contain.text',
-                  'Create a ' + SERVICE_MODE + ' payment link in Welsh'
-                )
               })
 
-            cy.get('.govuk-button-group').find('a').should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
+            cy.get('.govuk-button-group')
+              .find('a')
+              .should('have.length', 2)
+              .then(($elements) => {
+                cy.wrap($elements.eq(0)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
+                cy.wrap($elements.eq(1)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
+              })
 
             cy.get('.govuk-summary-card')
               .should('have.length', 2)
@@ -326,7 +328,7 @@ describe('PaymentLinks dashboard', () => {
               })
 
             cy.get('.govuk-body')
-              .should('have.length', 11)
+              .should('have.length', 10)
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -340,13 +342,15 @@ describe('PaymentLinks dashboard', () => {
                   'contain.text',
                   'You can test adding metadata like cost centre codes or business area to your test payment links.'
                 )
-                cy.wrap($elements.eq(10)).should(
-                  'contain.text',
-                  'Create a ' + SERVICE_MODE + ' payment link in Welsh'
-                )
               })
 
-            cy.get('.govuk-button-group').find('a').should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
+            cy.get('.govuk-button-group')
+              .find('a')
+              .should('have.length', 2)
+              .then(($elements) => {
+                cy.wrap($elements.eq(0)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
+                cy.wrap($elements.eq(1)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
+              })
 
             cy.get('.govuk-summary-card').should('not.exist')
           })
@@ -380,7 +384,7 @@ describe('PaymentLinks dashboard', () => {
             cy.get('.govuk-warning-text').should('not.exist')
 
             cy.get('.govuk-body')
-              .should('have.length', 11) // accordion paragraphs are visually hidden but still in the DOM
+              .should('have.length', 10) // accordion paragraphs are visually hidden but still in the DOM
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -394,13 +398,15 @@ describe('PaymentLinks dashboard', () => {
                   'contain.text',
                   'You can add metadata like cost centre codes or business area to your payment links.'
                 )
-                cy.wrap($elements.eq(10)).should(
-                  'contain.text',
-                  'Create a ' + SERVICE_MODE + ' payment link in Welsh'
-                )
               })
 
-            cy.get('.govuk-button-group').find('a').should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
+            cy.get('.govuk-button-group')
+              .find('a')
+              .should('have.length', 2)
+              .then(($elements) => {
+                cy.wrap($elements.eq(0)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
+                cy.wrap($elements.eq(1)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
+              })
 
             cy.get('.govuk-summary-card')
               .should('have.length', 1)
@@ -440,7 +446,7 @@ describe('PaymentLinks dashboard', () => {
             cy.get('.govuk-warning-text').should('not.exist')
 
             cy.get('.govuk-body')
-              .should('have.length', 11) // accordion paragraphs are visually hidden but still in the DOM
+              .should('have.length', 10) // accordion paragraphs are visually hidden but still in the DOM
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -454,13 +460,15 @@ describe('PaymentLinks dashboard', () => {
                   'contain.text',
                   'You can add metadata like cost centre codes or business area to your payment links.'
                 )
-                cy.wrap($elements.eq(10)).should(
-                  'contain.text',
-                  'Create a ' + SERVICE_MODE + ' payment link in Welsh'
-                )
               })
 
-            cy.get('.govuk-button-group').find('a').should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
+            cy.get('.govuk-button-group')
+              .find('a')
+              .should('have.length', 2)
+              .then(($elements) => {
+                cy.wrap($elements.eq(0)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
+                cy.wrap($elements.eq(1)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
+              })
 
             cy.get('.govuk-summary-card').should('not.exist')
           })
