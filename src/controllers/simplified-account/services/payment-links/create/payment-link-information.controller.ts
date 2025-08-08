@@ -28,13 +28,17 @@ const getIsWelsh = (req: ServiceRequest): boolean => {
   const session = req.session as unknown as PaymentLinkCreationSession
   const sessionIsWelsh = session.pageData?.createPaymentLink?.isWelsh ?? false
 
-  return languageValue === supportedLanguage.WELSH ||
+  return (
+    languageValue === supportedLanguage.WELSH ||
     (languageValue === '' && sessionIsWelsh)
+  )
 }
 
 const getServiceName = (service: Service, isWelsh: boolean): string => {
-  const language: SupportedLanguage = isWelsh ? supportedLanguage.WELSH : supportedLanguage.ENGLISH
-  return (language === 'cy' && service.serviceName.cy)
+  const language: SupportedLanguage = isWelsh
+    ? supportedLanguage.WELSH
+    : supportedLanguage.ENGLISH
+  return language === 'cy' && service.serviceName.cy
     ? String(service.serviceName.cy)
     : String(service.serviceName.en)
 }
@@ -46,8 +50,8 @@ interface CreatePaymentLinkBody {
 
 const validations = validatePaymentLinkInformation()
 
-const makeNiceURL = (string: string): string => {
-  return slugify(removeIndefiniteArticles(string))
+const makeNiceURL = (str: string): string => {
+  return slugify(removeIndefiniteArticles(str))
 }
 
 function get(req: ServiceRequest, res: ServiceResponse) {
@@ -83,14 +87,15 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   })
 }
 
-async function post(req: ServiceRequest<CreatePaymentLinkBody>, res: ServiceResponse) {
+async function post(req: ServiceRequest, res: ServiceResponse) {
   const service = req.service
   const { account } = req
-  const body: CreatePaymentLinkBody = req.body
+  const body = req.body as CreatePaymentLinkBody
 
   for (const validation of validations) {
     await validation.run(req)
   }
+
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
@@ -120,7 +125,6 @@ async function post(req: ServiceRequest<CreatePaymentLinkBody>, res: ServiceResp
       serviceMode: account.type
     })
   }
-
 
   const serviceName: string = service.name
   const serviceNamePath: string = makeNiceURL(serviceName)
