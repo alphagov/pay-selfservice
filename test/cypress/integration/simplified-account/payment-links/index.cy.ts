@@ -254,7 +254,7 @@ describe('PaymentLinks dashboard', () => {
               })
 
             cy.get('.govuk-body')
-              .should('have.length', 10)
+              .should('have.length', 11)
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -270,13 +270,12 @@ describe('PaymentLinks dashboard', () => {
                 )
               })
 
-            cy.get('.govuk-button-group')
-              .find('a')
-              .should('have.length', 2)
-              .then(($elements) => {
-                cy.wrap($elements.eq(0)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
-                cy.wrap($elements.eq(1)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
-              })
+            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link')
+              .should('be.visible')
+
+            cy.contains('a', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
+              .should('be.visible')
+              .should('have.class', 'govuk-link--no-visited-state')
 
             cy.get('.govuk-summary-card')
               .should('have.length', 2)
@@ -328,7 +327,7 @@ describe('PaymentLinks dashboard', () => {
               })
 
             cy.get('.govuk-body')
-              .should('have.length', 10)
+              .should('have.length', 11)
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -344,13 +343,12 @@ describe('PaymentLinks dashboard', () => {
                 )
               })
 
-            cy.get('.govuk-button-group')
-              .find('a')
-              .should('have.length', 2)
-              .then(($elements) => {
-                cy.wrap($elements.eq(0)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
-                cy.wrap($elements.eq(1)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
-              })
+            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link')
+              .should('be.visible')
+
+            cy.contains('a', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
+              .should('be.visible')
+              .should('have.class', 'govuk-link--no-visited-state')
 
             cy.get('.govuk-summary-card').should('not.exist')
           })
@@ -384,7 +382,7 @@ describe('PaymentLinks dashboard', () => {
             cy.get('.govuk-warning-text').should('not.exist')
 
             cy.get('.govuk-body')
-              .should('have.length', 10) // accordion paragraphs are visually hidden but still in the DOM
+              .should('have.length', 11) // accordion paragraphs are visually hidden but still in the DOM
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -400,13 +398,12 @@ describe('PaymentLinks dashboard', () => {
                 )
               })
 
-            cy.get('.govuk-button-group')
-              .find('a')
-              .should('have.length', 2)
-              .then(($elements) => {
-                cy.wrap($elements.eq(0)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
-                cy.wrap($elements.eq(1)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
-              })
+            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link')
+              .should('be.visible')
+
+            cy.contains('a', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
+              .should('be.visible')
+              .should('have.class', 'govuk-link--no-visited-state')
 
             cy.get('.govuk-summary-card')
               .should('have.length', 1)
@@ -446,7 +443,7 @@ describe('PaymentLinks dashboard', () => {
             cy.get('.govuk-warning-text').should('not.exist')
 
             cy.get('.govuk-body')
-              .should('have.length', 10) // accordion paragraphs are visually hidden but still in the DOM
+              .should('have.length', 11) // accordion paragraphs are visually hidden but still in the DOM
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
@@ -462,13 +459,12 @@ describe('PaymentLinks dashboard', () => {
                 )
               })
 
-            cy.get('.govuk-button-group')
-              .find('a')
-              .should('have.length', 2)
-              .then(($elements) => {
-                cy.wrap($elements.eq(0)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link')
-                cy.wrap($elements.eq(1)).should('contain.text', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
-              })
+            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link')
+              .should('be.visible')
+
+            cy.contains('a', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
+              .should('be.visible')
+              .should('have.class', 'govuk-link--no-visited-state')
 
             cy.get('.govuk-summary-card').should('not.exist')
           })
