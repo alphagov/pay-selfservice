@@ -1,0 +1,53 @@
+<form method="post">
+  <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+
+  {{ govukInput({
+    name: "reportingColumn",
+    id: "reporting-column",
+    label: {
+      text: "Column header",
+      classes: "govuk-label--m"
+    },
+    hint: {
+      text: "For example, ‘cost centre’ or ‘fee type’."
+    },
+    value: formValues.reportingColumn,
+    errorMessage: { text: errors.formErrors['reportingColumn'] } if errors.formErrors['reportingColumn'] else false
+  }) }}
+
+  {{ govukInput({
+    name: "cellContent",
+    id: "cell-content",
+    label: {
+      text: "Cell content",
+      classes: "govuk-label--m"
+    },
+    hint: {
+      text: "For example, if you put ‘cost centre’ as your heading, you could add ‘12345’ as the cost centre code."
+    },
+    value: formValues.cellContent,
+    errorMessage: { text: errors.formErrors['cellContent'] } if errors.formErrors['cellContent'] else false
+  }) }}
+
+  <div class="govuk-button-group govuk-!-margin-bottom-9">
+    {% if createJourney %}
+      {{ govukButton({
+        text: "Add reporting column",
+        name: "action",
+        value: "edit"
+      }) }}
+    {% else %}
+      {{ govukButton({
+        text: "Edit reporting column",
+        name: "action",
+        value: "edit"
+      }) }}
+      {{ govukButton({
+        text: "Delete reporting column",
+        classes: "govuk-button--secondary",
+        name: "action",
+        value: "delete"
+      }) }}
+    {% endif %}
+  </div>
+</form>

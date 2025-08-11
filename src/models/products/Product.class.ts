@@ -17,14 +17,14 @@ class Product {
   readonly price: number
   readonly status: string
   readonly apiToken: string
-  readonly description: string
+  readonly description?: string
   readonly type: string
   readonly returnUrl: string
   readonly newPaymentLinkJourneyEnabled: boolean
   readonly referenceEnabled: boolean
   readonly referenceLabel?: string
   readonly referenceHint?: string
-  readonly amountHint: string
+  readonly amountHint?: string
   readonly language: string
   readonly metadata: Record<string, string>
   readonly links: Links
@@ -34,17 +34,15 @@ class Product {
     this.gatewayAccountId = data.gateway_account_id
     this.dateCreated = DateTime.fromISO(data.date_created)
     this.name = data.name
-    this.price = data.price
+    this.price = data.price ?? 0
     this.status = data.status
     this.apiToken = data.pay_api_token
-    this.description = data.description
+    this.description = data.description?.trim() || undefined
     this.type = data.type
     this.returnUrl = data.return_url
     this.referenceEnabled = data.reference_enabled
-    if (data.reference_enabled) {
-      this.referenceLabel = data.reference_label
-      this.referenceHint = data.reference_hint
-    }
+    this.referenceLabel = data.reference_label
+    this.referenceHint = data.reference_hint
     this.amountHint = data.amount_hint
     this.language = data.language
     this.metadata = data.metadata

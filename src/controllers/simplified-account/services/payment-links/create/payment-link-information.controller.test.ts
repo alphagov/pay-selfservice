@@ -65,6 +65,11 @@ describe('controller: services/payment-links/create/payment-link-information', (
         sinon.assert.match(context.backLink, sinon.match.string)
         sinon.assert.match(context.backLink, sinon.match(/payment-links/))
       })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
+      })
     })
 
     describe('with existing session data', () => {
@@ -290,6 +295,11 @@ describe('controller: services/payment-links/create/payment-link-information', (
         const formValues = context.formValues as { name: string; description: string }
         sinon.assert.match(formValues.name, '')
         sinon.assert.match(formValues.description, 'Valid Description')
+      })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
       })
 
       it('should not redirect', () => {

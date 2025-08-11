@@ -80,6 +80,11 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         sinon.assert.match(context.backLink, sinon.match(/payment-links.*create/))
       })
 
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
+      })
+
       it('should set isWelsh to false for English language session', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.isWelsh, false)
@@ -315,6 +320,11 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         sinon.assert.match(context.errors, sinon.match.object)
         sinon.assert.match(context.errors, sinon.match.has('summary'))
         sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
       })
     })
 

@@ -2,6 +2,7 @@ import ProductsClient from '@services/clients/pay/ProductsClient.class'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import Product from '@models/products/Product.class'
 import ProductType from '@models/products/product-type'
+import { ProductUpdateRequestData } from '@models/products/dto/ProductUpdateRequest.dto'
 
 const productsClient = new ProductsClient()
 
@@ -10,12 +11,17 @@ const getProducts = (gatewayAccountId: number, productType: string) =>
 
 const getProductByExternalId = (productExternalId: string) => productsClient.products.getByExternalId(productExternalId)
 
+const getProductByGatewayAccountIdAndExternalId = (gatewayAccountId: number, productExternalId: string) =>
+  productsClient.products.getByGatewayAccountIdAndExternalId(gatewayAccountId, productExternalId)
+
 const deleteProduct = (gatewayAccountId: number, productExternalId: string) =>
   productsClient.products.delete(gatewayAccountId, productExternalId)
 
-async function createProduct (createProductRequest: CreateProductRequest): Promise<Product> {
-  return productsClient.products.create(createProductRequest)
-}
+const updateProduct = (gatewayAccountId: number, productExternalId: string, updateRequest: ProductUpdateRequestData) =>
+  productsClient.products.patchByGatewayAccountIdAndExternalId(gatewayAccountId, productExternalId, updateRequest)
+
+const createProduct = (createProductRequest: CreateProductRequest) =>
+  productsClient.products.create(createProductRequest)
 
 const createDemoProduct = async (
   token: string,
@@ -37,7 +43,9 @@ const createDemoProduct = async (
 export {
   getProducts,
   getProductByExternalId,
+  getProductByGatewayAccountIdAndExternalId,
   deleteProduct,
+  updateProduct,
   createDemoProduct,
-  createProduct
+  createProduct,
 }

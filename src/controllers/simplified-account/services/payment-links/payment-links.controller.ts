@@ -25,9 +25,9 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         name: product.name,
         href: product.links.friendly.href,
         reference: product.referenceLabel ?? 'Created by GOV.UK Pay',
-        details: product.description,
+        details: product.description ?? 'None given',
         amount: product.price ? penceToPoundsWithCurrency(product.price) : 'User can choose',
-        editLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.edit, req.service.externalId, req.account.type, product.externalId),
+        editLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.edit.index, req.service.externalId, req.account.type, product.externalId),
         deleteLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.delete, req.service.externalId, req.account.type, product.externalId),
       })),
   },)
