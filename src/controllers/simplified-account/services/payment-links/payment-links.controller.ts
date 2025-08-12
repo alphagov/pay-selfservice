@@ -9,8 +9,14 @@ import ProductType from '@models/products/product-type'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
+import { PaymentLinkCreationSession } from './constants'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
+  const session = req.session as unknown as PaymentLinkCreationSession
+  if (session.pageData?.createPaymentLink) {
+    delete session.pageData.createPaymentLink
+  }
+
   const products = await getProducts(req.account.id, ProductType.ADHOC)
   return response(req, res, 'simplified-account/services/payment-links/index', {
     isAdmin: req.user.isAdminUserForService(req.service.externalId),
