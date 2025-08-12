@@ -5,42 +5,63 @@ import formatValidationErrors from '@utils/simplified-account/format/format-vali
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import formatAccountPathsFor from '@utils/format-account-paths-for'
 import paths from '@root/paths'
-import { PaymentLinkCreationSession } from '../constants'
-import { validatePaymentLinkReferenceDetails } from '@utils/simplified-account/validation/payment-link-creation'
-
-interface CreatePaymentLinkReferenceBody {
-  reference?: string
-  referenceLabel?: string
-  referenceHint?: string
-}
-
-const validations = validatePaymentLinkReferenceDetails()
+import { CREATE_SESSION_KEY, PaymentLinkCreationSession } from './constants'
+import lodash from 'lodash'
+import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
+  const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
+  if (lodash.isEmpty(currentSession)) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
+    )
+  }
+  const isWelsh = currentSession.language === 'cy'
 
-  const backLinkUrl = formatServiceAndAccountPathsFor(
-    paths.simplifiedAccount.paymentLinks.create,
-    service.externalId,
-    account.type
-  )
-
-  const session = req.session as unknown as PaymentLinkCreationSession
-  const isWelsh = session.pageData?.createPaymentLink?.isWelsh ?? false
+  const formValues = {
+    referenceTypeGroup: currentSession.paymentReferenceType,
+    ...(currentSession.paymentReferenceType === 'custom' && {
+      referenceLabel: currentSession.paymentReferenceLabel,
+      referenceHint: currentSession.paymentReferenceHint,
+    }),
+  }
 
   return response(req, res, 'simplified-account/services/payment-links/create/reference', {
     service,
     account,
-    backLink: backLinkUrl,
-    formValues: {},
+    backLink: formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.create,
+      service.externalId,
+      account.type
+    ),
+    formValues,
     isWelsh,
-    serviceMode: account.type
+    serviceMode: account.type,
   })
 }
 
-async function post(req: ServiceRequest<CreatePaymentLinkReferenceBody>, res: ServiceResponse) {
+interface CreateLinkReferenceBody {
+  referenceTypeGroup: 'custom' | 'standard'
+  referenceLabel: string
+  referenceHint: string
+}
+
+async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceResponse) {
   const { service, account } = req
-  const body: CreatePaymentLinkReferenceBody = req.body
+  const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
+  if (lodash.isEmpty(currentSession)) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
+    )
+  }
+  const isWelsh = currentSession.language === 'cy'
+
+  const validations = [paymentLinkSchema.reference.type.validate]
+
+  if (req.body.referenceTypeGroup === 'custom') {
+    validations.push(paymentLinkSchema.reference.label.validate, paymentLinkSchema.reference.hint.validate)
+  }
 
   await Promise.all(validations.map((validation) => validation.run(req)))
   const errors = validationResult(req)
@@ -53,9 +74,6 @@ async function post(req: ServiceRequest<CreatePaymentLinkReferenceBody>, res: Se
       account.type
     )
 
-    const session = req.session as unknown as PaymentLinkCreationSession
-    const isWelsh = session.pageData?.createPaymentLink?.isWelsh ?? false
-
     return response(req, res, 'simplified-account/services/payment-links/create/reference', {
       service,
       account,
@@ -64,44 +82,22 @@ async function post(req: ServiceRequest<CreatePaymentLinkReferenceBody>, res: Se
         formErrors: formattedErrors.formErrors,
       },
       backLink: backLinkUrl,
-      formValues: body,
+      formValues: req.body,
       isWelsh,
-      serviceMode: account.type
+      serviceMode: account.type,
     })
   }
 
-  const session = req.session as unknown as PaymentLinkCreationSession
+  lodash.set(req, CREATE_SESSION_KEY, {
+    ...lodash.get(req, CREATE_SESSION_KEY, {}),
+    paymentReferenceType: req.body.referenceTypeGroup,
+    paymentReferenceLabel: req.body.referenceTypeGroup === 'custom' ? req.body.referenceLabel : undefined,
+    paymentReferenceHint: req.body.referenceTypeGroup === 'custom' ? req.body.referenceHint : undefined,
+    gatewayAccountId: account.id, // todo: remove me once implemented in simplified journey
+    paymentLinkAmount: 1500, // todo: remove me once implemented in simplified journey
+  } as PaymentLinkCreationSession)
 
-  if (!session.pageData?.createPaymentLink) {
-    const redirectUrl = formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.paymentLinks.create,
-      service.externalId,
-      account.type
-    )
-    return res.redirect(redirectUrl)
-  }
-
-  Object.assign(session.pageData.createPaymentLink, {
-    gatewayAccountId: account.id,
-    paymentLinkAmount: 1500,
-  })
-
-  if (body.reference === 'yes') {
-    session.pageData.createPaymentLink.paymentReferenceType = 'custom'
-    session.pageData.createPaymentLink.paymentReferenceLabel = body.referenceLabel ?? ''
-    session.pageData.createPaymentLink.paymentReferenceHint = body.referenceHint ?? ''
-  } else {
-    delete session.pageData.createPaymentLink.paymentReferenceType
-    delete session.pageData.createPaymentLink.paymentReferenceLabel
-    delete session.pageData.createPaymentLink.paymentReferenceHint
-  }
-
-  const redirectUrl = formatAccountPathsFor(
-    paths.account.paymentLinks.review,
-    account.externalId
-  ) as string
-
-  return res.redirect(redirectUrl)
+  return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.review, account.externalId) as string)
 }
 
 export { get, post }

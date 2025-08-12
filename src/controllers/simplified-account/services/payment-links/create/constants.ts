@@ -1,0 +1,15 @@
+export interface PaymentLinkCreationSession {
+  paymentLinkTitle: string
+  paymentLinkDescription?: string
+  serviceNamePath: string
+  productNamePath: string
+  language: 'en' | 'cy'
+  payApiToken: string
+  gatewayAccountId: number
+  paymentLinkAmount: number
+  paymentReferenceType: 'custom' | 'standard'
+  paymentReferenceLabel: string
+  paymentReferenceHint?: string
+}
+
+export const CREATE_SESSION_KEY = 'session.pageData.createPaymentLink'
