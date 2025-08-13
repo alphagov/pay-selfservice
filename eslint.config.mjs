@@ -46,7 +46,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.test.js'],
+    files: ['**/*.test.js', '**/*.test.ts'],
     rules: {
       '@typescript-eslint/no-unused-expressions': 'off',
     },

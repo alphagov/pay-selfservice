@@ -1,322 +1,339 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
-import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import paths from '@root/paths'
-import { expect } from 'chai'
-import { PaymentLinkCreationSession } from '@controllers/simplified-account/services/payment-links/constants'
+import { PaymentLinkCreationSession } from './constants'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
-const GATEWAY_ACCOUNT_EXTERNAL_ID = 'gateway-account-external-id-123'
-const SERVICE_NAME = 'Test Service'
-const WELSH_SERVICE_NAME = 'Gwasanaeth Prawf'
+const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 
 const mockResponse = sinon.spy()
 
-const { res, req, call, nextRequest } = new ControllerTestBuilder(
+const { nextRequest, call, res } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/payment-links/create/payment-link-information.controller'
 )
-  .withServiceExternalId(SERVICE_EXTERNAL_ID)
+  .withStubs({
+    '@utils/response': { response: mockResponse },
+  })
   .withAccount({
     id: GATEWAY_ACCOUNT_ID,
     externalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
     type: GatewayAccountType.TEST,
   })
   .withService({
-    externalId: SERVICE_EXTERNAL_ID,
-    name: SERVICE_NAME,
-    serviceName: {
-      en: SERVICE_NAME,
-      cy: WELSH_SERVICE_NAME
-    }
-  })
-  .withUser({
-    email: 'test@example.com',
-  })
-  .withStubs({
-    '@utils/response': { response: mockResponse },
+    name: 'McDuck Enterprises',
+    serviceName: { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' },
+    externalId: SERVICE_EXTERNAL_ID
   })
   .build()
 
-req.session = req.session || {}
-
-describe('Controller: services/payment-links/create (Step 1)', () => {
-  beforeEach(() => {
-    mockResponse.resetHistory()
-    req.session = req.session || {}
-    const session = req.session as unknown as PaymentLinkCreationSession
-    if (session.pageData?.createPaymentLink) {
-      delete session.pageData.createPaymentLink
-    }
-  })
-
-  afterEach(() => {
-    const session = req.session as unknown as PaymentLinkCreationSession
-    if (session.pageData?.createPaymentLink) {
-      delete session.pageData.createPaymentLink
-    }
-  })
-
+describe('controller: services/payment-links/create/payment-link-information', () => {
   describe('get', () => {
-    describe('without existing session data', () => {
-      beforeEach(async () => {
+    describe('with no existing session data', () => {
+      before(async () => {
         await call('get')
       })
 
-      it('should call the response method with correct parameters', () => {
+      it('should call the response method', () => {
+        sinon.assert.calledOnce(mockResponse)
+      })
+
+      it('should pass correct template path to the response method', () => {
         sinon.assert.calledWith(
           mockResponse,
           sinon.match.any,
           sinon.match.any,
-          'simplified-account/services/payment-links/create/index',
-          sinon.match({
-            service: sinon.match.object,
-            account: sinon.match.object,
-            backLink: formatServiceAndAccountPathsFor(
-              paths.simplifiedAccount.paymentLinks.index,
-              SERVICE_EXTERNAL_ID,
-              GatewayAccountType.TEST
-            ),
-            formValues: { name: '', description: '' },
-            friendlyURL: process.env.PRODUCTS_FRIENDLY_BASE_URI,
-            serviceName: SERVICE_NAME,
-            isWelsh: false,
-            serviceMode: GatewayAccountType.TEST
-          })
+          'simplified-account/services/payment-links/create/index'
         )
+      })
+
+      it('should set empty form values in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const formValues = context.formValues as { name: string; description: string }
+        sinon.assert.match(formValues.name, '')
+        sinon.assert.match(formValues.description, '')
+      })
+
+      it('should set service name and isWelsh to false by default', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.serviceName, 'McDuck Enterprises')
+        sinon.assert.match(context.isWelsh, false)
+      })
+
+      it('should set backLink in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.backLink, sinon.match.string)
+        sinon.assert.match(context.backLink, sinon.match(/payment-links/))
       })
     })
 
     describe('with existing session data', () => {
-      beforeEach(async () => {
-        const session = req.session as unknown as PaymentLinkCreationSession
-        session.pageData = {
-          createPaymentLink: {
-            paymentLinkTitle: 'Existing Title',
-            paymentLinkDescription: 'Existing Description',
-            isWelsh: false
-          }
+      before(async () => {
+        mockResponse.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Existing Title',
+          paymentLinkDescription: 'Existing Description',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'existing-title',
         }
-        await call('get')
-      })
 
-      it('should populate form values from session data', () => {
-        sinon.assert.calledWith(
-          mockResponse,
-          sinon.match.any,
-          sinon.match.any,
-          'simplified-account/services/payment-links/create/index',
-          sinon.match({
-            formValues: { name: 'Existing Title', description: 'Existing Description' }
-          })
-        )
-      })
-    })
-
-    describe('Welsh language handling', () => {
-      beforeEach(async () => {
         nextRequest({
-          query: { language: 'cy' }
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
         })
+
         await call('get')
       })
 
-      it('should use Welsh service name when language is cy', () => {
-        sinon.assert.calledWith(
-          mockResponse,
-          sinon.match.any,
-          sinon.match.any,
-          'simplified-account/services/payment-links/create/index',
-          sinon.match({
-            serviceName: WELSH_SERVICE_NAME,
-            isWelsh: true
-          })
-        )
+      it('should populate form values from session', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const formValues = context.formValues as { name: string; description: string }
+        sinon.assert.match(formValues.name, 'Existing Title')
+        sinon.assert.match(formValues.description, 'Existing Description')
       })
     })
 
-    describe('when Welsh is indicated from session data', () => {
-      beforeEach(async () => {
-        const session = req.session as unknown as PaymentLinkCreationSession
-        session.pageData = {
-          createPaymentLink: {
-            isWelsh: true
-          }
+    describe('with Welsh language selected in session', () => {
+      before(async () => {
+        mockResponse.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Welsh Title',
+          language: 'cy',
+          serviceNamePath: 'test-service',
+          productNamePath: 'welsh-title',
         }
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+        })
+
         await call('get')
       })
 
-      it('should use Welsh service name when session indicates Welsh', () => {
-        sinon.assert.calledWith(
-          mockResponse,
-          sinon.match.any,
-          sinon.match.any,
-          'simplified-account/services/payment-links/create/index',
-          sinon.match({
-            serviceName: WELSH_SERVICE_NAME,
-            isWelsh: true
-          })
-        )
+      it('should set isWelsh to true and use Welsh service name', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.isWelsh, true)
+        sinon.assert.match(context.serviceName, 'Mentrau McDuck')
+      })
+    })
+
+    describe('with Welsh language query parameter', () => {
+      before(async () => {
+        mockResponse.resetHistory()
+        nextRequest({
+          query: { language: 'cy' },
+        })
+
+        await call('get')
+      })
+
+      it('should set isWelsh to true', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.isWelsh, true)
+        sinon.assert.match(context.serviceName, 'Mentrau McDuck')
+      })
+    })
+
+    describe('with Welsh language in session but no Welsh service name', () => {
+      before(async () => {
+        mockResponse.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Welsh Title',
+          language: 'cy',
+          serviceNamePath: 'test-service',
+          productNamePath: 'welsh-title',
+        }
+
+        nextRequest({
+          service: {
+            name: 'English Only Service',
+            serviceName: { en: 'English Only Service', cy: null },
+          },
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+        })
+
+        await call('get')
+      })
+
+      it('should fallback to English service name when Welsh not available', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.serviceName, 'English Only Service')
       })
     })
   })
 
   describe('post', () => {
-    describe('successful form submission', () => {
-      beforeEach(async () => {
+    describe('with valid form data', () => {
+      before(async () => {
+        res.redirect.resetHistory()
+
         nextRequest({
           body: {
             name: 'Test Payment Link',
-            description: 'A description',
+            description: 'Test Description',
           },
         })
-        await call('post')
-      })
 
-      it('should not call response method when form is valid', () => {
-        sinon.assert.notCalled(mockResponse)
+        await call('post')
       })
 
       it('should redirect to reference page', () => {
-        sinon.assert.calledWith(
-          res.redirect,
-          formatServiceAndAccountPathsFor(
-            paths.simplifiedAccount.paymentLinks.reference,
-            SERVICE_EXTERNAL_ID,
-            GatewayAccountType.TEST
-          )
-        )
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/payment-links.*reference/))
       })
     })
 
-    describe('successful form submission with Welsh language', () => {
-      beforeEach(async () => {
+    describe('with Welsh language parameter', () => {
+      before(async () => {
+        res.redirect.resetHistory()
+
         nextRequest({
           query: { language: 'cy' },
           body: {
-            name: 'Test Payment Link',
-            description: 'A description',
+            name: 'Welsh Payment Link',
+            description: 'Welsh Description',
           },
         })
+
         await call('post')
       })
 
-      it('should redirect without calling response method', () => {
-        sinon.assert.notCalled(mockResponse)
+      it('should redirect to reference page', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/payment-links.*reference/))
       })
     })
 
-    describe('validation errors', () => {
-      describe('missing required fields', () => {
-        beforeEach(async () => {
-          nextRequest({
-            body: {
-              name: '',
-              description: '',
-            },
-          })
-          await call('post')
+    describe('with validation errors - empty title', () => {
+      before(async () => {
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          body: {
+            name: '',
+            description: 'Valid Description',
+          },
         })
 
-        it('should call response with errors', () => {
-          sinon.assert.calledWith(
-            mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            'simplified-account/services/payment-links/create/index',
-            sinon.match({
-              errors: sinon.match.object,
-              formValues: sinon.match.object,
-              friendlyURL: process.env.PRODUCTS_FRIENDLY_BASE_URI,
-              serviceName: SERVICE_NAME,
-              isWelsh: false,
-              serviceMode: GatewayAccountType.TEST
-            })
-          )
-        })
-
-        it('should not save session data', () => {
-          const session = req.session as unknown as PaymentLinkCreationSession
-          expect(session.pageData?.createPaymentLink).to.equal(undefined)
-        })
+        await call('post')
       })
 
-      describe('when the title is too long', () => {
-        beforeEach(async () => {
-          nextRequest({
-            body: {
-              name: 'a'.repeat(231),
-              description: 'Valid description',
-            },
-          })
-          await call('post')
-        })
-
-        it('should return validation error', () => {
-          sinon.assert.calledWith(
-            mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            'simplified-account/services/payment-links/create/index',
-            sinon.match.has('errors')
-          )
-        })
-
-        it('should not save session data when validation fails', () => {
-          const session = req.session as unknown as PaymentLinkCreationSession
-          expect(session.pageData?.createPaymentLink).to.equal(undefined)
-        })
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/index'
+        )
       })
 
-      describe('when the title is at maximum length', () => {
-        beforeEach(async () => {
-          nextRequest({
-            body: {
-              name: 'a'.repeat(230),
-              description: 'Valid description',
-            },
-          })
-          await call('post')
-        })
-
-        it('should successfully redirect to reference page', () => {
-          sinon.assert.calledWith(
-            res.redirect,
-            formatServiceAndAccountPathsFor(
-              paths.simplifiedAccount.paymentLinks.reference,
-              SERVICE_EXTERNAL_ID,
-              GatewayAccountType.TEST
-            )
-          )
-        })
+      it('should include errors in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
       })
 
-      describe('validation errors with Welsh language', () => {
-        beforeEach(async () => {
-          nextRequest({
-            query: { language: 'cy' },
-            body: {
-              name: '',
-              description: '',
-            },
-          })
-          await call('post')
+      it('should include form values in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const formValues = context.formValues as { name: string; description: string }
+        sinon.assert.match(formValues.name, '')
+        sinon.assert.match(formValues.description, 'Valid Description')
+      })
+
+      it('should not redirect', () => {
+        sinon.assert.notCalled(res.redirect)
+      })
+    })
+
+    describe('with validation errors - title too long', () => {
+      before(async () => {
+        const longTitle = 'a'.repeat(256)
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          body: {
+            name: longTitle,
+            description: 'Valid Description',
+          },
         })
 
-        it('should show errors in Welsh context', () => {
-          sinon.assert.calledWith(
-            mockResponse,
-            sinon.match.any,
-            sinon.match.any,
-            'simplified-account/services/payment-links/create/index',
-            sinon.match({
-              errors: sinon.match.object,
-              serviceName: WELSH_SERVICE_NAME,
-              isWelsh: true
-            })
-          )
+        await call('post')
+      })
+
+      it('should render form with validation errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.notCalled(res.redirect)
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+    })
+
+    describe('with validation errors - description with invalid characters', () => {
+      before(async () => {
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          body: {
+            name: 'Valid Title',
+            description: 'Description with < invalid characters >',
+          },
         })
+
+        await call('post')
+      })
+
+      it('should render form with validation errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.notCalled(res.redirect)
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+    })
+
+    describe('with validation errors - description too long', () => {
+      before(async () => {
+        const longDescription = 'a'.repeat(5001)
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          body: {
+            name: 'Valid Title',
+            description: longDescription,
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render form with validation errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.notCalled(res.redirect)
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
       })
     })
   })

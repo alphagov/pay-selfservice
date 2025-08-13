@@ -9,7 +9,7 @@ const paymentLinkSchema = {
         .withMessage('Enter a title')
         .bail()
         .isLength({ max: 255 })
-        .withMessage('Title must 255 characters or fewer'),
+        .withMessage('Title must be 255 characters or fewer'),
     },
     details : {
       validate: body('description')
@@ -39,7 +39,7 @@ const paymentLinkSchema = {
         .withMessage('Reference must be be 50 characters or fewer'),
     },
     hint: {
-      validate: body('hint')
+      validate: body('referenceHint')
         .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 255 })
