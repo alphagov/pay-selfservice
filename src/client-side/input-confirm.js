@@ -11,9 +11,9 @@ const confirmInput = (e) => {
   if (!confirmation) {
     confirmation = document.createElement('div')
     confirmation.innerHTML = `
-      <div id="${confirmationId}" class="govuk-inset-text input-confirm">
-        <h3 class="govuk-heading-s govuk-!-margin-bottom-2">${input.dataset.confirmationTitle}</h3>
-        <p class="govuk-body">
+      <div id="${confirmationId}" class="input-confirm">
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-2">${input.dataset.confirmationTitle}</h3>
+        <p class="govuk-body url-preview">
           ${input.dataset.confirmationLabel}<span class="input-confirmation"></span>
         </p>
       </div>`
