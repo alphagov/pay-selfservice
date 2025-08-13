@@ -1,4 +1,4 @@
-import * as create from './create/create-payment-link.controller'
+import * as create from './create'
 import * as edit from './edit/edit-payment-link.controller'
 import * as remove from './delete/delete-payment-link.controller'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
@@ -8,8 +8,11 @@ import ProductType from '@models/products/product-type'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
+import lodash from 'lodash'
+import { CREATE_SESSION_KEY } from '@controllers/simplified-account/services/payment-links/create/constants'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
+  lodash.unset(req, CREATE_SESSION_KEY)
   const products = await getProducts(req.account.id, ProductType.ADHOC)
   return response(req, res, 'simplified-account/services/payment-links/index', {
     isAdmin: req.user.isAdminUserForService(req.service.externalId),

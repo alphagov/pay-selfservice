@@ -1,0 +1,96 @@
+import { ServiceRequest, ServiceResponse } from '@utils/types/express'
+import { response } from '@utils/response'
+import { validationResult } from 'express-validator'
+import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
+import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import paths from '@root/paths'
+import { PaymentLinkCreationSession, CREATE_SESSION_KEY } from './constants'
+import lodash from 'lodash'
+import slugifyString from '@utils/simplified-account/format/slugify-string'
+import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
+
+const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
+
+function get(req: ServiceRequest, res: ServiceResponse) {
+  const { account, service } = req
+  const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
+  const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
+  // handle case where welsh payment link is selected but no welsh service name is set
+  const serviceName = isWelsh ? (service.serviceName.cy ?? service.name) : service.name
+
+  const formValues = {
+    name: currentSession.paymentLinkTitle ?? '',
+    description: currentSession.paymentLinkDescription ?? '',
+  }
+
+  return response(req, res, 'simplified-account/services/payment-links/create/index', {
+    service,
+    account,
+    backLink: formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.index,
+      service.externalId,
+      account.type
+    ),
+    formValues,
+    friendlyURL: PRODUCTS_FRIENDLY_BASE_URI,
+    serviceName,
+    isWelsh,
+    serviceMode: account.type,
+  })
+}
+
+interface CreateLinkInformationBody {
+  name: string
+  description?: string
+}
+
+async function post(req: ServiceRequest<CreateLinkInformationBody>, res: ServiceResponse) {
+  const { account, service } = req
+  const isWelsh = (req.query.language as string) === 'cy'
+  const serviceName = isWelsh ? (service.serviceName.cy ?? service.name) : service.name
+
+  const validations = [
+    paymentLinkSchema.info.title.validate,
+    paymentLinkSchema.info.details.validate
+  ]
+
+  await Promise.all(validations.map((validation) => validation.run(req)))
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    const formattedErrors = formatValidationErrors(errors)
+    return response(req, res, 'simplified-account/services/payment-links/create/index', {
+      service,
+      account,
+      errors: {
+        summary: formattedErrors.errorSummary,
+        formErrors: formattedErrors.formErrors,
+      },
+      backLink: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.paymentLinks.index,
+        service.externalId,
+        account.type
+      ),
+      formValues: req.body,
+      friendlyURL: PRODUCTS_FRIENDLY_BASE_URI,
+      serviceName,
+      isWelsh,
+      serviceMode: account.type,
+    })
+  }
+
+  lodash.set(req, CREATE_SESSION_KEY, {
+    ...lodash.get(req, CREATE_SESSION_KEY, {}),
+    paymentLinkTitle: req.body.name,
+    paymentLinkDescription: req.body.description,
+    language: isWelsh ? 'cy' : 'en',
+    serviceNamePath: slugifyString(serviceName),
+    productNamePath: slugifyString(req.body.name),
+  } as PaymentLinkCreationSession)
+
+  return res.redirect(
+    formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.reference, service.externalId, account.type)
+  )
+}
+
+export { get, post }

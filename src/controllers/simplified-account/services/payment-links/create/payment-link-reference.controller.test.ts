@@ -1,0 +1,399 @@
+import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
+import sinon from 'sinon'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { PaymentLinkCreationSession } from './constants'
+
+const SERVICE_EXTERNAL_ID = 'service123abc'
+const GATEWAY_ACCOUNT_ID = 117
+const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
+
+const mockResponse = sinon.spy()
+
+const { nextRequest, call, res } = new ControllerTestBuilder(
+  '@controllers/simplified-account/services/payment-links/create/payment-link-reference.controller'
+)
+  .withStubs({
+    '@utils/response': { response: mockResponse },
+  })
+  .withAccount({
+    id: GATEWAY_ACCOUNT_ID,
+    externalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
+    type: GatewayAccountType.TEST,
+  })
+  .withService({
+    name: 'McDuck Enterprises',
+    serviceName: { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' },
+    externalId: SERVICE_EXTERNAL_ID,
+  })
+  .build()
+
+describe('controller: services/payment-links/create/payment-link-reference', () => {
+  describe('get', () => {
+    describe('with valid session data', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          paymentLinkDescription: 'Test Description',
+          language: 'en',
+          serviceNamePath: 'mcduck-enterprises',
+          productNamePath: 'test-payment-link',
+          paymentReferenceType: 'custom',
+          paymentReferenceLabel: 'Order Number',
+          paymentReferenceHint: 'Enter your order number',
+        }
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+        })
+
+        await call('get')
+      })
+
+      it('should call the response method', () => {
+        sinon.assert.calledOnce(mockResponse)
+      })
+
+      it('should pass correct template path to the response method', () => {
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/reference'
+        )
+      })
+
+      it('should set form values from session in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const formValues = context.formValues as Record<string, unknown>
+        sinon.assert.match(formValues.referenceTypeGroup, 'custom')
+        sinon.assert.match(formValues.referenceLabel, 'Order Number')
+        sinon.assert.match(formValues.referenceHint, 'Enter your order number')
+      })
+
+      it('should set backLink in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.backLink, sinon.match.string)
+        sinon.assert.match(context.backLink, sinon.match(/payment-links.*create/))
+      })
+
+      it('should set isWelsh to false for English language session', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.isWelsh, false)
+      })
+    })
+
+    describe('with Welsh session data', () => {
+      before(async () => {
+        mockResponse.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Welsh Payment Link',
+          language: 'cy',
+          serviceNamePath: 'test-service',
+          productNamePath: 'welsh-payment-link',
+          paymentReferenceType: 'standard',
+          paymentReferenceLabel: 'Reference',
+        }
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+        })
+
+        await call('get')
+      })
+
+      it('should set isWelsh to true for Welsh session', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.isWelsh, true)
+      })
+
+      it('should set form values for standard reference type', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const formValues = context.formValues as Record<string, unknown>
+        sinon.assert.match(formValues.referenceTypeGroup, 'standard')
+        sinon.assert.match(formValues.referenceLabel, undefined)
+        sinon.assert.match(formValues.referenceHint, undefined)
+      })
+    })
+
+    describe('with empty session data', () => {
+      before(async () => {
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {},
+        })
+
+        await call('get')
+      })
+
+      it('should redirect to payment links index', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/payment-links/))
+      })
+    })
+  })
+
+  describe('post', () => {
+    describe('with valid standard reference type', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentReferenceType: 'custom',
+          paymentReferenceLabel: 'Old Label',
+        }
+
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            referenceTypeGroup: 'standard',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should redirect to review page', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/review/))
+      })
+    })
+
+    describe('with valid custom reference type', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentReferenceType: 'standard',
+          paymentReferenceLabel: 'Reference',
+        }
+
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            referenceTypeGroup: 'custom',
+            referenceLabel: 'Order Number',
+            referenceHint: 'Enter your order number',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should redirect to review page', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/review/))
+      })
+    })
+
+    describe('with empty session data', () => {
+      before(async () => {
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {},
+          body: {
+            referenceTypeGroup: 'standard',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should redirect to payment links index', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/payment-links/))
+      })
+    })
+
+    describe('with validation errors - no reference type selected', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentReferenceType: 'standard',
+          paymentReferenceLabel: 'Reference',
+        }
+
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            referenceTypeGroup: '',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/reference'
+        )
+      })
+
+      it('should include errors in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should not redirect', () => {
+        sinon.assert.notCalled(res.redirect)
+      })
+    })
+
+    describe('with validation errors - custom type but empty label', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentReferenceType: 'standard',
+        }
+
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            referenceTypeGroup: 'custom',
+            referenceLabel: '',
+            referenceHint: 'Valid hint',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+    })
+
+    describe('with validation errors - custom type with label too long', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentReferenceType: 'standard',
+        }
+
+        const longLabel = 'a'.repeat(51)
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            referenceTypeGroup: 'custom',
+            referenceLabel: longLabel,
+            referenceHint: 'Valid hint',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+    })
+
+    describe('with validation errors - custom type with hint too long', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentReferenceType: 'standard',
+        }
+
+        const longHint = 'a'.repeat(256)
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            referenceTypeGroup: 'custom',
+            referenceLabel: 'Valid Label',
+            referenceHint: longHint,
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+    })
+  })
+})
