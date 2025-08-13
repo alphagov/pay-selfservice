@@ -8,8 +8,8 @@ const paymentLinkSchema = {
         .notEmpty()
         .withMessage('Enter a title')
         .bail()
-        .isLength({ max: 255 })
-        .withMessage('Title must be 255 characters or fewer'),
+        .isLength({ max: 230 })
+        .withMessage('Title must be 230 characters or fewer'),
     },
     details : {
       validate: body('description')
