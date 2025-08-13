@@ -262,7 +262,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
 
     describe('with validation errors - title too long', () => {
       before(async () => {
-        const longTitle = 'a'.repeat(256)
+        const longTitle = 'a'.repeat(231)
         mockResponse.resetHistory()
         res.redirect.resetHistory()
 

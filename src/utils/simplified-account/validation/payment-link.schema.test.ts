@@ -41,18 +41,18 @@ describe('Payment Link Schema Validation', () => {
       expect(errors.array()[0].msg).to.equal('Enter a title')
     })
 
-    it('should fail when title exceeds 255 characters', async () => {
+    it('should fail when title exceeds 230 characters', async () => {
       const invalidReq = {
-        body: { ...BASE_REQ.body, name: 'a'.repeat(256) }
+        body: { ...BASE_REQ.body, name: 'a'.repeat(231) }
       }
       await paymentLinkSchema.info.title.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
-      expect(errors.array()[0].msg).to.equal('Title must be 255 characters or fewer')
+      expect(errors.array()[0].msg).to.equal('Title must be 230 characters or fewer')
     })
 
-    it('should pass with title at exactly 255 characters', async () => {
+    it('should pass with title at exactly 230 characters', async () => {
       const validReq = {
-        body: { ...BASE_REQ.body, name: 'a'.repeat(255) }
+        body: { ...BASE_REQ.body, name: 'a'.repeat(230) }
       }
       await paymentLinkSchema.info.title.validate.run(validReq)
       expect(validationResult(validReq).isEmpty()).to.be.true
