@@ -46,7 +46,8 @@ interface CreateLinkInformationBody {
 
 async function post(req: ServiceRequest<CreateLinkInformationBody>, res: ServiceResponse) {
   const { account, service } = req
-  const isWelsh = (req.query.language as string) === 'cy'
+  const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
+  const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
   const serviceName = isWelsh ? (service.serviceName.cy ?? service.name) : service.name
 
   const validations = [
