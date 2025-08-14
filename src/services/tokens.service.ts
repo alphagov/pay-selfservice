@@ -15,6 +15,12 @@ const createDemoPaymentToken = async (gatewayAccountId: number, serviceExternalI
   return response.token
 }
 
+async function createToken (createTokenRequest: CreateTokenRequest) {
+  const response = await publicAuthClient.tokens.create(createTokenRequest)
+  return response.token
+}
+
 export {
-  createDemoPaymentToken
+  createDemoPaymentToken,
+  createToken
 }

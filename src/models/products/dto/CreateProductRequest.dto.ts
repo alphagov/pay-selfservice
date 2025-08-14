@@ -5,4 +5,5 @@ export interface CreateProductRequestData {
   description: string
   price: number
   type: string
+  return_url?: string
 }
