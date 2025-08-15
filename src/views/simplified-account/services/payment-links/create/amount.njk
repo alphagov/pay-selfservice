@@ -1,5 +1,5 @@
-{% extends "../layout.njk" %}
-{% from "../macro/error-summary.njk" import errorSummary %}
+{% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% block pageTitle %}
   {% if isEditing %}
@@ -7,11 +7,6 @@
   {% else %}
   Is the payment for a fixed amount? - Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
   {% endif %}
-{% endblock %}
-
-{% block sideNavigation %}
-  {% set createLink = false if isEditing else true %}
-  {% include "./_nav.njk" %}
 {% endblock %}
 
 {% block mainContent %}
@@ -44,21 +39,15 @@
           </p>
           {% endif %}
         </label>
-        <div class="currency-input__inner">
-          <span class="currency-input__inner__unit">&pound;</span>
-          <input
-            class="govuk-input govuk-input--width-10{% if errors.formErrors['payment-amount'] %} govuk-input--error{% endif %}"
-            aria-label="Enter amount in pounds"
-            name="payment-amount"
-            autofocus
-            data-non-numeric
-            type="text"
-            spellcheck="false"
-            id="payment-amount"
-            value="{{ amountInPence | penceToPounds if amountInPence else '' }}"
-            data-trim
-          />
-        </div>
+        {{ govukInput({
+          id: "cost",
+          name: "cost",
+          prefix: {
+            text: "£"
+          },
+          classes: "govuk-!-width-one-quarter",
+          spellcheck: false
+        }) }}
       </div>
     {% endset %}
 
@@ -136,8 +125,6 @@
         classes: "button"
       })
     }}
-    {% set cancelLinkHref = formatAccountPathsFor(routes.account.paymentLinks.manage.index, currentGatewayAccount.external_id) if isEditing else formatAccountPathsFor(routes.account.paymentLinks.start, currentGatewayAccount.external_id) %}
-    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state cancel" href="{{ cancelLinkHref }}" data-cy="cancel-link">Cancel</a></p>
   </form>
 
   {% if not isWelsh %}
