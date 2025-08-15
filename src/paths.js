@@ -159,7 +159,16 @@ module.exports = {
       index: '/payment-links',
       create: '/payment-links/create',
       reference: '/payment-links/reference',
-      edit: '/payment-links/:productExternalId/edit',
+      edit: {
+        index: '/payment-links/:productExternalId',
+        information: '/payment-links/:productExternalId/edit/information',
+        reference: '/payment-links/:productExternalId/edit/reference',
+        amount: '/payment-links/:productExternalId/edit/amount',
+        metadata: {
+          add: '/payment-links/:productExternalId/add/reporting-column',
+          update: '/payment-links/:productExternalId/edit/reporting-column/:metadataKey',
+        }
+      },
       delete: '/payment-links/:productExternalId/delete',
     },
     testWithYourUsers: {

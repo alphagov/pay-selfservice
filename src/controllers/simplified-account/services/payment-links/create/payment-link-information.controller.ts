@@ -36,6 +36,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     serviceName,
     isWelsh,
     serviceMode: account.type,
+    createJourney: true
   })
 }
 
@@ -51,8 +52,8 @@ async function post(req: ServiceRequest<CreateLinkInformationBody>, res: Service
   const serviceName = isWelsh ? (service.serviceName.cy ?? service.name) : service.name
 
   const validations = [
-    paymentLinkSchema.info.title.validate,
-    paymentLinkSchema.info.details.validate
+    paymentLinkSchema.info.name.validate,
+    paymentLinkSchema.info.description.validate
   ]
 
   await Promise.all(validations.map((validation) => validation.run(req)))
@@ -77,11 +78,12 @@ async function post(req: ServiceRequest<CreateLinkInformationBody>, res: Service
       serviceName,
       isWelsh,
       serviceMode: account.type,
+      createJourney: true
     })
   }
 
   lodash.set(req, CREATE_SESSION_KEY, {
-    ...lodash.get(req, CREATE_SESSION_KEY, {}),
+    ...currentSession,
     paymentLinkTitle: req.body.name,
     paymentLinkDescription: req.body.description,
     language: isWelsh ? 'cy' : 'en',

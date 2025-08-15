@@ -86,7 +86,7 @@ describe('controller: services/payment-links', () => {
                 reference: 'Invoice number',
                 details: 'Eyewear for the discerning trillionaire',
                 amount: '£9,999.99',
-                editLink: '/service/service123abc/account/test/payment-links/cf3hp2/edit',
+                editLink: '/service/service123abc/account/test/payment-links/cf3hp2',
                 deleteLink: '/service/service123abc/account/test/payment-links/cf3hp2/delete'
               }
             ]
@@ -129,9 +129,9 @@ describe('controller: services/payment-links', () => {
                 name: 'Designer monocles',
                 href: 'http://products-ui.url/redirect/mcduck-enterprises/designer-monocles',
                 reference: 'Created by GOV.UK Pay',
-                details: 'None given',
+                details: undefined,
                 amount: 'User can choose',
-                editLink: '/service/service123abc/account/live/payment-links/cf3hp2/edit',
+                editLink: '/service/service123abc/account/live/payment-links/cf3hp2',
                 deleteLink: '/service/service123abc/account/live/payment-links/cf3hp2/delete'
               }
             ]
