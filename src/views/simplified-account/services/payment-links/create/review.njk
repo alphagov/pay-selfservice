@@ -1,0 +1,163 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+
+{% set servicePageTitle = "Review your " + account.type + " payment link details" %}
+{% set continueButtonText %}
+  Create {% if isWelsh %}Welsh{% endif %} payment link
+{% endset %}
+
+{% block serviceContent %}
+<section>
+  <h1 class="govuk-heading-l">{{ servicePageTitle }}</h1>
+
+  {% set detailsHTML %}
+    <span id="create-payment-link-description">
+      {% if pageData.paymentLinkDescription %}
+        {{ pageData.paymentLinkDescription | striptags(true) | escape | nl2br }}
+      {% else %}
+        <span>None given</span>
+      {% endif %}
+    </span>
+  {% endset %}
+
+  {% set referenceHTML %}
+    <span id="create-payment-link-reference">
+      {% if pageData.paymentReferenceType === 'custom' %}
+        {{ pageData.paymentReferenceLabel }}
+        {% if pageData.paymentReferenceHint %}
+          <span class="govuk-!-display-block pay-text-grey">
+            {{ pageData.paymentReferenceHint | striptags(true) | escape | nl2br }}
+          </span>
+        {% endif %}
+      {% else %}
+        <span>Created by GOV.UK Pay</span>
+      {% endif %}
+    </span>
+  {% endset %}
+
+  {% set paymentAmountHTML %}
+    <span id="create-payment-link-amount">
+    {% if pageData.paymentLinkAmount %}
+      £{{ pageData.paymentLinkAmount | penceToPounds }}
+    {% else %}
+      <span>User can choose</span>
+      {% if pageData.amountHint %}
+        <span class="govuk-!-display-block pay-text-grey">
+          {{ pageData.amountHint | striptags(true) | escape | nl2br }}
+        </span>
+      {% endif %}
+    {% endif %}
+    </span>
+  {% endset %}
+
+   {% set paymentLinkUrl %}{{ friendlyURL }}/{{ pageData.serviceNamePath }}/{{ pageData.productNamePath }}{% endset %}
+
+  {{
+    govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: "Title"
+          },
+          value: {
+            html: '<span id="create-payment-link-title">' + pageData.paymentLinkTitle + '</span>'
+          },
+          actions: {
+            items: [
+              {
+                href: titleLink,
+                text: "Change",
+                visuallyHiddenText: "title",
+                classes: 'govuk-link--no-visited-state'
+              }
+            ]
+          }
+        },
+        {
+          key: {
+            text: "Web address (not active yet)"
+          },
+          value: {
+            html: '<span id="create-payment-link-url">' + paymentLinkUrl + '</span>'
+          },
+          actions: {
+            items: [
+              {
+                href: titleLink,
+                text: "Change",
+                visuallyHiddenText: "web address",
+                classes: 'govuk-link--no-visited-state'
+              }
+            ]
+          }
+        },
+        {
+          key: {
+            text: "Details"
+          },
+          value: {
+            html: detailsHTML
+          },
+          actions: {
+            items: [
+              {
+                href: titleLink,
+                text: "Change",
+                visuallyHiddenText: "details",
+                classes: 'govuk-link--no-visited-state'
+              }
+            ]
+          }
+        },
+        {
+          key: {
+            text: "Reference number"
+          },
+          value: {
+            html: referenceHTML
+          },
+          actions: {
+            items: [
+              {
+                href: referenceLink,
+                text: "Change",
+                visuallyHiddenText: "payment reference",
+                classes: 'govuk-link--no-visited-state'
+              }
+            ]
+          }
+        },
+        {
+          key: {
+            text: "Payment amount"
+          },
+          value: {
+            html: paymentAmountHTML
+          },
+          actions: {
+            items: [
+              {
+                href: amountLink,
+                text: "Change",
+                visuallyHiddenText: "payment amount",
+                classes: 'govuk-link--no-visited-state'
+              }
+            ]
+          }
+        }
+      ]
+    })
+  }}
+
+  <form method="post" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: continueButtonText
+      }) }}
+
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ cancelLink }}">Cancel</a>
+    </div>
+  </form>
+{% endblock %}
+

@@ -159,6 +159,7 @@ module.exports = {
       index: '/payment-links',
       create: '/payment-links/create',
       reference: '/payment-links/reference',
+      review: '/payment-links/review',
       edit: '/payment-links/:productExternalId/edit',
       delete: '/payment-links/:productExternalId/delete',
     },
