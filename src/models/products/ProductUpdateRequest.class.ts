@@ -17,7 +17,7 @@ interface ProductUpdateRequestBuilderInput {
   description?: string
   amount: ProductAmount
   reference: ProductReference
-  metadata?: Record<string, string>
+  metadata?: Record<string, string> | null // products api expects null when unsetting existing metadata
 }
 
 export class ProductUpdateRequestBuilder<T extends Partial<ProductUpdateRequestBuilderInput>> {

@@ -8,7 +8,7 @@ import { NextFunction } from 'express'
 import Product from '@models/products/Product.class'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import { validationResult } from 'express-validator'
-import formatValidationErrors from '../../../../../../utils/simplified-account/format/format-validation-errors'
+import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { ProductUpdateRequestBuilder } from '@models/products/ProductUpdateRequest.class'
 import lodash from 'lodash'
 
