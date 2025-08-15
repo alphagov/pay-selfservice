@@ -13,7 +13,7 @@ const PRODUCT_EXTERNAL_ID = 'product123abc'
 const mockResponse = sinon.spy()
 const mockGetProductByGatewayAccountIdAndExternalId = sinon.stub()
 
-const { nextRequest, call, res } = new ControllerTestBuilder(
+const { nextRequest, call } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/payment-links/edit/edit-payment-link.controller'
 )
   .withStubs({

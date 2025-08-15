@@ -4,7 +4,6 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { ProductUpdateRequestBuilder } from '@models/products/ProductUpdateRequest.class'
-import { poundsToPence } from '@utils/currency-formatter'
 import Product from '@models/products/Product.class'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'

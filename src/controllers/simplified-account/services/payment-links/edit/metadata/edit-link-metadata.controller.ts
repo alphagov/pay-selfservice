@@ -11,7 +11,6 @@ import { validationResult } from 'express-validator'
 import formatValidationErrors from '../../../../../../utils/simplified-account/format/format-validation-errors'
 import { ProductUpdateRequestBuilder } from '@models/products/ProductUpdateRequest.class'
 import lodash from 'lodash'
-import formatPSPName from '@utils/format-PSP-name'
 
 async function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
