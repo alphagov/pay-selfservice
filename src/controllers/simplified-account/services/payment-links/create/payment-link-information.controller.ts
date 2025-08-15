@@ -4,7 +4,7 @@ import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
-import { PaymentLinkCreationSession, CREATE_SESSION_KEY } from './constants'
+import { PaymentLinkCreationSession, CREATE_SESSION_KEY, FROM_REVIEW_QUERY_PARAM } from './constants'
 import lodash from 'lodash'
 import slugifyString from '@utils/simplified-account/format/slugify-string'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
@@ -91,8 +91,12 @@ async function post(req: ServiceRequest<CreateLinkInformationBody>, res: Service
     productNamePath: slugifyString(req.body.name),
   } as PaymentLinkCreationSession)
 
+  const redirectPath = (req.query[FROM_REVIEW_QUERY_PARAM] as string) === 'true'
+    ? paths.simplifiedAccount.paymentLinks.review
+    : paths.simplifiedAccount.paymentLinks.reference
+
   return res.redirect(
-    formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.reference, service.externalId, account.type)
+    formatServiceAndAccountPathsFor(redirectPath, service.externalId, account.type)
   )
 }
 

@@ -1,7 +1,7 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
-import { PaymentLinkCreationSession } from './constants'
+import { PaymentLinkCreationSession, FROM_REVIEW_QUERY_PARAM } from './constants'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -257,6 +257,27 @@ describe('controller: services/payment-links/create/payment-link-information', (
       sinon.assert.match(sessionLanguage, 'cy')
     })
   })
+
+    describe('when the user is coming back from the review page (FROM_REVIEW_QUERY_PARAM set to true)', () => {
+      before(async () => {
+        res.redirect.resetHistory()
+
+        nextRequest({
+          query: { [FROM_REVIEW_QUERY_PARAM]: 'true' },
+          body: {
+            name: 'Test Payment Link',
+            description: 'Test Description',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should redirect back to review page', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/payment-links.*review/))
+      })
+    })
 
     describe('with validation errors - empty title', () => {
       before(async () => {
