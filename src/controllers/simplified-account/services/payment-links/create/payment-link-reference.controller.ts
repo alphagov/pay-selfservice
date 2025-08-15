@@ -3,7 +3,6 @@ import { response } from '@utils/response'
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import formatAccountPathsFor from '@utils/format-account-paths-for'
 import paths from '@root/paths'
 import { CREATE_SESSION_KEY, PaymentLinkCreationSession } from './constants'
 import lodash from 'lodash'
@@ -97,7 +96,9 @@ async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceRe
     paymentLinkAmount: 1500, // todo: remove me once implemented in simplified journey
   } as PaymentLinkCreationSession)
 
-  return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.review, account.externalId) as string)
+  return res.redirect(
+    formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type)
+  )
 }
 
 export { get, post }
