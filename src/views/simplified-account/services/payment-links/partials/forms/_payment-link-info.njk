@@ -66,7 +66,9 @@
     value: formValues.description
   }) }}
 
-  <button class="govuk-button" type="submit">{% if createJourney %}Continue{% else %}Save changes{% endif %}</button>
+  {{ govukButton({
+    text: "Continue" if createJourney else "Save changes"
+  }) }}
 </form>
 
 {% if not isWelsh %}
