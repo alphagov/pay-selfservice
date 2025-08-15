@@ -51,8 +51,10 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   })
 }
 
-async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceResponse) {
-
+function post (req: ServiceRequest, res: ServiceResponse) {
+  return res.status(501).json({
+    message: 'not implemented'
+  })
 }
 
 export { get, post }
