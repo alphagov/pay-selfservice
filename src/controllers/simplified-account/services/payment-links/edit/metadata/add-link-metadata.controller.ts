@@ -32,7 +32,7 @@ async function post(req: ServiceRequest<AddLinkMetadataBody>, res: ServiceRespon
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
 
   const validations = [
-    paymentLinkSchema.metadata.columnHeader.add.validate(product.metadata),
+    paymentLinkSchema.metadata.columnHeader.add.validate(product.metadata ?? {}),
     paymentLinkSchema.metadata.cellContent.validate,
   ]
 

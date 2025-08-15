@@ -26,7 +26,7 @@ class Product {
   readonly referenceHint?: string
   readonly amountHint?: string
   readonly language: string
-  readonly metadata: Record<string, string>
+  readonly metadata?: Record<string, string>
   readonly links: Links
 
   constructor(data: ProductData) {

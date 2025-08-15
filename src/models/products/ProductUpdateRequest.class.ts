@@ -65,7 +65,8 @@ export class ProductUpdateRequestBuilder<T extends Partial<ProductUpdateRequestB
   }
 
   setMetadata(metadata: Record<string, string>) {
-    return new ProductUpdateRequestBuilder({ ...this.actual, metadata })
+    const updatedMetadata = Object.keys(metadata).length === 0 ? null : metadata
+    return new ProductUpdateRequestBuilder({ ...this.actual, metadata: updatedMetadata })
   }
 
   build(this: ProductUpdateRequestBuilder<ProductUpdateRequestBuilderInput>): ProductUpdateRequestData {

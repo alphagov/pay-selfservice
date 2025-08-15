@@ -188,6 +188,70 @@ describe('controller: services/payment-links/edit/metadata/add-link-metadata', (
       })
     })
 
+    describe('with valid data - product has no existing metadata', () => {
+      const productWithoutMetadata = {
+        externalId: PRODUCT_EXTERNAL_ID,
+        name: 'Test Payment Link',
+        description: 'Test Description',
+        language: 'en',
+      } as Product
+
+      before(async () => {
+        mockGetProductByGatewayAccountIdAndExternalId.resolves(productWithoutMetadata)
+        mockUpdateProduct.resolves()
+        res.redirect.resetHistory()
+        req.flash.resetHistory()
+
+        nextRequest({
+          params: { productExternalId: PRODUCT_EXTERNAL_ID },
+          body: {
+            reportingColumn: 'new_column',
+            cellContent: 'new_value',
+          },
+          flash: req.flash,
+        })
+
+        await call('post')
+      })
+
+      it('should call updateProduct with correct parameters creating new metadata object', () => {
+        const expectedProductUpdateRequest = ProductUpdateRequestBuilder.fromProduct(productWithoutMetadata)
+          .setMetadata({
+            new_column: 'new_value'
+          })
+          .build()
+
+        sinon.assert.calledWith(
+          mockUpdateProduct,
+          GATEWAY_ACCOUNT_ID,
+          PRODUCT_EXTERNAL_ID,
+          expectedProductUpdateRequest
+        )
+      })
+
+      it('should set success flash message', () => {
+        sinon.assert.calledWith(
+          req.flash,
+          'messages',
+          sinon.match({
+            state: 'success',
+            icon: '&check;',
+            heading: 'Reporting column added',
+          })
+        )
+      })
+
+      it('should redirect to edit overview page', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.paymentLinks.edit.index,
+          SERVICE_EXTERNAL_ID,
+          GatewayAccountType.TEST,
+          PRODUCT_EXTERNAL_ID
+        ))
+      })
+    })
+
     describe('with validation errors - empty reporting column', () => {
       before(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)

@@ -27,7 +27,7 @@ async function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction
       isWelsh: product.language === 'cy',
       formValues: {
         reportingColumn: req.params.metadataKey,
-        cellContent: product.metadata[req.params.metadataKey]
+        cellContent: product.metadata[req.params.metadataKey],
       },
     })
   } catch (error) {
@@ -50,7 +50,7 @@ async function post(req: ServiceRequest<EditLinkMetadataBody>, res: ServiceRespo
     if (req.body.action === 'edit') {
       const validations = [
         paymentLinkSchema.metadata.columnHeader.edit.validate(product.metadata, req.params.metadataKey),
-        paymentLinkSchema.metadata.cellContent.validate
+        paymentLinkSchema.metadata.cellContent.validate,
       ]
 
       for (const validation of validations) {
@@ -83,9 +83,7 @@ async function post(req: ServiceRequest<EditLinkMetadataBody>, res: ServiceRespo
         [req.body.reportingColumn]: req.body.cellContent,
       }
 
-      const productUpdateRequest = ProductUpdateRequestBuilder.fromProduct(product)
-        .setMetadata(updatedMetadata)
-        .build()
+      const productUpdateRequest = ProductUpdateRequestBuilder.fromProduct(product).setMetadata(updatedMetadata).build()
 
       await updateProduct(req.account.id, product.externalId, productUpdateRequest)
 
@@ -94,14 +92,10 @@ async function post(req: ServiceRequest<EditLinkMetadataBody>, res: ServiceRespo
         icon: '&check;',
         heading: 'Reporting columns updated',
       })
-
     } else if (req.body.action === 'delete') {
-
       const updatedMetadata = lodash.omit(product.metadata, req.params.metadataKey)
 
-      const productUpdateRequest = ProductUpdateRequestBuilder.fromProduct(product)
-        .setMetadata(updatedMetadata)
-        .build()
+      const productUpdateRequest = ProductUpdateRequestBuilder.fromProduct(product).setMetadata(updatedMetadata).build()
 
       await updateProduct(req.account.id, product.externalId, productUpdateRequest)
 
@@ -112,20 +106,26 @@ async function post(req: ServiceRequest<EditLinkMetadataBody>, res: ServiceRespo
       })
     }
 
-    res.redirect(formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.paymentLinks.edit.index,
-      req.service.externalId,
-      req.account.type,
-      product.externalId
-    ))
-
+    res.redirect(
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.paymentLinks.edit.index,
+        req.service.externalId,
+        req.account.type,
+        product.externalId
+      )
+    )
   } catch (error) {
     next(error)
   }
 }
 
-const checkKeyExistsOnProductMetadata = (product: Product, req: ServiceRequest<EditLinkMetadataBody>) => {
-  if (!Object.keys(product.metadata).includes(req.params.metadataKey)) {
+function checkKeyExistsOnProductMetadata(
+  product: Product,
+  req: ServiceRequest<EditLinkMetadataBody>
+): asserts product is Product & {
+  metadata: NonNullable<Record<string, string>>
+} {
+  if (!Object.keys(product.metadata ?? {}).includes(req.params.metadataKey)) {
     throw new NotFoundError(
       `Metadata key was not found on product [product_external_id: ${product.externalId}, service_external_id: ${req.service.externalId}]`
     )
