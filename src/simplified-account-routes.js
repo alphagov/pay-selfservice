@@ -61,6 +61,8 @@ simplifiedAccount.post(
 )
 
 // payment links
+
+// payment links index
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.index,
   experimentalFeature,
@@ -96,12 +98,86 @@ simplifiedAccount.get(
   permission('tokens:create'),
   servicesController.paymentLinks.create.amount.get
 )
+
+// payment links edit - index
 simplifiedAccount.get(
-  paths.simplifiedAccount.paymentLinks.edit,
+  paths.simplifiedAccount.paymentLinks.edit.index,
   experimentalFeature,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.get
 )
+
+// payment links edit - details
+simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.edit.information,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.edit.information.get
+)
+
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.edit.information,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.edit.information.post
+)
+
+simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.edit.reference,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.edit.reference.get
+)
+
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.edit.reference,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.edit.reference.post
+)
+
+simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.edit.amount,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.edit.amount.get
+)
+
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.edit.amount,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.edit.amount.post
+)
+
+simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.edit.metadata.update,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.edit.metadata.edit.get
+)
+
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.edit.metadata.update,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.edit.metadata.edit.post
+)
+
+simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.edit.metadata.add,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.edit.metadata.add.get
+)
+
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.edit.metadata.add,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.edit.metadata.add.post
+)
+
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.delete,
   experimentalFeature,
@@ -119,7 +195,8 @@ simplifiedAccount.post(
 simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index.get)
 simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.links, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.links.get)
 simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create.get)
-simplifiedAccount.post(paths.simplifiedAccount.testWithYourUsers.confirm, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.submit)
+simplifiedAccount.post(paths.simplifiedAccount.testWithYourUsers.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create.postValidation, testWithYourUsersController.create.post)
+simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.confirm, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.confirm.get)
 simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.disable, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.disable.post)
 
 // agreements

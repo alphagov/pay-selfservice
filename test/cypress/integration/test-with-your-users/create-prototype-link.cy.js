@@ -165,56 +165,66 @@ describe('create prototype links page', () => {
       cy.contains('button', 'Create prototype link').click()
       cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
 
-      cy.get('.flash-container>.generic-error')
-        .should('contain.text', 'Enter a description')
+      cy.get('.govuk-error-summary__body').within(() => {
+        cy.contains('a', 'Enter a description').should('exist')
+        cy.get('a').should('have.attr', 'href', '#description')
+      })
     })
 
     it('should return an error if no amount is entered', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
-      cy.get('input#prototyping__links-input-description').type('Test prototype link description', { delay: 0 })
+      cy.get('input#description').type('Test prototype link description', { delay: 0 })
 
       cy.contains('button', 'Create prototype link').click()
       cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
 
-      cy.get('.flash-container>.generic-error')
-        .should('contain.text', 'Enter an amount in pounds and pence using digits and a decimal point. For example “10.50”')
+      cy.get('.govuk-error-summary__body').within(() => {
+        cy.contains('a', 'Enter a payment amount').should('exist')
+        cy.get('a').should('have.attr', 'href', '#payment-amount')
+      })
     })
 
     it('should return an error if the amount is too high', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
-      cy.get('input#prototyping__links-input-description').type('Test prototype link description', { delay: 0 })
-      cy.get('input#prototyping__links-input-amount').type('100000.01', { delay: 0 })
+      cy.get('input#description').type('Test prototype link description', { delay: 0 })
+      cy.get('input#payment-amount').type('100000.01', { delay: 0 })
 
       cy.contains('button', 'Create prototype link').click()
       cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
 
-      cy.get('.flash-container>.generic-error')
-        .should('contain.text', 'Enter an amount under £100,000')
+      cy.get('.govuk-error-summary__body').within(() => {
+        cy.contains('a', 'Enter a valid payment amount').should('exist')
+        cy.get('a').should('have.attr', 'href', '#payment-amount')
+      })
     })
 
     it('should return an error if no confirmation page URL is entered', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
-      cy.get('input#prototyping__links-input-description').type('Test prototype link description', { delay: 0 })
-      cy.get('input#prototyping__links-input-amount').type('100.00', { delay: 0 })
+      cy.get('input#description').type('Test prototype link description', { delay: 0 })
+      cy.get('input#payment-amount').type('100.00', { delay: 0 })
 
       cy.contains('button', 'Create prototype link').click()
       cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
 
-      cy.get('.flash-container>.generic-error')
-        .should('contain.text', 'URL must begin with https://')
+      cy.get('.govuk-error-summary__body').within(() => {
+        cy.contains('a', 'Enter a valid URL starting with https://').should('exist')
+        cy.get('a').should('have.attr', 'href', '#confirmation-page')
+      })
     })
 
     it('should return an error if the confirmation page URL is not https', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
-      cy.get('input#prototyping__links-input-description').type('Test prototype link description', { delay: 0 })
-      cy.get('input#prototyping__links-input-amount').type('100.00', { delay: 0 })
-      cy.get('input#prototyping__links-input-confirmation-page').type('http://www.gov.uk', { delay: 0 })
+      cy.get('input#description').type('Test prototype link description', { delay: 0 })
+      cy.get('input#payment-amount').type('100.00', { delay: 0 })
+      cy.get('input#confirmation-page').type('http://www.gov.uk', { delay: 0 })
 
       cy.contains('button', 'Create prototype link').click()
       cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
 
-      cy.get('.flash-container>.generic-error')
-        .should('contain.text', 'URL must begin with https://')
+      cy.get('.govuk-error-summary__body').within(() => {
+        cy.contains('a', 'Enter a valid URL starting with https://').should('exist')
+        cy.get('a').should('have.attr', 'href', '#confirmation-page')
+      })
     })
   })
 
@@ -225,9 +235,9 @@ describe('create prototype links page', () => {
 
     it('should redirect to the "Your prototype link" page', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/create`)
-      cy.get('input#prototyping__links-input-description').type('Test prototype link description', { delay: 0 })
-      cy.get('input#prototyping__links-input-amount').type('100.00', { delay: 0 })
-      cy.get('input#prototyping__links-input-confirmation-page').type('https://www.gov.uk', { delay: 0 })
+      cy.get('input#description').type('Test prototype link description', { delay: 0 })
+      cy.get('input#payment-amount').type('100.00', { delay: 0 })
+      cy.get('input#confirmation-page').type('https://www.gov.uk', { delay: 0 })
 
       cy.contains('button', 'Create prototype link').click()
       cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/confirm`)

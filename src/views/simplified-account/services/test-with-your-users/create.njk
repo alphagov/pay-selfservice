@@ -9,13 +9,12 @@
     {{ servicePageTitle }}
   </h1>
 
-  <form method="post" action="{{ confirmLink }}" novalidate>
+  <form method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
-    {{
-    govukInput({
-      name: "payment-description",
-      id: "prototyping__links-input-description",
+    {{ govukInput({
+      name: "description",
+      id: "description",
       label: {
         text: "Payment description",
         classes: "govuk-label--s"
@@ -23,38 +22,34 @@
       hint: {
         text: "Tell users what they are paying for"
       },
-      value: paymentDescription,
-      spellcheck: true
-    })
-    }}
+      value: prototypeLinkData.description,
+      spellcheck: true,
+      errorMessage: { text: errors.formErrors['description'] } if errors.formErrors['description'] else false
+    }) }}
 
-    <div class="currency-input govuk-form-group">
-      <label class="govuk-label govuk-label--s" for="payment-amount">
-        Payment amount
-        <span class="govuk-visually-hidden">in &pound;</span>
-      </label>
-      <div class="currency-input__inner">
-        <span class="currency-input__inner__unit">&pound;</span>
-        <input
-          class="govuk-input govuk-input--width-10"
-          aria-label="Enter amount in pounds"
-          name="payment-amount"
-          data-non-numeric
-          type="text"
-          spellcheck="false"
-          id="prototyping__links-input-amount"
-          {% if paymentAmount %}
-            value="{{ paymentAmount | penceToPounds }}"
-          {% endif %}
-          data-trim
-        />
-      </div>
-    </div>
+    {{ govukInput({
+      name: "paymentAmount",
+      id: "payment-amount",
+      label: {
+        html: "Payment amount <span class='govuk-visually-hidden'>in &pound;</span>",
+        classes: "govuk-label--s"
+      },
+      prefix: {
+        text: "£"
+      },
+      classes: "govuk-input--width-10",
+      attributes: {
+        'data-trim': true,
+        spellcheck: false
+      },
+      value: prototypeLinkData.paymentAmount,
+      errorMessage: { text: errors.formErrors['paymentAmount'] } if errors.formErrors['paymentAmount'] else false
+    }) }}
 
     {{
     govukInput({
-      name: "confirmation-page",
-      id: "prototyping__links-input-confirmation-page",
+      name: "confirmationPage",
+      id: "confirmation-page",
       label: {
         text: "Confirmation page",
         classes: "govuk-label--s"
@@ -64,10 +59,11 @@
       },
       type: "url",
       spellcheck: false,
-      value: confirmationPage,
+      value: prototypeLinkData.confirmationPage,
       attributes: {
         "data-trim": true
-      }
+      },
+      errorMessage: { text: errors.formErrors['confirmationPage'] } if errors.formErrors['confirmationPage'] else false
     })
     }}
 

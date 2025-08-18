@@ -38,6 +38,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     formValues,
     isWelsh,
     serviceMode: account.type,
+    createJourney: true
   })
 }
 
@@ -85,6 +86,7 @@ async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceRe
       formValues: req.body,
       isWelsh,
       serviceMode: account.type,
+      createJourney: true
     })
   }
 

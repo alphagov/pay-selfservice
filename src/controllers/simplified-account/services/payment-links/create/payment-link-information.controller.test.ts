@@ -65,6 +65,11 @@ describe('controller: services/payment-links/create/payment-link-information', (
         sinon.assert.match(context.backLink, sinon.match.string)
         sinon.assert.match(context.backLink, sinon.match(/payment-links/))
       })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
+      })
     })
 
     describe('with existing session data', () => {
@@ -216,6 +221,43 @@ describe('controller: services/payment-links/create/payment-link-information', (
       })
     })
 
+    describe('with Welsh language already saved in the session (user came back with Back link)', () => {
+      let sessionLanguage: string
+
+      before(async () => {
+        res.redirect.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Previous Title',
+          language: 'cy',
+          serviceNamePath: 'test-service',
+          productNamePath: 'previous-title',
+      }
+
+      nextRequest({
+        session: {
+          pageData: {
+            createPaymentLink: sessionData,
+          },
+        },
+        body: {
+          name: 'Welsh Payment Link',
+          description: 'Welsh Description',
+        },
+      })
+
+      const result = await call('post')
+      const thisRequest = result.req as Record<string, unknown>
+      const session = thisRequest.session as { pageData: { createPaymentLink: { language: string } } }
+      sessionLanguage = session.pageData.createPaymentLink.language
+    })
+
+    it('should retain Welsh language from session and redirect', () => {
+      sinon.assert.calledOnce(res.redirect)
+      sinon.assert.calledWith(res.redirect, sinon.match(/payment-links.*reference/))
+      sinon.assert.match(sessionLanguage, 'cy')
+    })
+  })
+
     describe('with validation errors - empty title', () => {
       before(async () => {
         mockResponse.resetHistory()
@@ -253,6 +295,11 @@ describe('controller: services/payment-links/create/payment-link-information', (
         const formValues = context.formValues as { name: string; description: string }
         sinon.assert.match(formValues.name, '')
         sinon.assert.match(formValues.description, 'Valid Description')
+      })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
       })
 
       it('should not redirect', () => {

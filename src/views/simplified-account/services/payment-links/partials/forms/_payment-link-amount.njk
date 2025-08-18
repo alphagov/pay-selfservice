@@ -1,0 +1,95 @@
+<form class="form" method="post" novalidate>
+  <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+
+  {% set fixedAmountHTML %}
+    {{ govukInput({
+      id: "payment-amount",
+      name: "paymentAmount",
+      label: {
+        text: "Enter the amount",
+        classes: "govuk-label--s govuk-!-margin-top-3"
+      },
+      errorMessage: { text: errors.formErrors['paymentAmount'] } if errors.formErrors['paymentAmount'] else false,
+      prefix: {
+        text: "£"
+      },
+      classes: "govuk-input--width-10",
+      spellcheck: false,
+      value: formValues.paymentAmount
+    }) }}
+  {% endset %}
+
+  {% if isWelsh %}
+    {% set amountHintHint = 'Explain in Welsh how users can work out how much they should pay, or where to find the payment amount.' %}
+    {% set lang = 'cy' %}
+  {% else %}
+    {% set amountHintHint = 'Tell users how to work out how much they should pay, or where to find the payment amount.' %}
+    {% set lang = 'en' %}
+  {% endif %}
+
+  {% set userProvidedAmountHTML %}
+    {{ govukCharacterCount({
+      id: "amount-hint",
+      name: "amountHint",
+      value: formValues.amountHint,
+      spellcheck: true,
+      errorMessage: { text: errors.formErrors['amountHint'] } if errors.formErrors['amountHint'] else false,
+      maxlength: 255,
+      spellcheck: true,
+      label: {
+        text: "Hint text (optional)",
+        classes: "govuk-label--s govuk-!-margin-top-3"
+      },
+      hint: {
+        text: amountHintHint
+      },
+      attributes: {
+        "maxlength": "255",
+        "lang": lang
+      }
+    }) }}
+  {% endset %}
+
+  {{ govukRadios({
+    idPrefix: "amount-type-group",
+    name: "amountTypeGroup",
+    fieldset: {
+      legend: {
+        text: "Is the payment for a fixed amount?",
+        isPageHeading: createJourney,
+        classes: "govuk-fieldset__legend--l" if createJourney else "govuk-fieldset__legend--m"
+      }
+    },
+    errorMessage: { text: errors.formErrors['amountTypeGroup'] } if errors.formErrors['amountTypeGroup'] else false,
+    items: [
+      {
+        value: "fixed",
+        text: "Yes",
+        id: "amount-type-fixed",
+        checked: formValues.amountTypeGroup === "fixed",
+        conditional: {
+        html: fixedAmountHTML
+      }
+      },
+      {
+        value: "variable",
+        id: "amount-type-variable",
+        text: "No, the user can choose the amount",
+        checked: formValues.amountTypeGroup === "variable",
+        conditional: {
+        html: userProvidedAmountHTML
+      }
+      }
+    ]
+  }) }}
+
+  {{ govukButton({
+    text: "Continue" if createJourney else "Save changes"
+  }) }}
+</form>
+
+{% if not isWelsh %}
+  <h3 class="govuk-heading-s">Example of what users will see</h3>
+  <img class="govuk-!-margin-bottom-6" src="/assets/images/payment-links/amount-and-confirm-page.svg"
+       alt="Screenshot of payment link amount page">
+{% endif %}
