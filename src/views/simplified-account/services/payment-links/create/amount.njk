@@ -1,5 +1,7 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block pageTitle %}
   {% if isEditing %}
@@ -9,129 +11,6 @@
   {% endif %}
 {% endblock %}
 
-{% block mainContent %}
-<section class="govuk-grid-column-two-thirds">
-  {% if errors %}
-    {{ govukErrorSummary({
-      titleText: "There is a problem",
-      errorList: errors.summary
-    }) }}
-  {% endif %}
-
-  <form class="form" method="post" novalidate>
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-
-    {% set noSelectionError = false %}
-    {% if errors.type %}
-    {% set noSelectionError = {
-        text: "Please choose an option"
-    } %}
-    {% endif %}
-
-    {% set fixedAmountHTML %}
-      <div class="currency-input govuk-form-group{% if errors.formErrors['payment-amount'] %} govuk-form-group--error{% endif %}">
-        <label class="govuk-label" for="payment-amount">
-          Enter the amount
-          <span class="govuk-visually-hidden">in &pound;</span>
-          {% if errors.formErrors['payment-amount'] %}
-          <p class="govuk-error-message">
-            {{ errors.formErrors['payment-amount'] }}
-          </p>
-          {% endif %}
-        </label>
-        {{ govukInput({
-          id: "cost",
-          name: "cost",
-          prefix: {
-            text: "£"
-          },
-          classes: "govuk-!-width-one-quarter",
-          spellcheck: false
-        }) }}
-      </div>
-    {% endset %}
-
-    {% if isWelsh %}
-      {% set amountHintHint = 'Explain in Welsh how users can work out how much they should pay, or where to find the payment amount.' %}
-      {% set lang = 'cy' %}
-    {% else %}
-      {% set amountHintHint = 'Tell users how to work out how much they should pay, or where to find the payment amount.' %}
-      {% set lang = 'en' %}
-    {% endif %}
-
-    {% set userProvidedAmountHTML %}
-      {{
-        govukCharacterCount({
-          id: "amount-hint-text",
-          name: "amount-hint-text",
-          value: amountHint,
-          errorMessage: { text: errors.hint } if errors.hint else false,
-          classes: "govuk-input--width-20",
-          maxlength: 255,
-          spellcheck: true,
-          label: {
-              text: "Hint text (optional)",
-              classes: "govuk-label--s"
-          },
-          hint: {
-            text: amountHintHint
-          },
-          attributes: {
-            "maxlength": "255",
-            "lang": lang
-          }
-        })
-      }}
-    {% endset %}
-
-    {{
-      govukRadios({
-        idPrefix: "amount-type-group",
-        name: "amount-type-group",
-        fieldset: {
-            legend: {
-                text: "Is the payment for a fixed amount?",
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--l"
-            }
-        },
-        errorMessage: noSelectionError,
-        items: [
-          {
-              value: "fixed",
-              text: "Yes",
-              id: "amount-type-fixed",
-              checked: amountType === "fixed",
-              conditional: {
-                html: fixedAmountHTML
-              }
-          },
-          {
-              value: "variable",
-              id: "amount-type-variable",
-              text: "No, the user can choose the amount",
-              checked: amountType === "variable",
-              conditional: {
-                html: userProvidedAmountHTML
-              }
-          }
-        ]
-      })
-    }}
-
-    {{
-      govukButton({
-        text: "Continue",
-        classes: "button"
-      })
-    }}
-  </form>
-
-  {% if not isWelsh %}
-  <div class="govuk-!-margin-top-9" id="payment-link-example">
-    <h3 class="govuk-heading-s">Example of what the user will see</h3>
-    <img src="/assets/images/payment-links/amount-and-confirm-page.svg" alt="Screenshot of both possible payment link amount pages">
-  </div>
-  {% endif %}
-</section>
+{% block serviceContent %}
+  {% include "simplified-account/services/payment-links/partials/forms/_payment-link-amount.njk" %}
 {% endblock %}
