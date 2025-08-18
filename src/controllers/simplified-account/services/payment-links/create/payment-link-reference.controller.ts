@@ -97,7 +97,8 @@ async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceRe
     paymentLinkAmount: 1500, // todo: remove me once implemented in simplified journey
   } as PaymentLinkCreationSession)
 
-  return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.review, account.externalId) as string)
+  return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.amount, service.externalId,
+    account.type))
 }
 
 export { get, post }
