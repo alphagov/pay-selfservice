@@ -7,8 +7,6 @@ import { addField } from '@services/clients/base/request-context'
 import _ from 'lodash'
 // @ts-expect-error js commons is not updated for typescript support yet
 import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
-import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
-import Service from '@models/service/Service.class'
 import { getGatewayAccountByServiceExternalIdAndType } from '@services/gateway-accounts.service'
 const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, GATEWAY_ACCOUNT_EXTERNAL_ID } = keys
 
@@ -77,13 +75,6 @@ async function getGatewayAccount(serviceExternalId: string, accountType: string)
     }
   }
 }
-
-// interface AuthenticatedRequest extends Request {
-//   user: User
-//   account?: GatewayAccount
-//   service?: Service
-//   params: Record<string, string>
-// }
 
 async function getSimplifiedAccount(req: Request, _: Response, next: NextFunction) {
   console.log('hit4')

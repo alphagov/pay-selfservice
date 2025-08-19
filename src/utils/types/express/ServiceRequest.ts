@@ -1,4 +1,3 @@
-import express from 'express'
 import type User from '@models/user/User.class'
 import type Service from '@models/service/Service.class'
 import type GatewayAccount from '@models/gateway-account/GatewayAccount.class'

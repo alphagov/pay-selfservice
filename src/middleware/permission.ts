@@ -1,7 +1,5 @@
 import { PermissionDeniedError } from '../errors'
 import {RequestHandler} from "express";
-import type User from '@models/user/User.class'
-import type Service from '@models/service/Service.class'
 import { Request } from 'express'
 /**
  * @param {String} permission User must be associated to a role with the given permission
@@ -9,11 +7,6 @@ import { Request } from 'express'
  *
  * For the moment if undefined, the check is skipped.
  */
-
-// interface PermissionsRequest extends Request {
-//   user: User
-//   service: Service
-// }
 
 function permissionMiddleware (permission: string): RequestHandler {
   return function userHasPermission (req: Request, res, next) {

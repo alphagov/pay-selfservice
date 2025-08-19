@@ -11,11 +11,6 @@ const logger = createLogger(__filename)
 
 const PATH = '/service/:serviceExternalId/account/:accountType/test-with-your-users/disable'
 
-
-interface Params {
-  productExternalId: string
-}
-
 @ServiceRoute
 @Authorised
 @Permission('transactions:read')
