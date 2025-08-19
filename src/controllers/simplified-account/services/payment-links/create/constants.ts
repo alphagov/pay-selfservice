@@ -7,6 +7,8 @@ export interface PaymentLinkCreationSession {
   payApiToken: string
   gatewayAccountId: number
   paymentLinkAmount: number
+  paymentAmountType: 'fixed' | 'variable'
+  paymentAmountHint?: string
   paymentReferenceType: 'custom' | 'standard'
   paymentReferenceLabel: string
   paymentReferenceHint?: string
