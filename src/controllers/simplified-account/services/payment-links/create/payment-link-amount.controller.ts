@@ -8,7 +8,7 @@ import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import formatAccountPathsFor from '@utils/format-account-paths-for'
-import { poundsToPence } from '@utils/currency-formatter'
+import { safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 
 
 function get(req: ServiceRequest, res: ServiceResponse) {
@@ -22,9 +22,17 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   const isWelsh = currentSession.language === 'cy'
 
   const formValues = {
-    amountTypeGroup: 'fixed',
-    paymentAmount: currentSession.paymentLinkAmount ? poundsToPence(currentSession.paymentLinkAmount) : undefined,
-  }
+    paymentAmountType: currentSession.paymentAmountType,
+    ...(currentSession.paymentAmountType === 'fixed' && {
+      paymentAmount: currentSession.paymentLinkAmount,
+    }),
+    ...(currentSession.paymentAmountType === 'variable' && {
+      amountHint: currentSession.paymentReferenceHint,
+    }),
+  };
+
+      // amountTypeGroup: 'fixed',
+    // paymentAmount: currentSession.paymentLinkAmount ? poundsToPence(currentSession.paymentLinkAmount) : undefined,
 
   return response(req, res, 'simplified-account/services/payment-links/create/amount', {
     service,
@@ -93,7 +101,7 @@ async function post(req: ServiceRequest<CreateLinkAmountBody>, res: ServiceRespo
 
   lodash.set(req, CREATE_SESSION_KEY, {
       ...lodash.get(req, CREATE_SESSION_KEY, {}),
-      paymentLinkAmount: poundsToPence(parseFloat(req.body.paymentAmount)),
+      paymentLinkAmount: safeConvertPoundsStringToPence(req.body.paymentAmount),
     } as PaymentLinkCreationSession)
     return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.review, account.externalId) as string)
 }
