@@ -1,15 +1,15 @@
-'use strict'
-
-const { PermissionDeniedError } = require('../errors')
-
+import { PermissionDeniedError } from '../errors'
+import {RequestHandler} from "express";
+import { Request } from 'express'
 /**
  * @param {String} permission User must be associated to a role with the given permission
  * to have authorization for the operation.
  *
  * For the moment if undefined, the check is skipped.
  */
-module.exports = function getUserHasPermissionMiddleware (permission) {
-  return function userHasPermission (req, res, next) {
+
+function permissionMiddleware (permission: string): RequestHandler {
+  return function userHasPermission (req: Request, res, next) {
     if (!req.user || !req.service) {
       return next(new Error('Request data is missing'))
     }
@@ -20,3 +20,5 @@ module.exports = function getUserHasPermissionMiddleware (permission) {
     return next()
   }
 }
+
+export = permissionMiddleware

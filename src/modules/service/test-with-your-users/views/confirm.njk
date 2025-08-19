@@ -1,0 +1,34 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+
+{% set servicePageTitle = "Your prototype link" %}
+{% set backLinkText = "Back to prototype links" %}
+
+{% block serviceContent %}
+  <h1 class="govuk-heading-l page-title">
+    {{ servicePageTitle }}
+  </h1>
+
+  <p class="govuk-body">This link will send the user to our payment pages. Use it in a “pay now” button, for example, to integrate it with your prototype.</p>
+
+  {% set prototypeLink %}
+    <p class="govuk-body govuk-!-font-weight-bold"><a class="pay-protototype-link govuk-link" id="prototyping__links-link-create-payment" href="{{prototypeLink}}">{{prototypeLink}}</a></p>
+  {% endset %}
+
+  {{
+    govukInsetText({
+      html: prototypeLink
+    })
+  }}
+
+  <p class="govuk-body">Links will be saved for as long as you need them in the prototype links tab.</p>
+
+  {{
+  govukButton({
+    text: "See prototype links",
+    href: prototypesLink,
+    attributes: {
+      id: "see-prototype-links"
+    }
+  })
+  }}
+{% endblock %}

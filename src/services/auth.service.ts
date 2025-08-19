@@ -149,7 +149,7 @@ function hasValidSession(req: PassportExpressRequest) {
 }
 
 function addUserFieldsToLogContext(req: Request, _: Response, next: NextFunction) {
-  const user = req.user as User
+  const user = req.user
   if (user) {
     addField(USER_EXTERNAL_ID, user.externalId)
     addField('internal_user', `${user.internalUser}`)
