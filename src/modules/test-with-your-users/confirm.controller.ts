@@ -8,7 +8,7 @@ import {
   Authorised,
   BaseModule, Experimental, Middleware, Path,
   Permission,
-  Service, TestClass,
+  Service,
 } from "@root/modules/app-module";
 import restrictToSandboxOrStripeTestAccount from "@middleware/restrict-to-sandbox-or-stripe-test-account";
 
@@ -21,7 +21,7 @@ const PATH = '/service/:serviceExternalId/account/:accountType/test-with-your-us
 @Middleware(restrictToSandboxOrStripeTestAccount)
 @Experimental
 @Path(PATH)
-export class ConfirmModule extends TestClass {
+export class ConfirmModule extends BaseModule {
   get (req: ServiceRequest, res: ServiceResponse) {
     const prototypeLink = lodash.get(req, SESSION_KEY, '')
 

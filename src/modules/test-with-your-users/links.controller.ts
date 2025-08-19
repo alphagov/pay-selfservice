@@ -11,10 +11,8 @@ import {
   Path,
   Permission,
   Service,
-  TestClass
 } from "@root/modules/app-module";
 import restrictToSandboxOrStripeTestAccount from "@middleware/restrict-to-sandbox-or-stripe-test-account";
-import Base = Mocha.reporters.Base;
 
 const PATH = '/service/:serviceExternalId/account/:accountType/test-with-your-users/links'
 
