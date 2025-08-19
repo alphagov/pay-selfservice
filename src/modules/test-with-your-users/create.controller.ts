@@ -21,7 +21,7 @@ import {
   Middleware,
   Path,
   Permission,
-  Service,
+  ServiceRoute,
   Validate
 } from "@root/modules/app-module";
 import restrictToSandboxOrStripeTestAccount from "@middleware/restrict-to-sandbox-or-stripe-test-account";
@@ -41,7 +41,7 @@ interface CreatePrototypeLinkData {
   confirmationPage: string
 }
 
-@Service
+@ServiceRoute
 @Authorised
 @Permission('transactions:read')
 @Middleware(restrictToSandboxOrStripeTestAccount)

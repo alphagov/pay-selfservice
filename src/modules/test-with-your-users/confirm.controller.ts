@@ -8,14 +8,14 @@ import {
   Authorised,
   BaseModule, Experimental, Middleware, Path,
   Permission,
-  Service,
+  ServiceRoute,
 } from "@root/modules/app-module";
 import restrictToSandboxOrStripeTestAccount from "@middleware/restrict-to-sandbox-or-stripe-test-account";
 
 
 const PATH = '/service/:serviceExternalId/account/:accountType/test-with-your-users/confirm'
 
-@Service
+@ServiceRoute
 @Authorised
 @Permission('transactions:read')
 @Middleware(restrictToSandboxOrStripeTestAccount)

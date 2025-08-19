@@ -2,12 +2,12 @@ import { response } from '@utils/response.js'
 import paths from '@root/paths'
 import { ServiceRequest, ServiceResponse } from "@utils/types/express";
 import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/format-service-and-account-paths-for";
-import {Authorised, BaseModule, Experimental, Middleware, Path, Permission, Service} from "@root/modules/app-module";
+import {Authorised, BaseModule, Experimental, Middleware, Path, Permission, ServiceRoute} from "@root/modules/app-module";
 import restrictToSandboxOrStripeTestAccount from "@middleware/restrict-to-sandbox-or-stripe-test-account";
 
 const PATH = '/service/:serviceExternalId/account/:accountType/test-with-your-users'
 
-@Service
+@ServiceRoute
 @Authorised
 @Permission('transactions:read')
 @Middleware(restrictToSandboxOrStripeTestAccount)

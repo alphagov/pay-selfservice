@@ -4,7 +4,7 @@ import productsClient from '@services/clients/products.client.js'
 import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/format-service-and-account-paths-for";
 import { ServiceRequest, ServiceResponse } from "@utils/types/express";
 import { Message } from "@utils/types/express/Message";
-import {Authorised, Experimental, Middleware, Path, Permission, Service} from "@root/modules/app-module";
+import {Authorised, Experimental, Middleware, Path, Permission, ServiceRoute} from "@root/modules/app-module";
 import restrictToSandboxOrStripeTestAccount from "@middleware/restrict-to-sandbox-or-stripe-test-account";
 
 const logger = createLogger(__filename)
@@ -16,7 +16,7 @@ interface Params {
   productExternalId: string
 }
 
-@Service
+@ServiceRoute
 @Authorised
 @Permission('transactions:read')
 @Middleware(restrictToSandboxOrStripeTestAccount)

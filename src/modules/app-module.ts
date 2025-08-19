@@ -1,16 +1,10 @@
-import express, { RequestHandler } from "express";
+import { RequestHandler } from "express";
 import {ValidationChain} from "express-validator";
 import permissionMiddleware from "@middleware/permission";
 import userIsAuthorised from '@middleware/user-is-authorised'
 import {experimentalFeature, simplifiedAccountStrategy} from "@middleware/simplified-account";
 
 (Symbol as { metadata: symbol }).metadata ??= Symbol('Symbol.metadata')
-
-export interface GetModule {
-  permission?: RequestHandler
-  handler: express.RequestHandler
-}
-
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 interface BaseModuleConstructor extends Function {
@@ -27,13 +21,6 @@ export interface IBaseModule {
   constructor: BaseModuleConstructor
 }
 
-
-// type ModuleConstructorBase = new () => IBaseModule
-// interface ModuleConstructor extends ModuleConstructorBase {
-//   path?: string
-// }
-
-export const pathSymbol = Symbol('path')
 export function Path (path: string) {
   return function (target: BaseModuleConstructor) {
     target.path = path
@@ -84,19 +71,12 @@ export function Experimental (target: RequestHandler | BaseModuleConstructor, co
   return wrapMiddleware(context, experimentalFeature)
 }
 
-export function Service (target: RequestHandler | BaseModuleConstructor, context: DecoratorContext) {
+export function ServiceRoute (target: RequestHandler | BaseModuleConstructor, context: DecoratorContext) {
   return wrapMiddleware(context, simplifiedAccountStrategy)
 }
 
 export function Middleware (middleware: RequestHandler) {
   return function (target: RequestHandler | BaseModuleConstructor, context: DecoratorContext) {
     return wrapMiddleware(context, middleware)
-  }
-}
-
-export function Get(path: string) {
-  return function (target: express.RequestHandler) {
-    return express()
-      .get(path, target)
   }
 }
