@@ -18,7 +18,8 @@
     {{ "how to create prefilled links" | docsLink("prefill_payment_links") | safe }}.</p>
 
   <h2 class="govuk-heading-m">Add metadata for reconciliation and reporting</h2>
-  <p class="govuk-body">You can test adding metadata like cost centre codes or business area to your test payment links.</p>
+  <p class="govuk-body">You can test adding metadata like cost centre codes or business area to your test payment
+    links.</p>
 
 {% else %}
   <p class="govuk-body">You can create payment links and send them to your users so they can pay you. The
@@ -54,17 +55,24 @@
     href: createLink
   }) }}
 
-  <a class="govuk-link govuk-link--no-visited-state" href="{{ createLink }}?language=cy">Create a {{ serviceMode }} payment link in Welsh</a>
+  <a class="govuk-link govuk-link--no-visited-state" href="{{ createLink }}?language=cy">Create a {{ serviceMode }}
+    payment link in Welsh</a>
 </div>
 
 {% if products.length > 0 %}
   <h2 class="govuk-heading-m">{{ serviceMode | smartCaps }} payment links ({{ products.length }})</h2>
   {% for product in products %}
+    {% set productTitle %}
+      {{ product.name }}
+      {% if product.language === 'cy' %}<br><span class="govuk-!-font-weight-regular">(Welsh)</span>{% endif %}
+    {% endset %}
+
     {{ govukSummaryList({
       card: {
         title: {
-          text: product.name,
-          headingLevel: 3
+          html: productTitle,
+          headingLevel: 3,
+          classes: "multiline-title"
         },
         actions: {
           items: [

@@ -31,11 +31,17 @@
 {% if products.length > 0 %}
   <h2 class="govuk-heading-m">{{ serviceMode | smartCaps }} payment links ({{ products.length }})</h2>
   {% for product in products %}
+    {% set productTitle %}
+      {{ product.name }}
+      {% if product.language === 'cy' %}<br><span class="govuk-!-font-weight-regular">(Welsh)</span>{% endif %}
+    {% endset %}
+
     {{ govukSummaryList({
       card: {
         title: {
-          text: product.name,
-          headingLevel: 3
+          html: productTitle,
+          headingLevel: 3,
+          classes: "multiline-title"
         },
         actions: {
           items: []
