@@ -15,3 +15,4 @@ export interface PaymentLinkCreationSession {
 }
 
 export const CREATE_SESSION_KEY = 'session.pageData.createPaymentLink'
+export const FROM_REVIEW_QUERY_PARAM = 'fromReview'

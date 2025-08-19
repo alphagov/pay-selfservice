@@ -3,9 +3,8 @@ import { response } from '@utils/response'
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import formatAccountPathsFor from '@utils/format-account-paths-for'
 import paths from '@root/paths'
-import { CREATE_SESSION_KEY, PaymentLinkCreationSession } from './constants'
+import { CREATE_SESSION_KEY, FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
 import lodash from 'lodash'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 
@@ -98,8 +97,19 @@ async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceRe
     gatewayAccountId: account.id, // todo: remove me once implemented in simplified journey
   } as PaymentLinkCreationSession)
 
+
   return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.amount, service.externalId,
     account.type))
+
+
+  //   const redirectPath = (req.query[FROM_REVIEW_QUERY_PARAM] as string) === 'true'
+  //     ? paths.simplifiedAccount.paymentLinks.review
+  //     : paths.simplifiedAccount.paymentLinks.review // TODO: change to account, once the account page is ready
+
+  // return res.redirect(
+  //   formatServiceAndAccountPathsFor(redirectPath, service.externalId, account.type)
+  // )
+
 }
 
 export { get, post }

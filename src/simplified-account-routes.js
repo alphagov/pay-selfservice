@@ -104,6 +104,18 @@ simplifiedAccount.post(
   permission('tokens:create'),
   servicesController.paymentLinks.create.amount.post
 )
+simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.review,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.create.review.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.review,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.create.review.post
+)
 
 // payment links edit - index
 simplifiedAccount.get(
