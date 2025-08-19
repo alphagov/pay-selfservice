@@ -96,7 +96,6 @@ async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceRe
     paymentReferenceLabel: req.body.referenceTypeGroup === 'custom' ? req.body.referenceLabel : undefined,
     paymentReferenceHint: req.body.referenceTypeGroup === 'custom' ? req.body.referenceHint : undefined,
     gatewayAccountId: account.id, // todo: remove me once implemented in simplified journey
-    paymentLinkAmount: 1500, // todo: remove me once implemented in simplified journey
   } as PaymentLinkCreationSession)
 
   return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.amount, service.externalId,
