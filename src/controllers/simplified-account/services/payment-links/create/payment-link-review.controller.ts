@@ -43,7 +43,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       account.type
     ),
     amountLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.paymentLinks.review + '?' + fromReviewQueryString,
+      paths.simplifiedAccount.paymentLinks.amount + '?' + fromReviewQueryString,
       service.externalId,
       account.type
     ),
