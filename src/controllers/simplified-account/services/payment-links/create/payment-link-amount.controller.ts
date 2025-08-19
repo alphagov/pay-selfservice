@@ -100,7 +100,7 @@ async function post(req: ServiceRequest<CreateLinkAmountBody>, res: ServiceRespo
       paymentLinkAmount: req.body.amountTypeGroup === 'fixed' ? safeConvertPoundsStringToPence(req.body.paymentAmount) : undefined,
       paymentAmountHint: req.body.amountTypeGroup === 'variable' ? req.body.amountHint : undefined,
     } as PaymentLinkCreationSession)
-    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
+    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review as string, service.externalId, account.type))
 }
 
 export { get, post }

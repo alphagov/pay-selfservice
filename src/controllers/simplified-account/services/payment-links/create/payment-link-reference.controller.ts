@@ -97,9 +97,9 @@ async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceRe
     gatewayAccountId: account.id, // todo: remove me once implemented in simplified journey
   } as PaymentLinkCreationSession)
 
-  const redirectPath = (req.query[FROM_REVIEW_QUERY_PARAM] as string) === 'true'
-    ? paths.simplifiedAccount.paymentLinks.review
-    : paths.simplifiedAccount.paymentLinks.amount
+  const redirectPath = req.query[FROM_REVIEW_QUERY_PARAM] === 'true'
+    ? paths.simplifiedAccount.paymentLinks.review as string
+    : paths.simplifiedAccount.paymentLinks.amount as string
 
   return res.redirect(formatServiceAndAccountPathsFor(redirectPath, service.externalId, account.type))
 
