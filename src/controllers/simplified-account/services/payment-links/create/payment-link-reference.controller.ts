@@ -98,8 +98,8 @@ async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceRe
   } as PaymentLinkCreationSession)
 
   const redirectPath = req.query[FROM_REVIEW_QUERY_PARAM] === 'true'
-    ? paths.simplifiedAccount.paymentLinks.review as string
-    : paths.simplifiedAccount.paymentLinks.amount as string
+    ? paths.simplifiedAccount.paymentLinks.review
+    : paths.simplifiedAccount.paymentLinks.amount
 
   return res.redirect(formatServiceAndAccountPathsFor(redirectPath, service.externalId, account.type))
 

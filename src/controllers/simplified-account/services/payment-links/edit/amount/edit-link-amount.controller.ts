@@ -3,7 +3,7 @@ import { getProductByGatewayAccountIdAndExternalId, updateProduct } from '@servi
 import { response } from '@utils/response'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
-import { penceToPounds, poundsToPence } from '@utils/currency-formatter'
+import { penceToPounds, safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 import { ProductUpdateRequestBuilder } from '@models/products/ProductUpdateRequest.class'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import { validationResult } from 'express-validator'
@@ -69,7 +69,7 @@ async function post(req: ServiceRequest<EditLinkAmountBody>, res: ServiceRespons
 
   const productUpdateRequest = ProductUpdateRequestBuilder.fromProduct(product)
     .setAmount({
-      price: req.body.amountTypeGroup === 'fixed' ? poundsToPence(parseFloat(req.body.paymentAmount)) : 0,
+      price: req.body.amountTypeGroup === 'fixed' ? safeConvertPoundsStringToPence(req.body.paymentAmount) : 0,
       hint: req.body.amountHint,
     })
     .build()
