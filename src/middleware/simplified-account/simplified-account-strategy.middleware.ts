@@ -78,16 +78,16 @@ async function getGatewayAccount(serviceExternalId: string, accountType: string)
   }
 }
 
-interface AuthenticatedRequest extends Request {
-  user: User
-  account?: GatewayAccount
-  service?: Service
-  params: Record<string, string>
-}
+// interface AuthenticatedRequest extends Request {
+//   user: User
+//   account?: GatewayAccount
+//   service?: Service
+//   params: Record<string, string>
+// }
 
 async function getSimplifiedAccount(req: Request, _: Response, next: NextFunction) {
   console.log('hit4')
-  const request = req as AuthenticatedRequest
+  const request = req
   try {
     const serviceExternalId = request.params[SERVICE_EXTERNAL_ID]
     const accountType = request.params[ACCOUNT_TYPE]

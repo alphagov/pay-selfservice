@@ -23,7 +23,7 @@ interface Params {
 @Experimental
 @Path(PATH)
 export class DisableModule {
-  async post (req: ServiceRequest<null, Params>, res: ServiceResponse) {
+  async post (req: ServiceRequest, res: ServiceResponse) {
     return productsClient.product.disable(req.account.id, req.params.productExternalId)
       .then(() => {
         req.flash('messages', Message.Success('Prototype link deleted'))
