@@ -12,7 +12,7 @@ import formatValidationErrors from '@utils/simplified-account/format/format-vali
 import { ProductUpdateRequestBuilder } from '@models/products/ProductUpdateRequest.class'
 import lodash from 'lodash'
 
-async function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
+async function get(req: ServiceRequest<EditLinkMetadataBody>, res: ServiceResponse, next: NextFunction) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
   try {
     checkKeyExistsOnProductMetadata(product, req)
