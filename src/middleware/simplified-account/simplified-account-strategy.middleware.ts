@@ -85,6 +85,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 async function getSimplifiedAccount(req: Request, _: Response, next: NextFunction) {
+  console.log('hit4')
   const request = req as AuthenticatedRequest
   try {
     const serviceExternalId = request.params[SERVICE_EXTERNAL_ID]
