@@ -56,6 +56,8 @@ const { registrationSuccess } = require('@services/auth.service')
 const { account: routes} = require('@root/paths')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 
+const { modularRouter } = require('@root/modular-router')
+
 // Assignments
 const {
   allServiceTransactions,
@@ -246,6 +248,10 @@ module.exports.bind = function (app) {
   account.get(transactions.detail, permission('transactions-details:read'), transactionDetailController)
   account.post(transactions.refund, permission('refunds:create'), transactionRefundController)
 
+
+  console.log('router:', modularRouter)
+  app.use(modularRouter)
+
   // Settings
   app.use(paths.simplifiedAccount.root, simplifiedAccountRoutes)
 
@@ -287,6 +293,7 @@ module.exports.bind = function (app) {
 
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
+
 
   // security.txt — https://gds-way.cloudapps.digital/standards/vulnerability-disclosure.html
   const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'

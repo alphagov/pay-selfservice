@@ -110,6 +110,7 @@
     "@pact-foundation/pact-core": "^14.0.5",
     "@types/client-sessions": "^0.8.6",
     "@types/express": "^5.0.1",
+    "@types/express-serve-static-core": "^5.0.7",
     "@types/jquery": "^3.5.32",
     "@types/lodash": "^4.17.16",
     "@types/luxon": "^3.6.2",
