@@ -1,7 +1,7 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
-import { PaymentLinkCreationSession } from './constants'
+import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -210,6 +210,41 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
       })
 
       it('should redirect to review page', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/review/))
+      })
+    })
+
+    describe('when the user is coming back from the review page (FROM_REVIEW_QUERY_PARAM set to true)', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentReferenceType: 'standard'
+        }
+
+        res.redirect.resetHistory()
+
+        nextRequest({
+          query: { [FROM_REVIEW_QUERY_PARAM]: 'true' },
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            referenceTypeGroup: 'custom',
+            referenceLabel: 'Order Number',
+            referenceHint: 'Enter your order number',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should redirect back to the review page', () => {
         sinon.assert.calledOnce(res.redirect)
         sinon.assert.calledWith(res.redirect, sinon.match(/review/))
       })
