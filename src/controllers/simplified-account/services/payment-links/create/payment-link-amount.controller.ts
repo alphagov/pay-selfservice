@@ -7,7 +7,6 @@ import lodash from 'lodash'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
-import formatAccountPathsFor from '@utils/format-account-paths-for'
 import { safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 
 
@@ -30,9 +29,6 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       amountHint: currentSession.paymentReferenceHint,
     }),
   };
-
-      // amountTypeGroup: 'fixed',
-    // paymentAmount: currentSession.paymentLinkAmount ? poundsToPence(currentSession.paymentLinkAmount) : undefined,
 
   return response(req, res, 'simplified-account/services/payment-links/create/amount', {
     service,
@@ -65,13 +61,12 @@ async function post(req: ServiceRequest<CreateLinkAmountBody>, res: ServiceRespo
   const isWelsh = currentSession.language === 'cy'
 
   const validations = [paymentLinkSchema.amount.type.validate]
-  validations.push(paymentLinkSchema.amount.price.validate)
 
-  // if (req.body.amountTypeGroup === 'fixed') {
-  //   validations.push(paymentLinkSchema.amount.price.validate)
-  // } else {
-  //   validations.push(paymentLinkSchema.amount.hint.validate)
-  // }
+  if (req.body.amountTypeGroup === 'fixed') {
+    validations.push(paymentLinkSchema.amount.price.validate)
+  } else {
+    validations.push(paymentLinkSchema.amount.hint.validate)
+  }
 
   await Promise.all(validations.map((validation) => validation.run(req)))
   const errors = validationResult(req)
@@ -101,9 +96,11 @@ async function post(req: ServiceRequest<CreateLinkAmountBody>, res: ServiceRespo
 
   lodash.set(req, CREATE_SESSION_KEY, {
       ...lodash.get(req, CREATE_SESSION_KEY, {}),
-      paymentLinkAmount: safeConvertPoundsStringToPence(req.body.paymentAmount),
+      paymentAmountType: req.body.amountTypeGroup,
+      paymentLinkAmount: req.body.amountTypeGroup === 'fixed' ? safeConvertPoundsStringToPence(req.body.paymentAmount) : undefined,
+      paymentAmountHint: req.body.amountTypeGroup === 'variable' ? req.body.amountHint : undefined,
     } as PaymentLinkCreationSession)
-    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.review, account.externalId) as string)
+    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
 }
 
 export { get, post }
