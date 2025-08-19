@@ -82,6 +82,7 @@ interface AuthenticatedRequest extends Request {
   user: User
   account?: GatewayAccount
   service?: Service
+  params: Record<string, string>
 }
 
 async function getSimplifiedAccount(req: Request, _: Response, next: NextFunction) {

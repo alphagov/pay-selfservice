@@ -11,7 +11,11 @@ import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-
 
 const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
 
-function get(req: ServiceRequest, res: ServiceResponse) {
+interface QueryParams {
+  language: unknown
+}
+
+function get(req: ServiceRequest<never,never,QueryParams>, res: ServiceResponse) {
   const { account, service } = req
   const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
   const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
@@ -45,7 +49,7 @@ interface CreateLinkInformationBody {
   description?: string
 }
 
-async function post(req: ServiceRequest<CreateLinkInformationBody>, res: ServiceResponse) {
+async function post(req: ServiceRequest<CreateLinkInformationBody, never, QueryParams>, res: ServiceResponse) {
   const { account, service } = req
   const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
   const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'

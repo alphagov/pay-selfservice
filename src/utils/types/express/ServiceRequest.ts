@@ -6,7 +6,7 @@ import type StripeAccountSetup from '@models/StripeAccountSetup.class'
 import ClientSessionsCookie from '@utils/types/client-sessions/ClientSessionsCookie'
 import { Message } from "@utils/types/express/Message";
 
-export default interface ServiceRequest<T = never, P = never> extends express.Request<P, never, T, never> {
+export default interface ServiceRequest<T = never, P = never, Q = never> extends express.Request<P, never, T, Q> {
   user: User
   service: Service
   account: GatewayAccount
@@ -14,5 +14,6 @@ export default interface ServiceRequest<T = never, P = never> extends express.Re
   flash(type: string, message: Message): void
   body: T
   params: P
+  query: Q
   session: ClientSessionsCookie
 }

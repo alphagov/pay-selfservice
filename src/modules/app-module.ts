@@ -1,5 +1,3 @@
-import 'reflect-metadata'
-
 import express, { RequestHandler } from "express";
 import {ValidationChain} from "express-validator";
 import permissionMiddleware from "@middleware/permission";

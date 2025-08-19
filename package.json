@@ -93,7 +93,6 @@
     "passport-local": "^1.0.0",
     "qrcode": "1.5.3",
     "qs": "6.11.2",
-    "reflect-metadata": "^0.2.2",
     "rfc822-validate": "1.0.0",
     "staticify": "5.0.0",
     "stripe": "^10.12.0",
