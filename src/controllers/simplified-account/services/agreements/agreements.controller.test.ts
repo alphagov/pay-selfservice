@@ -38,6 +38,7 @@ const { nextRequest, call } = new ControllerTestBuilder(
     id: GATEWAY_ACCOUNT_ID,
     type: GatewayAccountType.TEST
   })
+  .withUrl('localhost:3000')
   .build()
 
 

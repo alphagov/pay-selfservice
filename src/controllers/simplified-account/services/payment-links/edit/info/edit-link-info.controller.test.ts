@@ -256,7 +256,7 @@ describe('controller: services/payment-links/edit/info/edit-link-info', () => {
         mockResponse.resetHistory()
         res.redirect.resetHistory()
 
-        const longDescription = 'a'.repeat(256)
+        const longDescription = 'a'.repeat(5001)
         nextRequest({
           params: { productExternalId: PRODUCT_EXTERNAL_ID },
           body: {
