@@ -258,15 +258,15 @@ describe('PaymentLinks dashboard', () => {
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
-                  'You can create test payment links to see how your service will work.'
+                  'You can create test payment links'
                 )
                 cy.wrap($elements.eq(1)).should(
                   'contain.text',
-                  'You can test prefilling the amount, reference or both for users.'
+                  'You can test prefilling the amount'
                 )
                 cy.wrap($elements.eq(2)).should(
                   'contain.text',
-                  'You can test adding metadata like cost centre codes or business area to your test payment links.'
+                  'You can test adding metadata'
                 )
               })
 
@@ -331,15 +331,15 @@ describe('PaymentLinks dashboard', () => {
               .then(($elements) => {
                 cy.wrap($elements.eq(0)).should(
                   'contain.text',
-                  'You can create test payment links to see how your service will work.'
+                  'You can create test payment links'
                 )
                 cy.wrap($elements.eq(1)).should(
                   'contain.text',
-                  'You can test prefilling the amount, reference or both for users.'
+                  'You can test prefilling the amount'
                 )
                 cy.wrap($elements.eq(2)).should(
                   'contain.text',
-                  'You can test adding metadata like cost centre codes or business area to your test payment links.'
+                  'You can test adding metadata'
                 )
               })
 
