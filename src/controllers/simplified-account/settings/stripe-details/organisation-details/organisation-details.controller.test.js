@@ -4,7 +4,7 @@ const ControllerTestBuilder = require('@test/test-helpers/simplified-account/con
 const sinon = require('sinon')
 const { expect } = require('chai')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockStripeDetailsService = {
   updateConnectorStripeProgress: sinon.stub().resolves()
 }
@@ -32,8 +32,8 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/
 
 describe('Controller: settings/stripe-details/organisation-details', () => {
   describe('get', () => {
-    before(() => {
-      call('get', 1)
+    beforeEach(async () => {
+      await call('get', 1)
     })
 
     it('should call the response method', () => {
@@ -55,13 +55,13 @@ describe('Controller: settings/stripe-details/organisation-details', () => {
 
   describe('post', () => {
     describe('when user selects yes', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             confirmOrgDetails: 'true'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should update progress in connector database', () => {
@@ -78,13 +78,13 @@ describe('Controller: settings/stripe-details/organisation-details', () => {
     })
 
     describe('when user selects no', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             confirmOrgDetails: 'false'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should not update progress in connector database', () => {
@@ -100,13 +100,13 @@ describe('Controller: settings/stripe-details/organisation-details', () => {
     })
 
     describe('when user does not select an option', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             confirmOrgDetails: undefined
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should not redirect', () => {

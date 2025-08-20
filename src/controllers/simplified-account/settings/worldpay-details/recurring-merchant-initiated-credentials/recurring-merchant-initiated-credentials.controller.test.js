@@ -9,7 +9,7 @@ const PaymentProviders = require('@models/constants/payment-providers')
 const CredentialState = require('@models/constants/credential-state')
 const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const USERNAME = 'a-username'
 const PASSWORD = 'a-password' // pragma: allowlist secret
@@ -61,7 +61,7 @@ describe('Controller: settings/worldpay-details/recurring-merchant-initiated-cre
   describe('get', () => {
     describe('when credentials do not exist', () => {
       let thisCall
-      before(async () => {
+      beforeEach(async () => {
         thisCall = await call('get')
       })
 
@@ -90,7 +90,7 @@ describe('Controller: settings/worldpay-details/recurring-merchant-initiated-cre
     })
     describe('when credentials exist', () => {
       let thisCall
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           account: {
             gatewayAccountCredentials: [
@@ -107,6 +107,7 @@ describe('Controller: settings/worldpay-details/recurring-merchant-initiated-cre
         })
         thisCall = await call('get')
       })
+
       it('should call the response method', () => {
         expect(mockResponse.called).to.be.true
       })
@@ -135,7 +136,7 @@ describe('Controller: settings/worldpay-details/recurring-merchant-initiated-cre
     })
 
     describe('switch psp journey', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/switch-psp/recurring-merchant-initiated/${CREDENTIAL_EXTERNAL_ID}`,
         })
@@ -195,7 +196,7 @@ describe('Controller: settings/worldpay-details/recurring-merchant-initiated-cre
 
 
     describe('add details journey', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             merchantCode: MERCHANT_CODE,

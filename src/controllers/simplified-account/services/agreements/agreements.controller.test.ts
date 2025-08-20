@@ -7,7 +7,7 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const AGREEMENT_EXTERNAL_ID = 'agreement123abc'
 const GATEWAY_ACCOUNT_ID = 117
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockAgreementsService = {
   searchAgreements: sinon.stub().resolves({
     total: 1,
@@ -38,13 +38,14 @@ const { nextRequest, call } = new ControllerTestBuilder(
     id: GATEWAY_ACCOUNT_ID,
     type: GatewayAccountType.TEST
   })
+  .withUrl(`https://wwww.compuglobalhypermeganet.example.com/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/agreements`)
   .build()
 
 
 describe('controller: services/agreements', () => {
   describe('get', () => {
     describe('agreements exist for service, no filters', () => {
-      before(async () => {
+      beforeEach(async () => {
         await call('get')
       })
 

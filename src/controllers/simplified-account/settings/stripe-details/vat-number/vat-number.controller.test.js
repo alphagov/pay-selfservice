@@ -4,7 +4,7 @@ const paths = require('@root/paths')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const { expect } = require('chai')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockStripeDetailsService = {
   updateStripeDetailsVatNumber: sinon.stub().resolves()
 }
@@ -24,21 +24,20 @@ const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@c
 
 describe('Controller: settings/stripe-details/vat-number', () => {
   describe('get', () => {
-    before(() => {
-      call('get', 1)
-    })
-
-    it('should call the response method', () => {
+    it('should call the response method',  async () => {
+      await call('get', 1)
       expect(mockResponse.called).to.be.true
     })
 
-    it('should pass req, res and template path to the response method', () => {
+    it('should pass req, res and template path to the response method', async () => {
+      await call('get', 1)
       expect(mockResponse.args[0][0]).to.deep.equal(req)
       expect(mockResponse.args[0][1]).to.deep.equal(res)
       expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/stripe-details/vat-number/index')
     })
 
-    it('should pass context data to the response method', () => {
+    it('should pass context data to the response method', async () => {
+      await call('get', 1)
       expect(mockResponse.args[0][3]).to.have.property('backLink').to.equal(STRIPE_DETAILS_INDEX_PATH)
     })
   })
@@ -69,14 +68,14 @@ describe('Controller: settings/stripe-details/vat-number', () => {
 
     validVATNumbers.forEach(({ vatNumber, description }) => {
       describe(`when a valid ${description} is submitted`, () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
             body: {
               vatNumberDeclaration: 'yes',
               vatNumber
             }
           })
-          call('post', 1)
+          await call('post', 1)
         })
 
         it('should submit vat number to the stripe details service', () => {
@@ -92,14 +91,15 @@ describe('Controller: settings/stripe-details/vat-number', () => {
         })
       })
     })
+
     describe('when VAT number declaration is no', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             vatNumberDeclaration: 'no'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should not submit VAT number to the stripe details service', () => {
@@ -116,7 +116,7 @@ describe('Controller: settings/stripe-details/vat-number', () => {
     })
 
     describe('when the Stripe API returns an error', () => {
-      before(() => {
+      beforeEach(async () => {
         nextStubs({
           '@services/stripe-details.service': {
             updateStripeDetailsVatNumber: sinon.stub().rejects({ type: 'StripeInvalidRequestError' })
@@ -128,7 +128,7 @@ describe('Controller: settings/stripe-details/vat-number', () => {
             vatNumber: 'GB123456789'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should render the form with appropriate error response', () => {
@@ -137,14 +137,14 @@ describe('Controller: settings/stripe-details/vat-number', () => {
     })
 
     describe('when VAT number validation fails', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             vatNumberDeclaration: 'yes',
             vatNumber: 'what'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should not call the stripe details service', () => {

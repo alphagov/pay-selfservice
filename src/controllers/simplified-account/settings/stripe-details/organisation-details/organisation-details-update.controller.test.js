@@ -4,7 +4,7 @@ const formatSimplifiedAccountPathsFor = require('../../../../../utils/simplified
 const paths = require('@root/paths')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockStripeDetailsService = {
   updateStripeDetailsOrganisationNameAndAddress: sinon.stub().resolves()
 }
@@ -45,8 +45,8 @@ const {
 
 describe('Controller: settings/stripe-details/organisation-details-update', () => {
   describe('get', () => {
-    before(() => {
-      call('get', 1)
+    beforeEach(async () => {
+      await call('get', 1)
     })
 
     it('should call the response method with correct arguments', () => {
@@ -70,7 +70,7 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
 
   describe('post', () => {
     describe('when submitting valid details', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             organisationName: 'Glomgold Industries',
@@ -80,7 +80,7 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
             addressCountry: 'CS'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should submit organisation details to the stripe details service', () => {
@@ -103,7 +103,7 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
     })
 
     describe('when submitting invalid details', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             organisationName: '',
@@ -113,7 +113,7 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
             addressCountry: 'CS'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should not submit organisation details to the stripe details service', () => {
@@ -160,7 +160,7 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
     })
 
     describe('when address line 2 is present', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             organisationName: 'McDuck Enterprises',
@@ -171,7 +171,7 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
             addressCountry: 'CS'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should include additional details when submitting data to stripe details service', () => {

@@ -30,10 +30,6 @@ describe('restrictToSwitchingAccount middleware', () => {
     next = sinon.spy()
   })
 
-  afterEach(() => {
-    sinon.restore()
-  })
-
   describe('when account is switching to stripe', () => {
     it('should call next() without error when switching credential provider is stripe', () => {
       const middleware = restrictToSwitchingAccount(PaymentProviders.STRIPE)

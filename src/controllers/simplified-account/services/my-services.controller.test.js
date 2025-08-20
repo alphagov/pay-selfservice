@@ -14,7 +14,7 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const SERVICE_NAME = 'Rare coin authentication service'
 const SERVICE_EXTERNAL_ID = 'service-123-def'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockGatewayAccountService = {
   getGatewayAccountsByIds: sinon.stub().resolves({
     32: new GatewayAccount(validGatewayAccount({
@@ -102,14 +102,14 @@ const {
 describe('Controller: services/my-services.controller', () => {
   describe('get', () => {
     describe('for a service with two sandbox test accounts and a live account', () => {
-      before(() => {
+      beforeEach(async () => {
         userServiceRoles[0].service.gatewayAccountIds = ['35', '36', '37']
         nextRequest({
           user: {
             serviceRoles: userServiceRoles
           }
         })
-        call('get')
+        await call('get')
       })
 
       it('should call the response method with expected parameters', () => {
@@ -174,14 +174,14 @@ describe('Controller: services/my-services.controller', () => {
       })
     })
     describe('for a service with a test sandbox account, a test stripe account and no live account', () => {
-      before(() => {
+      beforeEach(async () => {
         userServiceRoles[0].service.gatewayAccountIds = ['34', '36']
         nextRequest({
           user: {
             serviceRoles: userServiceRoles
           }
         })
-        call('get')
+        await call('get')
       })
 
       it('should reformat links for test', () => {
@@ -228,14 +228,14 @@ describe('Controller: services/my-services.controller', () => {
       })
     })
     describe('for a service with an unsupported test account and a live account', () => {
-      before(() => {
+      beforeEach(async () => {
         userServiceRoles[0].service.gatewayAccountIds = ['33', '37']
         nextRequest({
           user: {
             serviceRoles: userServiceRoles
           }
         })
-        call('get')
+        await call('get')
       })
 
       it('should filter the unsupported test gateway account', () => {
@@ -260,14 +260,14 @@ describe('Controller: services/my-services.controller', () => {
       })
     })
     describe('for a service with disabled test gateway accounts', () => {
-      before(() => {
+      beforeEach(async () => {
         userServiceRoles[0].service.gatewayAccountIds = ['32', '38', '39']
         nextRequest({
           user: {
             serviceRoles: userServiceRoles
           }
         })
-        call('get')
+        await call('get')
       })
 
       it('should filter out the disabled test gateway accounts', () => {

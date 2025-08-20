@@ -10,7 +10,7 @@ const GATEWAY_ACCOUNT_ID = 117
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 const PRODUCT_EXTERNAL_ID = 'product123abc'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockGetProductByGatewayAccountIdAndExternalId = sinon.stub()
 
 const { nextRequest, call } = new ControllerTestBuilder(
@@ -57,7 +57,7 @@ const mockProduct = {
 describe('controller: services/payment-links/edit/edit-payment-link', () => {
   describe('get', () => {
     describe('with valid product', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         nextRequest({
           params: { productExternalId: PRODUCT_EXTERNAL_ID },
@@ -160,7 +160,7 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
     })
 
     describe('with product without description', () => {
-      before(async () => {
+      beforeEach(async () => {
         const productWithoutDescription = {
           ...mockProduct,
           description: undefined
@@ -182,7 +182,7 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
     })
 
     describe('with variable amount product', () => {
-      before(async () => {
+      beforeEach(async () => {
         const variableAmountProduct = {
           ...mockProduct,
           price: 0
@@ -204,7 +204,7 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
     })
 
     describe('with product without reference label', () => {
-      before(async () => {
+      beforeEach(async () => {
         const productWithoutReference = {
           ...mockProduct,
           referenceLabel: undefined
@@ -226,7 +226,7 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
     })
 
     describe('with product without metadata', () => {
-      before(async () => {
+      beforeEach(async () => {
         const productWithoutMetadata = {
           ...mockProduct,
           metadata: undefined

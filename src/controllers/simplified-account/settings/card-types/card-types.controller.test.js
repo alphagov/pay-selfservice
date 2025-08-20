@@ -53,7 +53,7 @@ const allCardTypes = [{
 }]
 const acceptedCardTypes = [allCardTypes[0]]
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockGetAllCardTypes = sinon.stub().resolves({ card_types: allCardTypes })
 const mockGetAcceptedCardTypesForServiceAndAccountType = sinon.stub().resolves({ card_types: acceptedCardTypes })
 const mockPostAcceptedCardsForServiceAndAccountType = sinon.stub().resolves({})
@@ -73,11 +73,11 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/
 
 describe('Controller: settings/card-types', () => {
   describe('get for admin user', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         user: adminUser
       })
-      call('get')
+      await call('get')
     })
 
     it('should call the response method', () => {
@@ -102,11 +102,11 @@ describe('Controller: settings/card-types', () => {
   })
 
   describe('get for non-admin user', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         user: viewOnlyUser
       })
-      call('get')
+      await call('get')
     })
 
     it('should call the response method', () => {
@@ -131,12 +131,12 @@ describe('Controller: settings/card-types', () => {
   })
 
   describe('post to enable an additional card type', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         user: adminUser,
         body: { currentAcceptedCardTypeIds: 'id-001', debit: 'id-001', credit: ['id-002', 'id-003'] }
       })
-      call('post')
+      await call('post')
     })
 
     it('should call adminusers to update accepted card types', () => {
@@ -155,12 +155,12 @@ describe('Controller: settings/card-types', () => {
   })
 
   describe('post an unchanged set of card types', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         user: adminUser,
         body: { currentAcceptedCardTypeIds: 'id-001', debit: 'id-001' }
       })
-      call('post')
+      await call('post')
     })
 
     it('should not call adminusers', () => {
@@ -175,12 +175,12 @@ describe('Controller: settings/card-types', () => {
   })
 
   describe('post with no card types selected', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         user: adminUser,
         body: { currentAcceptedCardTypeIds: 'id-001' }
       })
-      call('post')
+      await call('post')
     })
 
     it('should not call adminusers', () => {

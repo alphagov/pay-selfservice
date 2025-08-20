@@ -12,7 +12,7 @@ const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 const PRODUCT_EXTERNAL_ID = 'product123abc'
 const METADATA_KEY = 'existing_column'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockGetProductByGatewayAccountIdAndExternalId = sinon.stub()
 const mockUpdateProduct = sinon.stub()
 
@@ -55,7 +55,7 @@ const mockProduct = {
 describe('controller: services/payment-links/edit/metadata/edit-link-metadata', () => {
   describe('get', () => {
     describe('with valid metadata key', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         nextRequest({
           params: {
@@ -116,7 +116,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
     })
 
     describe('with invalid metadata key', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         next.resetHistory()
 
@@ -136,7 +136,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
     })
 
     describe('with Welsh product', () => {
-      before(async () => {
+      beforeEach(async () => {
         const welshProduct = {
           ...mockProduct,
           language: 'cy',
@@ -162,7 +162,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
 
   describe('post', () => {
     describe('with valid edit action', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockUpdateProduct.resolves()
         res.redirect.resetHistory()
@@ -224,7 +224,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
     })
 
     describe('with valid delete action', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockUpdateProduct.resolves()
         res.redirect.resetHistory()
@@ -282,7 +282,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
     })
 
     describe('with invalid metadata key', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         next.resetHistory()
 
@@ -307,7 +307,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
     })
 
     describe('with validation errors - edit action with empty column name', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockResponse.resetHistory()
         res.redirect.resetHistory()
@@ -355,7 +355,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
     })
 
     describe('with validation errors - edit action with empty cell content', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockResponse.resetHistory()
         res.redirect.resetHistory()
@@ -392,7 +392,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
     })
 
     describe('with validation errors - duplicate column name', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockResponse.resetHistory()
         res.redirect.resetHistory()

@@ -10,7 +10,7 @@ const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 const USER_EXTERNAL_ID = 'user123def'
 const USER_EMAIL = 'scrooge.mcduck@pay.gov.uk'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const mockAgreement = {
   externalId: AGREEMENT_EXTERNAL_ID,
@@ -52,7 +52,7 @@ const { nextRequest, call, res } = new ControllerTestBuilder(
 describe('controller: services/agreements/cancel', () => {
   describe('get', () => {
     describe('successful cancel agreement request', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           params: { agreementExternalId: AGREEMENT_EXTERNAL_ID },
         })
@@ -92,7 +92,7 @@ describe('controller: services/agreements/cancel', () => {
 
   describe('post', () => {
     describe('with valid yes answer', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           params: { agreementExternalId: AGREEMENT_EXTERNAL_ID },
           body: { cancelAgreement: 'yes' },
@@ -121,7 +121,7 @@ describe('controller: services/agreements/cancel', () => {
     })
 
     describe('with valid no answer', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockAgreementsService.cancelAgreement.resetHistory()
         res.redirect.resetHistory()
         nextRequest({
@@ -142,7 +142,7 @@ describe('controller: services/agreements/cancel', () => {
     })
 
     describe('with validation errors', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockResponse.resetHistory()
         res.redirect.resetHistory()
         nextRequest({

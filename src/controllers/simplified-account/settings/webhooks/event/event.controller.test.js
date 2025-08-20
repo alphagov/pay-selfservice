@@ -33,7 +33,7 @@ const attempts = [
     result: '403 Forbidden'
   }
 ]
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockGetWebhookMessage = sinon.stub().resolves(event)
 const mockGetWebhookMessageAttempts = sinon.stub().resolves(attempts)
 
@@ -50,14 +50,14 @@ const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simpl
 
 describe('Controller: settings/webhooks/event', () => {
   describe('get', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         params: { webhookExternalId: WEBHOOK_EXTERNAL_ID, eventId: WEBHOOK_EVENT_EXTERNAL_ID },
         account: {
           externalId: GATEWAY_ACCOUNT_EXTERNAL_ID
         }
       })
-      call('get')
+      await call('get')
     })
 
     it('should call the response method', () => {
