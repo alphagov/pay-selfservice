@@ -23,7 +23,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     service,
     account,
     backLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.paymentLinks.reference,
+      paths.simplifiedAccount.paymentLinks.amount,
       service.externalId,
       account.type
     ),
