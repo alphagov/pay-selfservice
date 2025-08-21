@@ -69,7 +69,7 @@ async function post(req: ServiceRequest<EditLinkAmountBody>, res: ServiceRespons
 
   const productUpdateRequest = ProductUpdateRequestBuilder.fromProduct(product)
     .setAmount({
-      price: req.body.amountTypeGroup === 'fixed' ? safeConvertPoundsStringToPence(req.body.paymentAmount) : 0,
+      price: req.body.amountTypeGroup === 'fixed' ? safeConvertPoundsStringToPence(req.body.paymentAmount)! : 0,
       hint: req.body.amountHint,
     })
     .build()
