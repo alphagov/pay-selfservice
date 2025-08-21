@@ -7,7 +7,7 @@ import lodash from 'lodash'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
-import { safeConvertPoundsStringToPence } from '@utils/currency-formatter'
+import { penceToPounds, safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 
 
 function get(req: ServiceRequest, res: ServiceResponse) {
@@ -21,14 +21,10 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   const isWelsh = currentSession.language === 'cy'
 
   const formValues = {
-    paymentAmountType: currentSession.paymentAmountType,
-    ...(currentSession.paymentAmountType === 'fixed' && {
-      paymentAmount: currentSession.paymentLinkAmount,
-    }),
-    ...(currentSession.paymentAmountType === 'variable' && {
-      amountHint: currentSession.paymentReferenceHint,
-    }),
-  };
+    amountTypeGroup: currentSession.paymentAmountType,
+    paymentAmount: currentSession.paymentAmountType === 'fixed' ? penceToPounds(currentSession.paymentLinkAmount) : undefined,
+    amountHint: currentSession.paymentAmountType === 'variable' ? currentSession.paymentAmountHint : undefined,
+  }
 
   return response(req, res, 'simplified-account/services/payment-links/create/amount', {
     service,
@@ -41,6 +37,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     formValues,
     isWelsh,
     serviceMode: account.type,
+    createJourney: true
   })
 }
 
