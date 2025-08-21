@@ -24,6 +24,10 @@ const {
   .build()
 
 describe('Middleware: stripeAccountSetupStrategy', () => {
+  afterEach(() => {
+    sinon.resetHistory()
+  })
+
   describe('when stripe account setup progress resolution succeeds', () => {
     it('should set request key and call next', async () => {
       const { req } = await call()
