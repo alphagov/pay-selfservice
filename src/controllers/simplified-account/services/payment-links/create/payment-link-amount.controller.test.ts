@@ -2,7 +2,6 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { PaymentLinkCreationSession } from './constants'
-import { amount } from '.'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -214,6 +213,281 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
       it('should redirect to review page', () => {
         sinon.assert.calledOnce(res.redirect)
         sinon.assert.calledWith(res.redirect, sinon.match(/review/))
+      })
+    })
+
+    describe('with empty session data', () => {
+      before(async () => {
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {},
+          body: {},
+        })
+
+        await call('post')
+      })
+
+      it('should redirect to payment links index', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/payment-links/))
+      })
+    })
+
+    describe('with validation errors - no amount type selected', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'fixed',
+          paymentLinkAmount: 2499,
+        }
+
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {},
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/amount'
+        )
+      })
+
+      it('should include errors in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should not redirect', () => {
+        sinon.assert.notCalled(res.redirect)
+      })
+    })
+
+    describe('with validation errors - fixed type but empty amount', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'fixed',
+        }
+
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            amountTypeGroup: 'fixed',
+            paymentAmount: undefined
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
+      })
+    })
+
+    describe('with validation errors - fixed type amount too low', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'fixed',
+        }
+
+        const minimumAmount = 0.3
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            amountTypeGroup: 'fixed',
+            paymentAmount: (minimumAmount - 1).toString()
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
+      })
+    })
+
+    describe('with validation errors - fixed type amount too high', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'fixed',
+        }
+
+        const maximumAmount = 100000
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            amountTypeGroup: 'fixed',
+            paymentAmount: (maximumAmount + 1).toString()
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
+      })
+    })
+
+    describe('with validation errors - fixed type text amount', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'fixed',
+        }
+
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            amountTypeGroup: 'fixed',
+            paymentAmount: 'something'
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
+      })
+    })
+
+    describe('with validation errors - variable type with hint too long', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentReferenceType: 'standard',
+        }
+
+        const characterLimit = 255
+        const invalidAmountHint = 'a'.repeat(characterLimit + 1)
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            amountTypeGroup: 'variable',
+            amountHint: invalidAmountHint
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
       })
     })
   })
