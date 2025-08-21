@@ -2,18 +2,24 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
+import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
+import productTypes from '@utils/product-types'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 
 const mockResponse = sinon.spy()
+const mockCreatePaymentLinkToken = sinon.stub()
+const mockCreateProduct = sinon.stub()
 
-const { nextRequest, call, res } = new ControllerTestBuilder(
+const { nextRequest, call, res, req } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/payment-links/create/payment-link-review.controller'
 )
   .withStubs({
     '@utils/response': { response: mockResponse },
+    '@services/tokens.service': { createPaymentLinkToken: mockCreatePaymentLinkToken },
+    '@services/products.service': { createProduct: mockCreateProduct },
   })
   .withAccount({
     id: GATEWAY_ACCOUNT_ID,
@@ -159,6 +165,120 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
     })
   })
 
-  // describe('post', () => {
-  // })
+  describe('post', () => {
+    describe('with empty session data', () => {
+      before(async () => {
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {},
+          user: {
+            email: 'test@example.com'
+          },
+          flash: sinon.stub()
+        })
+        await call('post')
+      })
+
+      it('should redirect to payment links index', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/payment-links/))
+      })
+    })
+
+    describe('when the user confirms the creation of the payment link', () => {
+      const mockPaymentLink = {
+        name: 'Test Payment Link',
+        links: {
+          pay: {
+            href: 'https://pay-test-link.gov.uk'
+          }
+        }
+      }
+
+      before(async () => {
+        req.flash.resetHistory()
+        res.redirect.resetHistory()
+        mockCreateProduct.resetHistory()
+        mockCreateProduct.resolves(mockPaymentLink)
+        mockCreatePaymentLinkToken.resetHistory()
+        mockCreatePaymentLinkToken.resolves('big-beautiful-token')
+
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          paymentLinkDescription: 'Test Description',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentReferenceType: 'custom',
+          paymentReferenceLabel: 'Order Number',
+          paymentReferenceHint: 'Enter your order number',
+          paymentLinkAmount: 1500
+        }
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          flash: req.flash,
+          user: {
+            email: 'test@example.com'
+          }
+        })
+
+        await call('post')
+      })
+
+      it('should call createPaymentLinkToken with correct parameters', () => {
+        sinon.assert.calledOnce(mockCreatePaymentLinkToken)
+
+        const expectedUserEmail = 'test@example.com'
+        const expectedAccountId = GATEWAY_ACCOUNT_ID
+        const expectedServiceId = SERVICE_EXTERNAL_ID
+        const expectedAccountType = GatewayAccountType.TEST
+
+        sinon.assert.calledWith(
+          mockCreatePaymentLinkToken,
+          expectedAccountId,
+          expectedServiceId,
+          expectedAccountType,
+          expectedUserEmail
+        )
+      })
+
+      it('should call createProduct with correct parameters', () => {
+        sinon.assert.calledOnce(mockCreateProduct)
+
+        const expectedCreateProductRequest: CreateProductRequest = new CreateProductRequest()
+            .withGatewayAccountId(GATEWAY_ACCOUNT_ID)
+            .withServiceNamePath('test-service')
+            .withProductNamePath('test-payment-link')
+            .withApiToken('big-beautiful-token')
+            .withName('Test Payment Link')
+            .withDescription('Test Description')
+            .withPrice(1500)
+            .withType(productTypes.ADHOC)
+        sinon.assert.calledWith(mockCreateProduct, expectedCreateProductRequest)
+      })
+
+      it('should set success flash message', () => {
+        sinon.assert.calledWith(
+          req.flash,
+          'messages',
+          sinon.match({
+            state: 'success',
+            icon: '&check;',
+            heading: 'Test Payment Link has been created'
+          })
+        )
+      })
+
+      it('should redirect to payment links index after successful creation', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/payment-links/))
+      })
+    })
+  })
 })

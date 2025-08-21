@@ -5,6 +5,12 @@ import paths from '@root/paths'
 import { CREATE_SESSION_KEY, FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
 const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
 import lodash from 'lodash'
+import { createProduct } from '@services/products.service'
+import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
+import { createPaymentLinkToken } from '@services/tokens.service'
+import productTypes from '@utils/product-types'
+import formatServicePathsFor from '@utils/format-service-paths-for'
+
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
@@ -55,10 +61,48 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   })
 }
 
-function post(req: ServiceRequest, res: ServiceResponse) {
-  return res.status(501).json({
-    message: 'not implemented'
+async function post(req: ServiceRequest, res: ServiceResponse) {
+  const { service, account } = req
+  const indexPath = formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.index,
+      service.externalId,
+      account.type
+    )
+
+  const pageData = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
+  if (lodash.isEmpty(pageData)) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
+    )
+  }
+
+  const token = await createPaymentLinkToken(req.account.id, req.service.externalId, req.account.type, req.user.email)
+
+  const createProductRequest = new CreateProductRequest()
+    .withApiToken(token)
+    .withGatewayAccountId(account.id)
+    .withServiceNamePath(pageData.serviceNamePath)
+    .withProductNamePath(pageData.productNamePath)
+    .withName(pageData.paymentLinkTitle)
+    .withDescription(pageData.paymentLinkDescription ?? '')
+    .withPrice(pageData.paymentLinkAmount)
+    .withType(productTypes.ADHOC)
+
+  const paymentLink = await createProduct(createProductRequest)
+  const goLiveLink = formatServicePathsFor(paths.service.requestToGoLive.index, req.service.externalId) as string
+  const successBannerBody = `You can <a href="${paymentLink.links.pay.href}/"
+    class="govuk-link govuk-link--no-visited-state" target="_blank">test your payment link</a>.
+    You'll need to create it again if you want to use it when you <a href="${goLiveLink}"
+    class="govuk-link govuk-link--no-visited-state" target="_blank">go live</a>.`
+  req.flash('messages', {
+    state: 'success',
+    icon: '&check;',
+    heading: `${paymentLink.name} has been created`,
+    body: successBannerBody
   })
+  lodash.unset(req, CREATE_SESSION_KEY)
+  return res.redirect(indexPath)
 }
 
 export { get, post }
+

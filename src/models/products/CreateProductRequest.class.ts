@@ -8,6 +8,8 @@ export class CreateProductRequest {
   private price!: number
   private type!: string
   private returnUrl?: string
+  private serviceNamePath!: string
+  private productNamePath!: string
 
   withApiToken(apiToken: string) {
     this.apiToken = apiToken
@@ -44,6 +46,16 @@ export class CreateProductRequest {
     return this
   }
 
+  withServiceNamePath(serviceNamePath: string) {
+    this.serviceNamePath = serviceNamePath
+    return this
+  }
+
+  withProductNamePath(productNamePath: string) {
+    this.productNamePath = productNamePath
+    return this
+  }
+
   toPayload(): CreateProductRequestData {
     return {
       pay_api_token: this.apiToken,
@@ -52,7 +64,9 @@ export class CreateProductRequest {
       description: this.description,
       price: this.price,
       type: this.type,
-      return_url: this.returnUrl
+      return_url: this.returnUrl,
+      service_name_path: this.serviceNamePath,
+      product_name_path: this.productNamePath
     }
   }
 }
