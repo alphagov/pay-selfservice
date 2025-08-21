@@ -15,6 +15,18 @@ const createDemoPaymentToken = async (gatewayAccountId: number, serviceExternalI
   return response.token
 }
 
+const createPaymentLinkToken = async (gatewayAccountId: number, serviceExternalId: string, serviceMode: string, userEmail: string) => {
+  const response = await publicAuthClient.tokens.create(new CreateTokenRequest()
+    .withGatewayAccountId(gatewayAccountId)
+    .withServiceExternalId(serviceExternalId)
+    .withServiceMode(serviceMode)
+    .withDescription('Token for Payment Link creation')
+    .withCreatedBy(userEmail)
+    .withTokenUsageType(TokenUsageType.PRODUCTS))
+  return response.token
+}
+
+
 async function createToken (createTokenRequest: CreateTokenRequest) {
   const response = await publicAuthClient.tokens.create(createTokenRequest)
   return response.token
@@ -22,5 +34,6 @@ async function createToken (createTokenRequest: CreateTokenRequest) {
 
 export {
   createDemoPaymentToken,
+  createPaymentLinkToken,
   createToken
 }
