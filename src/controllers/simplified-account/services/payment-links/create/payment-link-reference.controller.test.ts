@@ -174,9 +174,9 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         await call('post')
       })
 
-      it('should redirect to review page', () => {
+      it('should redirect to amount page', () => {
         sinon.assert.calledOnce(res.redirect)
-        sinon.assert.calledWith(res.redirect, sinon.match(/review/))
+        sinon.assert.calledWith(res.redirect, sinon.match(/amount/))
       })
     })
 
@@ -209,9 +209,9 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         await call('post')
       })
 
-      it('should redirect to review page', () => {
+      it('should redirect to amount page', () => {
         sinon.assert.calledOnce(res.redirect)
-        sinon.assert.calledWith(res.redirect, sinon.match(/review/))
+        sinon.assert.calledWith(res.redirect, sinon.match(/amount/))
       })
     })
 
