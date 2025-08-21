@@ -9,15 +9,18 @@ import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { penceToPounds, safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 
+function getSession<T>(req: ServiceRequest<T>, res: ServiceResponse) {
+  const { service, account } = req
+  const session = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
+  if (lodash.isEmpty(session)) {
+    res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type))
+  }
+  return session
+}
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
-  const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
-  if (lodash.isEmpty(currentSession)) {
-    return res.redirect(
-      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
-    )
-  }
+  const currentSession = getSession(req, res)
   const isWelsh = currentSession.language === 'cy'
 
   const formValues = {
@@ -49,12 +52,7 @@ interface CreateLinkAmountBody {
 
 async function post(req: ServiceRequest<CreateLinkAmountBody>, res: ServiceResponse) {
   const { service, account } = req
-  const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
-  if (lodash.isEmpty(currentSession)) {
-    return res.redirect(
-      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
-    )
-  }
+  const currentSession = getSession(req, res)
   const isWelsh = currentSession.language === 'cy'
 
   const validations = [paymentLinkSchema.amount.type.validate]
