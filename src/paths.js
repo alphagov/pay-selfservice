@@ -1,5 +1,7 @@
 'use strict'
 
+import { meta } from '@eslint/js'
+
 const generateRoute = require('./utils/generate-route')
 const formattedPathFor = require('./utils/replace-params-in-path')
 
@@ -158,6 +160,7 @@ module.exports = {
     paymentLinks: {
       index: '/payment-links',
       create: '/payment-links/create',
+      metadata: '/payment-links/create/reporting-column',
       reference: '/payment-links/reference',
       edit: {
         index: '/payment-links/:productExternalId',

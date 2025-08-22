@@ -53,6 +53,11 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       service.externalId,
       account.type
     ),
+    addReportingColumnLink: formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.metadata + '?' + fromReviewQueryString,
+      service.externalId,
+      account.type
+    ),
     friendlyURL: PRODUCTS_FRIENDLY_BASE_URI,
     pageData: currentSession,
     isWelsh,
