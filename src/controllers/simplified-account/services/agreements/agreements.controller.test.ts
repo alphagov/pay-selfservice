@@ -337,7 +337,7 @@ describe('controller: services/agreements', () => {
     })
 
     describe('pagination URL generation', () => {
-      beforeEach(async () => {
+      before(() => {
         mockAgreementsService.searchAgreements.resolves({
           total: 50,
           count: 20,
