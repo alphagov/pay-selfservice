@@ -30,7 +30,7 @@ const { nextRequest, call, res } = new ControllerTestBuilder(
 describe('controller: services/payment-links/create/payment-link-amount', () => {
   describe('get', () => {
     describe('with existing session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
@@ -91,7 +91,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
     })
 
     describe('with Welsh session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Payment Link',
@@ -129,7 +129,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
 
 
     describe('with empty session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         res.redirect.resetHistory()
 
         nextRequest({
@@ -149,7 +149,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
 
   describe('post', () => {
     describe('with fixed amount type', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -183,7 +183,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
     })
 
     describe('with variable amount type', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -235,7 +235,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
     })
 
     describe('with validation errors - no amount type selected', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -283,7 +283,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
     })
 
     describe('with validation errors - fixed type but empty amount', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -325,7 +325,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
     })
 
     describe('with validation errors - fixed type amount too low', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -368,7 +368,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
     })
 
     describe('with validation errors - fixed type amount too high', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -411,7 +411,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
     })
 
     describe('with validation errors - fixed type text amount', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -453,7 +453,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
     })
 
     describe('with validation errors - variable type with hint too long', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
