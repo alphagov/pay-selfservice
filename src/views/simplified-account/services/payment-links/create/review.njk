@@ -148,6 +148,8 @@
     })
   }}
 
+  {% include "../../payment-links/partials/_manage-payment-link-metadata.njk" %}
+
   <form method="post" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
 
