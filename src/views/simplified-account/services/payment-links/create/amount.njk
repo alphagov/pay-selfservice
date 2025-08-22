@@ -1,0 +1,16 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+  {% if isEditing %}
+  Edit your payment link amount - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  {% else %}
+  Is the payment for a fixed amount? - Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  {% endif %}
+{% endblock %}
+
+{% block serviceContent %}
+  {% include "simplified-account/services/payment-links/partials/forms/_payment-link-amount.njk" %}
+{% endblock %}
