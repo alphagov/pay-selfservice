@@ -7,7 +7,7 @@ const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const { nextRequest, call, res } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/payment-links/create/payment-link-information.controller'
@@ -30,7 +30,7 @@ const { nextRequest, call, res } = new ControllerTestBuilder(
 describe('controller: services/payment-links/create/payment-link-information', () => {
   describe('get', () => {
     describe('with no existing session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         await call('get')
       })
 
@@ -73,7 +73,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
     })
 
     describe('with existing session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Existing Title',
@@ -103,7 +103,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
     })
 
     describe('with Welsh language selected in session', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Title',
@@ -131,7 +131,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
     })
 
     describe('with Welsh language query parameter', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockResponse.resetHistory()
         nextRequest({
           query: { language: 'cy' },
@@ -148,7 +148,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
     })
 
     describe('with Welsh language in session but no Welsh service name', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Title',
@@ -181,7 +181,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
 
   describe('post', () => {
     describe('with valid form data', () => {
-      before(async () => {
+      beforeEach(async () => {
         res.redirect.resetHistory()
 
         nextRequest({
@@ -201,7 +201,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
     })
 
     describe('with Welsh language parameter', () => {
-      before(async () => {
+      beforeEach(async () => {
         res.redirect.resetHistory()
 
         nextRequest({
@@ -224,7 +224,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
     describe('with Welsh language already saved in the session (user came back with Back link)', () => {
       let sessionLanguage: string
 
-      before(async () => {
+      beforeEach(async () => {
         res.redirect.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Previous Title',
@@ -259,7 +259,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
   })
 
     describe('when the user is coming back from the review page (FROM_REVIEW_QUERY_PARAM set to true)', () => {
-      before(async () => {
+      beforeEach(async () => {
         res.redirect.resetHistory()
 
         nextRequest({
@@ -280,7 +280,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
     })
 
     describe('with validation errors - empty title', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockResponse.resetHistory()
         res.redirect.resetHistory()
 
@@ -329,7 +329,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
     })
 
     describe('with validation errors - title too long', () => {
-      before(async () => {
+      beforeEach(async () => {
         const longTitle = 'a'.repeat(231)
         mockResponse.resetHistory()
         res.redirect.resetHistory()
@@ -355,7 +355,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
     })
 
     describe('with validation errors - description with invalid characters', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockResponse.resetHistory()
         res.redirect.resetHistory()
 
@@ -380,7 +380,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
     })
 
     describe('with validation errors - description too long', () => {
-      before(async () => {
+      beforeEach(async () => {
         const longDescription = 'a'.repeat(5001)
         mockResponse.resetHistory()
         res.redirect.resetHistory()

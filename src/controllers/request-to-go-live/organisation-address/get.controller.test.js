@@ -8,7 +8,7 @@ const goLiveStage = require('@models/constants/go-live-stage')
 const Service = require('@models/service/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const getController = function getController () {
   return proxyquire('./get.controller', {

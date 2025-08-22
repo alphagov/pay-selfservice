@@ -7,7 +7,7 @@ const paths = require('@root/paths')
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const ACCOUNT_TYPE = 'live'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const {
   res,
@@ -25,7 +25,7 @@ describe('Controller: settings/api-keys//create/new-key-details', () => {
   describe('get', () => {
     describe('key details present on session', () => {
       let thisCall
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           session: {
             formState: {
@@ -61,8 +61,8 @@ describe('Controller: settings/api-keys//create/new-key-details', () => {
       })
     })
     describe('key details not present on session', () => {
-      before(() => {
-        call('get')
+      beforeEach(async () => {
+        await call('get')
       })
 
       it('should not call the response method', () => {

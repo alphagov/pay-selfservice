@@ -7,7 +7,7 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const AGREEMENT_EXTERNAL_ID = 'agreement123abc'
 const GATEWAY_ACCOUNT_ID = 117
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockAgreementsService = {
   searchAgreements: sinon.stub().resolves({
     total: 1,
@@ -45,7 +45,7 @@ const { nextRequest, call } = new ControllerTestBuilder(
 describe('controller: services/agreements', () => {
   describe('get', () => {
     describe('agreements exist for service, no filters', () => {
-      before(async () => {
+      beforeEach(async () => {
         await call('get')
       })
 
@@ -337,7 +337,7 @@ describe('controller: services/agreements', () => {
     })
 
     describe('pagination URL generation', () => {
-      before(() => {
+      beforeEach(async () => {
         mockAgreementsService.searchAgreements.resolves({
           total: 50,
           count: 20,

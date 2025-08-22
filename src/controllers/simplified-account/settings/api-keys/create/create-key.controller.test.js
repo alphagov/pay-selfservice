@@ -13,7 +13,7 @@ const GATEWAY_ACCOUNT = {
 }
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const NEW_API_KEY = 'api_live_123' // pragma: allowlist secret
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockApiKeysService = {
   createKey: sinon.stub().resolves(NEW_API_KEY),
   TOKEN_SOURCE
@@ -38,8 +38,8 @@ const {
 
 describe('Controller: settings/api-keys/create', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
+    beforeEach(async () => {
+      await call('get')
     })
 
     it('should call the response method with context', () => {
@@ -57,7 +57,7 @@ describe('Controller: settings/api-keys/create', () => {
   describe('post', () => {
     describe('a valid key name', () => {
       let thisCall
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             keyName: 'a test api key'
@@ -107,13 +107,13 @@ describe('Controller: settings/api-keys/create', () => {
         }
       ].forEach(({ testDescription, keyNameInput, expectedError }) => {
         describe(testDescription, () => {
-          before(() => {
+          beforeEach(async () => {
             nextRequest({
               body: {
                 keyName: keyNameInput
               }
             })
-            call('post')
+            await call('post')
           })
 
           it('should not call createKey', () => {

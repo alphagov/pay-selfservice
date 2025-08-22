@@ -5,7 +5,7 @@ const ControllerTestBuilder = require('@test/test-helpers/simplified-account/con
 const chai = require('chai')
 const expect = chai.expect
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const updateServiceSpy = sinon.spy()
 
 const ACCOUNT_TYPE = 'live'
@@ -35,7 +35,7 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/
 
 describe('Controller: settings/organisation-details', () => {
   describe('get', () => {
-    before(() => {
+    beforeEach(async () => {
       call('get')
     })
 
@@ -68,7 +68,7 @@ describe('Controller: settings/organisation-details', () => {
   })
 
   describe('post', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         body: {
           organisationName: 'Flancrest Enterprises',

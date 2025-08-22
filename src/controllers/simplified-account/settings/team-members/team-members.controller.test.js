@@ -33,7 +33,7 @@ const invitedUsers = [
   { email: 'invited-view-only-user@user.gov.uk', role: 'view-only' }
 ]
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockGetServiceUsers = sinon.stub().resolves(users)
 const mockGetInvitedUsers = sinon.stub().resolves(invitedUsers)
 
@@ -50,11 +50,11 @@ const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simpl
 
 describe('Controller: settings/team-members', () => {
   describe('get', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         user: adminUser
       })
-      call('get')
+      await call('get')
     })
 
     it('should call the response method', () => {
@@ -88,11 +88,11 @@ describe('Controller: settings/team-members', () => {
   })
 
   describe('get', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         user: adminUser
       })
-      call('get')
+      await call('get')
     })
 
     it('should call the response method', () => {

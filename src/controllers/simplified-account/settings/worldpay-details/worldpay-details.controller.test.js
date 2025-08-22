@@ -10,7 +10,7 @@ const WorldpayTaskIdentifiers = require('@models/task-workflows/task-identifiers
 const TaskStatus = require('@models/constants/task-status')
 const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const ACCOUNT_TYPE = GatewayAccountType.LIVE
 const SERVICE_EXTERNAL_ID = 'service123abc'
@@ -73,7 +73,7 @@ describe('Controller: settings/worldpay-details', () => {
     })
 
     describe('for a moto-enabled gateway account', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           account: {
             allowMoto: true
@@ -107,7 +107,7 @@ describe('Controller: settings/worldpay-details', () => {
     })
 
     describe('for a recurring card payments gateway account', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           account: {
             recurringEnabled: true,

@@ -24,7 +24,7 @@ const getController = (stubs = {}) => {
   })
 }
 
-const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
+const setupTest = async (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
   responseStub = sinon.spy()
   updateStripeDetailsResponsiblePersonStub = sinon.stub().resolves()
   responsiblePersonCheckAnswersController = getController({
@@ -47,13 +47,13 @@ const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additi
     ...additionalReqProps
   }
   next = sinon.spy()
-  responsiblePersonCheckAnswersController[method][1](req, res, next)
+  await responsiblePersonCheckAnswersController[method][1](req, res, next)
 }
 
 describe('Controller: settings/stripe-details/responsible-person/responsible-person-check-answers', () => {
   describe('get', () => {
     describe('no existing form state', () => {
-      before(() => setupTest('get'))
+      beforeEach(async () => await setupTest('get'))
 
       it('should redirect the user to the start of the journey', () => {
         expect(res.redirect.calledOnce).to.be.true
@@ -80,7 +80,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
         workTelephoneNumber: '01611234567',
         workEmail: 'scrooge.mcduck@pay.gov.uk'
       }
-      before(() => setupTest('get', {}, {}, {
+      beforeEach(async () => await setupTest('get', {}, {}, {
         session: {
           formState: {
             responsiblePerson: {
@@ -145,7 +145,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
     }
 
     describe('when submitting a valid responsible person', () => {
-      before(() => setupTest('post', {}, {}, {
+      beforeEach(async () => await setupTest('post', {}, {}, {
         session: {
           formState: {
             responsiblePerson: validResponsiblePerson
@@ -187,8 +187,8 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
 
     describe('when Stripe API returns errors', () => {
       describe('for invalid phone number', () => {
-        before(() => {
-          setupTest('post',
+        beforeEach(async () => {
+          await setupTest('post',
             {
               updateStripeDetailsResponsiblePerson: sinon.stub().rejects({
                 type: 'StripeInvalidRequestError',
@@ -216,8 +216,8 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
       })
 
       describe('for unhandled invalid request errors', () => {
-        before(() => {
-          setupTest('post',
+        beforeEach(async () => {
+          await setupTest('post',
             {
               updateStripeDetailsResponsiblePerson: sinon.stub().rejects({
                 type: 'StripeInvalidRequestError',
@@ -245,8 +245,8 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
       })
 
       describe('for any other errors', () => {
-        before(() => {
-          setupTest('post',
+        beforeEach(async () => {
+          await setupTest('post',
             {
               updateStripeDetailsResponsiblePerson: sinon.stub().rejects({
                 foo: 'bar'

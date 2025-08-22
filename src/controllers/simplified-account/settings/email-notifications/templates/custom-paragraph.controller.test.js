@@ -66,9 +66,9 @@ const setupTest = (body = {}) => {
 
 describe('Controller: settings/email-notifications/templates/custom-paragraph', () => {
   describe('get', () => {
-    before(() => {
+    beforeEach(async () => {
       setupTest()
-      customParagraphController.get(req, res)
+      await customParagraphController.get(req, res)
     })
 
     it('should call the response method', () => {
@@ -89,10 +89,10 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
   })
 
   describe('postRemoveCustomParagraph', () => {
-    before(() => {
+    beforeEach(async () => {
       const body = { customParagraph: 'a test custom paragraph' }
       setupTest(body)
-      customParagraphController.postRemoveCustomParagraph(req, res)
+      await customParagraphController.postRemoveCustomParagraph(req, res)
     })
 
     it('should update the confirmation template', () => {
@@ -108,10 +108,10 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
 
   describe('postEditCustomParagraph', () => {
     describe('with empty body', () => {
-      before(() => {
+      beforeEach(async () => {
         const body = { customParagraph: '' }
         setupTest(body)
-        customParagraphController.postEditCustomParagraph(req, res)
+        await customParagraphController.postEditCustomParagraph(req, res)
       })
       it('should update the confirmation template', () => {
         expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true
@@ -128,10 +128,10 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
       })
     })
     describe('without validation error', () => {
-      before(() => {
+      beforeEach(async () => {
         const body = { customParagraph: 'a test custom paragraph' }
         setupTest(body)
-        customParagraphController.postEditCustomParagraph(req, res)
+        await customParagraphController.postEditCustomParagraph(req, res)
       })
       it('should update the confirmation template', () => {
         expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true
@@ -156,10 +156,10 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
 
     describe('with validation error', () => {
       const invalidText = 'hi'.repeat(5000)
-      before(() => {
+      beforeEach(async () => {
         const body = { customParagraph: invalidText }
         setupTest(body)
-        customParagraphController.postEditCustomParagraph(req, res)
+        await customParagraphController.postEditCustomParagraph(req, res)
       })
 
       it('should call the response method', () => {

@@ -28,7 +28,7 @@ const { req, res, call, nextResponse } = new ControllerTestBuilder('@controllers
 describe('Controller: service name index', () => {
   describe('get', () => {
     describe('when there are no messages', () => {
-      before(async () => {
+      beforeEach(async () => {
         await call('get')
       })
 
@@ -52,7 +52,7 @@ describe('Controller: service name index', () => {
     })
 
     describe('when there are messages', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextResponse({
           locals: {
             flash: {

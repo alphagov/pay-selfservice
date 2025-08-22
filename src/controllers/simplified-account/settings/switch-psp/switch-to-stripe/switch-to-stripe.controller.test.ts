@@ -29,7 +29,7 @@ const ALL_TASKS_COMPLETED_RESPONSE = buildGetStripeAccountSetupResponse({
   organisation_details: true
 })
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockStripeDetailsService = {
   getConnectorStripeAccountSetup: sinon.stub().resolves(new StripeAccountSetup(buildGetStripeAccountSetupResponse())),
 }
@@ -65,19 +65,18 @@ const { req, res, next, nextRequest, nextResponse, call } = new ControllerTestBu
 
 describe('Controller: settings/switch-psp/switch-to-stripe', () => {
   describe('get', () => {
-    before(async () => {
+    it('should call the response method', async () => {
       await call('get')
-    })
-
-    it('should call the response method', () => {
       sinon.assert.calledOnce(mockResponse)
     })
 
-    it('should pass req, res and template path to the response method', () => {
+    it('should pass req, res and template path to the response method', async () => {
+      await call('get')
       sinon.assert.calledWith(mockResponse, req, res, 'simplified-account/settings/switch-psp/switch-to-stripe/index')
     })
 
-    it('should pass the context data to the response method', () => {
+    it('should pass the context data to the response method', async () => {
+      await call('get')
       const context = mockResponse.args[0][3] as object
 
       sinon.assert.match(context, {
@@ -109,7 +108,7 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
     })
 
     describe('when stripe verification is pending', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockStripeDetailsService.getConnectorStripeAccountSetup.resolves(
           new StripeAccountSetup(ALL_TASKS_COMPLETED_RESPONSE)
         )
@@ -151,7 +150,7 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
     })
 
     describe('when stripe verification is successful', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockStripeDetailsService.getConnectorStripeAccountSetup.resolves(
           new StripeAccountSetup(ALL_TASKS_COMPLETED_RESPONSE)
         )
@@ -187,7 +186,7 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
     })
 
     describe('when all tasks are complete', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockStripeDetailsService.getConnectorStripeAccountSetup.resolves(
           new StripeAccountSetup(ALL_TASKS_COMPLETED_RESPONSE)
         )
@@ -215,7 +214,7 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
     })
 
     describe('when messages are available', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextResponse({
           locals: {
             flash: {
@@ -234,7 +233,7 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
 
   describe('post', () => {
     describe('when all tasks are complete', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockStripeDetailsService.getConnectorStripeAccountSetup.resolves(
           new StripeAccountSetup(ALL_TASKS_COMPLETED_RESPONSE)
         )
@@ -281,7 +280,7 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
     })
 
     describe('when all tasks are not complete', () => {
-      before(async () => {
+      beforeEach(async () => {
         await call('post')
       })
 
@@ -303,7 +302,7 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
     })
 
     describe('when there is a problem talking to connector', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           account: {
             getSwitchingCredential: () => {

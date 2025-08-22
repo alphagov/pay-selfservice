@@ -58,7 +58,7 @@ const setupTest = (additionalReqProps = {}) => {
 
 describe('Controller: settings/email-notifications/payment-confirmation-emails', () => {
   describe('get', () => {
-    before(() => {
+    beforeEach(async () => {
       setupTest()
       paymentConfirmationEmailsController.get(req, res)
     })
@@ -81,7 +81,7 @@ describe('Controller: settings/email-notifications/payment-confirmation-emails',
   })
 
   describe('post', () => {
-    before(() => {
+    beforeEach(async () => {
       setupTest({
         body: {
           paymentConfirmationEmailToggle: 'true'

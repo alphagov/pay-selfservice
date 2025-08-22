@@ -12,7 +12,7 @@ const testWebhook = new Webhook()
   .withCallbackUrl('https://www.globexcorporation.example.com')
   .withStatus(WebhookStatus.INACTIVE)
   .withDescription('My webhook')
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockToggleWebhookStatus = sinon.stub().resolves({})
 const mockGetWebhook = sinon.stub().resolves(testWebhook)
 
@@ -30,12 +30,12 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/
   .build()
 
 describe('Controller: settings/webhooks/update', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     mockGetWebhook.returns(testWebhook)
   })
 
   describe('get', () => {
-    before(async () => {
+    beforeEach(async () => {
       await call('get')
     })
 
@@ -62,7 +62,7 @@ describe('Controller: settings/webhooks/update', () => {
 
   describe('post', () => {
     describe('when no option is selected', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             toggleActive: ''
@@ -87,7 +87,7 @@ describe('Controller: settings/webhooks/update', () => {
     })
 
     describe('when "yes" is selected', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             toggleActive: 'yes'
@@ -118,7 +118,7 @@ describe('Controller: settings/webhooks/update', () => {
     })
 
     describe('when "no" is selected', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             toggleActive: 'no'

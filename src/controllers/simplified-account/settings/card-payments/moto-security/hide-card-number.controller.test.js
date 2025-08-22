@@ -6,7 +6,7 @@ const paths = require('@root/paths')
 const ACCOUNT_TYPE = 'live'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockUpdateMotoMaskCardNumber = sinon.spy()
 
 const {
@@ -29,8 +29,8 @@ const {
 
 describe('Controller: settings/card-payments/moto-security/hide-card-number', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
+    beforeEach(async () => {
+      await call('get')
     })
     it('should call the response method with context', () => {
       sinon.assert.calledOnceWithExactly(mockResponse,
@@ -47,13 +47,13 @@ describe('Controller: settings/card-payments/moto-security/hide-card-number', ()
 
   describe('post', () => {
     describe('valid submission', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             hideCardNumber: 'on'
           }
         })
-        call('post')
+        await call('post')
       })
 
       it('should call updateMotoMaskCardNumber', () => {
@@ -71,13 +71,13 @@ describe('Controller: settings/card-payments/moto-security/hide-card-number', ()
       })
     })
     describe('invalid submission', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             NOTHideCardNumber: 'blah'
           }
         })
-        call('post')
+        await call('post')
       })
 
       it('should not call updateMotoMaskCardNumber', () => {

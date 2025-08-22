@@ -8,7 +8,7 @@ const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
 const GATEWAY_ACCOUNT_ID = '123'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockUpdateApplePay = sinon.spy()
 
 const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/card-payments/apple-pay.controller')
@@ -26,8 +26,8 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/
 
 describe('Controller: settings/card-payments/apple-pay', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
+    beforeEach(async () => {
+      await call('get')
     })
     it('should call the response method', () => {
       expect(mockResponse.calledOnce).to.be.true
@@ -45,11 +45,11 @@ describe('Controller: settings/card-payments/apple-pay', () => {
     })
   })
   describe('post', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         body: { applePay: 'on' }
       })
-      call('post')
+      await call('post')
     })
 
     it('should update allow Apple Pay enabled', () => {

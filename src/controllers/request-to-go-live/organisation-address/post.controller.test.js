@@ -9,7 +9,7 @@ const Service = require('@models/service/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
 const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account.fixtures')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const loggerInfoMock = sinon.spy()
 const stripeAccountId = 'acct_123example123'

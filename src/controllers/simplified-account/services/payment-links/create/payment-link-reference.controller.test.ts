@@ -7,7 +7,7 @@ const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const { nextRequest, call, res } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/payment-links/create/payment-link-reference.controller'
@@ -30,7 +30,7 @@ const { nextRequest, call, res } = new ControllerTestBuilder(
 describe('controller: services/payment-links/create/payment-link-reference', () => {
   describe('get', () => {
     describe('with valid session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           paymentLinkDescription: 'Test Description',
@@ -92,7 +92,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
     })
 
     describe('with Welsh session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Payment Link',
@@ -129,7 +129,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
     })
 
     describe('with empty session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         res.redirect.resetHistory()
 
         nextRequest({
@@ -148,7 +148,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
 
   describe('post', () => {
     describe('with valid standard reference type', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -181,7 +181,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
     })
 
     describe('with valid custom reference type', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -216,7 +216,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
     })
 
     describe('when the user is coming back from the review page (FROM_REVIEW_QUERY_PARAM set to true)', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -251,7 +251,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
     })
 
     describe('with empty session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         res.redirect.resetHistory()
 
         nextRequest({
@@ -271,7 +271,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
     })
 
     describe('with validation errors - no reference type selected', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -321,7 +321,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
     })
 
     describe('with validation errors - custom type but empty label', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -364,7 +364,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
     })
 
     describe('with validation errors - custom type with label too long', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
@@ -403,7 +403,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
     })
 
     describe('with validation errors - custom type with hint too long', () => {
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',

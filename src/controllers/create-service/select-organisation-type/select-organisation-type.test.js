@@ -30,7 +30,7 @@ describe('Controller: selectOrganisationType, Method: get', () => {
   })
 
   describe('when there is pre-existing pageData', () => {
-    before(() => {
+    beforeEach(() => {
       mockResponse.response = sinon.spy()
       const selectOrganisationTypeController = controller(mockResponse)
       res = {
@@ -72,7 +72,7 @@ describe('Controller: selectOrganisationType, Method: get', () => {
 
 describe('Controller: selectOrganisationType, Method: post', () => {
   describe('when request passes validation', () => {
-    before(async () => {
+    beforeEach(async () => {
       mockResponse.response = sinon.spy()
       const selectOrganisationTypeController = controller(mockResponse)
       res = {}
@@ -98,7 +98,7 @@ describe('Controller: selectOrganisationType, Method: post', () => {
     })
   })
   describe('when request fails validation', () => {
-    before(async () => {
+    beforeEach(async () => {
       mockResponse.response = sinon.spy()
       const selectOrganisationTypeController = controller(mockResponse)
       res = {

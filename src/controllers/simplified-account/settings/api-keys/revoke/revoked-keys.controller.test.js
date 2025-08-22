@@ -8,7 +8,7 @@ const ACCOUNT_TYPE = 'live'
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = '1337'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockApiKeysService = {
   getRevokedKeys: sinon.stub().resolves([])
 }
@@ -43,9 +43,9 @@ describe('Controller: settings/api-keys/revoked-keys', () => {
         }
       ]
 
-      before(() => {
+      beforeEach(async () => {
         mockApiKeysService.getRevokedKeys.resolves(revokedKeys)
-        call('get')
+        await call('get')
       })
 
       it('should call getRevokedKeys with args', () => {
@@ -67,9 +67,9 @@ describe('Controller: settings/api-keys/revoked-keys', () => {
       })
     })
     describe('when revoked keys are not present', () => {
-      before(() => {
+      beforeEach(async () => {
         mockApiKeysService.getRevokedKeys.resolves([])
-        call('get')
+        await call('get')
       })
 
       it('should call getRevokedKeys with args', () => {
