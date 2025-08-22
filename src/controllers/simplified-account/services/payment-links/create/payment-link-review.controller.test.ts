@@ -9,7 +9,7 @@ const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockCreatePaymentLinkToken = sinon.stub()
 const mockCreateProduct = sinon.stub()
 
@@ -38,7 +38,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
     describe('with valid session data', () => {
       const expectedQueryStringForChangeLinks = FROM_REVIEW_QUERY_PARAM + '=true'
 
-      before(async () => {
+      beforeEach(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           paymentLinkDescription: 'Test Description',
@@ -119,7 +119,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
     })
 
     describe('with Welsh session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Payment Link',
@@ -148,7 +148,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
     })
 
     describe('with empty session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         res.redirect.resetHistory()
 
         nextRequest({
@@ -167,7 +167,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
 
   describe('post', () => {
     describe('with empty session data', () => {
-      before(async () => {
+      beforeEach(async () => {
         res.redirect.resetHistory()
 
         nextRequest({
@@ -196,7 +196,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
         }
       }
 
-      before(async () => {
+      beforeEach(async () => {
         req.flash.resetHistory()
         res.redirect.resetHistory()
         mockCreateProduct.resetHistory()

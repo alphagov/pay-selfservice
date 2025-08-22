@@ -5,7 +5,7 @@ const proxyquire = require('proxyquire')
 module.exports = class ControllerTestBuilder {
   constructor (controllerPath) {
     this.controllerPath = controllerPath
-    this.next = sinon.spy()
+    this.next = sinon.stub()
     this.req = {
       service: {},
       account: {},
@@ -92,7 +92,6 @@ module.exports = class ControllerTestBuilder {
       nextResponse: this.nextResponse.bind(this),
       nextStubs: this.nextStubs.bind(this),
       call: async (method, index) => {
-        sinon.resetHistory() // ensure fresh mock data for each call
         if (this.nextStubsData) {
           Object.assign(this.stubs, this.nextStubsData) // copy by ref
           controller = Object.assign({}, controller, proxyquire(this.controllerPath, {

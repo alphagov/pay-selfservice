@@ -32,7 +32,7 @@ const viewOnlyUser = new User(userFixtures.validUserResponse(
     }
   }))
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockRenderErrorView = sinon.spy()
 const mockFindByExternalId = sinon.stub()
 const mockDelete = sinon.stub().returns({ })
@@ -50,12 +50,12 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/
 describe('Controller: settings/team-members/remove-user', () => {
   describe('get', () => {
     describe('success', () => {
-      before(() => {
+      beforeEach(async () => {
         mockFindByExternalId.resolves(viewOnlyUser)
         nextRequest({
           params: { externalUserId: 'user-id-to-remove' }
         })
-        call('get')
+        await call('get')
       })
 
       it('should call the response method', () => {
@@ -76,12 +76,12 @@ describe('Controller: settings/team-members/remove-user', () => {
     })
 
     describe('failure - admin attempts to remove self', () => {
-      before(() => {
+      beforeEach(async () => {
         mockFindByExternalId.resolves(adminUser)
         nextRequest({
           params: { externalUserId: 'user-id-for-admin-user' }
         })
-        call('get')
+        await call('get')
       })
 
       it('should call the renderErrorView method', () => {
@@ -93,13 +93,13 @@ describe('Controller: settings/team-members/remove-user', () => {
 
   describe('post', () => {
     describe('admin user confirmed remove user', () => {
-      before(() => {
+      beforeEach(async () => {
         mockFindByExternalId.resolves(adminUser)
         nextRequest({
           params: { externalUserId: 'user-id-to-remove' },
           body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'yes' }
         })
-        call('post')
+        await call('post')
       })
 
       it('should remove the user from the service', () => {
@@ -118,13 +118,13 @@ describe('Controller: settings/team-members/remove-user', () => {
     })
 
     describe('admin user selected not to remove user', () => {
-      before(() => {
+      beforeEach(async () => {
         mockFindByExternalId.resolves(viewOnlyUser)
         nextRequest({
           params: { externalUserId: 'user-id-to-remove' },
           body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'no' }
         })
-        call('post')
+        await call('post')
       })
 
       it('should redirect to the team members page without deleting the user', () => {
@@ -135,13 +135,13 @@ describe('Controller: settings/team-members/remove-user', () => {
     })
 
     describe('admin user attempted to remove self', () => {
-      before(() => {
+      beforeEach(async () => {
         mockFindByExternalId.resolves(adminUser)
         nextRequest({
           params: { externalUserId: 'user-id-for-admin-user' },
           body: { email: 'admin-user@users.gov.uk', confirmRemoveUser: 'yes' }
         })
-        call('post')
+        await call('post')
       })
 
       it('should call the renderErrorView method', () => {

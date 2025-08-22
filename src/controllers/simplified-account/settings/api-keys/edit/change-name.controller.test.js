@@ -8,7 +8,7 @@ const ACCOUNT_TYPE = 'live'
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const TOKEN_LINK = 'token456def'
 const TOKEN_DESC = 'S MCDUCK API DEV'
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockApiKeysService = {
   changeKeyName: sinon.stub().resolves(),
   getKeyByTokenLink: sinon.stub().resolves(new Token()
@@ -31,8 +31,8 @@ const {
 
 describe('Controller: settings/api-keys/change-name', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
+    beforeEach(async () => {
+      await call('get')
     })
 
     it('should call the response method with context', () => {
@@ -50,7 +50,7 @@ describe('Controller: settings/api-keys/change-name', () => {
 
   describe('post', () => {
     describe('a valid key name', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             keyName: 'S MCDUCK API PROD'
@@ -59,7 +59,7 @@ describe('Controller: settings/api-keys/change-name', () => {
             tokenLink: TOKEN_LINK
           }
         })
-        call('post')
+        await call('post')
       })
 
       it('should call changeKeyName with args', () => {
@@ -77,7 +77,7 @@ describe('Controller: settings/api-keys/change-name', () => {
     })
 
     describe('an invalid key name', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             keyName: ''
@@ -86,7 +86,7 @@ describe('Controller: settings/api-keys/change-name', () => {
             tokenLink: TOKEN_LINK
           }
         })
-        call('post')
+        await call('post')
       })
 
       it('should not call changeKeyName', () => {

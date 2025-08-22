@@ -11,7 +11,7 @@ const GATEWAY_ACCOUNT_ID = 117
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 const PRODUCT_EXTERNAL_ID = 'product123abc'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockGetProductByGatewayAccountIdAndExternalId = sinon.stub()
 const mockUpdateProduct = sinon.stub()
 
@@ -51,7 +51,7 @@ const mockProduct = {
 describe('controller: services/payment-links/edit/amount/edit-link-amount', () => {
   describe('get', () => {
     describe('with fixed amount product', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         nextRequest({
           params: { productExternalId: PRODUCT_EXTERNAL_ID },
@@ -105,7 +105,7 @@ describe('controller: services/payment-links/edit/amount/edit-link-amount', () =
     })
 
     describe('with variable amount product', () => {
-      before(async () => {
+      beforeEach(async () => {
         const variableProduct = {
           ...mockProduct,
           price: 0,
@@ -129,7 +129,7 @@ describe('controller: services/payment-links/edit/amount/edit-link-amount', () =
     })
 
     describe('with Welsh product', () => {
-      before(async () => {
+      beforeEach(async () => {
         const welshProduct = {
           ...mockProduct,
           language: 'cy',
@@ -152,7 +152,7 @@ describe('controller: services/payment-links/edit/amount/edit-link-amount', () =
 
   describe('post', () => {
     describe('with valid fixed amount data', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockUpdateProduct.resolves()
         res.redirect.resetHistory()
@@ -197,7 +197,7 @@ describe('controller: services/payment-links/edit/amount/edit-link-amount', () =
     })
 
     describe('with valid variable amount data', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockUpdateProduct.resolves()
         res.redirect.resetHistory()
@@ -239,7 +239,7 @@ describe('controller: services/payment-links/edit/amount/edit-link-amount', () =
     })
 
     describe('with validation errors - no amount type selected', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockResponse.resetHistory()
         res.redirect.resetHistory()
@@ -279,7 +279,7 @@ describe('controller: services/payment-links/edit/amount/edit-link-amount', () =
     })
 
     describe('with validation errors - fixed amount but no price', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockResponse.resetHistory()
         res.redirect.resetHistory()
@@ -311,7 +311,7 @@ describe('controller: services/payment-links/edit/amount/edit-link-amount', () =
     })
 
     describe('with validation errors - invalid amount format', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockResponse.resetHistory()
         res.redirect.resetHistory()

@@ -16,7 +16,7 @@ let req, res, next
 
 describe('Controller: editServiceName, Method: get', () => {
   describe('when the service name is not empty', () => {
-    before(async function () {
+    beforeEach(async function () {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
@@ -40,7 +40,7 @@ describe('Controller: editServiceName, Method: get', () => {
   })
 
   describe('when the service name is not empty, but the update call fails', () => {
-    before(async function () {
+    beforeEach(async function () {
       mockServiceService.updateServiceName = sinon.stub().rejects(new Error('something went wrong'))
       mockResponses.renderErrorView = sinon.spy()
       req = {
@@ -64,7 +64,7 @@ describe('Controller: editServiceName, Method: get', () => {
   })
 
   describe('when the service name is empty', () => {
-    before(async function () {
+    beforeEach(async function () {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {
@@ -93,7 +93,7 @@ describe('Controller: editServiceName, Method: get', () => {
   })
 
   describe('when the service name is too long', () => {
-    before(async function () {
+    beforeEach(async function () {
       mockServiceService.updateServiceName = sinon.stub().resolves()
       mockResponses.response = sinon.spy()
       req = {

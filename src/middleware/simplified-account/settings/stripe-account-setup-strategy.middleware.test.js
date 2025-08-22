@@ -24,6 +24,10 @@ const {
   .build()
 
 describe('Middleware: stripeAccountSetupStrategy', () => {
+  // afterEach(() => {
+  //   sinon.restore()
+  // })
+
   describe('when stripe account setup progress resolution succeeds', () => {
     it('should set request key and call next', async () => {
       const { req } = await call()
@@ -36,7 +40,7 @@ describe('Middleware: stripeAccountSetupStrategy', () => {
   })
 
   describe('when stripe account setup progress resolution fails', () => {
-    before(() => {
+    beforeEach(() => {
       const error = new RESTClientError('whoops')
       mockStripeDetailsService.getConnectorStripeAccountSetup.rejects(error)
     })

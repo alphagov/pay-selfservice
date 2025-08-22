@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const sinon = require('sinon')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
 
@@ -28,7 +28,7 @@ const {
 
 describe('Controller: settings/email-notifications', () => {
   describe('get', () => {
-    before(() => {
+    beforeEach(async () => {
       call('get')
     })
 

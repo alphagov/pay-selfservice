@@ -4,7 +4,7 @@ const paths = require('@root/paths')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const { expect } = require('chai')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockStripeDetailsService = {
   updateStripeDetailsDirector: sinon.stub().resolves()
 }
@@ -30,8 +30,8 @@ const {
 
 describe('Controller: settings/stripe-details/director', () => {
   describe('get', () => {
-    before(() => {
-      call('get', 1)
+    beforeEach(async () => {
+      await call('get', 1)
     })
 
     it('should call the response method', () => {
@@ -51,7 +51,7 @@ describe('Controller: settings/stripe-details/director', () => {
 
   describe('post', () => {
     describe('when submitting valid data', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             firstName: 'Scrooge',
@@ -62,7 +62,7 @@ describe('Controller: settings/stripe-details/director', () => {
             workEmail: 'scrooge.mcduck@pay.gov.uk'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
       it('should submit director details to the stripe details service', () => {
         expect(mockStripeDetailsService.updateStripeDetailsDirector).to.have.been.calledWith(
@@ -85,7 +85,7 @@ describe('Controller: settings/stripe-details/director', () => {
     })
 
     describe('when submitting invalid data', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             firstName: '',
@@ -96,7 +96,7 @@ describe('Controller: settings/stripe-details/director', () => {
             workEmail: 'scrooge.mcduck'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should not submit director details to the stripe details service', () => {
@@ -132,7 +132,7 @@ describe('Controller: settings/stripe-details/director', () => {
       })
     })
     describe('when the Stripe API returns an error', () => {
-      before(() => {
+      beforeEach(async () => {
         nextStubs({
           '@services/stripe-details.service': {
             updateStripeDetailsDirector: sinon.stub().rejects({ type: 'StripeInvalidRequestError' })
@@ -148,7 +148,7 @@ describe('Controller: settings/stripe-details/director', () => {
             workEmail: 'scrooge.mcduck@pay.gov.uk'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should render the form with appropriate error response', () => {

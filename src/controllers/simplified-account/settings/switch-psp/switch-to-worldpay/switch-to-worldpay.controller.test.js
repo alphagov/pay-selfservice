@@ -16,7 +16,7 @@ const GenericTaskIdentifiers = require('@models/task-workflows/task-identifiers/
 const TaskStatus = require('@models/constants/task-status')
 const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const mockGatewayAccountsService = {
   completePaymentServiceProviderSwitch: sinon.stub().resolves()
@@ -65,15 +65,13 @@ const {
 
 describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
-    })
-
-    it('should call the response method', () => {
+    it('should call the response method', async () => {
+      await call('get')
       sinon.assert.calledOnce(mockResponse)
     })
 
-    it('should pass req, res and template path to the response method', () => {
+    it('should pass req, res and template path to the response method', async () => {
+      await call('get')
       sinon.assert.calledWith(mockResponse,
         req,
         res,
@@ -81,7 +79,8 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
       )
     })
 
-    it('should pass the context data to the response method', () => {
+    it('should pass the context data to the response method', async () => {
+      await call('get')
       const context = mockResponse.args[0][3]
       sinon.assert.match(context, {
         messages: [],
@@ -107,7 +106,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
     })
 
     describe('when messages are available', () => {
-      before(() => {
+      beforeEach(async () => {
         nextResponse({
           locals: {
             flash: {
@@ -115,7 +114,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
             }
           }
         })
-        call('get')
+        await call('get')
       })
 
       it('should pass messages to the response method', () => {
@@ -126,7 +125,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
 
   describe('post', () => {
     describe('when all tasks are complete', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           account: {
             getSwitchingCredential: () => {
@@ -139,7 +138,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
             }
           }
         })
-        call('post')
+        await call('post')
       })
 
       it('should call completePspSwitch', () => {
@@ -172,8 +171,8 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
     })
 
     describe('when all tasks are not complete', () => {
-      before(() => {
-        call('post')
+      beforeEach(async () => {
+        await call('post')
       })
 
       it('should set error message', () => {
@@ -194,7 +193,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
     })
 
     describe('when there is a problem talking to connector', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           account: {
             getSwitchingCredential: () => {
@@ -209,7 +208,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
         })
         const error = new RESTClientError('whoops')
         mockGatewayAccountsService.completePaymentServiceProviderSwitch.rejects(error)
-        call('post')
+        await call('post')
       })
 
       it('should call next with error', () => {

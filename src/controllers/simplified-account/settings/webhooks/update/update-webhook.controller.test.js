@@ -10,7 +10,7 @@ const GATEWAY_ACCOUNT_ID = '100'
 
 const testWebhook = new Webhook()
   .withCallbackUrl('https://www.globexcorporation.example.com')
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockUpdateWebhook = sinon.stub().resolves({})
 const mockGetWebhook = sinon.stub().resolves(testWebhook)
 const mockUpdateWebhookDomainNotAllowed = sinon.stub().rejects(new RESTClientError(null, 'webhooks', 400, 'CALLBACK_URL_NOT_ON_ALLOW_LIST'))
@@ -30,7 +30,7 @@ const { req, res, call, nextRequest, nextStubs } = new ControllerTestBuilder('@c
 
 describe('Controller: settings/webhooks/update', () => {
   describe('get', () => {
-    before(async () => {
+    beforeEach(async () => {
       await call('get')
     })
 
@@ -60,7 +60,7 @@ describe('Controller: settings/webhooks/update', () => {
 
   describe('post', () => {
     describe('when the updates are valid', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             callbackUrl: 'https://www.compuglobalhypermeganet.example.com',
@@ -82,7 +82,7 @@ describe('Controller: settings/webhooks/update', () => {
     })
 
     describe('when there are validation errors', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             callbackUrl: 'not-a-valid-url',
@@ -110,7 +110,7 @@ describe('Controller: settings/webhooks/update', () => {
     })
 
     describe('when the domain not in the allow list', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             callbackUrl: 'https://www.gov.uk',
@@ -136,7 +136,7 @@ describe('Controller: settings/webhooks/update', () => {
     })
 
     describe('when the callback URL is not https', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             callbackUrl: 'http://www.gov.uk',

@@ -34,7 +34,7 @@ const PRODUCT_REF_AMOUNT_DETAIL = new Product(
   }) as ProductData
 )
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockProductsService = {
   getProducts: sinon.stub().resolves([]),
 }

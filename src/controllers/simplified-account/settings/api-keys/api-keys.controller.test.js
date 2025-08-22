@@ -6,7 +6,7 @@ const ACCOUNT_TYPE = 'live'
 const ACCOUNT_ID = '1337'
 const SERVICE_EXTERNAL_ID = 'service123abc'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const apiKeys = [{
   description: 'my token',
   createdBy: 'system generated',
@@ -36,8 +36,8 @@ const {
 
 describe('Controller: settings/api-keys', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
+    beforeEach(async () => {
+      await call('get')
     })
 
     it('should call apiKeysService', () => {

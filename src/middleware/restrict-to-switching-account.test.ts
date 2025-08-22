@@ -31,7 +31,7 @@ describe('restrictToSwitchingAccount middleware', () => {
   })
 
   afterEach(() => {
-    sinon.restore()
+    // sinon.restore()
   })
 
   describe('when account is switching to stripe', () => {

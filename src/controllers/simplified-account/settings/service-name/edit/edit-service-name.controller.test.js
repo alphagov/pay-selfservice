@@ -31,7 +31,7 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/
 describe('Controller: edit service name', () => {
   describe('get', () => {
     describe('when editing English service name', () => {
-      before(async () => {
+      beforeEach(async () => {
         await call('get')
       })
 
@@ -56,7 +56,7 @@ describe('Controller: edit service name', () => {
 
     describe('when editing Welsh service name', () => {
       let callContext
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           query: {
             cy: 'true'
@@ -87,7 +87,7 @@ describe('Controller: edit service name', () => {
 
   describe('post', () => {
     describe('when entering a valid English service name', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             serviceName: 'New English Name',
@@ -108,7 +108,7 @@ describe('Controller: edit service name', () => {
       })
     })
     describe('when entering a valid Welsh service name', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             serviceName: 'New Welsh Name',
@@ -131,7 +131,7 @@ describe('Controller: edit service name', () => {
 
     describe('when submitting an invalid service name', () => {
       let callContext
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             serviceName: 'this is a really really really long service name that is longer than fifty characters',

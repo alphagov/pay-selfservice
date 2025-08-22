@@ -15,7 +15,7 @@ const ACCOUNT_TYPE = 'live'
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const CREDENTIAL_EXTERNAL_ID = 'credential456def'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const worldpayDetailsServiceStubs = {
   check3dsFlexCredential: sinon.stub().returns(true),
@@ -55,7 +55,7 @@ const { req, res, nextRequest, nextStubs, call } = new ControllerTestBuilder('@c
 describe('Controller: settings/worldpay-details/flex-credentials', () => {
   describe('get', () => {
     describe('switch psp journey', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/switch-psp/flex-credentials`,
         })
@@ -100,7 +100,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
     })
 
     describe('when credentials have already been set', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         nextRequest({
           account: {
             worldpay3dsFlex: {
@@ -231,7 +231,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
       })
 
       describe('when submitting valid data', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           nextRequest({
             body: {
               organisationalUnitId: '5bd9b55e4444761ac0af1c80', // pragma: allowlist secret
@@ -241,7 +241,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
           })
         })
         describe('when the worldpay credential check fails', () => {
-          beforeEach(() => {
+          beforeEach(async () => {
             nextStubs({
               '@services/worldpay-details.service': {
                 check3dsFlexCredential: sinon.stub().returns(false),
@@ -276,7 +276,7 @@ describe('Controller: settings/worldpay-details/flex-credentials', () => {
         })
 
         describe('when the worldpay credential check passes', () => {
-          beforeEach(() => {
+          beforeEach(async () => {
             nextStubs({
               '@services/worldpay-details.service': worldpayDetailsServiceStubs
             })

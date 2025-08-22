@@ -32,7 +32,7 @@ const viewOnlyUser = new User(userFixtures.validUserResponse(
     }
   }))
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockRenderErrorView = sinon.spy()
 const mockFindByExternalId = sinon.stub()
 const mockUpdateServiceRole = sinon.stub().resolves({})
@@ -50,12 +50,12 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/
 describe('Controller: settings/team-members/change-permission', () => {
   describe('get', () => {
     describe('success', () => {
-      before(() => {
+      beforeEach(async () => {
         mockFindByExternalId.resolves(viewOnlyUser)
         nextRequest({
           params: { externalUserId: 'user-id-to-change-permission' }
         })
-        call('get')
+        await call('get')
       })
 
       it('should call the response method', () => {
@@ -77,12 +77,12 @@ describe('Controller: settings/team-members/change-permission', () => {
       })
     })
     describe('failure - admin attempts to change own permissions', () => {
-      before(() => {
+      beforeEach(async () => {
         mockFindByExternalId.resolves(adminUser)
         nextRequest({
           params: { externalUserId: 'user-id-for-admin-user' }
         })
-        call('get')
+        await call('get')
       })
 
       it('should call the renderErrorView method', () => {
@@ -93,13 +93,13 @@ describe('Controller: settings/team-members/change-permission', () => {
   })
   describe('post', () => {
     describe('admin user selects a new role for the user', () => {
-      before(() => {
+      beforeEach(async () => {
         mockFindByExternalId.resolves(viewOnlyUser)
         nextRequest({
           params: { externalUserId: 'user-id-to-change-permission' },
           body: { newRole: 'view-and-refund' }
         })
-        call('post')
+        await call('post')
       })
 
       it('should call the update service role method with the new role', () => {
@@ -117,13 +117,13 @@ describe('Controller: settings/team-members/change-permission', () => {
       })
     })
     describe('admin user selects users current role', () => {
-      before(() => {
+      beforeEach(async () => {
         mockFindByExternalId.resolves(viewOnlyUser)
         nextRequest({
           params: { externalUserId: 'user-id-to-change-permission' },
           body: { newRole: 'view-only' }
         })
-        call('post')
+        await call('post')
       })
 
       it('should not attempt to update and should redirect to the team members index page without a notification', () => {
@@ -134,13 +134,13 @@ describe('Controller: settings/team-members/change-permission', () => {
       })
     })
     describe('failure - admin attempts to change own permissions', () => {
-      before(() => {
+      beforeEach(async () => {
         mockFindByExternalId.resolves(adminUser)
         nextRequest({
           params: { externalUserId: 'user-id-for-admin-user' },
           body: { newRole: 'view-and-refund' }
         })
-        call('post')
+        await call('post')
       })
 
       it('should call the renderErrorView method', () => {

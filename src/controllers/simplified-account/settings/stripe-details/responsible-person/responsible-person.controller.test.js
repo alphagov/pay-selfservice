@@ -20,7 +20,7 @@ const getController = (stubs = {}) => {
   })
 }
 
-const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
+const setupTest = async (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
   responseStub = sinon.spy()
   responsiblePersonController = getController({
     response: responseStub,
@@ -41,13 +41,13 @@ const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additi
     ...additionalReqProps
   }
   next = sinon.spy()
-  responsiblePersonController[method][1](req, res, next)
+  await responsiblePersonController[method][1](req, res, next)
 }
 
 describe('Controller: settings/stripe-details/responsible-person', () => {
   describe('get', () => {
     describe('no existing form state', () => {
-      before(() => setupTest('get'))
+      beforeEach(async () => setupTest('get'))
 
       it('should call the response method', () => {
         expect(responseStub.called).to.be.true
@@ -75,7 +75,7 @@ describe('Controller: settings/stripe-details/responsible-person', () => {
         dobMonth: '09',
         dobYear: '1940'
       }
-      before(() => setupTest('get', {}, {}, {
+      beforeEach(async () => setupTest('get', {}, {}, {
         session: {
           formState: {
             responsiblePerson: {
@@ -111,7 +111,7 @@ describe('Controller: settings/stripe-details/responsible-person', () => {
         dobYear: '1940'
       }
 
-      before(() => setupTest('post', {}, {}, {
+      beforeEach(async () => setupTest('post', {}, {}, {
         body: validBody,
         session: {}
       }))
@@ -146,7 +146,7 @@ describe('Controller: settings/stripe-details/responsible-person', () => {
         dobYear: ''
       }
 
-      before(() => setupTest('post', {}, {}, {
+      beforeEach(async () => setupTest('post', {}, {}, {
         body: invalidBody,
         session: {}
       }))
@@ -200,7 +200,7 @@ describe('Controller: settings/stripe-details/responsible-person', () => {
         }
       }
 
-      before(() => setupTest('post', {}, {}, {
+      beforeEach(async () => setupTest('post', {}, {}, {
         body: validBody,
         session: {
           formState: {

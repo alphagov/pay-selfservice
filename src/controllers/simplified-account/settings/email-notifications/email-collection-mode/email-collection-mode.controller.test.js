@@ -3,7 +3,7 @@ const paths = require('@root/paths')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const sinon = require('sinon')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockEmailService = {
   setEmailCollectionModeByServiceIdAndAccountType: sinon.stub().resolves()
 }
@@ -30,7 +30,7 @@ const {
 
 describe('Controller: settings/email-notifications/email-collection-mode', () => {
   describe('get', () => {
-    before(() => {
+    beforeEach(async () => {
       call('get')
     })
 
@@ -57,7 +57,7 @@ describe('Controller: settings/email-notifications/email-collection-mode', () =>
   })
 
   describe('post', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         body: {
           emailCollectionMode: 'OPTIONAL'

@@ -10,7 +10,7 @@ const CredentialState = require('@models/constants/credential-state')
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockStripeDetailsService = {
   getStripeAccountOnboardingDetails: sinon.stub().resolves({
     foo: 'bar',
@@ -35,8 +35,8 @@ const {
 describe('Controller: settings/stripe-details', () => {
   describe('getAccountDetails', () => {
     describe('when requesting account details', () => {
-      before(() => {
-        call('getAccountDetails')
+      beforeEach(async () => {
+        await call('getAccountDetails')
       })
       it('should return a json object', () => {
         sinon.assert.calledOnce(mockStripeDetailsService.getStripeAccountOnboardingDetails)
@@ -50,7 +50,7 @@ describe('Controller: settings/stripe-details', () => {
 
   describe('get', () => {
     describe('when there are outstanding tasks', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           gatewayAccountStripeProgress: new StripeAccountSetup(
             buildGetStripeAccountSetupResponse({
@@ -58,7 +58,7 @@ describe('Controller: settings/stripe-details', () => {
             })
           )
         })
-        call('get')
+        await call('get')
       })
 
       it('should call the response method', () => {
@@ -102,7 +102,7 @@ describe('Controller: settings/stripe-details', () => {
     })
 
     describe('when messages are available', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           gatewayAccountStripeProgress: new StripeAccountSetup(
             buildGetStripeAccountSetupResponse()
@@ -115,7 +115,7 @@ describe('Controller: settings/stripe-details', () => {
             }
           }
         })
-        call('get')
+        await call('get')
       })
 
       it('should pass messages to the response method', () => {
@@ -124,7 +124,7 @@ describe('Controller: settings/stripe-details', () => {
     })
 
     describe('when all tasks are complete', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           gatewayAccountStripeProgress: new StripeAccountSetup(
             buildGetStripeAccountSetupResponse({
@@ -141,7 +141,7 @@ describe('Controller: settings/stripe-details', () => {
             noscript: 'true'
           }
         })
-        call('get')
+        await call('get')
       })
       it('should set incompleteTasks to false', () => {
         expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(false)
@@ -158,7 +158,7 @@ describe('Controller: settings/stripe-details', () => {
       })
     })
     describe('when account is switching providers', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           gatewayAccountStripeProgress: new StripeAccountSetup(
             buildGetStripeAccountSetupResponse({
@@ -177,7 +177,7 @@ describe('Controller: settings/stripe-details', () => {
               .withState(CredentialState.CREATED)
           }
         })
-        call('get')
+        await call('get')
       })
 
       it('should render response with answers', () => {

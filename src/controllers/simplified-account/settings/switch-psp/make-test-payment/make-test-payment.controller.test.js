@@ -21,7 +21,7 @@ const CHARGE_EXTERNAL_ID = 'charge-id-123abc'
 const CHARGE_URL = 'https://payment.gov.uk/blahblahblah'
 const USER_EXTERNAL_ID = 'user-id-123abc'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockChargeService = {
   createCharge: sinon.stub().resolves(
     new Charge(
@@ -79,8 +79,8 @@ const { req, res, next, nextRequest, call } = new ControllerTestBuilder(
 
 describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
+    beforeEach(async () => {
+      await call('get')
     })
 
     it('should call the response method', () => {
@@ -105,13 +105,13 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
 
   describe('getInbound', () => {
     describe('when payment is successful', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           session: {
             [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID,
           },
         })
-        call('getInbound')
+        await call('getInbound')
       })
 
       it('should update the credential state', () => {
@@ -139,7 +139,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
       })
     })
     describe('when payment is not successful', () => {
-      before(() => {
+      beforeEach(async () => {
         mockChargeService.getCharge.resolves({
           state: {
             status: 'error',
@@ -150,7 +150,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
             [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID,
           },
         })
-        call('getInbound')
+        await call('getInbound')
       })
 
       it('should set error message', () => {
@@ -172,7 +172,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
       })
     })
     describe('when there is a problem retrieving the charge', () => {
-      before(() => {
+      beforeEach(async () => {
         const error = new RESTClientError('whoops')
         mockChargeService.getCharge.rejects(error)
         nextRequest({
@@ -180,7 +180,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
             [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID,
           },
         })
-        call('getInbound')
+        await call('getInbound')
       })
       it('should call next with error', () => {
         sinon.assert.notCalled(res.redirect)
@@ -191,7 +191,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
       })
     })
     describe('when there is a problem updating the credential', () => {
-      before(() => {
+      beforeEach(async () => {
         const error = new RESTClientError('whoops')
         mockWorldpayDetailsService.updateCredentialState.rejects(error)
         nextRequest({
@@ -199,7 +199,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
             [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID,
           },
         })
-        call('getInbound')
+        await call('getInbound')
       })
       it('should call next with error', () => {
         sinon.assert.notCalled(res.redirect)
@@ -212,8 +212,8 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
   })
 
   describe('post', () => {
-    before(() => {
-      call('post')
+    beforeEach(async () => {
+      await call('post')
     })
 
     it('should create a charge via the charge service', () => {
@@ -245,10 +245,10 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
     })
 
     describe('when there is a problem creating the charge', () => {
-      before(() => {
+      beforeEach(async () => {
         const error = new RESTClientError('whoops')
         mockChargeService.createCharge.rejects(error)
-        call('post')
+        await call('post')
       })
 
       it('should call next with error', () => {

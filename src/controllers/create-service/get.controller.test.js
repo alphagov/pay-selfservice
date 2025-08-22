@@ -14,7 +14,7 @@ const getController = function (mockResponses) {
 
 describe('Controller: createService, Method: get', () => {
   describe('when there is no pre-existing pageData', () => {
-    before(() => {
+    beforeEach(() => {
       mockResponses.response = sinon.spy()
       const createServiceCtrl = getController(mockResponses)
       res = {}
@@ -43,7 +43,7 @@ describe('Controller: createService, Method: get', () => {
   })
 
   describe('when there is pre-existing pageData', () => {
-    before(() => {
+    beforeEach(() => {
       mockResponses.response = sinon.spy()
       const createServiceCtrl = getController(mockResponses)
       res = {}

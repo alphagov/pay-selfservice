@@ -6,7 +6,6 @@ const { response } = require('../../utils/response')
 const paths = require('../../paths')
 const serviceService = require('../../services/service.service')
 const userService = require('../../services/user.service')
-const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 
 function get (req, res) {

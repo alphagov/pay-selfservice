@@ -10,7 +10,7 @@ const WorldpayTaskIdentifiers = require('@models/task-workflows/task-identifiers
 const TaskStatus = require('@models/constants/task-status')
 const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const ACCOUNT_TYPE = GatewayAccountType.LIVE
 const SERVICE_EXTERNAL_ID = 'service123abc'
@@ -37,23 +37,23 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/
   .build()
 
 describe('Controller: settings/worldpay-details', () => {
-  before(async () => {
-    await call('get')
-  })
 
   describe('get', () => {
     describe('for one-off card payments gateway account', () => {
-      it('should call the response method', () => {
+      it('should call the response method', async () => {
+        await call('get')
         expect(mockResponse.called).to.be.true
       })
 
-      it('should pass req, res and template path to the response method', () => {
+      it('should pass req, res and template path to the response method', async () => {
+        await call('get')
         expect(mockResponse.args[0][0]).to.deep.equal(req)
         expect(mockResponse.args[0][1]).to.deep.equal(res)
         expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/worldpay-details/index')
       })
 
-      it('should pass context data to the response method', () => {
+      it('should pass context data to the response method', async () => {
+        await call('get')
         const tasks = [{
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
             SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, CREDENTIAL_EXTERNAL_ID),
@@ -73,25 +73,27 @@ describe('Controller: settings/worldpay-details', () => {
     })
 
     describe('for a moto-enabled gateway account', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           account: {
             allowMoto: true
           }
         })
-        call('get')
       })
-      it('should call the response method', () => {
+      it('should call the response method', async () => {
+        await call('get')
         expect(mockResponse.called).to.be.true
       })
 
-      it('should pass req, res and template path to the response method', () => {
+      it('should pass req, res and template path to the response method', async () => {
+        await call('get')
         expect(mockResponse.args[0][0]).to.deep.equal(req)
         expect(mockResponse.args[0][1]).to.deep.equal(res)
         expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/worldpay-details/index')
       })
 
-      it('should pass context data to the response method', () => {
+      it('should pass context data to the response method', async () => {
+        await call('get')
         const tasks = [{
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
             SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, CREDENTIAL_EXTERNAL_ID),
@@ -105,26 +107,28 @@ describe('Controller: settings/worldpay-details', () => {
     })
 
     describe('for a recurring card payments gateway account', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           account: {
             recurringEnabled: true,
             allowMoto: false
           }
         })
-        call('get')
       })
-      it('should call the response method', () => {
+      it('should call the response method', async () => {
+        await call('get')
         expect(mockResponse.called).to.be.true
       })
 
-      it('should pass req, res and template path to the response method', () => {
+      it('should pass req, res and template path to the response method', async () => {
+        await call('get')
         expect(mockResponse.args[0][0]).to.deep.equal(req)
         expect(mockResponse.args[0][1]).to.deep.equal(res)
         expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/worldpay-details/index')
       })
 
-      it('should pass context data to the response method', () => {
+      it('should pass context data to the response method', async () => {
+        await call('get')
         const tasks = [{
           href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
             SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, CREDENTIAL_EXTERNAL_ID),

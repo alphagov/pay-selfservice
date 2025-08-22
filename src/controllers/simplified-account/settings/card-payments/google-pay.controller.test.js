@@ -8,7 +8,7 @@ const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/f
 const ACCOUNT_TYPE = 'test'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockUpdateGooglePay = sinon.spy()
 const mockUpdateGooglePayMerchantId = sinon.spy()
 
@@ -34,8 +34,8 @@ const {
 describe('Controller: settings/card-payments/google-pay', () => {
   describe('get', () => {
     describe('a non-worldpay account', () => {
-      before(() => {
-        call('get', 1)
+      beforeEach(async () => {
+        await call('get', 1)
       })
       it('should call the response method', () => {
         expect(mockResponse).to.have.been.calledOnce
@@ -55,7 +55,7 @@ describe('Controller: settings/card-payments/google-pay', () => {
     })
 
     describe('a worldpay account', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           account: {
             paymentProvider: WORLDPAY,
@@ -68,7 +68,7 @@ describe('Controller: settings/card-payments/google-pay', () => {
             }
           }
         })
-        call('get', 1)
+        await call('get', 1)
       })
 
       it('should include google pay merchant id in the context', () => {
@@ -79,11 +79,11 @@ describe('Controller: settings/card-payments/google-pay', () => {
   })
   describe('post', () => {
     describe('a non-worldpay account', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: { googlePay: 'on' }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should not update Google Pay merchant id', () => {
@@ -103,7 +103,7 @@ describe('Controller: settings/card-payments/google-pay', () => {
     })
 
     describe('a worldpay account', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             googlePay: 'on',
@@ -121,7 +121,7 @@ describe('Controller: settings/card-payments/google-pay', () => {
             }
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should update Google Pay merchant id', () => {

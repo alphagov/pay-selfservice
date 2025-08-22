@@ -62,7 +62,7 @@ const setupTest = () => {
 
 describe('Controller: settings/email-notifications/templates', () => {
   describe('get', () => {
-    before(() => {
+    beforeEach(async () => {
       setupTest()
       templatesController.get(req, res)
     })
