@@ -11,7 +11,7 @@ import {
   SESSION_KEY,
 } from '@controllers/simplified-account/services/make-a-demo-payment/constants'
 import { demoPaymentSchema } from '@utils/simplified-account/validation/demo-payment.schema'
-import { penceToPounds, poundsToPence } from '@utils/currency-formatter'
+import { penceToPounds, safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 
 const DEMO_PAYMENT_INDEX = paths.simplifiedAccount.demoPayment.index
 
@@ -53,7 +53,7 @@ async function post(req: ServiceRequest<EditPaymentDetailsBody>, res: ServiceRes
 
   lodash.set(req, SESSION_KEY, {
     description: req.body.paymentDescription,
-    amount: poundsToPence(parseFloat(req.body.paymentAmount)),
+    amount: safeConvertPoundsStringToPence(req.body.paymentAmount),
   } as DemoPaymentSessionData)
 
   res.redirect(formatServiceAndAccountPathsFor(DEMO_PAYMENT_INDEX, req.service.externalId, req.account.type))

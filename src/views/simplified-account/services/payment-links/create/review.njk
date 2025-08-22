@@ -40,9 +40,9 @@
       £{{ pageData.paymentLinkAmount | penceToPounds }}
     {% else %}
       <span>User can choose</span>
-      {% if pageData.amountHint %}
+      {% if pageData.paymentAmountHint %}
         <span class="govuk-!-display-block pay-text-grey">
-          {{ pageData.amountHint | striptags(true) | escape | nl2br }}
+          {{ pageData.paymentAmountHint | striptags(true) | escape | nl2br }}
         </span>
       {% endif %}
     {% endif %}

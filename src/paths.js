@@ -162,6 +162,7 @@ module.exports = {
       create: '/payment-links/create',
       metadata: '/payment-links/create/reporting-column',
       reference: '/payment-links/reference',
+      amount: '/payment-links/amount',
       edit: {
         index: '/payment-links/:productExternalId',
         information: '/payment-links/:productExternalId/edit/information',

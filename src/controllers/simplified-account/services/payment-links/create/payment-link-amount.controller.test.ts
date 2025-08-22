@@ -1,7 +1,7 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
-import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
+import { PaymentLinkCreationSession } from './constants'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -10,7 +10,7 @@ const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 const mockResponse = sinon.spy()
 
 const { nextRequest, call, res } = new ControllerTestBuilder(
-  '@controllers/simplified-account/services/payment-links/create/payment-link-reference.controller'
+  '@controllers/simplified-account/services/payment-links/create/payment-link-amount.controller'
 )
   .withStubs({
     '@utils/response': { response: mockResponse },
@@ -23,23 +23,23 @@ const { nextRequest, call, res } = new ControllerTestBuilder(
   .withService({
     name: 'McDuck Enterprises',
     serviceName: { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' },
-    externalId: SERVICE_EXTERNAL_ID,
+    externalId: SERVICE_EXTERNAL_ID
   })
   .build()
 
-describe('controller: services/payment-links/create/payment-link-reference', () => {
+describe('controller: services/payment-links/create/payment-link-amount', () => {
   describe('get', () => {
-    describe('with valid session data', () => {
+    describe('with existing session data', () => {
       before(async () => {
+        mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           paymentLinkDescription: 'Test Description',
           language: 'en',
           serviceNamePath: 'mcduck-enterprises',
           productNamePath: 'test-payment-link',
-          paymentReferenceType: 'custom',
-          paymentReferenceLabel: 'Order Number',
-          paymentReferenceHint: 'Enter your order number',
+          paymentAmountType: 'fixed',
+          paymentLinkAmount: 2499
         }
 
         nextRequest({
@@ -62,22 +62,21 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
           mockResponse,
           sinon.match.any,
           sinon.match.any,
-          'simplified-account/services/payment-links/create/reference'
+          'simplified-account/services/payment-links/create/amount'
         )
       })
 
       it('should set form values from session in context', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         const formValues = context.formValues as Record<string, unknown>
-        sinon.assert.match(formValues.referenceTypeGroup, 'custom')
-        sinon.assert.match(formValues.referenceLabel, 'Order Number')
-        sinon.assert.match(formValues.referenceHint, 'Enter your order number')
+        sinon.assert.match(formValues.amountTypeGroup, 'fixed')
+        sinon.assert.match(formValues.paymentAmount, 24.99)
       })
 
       it('should set backLink in context', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.backLink, sinon.match.string)
-        sinon.assert.match(context.backLink, sinon.match(/payment-links.*create/))
+        sinon.assert.match(context.backLink, sinon.match(/payment-links.*reference/))
       })
 
       it('should set createJourney in context', () => {
@@ -99,8 +98,8 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
           language: 'cy',
           serviceNamePath: 'test-service',
           productNamePath: 'welsh-payment-link',
-          paymentReferenceType: 'standard',
-          paymentReferenceLabel: 'Reference',
+          paymentAmountType: 'variable',
+          paymentAmountHint: 'whatever',
         }
 
         nextRequest({
@@ -119,14 +118,15 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         sinon.assert.match(context.isWelsh, true)
       })
 
-      it('should set form values for standard reference type', () => {
+      it('should set form values for variable amount', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         const formValues = context.formValues as Record<string, unknown>
-        sinon.assert.match(formValues.referenceTypeGroup, 'standard')
-        sinon.assert.match(formValues.referenceLabel, undefined)
-        sinon.assert.match(formValues.referenceHint, undefined)
+        sinon.assert.match(formValues.amountTypeGroup, 'variable')
+        sinon.assert.match(formValues.amountHint, 'whatever')
+        sinon.assert.match(formValues.paymentAmount, undefined)
       })
     })
+
 
     describe('with empty session data', () => {
       before(async () => {
@@ -134,6 +134,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
 
         nextRequest({
           session: {},
+          body: {},
         })
 
         await call('get')
@@ -147,15 +148,15 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
   })
 
   describe('post', () => {
-    describe('with valid standard reference type', () => {
+    describe('with fixed amount type', () => {
       before(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
           serviceNamePath: 'test-service',
           productNamePath: 'test-payment-link',
-          paymentReferenceType: 'custom',
-          paymentReferenceLabel: 'Old Label',
+          paymentAmountType: 'variable',
+          paymentAmountHint: 'whatever',
         }
 
         res.redirect.resetHistory()
@@ -167,28 +168,29 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
             },
           },
           body: {
-            referenceTypeGroup: 'standard',
+            amountTypeGroup: 'fixed',
+            paymentAmount: '24.99',
           },
         })
 
         await call('post')
       })
 
-      it('should redirect to amount page', () => {
+      it('should redirect to review page', () => {
         sinon.assert.calledOnce(res.redirect)
-        sinon.assert.calledWith(res.redirect, sinon.match(/amount/))
+        sinon.assert.calledWith(res.redirect, sinon.match(/review/))
       })
     })
 
-    describe('with valid custom reference type', () => {
+    describe('with variable amount type', () => {
       before(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
           serviceNamePath: 'test-service',
           productNamePath: 'test-payment-link',
-          paymentReferenceType: 'standard',
-          paymentReferenceLabel: 'Reference',
+          paymentAmountType: 'fixed',
+          paymentLinkAmount: 1299,
         }
 
         res.redirect.resetHistory()
@@ -200,51 +202,15 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
             },
           },
           body: {
-            referenceTypeGroup: 'custom',
-            referenceLabel: 'Order Number',
-            referenceHint: 'Enter your order number',
+            amountTypeGroup: 'variable',
+            amountHint: 'whatever',
           },
         })
 
         await call('post')
       })
 
-      it('should redirect to amount page', () => {
-        sinon.assert.calledOnce(res.redirect)
-        sinon.assert.calledWith(res.redirect, sinon.match(/amount/))
-      })
-    })
-
-    describe('when the user is coming back from the review page (FROM_REVIEW_QUERY_PARAM set to true)', () => {
-      before(async () => {
-        const sessionData: Partial<PaymentLinkCreationSession> = {
-          paymentLinkTitle: 'Test Payment Link',
-          language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
-          paymentReferenceType: 'standard'
-        }
-
-        res.redirect.resetHistory()
-
-        nextRequest({
-          query: { [FROM_REVIEW_QUERY_PARAM]: 'true' },
-          session: {
-            pageData: {
-              createPaymentLink: sessionData,
-            },
-          },
-          body: {
-            referenceTypeGroup: 'custom',
-            referenceLabel: 'Order Number',
-            referenceHint: 'Enter your order number',
-          },
-        })
-
-        await call('post')
-      })
-
-      it('should redirect back to the review page', () => {
+      it('should redirect to review page', () => {
         sinon.assert.calledOnce(res.redirect)
         sinon.assert.calledWith(res.redirect, sinon.match(/review/))
       })
@@ -256,9 +222,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
 
         nextRequest({
           session: {},
-          body: {
-            referenceTypeGroup: 'standard',
-          },
+          body: {},
         })
 
         await call('post')
@@ -270,15 +234,15 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
       })
     })
 
-    describe('with validation errors - no reference type selected', () => {
+    describe('with validation errors - no amount type selected', () => {
       before(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
           serviceNamePath: 'test-service',
           productNamePath: 'test-payment-link',
-          paymentReferenceType: 'standard',
-          paymentReferenceLabel: 'Reference',
+          paymentAmountType: 'fixed',
+          paymentLinkAmount: 2499,
         }
 
         mockResponse.resetHistory()
@@ -290,9 +254,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
               createPaymentLink: sessionData,
             },
           },
-          body: {
-            referenceTypeGroup: '',
-          },
+          body: {},
         })
 
         await call('post')
@@ -304,7 +266,7 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
           mockResponse,
           sinon.match.any,
           sinon.match.any,
-          'simplified-account/services/payment-links/create/reference'
+          'simplified-account/services/payment-links/create/amount'
         )
       })
 
@@ -320,14 +282,14 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
       })
     })
 
-    describe('with validation errors - custom type but empty label', () => {
+    describe('with validation errors - fixed type but empty amount', () => {
       before(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
           serviceNamePath: 'test-service',
           productNamePath: 'test-payment-link',
-          paymentReferenceType: 'standard',
+          paymentAmountType: 'fixed',
         }
 
         mockResponse.resetHistory()
@@ -340,9 +302,8 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
             },
           },
           body: {
-            referenceTypeGroup: 'custom',
-            referenceLabel: '',
-            referenceHint: 'Valid hint',
+            amountTypeGroup: 'fixed',
+            paymentAmount: undefined
           },
         })
 
@@ -363,17 +324,17 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
       })
     })
 
-    describe('with validation errors - custom type with label too long', () => {
+    describe('with validation errors - fixed type amount too low', () => {
       before(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
           serviceNamePath: 'test-service',
           productNamePath: 'test-payment-link',
-          paymentReferenceType: 'standard',
+          paymentAmountType: 'fixed',
         }
 
-        const longLabel = 'a'.repeat(51)
+        const minimumAmount = 0.3
         mockResponse.resetHistory()
         res.redirect.resetHistory()
 
@@ -384,9 +345,8 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
             },
           },
           body: {
-            referenceTypeGroup: 'custom',
-            referenceLabel: longLabel,
-            referenceHint: 'Valid hint',
+            amountTypeGroup: 'fixed',
+            paymentAmount: (minimumAmount - 1).toString()
           },
         })
 
@@ -400,19 +360,24 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         sinon.assert.match(context.errors, sinon.match.has('summary'))
         sinon.assert.match(context.errors, sinon.match.has('formErrors'))
       })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
+      })
     })
 
-    describe('with validation errors - custom type with hint too long', () => {
+    describe('with validation errors - fixed type amount too high', () => {
       before(async () => {
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
           serviceNamePath: 'test-service',
           productNamePath: 'test-payment-link',
-          paymentReferenceType: 'standard',
+          paymentAmountType: 'fixed',
         }
 
-        const longHint = 'a'.repeat(256)
+        const maximumAmount = 100000
         mockResponse.resetHistory()
         res.redirect.resetHistory()
 
@@ -423,9 +388,94 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
             },
           },
           body: {
-            referenceTypeGroup: 'custom',
-            referenceLabel: 'Valid Label',
-            referenceHint: longHint,
+            amountTypeGroup: 'fixed',
+            paymentAmount: (maximumAmount + 1).toString()
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
+      })
+    })
+
+    describe('with validation errors - fixed type text amount', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'fixed',
+        }
+
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            amountTypeGroup: 'fixed',
+            paymentAmount: 'something'
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
+      })
+    })
+
+    describe('with validation errors - variable type with hint too long', () => {
+      before(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentReferenceType: 'standard',
+        }
+
+        const characterLimit = 255
+        const invalidAmountHint = 'a'.repeat(characterLimit + 1)
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            amountTypeGroup: 'variable',
+            amountHint: invalidAmountHint
           },
         })
 

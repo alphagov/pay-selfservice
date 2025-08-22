@@ -77,7 +77,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
       it('should set backLink in context', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.backLink, sinon.match.string)
-        sinon.assert.match(context.backLink, sinon.match(/payment-links.*reference/))
+        sinon.assert.match(context.backLink, sinon.match(/payment-links.*amount/))
       })
 
       it('should set titleLink in context with fromReview query parameter', () => {
@@ -97,7 +97,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
       it('should set amountLink in context with fromReview query parameter', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.amountLink, sinon.match.string)
-        sinon.assert.match(context.amountLink, sinon.match(/payment-links.*review/))
+        sinon.assert.match(context.amountLink, sinon.match(/payment-links.*amount/))
         sinon.assert.match(context.amountLink, sinon.match(expectedQueryStringForChangeLinks))
       })
 

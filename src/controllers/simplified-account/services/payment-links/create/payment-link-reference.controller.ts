@@ -95,17 +95,14 @@ async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceRe
     paymentReferenceLabel: req.body.referenceTypeGroup === 'custom' ? req.body.referenceLabel : undefined,
     paymentReferenceHint: req.body.referenceTypeGroup === 'custom' ? req.body.referenceHint : undefined,
     gatewayAccountId: account.id, // todo: remove me once implemented in simplified journey
-    paymentLinkAmount: 1500, // todo: remove me once implemented in simplified journey
   } as PaymentLinkCreationSession)
 
+  const redirectPath = req.query[FROM_REVIEW_QUERY_PARAM] === 'true'
+    ? paths.simplifiedAccount.paymentLinks.review
+    : paths.simplifiedAccount.paymentLinks.amount
 
-    const redirectPath = (req.query[FROM_REVIEW_QUERY_PARAM] as string) === 'true'
-      ? paths.simplifiedAccount.paymentLinks.review
-      : paths.simplifiedAccount.paymentLinks.review // TODO: change to account, once the account page is ready
+  return res.redirect(formatServiceAndAccountPathsFor(redirectPath, service.externalId, account.type))
 
-  return res.redirect(
-    formatServiceAndAccountPathsFor(redirectPath, service.externalId, account.type)
-  )
 }
 
 export { get, post }
