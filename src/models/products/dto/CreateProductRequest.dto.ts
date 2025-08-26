@@ -6,6 +6,7 @@ export interface CreateProductRequestData {
   price: number
   type: string
   return_url?: string
+  language: string
   service_name_path?: string
   product_name_path?: string
 }
