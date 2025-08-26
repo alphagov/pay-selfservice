@@ -8,6 +8,7 @@ export class CreateProductRequest {
   private price!: number
   private type!: string
   private returnUrl?: string
+  private language!: string
   private serviceNamePath!: string
   private productNamePath!: string
 
@@ -46,6 +47,11 @@ export class CreateProductRequest {
     return this
   }
 
+  withLanguage(language: string) {
+    this.language = language
+    return this
+  }
+
   withServiceNamePath(serviceNamePath: string) {
     this.serviceNamePath = serviceNamePath
     return this
@@ -65,6 +71,7 @@ export class CreateProductRequest {
       price: this.price,
       type: this.type,
       return_url: this.returnUrl,
+      language: this.language,
       service_name_path: this.serviceNamePath,
       product_name_path: this.productNamePath
     }

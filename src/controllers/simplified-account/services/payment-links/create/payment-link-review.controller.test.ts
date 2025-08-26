@@ -257,6 +257,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
             .withProductNamePath('test-payment-link')
             .withApiToken('big-beautiful-token')
             .withName('Test Payment Link')
+            .withLanguage('en')
             .withDescription('Test Description')
             .withPrice(1500)
             .withType(productTypes.ADHOC)
