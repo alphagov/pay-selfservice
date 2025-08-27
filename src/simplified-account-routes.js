@@ -122,6 +122,12 @@ simplifiedAccount.get(
   permission('tokens:create'),
   servicesController.paymentLinks.create.metadata.get
 )
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.metadata,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.create.metadata.post
+)
 
 // payment links edit - index
 simplifiedAccount.get(
