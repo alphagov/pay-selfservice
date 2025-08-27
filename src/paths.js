@@ -1,7 +1,5 @@
 'use strict'
 
-import { meta } from '@eslint/js'
-
 const generateRoute = require('./utils/generate-route')
 const formattedPathFor = require('./utils/replace-params-in-path')
 
