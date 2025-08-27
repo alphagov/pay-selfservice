@@ -9,7 +9,7 @@ import { buildPaymentLinkOptions } from '@test/cypress/integration/simplified-ac
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const GATEWAY_ACCOUNT_ID = 117
-const PRODUCT_EXTERNAL_ID = 'cf3hp2'
+const PRODUCT_EXTERNAL_ID = 'product123abc'
 const SERVICE_NAME = {
   en: 'McDuck Enterprises',
   cy: 'Mentrau McDuck',
