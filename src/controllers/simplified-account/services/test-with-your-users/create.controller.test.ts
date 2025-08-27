@@ -1,4 +1,5 @@
 import sinon from 'sinon'
+import _ from 'lodash'
 
 import ControllerTestBuilder from "@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class";
 import GatewayAccountType from "@models/gateway-account/gateway-account-type";
@@ -6,12 +7,19 @@ import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/fo
 import paths from "@root/paths";
 import {beforeEach} from "mocha";
 import {array} from "@test/utils/custom-matchers";
+import {CreateTokenRequest} from "@models/public-auth/CreateTokenRequest.class";
+import TokenUsageType from "@models/public-auth/token-usage-type";
+import {CreateProductRequest} from "@models/products/CreateProductRequest.class";
+import {PROTOTYPE} from "@utils/product-types";
+import {ServiceRequest} from "@utils/types/express";
+import {SESSION_KEY} from "@controllers/simplified-account/services/test-with-your-users/constants";
 
 const mockResponse = sinon.stub()
 
-const GATEWAY_ACCOUNT_ID = '100'
+const GATEWAY_ACCOUNT_ID = 100
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'ga-123-external-id-abc'
 const SERVICE_EXTERNAL_ID = 'service-123-external-id-abc'
+const USER_EMAIL = 'homer.simpson@example.com'
 
 const createProductStub = sinon.stub()
 const createTokenStub = sinon.stub()
@@ -36,6 +44,9 @@ const { call, res, req, nextRequest, validate } = new ControllerTestBuilder(
   .withService({
     name: 'Test Service',
     externalId: SERVICE_EXTERNAL_ID,
+  })
+  .withUser({
+    email: USER_EMAIL
   })
   .build()
 
@@ -131,12 +142,12 @@ describe('test-with-your-users/create controller tests', () => {
             confirmationPage: 'https://this.is.a.valid.url.example.com'
           }
         })
-        createTokenStub.resolves('api_key_test_productapikey')
 
+        createTokenStub.resolves('api_key_test_productapikey')
         createProductStub.resolves({
           links: {
             pay: {
-              href: 'blah'
+              href: 'https://payment.link.url.example.com/paymentlink'
             }
           }
         })
@@ -145,13 +156,34 @@ describe('test-with-your-users/create controller tests', () => {
       it('should call createToken', async () => {
         await call('post')
 
-        createProductStub.should.have.been.calledOnce
+        createTokenStub.should.have.been.calledOnce
+        createTokenStub.should.have.been.calledWith(new CreateTokenRequest()
+          .withGatewayAccountId(GATEWAY_ACCOUNT_ID)
+          .withServiceExternalId(SERVICE_EXTERNAL_ID)
+          .withServiceMode(GatewayAccountType.TEST)
+          .withDescription(`Token for Prototype: This is a valid description`)
+          .withCreatedBy(USER_EMAIL)
+          .withTokenUsageType(TokenUsageType.PRODUCTS)
+        )
       })
 
       it('should call createProduct', async () => {
         await call('post')
 
         createProductStub.should.have.been.calledOnce
+        createProductStub.should.have.been.calledWith(new CreateProductRequest()
+          .withName('This is a valid description')
+          .withPrice(1000)
+          .withReturnUrl('https://this.is.a.valid.url.example.com')
+          .withType(PROTOTYPE)
+          .withGatewayAccountId(GATEWAY_ACCOUNT_ID)
+          .withApiToken('api_key_test_productapikey'))
+      })
+
+      it('should set the payment link URL on the session', async () => {
+        const { req } = await call('post') as { req: ServiceRequest }
+
+        _.get(req, SESSION_KEY, '').should.equal('https://payment.link.url.example.com/paymentlink')
       })
     })
   })
