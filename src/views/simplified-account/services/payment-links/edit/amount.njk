@@ -5,7 +5,7 @@
 {% endset %}
 
 {% block serviceContent %}
-  <span class="govuk-caption-m">Edit {{ serviceMode }} payment link</span>
+  <span class="govuk-caption-l">Edit {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
 
   {% include "simplified-account/services/payment-links/partials/forms/_payment-link-amount.njk" %}
 {% endblock %}
