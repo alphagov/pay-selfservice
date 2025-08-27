@@ -11,7 +11,7 @@ import {CreateTokenRequest} from "@models/public-auth/CreateTokenRequest.class";
 import TokenUsageType from "@models/public-auth/token-usage-type";
 import {CreateProductRequest} from "@models/products/CreateProductRequest.class";
 import { createProduct } from '@services/products.service'
-import { PROTOTYPE } from '@utils/product-types'
+import ProductType from '@models/products/product-type'
 import { SESSION_KEY } from "./constants";
 import {demoPaymentSchema} from "@utils/simplified-account/validation/demo-payment.schema";
 import {safeConvertPoundsStringToPence} from "@utils/currency-formatter";
@@ -72,7 +72,7 @@ async function post (req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceR
       .withName(req.body.description)
       .withPrice(parsedAmount)
       .withReturnUrl(req.body.confirmationPage)
-      .withType(PROTOTYPE)
+      .withType(ProductType.PROTOTYPE)
       .withGatewayAccountId(req.account.id)
       .withApiToken(token)
   )

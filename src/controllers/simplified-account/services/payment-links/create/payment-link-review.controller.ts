@@ -8,7 +8,7 @@ import lodash from 'lodash'
 import { createProduct } from '@services/products.service'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import { createPaymentLinkToken } from '@services/tokens.service'
-import productTypes from '@utils/product-types'
+import ProductType from "@models/products/product-type";
 import formatServicePathsFor from '@utils/format-service-paths-for'
 
 
@@ -87,7 +87,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     .withDescription(pageData.paymentLinkDescription ?? '')
     .withPrice(pageData.paymentLinkAmount)
     .withLanguage(pageData.language)
-    .withType(productTypes.ADHOC)
+    .withType(ProductType.ADHOC)
 
   const paymentLink = await createProduct(createProductRequest)
   const goLiveLink = formatServicePathsFor(paths.service.requestToGoLive.index, req.service.externalId) as string
