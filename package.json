@@ -63,6 +63,7 @@
     "@govuk-pay/pay-js-commons": "^7.0.14",
     "@govuk-pay/pay-js-metrics": "^1.0.14",
     "@sentry/node": "6.12.0",
+    "@types/sinon-chai": "^4.0.0",
     "accessible-autocomplete": "2.0.4",
     "axios": "^1.8.2",
     "body-parser": "1.20.3",

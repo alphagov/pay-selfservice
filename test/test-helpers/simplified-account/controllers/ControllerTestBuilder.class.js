@@ -65,6 +65,11 @@ module.exports = class ControllerTestBuilder {
     return this
   }
 
+  withSession (session) {
+    this.req.session = session
+    return this
+  }
+
   nextRequest (params) {
     this.nextReq = _.merge({}, this.req, params)
     return this
@@ -91,6 +96,21 @@ module.exports = class ControllerTestBuilder {
       nextRequest: this.nextRequest.bind(this),
       nextResponse: this.nextResponse.bind(this),
       nextStubs: this.nextStubs.bind(this),
+
+      validate: async (validationMethod) => {
+        const fn = controller[validationMethod]
+        const _req = this.nextReq || this.req
+        const _res = this.nextRes || this.res
+
+        if ( !(fn instanceof Array && fn.reduce((acc, curr) => acc && typeof curr === 'function', true)) ) {
+          throw new Error('not a validation chain')
+        }
+
+        for (let i = 0; i < fn.length; i ++) {
+          await fn[i](_req, _res, this.next)
+        }
+      },
+
       call: async (method, index) => {
         if (this.nextStubsData) {
           Object.assign(this.stubs, this.nextStubsData) // copy by ref
