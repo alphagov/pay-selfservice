@@ -4,6 +4,7 @@ import { ProductData } from '@models/products/dto/Product.dto'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import { CreateProductRequestData } from '@models/products/dto/CreateProductRequest.dto'
 import { ProductUpdateRequestData } from '@models/products/dto/ProductUpdateRequest.dto'
+import {ProductType} from "@utils/product-types";
 
 const SERVICE_NAME = 'products'
 const SERVICE_BASE_URL = process.env.PRODUCTS_URL!
@@ -18,7 +19,7 @@ class ProductsClient extends BaseClient {
 
   private get productsClient() {
     return {
-      getByGatewayAccountIdAndProductType: async (gatewayAccountId: number, productType: string) => {
+      getByGatewayAccountIdAndProductType: async (gatewayAccountId: number, productType: ProductType) => {
         const path = '/v1/api/gateway-account/{gatewayAccountId}/products?type={productType}'
           .replace('{gatewayAccountId}', encodeURIComponent(gatewayAccountId))
           .replace('{productType}', encodeURIComponent(productType))
@@ -64,6 +65,13 @@ class ProductsClient extends BaseClient {
           .replace('{gatewayAccountId}', encodeURIComponent(gatewayAccountId.toString()))
           .replace('{productExternalId}', encodeURIComponent(productExternalId))
         await this.delete<void>(path, 'delete a product')
+      },
+
+      disable: async (gatewayAccountId: number, productExternalId: string) => {
+        const path = '/v1/api/gateway-account/{gatewayAccountId}/products/{productExternalId}/disable'
+          .replace('{gatewayAccountId}', encodeURIComponent(gatewayAccountId.toString()))
+          .replace('{productExternalId}', encodeURIComponent(productExternalId))
+        await this.patch<void, void>(path, undefined,'disable a product')
       },
     }
   }

@@ -1,4 +1,4 @@
-import { response } from '@utils/response.js'
+import { response } from '@utils/response'
 import paths from '@root/paths'
 import { ServiceRequest, ServiceResponse } from "@utils/types/express";
 import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/format-service-and-account-paths-for";
