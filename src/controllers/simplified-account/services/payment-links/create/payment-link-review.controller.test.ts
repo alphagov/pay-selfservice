@@ -5,9 +5,9 @@ import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import { validGatewayAccount } from '@test/fixtures/gateway-account.fixtures'
 import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
-import productTypes from '@utils/product-types'
 import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import ProductType from '@models/products/product-type'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -291,7 +291,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
             .withLanguage('en')
             .withDescription('Test Description')
             .withPrice(1500)
-            .withType(productTypes.ADHOC)
+            .withType(ProductType.ADHOC)
         sinon.assert.calledWith(mockCreateProduct, expectedCreateProductRequest)
       })
 

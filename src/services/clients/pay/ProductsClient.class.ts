@@ -4,7 +4,7 @@ import { ProductData } from '@models/products/dto/Product.dto'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import { CreateProductRequestData } from '@models/products/dto/CreateProductRequest.dto'
 import { ProductUpdateRequestData } from '@models/products/dto/ProductUpdateRequest.dto'
-import {ProductType} from "@utils/product-types";
+import ProductType from "@models/products/product-type";
 
 const SERVICE_NAME = 'products'
 const SERVICE_BASE_URL = process.env.PRODUCTS_URL!

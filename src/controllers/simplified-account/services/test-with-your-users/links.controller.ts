@@ -1,24 +1,23 @@
-import { response } from '@utils/response.js'
+import {response} from '@utils/response'
 import paths from '@root/paths'
-import productsClient from '@services/clients/products.client.js'
+import {getProducts} from '@services/products.service'
 import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/format-service-and-account-paths-for";
-import { ServiceRequest, ServiceResponse } from "@utils/types/express";
+import {ServiceRequest, ServiceResponse} from "@utils/types/express";
+import ProductType from "@models/products/product-type";
 
 async function get (req: ServiceRequest, res: ServiceResponse) {
-  const prototypeProducts = await productsClient.product.getByGatewayAccountIdAndType(`${req.account.id}`, 'PROTOTYPE')
+  const prototypeProducts = await getProducts(req.account.id, ProductType.PROTOTYPE)
 
   const context = {
     messages: res.locals?.flash?.messages ?? [],
-    productsTab: true,
     createLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.create, req.service.externalId, req.account.type),
     indexLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, req.service.externalId, req.account.type),
     prototypesLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links, req.service.externalId, req.account.type),
     backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, req.service.externalId, req.account.type),
-    productsLength: prototypeProducts.length,
     products: prototypeProducts
   }
 
-  return response(req, res, 'simplified-account/services/test-with-your-users/index', context)
+  return response(req, res, 'simplified-account/services/test-with-your-users/links', context)
 }
 
 export {

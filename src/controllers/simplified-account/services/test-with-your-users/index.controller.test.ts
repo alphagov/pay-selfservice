@@ -42,7 +42,6 @@ describe('test-with-your-users/index controller tests', () => {
 
       mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
         messages: [],
-        productsTab: false,
         createLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.create, SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
         prototypesLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
         backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.dashboard.index, SERVICE_EXTERNAL_ID, GatewayAccountType.TEST)

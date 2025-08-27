@@ -9,7 +9,8 @@ import lodash from 'lodash'
 import { createProduct } from '@services/products.service'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import { createPaymentLinkToken } from '@services/tokens.service'
-import productTypes from '@utils/product-types'
+import ProductType from "@models/products/product-type";
+import formatServicePathsFor from '@utils/format-service-paths-for'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
@@ -108,9 +109,9 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     .withDescription(pageData.paymentLinkDescription ?? '')
     .withPrice(pageData.paymentLinkAmount)
     .withLanguage(pageData.language)
-    .withType(productTypes.ADHOC)
-    .withMetadata(pageData.metadata) 
-    
+    .withMetadata(pageData.metadata)
+    .withType(ProductType.ADHOC)
+
   const paymentLink = await createProduct(createProductRequest)
   const successBannerBody = account.type === GatewayAccountType.TEST ?
     `You can <a href="${paymentLink.links.pay.href}/"

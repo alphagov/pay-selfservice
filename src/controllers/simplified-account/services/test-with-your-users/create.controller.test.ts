@@ -10,9 +10,9 @@ import {array} from "@test/utils/custom-matchers";
 import {CreateTokenRequest} from "@models/public-auth/CreateTokenRequest.class";
 import TokenUsageType from "@models/public-auth/token-usage-type";
 import {CreateProductRequest} from "@models/products/CreateProductRequest.class";
-import {PROTOTYPE} from "@utils/product-types";
 import {ServiceRequest} from "@utils/types/express";
 import {SESSION_KEY} from "@controllers/simplified-account/services/test-with-your-users/constants";
+import ProductType from "@models/products/product-type";
 
 const mockResponse = sinon.stub()
 
@@ -175,7 +175,7 @@ describe('test-with-your-users/create controller tests', () => {
           .withName('This is a valid description')
           .withPrice(1000)
           .withReturnUrl('https://this.is.a.valid.url.example.com')
-          .withType(PROTOTYPE)
+          .withType(ProductType.PROTOTYPE)
           .withGatewayAccountId(GATEWAY_ACCOUNT_ID)
           .withApiToken('api_key_test_productapikey'))
       })

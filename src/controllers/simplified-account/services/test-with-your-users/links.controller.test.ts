@@ -10,12 +10,14 @@ const GATEWAY_ACCOUNT_ID = 100
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'ga-123-external-id-abc'
 const SERVICE_EXTERNAL_ID = 'service-123-external-id-abc'
 
+const getProductsStub = sinon.stub()
 
 const { call, res, req } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/test-with-your-users/links.controller'
 )
   .withStubs({
     '@utils/response': { response: mockResponse },
+    '@services/products.service': { getProducts: getProductsStub }
   })
   .withAccount({
     id: GATEWAY_ACCOUNT_ID,
@@ -28,13 +30,17 @@ const { call, res, req } = new ControllerTestBuilder(
   })
   .build()
 
-describe('test-with-your-users/index controller tests', () => {
+describe('test-with-your-users/links controller tests', () => {
   describe('get', () => {
+    beforeEach(() => {
+      getProductsStub.resolves([])
+    })
+
     it('should call the response method with req, res and the template path', async () => {
       await call('get')
 
       mockResponse.should.have.been.calledOnce
-      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/services/test-with-your-users/index')
+      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/services/test-with-your-users/links')
     })
 
     it('should call the response method with the context object', async () => {
@@ -42,10 +48,11 @@ describe('test-with-your-users/index controller tests', () => {
 
       mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
         messages: [],
-        productsTab: false,
         createLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.create, SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
         prototypesLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
-        backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.dashboard.index, SERVICE_EXTERNAL_ID, GatewayAccountType.TEST)
+        backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
+        indexLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
+        products: []
       })
     })
   })
