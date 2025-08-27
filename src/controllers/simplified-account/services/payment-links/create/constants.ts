@@ -12,10 +12,7 @@ export interface PaymentLinkCreationSession {
   paymentReferenceType: 'custom' | 'standard'
   paymentReferenceLabel: string
   paymentReferenceHint?: string
-  metadata: {
-    metadataColumnHeader: string,
-    metadataCellContent: string
-  }
+  metadata?: Record<string, string>
 }
 
 export const CREATE_SESSION_KEY = 'session.pageData.createPaymentLink'

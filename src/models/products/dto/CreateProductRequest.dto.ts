@@ -8,4 +8,5 @@ export interface CreateProductRequestData {
   return_url?: string
   service_name_path?: string
   product_name_path?: string
+  metadata?: Record<string, string>
 }

@@ -92,7 +92,8 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     .withDescription(pageData.paymentLinkDescription ?? '')
     .withPrice(pageData.paymentLinkAmount)
     .withType(productTypes.ADHOC)
-
+    .withMetadata(pageData.metadata) 
+    
   const paymentLink = await createProduct(createProductRequest)
   const goLiveLink = formatServicePathsFor(paths.service.requestToGoLive.index, req.service.externalId) as string
   const successBannerBody = `You can <a href="${paymentLink.links.pay.href}/"
