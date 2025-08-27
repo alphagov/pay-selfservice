@@ -91,6 +91,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     .withName(pageData.paymentLinkTitle)
     .withDescription(pageData.paymentLinkDescription ?? '')
     .withPrice(pageData.paymentLinkAmount)
+    .withLanguage(pageData.language)
     .withType(productTypes.ADHOC)
     .withMetadata(pageData.metadata) 
     
