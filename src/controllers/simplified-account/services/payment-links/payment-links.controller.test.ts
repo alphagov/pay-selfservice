@@ -81,6 +81,7 @@ describe('controller: services/payment-links', () => {
             createLink: '/service/service123abc/account/test/payment-links/create',
             products: [
               {
+                language: 'en',
                 name: 'Designer monocles',
                 href: 'http://products-ui.url/redirect/mcduck-enterprises/designer-monocles',
                 reference: 'Invoice number',
@@ -126,6 +127,7 @@ describe('controller: services/payment-links', () => {
             createLink: '/service/service123abc/account/live/payment-links/create',
             products: [
               {
+                language: 'en',
                 name: 'Designer monocles',
                 href: 'http://products-ui.url/redirect/mcduck-enterprises/designer-monocles',
                 reference: 'Created by GOV.UK Pay',
