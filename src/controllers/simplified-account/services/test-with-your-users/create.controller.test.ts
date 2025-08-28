@@ -12,7 +12,7 @@ import TokenUsageType from "@models/public-auth/token-usage-type";
 import {CreateProductRequest} from "@models/products/CreateProductRequest.class";
 import {ServiceRequest} from "@utils/types/express";
 import {SESSION_KEY} from "@controllers/simplified-account/services/test-with-your-users/constants";
-import ProductType from "@models/products/product-type";
+import { ProductType } from "@models/products/product-type";
 
 const mockResponse = sinon.stub()
 

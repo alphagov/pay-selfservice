@@ -6,7 +6,7 @@ const paths = require('../../paths')
 
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const productsClient = require('../../services/clients/products.client.js')
-const ProductType = require('@models/products/product-type')
+const { ProductType } = require('@models/products/product-type')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 const supportedLanguage = require('@models/constants/supported-language')
 

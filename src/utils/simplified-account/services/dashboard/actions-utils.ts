@@ -11,7 +11,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import CredentialState from '@models/constants/credential-state'
 import {getConnectorStripeAccountSetup, getStripeAccountCapabilities} from '@services/stripe-details.service'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
-import ProductType from "@models/products/product-type";
+import { ProductType } from "@models/products/product-type";
 
 const logger = createLogger(__filename)
 

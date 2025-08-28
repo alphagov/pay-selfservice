@@ -4,7 +4,7 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import Product from '@models/products/Product.class'
 import { validProductResponse } from '@test/fixtures/product.fixtures'
 import { ProductData } from '@models/products/dto/Product.dto'
-import ProductType from '@models/products/product-type'
+import { ProductType } from "@models/products/product-type";
 import { afterEach } from 'mocha'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'

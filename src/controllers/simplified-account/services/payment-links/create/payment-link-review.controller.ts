@@ -9,7 +9,7 @@ import lodash from 'lodash'
 import { createProduct } from '@services/products.service'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import { createPaymentLinkToken } from '@services/tokens.service'
-import ProductType from "@models/products/product-type";
+import { ProductType } from "@models/products/product-type";
 import formatServicePathsFor from '@utils/format-service-paths-for'
 
 function get(req: ServiceRequest, res: ServiceResponse) {

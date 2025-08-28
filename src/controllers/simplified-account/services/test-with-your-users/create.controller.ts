@@ -11,7 +11,7 @@ import {CreateTokenRequest} from "@models/public-auth/CreateTokenRequest.class";
 import TokenUsageType from "@models/public-auth/token-usage-type";
 import {CreateProductRequest} from "@models/products/CreateProductRequest.class";
 import { createProduct } from '@services/products.service'
-import ProductType from '@models/products/product-type'
+import { ProductType } from "@models/products/product-type";
 import { SESSION_KEY } from "./constants";
 import {demoPaymentSchema} from "@utils/simplified-account/validation/demo-payment.schema";
 import {safeConvertPoundsStringToPence} from "@utils/currency-formatter";
