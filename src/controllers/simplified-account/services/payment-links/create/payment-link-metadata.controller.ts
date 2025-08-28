@@ -56,7 +56,7 @@ async function post(req: ServiceRequest<CreateLinkMetadataBody>, res: ServiceRes
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)
     const backLinkUrl = formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.paymentLinks.reference,
+      paths.simplifiedAccount.paymentLinks.review,
       service.externalId,
       account.type
     )
@@ -69,18 +69,14 @@ async function post(req: ServiceRequest<CreateLinkMetadataBody>, res: ServiceRes
       },
       backLink: backLinkUrl,
       formValues: req.body,
-       
       serviceMode: account.type,
-      // isWelsh: product.language === 'cy',
       createJourney: true,
-      
     })
   }
 
   lodash.set(req, CREATE_SESSION_KEY, {
     ...lodash.get(req, CREATE_SESSION_KEY, {}),
     metadata: {
-      ...currentSession.metadata,
       [req.body.reportingColumn]: req.body.cellContent,
     }
   } as PaymentLinkCreationSession)
