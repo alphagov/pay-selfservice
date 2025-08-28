@@ -135,16 +135,6 @@ module.exports = {
       },
     },
   },
-  futureAccountStrategy: {
-    // remove account when hybrid gateway account root no longer required
-    // `/:${keys.ENVIRONMENT_ID}(test|live)/service/:${keys.SERVICE_EXTERNAL_ID}`,
-    root: `/:${keys.ENVIRONMENT_ID}(test|live)/service/:${keys.SERVICE_EXTERNAL_ID}/account/:${keys.GATEWAY_ACCOUNT_EXTERNAL_ID}`,
-    agreements: {
-      index: '/agreements',
-      detail: '/agreements/:agreementId',
-      cancel: '/agreements/:agreementId/cancel',
-    },
-  },
   simplifiedAccount: {
     root: `/service/:${keys.SERVICE_EXTERNAL_ID}/account/:${keys.ACCOUNT_TYPE}`,
     dashboard: {

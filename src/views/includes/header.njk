@@ -1,7 +1,3 @@
-{%- set payHeaderClasses -%}
-govuk-width-container govuk-header__container--{{accountType}}
-{%- endset -%}
-
 {% if loggedIn %}
   {% set payHeaderNavigation = [
     {
@@ -59,9 +55,8 @@ govuk-width-container govuk-header__container--{{accountType}}
 {{
   govukHeader({
     homepageUrl: "/",
-    containerClasses: payHeaderClasses,
     productName: "Pay",
-    navigation: payHeaderNavigation,
+    navigation: payHeaderNavigation if not NEW_GOVUK_HEADER,
     attributes : {
       'data-cy': 'header'
     }
