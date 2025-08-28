@@ -48,7 +48,7 @@ export default tseslint.config(
   {
     files: ['**/*.test.js', '**/*.test.ts'],
     rules: {
-      '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off', // some chai expect assertions trip this up so it's disabled for test files
     },
   }
 )

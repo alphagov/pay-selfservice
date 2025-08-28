@@ -1,4 +1,10 @@
 {% set titleHint %}
+  {% if not createJourney %}
+    {{ govukInsetText({
+      text: "Editing the payment link title does not change the web address.",
+      classes: "service-settings-inset-text--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2"
+    }) }}
+  {% endif %}
   <p class="govuk-!-margin-bottom-0">The title of your payment link should:</p>
   <ul class="govuk-!-margin-top-0">
     <li>briefly describe what the user is paying for</li>
@@ -22,13 +28,6 @@
 
 <form method="post">
   <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-
-  {% if not createJourney %}
-    {{ govukInsetText({
-      text: "Editing the payment link title does not change the web address.",
-      classes: "service-settings-inset-text--grey"
-    }) }}
-  {% endif %}
 
   {{ govukInput({
     name: "name",
@@ -72,6 +71,6 @@
 </form>
 
 {% if not isWelsh %}
-  <h3 class="govuk-heading-s">Example of what users will see</h3>
+  <h2 class="govuk-heading-s">Example of what users will see</h2>
   <img class="govuk-!-margin-bottom-6" src="/assets/images/payment-links/start-page.svg" alt="Screenshot of payment link landing page">
 {% endif %}
