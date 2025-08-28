@@ -4,7 +4,7 @@ import * as remove from './delete/delete-payment-link.controller'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { response } from '@utils/response'
 import { getProducts } from '@services/products.service'
-import ProductType from '@models/products/product-type'
+import { ProductType } from "@models/products/product-type";
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'

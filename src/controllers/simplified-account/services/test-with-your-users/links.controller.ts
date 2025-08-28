@@ -3,7 +3,7 @@ import paths from '@root/paths'
 import {getProducts} from '@services/products.service'
 import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/format-service-and-account-paths-for";
 import {ServiceRequest, ServiceResponse} from "@utils/types/express";
-import ProductType from "@models/products/product-type";
+import { ProductType } from "@models/products/product-type";
 
 async function get (req: ServiceRequest, res: ServiceResponse) {
   const prototypeProducts = await getProducts(req.account.id, ProductType.PROTOTYPE)

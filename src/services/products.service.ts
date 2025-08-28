@@ -1,6 +1,6 @@
 import ProductsClient from '@services/clients/pay/ProductsClient.class'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
-import ProductType from '@models/products/product-type'
+import { ProductType } from '@models/products/product-type'
 import { ProductUpdateRequestData } from '@models/products/dto/ProductUpdateRequest.dto'
 
 const productsClient = new ProductsClient()

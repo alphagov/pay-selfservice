@@ -3,7 +3,7 @@ import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
-import ProductType from "@models/products/product-type";
+import { ProductType } from "@models/products/product-type";
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
