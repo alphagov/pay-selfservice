@@ -1,6 +1,6 @@
 import sinon from 'sinon'
 
-export const inAnyOrder = (expected: any[]) => sinon.match(function (actual: any[]) {
+export const inAnyOrder = <T extends object>(expected: T[]) => sinon.match(function (actual: T[]) {
   if (!(expected instanceof Array)) {
     return false
   }
@@ -11,9 +11,6 @@ export const inAnyOrder = (expected: any[]) => sinon.match(function (actual: any
 
   return expected.reduce((acc: boolean, curr) => {
     const contains = actual.some((el) => sinon.match(curr).test(el))
-    if (!contains) {
-      throw new Error('oh no')
-    }
     return acc && contains
   }, true)
 })
