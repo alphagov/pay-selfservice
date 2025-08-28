@@ -21,7 +21,7 @@ const getController = (stubs = {}) => {
   })
 }
 
-const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
+const setupTest = async (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
   responseStub = sinon.spy()
   updateStripeDetailsBankDetailsStub = sinon.stub().resolves()
   bankDetailsController = getController({
@@ -43,12 +43,12 @@ const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additi
     ...additionalReqProps
   }
   next = sinon.spy()
-  bankDetailsController[method][1](req, res, next)
+  await bankDetailsController[method][1](req, res, next)
 }
 
 describe('Controller: settings/stripe-details/bank-details', () => {
   describe('get', () => {
-    before(() => setupTest('get'))
+    beforeEach(async () => await setupTest('get'))
 
     it('should call the response method', () => {
       expect(responseStub.called).to.be.true
@@ -70,7 +70,7 @@ describe('Controller: settings/stripe-details/bank-details', () => {
     const VALID_SORT_CODE = '309430'
     const VALID_ACCOUNT_NUMBER = '00733445'
     describe('when submitting valid bank details', () => {
-      before(() => setupTest('post', {}, {}, {
+      beforeEach(async () => await setupTest('post', {}, {}, {
         body: {
           sortCode: VALID_SORT_CODE,
           accountNumber: VALID_ACCOUNT_NUMBER
@@ -89,8 +89,8 @@ describe('Controller: settings/stripe-details/bank-details', () => {
 
     describe('when validation fails', () => {
       describe('for empty fields', () => {
-        before(() => {
-          setupTest('post',
+        beforeEach(async () => {
+          await setupTest('post',
             {},
             {},
             { body: { sortCodeInput: '', accountNumberInput: '' } }
@@ -123,8 +123,8 @@ describe('Controller: settings/stripe-details/bank-details', () => {
       })
 
       describe('for invalid sort code format', () => {
-        before(() => {
-          setupTest('post',
+        beforeEach(async () => {
+          await setupTest('post',
             {},
             {},
             { body: { sortCode: 'not-a-valid-sort-code', accountNumber: VALID_ACCOUNT_NUMBER } }
@@ -150,8 +150,8 @@ describe('Controller: settings/stripe-details/bank-details', () => {
       })
 
       describe('for invalid account number format', () => {
-        before(() => {
-          setupTest('post',
+        beforeEach(async () => {
+          await setupTest('post',
             {},
             {},
             { body: { sortCode: VALID_SORT_CODE, accountNumber: 'not-a-valid-account-number' } }
@@ -179,8 +179,8 @@ describe('Controller: settings/stripe-details/bank-details', () => {
 
     describe('when Stripe API returns errors', () => {
       describe('for unusable bank account', () => {
-        before(() => {
-          setupTest('post',
+        beforeEach(async () => {
+          await setupTest('post',
             { updateStripeDetailsBankDetails: sinon.stub().rejects({ code: 'bank_account_unusable' }) },
             {},
             { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
@@ -197,8 +197,8 @@ describe('Controller: settings/stripe-details/bank-details', () => {
       })
 
       describe('for invalid sort code', () => {
-        before(() => {
-          setupTest('post',
+        beforeEach(async () => {
+          await setupTest('post',
             { updateStripeDetailsBankDetails: sinon.stub().rejects({ code: 'routing_number_invalid' }) },
             {},
             { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
@@ -216,8 +216,8 @@ describe('Controller: settings/stripe-details/bank-details', () => {
       })
 
       describe('for invalid account number', () => {
-        before(() => {
-          setupTest('post',
+        beforeEach(async () => {
+          await setupTest('post',
             { updateStripeDetailsBankDetails: sinon.stub().rejects({ code: 'account_number_invalid' }) },
             {},
             { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
@@ -235,8 +235,8 @@ describe('Controller: settings/stripe-details/bank-details', () => {
       })
 
       describe('for unhandled errors with codes', () => {
-        before(() => {
-          setupTest('post',
+        beforeEach(async () => {
+          await setupTest('post',
             { updateStripeDetailsBankDetails: sinon.stub().rejects({ code: 'unhandled_error' }) },
             {},
             { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }
@@ -250,8 +250,8 @@ describe('Controller: settings/stripe-details/bank-details', () => {
       })
 
       describe('for any other errors', () => {
-        before(() => {
-          setupTest('post',
+        beforeEach(async () => {
+          await setupTest('post',
             { updateStripeDetailsBankDetails: sinon.stub().rejects({ foo: 'bar' }) },
             {},
             { body: { sortCode: VALID_SORT_CODE, accountNumber: VALID_ACCOUNT_NUMBER } }

@@ -20,7 +20,7 @@ const getController = (stubs = {}) => {
   })
 }
 
-const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
+const setupTest = async (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
   responseStub = sinon.spy()
   responsiblePersonContactDetailsController = getController({
     response: responseStub,
@@ -41,13 +41,13 @@ const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additi
     ...additionalReqProps
   }
   next = sinon.spy()
-  responsiblePersonContactDetailsController[method][1](req, res, next)
+  await responsiblePersonContactDetailsController[method][1](req, res, next)
 }
 
 describe('Controller: settings/stripe-details/responsible-person-contact-details', () => {
   describe('get', () => {
     describe('no existing form state', () => {
-      before(() => setupTest('get'))
+      beforeEach(async () => setupTest('get'))
 
       it('should call the response method', () => {
         expect(responseStub.called).to.be.true
@@ -65,7 +65,7 @@ describe('Controller: settings/stripe-details/responsible-person-contact-details
       })
     })
     describe('existing form state', () => {
-      before(() => setupTest('get', {}, {}, {
+      beforeEach(async () => setupTest('get', {}, {}, {
         session: {
           formState: {
             responsiblePerson: {
@@ -95,7 +95,7 @@ describe('Controller: settings/stripe-details/responsible-person-contact-details
         workEmail: 'scrooge.mcduck@pay.gov.uk'
       }
 
-      before(() => setupTest('post', {}, {}, {
+      beforeEach(async () => setupTest('post', {}, {}, {
         body: validBody,
         session: {}
       }))
@@ -122,7 +122,7 @@ describe('Controller: settings/stripe-details/responsible-person-contact-details
         workEmail: 'not an email address'
       }
 
-      before(() => setupTest('post', {}, {}, {
+      beforeEach(async () => setupTest('post', {}, {}, {
         body: invalidBody,
         session: {}
       }))
@@ -165,7 +165,7 @@ describe('Controller: settings/stripe-details/responsible-person-contact-details
         }
       }
 
-      before(() => setupTest('post', {}, {}, {
+      beforeEach(async () => setupTest('post', {}, {}, {
         body: validBody,
         session: {
           formState: {

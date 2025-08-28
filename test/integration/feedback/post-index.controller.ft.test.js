@@ -16,7 +16,7 @@ const VALID_USER = getUser({
 
 describe('Feedback page POST', () => {
   let result, session, app
-  before('Arrange', () => {
+  beforeEach('Arrange', () => {
     session = getMockSession(VALID_USER)
     app = createAppWithSession(getApp(), session)
 
@@ -25,7 +25,7 @@ describe('Feedback page POST', () => {
       .reply(200)
   })
 
-  before('Act', done => {
+  beforeEach('Act', done => {
     supertest(app)
       .post(paths.feedback)
       .send({

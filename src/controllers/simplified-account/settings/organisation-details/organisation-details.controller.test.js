@@ -5,7 +5,7 @@ const ControllerTestBuilder = require('@test/test-helpers/simplified-account/con
 const chai = require('chai')
 const expect = chai.expect
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const ACCOUNT_TYPE = 'live'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
@@ -25,7 +25,7 @@ describe('Controller: settings/organisation-details', () => {
   describe('get', () => {
     describe('where organisation details have been set', () => {
       let thisCall
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           service: {
             merchantDetails: {
@@ -66,7 +66,7 @@ describe('Controller: settings/organisation-details', () => {
     })
 
     describe('where organisation details have not been set', () => {
-      before(() => {
+      beforeEach(async () => {
         call('get')
       })
 

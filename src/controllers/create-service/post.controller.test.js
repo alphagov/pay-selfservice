@@ -40,7 +40,7 @@ describe('Controller: createService, Method: post', () => {
     })
     mockUserService.assignServiceRole = sinon.stub().resolves()
 
-    before(async () => {
+    beforeEach(async () => {
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
         user: { externalId: '38475y38q4758ow4' },
@@ -72,7 +72,7 @@ describe('Controller: createService, Method: post', () => {
   })
 
   describe('when organisation type is provided, but create service fails', () => {
-    before(async () => {
+    beforeEach(async () => {
       mockServiceService.createService = sinon.stub().rejects(new Error('something went wrong'))
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)
       req = {
@@ -100,7 +100,7 @@ describe('Controller: createService, Method: post', () => {
   })
 
   describe('when organisation type is provided, and the create service succeeds, but the assign service role call fails', () => {
-    before(async () => {
+    beforeEach(async () => {
       mockServiceService.createService = sinon.stub().resolves({
         service: {
           externalId: 'def456'
@@ -134,7 +134,7 @@ describe('Controller: createService, Method: post', () => {
   })
 
   describe('when organisation type is not provided', () => {
-    before(async () => {
+    beforeEach(async () => {
       mockServiceService.createService = sinon.stub()
       mockUserService.assignServiceRole = sinon.stub()
       const addServiceCtrl = getController(mockResponses, mockServiceService, mockUserService)

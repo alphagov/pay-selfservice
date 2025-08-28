@@ -8,7 +8,7 @@ const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
 const GATEWAY_ACCOUNT_ID = '123'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockUpdateDefaultBillingAddressCountry = sinon.spy()
 
 const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/card-payments/default-billing-address-country.controller')
@@ -28,8 +28,8 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/
 
 describe('Controller: settings/card-payments/default-billing-address', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
+    beforeEach(async () => {
+      await call('get')
     })
     it('should call the response method', () => {
       expect(mockResponse).to.have.been.calledOnce
@@ -47,11 +47,11 @@ describe('Controller: settings/card-payments/default-billing-address', () => {
     })
   })
   describe('post', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         body: { defaultBillingAddress: 'on' }
       })
-      call('post')
+      await call('post')
     })
 
     it('should update default billing address enabled', () => {

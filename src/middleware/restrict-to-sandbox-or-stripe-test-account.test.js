@@ -10,7 +10,7 @@ const GatewayAccountType = require('@models/gateway-account/gateway-account-type
 describe('restrict-to-sandbox middleware', () => {
   describe('when a user is using a sandbox account', () => {
     let req, res, next
-    before(done => {
+    beforeEach(done => {
       req = {
         account: {
           paymentProvider: PaymentProviders.SANDBOX,
@@ -31,7 +31,7 @@ describe('restrict-to-sandbox middleware', () => {
 
   describe('when a user is using a Stripe test account', () => {
     let req, res, next
-    before(done => {
+    beforeEach(done => {
       req = {
         account: {
           paymentProvider: PaymentProviders.STRIPE,
@@ -51,7 +51,7 @@ describe('restrict-to-sandbox middleware', () => {
 
   describe('when a user is using a Stripe live account', () => {
     let req, res, next
-    before(() => {
+    beforeEach(() => {
       req = {
         account: {
           paymentProvider: PaymentProviders.WORLDPAY,
@@ -72,7 +72,7 @@ describe('restrict-to-sandbox middleware', () => {
 
   describe('when a user is not using a sandbox account or a Stripe test account', () => {
     let req, res, next
-    before(() => {
+    beforeEach(() => {
       req = {
         account: {
           paymentProvider: PaymentProviders.WORLDPAY,

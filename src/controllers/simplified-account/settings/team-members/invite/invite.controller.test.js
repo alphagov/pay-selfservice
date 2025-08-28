@@ -20,7 +20,7 @@ const adminUser = new User(userFixtures.validUserResponse({
   }
 }))
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockCreateInviteToJoinService = sinon.stub()
 
 const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/team-members/invite/invite.controller')
@@ -35,8 +35,8 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/
 
 describe('Controller: settings/team-members/invite', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
+    beforeEach(async () => {
+      await call('get')
     })
 
     it('should call the response method', () => {
@@ -58,12 +58,12 @@ describe('Controller: settings/team-members/invite', () => {
 
 describe('post', () => {
   describe('success', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         body: { invitedUserEmail: 'user-to-invite@users.gov.uk', invitedUserRole: 'view-only' }
       })
       mockCreateInviteToJoinService.resolves()
-      call('post')
+      await call('post')
     })
 
     it('should call adminusers to send an invite', () => {
@@ -82,12 +82,12 @@ describe('post', () => {
   })
 
   describe('failure - user already in service', () => {
-    before(() => {
+    beforeEach(async () => {
       nextRequest({
         body: { invitedUserEmail: 'user-to-invite@users.gov.uk', invitedUserRole: 'view-only' }
       })
       mockCreateInviteToJoinService.rejects(new RESTClientError(null, 'adminusers', 412))
-      call('post')
+      await call('post')
     })
 
     it('should respond with error message', () => {

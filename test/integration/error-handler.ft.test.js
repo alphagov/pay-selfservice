@@ -9,7 +9,7 @@ describe('express unhandled error handler', () => {
     const testPath = '/test-error'
     let response, $
 
-    before(done => {
+    beforeEach(done => {
       const { getApp } = proxyquire('@root/server', {
         '@root/routes': {
           bind: (app) => {

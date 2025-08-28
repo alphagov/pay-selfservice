@@ -5,7 +5,7 @@ const ControllerTestBuilder = require('@test/test-helpers/simplified-account/con
 const { expect } = require('chai')
 const paths = require('@root/paths')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockStripeDetailsService = {
   updateStripeDetailsUploadEntityDocument: sinon.stub().resolves()
 }
@@ -31,8 +31,8 @@ const {
 
 describe('Controller: settings/stripe-details/government-entity-document', () => {
   describe('get', () => {
-    before(() => {
-      call('get', 1)
+    beforeEach(async () => {
+      await call('get', 1)
     })
 
     it('should call the response method', () => {
@@ -52,14 +52,14 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
   })
   describe('post', () => {
     describe('when uploading a valid file', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           file: {
             size: 10 * 1024 * 1024,
             mimetype: 'image/jpeg'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should submit the file to the stripe details service', () => {
@@ -84,14 +84,14 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
 
     describe('when submitting invalid data', () => {
       describe('file is too large', () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
             file: {
               size: 11 * 1024 * 1024,
               mimetype: 'image/jpeg'
             }
           })
-          call('post', 1)
+          await call('post', 1)
         })
 
         it('should not submit the file to the stripe details service', () => {
@@ -128,14 +128,14 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
       })
 
       describe('mimetype is incorrect', () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
             file: {
               size: 10 * 1024 * 1024,
               mimetype: 'application/json'
             }
           })
-          call('post', 1)
+          await call('post', 1)
         })
 
         it('should not submit the file to the stripe details service', () => {
@@ -171,10 +171,10 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
         })
       })
       describe('file is missing', () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
           })
-          call('post', 1)
+          await call('post', 1)
         })
 
         it('should not submit the file to the stripe details service', () => {
@@ -212,7 +212,7 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
     })
 
     describe('when the Stripe API returns an error', () => {
-      before(() => {
+      beforeEach(async () => {
         nextStubs({
           '@services/stripe-details.service': {
             updateStripeDetailsUploadEntityDocument: sinon.stub().rejects({ type: 'StripeInvalidRequestError', param: 'file' })
@@ -224,7 +224,7 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
             mimetype: 'image/jpeg'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should not set message', () => {

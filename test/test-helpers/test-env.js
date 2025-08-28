@@ -5,10 +5,12 @@ const sinonChai = require('sinon-chai')
 const chaiAsPromised = require('chai-as-promised')
 const chai = require('chai')
 const nock = require('nock')
+const sinon = require('sinon')
 chai.should()
 chai.use(sinonChai)
 chai.use(chaiAsPromised)
 
 afterEach(() => {
+  sinon.resetHistory()
   nock.cleanAll()
 })

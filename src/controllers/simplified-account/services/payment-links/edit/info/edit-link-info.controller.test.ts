@@ -11,7 +11,7 @@ const GATEWAY_ACCOUNT_ID = 117
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 const PRODUCT_EXTERNAL_ID = 'product123abc'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockGetProductByGatewayAccountIdAndExternalId = sinon.stub()
 const mockUpdateProduct = sinon.stub()
 
@@ -49,7 +49,7 @@ const mockProduct = {
 describe('controller: services/payment-links/edit/info/edit-link-info', () => {
   describe('get', () => {
     describe('with valid product', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         nextRequest({
           params: { productExternalId: PRODUCT_EXTERNAL_ID },
@@ -103,7 +103,7 @@ describe('controller: services/payment-links/edit/info/edit-link-info', () => {
     })
 
     describe('with Welsh product', () => {
-      before(async () => {
+      beforeEach(async () => {
         const welshProduct = {
           ...mockProduct,
           language: 'cy',
@@ -126,7 +126,7 @@ describe('controller: services/payment-links/edit/info/edit-link-info', () => {
 
   describe('post', () => {
     describe('with valid data', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockUpdateProduct.resolves()
         res.redirect.resetHistory()
@@ -171,7 +171,7 @@ describe('controller: services/payment-links/edit/info/edit-link-info', () => {
     })
 
     describe('with validation errors - empty name', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockResponse.resetHistory()
         res.redirect.resetHistory()
@@ -217,7 +217,7 @@ describe('controller: services/payment-links/edit/info/edit-link-info', () => {
     })
 
     describe('with validation errors - name too long', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockResponse.resetHistory()
         res.redirect.resetHistory()
@@ -251,12 +251,12 @@ describe('controller: services/payment-links/edit/info/edit-link-info', () => {
     })
 
     describe('with validation errors - description too long', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockResponse.resetHistory()
         res.redirect.resetHistory()
 
-        const longDescription = 'a'.repeat(256)
+        const longDescription = 'a'.repeat(5001)
         nextRequest({
           params: { productExternalId: PRODUCT_EXTERNAL_ID },
           body: {
@@ -278,7 +278,7 @@ describe('controller: services/payment-links/edit/info/edit-link-info', () => {
     })
 
     describe('with empty description', () => {
-      before(async () => {
+      beforeEach(async () => {
         mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
         mockUpdateProduct.resolves()
         res.redirect.resetHistory()

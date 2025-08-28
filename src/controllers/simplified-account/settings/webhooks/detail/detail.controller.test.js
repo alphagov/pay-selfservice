@@ -32,7 +32,7 @@ const webhookMessages = {
     { resource_id: 'payment11' }
   ]
 }
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockGetWebhook = sinon.stub().resolves(webhook)
 const mockGetSigningSecret = sinon.stub().resolves(signingSecret)
 const mockGetWebhookMessages = sinon.stub().resolves(webhookMessages)
@@ -54,7 +54,7 @@ const {
 
 describe('Controller: settings/webhooks/detail', () => {
   describe('get', () => {
-    before(async () => {
+    beforeEach(async () => {
       nextRequest({
         params: { webhookExternalId: WEBHOOK_EXTERNAL_ID }
       })

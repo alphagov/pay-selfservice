@@ -14,7 +14,7 @@ let req, res
 
 describe('Controller: editServiceName, Method: get', () => {
   describe('when there is no pre-existing pageData, but the service has an existing name', () => {
-    before(() => {
+    beforeEach(() => {
       mockResponses.response = sinon.spy()
       res = {}
       req = {
@@ -48,7 +48,7 @@ describe('Controller: editServiceName, Method: get', () => {
   })
 
   describe('when there is no pre-existing pageData, but the service has no existing name', () => {
-    before(() => {
+    beforeEach(() => {
       mockResponses.response = sinon.spy()
       res = {}
       req = {
@@ -67,7 +67,7 @@ describe('Controller: editServiceName, Method: get', () => {
   })
 
   describe('when there is pre-existing pageData', () => {
-    before(() => {
+    beforeEach(() => {
       mockResponses.response = sinon.spy()
       res = {}
       req = {

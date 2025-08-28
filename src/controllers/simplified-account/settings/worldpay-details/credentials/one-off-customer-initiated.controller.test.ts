@@ -23,7 +23,7 @@ const ACCOUNT_CREDENTIAL = {
   },
 }
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const findCredentialByExternalIdStub = sinon.stub()
 findCredentialByExternalIdStub.returns(ACCOUNT_CREDENTIAL)
 
@@ -53,7 +53,7 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder(
 describe('Controller: settings/worldpay-details/credentials/one-off-customer-initiated', () => {
   describe('get', () => {
     describe('worldpay details journey', () => {
-      before(async () => {
+      beforeEach(async () => {
         await call('get')
       })
 
@@ -90,7 +90,7 @@ describe('Controller: settings/worldpay-details/credentials/one-off-customer-ini
     })
 
     describe('switch psp journey', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/switch-psp/one-off-customer-initiated/${CREDENTIAL_EXTERNAL_ID}`,
         })

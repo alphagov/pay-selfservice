@@ -20,7 +20,7 @@ const getController = (stubs = {}) => {
   })
 }
 
-const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
+const setupTest = async (method, additionalStubs = {}, additionalResProps = {}, additionalReqProps = {}) => {
   responseStub = sinon.spy()
   responsiblePersonHomeAddressController = getController({
     response: responseStub,
@@ -41,13 +41,13 @@ const setupTest = (method, additionalStubs = {}, additionalResProps = {}, additi
     ...additionalReqProps
   }
   next = sinon.spy()
-  responsiblePersonHomeAddressController[method][1](req, res, next)
+  await responsiblePersonHomeAddressController[method][1](req, res, next)
 }
 
 describe('Controller: settings/stripe-details/responsible-person-home-address', () => {
   describe('get', () => {
     describe('no existing form state', () => {
-      before(() => setupTest('get'))
+      beforeEach(async () => setupTest('get'))
 
       it('should call the response method', () => {
         expect(responseStub.called).to.be.true
@@ -65,7 +65,7 @@ describe('Controller: settings/stripe-details/responsible-person-home-address', 
       })
     })
     describe('existing form state', () => {
-      before(() => setupTest('get', {}, {}, {
+      beforeEach(async () => setupTest('get', {}, {}, {
         session: {
           formState: {
             responsiblePerson: {
@@ -101,7 +101,7 @@ describe('Controller: settings/stripe-details/responsible-person-home-address', 
         homeAddressPostcode: 'SW1A 1AA'
       }
 
-      before(() => setupTest('post', {}, {}, {
+      beforeEach(async () => setupTest('post', {}, {}, {
         body: validBody,
         session: {}
       }))
@@ -132,7 +132,7 @@ describe('Controller: settings/stripe-details/responsible-person-home-address', 
         homeAddressPostcode: 'S123 LOL'
       }
 
-      before(() => setupTest('post', {}, {}, {
+      beforeEach(async () => setupTest('post', {}, {}, {
         body: invalidBody,
         session: {}
       }))
@@ -177,7 +177,7 @@ describe('Controller: settings/stripe-details/responsible-person-home-address', 
         }
       }
 
-      before(() => setupTest('post', {}, {}, {
+      beforeEach(async () => setupTest('post', {}, {}, {
         body: validBody,
         session: {
           formState: {

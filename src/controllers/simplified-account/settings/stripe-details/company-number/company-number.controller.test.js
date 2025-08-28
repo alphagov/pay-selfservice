@@ -4,7 +4,7 @@ const paths = require('@root/paths')
 const sinon = require('sinon')
 const { expect } = require('chai')
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockStripeDetailsService = {
   updateStripeDetailsCompanyNumber: sinon.stub().resolves()
 }
@@ -30,8 +30,8 @@ const {
 
 describe('Controller: settings/stripe-details/company-number', () => {
   describe('get', () => {
-    before(() => {
-      call('get', 1)
+    beforeEach(async () => {
+      await call('get', 1)
     })
 
     it('should call the response method', () => {
@@ -95,14 +95,14 @@ describe('Controller: settings/stripe-details/company-number', () => {
 
     validCompanyNumbers.forEach(({ companyNumber, description }) => {
       describe(`when a valid ${description} is submitted`, () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
             body: {
               companyNumberDeclaration: 'yes',
               companyNumber
             }
           })
-          call('post', 1)
+          await call('post', 1)
         })
 
         it('should submit company number to the stripe details service', () => {
@@ -120,13 +120,13 @@ describe('Controller: settings/stripe-details/company-number', () => {
     })
 
     describe('when company number declaration is no', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             companyNumberDeclaration: 'no'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should not submit company number to the stripe details service', () => {
@@ -143,7 +143,7 @@ describe('Controller: settings/stripe-details/company-number', () => {
     })
 
     describe('when the Stripe API returns an error', () => {
-      before(() => {
+      beforeEach(async () => {
         nextStubs({
           '@services/stripe-details.service': {
             updateStripeDetailsCompanyNumber: sinon.stub().rejects({ type: 'StripeInvalidRequestError' })
@@ -155,7 +155,7 @@ describe('Controller: settings/stripe-details/company-number', () => {
             companyNumber: '01234567'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should render the form with appropriate error response', () => {
@@ -164,14 +164,14 @@ describe('Controller: settings/stripe-details/company-number', () => {
     })
 
     describe('when company number validation fails', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             companyNumberDeclaration: 'yes',
             companyNumber: 'what'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should not call the stripe details service', () => {
@@ -198,14 +198,14 @@ describe('Controller: settings/stripe-details/company-number', () => {
     })
 
     describe('when a limited company number is entered without a leading zero', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             companyNumberDeclaration: 'yes',
             companyNumber: '1234567'
           }
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should render the form with validation errors', () => {
@@ -217,11 +217,11 @@ describe('Controller: settings/stripe-details/company-number', () => {
     })
 
     describe('when no option is selected', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {}
         })
-        call('post', 1)
+        await call('post', 1)
       })
 
       it('should render the form with validation errors', () => {

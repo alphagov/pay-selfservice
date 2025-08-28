@@ -8,7 +8,7 @@ const userFixtures = require('@test/fixtures/user.fixtures')
 let user, service, result, permission, role
 
 describe('Class: User', () => {
-  before(() => {
+  beforeEach(() => {
     user = new User(userFixtures.validUserResponse())
     service = user.serviceRoles[0].service
     permission = user.serviceRoles[0].role.permissions[0].name
