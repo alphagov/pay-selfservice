@@ -1,0 +1,80 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+
+{% set servicePageTitle = "Test with your users" %}
+{% set backLinkText = "Back to dashboard" %}
+
+{% block serviceContent %}
+  <h1 class="govuk-heading-l page-title">
+    {{ servicePageTitle }}
+  </h1>
+
+  <p class="govuk-body">Create a reusable link to integrate your service prototype with GOV.UK Pay and test with users.</p>
+
+  {{
+    govukButton({
+      text: "Create prototype link",
+      href: createLink,
+      attributes: {
+        id: "prototyping__links-button-create"
+      }
+    })
+  }}
+
+  <div class="govuk-tabs">
+    <ul class="govuk-tabs__list">
+      <li class="govuk-tabs__list-item">
+        <a class="govuk-tabs__tab" href="{{ indexLink }}">
+          Mock card numbers
+        </a>
+      </li>
+      <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+        <a class="govuk-tabs__tab">
+          Prototype links
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <h2 id="prototyping__links-header" class="govuk-heading-m">
+    {% if products | length === 1 %}
+      There is 1 prototype link
+      {% elif products | length > 1 %}
+      There are {{ products | length }} prototype links
+    {% else %}
+      There are no prototype links
+    {% endif %}
+  </h2>
+  <div class="key-list">
+    {% for product in products %}
+      <div class="key-list-item prototyping__links-list-item">
+        <h3 class="govuk-heading-s"><a class="govuk-link" href="{{ product.links.pay.href }}">{{ product.links.pay.href }}</a></h3>
+        <dl class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-0">
+          <dt class="govuk-!-display-inline-block">
+            Payment description:
+          </dt>
+          <dd class="govuk-!-display-inline-block govuk-!-font-weight-bold govuk-!-margin-left-0 prototyping__links-list-item-description">
+            {{ product.name }}
+          </dd>
+        </dl>
+        <dl class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-0">
+          <dt class="govuk-!-display-inline-block">
+            Payment amount:
+          </dt>
+          <dd class="govuk-!-display-inline-block govuk-!-font-weight-bold govuk-!-margin-left-0 prototyping__links-list-item-amount">
+            {{ product.price | penceToPoundsWithCurrency }}
+          </dd>
+        </dl>
+        <dl class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-0">
+          <dt class="govuk-!-display-inline-block">
+            Success page:
+          </dt>
+          <dd class="govuk-!-display-inline-block govuk-!-font-weight-bold govuk-!-margin-left-0 prototyping__links-list-item-success-page">
+            {{ product.returnUrl }}
+          </dd>
+        </dl>
+        <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-top-3"><a class="govuk-link govuk-link--no-visited-state prototyping__links-list-item-delete-link" href="links/disable/{{ product.externalId }}">Delete prototype link</a></p>
+      </div>
+    {% endfor %}
+  </div>
+
+{% endblock %}
