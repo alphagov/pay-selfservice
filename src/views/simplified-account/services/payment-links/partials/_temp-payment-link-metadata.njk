@@ -5,16 +5,16 @@
     cost centre code or business area. This will help finance teams track and reconcile your payments. The extra columns
     will only appear in your downloaded reports.</p>
 
-  {% if pageData.metadata %}
+  {% if metadata %}
     {% set reportingColumns = [] %}
-    {% for key, value in pageData.metadata | dictsort %}
+    {% for key, value in metadata | dictsort %}
       {% set column =
         {
           key: {
           text: key
         },
           value: {
-          text: value
+          text: value.value
         },
           actions: {
           items: [
