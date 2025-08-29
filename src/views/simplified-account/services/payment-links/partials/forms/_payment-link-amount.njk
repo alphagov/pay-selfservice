@@ -65,6 +65,7 @@
       {
         value: "fixed",
         text: "Yes",
+        label: { classes: "govuk-!-font-weight-bold" },
         id: "amount-type-fixed",
         checked: formValues.amountTypeGroup === "fixed",
         conditional: {
@@ -75,6 +76,7 @@
         value: "variable",
         id: "amount-type-variable",
         text: "No, the user can choose the amount",
+        label: { classes: "govuk-!-font-weight-bold" },
         checked: formValues.amountTypeGroup === "variable",
         conditional: {
         html: userProvidedAmountHTML
