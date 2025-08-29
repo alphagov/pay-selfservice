@@ -11,6 +11,7 @@ export class CreateProductRequest {
   private language!: string
   private serviceNamePath!: string
   private productNamePath!: string
+  private metadata?: Record<string, string>
 
   withApiToken(apiToken: string) {
     this.apiToken = apiToken
@@ -62,6 +63,11 @@ export class CreateProductRequest {
     return this
   }
 
+  withMetadata(metadata?: Record<string, string>) {
+    this.metadata = metadata
+    return this
+  }
+
   toPayload(): CreateProductRequestData {
     return {
       pay_api_token: this.apiToken,
@@ -73,7 +79,8 @@ export class CreateProductRequest {
       return_url: this.returnUrl,
       language: this.language,
       service_name_path: this.serviceNamePath,
-      product_name_path: this.productNamePath
+      product_name_path: this.productNamePath,
+      metadata: this.metadata,
     }
   }
 }

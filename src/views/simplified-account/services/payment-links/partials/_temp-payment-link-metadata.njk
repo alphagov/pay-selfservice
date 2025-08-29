@@ -1,0 +1,40 @@
+  <h2 class="govuk-heading-m">Reporting columns</h2>
+
+  <p class="govuk-body">You can download reports in CSV format about your payments from your account.</p>
+  <p class="govuk-body">You can add extra columns about your transactions to these reports. For example, to include your
+    cost centre code or business area. This will help finance teams track and reconcile your payments. The extra columns
+    will only appear in your downloaded reports.</p>
+
+  {% if pageData.metadata %}
+    {% set reportingColumns = [] %}
+    {% for key, value in pageData.metadata | dictsort %}
+      {% set column =
+        {
+          key: {
+          text: key
+        },
+          value: {
+          text: value
+        },
+          actions: {
+          items: [
+            {
+              href: value.link,
+              text: "Change",
+              classes: "govuk-link--no-visited-state",
+              visuallyHiddenText: key
+            }
+          ]
+        }
+        } %}
+      {% set reportingColumns = (reportingColumns.push(column), reportingColumns) %}
+    {% endfor %}
+
+    {{ govukSummaryList({
+      rows: reportingColumns
+    }) }}
+  {% endif %}
+
+  <a href="{{ addReportingColumnLink }}" class="govuk-button govuk-button--secondary">
+    Add reporting column
+  </a>

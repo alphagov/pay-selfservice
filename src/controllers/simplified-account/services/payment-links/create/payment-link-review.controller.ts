@@ -53,6 +53,11 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       service.externalId,
       account.type
     ),
+    addReportingColumnLink: formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.metadata + '?' + fromReviewQueryString,
+      service.externalId,
+      account.type
+    ),
     friendlyURL: PRODUCTS_FRIENDLY_BASE_URI,
     pageData: currentSession,
     isWelsh,
@@ -88,7 +93,8 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     .withPrice(pageData.paymentLinkAmount)
     .withLanguage(pageData.language)
     .withType(productTypes.ADHOC)
-
+    .withMetadata(pageData.metadata) 
+    
   const paymentLink = await createProduct(createProductRequest)
   const goLiveLink = formatServicePathsFor(paths.service.requestToGoLive.index, req.service.externalId) as string
   const successBannerBody = `You can <a href="${paymentLink.links.pay.href}/"
