@@ -28,6 +28,23 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/services/payment-links/create/review', {
     service,
     account,
+    ...(currentSession.metadata && {
+        metadata: Object.entries(currentSession.metadata).reduce(
+          (acc, [key, value]) => {
+            acc[key] = {
+              value,
+              link: formatServiceAndAccountPathsFor(
+                paths.simplifiedAccount.paymentLinks.metadata.update,
+                req.service.externalId,
+                req.account.type,
+                key
+              ),
+            }
+            return acc
+          },
+          {} as Record<string, Record<string, string>>
+        ),
+      }),
     backLink: formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.paymentLinks.amount,
       service.externalId,
@@ -54,7 +71,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       account.type
     ),
     addReportingColumnLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.paymentLinks.metadata + '?' + fromReviewQueryString,
+      paths.simplifiedAccount.paymentLinks.metadata.add + '?' + fromReviewQueryString,
       service.externalId,
       account.type
     ),

@@ -117,13 +117,13 @@ simplifiedAccount.post(
   servicesController.paymentLinks.create.review.post
 )
 simplifiedAccount.get(
-  paths.simplifiedAccount.paymentLinks.metadata,
+  paths.simplifiedAccount.paymentLinks.metadata.add,
   experimentalFeature,
   permission('tokens:create'),
   servicesController.paymentLinks.create.metadata.get
 )
 simplifiedAccount.post(
-  paths.simplifiedAccount.paymentLinks.metadata,
+  paths.simplifiedAccount.paymentLinks.metadata.add,
   experimentalFeature,
   permission('tokens:create'),
   servicesController.paymentLinks.create.metadata.post

@@ -158,7 +158,10 @@ module.exports = {
     paymentLinks: {
       index: '/payment-links',
       create: '/payment-links/create',
-      metadata: '/payment-links/create/reporting-column',
+      metadata: {
+        add: '/payment-links/create/reporting-column',
+        update: '/payment-links/create/reporting-column/:metadataKey',
+      },
       reference: '/payment-links/reference',
       amount: '/payment-links/amount',
       edit: {
