@@ -28,7 +28,7 @@
   {% endif %}
 
   {% set userProvidedAmountHTML %}
-    {{ govukCharacterCount({
+    {{ govukTextarea({
       id: "amount-hint",
       name: "amountHint",
       value: formValues.amountHint,
