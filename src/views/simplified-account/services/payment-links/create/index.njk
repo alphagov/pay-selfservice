@@ -4,10 +4,11 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set servicePageTitle %}
-  Enter {% if isWelsh %}Welsh{% endif %} {{ serviceMode }} payment link details
+  Enter payment link details
 {% endset %}
 
 {% block serviceContent %}
+  <span class="govuk-caption-l">Create {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
   <h1 class="govuk-heading-l">{{ servicePageTitle }}</h1>
 
   {% include "simplified-account/services/payment-links/partials/forms/_payment-link-info.njk" %}
