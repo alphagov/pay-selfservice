@@ -24,7 +24,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
     })
     .add({
       id: 'email-notifications',
-      name: 'email notifications',
+      name: 'paying user email addresses',
       path: formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.emailNotifications.index,
         service.externalId,
