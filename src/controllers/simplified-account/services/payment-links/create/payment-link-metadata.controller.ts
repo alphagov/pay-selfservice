@@ -77,6 +77,7 @@ async function post(req: ServiceRequest<CreateLinkMetadataBody>, res: ServiceRes
   lodash.set(req, CREATE_SESSION_KEY, {
     ...lodash.get(req, CREATE_SESSION_KEY, {}),
     metadata: {
+    ...currentSession.metadata,
       [req.body.reportingColumn]: req.body.cellContent,
     }
   } as PaymentLinkCreationSession)
