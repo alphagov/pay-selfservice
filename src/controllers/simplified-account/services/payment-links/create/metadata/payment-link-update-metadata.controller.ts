@@ -60,7 +60,7 @@ async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceRes
   if (req.body.action === 'edit') {
 
     const validations = [
-      paymentLinkSchema.metadata.columnHeader.add.validate(currentSession.metadata ?? {}),
+      paymentLinkSchema.metadata.columnHeader.edit.validate(currentSession.metadata?? {}, req.params.metadataKey),
       paymentLinkSchema.metadata.cellContent.validate,
     ]
 
