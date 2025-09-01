@@ -172,9 +172,74 @@ describe('controller: services/payment-links/create/payment-link-information', (
         await call('get')
       })
 
-      it('should fallback to English service name when Welsh not available', () => {
+      it('should redirect to service name edit page with Welsh and payment link creation query parameters set', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(
+          res.redirect,
+          sinon.match(/settings.*service-name.*edit/)
+        )
+        sinon.assert.calledWith(
+          res.redirect,
+          sinon.match(/cy=true/)
+        )
+        sinon.assert.calledWith(
+          res.redirect,
+          sinon.match(/fromPaymentLinkCreation=true/)
+        )
+      })
+    })
+
+    describe('with Welsh language in session but no Welsh service name however using English Service name', () => {
+      beforeEach(async () => {
+        mockResponse.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Welsh Title',
+          language: 'cy',
+          useEnglishServiceName: 'true',
+          serviceNamePath: 'test-service',
+          productNamePath: 'welsh-title',
+        }
+
+        nextRequest({
+          service: {
+            name: 'English Only Service',
+            serviceName: { en: 'English Only Service', cy: null },
+          },
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+        })
+
+        await call('get')
+      })
+
+      it('should call the response method', () => {
+        sinon.assert.calledOnce(mockResponse)
+      })
+
+      it('should pass correct template path to the response method', () => {
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/index'
+        )
+      })
+
+      it('should set empty form values in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const formValues = context.formValues as { name: string; description: string }
+        sinon.assert.match(formValues.name, '')
+        sinon.assert.match(formValues.description, '')
+      })
+
+      it('should set English service name and isWelsh to true and isUsingEnglishServiceName to true', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.serviceName, 'English Only Service')
+        sinon.assert.match(context.isWelsh, true)
+        sinon.assert.match(context.isUsingEnglishServiceName, true)
       })
     })
   })
