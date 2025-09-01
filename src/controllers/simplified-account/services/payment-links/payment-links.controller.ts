@@ -22,6 +22,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     products: products
       .sort((a, b) => b.dateCreated.toMillis() - a.dateCreated.toMillis())
       .map(product => ({
+        language: product.language,
         name: product.name,
         href: product.links.friendly.href,
         reference: product.referenceLabel ?? 'Created by GOV.UK Pay',

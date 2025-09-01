@@ -12,13 +12,6 @@
   </ul>
 {% endmacro %}
 
-{% macro webhookDescriptionWithTag(webhook) %}
-  <div class="text-with-tag">
-    <div class="text-with-tag__text">{{ webhook.description }}</div>
-    <div class="text-with-tag__tag">{{ webhookStatus(webhook.status) }}</div>
-  </div>
-{% endmacro %}
-
 {% block settingsContent %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   <p class="govuk-body">Use webhooks to send a message to your application when a payment is processed.</p>
@@ -40,12 +33,19 @@
       <h2 class="govuk-heading-m">Active webhooks ({{ activeWebhooks.length }})</h2>
 
       {% for webhook in activeWebhooks %}
+        {% set webhookTitle %}
+          <span class="govuk-!-margin-left-1">{{ webhook.description }}</span><br>
+          <div class="govuk-!-margin-top-1">
+            {{ webhookStatus(webhook.status) }}
+          </div>
+        {% endset %}
+
         {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
         {{ govukSummaryList({
           card: {
-            classes: 'card-with-tag',
             title: {
-              html: webhookDescriptionWithTag(webhook)
+              html: webhookTitle,
+              classes: "multiline-title"
             },
             actions: {
               items: [
@@ -88,12 +88,18 @@
       <h2 class="govuk-heading-m">Deactivated webhooks ({{ deactivatedWebhooks.length }})</h2>
 
       {% for webhook in deactivatedWebhooks %}
+        {% set webhookTitle %}
+          <span class="govuk-!-margin-left-1">{{ webhook.description }}</span><br>
+          <div class="govuk-!-margin-top-1">
+            {{ webhookStatus(webhook.status) }}
+          </div>
+        {% endset %}
         {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
         {{ govukSummaryList({
           card: {
-            classes: 'card-with-tag',
             title: {
-              html: webhookDescriptionWithTag(webhook)
+              html: webhookTitle,
+              classes: "multiline-title"
             },
             actions: {
               items: [

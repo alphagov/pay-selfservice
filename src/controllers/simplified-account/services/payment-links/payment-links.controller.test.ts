@@ -34,7 +34,7 @@ const PRODUCT_REF_AMOUNT_DETAIL = new Product(
   }) as ProductData
 )
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockProductsService = {
   getProducts: sinon.stub().resolves([]),
 }
@@ -81,6 +81,7 @@ describe('controller: services/payment-links', () => {
             createLink: '/service/service123abc/account/test/payment-links/create',
             products: [
               {
+                language: 'en',
                 name: 'Designer monocles',
                 href: 'http://products-ui.url/redirect/mcduck-enterprises/designer-monocles',
                 reference: 'Invoice number',
@@ -126,6 +127,7 @@ describe('controller: services/payment-links', () => {
             createLink: '/service/service123abc/account/live/payment-links/create',
             products: [
               {
+                language: 'en',
                 name: 'Designer monocles',
                 href: 'http://products-ui.url/redirect/mcduck-enterprises/designer-monocles',
                 reference: 'Created by GOV.UK Pay',

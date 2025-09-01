@@ -9,7 +9,7 @@ const AGREEMENT_EXTERNAL_ID = 'agreement123abc'
 const GATEWAY_ACCOUNT_ID = 117
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123external'
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const mockAgreement = {
   externalId: AGREEMENT_EXTERNAL_ID,
@@ -61,7 +61,7 @@ const { nextRequest, call } = new ControllerTestBuilder(
 describe('controller: services/agreements/detail', () => {
   describe('get', () => {
     describe('successful agreement detail request', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           params: { agreementExternalId: AGREEMENT_EXTERNAL_ID },
           session: {},
@@ -134,7 +134,7 @@ describe('controller: services/agreements/detail', () => {
     })
 
     describe('with agreements filter in session', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           params: { agreementExternalId: AGREEMENT_EXTERNAL_ID },
           session: { agreementsFilter: 'status=ACTIVE&reference=test' },
@@ -149,7 +149,7 @@ describe('controller: services/agreements/detail', () => {
     })
 
     describe('without agreements filter in session', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           params: { agreementExternalId: AGREEMENT_EXTERNAL_ID },
           session: {},
@@ -167,7 +167,7 @@ describe('controller: services/agreements/detail', () => {
 
     describe('showCancelAgreementFunctionality conditions', () => {
       describe('when user lacks permission', () => {
-        before(async () => {
+        beforeEach(async () => {
           mockResponse.resetHistory()
           nextRequest({
             params: { agreementExternalId: AGREEMENT_EXTERNAL_ID },
@@ -186,7 +186,7 @@ describe('controller: services/agreements/detail', () => {
       })
 
       describe('when agreement is not active', () => {
-        before(async () => {
+        beforeEach(async () => {
           mockResponse.resetHistory()
           const inactiveAgreement = {
             ...mockAgreement,
@@ -214,7 +214,7 @@ describe('controller: services/agreements/detail', () => {
       })
 
       describe('when user lacks permission and agreement is not active', () => {
-        before(async () => {
+        beforeEach(async () => {
           mockResponse.resetHistory()
           const inactiveAgreement = {
             ...mockAgreement,

@@ -1,4 +1,9 @@
 <form method="post">
+  <p class="govuk-body">Reporting columns are added to your CSV payment reports. They are not shown to the user making
+    the payment.</p>
+  <p class="govuk-body">If you are adding reporting columns to more than one service or payment link, use consistent
+    wording. This will make it easier to read your payment report.</p>
+
   <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
   {{ govukInput({

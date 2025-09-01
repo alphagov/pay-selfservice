@@ -42,7 +42,7 @@ const MOCK_PRODUCT_NO_PRICE = new Product(
   }) as ProductData
 )
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockProductsService = {
   getProductByExternalId: sinon.stub().resolves(MOCK_PRODUCT),
   deleteProduct: sinon.stub().resolves(),

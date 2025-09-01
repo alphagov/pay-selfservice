@@ -10,7 +10,7 @@ const paths = require('@root/paths')
 
 describe('Feedback page GET', () => {
   let result, $, session
-  before(done => {
+  beforeEach(done => {
     const user = getUser({
       permissions: [{ name: 'transactions:read' }]
     })

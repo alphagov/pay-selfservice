@@ -1,0 +1,4 @@
+// prevent actions container from adjusting height to match title container
+.govuk-summary-card__title-wrapper:has(.multiline-title) {
+  align-items: flex-start;
+}

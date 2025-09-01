@@ -13,7 +13,7 @@ const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 const GATEWAY_ACCOUNT_ID = '123'
 const BASE_URL = `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments/`
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const adminUser = new User(userFixtures.validUserResponse({
   external_id: 'user-id-for-admin-user',
@@ -59,7 +59,7 @@ describe('Controller: settings/card-payments', () => {
   describe('get', () => {
     describe('for admin user', () => {
       describe('for non-moto gateway account', () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
             user: adminUser,
             service: {
@@ -72,7 +72,7 @@ describe('Controller: settings/card-payments', () => {
               getActiveCredential: () => true
             }
           })
-          call('get')
+          await call('get')
         })
         it('should call the response method', () => {
           expect(mockResponse).to.have.been.calledOnce
@@ -101,7 +101,7 @@ describe('Controller: settings/card-payments', () => {
         })
       })
       describe('for moto gateway account', () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
             user: adminUser,
             account: {
@@ -112,7 +112,7 @@ describe('Controller: settings/card-payments', () => {
               getActiveCredential: () => null
             }
           })
-          call('get')
+          await call('get')
         })
 
         it('should pass additional context data to the response method', () => {
@@ -126,7 +126,7 @@ describe('Controller: settings/card-payments', () => {
         })
       })
       describe('for worldpay gateway account with no active credential', () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
             user: adminUser,
             account: {
@@ -134,7 +134,7 @@ describe('Controller: settings/card-payments', () => {
               getActiveCredential: () => undefined
             }
           })
-          call('get')
+          await call('get')
         })
 
         it('should not enable edit of google pay setting', () => {
@@ -143,7 +143,7 @@ describe('Controller: settings/card-payments', () => {
         })
       })
       describe('for stripe gateway account with no active credential', () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
             user: adminUser,
             account: {
@@ -151,7 +151,7 @@ describe('Controller: settings/card-payments', () => {
               getActiveCredential: () => null
             }
           })
-          call('get')
+          await call('get')
         })
 
         it('should enable edit of google pay setting', () => {
@@ -160,7 +160,7 @@ describe('Controller: settings/card-payments', () => {
         })
       })
       describe('for worldpay gateway account with active credential', () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
             user: adminUser,
             account: {
@@ -168,7 +168,7 @@ describe('Controller: settings/card-payments', () => {
               getActiveCredential: () => true
             }
           })
-          call('get')
+          await call('get')
         })
 
         it('should enable edit of google pay setting', () => {
@@ -179,7 +179,7 @@ describe('Controller: settings/card-payments', () => {
     })
     describe('for non-admin user', () => {
       describe('for non-moto gateway account', () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
             user: viewOnlyUser,
             service: {
@@ -191,7 +191,7 @@ describe('Controller: settings/card-payments', () => {
               getActiveCredential: () => true
             }
           })
-          call('get')
+          await call('get')
         })
         it('should call the response method', () => {
           expect(mockResponse).to.have.been.calledOnce
@@ -213,7 +213,7 @@ describe('Controller: settings/card-payments', () => {
         })
       })
       describe('for moto gateway account', () => {
-        before(() => {
+        beforeEach(async () => {
           nextRequest({
             user: viewOnlyUser,
             account: {
@@ -223,7 +223,7 @@ describe('Controller: settings/card-payments', () => {
               getActiveCredential: () => null
             }
           })
-          call('get')
+          await call('get')
         })
 
         it('should pass additional context data to the response method', () => {

@@ -9,7 +9,7 @@ const SERVICE_EXTERNAL_ID = 'service123abc'
 const TOKEN_LINK = 'token456def'
 const TOKEN_DESC = 'S MCDUCK API DEV'
 const GATEWAY_ACCOUNT_ID = '1337'
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockApiKeysService = {
   getKeyByTokenLink: sinon.stub().resolves(new Token()
     .withDescription(TOKEN_DESC)
@@ -39,8 +39,8 @@ const {
 
 describe('Controller: settings/api-keys/revoke', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
+    beforeEach(async () => {
+      await call('get')
     })
 
     it('should call getKeyByTokenLink', () => {
@@ -60,11 +60,11 @@ describe('Controller: settings/api-keys/revoke', () => {
 
   describe('post', () => {
     describe('when nothing is selected', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {}
         })
-        call('post')
+        await call('post')
       })
 
       it('should not call revokeKey', () => {
@@ -99,13 +99,13 @@ describe('Controller: settings/api-keys/revoke', () => {
     })
 
     describe('when "No" is selected', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             revokeKey: 'no' // pragma: allowlist secret
           }
         })
-        call('post')
+        await call('post')
       })
 
       it('should not call revokeKey', () => {
@@ -121,13 +121,13 @@ describe('Controller: settings/api-keys/revoke', () => {
     })
 
     describe('when "Yes" is selected', () => {
-      before(() => {
+      beforeEach(async () => {
         nextRequest({
           body: {
             revokeKey: 'yes' // pragma: allowlist secret
           }
         })
-        call('post')
+        await call('post')
       })
 
       it('should call revokeKey with args', () => {

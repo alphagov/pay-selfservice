@@ -57,11 +57,12 @@ function postCreateProductSuccessWithRequestBody (opts) {
   })
 }
 
-function patchUpdateProductSuccess (opts) {
+function patchUpdateProductSuccess (opts, mockBehaviour = { deepMatch: false }) {
   const path = `/v1/api/gateway-account/${opts.gatewayAccountId}/products/${opts.productExternalId}`
   return stubBuilder('PATCH', path, 200, {
     request: productFixtures.validUpdateProductRequest(opts),
-    response: productFixtures.validAdhocProductResponse()
+    response: productFixtures.validAdhocProductResponse(),
+    deepMatchRequest: mockBehaviour.deepMatch,
   })
 }
 

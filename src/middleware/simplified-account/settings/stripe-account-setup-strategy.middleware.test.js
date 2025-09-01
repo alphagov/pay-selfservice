@@ -36,7 +36,7 @@ describe('Middleware: stripeAccountSetupStrategy', () => {
   })
 
   describe('when stripe account setup progress resolution fails', () => {
-    before(() => {
+    beforeEach(() => {
       const error = new RESTClientError('whoops')
       mockStripeDetailsService.getConnectorStripeAccountSetup.rejects(error)
     })

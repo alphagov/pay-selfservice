@@ -28,7 +28,7 @@
   {% endif %}
 
   {% set userProvidedAmountHTML %}
-    {{ govukCharacterCount({
+    {{ govukTextarea({
       id: "amount-hint",
       name: "amountHint",
       value: formValues.amountHint,
@@ -56,8 +56,8 @@
     fieldset: {
       legend: {
         text: "Is the payment for a fixed amount?",
-        isPageHeading: createJourney,
-        classes: "govuk-fieldset__legend--l" if createJourney else "govuk-fieldset__legend--m"
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
       }
     },
     errorMessage: { text: errors.formErrors['amountTypeGroup'] } if errors.formErrors['amountTypeGroup'] else false,
@@ -66,6 +66,9 @@
         value: "fixed",
         text: "Yes",
         id: "amount-type-fixed",
+        label: {
+          classes: "govuk-!-font-weight-bold"
+        },
         checked: formValues.amountTypeGroup === "fixed",
         conditional: {
         html: fixedAmountHTML
@@ -75,6 +78,9 @@
         value: "variable",
         id: "amount-type-variable",
         text: "No, the user can choose the amount",
+        label: {
+          classes: "govuk-!-font-weight-bold"
+        },
         checked: formValues.amountTypeGroup === "variable",
         conditional: {
         html: userProvidedAmountHTML
@@ -89,7 +95,7 @@
 </form>
 
 {% if not isWelsh %}
-  <h3 class="govuk-heading-s">Example of what users will see</h3>
+  <h2 class="govuk-heading-s">Example of what users will see</h2>
   <img class="govuk-!-margin-bottom-6" style="max-width: 100%;height: auto;" src="/assets/images/payment-links/amount-and-confirm-page.svg"
        alt="Screenshot of payment link amount page">
 {% endif %}

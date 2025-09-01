@@ -23,7 +23,7 @@
     "lint": "eslint",
     "lint-fix": "eslint --fix",
     "lint-sass": "stylelint 'src/assets/sass/**/*.scss'",
-    "test": "rm -rf ./pacts && NODE_ENV=test mocha '!(node_modules)/**/*.test'.js",
+    "test": "rm -rf ./pacts && NODE_ENV=test mocha '!(node_modules)/**/*.test'.[jt]s",
     "test:no-pact": "rm -rf ./pacts && NODE_ENV=test mocha --exclude **/*.pact.test.js '!(node_modules)/**/*.test'.js",
     "test:pact": "rm -rf ./pacts && NODE_ENV=test mocha **/*.pact.test.js",
     "cypress:server": "run-amock --port=8000 | node -r dotenv/config dist/application.js dotenv_config_path=test/cypress/test.env",
@@ -127,7 +127,7 @@
     "cheerio": "1.0.0-rc.12",
     "chokidar-cli": "*",
     "csrf": "^3.1.0",
-    "cypress": "^13.17.0",
+    "cypress": "^14.0.3",
     "cypress-axe": "^1.6.0",
     "dotenv": "16.3.1",
     "esbuild": "^0.25.0",
@@ -157,6 +157,6 @@
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.28.0",
-    "wick-a11y": "^1.4.0"
+    "wick-a11y": "^2.0.1"
   }
 }

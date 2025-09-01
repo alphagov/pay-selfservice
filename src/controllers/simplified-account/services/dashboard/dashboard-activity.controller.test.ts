@@ -103,7 +103,7 @@ const DEFAULT_PRODUCTS_RESPONSE = [
   }
 ]
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 
 const mockLedgerService = {
   dashboardTransactionSummary: sinon.stub().resolves(DEFAULT_DASHBOARD_TX_SUMMARY_RESPONSE),
@@ -149,7 +149,7 @@ const { nextRequest, call } = new ControllerTestBuilder(
 describe('controller: services/dashboard', () => {
   describe('get', () => {
     describe('sandbox test account, service is not live', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           service: SERVICE(GoLiveStage.NOT_STARTED),
           account: ACCOUNT(ACCOUNT_TYPE.TEST, PaymentProviders.SANDBOX, CredentialState.ACTIVE),
@@ -204,7 +204,7 @@ describe('controller: services/dashboard', () => {
     })
 
     describe('sandbox test account, service is live', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           service: SERVICE(GoLiveStage.LIVE),
           account: ACCOUNT(ACCOUNT_TYPE.TEST, PaymentProviders.SANDBOX, CredentialState.ACTIVE),
@@ -238,7 +238,7 @@ describe('controller: services/dashboard', () => {
 
     describe('worldpay test service', () => {
       describe('credential configured', () => {
-        before(async () => {
+        beforeEach(async () => {
           nextRequest({
             service: SERVICE(GoLiveStage.NOT_STARTED),
             account: ACCOUNT(ACCOUNT_TYPE.TEST, PaymentProviders.WORLDPAY, CredentialState.ACTIVE, WORLDPAY_CREDENTIAL),
@@ -277,7 +277,7 @@ describe('controller: services/dashboard', () => {
       })
 
       describe('credential not configured', () => {
-        before(async () => {
+        beforeEach(async () => {
           nextRequest({
             service: SERVICE(GoLiveStage.NOT_STARTED),
             account: ACCOUNT(ACCOUNT_TYPE.TEST, PaymentProviders.WORLDPAY, CredentialState.CREATED),
@@ -310,7 +310,7 @@ describe('controller: services/dashboard', () => {
     })
 
     describe('stripe test account, service is not live', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           service: SERVICE(GoLiveStage.NOT_STARTED),
           account: ACCOUNT(ACCOUNT_TYPE.TEST, PaymentProviders.STRIPE, CredentialState.ACTIVE, STRIPE_CREDENTIAL),
@@ -352,7 +352,7 @@ describe('controller: services/dashboard', () => {
     })
 
     describe('stripe test account, service is live', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           service: SERVICE(GoLiveStage.LIVE),
           account: ACCOUNT(ACCOUNT_TYPE.TEST, PaymentProviders.STRIPE, CredentialState.ACTIVE, STRIPE_CREDENTIAL),
@@ -389,7 +389,7 @@ describe('controller: services/dashboard', () => {
 
     describe('stripe live account', () => {
       describe('onboarding completed', () => {
-        before(async () => {
+        beforeEach(async () => {
           nextRequest({
             service: SERVICE(GoLiveStage.LIVE),
             account: ACCOUNT(ACCOUNT_TYPE.LIVE, PaymentProviders.STRIPE, CredentialState.ACTIVE, STRIPE_CREDENTIAL),
@@ -425,7 +425,7 @@ describe('controller: services/dashboard', () => {
       })
 
       describe('onboarding incomplete', () => {
-        before(async () => {
+        beforeEach(async () => {
           mockStripeDetailsService.getConnectorStripeAccountSetup.resolves(
             new StripeAccountSetup(buildGetStripeAccountSetupResponse())
           )
@@ -488,7 +488,7 @@ describe('controller: services/dashboard', () => {
 
     describe('worldpay live account', () => {
       describe('credential configured', () => {
-        before(async () => {
+        beforeEach(async () => {
           nextRequest({
             service: SERVICE(GoLiveStage.LIVE),
             account: ACCOUNT(ACCOUNT_TYPE.LIVE, PaymentProviders.WORLDPAY, CredentialState.ACTIVE, WORLDPAY_CREDENTIAL),
@@ -526,7 +526,7 @@ describe('controller: services/dashboard', () => {
         })
       })
       describe('credential not configured', () => {
-        before(async () => {
+        beforeEach(async () => {
           nextRequest({
             service: SERVICE(GoLiveStage.LIVE),
             account: ACCOUNT(ACCOUNT_TYPE.LIVE, PaymentProviders.WORLDPAY, CredentialState.CREATED),
@@ -579,7 +579,7 @@ describe('controller: services/dashboard', () => {
     })
 
     describe('stripe live account switching to worldpay', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           service: SERVICE(GoLiveStage.LIVE),
           account: new GatewayAccount(
@@ -644,7 +644,7 @@ describe('controller: services/dashboard', () => {
     })
 
     describe('worldpay live account with agent initiated moto enabled', () => {
-      before(async () => {
+      beforeEach(async () => {
         nextRequest({
           service: new Service(
             validServiceResponse({
@@ -677,7 +677,7 @@ describe('controller: services/dashboard', () => {
 
     describe('edge cases', () => {
       describe('ledger unavailable', () => {
-        before(async () => {
+        beforeEach(async () => {
           mockLedgerService.dashboardTransactionSummary.rejects()
           nextRequest({
             service: SERVICE(GoLiveStage.NOT_STARTED),
@@ -705,7 +705,7 @@ describe('controller: services/dashboard', () => {
       })
 
       describe('connector unavailable', () => {
-        before(async () => {
+        beforeEach(async () => {
           mockStripeDetailsService.getConnectorStripeAccountSetup.rejects()
           nextRequest({
             service: SERVICE(GoLiveStage.LIVE),
@@ -733,7 +733,7 @@ describe('controller: services/dashboard', () => {
       })
 
       describe('stripe unavailable', () => {
-        before(async () => {
+        beforeEach(async () => {
           mockStripeDetailsService.getStripeAccountCapabilities.rejects()
           nextRequest({
             service: SERVICE(GoLiveStage.LIVE),

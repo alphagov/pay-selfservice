@@ -44,7 +44,7 @@ describe('Email notifications settings', () => {
       it('should show active "Email notifications" link in the setting navigation', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         checkSettingsNavigation(
-          'Email notifications',
+          'Paying user email addresses',
           `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`
         )
       })
@@ -88,7 +88,7 @@ describe('Email notifications settings', () => {
       it('should show active "Email notifications" link in the setting navigation', () => {
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`)
         checkSettingsNavigation(
-          'Email notifications',
+          'Paying user email addresses',
           `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`
         )
       })
@@ -137,7 +137,7 @@ describe('Email notifications settings', () => {
 
       it('should show active "Email notifications" link in the setting navigation', () => {
         checkSettingsNavigation(
-          'Email notifications',
+          'Paying user email addresses',
           `/service/${SERVICE_EXTERNAL_ID}/account/test/settings/email-notifications`
         )
       })

@@ -62,7 +62,7 @@ const setupTest = (additionalReqProps = {}) => {
 
 describe('Controller: settings/email-notifications/refund-emails', () => {
   describe('get', () => {
-    before(() => {
+    beforeEach(async () => {
       setupTest()
       refundEmailsController.get(req, res)
     })
@@ -85,7 +85,7 @@ describe('Controller: settings/email-notifications/refund-emails', () => {
   })
 
   describe('post', () => {
-    before(() => {
+    beforeEach(async () => {
       setupTest({
         body: {
           refundEmailToggle: 'false'

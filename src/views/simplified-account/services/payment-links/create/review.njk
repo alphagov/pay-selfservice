@@ -1,12 +1,13 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 
-{% set servicePageTitle = "Review your " + account.type + " payment link details" %}
+{% set servicePageTitle = "Review your payment link details" %}
 {% set continueButtonText %}
   Create {% if isWelsh %}Welsh{% endif %} payment link
 {% endset %}
 
 {% block serviceContent %}
 <section>
+  <span class="govuk-caption-l">Create {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
   <h1 class="govuk-heading-l">{{ servicePageTitle }}</h1>
 
   {% set detailsHTML %}

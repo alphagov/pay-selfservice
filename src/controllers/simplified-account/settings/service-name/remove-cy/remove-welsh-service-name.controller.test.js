@@ -29,7 +29,7 @@ const { req, res, call } = new ControllerTestBuilder('@controllers/simplified-ac
   .build()
 
 describe('Controller: remove welsh service name', () => {
-  before(async () => {
+  beforeEach(async () => {
     await call('post')
   })
 

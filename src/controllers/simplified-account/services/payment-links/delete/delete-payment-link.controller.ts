@@ -25,8 +25,6 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   )
 
   return response(req, res, 'simplified-account/services/payment-links/delete/index', {
-    service,
-    account,
     backLink: backLinkUrl,
     paymentLink: {
       externalId: paymentLink.externalId,

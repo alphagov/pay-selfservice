@@ -13,7 +13,7 @@ const webhook = new Webhook()
   .withDescription('This is a description of the webhook')
   .withStatus(WebhookStatus.ACTIVE)
 
-const mockResponse = sinon.spy()
+const mockResponse = sinon.stub()
 const mockListWebhooks = sinon.stub().resolves([webhook])
 
 const { req, res, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/webhooks/webhooks.controller')
@@ -29,8 +29,8 @@ const { req, res, call } = new ControllerTestBuilder('@controllers/simplified-ac
 
 describe('Controller: settings/webhooks', () => {
   describe('get', () => {
-    before(() => {
-      call('get')
+    beforeEach(async () => {
+      await call('get')
     })
 
     it('should call the response method', () => {
