@@ -35,7 +35,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     ),
     formValues,
     serviceMode: req.account.type,
-    createJourney: true,
+    // createJourney: true,
   })
 }
 
@@ -49,46 +49,59 @@ async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceRes
   const { service, account } = req
   const currentSession = getSession(req)
 
-  const validations = [
-    paymentLinkSchema.metadata.columnHeader.add.validate(currentSession.metadata ?? {}),
-    paymentLinkSchema.metadata.cellContent.validate,
-  ]
+  if (req.body.action === 'edit') {
 
-  for (const validation of validations) {
-    await validation.run(req)
-  }
+    const validations = [
+      paymentLinkSchema.metadata.columnHeader.add.validate(currentSession.metadata ?? {}),
+      paymentLinkSchema.metadata.cellContent.validate,
+    ]
 
-  const errors = validationResult(req)
-
-  if (!errors.isEmpty()) {
-    const formattedErrors = formatValidationErrors(errors)
-    const backLinkUrl = formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.paymentLinks.review,
-      service.externalId,
-      account.type
-    )
-    return response(req, res, 'simplified-account/services/payment-links/edit/metadata', {
-      service,
-      account,
-      errors: {
-        summary: formattedErrors.errorSummary,
-        formErrors: formattedErrors.formErrors,
-      },
-      backLink: backLinkUrl,
-      formValues: req.body,
-      serviceMode: account.type,
-      createJourney: true,
-    })
-  }
-
-  lodash.set(req, CREATE_SESSION_KEY, {
-    ...lodash.get(req, CREATE_SESSION_KEY, {}),
-    metadata: {
-      ...lodash.omit(currentSession.metadata, req.params.metadataKey),
-      [req.body.reportingColumn]: req.body.cellContent,
+    for (const validation of validations) {
+      await validation.run(req)
     }
-  } as PaymentLinkCreationSession)
-  return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
+
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      const formattedErrors = formatValidationErrors(errors)
+      const backLinkUrl = formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.paymentLinks.review,
+        service.externalId,
+        account.type
+      )
+      return response(req, res, 'simplified-account/services/payment-links/edit/metadata', {
+        service,
+        account,
+        errors: {
+          summary: formattedErrors.errorSummary,
+          formErrors: formattedErrors.formErrors,
+        },
+        backLink: backLinkUrl,
+        formValues: req.body,
+        serviceMode: account.type,
+        createJourney: true,
+      })
+    }
+
+    lodash.set(req, CREATE_SESSION_KEY, {
+      ...lodash.get(req, CREATE_SESSION_KEY, {}),
+      metadata: {
+        ...lodash.omit(currentSession.metadata, req.params.metadataKey),
+        [req.body.reportingColumn]: req.body.cellContent,
+      }
+    } as PaymentLinkCreationSession)
+    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
+  }
+
+  else if (req.body.action === 'delete') {
+    lodash.set(req, CREATE_SESSION_KEY, {
+      ...lodash.get(req, CREATE_SESSION_KEY, {}),
+      metadata: {
+        ...lodash.omit(currentSession.metadata, req.params.metadataKey)
+      }
+    } as PaymentLinkCreationSession)
+    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
+  }
 }
 
 export { get, post }
