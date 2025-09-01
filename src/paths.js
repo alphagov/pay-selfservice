@@ -181,6 +181,7 @@ module.exports = {
         index: '/settings/service-name',
         edit: '/settings/service-name/edit',
         removeCy: '/settings/service-name/cy/remove',
+        useEn: '/settings/service-name/en/use',
       },
       emailNotifications: {
         index: '/settings/email-notifications',

@@ -1,5 +1,6 @@
 import edit from '@controllers/simplified-account/settings/service-name/edit/edit-service-name.controller'
 import removeWelshServiceName from '@controllers/simplified-account/settings/service-name/remove-cy/remove-welsh-service-name.controller'
+import useEnglishServiceName from '@controllers/simplified-account/settings/service-name/use-en/use-english-service-name.controller'
 import type ServiceRequest from '@utils/types/express/ServiceRequest'
 import type ServiceResponse from '@utils/types/express/ServiceResponse'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
@@ -35,4 +36,5 @@ export {
   get,
   edit,
   removeWelshServiceName,
+  useEnglishServiceName,
 }

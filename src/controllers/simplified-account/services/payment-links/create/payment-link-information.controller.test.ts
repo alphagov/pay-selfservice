@@ -172,10 +172,21 @@ describe('controller: services/payment-links/create/payment-link-information', (
         await call('get')
       })
 
-      it('should fallback to English service name when Welsh not available', () => {
-        const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.serviceName, 'English Only Service')
-      })
+      it('should redirect to service name edit page with Welsh and payment link creation query parameters set', () => {
+          sinon.assert.calledOnce(res.redirect)
+          sinon.assert.calledWith(
+            res.redirect,
+            sinon.match(/settings.*service-name.*edit/)
+          )
+          sinon.assert.calledWith(
+            res.redirect,
+            sinon.match(/cy=true/)
+          )
+          sinon.assert.calledWith(
+            res.redirect,
+            sinon.match(/fromPaymentLinkCreation=true/)
+          )
+        })
     })
   })
 

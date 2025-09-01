@@ -270,6 +270,12 @@ simplifiedAccount.post(
   permission('service-name:update'),
   serviceSettingsController.serviceName.removeWelshServiceName.post
 )
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.serviceName.useEn,
+  enforceLiveAccountOnly,
+  permission('service-name:update'),
+  serviceSettingsController.serviceName.useEnglishServiceName.post
+)
 
 // team members
 simplifiedAccount.get(

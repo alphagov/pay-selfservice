@@ -16,6 +16,15 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
   const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
   // handle case where welsh payment link is selected but no welsh service name is set
+  if (isWelsh && !service.serviceName.cy) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.serviceName.edit,
+        req.service.externalId,
+        req.account.type
+      ) + '?cy=true&fromPaymentLinkCreation=true',
+    )
+  }
   const serviceName = isWelsh ? (service.serviceName.cy ?? service.name) : service.name
 
   const formValues = {
