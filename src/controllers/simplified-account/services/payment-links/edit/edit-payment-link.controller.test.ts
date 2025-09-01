@@ -246,5 +246,26 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
         sinon.assert.match(product.metadata, undefined)
       })
     })
+
+    describe('with Welsh product', () => {
+      beforeEach(async () => {
+        const welshProduct = {
+          ...mockProduct,
+          language: 'cy'
+        }
+        mockGetProductByGatewayAccountIdAndExternalId.resolves(welshProduct)
+        mockResponse.resetHistory()
+
+        nextRequest({
+          params: { productExternalId: PRODUCT_EXTERNAL_ID },
+        })
+        await call('get')
+      })
+
+      it('should set isWelsh to true for Welsh products', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.isWelsh, true)
+      })
+    })
   })
 })
