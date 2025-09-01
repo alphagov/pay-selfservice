@@ -22,7 +22,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 
   const formValues = {
     reportingColumn: req.params.metadataKey,
-    cellContent: currentSession.metadata[req.params.metadataKey],
+    cellContent: currentSession.metadata?.[req.params.metadataKey],
   }
 
   return response(req, res, 'simplified-account/services/payment-links/edit/metadata', {
@@ -93,13 +93,16 @@ async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceRes
     return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
   }
 
-  else if (req.body.action === 'delete') {
-    lodash.set(req, CREATE_SESSION_KEY, {
-      ...lodash.get(req, CREATE_SESSION_KEY, {}),
-      metadata: {
-        ...lodash.omit(currentSession.metadata, req.params.metadataKey)
-      }
-    } as PaymentLinkCreationSession)
+else if (req.body.action === 'delete') {
+    const updatedMetadata = lodash.omit(currentSession.metadata, req.params.metadataKey)
+
+    if (lodash.isEmpty(updatedMetadata)) {
+      lodash.unset(currentSession, 'metadata')
+    } else {
+      currentSession.metadata = updatedMetadata
+    }
+
+    lodash.set(req, CREATE_SESSION_KEY, currentSession)
     return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
   }
 }
