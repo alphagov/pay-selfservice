@@ -1,10 +1,11 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 
 {% set servicePageTitle %}
-  {% if createJourney %}Add{% else %}Edit{% endif %} reporting column
+  Reporting column
 {% endset %}
 
 {% block serviceContent %}
+  <span class="govuk-caption-l">Create {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
   <h1 class="govuk-heading-l page-title">
     {{ servicePageTitle }}
   </h1>
