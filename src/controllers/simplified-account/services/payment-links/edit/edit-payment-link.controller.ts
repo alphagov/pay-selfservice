@@ -19,6 +19,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       req.account.type
     ),
     serviceMode: req.account.type,
+    isWelsh: product.language === 'cy',
     product: {
       name: product.name,
       details: product.description ?? 'None given',

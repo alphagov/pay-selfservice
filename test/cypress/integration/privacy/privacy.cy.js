@@ -18,7 +18,6 @@ describe('Privacy page', () => {
       cy.get('main h2').should('have.length', 11)
 
       cy.get('#navigation').should('contain', 'Sign in')
-      cy.get('[data-cy=breadcrumbs]').should('not.exist')
     })
   })
 
@@ -33,7 +32,7 @@ describe('Privacy page', () => {
       cy.visit('/privacy')
 
       cy.get('#navigation').should('contain', 'Sign out')
-      cy.get('[data-cy=breadcrumbs]').should('exist')
+      cy.get('#navigation').should('contain', 'My services')
     })
   })
 })

@@ -50,3 +50,9 @@
     }
   }
 }
+
+.govuk-service-navigation__list--last-item-right {
+  .govuk-service-navigation__list > :last-child {
+    margin-left: auto;
+  }
+}
