@@ -20,6 +20,8 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type))
   }
 
+  const isWelsh = currentSession.language === 'cy'
+
   return response(req, res, 'simplified-account/services/payment-links/create/metadata', {
     service,
     account,
@@ -28,6 +30,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       req.service.externalId,
       req.account.type,
     ),
+    isWelsh,
     serviceMode: req.account.type,
     createJourney: true,
   })

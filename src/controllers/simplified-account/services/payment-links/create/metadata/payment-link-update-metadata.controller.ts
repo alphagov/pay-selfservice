@@ -20,6 +20,8 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type))
   }
 
+  const isWelsh = currentSession.language === 'cy'
+
   const formValues = {
     reportingColumn: req.params.metadataKey,
     cellContent: currentSession.metadata?.[req.params.metadataKey],
@@ -35,7 +37,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     ),
     formValues,
     serviceMode: req.account.type,
-    // createJourney: true,
+    isWelsh
   })
 }
 
@@ -48,6 +50,12 @@ interface UpdateLinkMetadataBody {
 async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceResponse) {
   const { service, account } = req
   const currentSession = getSession(req)
+
+  if (lodash.isEmpty(currentSession)) {
+    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type))
+  }
+  
+  const isWelsh = currentSession.language === 'cy'
 
   if (req.body.action === 'edit') {
 
@@ -78,6 +86,7 @@ async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceRes
         },
         backLink: backLinkUrl,
         formValues: req.body,
+        isWelsh,
         serviceMode: account.type,
         createJourney: true,
       })
