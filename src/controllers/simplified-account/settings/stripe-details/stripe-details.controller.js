@@ -2,7 +2,7 @@ const { response } = require('@utils/response')
 const { getStripeAccountOnboardingDetails } = require('@services/stripe-details.service')
 const paths = require('@root/paths')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
-const StripeTasks = require('@models/StripeTasks.class')
+const StripeTasks = require('@models/task-workflows/StripeTasks.class')
 const PaymentProviders = require('@models/constants/payment-providers')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 

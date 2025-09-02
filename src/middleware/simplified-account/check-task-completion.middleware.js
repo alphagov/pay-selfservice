@@ -1,7 +1,7 @@
 const { TaskAlreadyCompletedError, TaskAccessedOutOfSequenceError } = require('@root/errors')
-const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const formatSimplifiedAccountPathsFor = require('../../utils/simplified-account/format/format-simplified-account-paths-for')
 const paths = require('@root/paths')
+const StripeTaskIdentifiers = require('@models/task-workflows/task-identifiers/stripe-task-identifiers')
 
 module.exports = function checkTaskCompletion(task) {
   return function (req, res, next) {
@@ -14,7 +14,7 @@ module.exports = function checkTaskCompletion(task) {
       )
     }
     if (
-      task === stripeDetailsTasks.governmentEntityDocument.name &&
+      task === StripeTaskIdentifiers.DOC.connectorName &&
       !gatewayAccountStripeProgress.entityDocTaskAvailable()
     ) {
       next(

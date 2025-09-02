@@ -69,4 +69,4 @@ class ProductsClient extends BaseClient {
   }
 }
 
-export = ProductsClient
+export default ProductsClient

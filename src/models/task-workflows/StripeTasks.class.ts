@@ -53,7 +53,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       "Organisation's bank details",
-      StripeTaskIdentifiers.BANK,
+      StripeTaskIdentifiers.BANK.id,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.bankDetails,
         serviceExternalId,
@@ -75,7 +75,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       'Responsible person',
-      StripeTaskIdentifiers.RES_PERSON,
+      StripeTaskIdentifiers.RES_PERSON.id,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.responsiblePerson.index,
         serviceExternalId,
@@ -97,7 +97,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       'Service director',
-      StripeTaskIdentifiers.DIRECTOR,
+      StripeTaskIdentifiers.DIRECTOR.id,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.director,
         serviceExternalId,
@@ -119,7 +119,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       'VAT registration number',
-      StripeTaskIdentifiers.VAT_NUMBER,
+      StripeTaskIdentifiers.VAT_NUMBER.id,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.vatNumber,
         serviceExternalId,
@@ -141,7 +141,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       'Company registration number',
-      StripeTaskIdentifiers.COMPANY_NUMBER,
+      StripeTaskIdentifiers.COMPANY_NUMBER.id,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.companyNumber,
         serviceExternalId,
@@ -163,7 +163,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       "Confirm your organisation's name and address match your government entity document",
-      StripeTaskIdentifiers.ORG,
+      StripeTaskIdentifiers.ORG.id,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.organisationDetails.index,
         serviceExternalId,
@@ -185,7 +185,7 @@ class StripeTask extends Task {
   ) {
     const task = new StripeTask(
       'Government entity document',
-      StripeTaskIdentifiers.DOC,
+      StripeTaskIdentifiers.DOC.id,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.governmentEntityDocument,
         serviceExternalId,

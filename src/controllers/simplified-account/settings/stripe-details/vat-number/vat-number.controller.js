@@ -1,10 +1,10 @@
 const { formatSimplifiedAccountPathsFor, formatValidationErrors } = require('@utils/simplified-account/format')
 const { checkTaskCompletion } = require('@middleware/simplified-account')
-const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const { response } = require('@utils/response')
 const { body, validationResult } = require('express-validator')
 const { updateStripeDetailsVatNumber } = require('@services/stripe-details.service')
 const paths = require('@root/paths')
+const StripeTaskIdentifiers = require('@models/task-workflows/task-identifiers/stripe-task-identifiers')
 
 async function get (req, res) {
   return response(req, res, 'simplified-account/settings/stripe-details/vat-number/index', {
@@ -68,6 +68,6 @@ const postErrorResponse = (req, res, errors) => {
 }
 
 module.exports = {
-  get: [checkTaskCompletion(stripeDetailsTasks.vatNumber.name), get],
-  post: [checkTaskCompletion(stripeDetailsTasks.vatNumber.name), post]
+  get: [checkTaskCompletion(StripeTaskIdentifiers.VAT_NUMBER.connectorName), get],
+  post: [checkTaskCompletion(StripeTaskIdentifiers.VAT_NUMBER.connectorName), post]
 }
