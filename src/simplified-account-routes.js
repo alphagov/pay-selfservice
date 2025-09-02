@@ -120,25 +120,25 @@ simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.metadata.add,
   experimentalFeature,
   permission('tokens:create'),
-  servicesController.paymentLinks.create.metadata.get
+  servicesController.paymentLinks.create.metadata.add.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.metadata.add,
   experimentalFeature,
   permission('tokens:create'),
-  servicesController.paymentLinks.create.metadata.post
+  servicesController.paymentLinks.create.metadata.add.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.metadata.update,
   experimentalFeature,
   permission('tokens:create'),
-  servicesController.paymentLinks.create.updateMetadata.get
+  servicesController.paymentLinks.create.metadata.edit.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.metadata.update,
   experimentalFeature,
   permission('tokens:create'),
-  servicesController.paymentLinks.create.updateMetadata.post
+  servicesController.paymentLinks.create.metadata.edit.post
 )
 
 // payment links edit - index

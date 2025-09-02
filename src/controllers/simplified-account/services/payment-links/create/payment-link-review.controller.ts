@@ -10,8 +10,7 @@ import { CreateProductRequest } from '@models/products/CreateProductRequest.clas
 import { createPaymentLinkToken } from '@services/tokens.service'
 import productTypes from '@utils/product-types'
 import formatServicePathsFor from '@utils/format-service-paths-for'
-import * as updateMetadata from './metadata'
-
+import * as metadata from './metadata'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
@@ -129,5 +128,5 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
   return res.redirect(indexPath)
 }
 
-export { get, post, updateMetadata }
+export { get, post, metadata }
 
