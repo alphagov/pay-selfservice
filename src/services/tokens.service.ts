@@ -1,4 +1,4 @@
-import {PublicAuthClient} from '@services/clients/pay/PublicAuthClient.class'
+import PublicAuthClient from '@services/clients/pay/PublicAuthClient.class'
 import { CreateTokenRequest } from '@models/public-auth/CreateTokenRequest.class'
 import TokenUsageType from '@models/public-auth/token-usage-type'
 

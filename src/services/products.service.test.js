@@ -39,7 +39,7 @@ describe('products service', function () {
       }
 
       productsService = proxyquire('./products.service', {
-        '@services/clients/pay/ProductsClient.class': ProductsClientStub
+        '@services/clients/pay/ProductsClient.class': { default: ProductsClientStub }
       })
 
       const result = await productsService.getProducts(gatewayAccountId, productType)
@@ -66,7 +66,7 @@ describe('products service', function () {
       }
 
       productsService = proxyquire('./products.service', {
-        '@services/clients/pay/ProductsClient.class': ProductsClientStub
+        '@services/clients/pay/ProductsClient.class': { default: ProductsClientStub }
       })
 
       const result = await productsService.getProductByExternalId(productExternalId)
@@ -93,7 +93,7 @@ describe('products service', function () {
       }
 
       productsService = proxyquire('./products.service', {
-        '@services/clients/pay/ProductsClient.class': ProductsClientStub
+        '@services/clients/pay/ProductsClient.class': { default: ProductsClientStub }
       })
 
       await productsService.deleteProduct(gatewayAccountId, productExternalId)
@@ -149,7 +149,7 @@ describe('products service', function () {
       }
 
       productsService = proxyquire('./products.service', {
-        '@services/clients/pay/ProductsClient.class': ProductsClientStub,
+        '@services/clients/pay/ProductsClient.class': { default: ProductsClientStub },
         '@models/products/CreateProductRequest.class': { CreateProductRequest: CreateProductRequestStub },
         '@models/products/product-type': ProductTypeStub
       })
@@ -205,7 +205,7 @@ describe('products service', function () {
       }
 
       productsService = proxyquire('./products.service', {
-        '@services/clients/pay/ProductsClient.class': ProductsClientStub,
+        '@services/clients/pay/ProductsClient.class': { default: ProductsClientStub },
         '@models/products/CreateProductRequest.class': { CreateProductRequest: CreateProductRequestStub },
         '@models/products/product-type': ProductTypeStub
       })
@@ -241,7 +241,7 @@ describe('products service', function () {
       }
 
       productsService = proxyquire('./products.service', {
-        '@services/clients/pay/ProductsClient.class': ProductsClientStub
+        '@services/clients/pay/ProductsClient.class': { default: ProductsClientStub }
       })
 
       await expect(productsService.getProducts(gatewayAccountId, productType)).to.be.rejectedWith(error)
@@ -262,7 +262,7 @@ describe('products service', function () {
       }
 
       productsService = proxyquire('./products.service', {
-        '@services/clients/pay/ProductsClient.class': ProductsClientStub
+        '@services/clients/pay/ProductsClient.class': { default: ProductsClientStub }
       })
 
       await expect(productsService.getProductByExternalId(productExternalId)).to.be.rejectedWith(error)
@@ -284,7 +284,7 @@ describe('products service', function () {
       }
 
       productsService = proxyquire('./products.service', {
-        '@services/clients/pay/ProductsClient.class': ProductsClientStub
+        '@services/clients/pay/ProductsClient.class': { default: ProductsClientStub }
       })
 
       await expect(productsService.deleteProduct(gatewayAccountId, productExternalId)).to.be.rejectedWith(error)
@@ -323,7 +323,7 @@ describe('products service', function () {
       }
 
       productsService = proxyquire('./products.service', {
-        '@services/clients/pay/ProductsClient.class': ProductsClientStub,
+        '@services/clients/pay/ProductsClient.class': { default: ProductsClientStub },
         '@models/products/CreateProductRequest.class': { CreateProductRequest: CreateProductRequestStub },
         '@models/products/product-type': ProductTypeStub
       })
