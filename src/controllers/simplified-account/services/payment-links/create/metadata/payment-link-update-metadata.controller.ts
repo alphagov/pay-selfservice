@@ -27,7 +27,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     cellContent: currentSession.metadata?.[req.params.metadataKey],
   }
 
-  return response(req, res, 'simplified-account/services/payment-links/edit/metadata', {
+  return response(req, res, 'simplified-account/services/payment-links/create/metadata', {
     service,
     account,
     backLink: formatServiceAndAccountPathsFor(
@@ -77,7 +77,7 @@ async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceRes
         service.externalId,
         account.type
       )
-      return response(req, res, 'simplified-account/services/payment-links/edit/metadata', {
+      return response(req, res, 'simplified-account/services/payment-links/create/metadata', {
         service,
         account,
         errors: {
