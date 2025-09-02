@@ -144,7 +144,7 @@ describe('Edit payment link information', () => {
 
       it('should navigate back to index view when back link is clicked', () => {
         cy.get('.service-pane').find('.govuk-back-link').click()
-        cy.get('#service-content').find('h1').should('contain.text', 'Live payment link details')
+        cy.get('#service-content').find('h1').should('contain.text', 'Payment link details')
       })
 
       it('should validate form inputs', () => {
@@ -170,7 +170,7 @@ describe('Edit payment link information', () => {
           .click().focused().clear()
           .type('new payment link details')
         cy.get('#service-content').find('form').find('button').click()
-        cy.get('#service-content').find('h1').should('contain.text', 'Live payment link details')
+        cy.get('#service-content').find('h1').should('contain.text', 'Payment link details')
       })
     })
   })
