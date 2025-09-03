@@ -308,5 +308,273 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
         sinon.assert.notCalled(res.redirect)
       })
     })
+
+    describe('with reporting column too long', () => {
+      beforeEach(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'variable',
+        }
+
+        const characterLimit = 30
+        const invalidColumnName = 'a'.repeat(characterLimit + 1)
+
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            reportingColumn: invalidColumnName,
+            cellContent: 'a_value',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/metadata'
+        )
+      })
+
+      it('should include errors in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should not redirect', () => {
+        sinon.assert.notCalled(res.redirect)
+      })
+    })
+
+    describe('with cell content too long', () => {
+      beforeEach(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'variable',
+        }
+
+        const characterLimit = 100
+        const invalidCellContent = 'a'.repeat(characterLimit + 1)
+
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            reportingColumn: 'a_column',
+            cellContent: invalidCellContent,
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/metadata'
+        )
+      })
+
+      it('should include errors in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should not redirect', () => {
+        sinon.assert.notCalled(res.redirect)
+      })
+    })
+
+    describe('with duplicate reporting column', () => {
+      beforeEach(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'variable',
+          metadata: { 'existing_column' : 'existing_value' }
+        }
+
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            reportingColumn: 'existing_column',
+            cellContent: 'some_new_value',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/metadata'
+        )
+      })
+
+      it('should include errors in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should not redirect', () => {
+        sinon.assert.notCalled(res.redirect)
+      })
+    })
+  })
+
+  describe('with cell content too long', () => {
+    beforeEach(async () => {
+      const sessionData: Partial<PaymentLinkCreationSession> = {
+        paymentLinkTitle: 'Test Payment Link',
+        language: 'en',
+        serviceNamePath: 'test-service',
+        productNamePath: 'test-payment-link',
+        paymentAmountType: 'variable',
+      }
+
+      const characterLimit = 100
+      const invalidCellContent = 'a'.repeat(characterLimit + 1)
+
+      mockResponse.resetHistory()
+      res.redirect.resetHistory()
+
+      nextRequest({
+        session: {
+          pageData: {
+            createPaymentLink: sessionData,
+          },
+        },
+        body: {
+          reportingColumn: 'a_column',
+          cellContent: invalidCellContent,
+        },
+      })
+
+      await call('post')
+    })
+
+    it('should render the form with errors', () => {
+      sinon.assert.calledOnce(mockResponse)
+      sinon.assert.calledWith(
+        mockResponse,
+        sinon.match.any,
+        sinon.match.any,
+        'simplified-account/services/payment-links/create/metadata'
+      )
+    })
+
+    it('should include errors in context', () => {
+      const context = mockResponse.args[0][3] as Record<string, unknown>
+      sinon.assert.match(context.errors, sinon.match.object)
+      sinon.assert.match(context.errors, sinon.match.has('summary'))
+      sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+    })
+
+    it('should not redirect', () => {
+      sinon.assert.notCalled(res.redirect)
+    })
+  })
+
+  describe('with too many reporting columns', () => {
+    beforeEach(async () => {
+      const sessionData: Partial<PaymentLinkCreationSession> = {
+        paymentLinkTitle: 'Test Payment Link',
+        language: 'en',
+        serviceNamePath: 'test-service',
+        productNamePath: 'test-payment-link',
+        paymentAmountType: 'variable',
+        metadata: {},
+      }
+
+      const maximumColumns = 15
+      
+      for (let i = 1; i <= maximumColumns; i++) {
+        const key = `existing_column_${i}`;
+        sessionData.metadata[key] = 'existing value';
+      }
+
+      mockResponse.resetHistory()
+      res.redirect.resetHistory()
+
+      nextRequest({
+        session: {
+          pageData: {
+            createPaymentLink: sessionData,
+          },
+        },
+        body: {
+          reportingColumn: 'new_column',
+          cellContent: 'some_new_value',
+        },
+      })
+
+      await call('post')
+    })
+
+    it('should render the form with errors', () => {
+      sinon.assert.calledOnce(mockResponse)
+      sinon.assert.calledWith(
+        mockResponse,
+        sinon.match.any,
+        sinon.match.any,
+        'simplified-account/services/payment-links/create/metadata'
+      )
+    })
+
+    it('should include errors in context', () => {
+      const context = mockResponse.args[0][3] as Record<string, unknown>
+      sinon.assert.match(context.errors, sinon.match.object)
+      sinon.assert.match(context.errors, sinon.match.has('summary'))
+      sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+    })
+
+    it('should not redirect', () => {
+      sinon.assert.notCalled(res.redirect)
+    })
   })
 })
