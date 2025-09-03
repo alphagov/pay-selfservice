@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { response } from'@utils/response.js'
+import { response } from'@utils/response'
 import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/format-service-and-account-paths-for";
 import {ServiceRequest, ServiceResponse} from "@utils/types/express";
@@ -11,7 +11,7 @@ import {CreateTokenRequest} from "@models/public-auth/CreateTokenRequest.class";
 import TokenUsageType from "@models/public-auth/token-usage-type";
 import {CreateProductRequest} from "@models/products/CreateProductRequest.class";
 import { createProduct } from '@services/products.service'
-import { PROTOTYPE } from '@utils/product-types'
+import { ProductType } from "@models/products/product-type";
 import { SESSION_KEY } from "./constants";
 import {demoPaymentSchema} from "@utils/simplified-account/validation/demo-payment.schema";
 import {safeConvertPoundsStringToPence} from "@utils/currency-formatter";
@@ -20,7 +20,6 @@ function get (req: ServiceRequest, res: ServiceResponse) {
   const context = {
     backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  req.service.externalId, req.account.type),
     confirmLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.confirm,  req.service.externalId, req.account.type),
-    ...lodash.get(req, 'session.pageData.createPrototypeLink', {})
   }
 
   return response(req, res, 'simplified-account/services/test-with-your-users/create', context)
@@ -73,7 +72,7 @@ async function post (req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceR
       .withName(req.body.description)
       .withPrice(parsedAmount)
       .withReturnUrl(req.body.confirmationPage)
-      .withType(PROTOTYPE)
+      .withType(ProductType.PROTOTYPE)
       .withGatewayAccountId(req.account.id)
       .withApiToken(token)
   )
