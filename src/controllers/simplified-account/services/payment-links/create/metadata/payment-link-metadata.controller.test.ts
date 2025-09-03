@@ -423,7 +423,7 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
           serviceNamePath: 'test-service',
           productNamePath: 'test-payment-link',
           paymentAmountType: 'variable',
-          metadata: { 'existing_column' : 'existing_value' }
+          metadata: { 'existing_column': 'existing_value' }
         }
 
         mockResponse.resetHistory()
@@ -465,116 +465,117 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
         sinon.assert.notCalled(res.redirect)
       })
     })
-  })
 
-  describe('with cell content too long', () => {
-    beforeEach(async () => {
-      const sessionData: Partial<PaymentLinkCreationSession> = {
-        paymentLinkTitle: 'Test Payment Link',
-        language: 'en',
-        serviceNamePath: 'test-service',
-        productNamePath: 'test-payment-link',
-        paymentAmountType: 'variable',
-      }
 
-      const characterLimit = 100
-      const invalidCellContent = 'a'.repeat(characterLimit + 1)
+    describe('with cell content too long', () => {
+      beforeEach(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'variable',
+        }
 
-      mockResponse.resetHistory()
-      res.redirect.resetHistory()
+        const characterLimit = 100
+        const invalidCellContent = 'a'.repeat(characterLimit + 1)
 
-      nextRequest({
-        session: {
-          pageData: {
-            createPaymentLink: sessionData,
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
           },
-        },
-        body: {
-          reportingColumn: 'a_column',
-          cellContent: invalidCellContent,
-        },
+          body: {
+            reportingColumn: 'a_column',
+            cellContent: invalidCellContent,
+          },
+        })
+
+        await call('post')
       })
 
-      await call('post')
-    })
-
-    it('should render the form with errors', () => {
-      sinon.assert.calledOnce(mockResponse)
-      sinon.assert.calledWith(
-        mockResponse,
-        sinon.match.any,
-        sinon.match.any,
-        'simplified-account/services/payment-links/create/metadata'
-      )
-    })
-
-    it('should include errors in context', () => {
-      const context = mockResponse.args[0][3] as Record<string, unknown>
-      sinon.assert.match(context.errors, sinon.match.object)
-      sinon.assert.match(context.errors, sinon.match.has('summary'))
-      sinon.assert.match(context.errors, sinon.match.has('formErrors'))
-    })
-
-    it('should not redirect', () => {
-      sinon.assert.notCalled(res.redirect)
-    })
-  })
-
-  describe('with too many reporting columns', () => {
-    beforeEach(async () => {
-      const sessionData: Partial<PaymentLinkCreationSession> = {
-        paymentLinkTitle: 'Test Payment Link',
-        language: 'en',
-        serviceNamePath: 'test-service',
-        productNamePath: 'test-payment-link',
-        paymentAmountType: 'variable',
-        metadata: {},
-      }
-
-      const maximumColumns = 15
-      
-      for (let i = 1; i <= maximumColumns; i++) {
-        const key = `existing_column_${i}`;
-        sessionData.metadata[key] = 'existing value';
-      }
-
-      mockResponse.resetHistory()
-      res.redirect.resetHistory()
-
-      nextRequest({
-        session: {
-          pageData: {
-            createPaymentLink: sessionData,
-          },
-        },
-        body: {
-          reportingColumn: 'new_column',
-          cellContent: 'some_new_value',
-        },
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/metadata'
+        )
       })
 
-      await call('post')
+      it('should include errors in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should not redirect', () => {
+        sinon.assert.notCalled(res.redirect)
+      })
     })
 
-    it('should render the form with errors', () => {
-      sinon.assert.calledOnce(mockResponse)
-      sinon.assert.calledWith(
-        mockResponse,
-        sinon.match.any,
-        sinon.match.any,
-        'simplified-account/services/payment-links/create/metadata'
-      )
-    })
+    describe('with too many reporting columns', () => {
+      beforeEach(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'variable',
+          metadata: {},
+        }
 
-    it('should include errors in context', () => {
-      const context = mockResponse.args[0][3] as Record<string, unknown>
-      sinon.assert.match(context.errors, sinon.match.object)
-      sinon.assert.match(context.errors, sinon.match.has('summary'))
-      sinon.assert.match(context.errors, sinon.match.has('formErrors'))
-    })
+        const maximumColumns = 15
 
-    it('should not redirect', () => {
-      sinon.assert.notCalled(res.redirect)
+        for (let i = 1; i <= maximumColumns; i++) {
+          const columnName = `existing_column_${i}`;
+          sessionData.metadata[columnName] = 'existing value';
+        }
+
+        mockResponse.resetHistory()
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            reportingColumn: 'new_column',
+            cellContent: 'some_new_value',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should render the form with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/metadata'
+        )
+      })
+
+      it('should include errors in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.errors, sinon.match.object)
+        sinon.assert.match(context.errors, sinon.match.has('summary'))
+        sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+
+      it('should not redirect', () => {
+        sinon.assert.notCalled(res.redirect)
+      })
     })
   })
 })
