@@ -30,60 +30,91 @@ const { nextRequest, call, res } = new ControllerTestBuilder(
 describe('controller: services/payment-links/create/metadata/payment-link-metadata', () => {
   describe('get', () => {
     describe('with existing session data', () => {
-          beforeEach(async () => {
-            mockResponse.resetHistory()
-            const sessionData: Partial<PaymentLinkCreationSession> = {
-              paymentLinkTitle: 'Test Payment Link',
-              paymentLinkDescription: 'Test Description',
-              language: 'en',
-              serviceNamePath: 'mcduck-enterprises',
-              productNamePath: 'test-payment-link',
-              paymentAmountType: 'variable',
-              metadata: {
-                existing_column: 'existing_value',
-              },
-            }
-    
-            nextRequest({
-              session: {
-                pageData: {
-                  createPaymentLink: sessionData,
-                },
-              },
-            })
-    
-            await call('get')
-          })
-    
-          it('should call the response method', () => {
-            sinon.assert.calledOnce(mockResponse)
-          })
-    
-          it('should pass correct template path to the response method', () => {
-            sinon.assert.calledWith(
-              mockResponse,
-              sinon.match.any,
-              sinon.match.any,
-              'simplified-account/services/payment-links/create/metadata'
-            )
-          })
-    
-          it('should set backLink in context', () => {
-            const context = mockResponse.args[0][3] as Record<string, unknown>
-            sinon.assert.match(context.backLink, sinon.match.string)
-            sinon.assert.match(context.backLink, sinon.match(/payment-links.*review/))
-          })
-    
-          it('should set createJourney in context', () => {
-            const context = mockResponse.args[0][3] as Record<string, unknown>
-            sinon.assert.match(context.createJourney, true)
-          })
-    
-          it('should set isWelsh to false for English language session', () => {
-            const context = mockResponse.args[0][3] as Record<string, unknown>
-            sinon.assert.match(context.isWelsh, false)
-          })
+      beforeEach(async () => {
+        mockResponse.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          paymentLinkDescription: 'Test Description',
+          language: 'en',
+          serviceNamePath: 'mcduck-enterprises',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'variable',
+          metadata: {
+            a_column: 'a_value',
+          },
+        }
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
         })
+
+        await call('get')
+      })
+
+      it('should call the response method', () => {
+        sinon.assert.calledOnce(mockResponse)
+      })
+
+      it('should pass correct template path to the response method', () => {
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/metadata'
+        )
+      })
+
+      it('should set backLink in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.backLink, sinon.match.string)
+        sinon.assert.match(context.backLink, sinon.match(/payment-links.*review/))
+      })
+
+      it('should set createJourney in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.createJourney, true)
+      })
+
+      it('should set isWelsh to false for English language session', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.isWelsh, false)
+      })
+    })
+
+    describe('with Welsh session data', () => {
+      beforeEach(async () => {
+        mockResponse.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Welsh Payment Link',
+          language: 'cy',
+          serviceNamePath: 'test-service',
+          productNamePath: 'welsh-payment-link',
+          paymentAmountType: 'variable',
+          metadata: {
+            a_column: 'a_value',
+          },
+        }
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+        })
+
+        await call('get')
+      })
+
+      it('should set isWelsh to true for Welsh session', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.isWelsh, true)
+      })
+    })
 
     describe('with empty session data', () => {
       beforeEach(async () => {
