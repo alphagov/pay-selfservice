@@ -10,7 +10,7 @@ const METADATA_KEY = 'existing_column'
 
 const mockResponse = sinon.spy()
 
-const { nextRequest, call, res } = new ControllerTestBuilder(
+const { nextRequest, call, res, next } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/payment-links/create/metadata/payment-link-update-metadata.controller'
 )
   .withStubs({
@@ -94,7 +94,41 @@ describe('controller: services/payment-links/create/metadata/payment-link-update
       })
     })
 
-    // add not found error and logic
+    describe('with invalid metadata key', () => {
+      beforeEach(async () => {
+        next.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          paymentLinkDescription: 'Test Description',
+          language: 'en',
+          serviceNamePath: 'test-service',
+          productNamePath: 'test-payment-link',
+          paymentAmountType: 'variable',
+          metadata: {
+            'existing_column': 'a_value',
+            'another_column': 'another_value'
+          },
+        }
+
+        nextRequest({
+          params: {
+            metadataKey: 'invalid_key'
+          },
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+        })
+
+        await call('get')
+      })
+
+      it('should call next with NotFoundError', () => {
+        sinon.assert.calledOnce(next)
+        sinon.assert.calledWith(next, sinon.match.instanceOf(Error))
+      })
+    })
 
     describe('with Welsh session data', () => {
       beforeEach(async () => {
@@ -153,7 +187,7 @@ describe('controller: services/payment-links/create/metadata/payment-link-update
 
 
   describe('post', () => {
-    describe('with valid form values and edit action', () => {
+    describe('with valid metadata key and edit action', () => {
       beforeEach(async () => {
       mockResponse.resetHistory()
       const sessionData: Partial<PaymentLinkCreationSession> = {
@@ -194,7 +228,7 @@ describe('controller: services/payment-links/create/metadata/payment-link-update
       })
     })
 
-    describe('with valid form values and delete action', () => {
+    describe('with valid metadata key and delete action', () => {
       beforeEach(async () => {
         mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {

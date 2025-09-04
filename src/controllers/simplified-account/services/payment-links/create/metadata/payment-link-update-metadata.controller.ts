@@ -7,12 +7,14 @@ import { CREATE_SESSION_KEY, PaymentLinkCreationSession } from '../constants'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
+import { NotFoundError } from '@root/errors'
+import { NextFunction } from 'express'
 
 function getSession<T>(req: ServiceRequest<T>) {
   return lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
 }
 
-function get(req: ServiceRequest, res: ServiceResponse) {
+function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
   const { service, account } = req
   const currentSession = getSession(req)
 
@@ -27,18 +29,23 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     cellContent: currentSession.metadata?.[req.params.metadataKey],
   }
 
-  return response(req, res, 'simplified-account/services/payment-links/create/metadata', {
-    service,
-    account,
-    backLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.paymentLinks.review,
-      req.service.externalId,
-      req.account.type,
-    ),
-    formValues,
-    serviceMode: req.account.type,
-    isWelsh
-  })
+  try {
+    checkKeyExistsOnSessionMetadata(currentSession, req)
+    return response(req, res, 'simplified-account/services/payment-links/create/metadata', {
+      service,
+      account,
+      backLink: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.paymentLinks.review,
+        req.service.externalId,
+        req.account.type,
+      ),
+      formValues,
+      serviceMode: req.account.type,
+      isWelsh
+    })
+  } catch (error) {
+    next(error)
+  }
 }
 
 interface UpdateLinkMetadataBody {
@@ -113,6 +120,19 @@ else if (req.body.action === 'delete') {
 
     lodash.set(req, CREATE_SESSION_KEY, currentSession)
     return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
+  }
+}
+
+function checkKeyExistsOnSessionMetadata(
+  session: PaymentLinkCreationSession,
+  req: ServiceRequest<UpdateLinkMetadataBody>
+): asserts session is PaymentLinkCreationSession & {
+  metadata: NonNullable<Record<string, string>>
+} {
+  if (!Object.keys(session.metadata ?? {}).includes(req.params.metadataKey)) {
+    throw new NotFoundError(
+      `Metadata key was not found on product`
+    )
   }
 }
 
