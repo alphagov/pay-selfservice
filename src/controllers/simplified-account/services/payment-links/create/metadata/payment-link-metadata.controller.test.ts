@@ -532,7 +532,8 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
         }
 
         const maximumColumns = 15
-
+        sessionData.metadata ??= {};
+        
         for (let i = 1; i <= maximumColumns; i++) {
           const columnName = `existing_column_${i}`;
           sessionData.metadata[columnName] = 'existing value';
