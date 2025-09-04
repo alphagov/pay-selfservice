@@ -8,6 +8,8 @@ import { PaymentLinkCreationSession, CREATE_SESSION_KEY, FROM_REVIEW_QUERY_PARAM
 import lodash from 'lodash'
 import slugifyString from '@utils/simplified-account/format/slugify-string'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
+import PaymentProviders from '@models/constants/payment-providers'
+import goLiveStage from '@models/constants/go-live-stage'
 
 const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
 
@@ -16,7 +18,9 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
   const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
   // handle case where welsh payment link is selected but no welsh service name is set
-  if (isWelsh && !service.serviceName.cy) {
+  if (isWelsh && !service.serviceName.cy
+      && service.currentGoLiveStage === goLiveStage.LIVE
+      && account.paymentProvider.toLowerCase() !== PaymentProviders.SANDBOX) {
     return res.redirect(
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.serviceName.edit,

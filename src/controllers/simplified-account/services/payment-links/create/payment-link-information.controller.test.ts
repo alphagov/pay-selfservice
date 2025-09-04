@@ -1,7 +1,11 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-account-type'
+import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
+import { validGatewayAccount } from '@test/fixtures/gateway-account.fixtures'
 import { PaymentLinkCreationSession, FROM_REVIEW_QUERY_PARAM } from './constants'
+import goLiveStage from '@models/constants/go-live-stage'
+import PaymentProviders from '@models/constants/payment-providers'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -147,7 +151,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
       })
     })
 
-    describe('with Welsh language in session but no Welsh service name', () => {
+    describe('for Welsh payment links on live account and no Welsh service name', () => {
       beforeEach(async () => {
         mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
@@ -158,10 +162,19 @@ describe('controller: services/payment-links/create/payment-link-information', (
         }
 
         nextRequest({
-          service: {
-            name: 'English Only Service',
-            serviceName: { en: 'English Only Service', cy: null },
+            service: {
+            name: 'English Service',
+            serviceName: { en: 'English Service', cy: null },
+            currentGoLiveStage: goLiveStage.LIVE
           },
+          account: new GatewayAccount(
+            validGatewayAccount({
+              gateway_account_id: GATEWAY_ACCOUNT_ID,
+              external_id: SERVICE_EXTERNAL_ID,
+              type: TEST,
+              payment_provider: PaymentProviders.WORLDPAY,
+              })
+            ),
           session: {
             pageData: {
               createPaymentLink: sessionData,
@@ -187,6 +200,114 @@ describe('controller: services/payment-links/create/payment-link-information', (
             sinon.match(/fromPaymentLinkCreation=true/)
           )
         })
+    })
+
+    describe('for Welsh payment links on test account and no Welsh service name', () => {
+      beforeEach(async () => {
+        mockResponse.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Welsh Title',
+          language: 'cy',
+          serviceNamePath: 'test-service',
+          productNamePath: 'welsh-title',
+        }
+
+        nextRequest({
+          service: {
+            name: 'English Service',
+            serviceName: { en: 'English Service', cy: null },
+            currentGoLiveStage: goLiveStage.NOT_STARTED
+          },
+          account: new GatewayAccount(
+            validGatewayAccount({
+              gateway_account_id: GATEWAY_ACCOUNT_ID,
+              external_id: SERVICE_EXTERNAL_ID,
+              type: TEST,
+              payment_provider: PaymentProviders.SANDBOX,
+              })
+            ),
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+        })
+
+        await call('get')
+      })
+
+      it('should call the response method', () => {
+        sinon.assert.calledOnce(mockResponse)
+      })
+
+      it('should pass correct template path to the response method', () => {
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/index'
+        )
+      })
+
+      it('should set isWelsh to true but use the English service name', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.isWelsh, true)
+        sinon.assert.match(context.serviceName, 'English Service')
+      })
+    })
+
+    describe('for Welsh payment links on sandbox account and no Welsh service name', () => {
+      beforeEach(async () => {
+        mockResponse.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Welsh Title',
+          language: 'cy',
+          serviceNamePath: 'test-service',
+          productNamePath: 'welsh-title',
+        }
+
+        nextRequest({
+          service: {
+            name: 'English Service',
+            serviceName: { en: 'English Service', cy: null },
+            currentGoLiveStage: goLiveStage.LIVE
+          },
+          account: new GatewayAccount(
+            validGatewayAccount({
+              gateway_account_id: GATEWAY_ACCOUNT_ID,
+              external_id: SERVICE_EXTERNAL_ID,
+              type: TEST,
+              payment_provider: PaymentProviders.SANDBOX,
+              })
+            ),
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+        })
+
+        await call('get')
+      })
+
+      it('should call the response method', () => {
+        sinon.assert.calledOnce(mockResponse)
+      })
+
+      it('should pass correct template path to the response method', () => {
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/payment-links/create/index'
+        )
+      })
+
+      it('should set isWelsh to true but use the English service name', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.isWelsh, true)
+        sinon.assert.match(context.serviceName, 'English Service')
+      })
     })
   })
 
