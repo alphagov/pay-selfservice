@@ -11,7 +11,6 @@ import { createPaymentLinkToken } from '@services/tokens.service'
 import productTypes from '@utils/product-types'
 import formatServicePathsFor from '@utils/format-service-paths-for'
 
-
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
   const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
@@ -28,6 +27,23 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/services/payment-links/create/review', {
     service,
     account,
+    ...(currentSession.metadata && {
+        metadata: Object.entries(currentSession.metadata).reduce(
+          (acc, [key, value]) => {
+            acc[key] = {
+              value,
+              link: formatServiceAndAccountPathsFor(
+                paths.simplifiedAccount.paymentLinks.metadata.update,
+                req.service.externalId,
+                req.account.type,
+                key
+              ),
+            }
+            return acc
+          },
+          {} as Record<string, Record<string, string>>
+        ),
+      }),
     backLink: formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.paymentLinks.amount,
       service.externalId,
@@ -50,6 +66,11 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     ),
     amountLink: formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.paymentLinks.amount + '?' + fromReviewQueryString,
+      service.externalId,
+      account.type
+    ),
+    addReportingColumnLink: formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.metadata.add + '?' + fromReviewQueryString,
       service.externalId,
       account.type
     ),
@@ -88,7 +109,8 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     .withPrice(pageData.paymentLinkAmount)
     .withLanguage(pageData.language)
     .withType(productTypes.ADHOC)
-
+    .withMetadata(pageData.metadata) 
+    
   const paymentLink = await createProduct(createProductRequest)
   const goLiveLink = formatServicePathsFor(paths.service.requestToGoLive.index, req.service.externalId) as string
   const successBannerBody = `You can <a href="${paymentLink.links.pay.href}/"

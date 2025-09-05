@@ -4,6 +4,8 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import productTypes from '@utils/product-types'
+import paths from '@root/paths'
+import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -48,6 +50,10 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
           paymentReferenceType: 'custom',
           paymentReferenceLabel: 'Order Number',
           paymentReferenceHint: 'Enter your order number',
+          metadata: {
+            'existing_column': 'a_value',
+            'another_column': 'another_value'
+          },
         }
 
         nextRequest({
@@ -105,6 +111,17 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.cancelLink, sinon.match.string)
         sinon.assert.match(context.cancelLink, sinon.match(/payment-links/))
+      })
+
+      it('should set edit metadata link in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const metadata = context.metadata as Record<string, Record<string, string>>
+        const updateMetadataLink = metadata.existing_column.link
+        sinon.assert.match(updateMetadataLink, formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.paymentLinks.metadata.update,
+          SERVICE_EXTERNAL_ID,
+          GatewayAccountType.TEST,
+          'existing_column'))
       })
 
       it('should set createJourney in context', () => {

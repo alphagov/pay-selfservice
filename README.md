@@ -63,7 +63,7 @@ This command will watch changes in your workspace and rebuild them in a Pay CLI 
 ```bash
 npm run test
 ```
-This command will run all [mocha](https://mochajs.org/) test suites matching the glob pattern `*.test.js`
+This command will run all [mocha](https://mochajs.org/) test suites matching the glob patterns `*.test.js` or `*.test.ts`
 
 To run Cypress tests start the server in a separate terminal
 

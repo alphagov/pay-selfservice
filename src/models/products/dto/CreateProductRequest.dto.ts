@@ -9,4 +9,5 @@ export interface CreateProductRequestData {
   language: string
   service_name_path?: string
   product_name_path?: string
+  metadata?: Record<string, string>
 }
