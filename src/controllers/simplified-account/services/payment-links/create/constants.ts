@@ -4,6 +4,7 @@ export interface PaymentLinkCreationSession {
   serviceNamePath: string
   productNamePath: string
   language: 'en' | 'cy'
+  useEnglishServiceName?: string
   payApiToken: string
   gatewayAccountId: number
   paymentLinkAmount: number
