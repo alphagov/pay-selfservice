@@ -61,13 +61,13 @@ async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceRes
   if (lodash.isEmpty(currentSession)) {
     return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type))
   }
-  
+
   const isWelsh = currentSession.language === 'cy'
 
   if (req.body.action === 'edit') {
 
     const validations = [
-      paymentLinkSchema.metadata.columnHeader.edit.validate(currentSession.metadata?? {}, req.params.metadataKey),
+      paymentLinkSchema.metadata.columnHeader.edit.validate(currentSession.metadata ?? {}, req.params.metadataKey),
       paymentLinkSchema.metadata.cellContent.validate,
     ]
 
@@ -109,7 +109,7 @@ async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceRes
     return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
   }
 
-else if (req.body.action === 'delete') {
+  else if (req.body.action === 'delete') {
     const updatedMetadata = lodash.omit(currentSession.metadata, req.params.metadataKey)
 
     if (lodash.isEmpty(updatedMetadata)) {
