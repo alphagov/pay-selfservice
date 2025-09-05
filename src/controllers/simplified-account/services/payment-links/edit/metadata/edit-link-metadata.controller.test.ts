@@ -268,7 +268,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
           sinon.match({
             state: 'success',
             icon: '&check;',
-            heading: 'Reporting column deleted',
+            heading: `Reporting column '${METADATA_KEY}' deleted`,
           })
         )
       })

@@ -4,8 +4,8 @@ const { directorValidations } = require('@utils/simplified-account/validation/st
 const { validationResult } = require('express-validator')
 const { updateStripeDetailsDirector } = require('@services/stripe-details.service')
 const { checkTaskCompletion } = require('@middleware/simplified-account')
-const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const paths = require('@root/paths')
+const StripeTaskIdentifiers = require('@models/task-workflows/task-identifiers/stripe-task-identifiers')
 
 async function get (req, res) {
   return response(req, res, 'simplified-account/settings/stripe-details/director/index', {
@@ -75,6 +75,6 @@ const postErrorResponse = (req, res, errors) => {
 }
 
 module.exports = {
-  get: [checkTaskCompletion(stripeDetailsTasks.director.name), get],
-  post: [checkTaskCompletion(stripeDetailsTasks.director.name), post]
+  get: [checkTaskCompletion(StripeTaskIdentifiers.DIRECTOR.connectorName), get],
+  post: [checkTaskCompletion(StripeTaskIdentifiers.DIRECTOR.connectorName), post]
 }

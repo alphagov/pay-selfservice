@@ -5,7 +5,7 @@ import { CreateTokenRequestData } from '@models/public-auth/dto/CreateTokenReque
 const SERVICE_NAME = 'publicauth'
 const SERVICE_BASE_URL = process.env.PUBLIC_AUTH_URL!
 
-export class PublicAuthClient extends BaseClient {
+class PublicAuthClient extends BaseClient {
   public tokens
   constructor() {
     super(SERVICE_BASE_URL, SERVICE_NAME)
@@ -21,3 +21,5 @@ export class PublicAuthClient extends BaseClient {
     }
   }
 }
+
+export default PublicAuthClient

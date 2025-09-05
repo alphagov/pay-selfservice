@@ -4,10 +4,10 @@ const paths = require('@root/paths')
 const { response } = require('@utils/response')
 const { updateStripeDetailsResponsiblePerson } = require('@services/stripe-details.service')
 const { formatPhoneNumberWithCountryCode } = require('@utils/telephone-number-utils')
-const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const { formatAddressAsParagraph } = require('@utils/format-address-as-paragraph')
 const { FORM_STATE_KEY } = require('@controllers/simplified-account/settings/stripe-details/responsible-person/constants')
 const _ = require('lodash')
+const StripeTaskIdentifiers = require('@models/task-workflows/task-identifiers/stripe-task-identifiers')
 
 async function get (req, res) {
   const { name, dob, address, contact } = _.get(req, FORM_STATE_KEY, {})
@@ -85,6 +85,6 @@ const postErrorResponse = (req, res, errors) => {
 }
 
 module.exports = {
-  get: [checkTaskCompletion(stripeDetailsTasks.responsiblePerson.name), get],
-  post: [checkTaskCompletion(stripeDetailsTasks.responsiblePerson.name), post]
+  get: [checkTaskCompletion(StripeTaskIdentifiers.RES_PERSON.connectorName), get],
+  post: [checkTaskCompletion(StripeTaskIdentifiers.RES_PERSON.connectorName), post]
 }

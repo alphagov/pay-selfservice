@@ -5,7 +5,7 @@ const { validationResult, body } = require('express-validator')
 const { formatValidationErrors } = require('@utils/simplified-account/format')
 const { updateConnectorStripeProgress } = require('@services/stripe-details.service')
 const { checkTaskCompletion } = require('@middleware/simplified-account')
-const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
+const StripeTaskIdentifiers = require('@models/task-workflows/task-identifiers/stripe-task-identifiers')
 
 async function get (req, res) {
   const { merchantDetails } = req.service
@@ -57,6 +57,6 @@ const postErrorResponse = (req, res, errors) => {
   })
 }
 
-module.exports.get = [checkTaskCompletion(stripeDetailsTasks.organisationDetails.name), get]
-module.exports.post = [checkTaskCompletion(stripeDetailsTasks.organisationDetails.name), post]
+module.exports.get = [checkTaskCompletion(StripeTaskIdentifiers.ORG.connectorName), get]
+module.exports.post = [checkTaskCompletion(StripeTaskIdentifiers.ORG.connectorName), post]
 module.exports.update = require('./organisation-details-update.controller')

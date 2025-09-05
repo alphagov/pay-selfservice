@@ -1,11 +1,11 @@
 const { checkTaskCompletion } = require('@middleware/simplified-account')
-const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const { response } = require('@utils/response')
 const { formatSimplifiedAccountPathsFor, formatValidationErrors } = require('@utils/simplified-account/format')
 const paths = require('@root/paths')
 const { updateStripeDetailsOrganisationNameAndAddress } = require('@services/stripe-details.service')
 const { validationResult } = require('express-validator')
 const { organisationDetailsSchema } = require('@utils/simplified-account/validation/organisation-details.schema')
+const StripeTaskIdentifiers = require('@models/task-workflows/task-identifiers/stripe-task-identifiers')
 const { countries } = require('@govuk-pay/pay-js-commons').utils
 
 async function get (req, res) {
@@ -78,6 +78,6 @@ const postErrorResponse = (req, res, errors) => {
 }
 
 module.exports = {
-  get: [checkTaskCompletion(stripeDetailsTasks.organisationDetails.name), get],
-  post: [checkTaskCompletion(stripeDetailsTasks.organisationDetails.name), post]
+  get: [checkTaskCompletion(StripeTaskIdentifiers.ORG.connectorName), get],
+  post: [checkTaskCompletion(StripeTaskIdentifiers.ORG.connectorName), post]
 }

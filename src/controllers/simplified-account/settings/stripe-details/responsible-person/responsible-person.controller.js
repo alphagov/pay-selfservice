@@ -5,8 +5,8 @@ const _ = require('lodash')
 const { validationResult } = require('express-validator')
 const { response } = require('@utils/response')
 const { stripePersonSchema } = require('@utils/simplified-account/validation/stripe-person.schema')
-const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
 const { FORM_STATE_KEY } = require('@controllers/simplified-account/settings/stripe-details/responsible-person/constants')
+const StripeTaskIdentifiers = require('@models/task-workflows/task-identifiers/stripe-task-identifiers')
 
 async function get (req, res) {
   const { name, dob } = _.get(req, FORM_STATE_KEY, {})
@@ -66,8 +66,8 @@ const postErrorResponse = (req, res, errors) => {
   })
 }
 
-module.exports.get = [checkTaskCompletion(stripeDetailsTasks.responsiblePerson.name), get]
-module.exports.post = [checkTaskCompletion(stripeDetailsTasks.responsiblePerson.name), post]
+module.exports.get = [checkTaskCompletion(StripeTaskIdentifiers.RES_PERSON.connectorName), get]
+module.exports.post = [checkTaskCompletion(StripeTaskIdentifiers.RES_PERSON.connectorName), post]
 module.exports.homeAddress = require('./responsible-person-home-address.controller')
 module.exports.contactDetails = require('./responsible-person-contact-details.controller')
 module.exports.checkYourAnswers = require('./responsible-person-check-answers.controller')
