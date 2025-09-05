@@ -1,12 +1,21 @@
+const { EXPERIMENTAL_FEATURES_FLAG } = process.env
+const EXPERIMENTAL_FEATURES = EXPERIMENTAL_FEATURES_FLAG === 'true'
 const _ = require('lodash')
 const logger = require('./logger')(__filename)
 const displayConverter = require('./display-converter')
+const { prepareTemplateData } = require('@utils/simplified-account/prepare-template-data')
 
 const ERROR_MESSAGE = 'There is a problem with the payments platform'
 const ERROR_VIEW = 'error'
 
 function response (req, res, template, data = {}) {
-  const convertedData = displayConverter(req, data, template)
+  let convertedData = displayConverter(req, data, template)
+  if (EXPERIMENTAL_FEATURES) {
+    convertedData = {
+      ...convertedData,
+      ...prepareTemplateData(req, data)
+    }
+  }
   render(req, res, template, convertedData)
 }
 

@@ -14,21 +14,17 @@ const mockResponse = sinon.stub()
 const mockStripeDetailsService = {
   getStripeAccountOnboardingDetails: sinon.stub().resolves({
     foo: 'bar',
-  })
+  }),
 }
 
-const {
-  req,
-  res,
-  nextRequest,
-  nextResponse,
-  call
-} = new ControllerTestBuilder('@controllers/simplified-account/settings/stripe-details/stripe-details.controller')
+const { req, res, nextRequest, nextResponse, call } = new ControllerTestBuilder(
+  '@controllers/simplified-account/settings/stripe-details/stripe-details.controller'
+)
   .withServiceExternalId(SERVICE_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/stripe-details.service': mockStripeDetailsService
+    '@services/stripe-details.service': mockStripeDetailsService,
   })
   .build()
 
@@ -42,7 +38,7 @@ describe('Controller: settings/stripe-details', () => {
         sinon.assert.calledOnce(mockStripeDetailsService.getStripeAccountOnboardingDetails)
         sinon.assert.calledWith(mockStripeDetailsService.getStripeAccountOnboardingDetails, req.service)
         sinon.assert.calledWith(res.json, {
-          foo: 'bar'
+          foo: 'bar',
         })
       })
     })
@@ -54,9 +50,12 @@ describe('Controller: settings/stripe-details', () => {
         nextRequest({
           gatewayAccountStripeProgress: new StripeAccountSetup(
             buildGetStripeAccountSetupResponse({
-              bank_account: true
+              bank_account: true,
             })
-          )
+          ),
+          account: {
+            getActiveCredential: () => undefined,
+          },
         })
         await call('get')
       })
@@ -81,22 +80,22 @@ describe('Controller: settings/stripe-details', () => {
       it('should pass Stripe details tasks to the response method', () => {
         const stripeDetailsTasks = mockResponse.args[0][3].tasks
         expect(stripeDetailsTasks[0]).to.deep.equal({
-          linkText: 'Organisation\'s bank details',
+          linkText: "Organisation's bank details",
           href: `/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/bank-details`,
           id: 'stripe-bank-details',
-          status: COMPLETED_CANNOT_START
+          status: COMPLETED_CANNOT_START,
         })
         expect(stripeDetailsTasks[3]).to.deep.equal({
           linkText: 'VAT registration number',
           href: `/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/vat-number`,
           id: 'stripe-vat-number',
-          status: NOT_STARTED
+          status: NOT_STARTED,
         })
         expect(stripeDetailsTasks[6]).to.deep.equal({
           linkText: 'Government entity document',
           href: `/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/government-entity-document`,
           id: 'stripe-gov-entity-doc',
-          status: CANNOT_START
+          status: CANNOT_START,
         })
       })
     })
@@ -104,16 +103,17 @@ describe('Controller: settings/stripe-details', () => {
     describe('when messages are available', () => {
       beforeEach(async () => {
         nextRequest({
-          gatewayAccountStripeProgress: new StripeAccountSetup(
-            buildGetStripeAccountSetupResponse()
-          )
+          gatewayAccountStripeProgress: new StripeAccountSetup(buildGetStripeAccountSetupResponse()),
+          account: {
+            getActiveCredential: () => undefined,
+          },
         })
         nextResponse({
           locals: {
             flash: {
-              messages: 'blah'
-            }
-          }
+              messages: 'blah',
+            },
+          },
         })
         await call('get')
       })
@@ -124,6 +124,42 @@ describe('Controller: settings/stripe-details', () => {
     })
 
     describe('when all tasks are complete', () => {
+      beforeEach(async () => {
+        nextRequest({
+          account: {
+            getActiveCredential: () => new GatewayAccountCredential().withState(CredentialState.ACTIVE),
+          },
+          gatewayAccountStripeProgress: new StripeAccountSetup(
+            buildGetStripeAccountSetupResponse({
+              bank_account: true,
+              responsible_person: true,
+              vat_number: true,
+              company_number: true,
+              director: true,
+              government_entity_document: true,
+              organisation_details: true,
+            })
+          ),
+          query: {
+            noscript: 'true',
+          },
+        })
+        await call('get')
+      })
+      it('should set incompleteTasks to false', () => {
+        expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(false)
+      })
+
+      it('should render response with answers', () => {
+        const call = mockStripeDetailsService.getStripeAccountOnboardingDetails.getCall(0)
+        expect(call).to.not.be.null
+        expect(mockResponse.args[0][3]).to.have.property('answers').to.deep.equal({
+          foo: 'bar',
+        })
+      })
+    })
+
+    describe('when all tasks are complete but credential is not active', () => {
       beforeEach(async () => {
         nextRequest({
           gatewayAccountStripeProgress: new StripeAccountSetup(
@@ -137,26 +173,28 @@ describe('Controller: settings/stripe-details', () => {
               organisation_details: true,
             })
           ),
-          query: {
-            noscript: 'true'
-          }
+          account: {
+            getActiveCredential: () => undefined,
+          },
         })
         await call('get')
       })
-      it('should set incompleteTasks to false', () => {
-        expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(false)
-      })
 
-      it('should render response with answers', () => {
-        const call = mockStripeDetailsService.getStripeAccountOnboardingDetails.getCall(0)
-        expect(call).to.not.be.null
-        expect(call.args[0]).to.deep.equal(req.service)
-        expect(call.args[1]).to.deep.equal(req.account)
-        expect(mockResponse.args[0][3]).to.have.property('answers').to.deep.equal({
-          foo: 'bar'
+      it('should show info message about Stripe checking information', () => {
+        const messages = mockResponse.args[0][3].messages
+        expect(messages).to.have.lengthOf(1)
+        expect(messages[0]).to.deep.equal({
+          state: 'info',
+          heading: 'Stripe is still checking your information',
+          body: 'We will contact you if there is a problem',
         })
       })
+
+      it('should set credentialIsActive to false', () => {
+        expect(mockResponse.args[0][3]).to.have.property('credentialIsActive').to.equal(false)
+      })
     })
+
     describe('when account is switching providers', () => {
       beforeEach(async () => {
         nextRequest({
@@ -173,9 +211,9 @@ describe('Controller: settings/stripe-details', () => {
           ),
           account: {
             providerSwitchEnabled: true,
-            getSwitchingCredential: () => new GatewayAccountCredential()
-              .withState(CredentialState.CREATED)
-          }
+            getSwitchingCredential: () => new GatewayAccountCredential().withState(CredentialState.CREATED),
+            getActiveCredential: () => new GatewayAccountCredential().withState(CredentialState.ACTIVE),
+          },
         })
         await call('get')
       })
