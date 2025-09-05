@@ -1,3 +1,4 @@
+const GoLiveStage = require('@models/constants/go-live-stage')
 const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
@@ -7,6 +8,7 @@ const { SANDBOX, STRIPE } = require('@models/constants/payment-providers')
 const stripePspStubs = require('@test/cypress/stubs/stripe-psp-stubs')
 const {
   STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
+  STRIPE_CREDENTIAL_IN_CREATED_STATE,
 } = require('@test/fixtures/credentials.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
@@ -28,6 +30,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       serviceName: SERVICE_NAME,
       serviceExternalId: SERVICE_EXTERNAL_ID,
+      goLiveStage: GoLiveStage.LIVE,
       merchantDetails: {
         name: 'McDuck Enterprises',
         address_line1: 'McDuck Manor',
@@ -41,7 +44,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       type: LIVE_ACCOUNT_TYPE,
       payment_provider: opts.paymentProvider || STRIPE,
       provider_switch_enabled: opts.providerSwitchEnabled || false,
-      gateway_account_credentials: [STRIPE_CREDENTIAL_IN_ACTIVE_STATE],
+      gateway_account_credentials: [opts.credential ?? STRIPE_CREDENTIAL_IN_CREATED_STATE],
     }),
     ...additionalStubs,
   ])
@@ -123,37 +126,42 @@ describe('Stripe details settings', () => {
     })
     describe('When all tasks are complete', () => {
       beforeEach(() => {
-        setStubs({}, [
-          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
-            serviceExternalId: SERVICE_EXTERNAL_ID,
-            accountType: LIVE_ACCOUNT_TYPE,
-            bankAccount: true,
-            responsiblePerson: true,
-            director: true,
-            vatNumber: true,
-            companyNumber: true,
-            organisationDetails: true,
-            governmentEntityDocument: true,
-          }),
-          gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
-            stripeAccountId: STRIPE_ACCOUNT_ID,
-          }),
-          stripePspStubs.retrieveAccountDetails({
-            stripeAccountId: STRIPE_ACCOUNT_ID,
-          }),
-          stripePspStubs.listPersons({
-            stripeAccountId: STRIPE_ACCOUNT_ID,
-            director: true,
-            representative: true,
-            firstName: 'Scrooge',
-            lastName: 'McDuck',
-          }),
-          stripePspStubs.listBankAccount({
-            stripeAccountId: STRIPE_ACCOUNT_ID,
-            director: true,
-            representative: true,
-          }),
-        ])
+        setStubs(
+          {
+            credential: STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
+          },
+          [
+            stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
+              serviceExternalId: SERVICE_EXTERNAL_ID,
+              accountType: LIVE_ACCOUNT_TYPE,
+              bankAccount: true,
+              responsiblePerson: true,
+              director: true,
+              vatNumber: true,
+              companyNumber: true,
+              organisationDetails: true,
+              governmentEntityDocument: true,
+            }),
+            gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
+              stripeAccountId: STRIPE_ACCOUNT_ID,
+            }),
+            stripePspStubs.retrieveAccountDetails({
+              stripeAccountId: STRIPE_ACCOUNT_ID,
+            }),
+            stripePspStubs.listPersons({
+              stripeAccountId: STRIPE_ACCOUNT_ID,
+              director: true,
+              representative: true,
+              firstName: 'Scrooge',
+              lastName: 'McDuck',
+            }),
+            stripePspStubs.listBankAccount({
+              stripeAccountId: STRIPE_ACCOUNT_ID,
+              director: true,
+              representative: true,
+            }),
+          ]
+        )
         cy.visit(SERVICE_SETTINGS_URL + '/stripe-details')
       })
 
@@ -301,6 +309,7 @@ describe('Stripe details settings', () => {
       beforeEach(() => {
         setStubs(
           {
+            credential: STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
             providerSwitchEnabled: true,
           },
           [
@@ -343,6 +352,50 @@ describe('Stripe details settings', () => {
           'contain.text',
           'Your service is ready to switch PSP from Stripe to Worldpay'
         )
+      })
+    })
+
+    describe('When account is pending kyc check confirmation', () => {
+      beforeEach(() => {
+        setStubs({}, [
+          stripeAccountSetupStubs.getStripeSetupProgressByServiceExternalIdAndAccountType({
+            serviceExternalId: SERVICE_EXTERNAL_ID,
+            accountType: LIVE_ACCOUNT_TYPE,
+            bankAccount: true,
+            responsiblePerson: true,
+            director: true,
+            vatNumber: true,
+            companyNumber: true,
+            organisationDetails: true,
+            governmentEntityDocument: true,
+          }),
+          gatewayAccountStubs.getStripeAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
+            stripeAccountId: STRIPE_ACCOUNT_ID,
+          }),
+          stripePspStubs.retrieveAccountDetails({
+            stripeAccountId: STRIPE_ACCOUNT_ID,
+          }),
+          stripePspStubs.listPersons({
+            stripeAccountId: STRIPE_ACCOUNT_ID,
+            director: true,
+            representative: true,
+            firstName: 'Scrooge',
+            lastName: 'McDuck',
+          }),
+          stripePspStubs.listBankAccount({
+            stripeAccountId: STRIPE_ACCOUNT_ID,
+            director: true,
+            representative: true,
+          }),
+        ])
+        cy.visit(SERVICE_SETTINGS_URL + '/stripe-details')
+      })
+
+      it('should show information about pending checks', () => {
+        cy.get('.system-messages')
+          .should('contain.text', 'Stripe is still checking your information')
+          .should('contain.text', 'We will contact you if there is a problem')
+        cy.get('#service-name').find('.govuk-tag').should('contain.text', 'Not live yet')
       })
     })
   })
