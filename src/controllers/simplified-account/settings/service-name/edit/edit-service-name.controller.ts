@@ -10,13 +10,19 @@ import formatValidationErrors from '@utils/simplified-account/format/format-vali
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const editCy = req.query.cy === 'true'
-  const context = {
-    editCy,
-    backLink: formatServiceAndAccountPathsFor(
+  const fromPaymentLinkCreation = req.query.fromPaymentLinkCreation === 'true'
+  const backLink = fromPaymentLinkCreation ? formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.index,
+      req.service.externalId,
+      req.account.type
+    ) : formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.settings.serviceName.index,
       req.service.externalId,
       req.account.type
-    ),
+    )
+  const context = {
+    editCy,
+    backLink,
     submitLink: formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.settings.serviceName.edit,
       req.service.externalId,
@@ -27,6 +33,13 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       req.service.externalId,
       req.account.type
     ),
+    useEnLink: formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.settings.serviceName.useEn,
+      req.service.externalId,
+      req.account.type
+    ),
+    serviceMode: req.account.type,
+    fromPaymentLinkCreation
   }
   if (editCy) {
     Object.assign(context, { serviceName: req.service.serviceName.cy })
@@ -39,10 +52,12 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 interface EditServiceNameBody {
   serviceName: string
   cy: string
+  fromPaymentLinkCreation?: string
 }
 
 async function post(req: ServiceRequest<EditServiceNameBody>, res: ServiceResponse) {
   const editCy = req.body.cy === 'true'
+  const fromPaymentLinkCreation = req.body.fromPaymentLinkCreation === 'true'
   const validations = [
     body('serviceName')
       .trim()
@@ -80,6 +95,11 @@ async function post(req: ServiceRequest<EditServiceNameBody>, res: ServiceRespon
         req.service.externalId,
         req.account.type
       ),
+      useEnLink: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.serviceName.useEn,
+        req.service.externalId,
+        req.account.type
+      ),
     })
   }
 
@@ -89,14 +109,19 @@ async function post(req: ServiceRequest<EditServiceNameBody>, res: ServiceRespon
   } else {
     await updateServiceName(req.service.externalId, newServiceName, req.service.serviceName.cy)
   }
-  res.redirect(
-    formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.settings.serviceName.index,
+  const redirectLink = fromPaymentLinkCreation ? formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.create + "?language=cy",
       req.service.externalId,
       req.account.type
-    )
+    ) : formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.serviceName.index,
+        req.service.externalId,
+        req.account.type
   )
+  res.redirect(redirectLink)
 }
+
+
 
 export = {
   get,
