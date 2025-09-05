@@ -1,6 +1,7 @@
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { response } from '@utils/response'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import paths from '@root/paths'
 import { CREATE_SESSION_KEY, FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
 const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
@@ -9,7 +10,6 @@ import { createProduct } from '@services/products.service'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import { createPaymentLinkToken } from '@services/tokens.service'
 import productTypes from '@utils/product-types'
-import formatServicePathsFor from '@utils/format-service-paths-for'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
@@ -112,11 +112,10 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     .withMetadata(pageData.metadata) 
     
   const paymentLink = await createProduct(createProductRequest)
-  const goLiveLink = formatServicePathsFor(paths.service.requestToGoLive.index, req.service.externalId) as string
-  const successBannerBody = `You can <a href="${paymentLink.links.pay.href}/"
-    class="govuk-link govuk-link--no-visited-state" target="_blank">test your payment link</a>.
-    You'll need to create it again if you want to use it when you <a href="${goLiveLink}"
-    class="govuk-link govuk-link--no-visited-state" target="_blank">go live</a>.`
+  const successBannerBody = account.type === GatewayAccountType.TEST ?
+    `You can <a href="${paymentLink.links.pay.href}/"
+        class="govuk-link govuk-link--no-visited-state" target="_blank">test your payment link</a>.`
+      : ''
   req.flash('messages', {
     state: 'success',
     icon: '&check;',
