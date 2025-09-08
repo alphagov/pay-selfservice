@@ -74,7 +74,7 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
       })
 
       it('should set message', () => {
-        expect(req.flash).to.have.been.calledWith('messages', { state: 'success', icon: '&check;', heading: 'Service connected to Stripe', body: 'This service can now take payments' })
+        expect(req.flash).to.have.been.calledWith('messages', { state: 'success', icon: '&check;', heading: 'Information sent to Stripe', body: 'Stripe is checking your information. We will contact you if there is a problem' })
       })
 
       it('should redirect to the stripe details index', () => {
@@ -243,7 +243,7 @@ describe('Controller: settings/stripe-details/government-entity-document', () =>
           {
             errors: {
               summary: [
-                { text: 'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png', href: '#government-entity-document' }
+                { text: 'Error uploading file to Stripe. Try uploading a file with one of the following types: pdf, jpeg, png', href: '#government-entity-document' }
               ]
             },
             backLink: STRIPE_DETAILS_INDEX_PATH,
