@@ -15,11 +15,10 @@ class AdminUsersClient extends BaseClient {
   private get usersClient() {
     return {
       getByExternalId: async (externalId: string) => {
-        const path = '/v1/api/users/{externalId}'
-          .replace('{externalId}', encodeURIComponent(externalId))
-        const response = await this.get<UserData>(path, 'get a product')
+        const path = '/v1/api/users/{externalId}'.replace('{externalId}', encodeURIComponent(externalId))
+        const response = await this.get<UserData>(path, 'get a user')
         return new User(response.data)
-      }
+      },
     }
   }
 }
