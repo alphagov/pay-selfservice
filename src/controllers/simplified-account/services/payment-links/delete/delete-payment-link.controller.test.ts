@@ -44,7 +44,7 @@ const MOCK_PRODUCT_NO_PRICE = new Product(
 
 const mockResponse = sinon.stub()
 const mockProductsService = {
-  getProductByExternalId: sinon.stub().resolves(MOCK_PRODUCT),
+  getProductByGatewayAccountIdAndExternalId: sinon.stub().resolves(MOCK_PRODUCT),
   deleteProduct: sinon.stub().resolves(),
 }
 
@@ -66,9 +66,9 @@ const { res, next, nextRequest, call } = new ControllerTestBuilder(
 describe('Controller: services/payment-links/delete', () => {
   afterEach(() => {
     mockResponse.resetHistory()
-    mockProductsService.getProductByExternalId.resetHistory()
+    mockProductsService.getProductByGatewayAccountIdAndExternalId.resetHistory()
     mockProductsService.deleteProduct.resetHistory()
-    mockProductsService.getProductByExternalId.resolves(MOCK_PRODUCT)
+    mockProductsService.getProductByGatewayAccountIdAndExternalId.resolves(MOCK_PRODUCT)
   })
 
   describe('get', () => {
@@ -78,7 +78,11 @@ describe('Controller: services/payment-links/delete', () => {
       })
 
       it('should call getProductByExternalId with correct product external id', () => {
-        sinon.assert.calledOnceWithExactly(mockProductsService.getProductByExternalId, PRODUCT_EXTERNAL_ID)
+        sinon.assert.calledOnceWithExactly(
+          mockProductsService.getProductByGatewayAccountIdAndExternalId,
+          GATEWAY_ACCOUNT_ID,
+          PRODUCT_EXTERNAL_ID
+        )
       })
 
       it('should call the response method with expected params', () => {
@@ -107,7 +111,7 @@ describe('Controller: services/payment-links/delete', () => {
 
     describe('payment link with no price and no reference', () => {
       beforeEach(async () => {
-        mockProductsService.getProductByExternalId.resolves(MOCK_PRODUCT_NO_PRICE)
+        mockProductsService.getProductByGatewayAccountIdAndExternalId.resolves(MOCK_PRODUCT_NO_PRICE)
         await call('get')
       })
 
@@ -146,11 +150,7 @@ describe('Controller: services/payment-links/delete', () => {
       })
 
       it('should call deleteProduct with correct parameters', () => {
-        sinon.assert.calledOnceWithExactly(
-          mockProductsService.deleteProduct,
-          GATEWAY_ACCOUNT_ID,
-          PRODUCT_EXTERNAL_ID
-        )
+        sinon.assert.calledOnceWithExactly(mockProductsService.deleteProduct, GATEWAY_ACCOUNT_ID, PRODUCT_EXTERNAL_ID)
       })
 
       it('should redirect to payment links index', () => {
@@ -265,7 +265,7 @@ describe('Controller: services/payment-links/delete', () => {
       describe('when getProductByExternalId fails', () => {
         it('should propagate the error', async () => {
           const error = new Error('Product not found')
-          mockProductsService.getProductByExternalId.rejects(error)
+          mockProductsService.getProductByGatewayAccountIdAndExternalId.rejects(error)
 
           let thrownError
           try {
@@ -274,7 +274,7 @@ describe('Controller: services/payment-links/delete', () => {
             thrownError = err
           }
 
-          sinon.assert.calledOnce(mockProductsService.getProductByExternalId)
+          sinon.assert.calledOnce(mockProductsService.getProductByGatewayAccountIdAndExternalId)
           sinon.assert.match(thrownError, sinon.match.instanceOf(Error))
         })
       })
