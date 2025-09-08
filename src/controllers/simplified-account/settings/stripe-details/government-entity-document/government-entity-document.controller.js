@@ -6,7 +6,7 @@ const { validationResult, check } = require('express-validator')
 const { formatValidationErrors } = require('@utils/simplified-account/format')
 const { updateStripeDetailsUploadEntityDocument } = require('@services/stripe-details.service')
 const { checkTaskCompletion } = require('@middleware/simplified-account')
-const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
+const StripeTaskIdentifiers = require('@models/task-workflows/task-identifiers/stripe-task-identifiers')
 
 async function get (req, res) {
   return response(req, res, 'simplified-account/settings/stripe-details/government-entity-document/index', {
@@ -77,6 +77,6 @@ const postErrorResponse = (req, res, errors) => {
 }
 
 module.exports = {
-  get: [checkTaskCompletion(stripeDetailsTasks.governmentEntityDocument.name), get],
-  post: [checkTaskCompletion(stripeDetailsTasks.governmentEntityDocument.name), post]
+  get: [checkTaskCompletion(StripeTaskIdentifiers.DOC.connectorName), get],
+  post: [checkTaskCompletion(StripeTaskIdentifiers.DOC.connectorName), post]
 }

@@ -102,7 +102,7 @@ async function post(req: ServiceRequest<EditLinkMetadataBody>, res: ServiceRespo
       req.flash('messages', {
         state: 'success',
         icon: '&check;',
-        heading: 'Reporting column deleted',
+        heading: `Reporting column '${req.params.metadataKey}' deleted`,
       })
     }
 

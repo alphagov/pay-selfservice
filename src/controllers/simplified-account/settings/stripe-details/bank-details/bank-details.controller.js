@@ -5,7 +5,7 @@ const { checkTaskCompletion } = require('@middleware/simplified-account')
 const { response } = require('@utils/response')
 const { body, validationResult } = require('express-validator')
 const { updateStripeDetailsBankDetails } = require('@services/stripe-details.service')
-const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
+const StripeTaskIdentifiers = require('@models/task-workflows/task-identifiers/stripe-task-identifiers')
 
 const ACCT_NUMBER_ERR_MSG = 'Enter a valid account number like 00733445'
 
@@ -76,6 +76,6 @@ const postErrorResponse = (req, res, errors) => {
 }
 
 module.exports = {
-  get: [checkTaskCompletion(stripeDetailsTasks.bankAccount.name), get],
-  post: [checkTaskCompletion(stripeDetailsTasks.bankAccount.name), post]
+  get: [checkTaskCompletion(StripeTaskIdentifiers.BANK.connectorName), get],
+  post: [checkTaskCompletion(StripeTaskIdentifiers.BANK.connectorName), post]
 }
