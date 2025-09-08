@@ -4,21 +4,13 @@
   {% if editCy %}Welsh service name (<span lang="cy">Cymraeg</span>){% else %}Service name (English){% endif %}
 {% endset %}
 
-{% set saveServiceNameButtonLabel %}
-  {% if fromPaymentLinkCreation %}Continue{% else %}Save changes{% endif %}
-{% endset %}
-
 {% set settingsPageTitle = ("Welsh" if editCy else "English") + " service name" %}
 
 {% block settingsContent %}
-  {% if fromPaymentLinkCreation %}
-    <span class="govuk-caption-l">Create {{ serviceMode }} payment link (Welsh)</span>
-  {% endif %}
 
   <form id="edit-service-name" method="post" action="{{ submitLink }}" novalidate>
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
     <input id="cy" name="cy" type="hidden" value="{{ editCy }}"/>
-    <input id="fromPaymentLinkCreation" name="fromPaymentLinkCreation" type="hidden" value="{{ fromPaymentLinkCreation }}"/>
 
     {{ govukInput({
       label: {
@@ -41,21 +33,19 @@
       }
     }) }}
 
-    {% if fromPaymentLinkCreation == false %}
-      <p class="govuk-body govuk-!-margin-bottom-6">
-        {% if editCy %}
-          <a class="govuk-link govuk-link--no-visited-state" id="welsh-language-guidance"
-            href="https://docs.payments.service.gov.uk/optional_features/welsh_language/">
-            Read our documentation on how to use Welsh on your payment pages
-          </a>
-        {% else %}
-          <a class="govuk-link govuk-link--no-visited-state" id="service-name-guidance"
-            href="https://www.gov.uk/service-manual/design/naming-your-service">
-            Get guidance on choosing a name for your service
-          </a>
-        {% endif %}
-      </p>
-    {% endif %}
+    <p class="govuk-body govuk-!-margin-bottom-6">
+      {% if editCy %}
+        <a class="govuk-link govuk-link--no-visited-state" id="welsh-language-guidance"
+           href="https://docs.payments.service.gov.uk/optional_features/welsh_language/">
+          Read our documentation on how to use Welsh on your payment pages
+        </a>
+      {% else %}
+        <a class="govuk-link govuk-link--no-visited-state" id="service-name-guidance"
+           href="https://www.gov.uk/service-manual/design/naming-your-service">
+          Get guidance on choosing a name for your service
+        </a>
+      {% endif %}
+    </p>
   </form>
 
   {% if editCy and serviceName %}
@@ -66,7 +56,7 @@
 
   <div class="govuk-button-group">
     {{ govukButton({
-      text: saveServiceNameButtonLabel,
+      text: "Save changes",
       attributes: { form: "edit-service-name" }
     }) }}
 
@@ -78,8 +68,4 @@
       }) }}
     {% endif %}
   </div>
-  {% if fromPaymentLinkCreation %}
-    <a class="govuk-link govuk-link--no-visited-state" href="{{ createWelshPaymentLinkLinkWithEnglishServiceName }}">
-    Use English service name instead</a>
-  {% endif %}
 {% endblock %}

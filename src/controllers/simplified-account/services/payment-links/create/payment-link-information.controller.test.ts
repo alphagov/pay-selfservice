@@ -172,19 +172,11 @@ describe('controller: services/payment-links/create/payment-link-information', (
         await call('get')
       })
 
-      it('should redirect to service name edit page with Welsh and payment link creation query parameters set', () => {
+      it('should redirect the user to a new page to add the Welsh service name', () => {
         sinon.assert.calledOnce(res.redirect)
         sinon.assert.calledWith(
           res.redirect,
-          sinon.match(/settings.*service-name.*edit/)
-        )
-        sinon.assert.calledWith(
-          res.redirect,
-          sinon.match(/cy=true/)
-        )
-        sinon.assert.calledWith(
-          res.redirect,
-          sinon.match(/fromPaymentLinkCreation=true/)
+          sinon.match(/payment-links.create.add-welsh-service-name/)
         )
       })
     })

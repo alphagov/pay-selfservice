@@ -81,6 +81,18 @@ simplifiedAccount.post(
   servicesController.paymentLinks.create.information.post
 )
 simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.addWelshServiceName,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.create.addWelshServiceName.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.addWelshServiceName,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.create.addWelshServiceName.post
+)
+simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.reference,
   experimentalFeature,
   permission('tokens:create'),

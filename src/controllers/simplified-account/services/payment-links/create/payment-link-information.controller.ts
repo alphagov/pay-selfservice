@@ -16,14 +16,15 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
   const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
   const isUsingEnglishServiceName = currentSession.useEnglishServiceName === 'true' || (req.query.useEnglishServiceName as string) === 'true'
+
   // handle case where welsh payment link is selected but no welsh service name is set
   if (isWelsh && !service.serviceName.cy && !isUsingEnglishServiceName) {
     return res.redirect(
       formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.settings.serviceName.edit,
+        paths.simplifiedAccount.paymentLinks.addWelshServiceName,
         req.service.externalId,
         req.account.type
-      ) + '?cy=true&fromPaymentLinkCreation=true',
+      ),
     )
   }
   const serviceName = isWelsh ? (service.serviceName.cy ?? service.name) : service.name
@@ -62,7 +63,6 @@ async function post(req: ServiceRequest<CreateLinkInformationBody>, res: Service
   const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
   const isUsingEnglishServiceName = currentSession.useEnglishServiceName === 'true' || (req.query.useEnglishServiceName as string) === 'true'
   const serviceName = isWelsh ? (service.serviceName.cy ?? service.name) : service.name
-
 
   const validations = [
     paymentLinkSchema.info.name.validate,
