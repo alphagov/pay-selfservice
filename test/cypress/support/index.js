@@ -34,13 +34,19 @@ Cypress.Commands.add('createPaymentLinkWithTitle', (title, url) => {
   cy.visit(url);
   cy.get('#service-content').find('form').find('#name')
     .click().focused()
-    .type('A payment link name')
+    .type(title)
   cy.get('#service-content').find('form').find('button').click()
 });
 
 Cypress.Commands.add('createPaymentLinkWithReference', (title, url) => {
   cy.createPaymentLinkWithTitle(title, url);
   cy.get('#reference-type-standard').click()
+  cy.get('#service-content').find('form').find('button').click()
+});
+
+Cypress.Commands.add('createPaymentLinkWithAmount', (title, url) => {
+  cy.createPaymentLinkWithReference(title, url);
+  cy.get('#amount-type-variable').click()
   cy.get('#service-content').find('form').find('button').click()
 });
 

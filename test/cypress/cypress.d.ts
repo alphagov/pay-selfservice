@@ -4,5 +4,6 @@ declare namespace Cypress {
     a11yCheck(excludeSelectors?: { exclude: string[] }): Chainable<void>
     createPaymentLinkWithTitle(title: string, url: string): Chainable<void>
     createPaymentLinkWithReference(title: string, url: string): Chainable<void>
+    createPaymentLinkWithAmount(title: string, url: string): Chainable<void>
   }
 }

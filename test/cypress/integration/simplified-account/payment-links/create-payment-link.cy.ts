@@ -27,6 +27,9 @@ const CREATE_PAYMENT_LINK_REFERENCE_URL = (serviceMode = 'test') =>
 const CREATE_PAYMENT_LINK_AMOUNT_URL = (serviceMode = 'test') =>
   `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links/amount`
 
+const CREATE_PAYMENT_LINK_REVIEW_URL = (serviceMode = 'test') =>
+  `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links/review`
+
 const setupStubs = (role = 'admin', gatewayAccountType = 'test') => {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
@@ -122,12 +125,40 @@ describe('Create payment link journey', () => {
         cy.get('#service-content').find('form').find('#reference-label').should('have.class', 'govuk-input--error')
       })
 
-
       it('should navigate to amount page page', () => {
         cy.createPaymentLinkWithReference('abc', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
-        cy.get('h1').should('contain', 'Is the payment for a fixed amount?')
         cy.location().should((location) => {
           expect(location.pathname).to.eq(CREATE_PAYMENT_LINK_AMOUNT_URL(GatewayAccountType.TEST))
+        })
+      })
+    })
+
+    describe('payment link amount page', () => {
+      beforeEach(() => {
+        cy.createPaymentLinkWithReference('abc', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+      })
+      it('english only ui functions', () => {
+        cy.get('h1').should('contain', 'Is the payment for a fixed amount?')
+        cy.get('#service-content')
+          .find('img')
+          .should('have.attr', 'src')
+          .should('include', 'amount-and-confirm-page.svg')
+      })
+
+      it('should validate form inputs', () => {
+        cy.get('#amount-type-fixed').click()
+        cy.get('#service-content').find('form').find('#payment-amount').click().focused().clear()
+
+        cy.get('#service-content').find('form').find('button').click()
+        cy.get('.govuk-error-summary').should('exist').should('contain.text', 'Enter a payment amount')
+        cy.get('#service-content').find('form').find('#payment-amount').should('have.class', 'govuk-input--error')
+      })
+
+      it('should navigate to review page', () => {
+        cy.createPaymentLinkWithAmount('abc', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(CREATE_PAYMENT_LINK_REVIEW_URL(GatewayAccountType.TEST))
         })
       })
     })
