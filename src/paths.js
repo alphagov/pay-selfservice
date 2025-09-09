@@ -152,6 +152,7 @@ module.exports = {
         add: '/payment-links/create/reporting-column',
         update: '/payment-links/create/reporting-column/:metadataKey',
       },
+      addWelshServiceName: '/payment-links/create/add-welsh-service-name',
       reference: '/payment-links/reference',
       amount: '/payment-links/amount',
       edit: {
