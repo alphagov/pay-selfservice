@@ -30,6 +30,20 @@ Cypress.Commands.add('a11yCheck', (excludeSelectors = { exclude: ['.govuk-skip-l
   )
 })
 
+Cypress.Commands.add('createPaymentLinkWithTitle', (title, url) => {
+  cy.visit(url);
+  cy.get('#service-content').find('form').find('#name')
+    .click().focused()
+    .type('A payment link name')
+  cy.get('#service-content').find('form').find('button').click()
+});
+
+Cypress.Commands.add('createPaymentLinkWithReference', (title, url) => {
+  cy.createPaymentLinkWithTitle(title, url);
+  cy.get('#reference-type-standard').click()
+  cy.get('#service-content').find('form').find('button').click()
+});
+
 beforeEach(() => {
   cy.task('clearStubs')
 })
