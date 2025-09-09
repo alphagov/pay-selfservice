@@ -32,7 +32,7 @@
     {
       href: paths.user.logOut,
       text: "Sign out" if loggedIn else "Sign in",
-      current: false if loggedIn else true
+      current: isSignInActive if isSignInActive is defined else (false if loggedIn else true)
     }
   ],
   collapseNavigationOnMobile: true
