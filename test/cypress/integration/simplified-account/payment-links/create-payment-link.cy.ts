@@ -63,10 +63,21 @@ describe('Create payment link journey', () => {
       it('accessibility check', () => {
         cy.a11yCheck()
       })
+    })
 
-      it('English only ui functions', () => {
+    describe('payment link details page', () => {
+      it('english only ui functions', () => {
         cy.get('h1').should('contain', 'Enter payment link details')
         cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link')
+        cy.get('.govuk-hint').should('contain.text', 'Good: Pay for your registration')
+        cy.get('.govuk-hint').should('contain.text', 'Give your users more information.')
+        cy.get('#service-content').find('.govuk-heading-s').should('contain.text', 'Example of what users will see')
+        cy.get('#service-content').find('img')
+          .should('have.attr', 'src')
+          .should('include', 'start-page.svg')
+      })
+
+      it('should navigate to reference page', () => {
         cy.get('#service-content').find('form').find('#name')
           .click().focused()
           .type('A payment link name')
@@ -75,19 +86,49 @@ describe('Create payment link journey', () => {
         cy.location().should((location) => {
           expect(location.pathname).to.eq(CREATE_PAYMENT_LINK_REFERENCE_URL(GatewayAccountType.TEST))
         })
-        cy.get('h1').should('contain', 'Will your users already have a payment reference?')
-        cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link')
+      })
 
-        cy.get('input[type=radio]#reference-type-custom').should('exist')
-        cy.get('input[type=radio]#reference-type-standard').should('exist')
-        cy.get('input[type=radio]#reference-type-standard').click()
+      it('should validate form inputs', () => {
+        cy.get('#service-content').find('form').find('#name').click().focused().clear()
         cy.get('#service-content').find('form').find('button').click()
+        cy.get('.govuk-error-summary').should('exist').should('contain.text', 'Enter a title')
+        cy.get('#service-content').find('form').find('#name').should('have.class', 'govuk-input--error')
+      })
+    })
 
+    describe('payment link reference page', () => {
+      beforeEach(() => {
+        cy.createPaymentLinkWithTitle('abc', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+      })
+      it('english only ui functions', () => {
+        cy.get('h1').should('contain', 'Will your users already have a payment reference?')
+        cy.get('#reference-type-custom').click()
+        cy.get('#reference-label-hint').should('contain.text', 'For example, “invoice number”')
+        cy.get('#reference-hint-hint').should('contain.text', 'Tell users what the payment reference looks like and where they can find it')
+        cy.get('#service-content').find('.govuk-heading-s').should('contain.text', 'Example of what users will see')
+        cy.get('#service-content')
+          .find('img')
+          .should('have.attr', 'src')
+          .should('include', 'reference-page.svg')
+      })
+
+      it('should validate form inputs', () => {
+        cy.get('#reference-type-custom').click()
+
+        cy.get('#service-content').find('form').find('#reference-label').click().focused().clear()
+
+        cy.get('#service-content').find('form').find('button').click()
+        cy.get('.govuk-error-summary').should('exist').should('contain.text', 'Please enter a reference')
+        cy.get('#service-content').find('form').find('#reference-label').should('have.class', 'govuk-input--error')
+      })
+
+
+      it('should navigate to amount page page', () => {
+        cy.createPaymentLinkWithReference('abc', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+        cy.get('h1').should('contain', 'Is the payment for a fixed amount?')
         cy.location().should((location) => {
           expect(location.pathname).to.eq(CREATE_PAYMENT_LINK_AMOUNT_URL(GatewayAccountType.TEST))
         })
-        cy.get('h1').should('contain', 'Is the payment for a fixed amount?')
-        cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link')
       })
     })
   })
