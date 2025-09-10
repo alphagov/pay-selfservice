@@ -137,6 +137,7 @@ describe('Create payment link journey', () => {
       beforeEach(() => {
         cy.createPaymentLinkWithReference('abc', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
       })
+
       it('english only ui functions', () => {
         cy.get('h1').should('contain', 'Is the payment for a fixed amount?')
         cy.get('#service-content')
@@ -156,6 +157,35 @@ describe('Create payment link journey', () => {
 
       it('should navigate to review page', () => {
         cy.createPaymentLinkWithAmount('abc', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+
+        cy.location().should((location) => {
+          expect(location.pathname).to.eq(CREATE_PAYMENT_LINK_REVIEW_URL(GatewayAccountType.TEST))
+        })
+      })
+    })
+
+    describe('payment link reporting columns page', () => {
+      beforeEach(() => {
+        cy.createPaymentLinkWithAmount('abc', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+        cy.get('.govuk-button--secondary').click()
+      })
+      it('english only ui functions', () => {
+        cy.get('h1').should('contain', 'Reporting column')
+        cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link')
+      })
+
+      it('should validate form inputs', () => {
+        cy.get('#service-content').find('form').find('#reporting-column').click().focused().clear()
+        cy.get('#service-content').find('form').find('#cell-content').click().focused().clear()
+        cy.get('#service-content').find('form').find('button').contains('Add reporting column').click()
+        cy.get('.govuk-error-summary').should('exist').should('contain.text', 'Enter the column header')
+        cy.get('.govuk-error-summary').should('exist').should('contain.text', 'Enter the cell content')
+        cy.get('#service-content').find('form').find('#reporting-column').should('have.class', 'govuk-input--error')
+        cy.get('#service-content').find('form').find('#cell-content').should('have.class', 'govuk-input--error')
+      })
+
+      it('should navigate to review page', () => {
+        cy.createPaymentLinkWithMetadata('abc', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'invoice', '12345')
 
         cy.location().should((location) => {
           expect(location.pathname).to.eq(CREATE_PAYMENT_LINK_REVIEW_URL(GatewayAccountType.TEST))
