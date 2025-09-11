@@ -91,6 +91,30 @@ describe('Service Name Component', () => {
     })
   })
 
+  describe('live service - sandbox mode with worldpay test account (LEGACY)', () => {
+    beforeEach(() => {
+      setupStubs(GatewayAccountType.TEST, GoLiveStage.LIVE, PaymentProviders.WORLDPAY, CredentialState.ACTIVE)
+    })
+
+    it('should display service in sandbox mode', () => {
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/dashboard`)
+      cy.get('#service-name').find('.govuk-body').should('contain.text', SERVICE_NAME.en)
+      cy.get('#service-name').find('.govuk-tag').should('contain.text', 'Sandbox mode')
+      cy.get('#service-name').find('.govuk-tag').should('have.class', 'govuk-tag--blue')
+      cy.get('#service-name').find('p').should('have.length', 2)
+      cy.get('#service-name')
+        .find('p')
+        .eq(1)
+        .should(
+          'contain.text',
+          "You're in sandbox mode. Some settings are not available. Only test payment data is shown."
+        )
+        .find('a')
+        .should('contain.text', 'Exit sandbox mode')
+        .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/dashboard`)
+    })
+  })
+
   describe('live service - worldpay psp onboarding not complete', () => {
     beforeEach(() => {
       setupStubs(GatewayAccountType.LIVE, GoLiveStage.LIVE, PaymentProviders.WORLDPAY, CredentialState.CREATED)

@@ -13,7 +13,7 @@ import createLogger from '@utils/logger'
 
 const logger = createLogger(__filename)
 
-const SandboxModePaymentProviders = [PaymentProviders.SANDBOX, PaymentProviders.STRIPE]
+const PaymentProvidersThatCanGoLive = [PaymentProviders.SANDBOX, PaymentProviders.STRIPE]
 
 const GoLiveInProgressStages = [
   GoLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY,
@@ -105,13 +105,13 @@ const determineServiceStatus = (service: Service, account: GatewayAccount) => {
   const currentGoLiveStage = service.currentGoLiveStage
   const isTestGatewayAccount = account.type === GatewayAccountType.TEST
   const isLiveGatewayAccount = account.type === GatewayAccountType.LIVE
-  const isSandboxPaymentProvider = SandboxModePaymentProviders.includes(account.paymentProvider)
+  const canGoLive = PaymentProvidersThatCanGoLive.includes(account.paymentProvider)
   const isPendingGoLive = ![GoLiveStage.LIVE, GoLiveStage.DENIED].includes(currentGoLiveStage)
   const hasActiveCredential = account.getActiveCredential() !== undefined
   const hasGoneLive = currentGoLiveStage === GoLiveStage.LIVE
 
-  const isNotLiveYet = isTestGatewayAccount && isSandboxPaymentProvider && isPendingGoLive
-  const isInSandboxMode = isTestGatewayAccount && isSandboxPaymentProvider && hasGoneLive
+  const isNotLiveYet = isTestGatewayAccount && canGoLive && isPendingGoLive
+  const isInSandboxMode = isTestGatewayAccount && hasGoneLive
   const isInLiveMode = isLiveGatewayAccount && hasGoneLive
   const isWorldpayTestService = account.paymentProvider === PaymentProviders.WORLDPAY && isTestGatewayAccount
 
