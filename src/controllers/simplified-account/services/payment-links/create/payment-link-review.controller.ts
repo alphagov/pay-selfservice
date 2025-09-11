@@ -4,13 +4,13 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import paths from '@root/paths'
 import { CREATE_SESSION_KEY, FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
-const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
 import lodash from 'lodash'
 import { createProduct } from '@services/products.service'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import { createPaymentLinkToken } from '@services/tokens.service'
 import { ProductType } from "@models/products/product-type";
-import formatServicePathsFor from '@utils/format-service-paths-for'
+
+const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
