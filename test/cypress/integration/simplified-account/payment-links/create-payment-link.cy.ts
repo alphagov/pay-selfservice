@@ -32,8 +32,8 @@ const CREATE_PAYMENT_LINK_AMOUNT_URL = (serviceMode = 'test') =>
 const CREATE_PAYMENT_LINK_REVIEW_URL = (serviceMode = 'test') =>
   `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links/review`
 
-const PAYMENT_LINKS_INDEX_URL = (serviceMode = 'test') =>
-  `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links`
+const PAYMENT_LINK_REPORTING_COLUMNS_URL = (serviceMode = 'test', columnHeader: string) =>
+  `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links/create/reporting-column/${columnHeader}`
 
 const setupStubs = (role = 'admin', gatewayAccountType = 'test', products: object[] = []) => {
   cy.task('setupStubs', [
@@ -187,9 +187,43 @@ describe('Create payment link journey', () => {
         cy.get('#service-content').find('form').find('#cell-content').should('have.class', 'govuk-input--error')
       })
 
-      it('should navigate to review page', () => {
+      it('should navigate to review page and display the reporting column', () => {
         cy.createPaymentLinkWithMetadata('A link with metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'invoice', '12345')
         cy.url().should('include', CREATE_PAYMENT_LINK_REVIEW_URL(GatewayAccountType.TEST))
+
+        cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(5).should('exist').within(() => {
+          cy.get('.govuk-summary-list__key').should('contain', 'invoice')
+          cy.get('.govuk-summary-list__value').should('contain', '12345')
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', PAYMENT_LINK_REPORTING_COLUMNS_URL(GatewayAccountType.TEST, 'invoice'))
+        })
+      })
+
+      it('should navigate to review page and display the updated reporting column', () => {
+        cy.createPaymentLinkWithMetadata('A link with metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'invoice', '12345')
+        cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(5).should('exist').within(() => {
+          cy.get('.govuk-summary-list__actions a').click()
+        })
+        cy.get('#service-content').find('form').find('#reporting-column').click().focused().clear().type('account')
+        cy.get('#service-content').find('form').find('#cell-content').click().focused().clear().type('ABCDE')
+        cy.get('#service-content').find('form').find('button').contains('Save changes').click()
+
+        cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(5).should('exist').within(() => {
+          cy.get('.govuk-summary-list__key').should('contain', 'account')
+          cy.get('.govuk-summary-list__value').should('contain', 'ABCDE')
+          cy.get('.govuk-summary-list__actions a').should('have.attr', 'href', PAYMENT_LINK_REPORTING_COLUMNS_URL(GatewayAccountType.TEST, 'account'))
+        })
+      })
+
+      it('should navigate to review page and not display the deleted reporting column', () => {
+        cy.createPaymentLinkWithMetadata('A link with metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'invoice', '12345')
+        cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(5).should('exist').within(() => {
+          cy.get('.govuk-summary-list__actions a').click()
+        })
+        cy.get('#service-content').find('form').find('#reporting-column').click().focused().clear().type('account')
+        cy.get('#service-content').find('form').find('#cell-content').click().focused().clear().type('ABCDE')
+        cy.get('#service-content').find('form').find('button').contains('Delete reporting column').click()
+
+        cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(5).should('not.exist')
       })
     })
 
@@ -204,7 +238,7 @@ describe('Create payment link journey', () => {
 
       it('should navigate to the index page', () => {
         cy.get('#service-content').find('form').find('button').click()
-        cy.url().should('include', PAYMENT_LINKS_INDEX_URL(GatewayAccountType.TEST))
+        cy.url().should('include', PAYMENT_LINKS_URL(GatewayAccountType.TEST))
       })
     })
   })
