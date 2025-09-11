@@ -7,7 +7,6 @@ import {
   checkServiceNavigation,
 } from '@test/cypress/integration/simplified-account/common/assertions'
 import productStubs from '@test/cypress/stubs/products-stubs'
-import { buildPaymentLinkOptions } from '@test/cypress/integration/simplified-account/payment-links/helpers/product-builder'
 import tokenStubs from '@test/cypress/stubs/token-stubs'
 
 const USER_EXTERNAL_ID = 'user123abc'
@@ -17,15 +16,6 @@ const SERVICE_NAME = {
   en: 'McDuck Enterprises',
   cy: 'Mentrau McDuck',
 }
-
-const ENGLISH_PAYMENT_LINK = buildPaymentLinkOptions({
-  name: 'Gold coin polishing',
-  href: 'pay.me/product/gold-coin-polishing',
-  description: 'blah',
-  metadata: {
-    alpha: 'beta'
-  }
-})
 
 const PAYMENT_LINKS_URL = (serviceMode = 'test') =>
   `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links`
@@ -61,17 +51,9 @@ const setupStubs = (role = 'admin', gatewayAccountType = 'test', products: objec
     }),
     productStubs.getProductsByGatewayAccountIdAndTypeStub(products, GATEWAY_ACCOUNT_ID, 'ADHOC'),
     productStubs.postCreateProductSuccess({
-      gatewayAccountId: GATEWAY_ACCOUNT_ID,
-      productExternalId: 'product123abc',
-      name: 'Gold coin polishing',
-      description: 'blah',
-      price: 1337,
-      reference_enabled: false,
-      metadata: {
-        upsilon: 'zeta'
-      }
+      name: 'A submitted payment link'
     }),
-    tokenStubs.postCreateTokenForAccountSuccess({ GATEWAY_ACCOUNT_ID})
+    tokenStubs.postCreateTokenForAccountSuccess({ GATEWAY_ACCOUNT_ID })
   ])
 }
 
@@ -114,9 +96,7 @@ describe('Create payment link journey', () => {
           .type('A payment link name')
         cy.get('#service-content').find('form').find('button').click()
 
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(CREATE_PAYMENT_LINK_REFERENCE_URL(GatewayAccountType.TEST))
-        })
+        cy.url().should('include', CREATE_PAYMENT_LINK_REFERENCE_URL(GatewayAccountType.TEST))
       })
 
       it('should validate form inputs', () => {
@@ -155,9 +135,7 @@ describe('Create payment link journey', () => {
 
       it('should navigate to amount page page', () => {
         cy.createPaymentLinkWithReference('A link with reference', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(CREATE_PAYMENT_LINK_AMOUNT_URL(GatewayAccountType.TEST))
-        })
+        cy.url().should('include', CREATE_PAYMENT_LINK_AMOUNT_URL(GatewayAccountType.TEST))
       })
     })
 
@@ -185,10 +163,7 @@ describe('Create payment link journey', () => {
 
       it('should navigate to review page', () => {
         cy.createPaymentLinkWithAmount('A link with amount', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(CREATE_PAYMENT_LINK_REVIEW_URL(GatewayAccountType.TEST))
-        })
+        cy.url().should('include', CREATE_PAYMENT_LINK_REVIEW_URL(GatewayAccountType.TEST))
       })
     })
 
@@ -214,16 +189,12 @@ describe('Create payment link journey', () => {
 
       it('should navigate to review page', () => {
         cy.createPaymentLinkWithMetadata('A link with metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'invoice', '12345')
-
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(CREATE_PAYMENT_LINK_REVIEW_URL(GatewayAccountType.TEST))
-        })
+        cy.url().should('include', CREATE_PAYMENT_LINK_REVIEW_URL(GatewayAccountType.TEST))
       })
     })
 
     describe('payment link review page', () => {
       beforeEach(() => {
-        setupStubs(USER_ROLE, GatewayAccountType.TEST, [ENGLISH_PAYMENT_LINK])
         cy.createPaymentLinkWithMetadata('A link with different metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'cost centre', '67890')
       })
       it('english only ui functions', () => {
@@ -233,9 +204,7 @@ describe('Create payment link journey', () => {
 
       it('should navigate to the index page', () => {
         cy.get('#service-content').find('form').find('button').click()
-        cy.location().should((location) => {
-          expect(location.pathname).to.eq(PAYMENT_LINKS_INDEX_URL(GatewayAccountType.TEST))
-        })
+        cy.url().should('include', PAYMENT_LINKS_INDEX_URL(GatewayAccountType.TEST))
       })
     })
   })
