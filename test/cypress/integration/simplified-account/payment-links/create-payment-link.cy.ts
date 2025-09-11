@@ -94,7 +94,7 @@ describe('Create English payment link journey', () => {
     })
 
     describe('payment link details page', () => {
-      it('english only ui functions', () => {
+      it('English only ui functions', () => {
         cy.get('h1').should('contain', 'Enter payment link details')
         cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link')
         cy.get('.govuk-hint').should('contain.text', 'Good: Pay for your registration')
@@ -126,7 +126,7 @@ describe('Create English payment link journey', () => {
       beforeEach(() => {
         cy.createPaymentLinkWithTitle('A link with title', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
       })
-      it('english only ui functions', () => {
+      it('English only ui functions', () => {
         cy.get('h1').should('contain', 'Will your users already have a payment reference?')
         cy.get('#reference-type-custom').click()
         cy.get('#reference-label-hint').should('contain.text', 'For example, “invoice number”')
@@ -159,7 +159,7 @@ describe('Create English payment link journey', () => {
         cy.createPaymentLinkWithReference('A link with different reference', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
       })
 
-      it('english only ui functions', () => {
+      it('English only ui functions', () => {
         cy.get('h1').should('contain', 'Is the payment for a fixed amount?')
         cy.get('#service-content')
           .find('img')
@@ -187,7 +187,7 @@ describe('Create English payment link journey', () => {
         cy.createPaymentLinkWithAmount('A link with different amount', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
         cy.get('.govuk-button--secondary').click()
       })
-      it('english only ui functions', () => {
+      it('English only ui functions', () => {
         cy.get('h1').should('contain', 'Reporting column')
         cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link')
       })
@@ -246,7 +246,7 @@ describe('Create English payment link journey', () => {
       beforeEach(() => {
         cy.createPaymentLinkWithMetadata('A link with different metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'cost centre', '67890')
       })
-      it('english only ui functions', () => {
+      it('English only ui functions', () => {
         cy.get('h1').should('contain', 'Review your payment link details')
         cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link')
       })
@@ -273,14 +273,55 @@ describe('Create Welsh payment link journey', () => {
     })
 
     describe('payment link details page', () => {
-
-      it('welsh only ui functions', () => {
+      it('Welsh only ui functions', () => {
         cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link (Welsh)')
         cy.get('.govuk-hint').should('contain.text', 'Talu am drwydded barcio')
         cy.get('.govuk-hint').should('contain.text', 'Give your users more information in Welsh.')
         cy.get('#service-content').find('.govuk-heading-s').should('not.exist')
       })
     })
+
+    describe('payment link reference page', () => {
+      beforeEach(() => {
+        cy.createPaymentLinkWithTitle('A link with title', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST, true))
+      })
+      it('Welsh only ui functions', () => {
+        cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link (Welsh)')
+        cy.get('#reference-type-custom').click()
+        cy.get('#reference-label-hint').should('contain.text', 'For example, “rhif anfoneb”')
+        cy.get('#reference-hint-hint').should('contain.text', 'Explain in Welsh what the payment reference looks like')
+        cy.get('#service-content').find('.govuk-heading-s').should('not.exist')
+        cy.get('#service-content').find('img').should('not.exist')
+      })
+    })
+
+    describe('payment link amount page', () => {
+      beforeEach(() => {
+        cy.createPaymentLinkWithReference('A link with different reference', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST, true))
+      })
+
+      it('Welsh only ui functions', () => {
+        cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link (Welsh)')
+        cy.get('#amount-type-variable').click()
+        cy.get('#amount-hint-hint').should(
+          'contain.text',
+          'Explain in Welsh how users can work out how much they should pay'
+        )
+        cy.get('#service-content').find('.govuk-heading-s').should('not.exist')
+        cy.get('#service-content').find('img').should('not.exist')
+      })
+    })
+
+    describe('payment link reporting columns page', () => {
+      beforeEach(() => {
+        cy.createPaymentLinkWithAmount('A link with different amount', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST, true))
+        cy.get('.govuk-button--secondary').click()
+      })
+      it('Welsh only ui functions', () => {
+        cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link (Welsh)')
+      })
+    })
   })
 })
+
 
