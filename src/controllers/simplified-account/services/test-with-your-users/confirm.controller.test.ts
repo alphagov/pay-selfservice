@@ -54,7 +54,6 @@ describe('test-with-your-users/confirm controller tests', () => {
 
       mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
         prototypeLink: 'https://pay.test/test-prototype-link',
-        backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
         prototypesLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
       })
     })

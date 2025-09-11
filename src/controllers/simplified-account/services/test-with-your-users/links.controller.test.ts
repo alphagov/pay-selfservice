@@ -50,7 +50,7 @@ describe('test-with-your-users/links controller tests', () => {
         messages: [],
         createLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.create, SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
         prototypesLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
-        backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
+        backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.dashboard.index, SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
         indexLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.index, SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
         products: []
       })
