@@ -11,7 +11,6 @@ function get (req: ServiceRequest, res: ServiceResponse) {
 
   const context = {
     prototypeLink,
-    backLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  req.service.externalId, req.account.type),
     prototypesLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  req.service.externalId, req.account.type),
   }
 
