@@ -20,8 +20,10 @@ const SERVICE_NAME = {
 const PAYMENT_LINKS_URL = (serviceMode = 'test') =>
   `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links`
 
-const CREATE_PAYMENT_LINK_URL = (serviceMode = 'test') =>
-  `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links/create`
+const CREATE_PAYMENT_LINK_URL = (serviceMode = 'test', isWelsh = false) => {
+  const languageParam = isWelsh ? '?language=cy' : '';
+  return `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links/create${languageParam}`;
+};
 
 const CREATE_PAYMENT_LINK_REFERENCE_URL = (serviceMode = 'test') =>
   `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links/reference`
@@ -57,10 +59,25 @@ const setupStubs = (role = 'admin', gatewayAccountType = 'test', products: objec
   ])
 }
 
-describe('Create payment link journey', () => {
+describe('Create English payment link journey', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
+
+  describe('Non-admin view', () => {
+    const USER_ROLE = 'view-only'
+    beforeEach(() => {
+      setupStubs(USER_ROLE)
+      cy.visit(CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), { failOnStatusCode: false })
+    })
+
+    it('should show admin only error', () => {
+      cy.title().should('eq', 'An error occurred - GOV.UK Pay')
+      cy.get('h1').should('contain.text', 'An error occurred')
+      cy.get('#errorMsg').should('contain.text', 'You do not have the administrator rights to perform this operation.')
+    })
+  })
+
   describe('Admin view', () => {
     const USER_ROLE = 'admin'
     beforeEach(() => {
@@ -68,14 +85,12 @@ describe('Create payment link journey', () => {
       cy.visit(CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), { failOnStatusCode: false })
     })
 
-    describe('English payment link', () => {
-      it('should show the payment links navigation item in the side bar in an active state', () => {
-        checkServiceNavigation('Payment links', PAYMENT_LINKS_URL('test'))
-      })
+    it('should show the payment links navigation item in the side bar in an active state', () => {
+      checkServiceNavigation('Payment links', PAYMENT_LINKS_URL('test'))
+    })
 
-      it('accessibility check', () => {
-        cy.a11yCheck()
-      })
+    it('accessibility check', () => {
+      cy.a11yCheck()
     })
 
     describe('payment link details page', () => {
@@ -239,6 +254,31 @@ describe('Create payment link journey', () => {
       it('should navigate to the index page', () => {
         cy.get('#service-content').find('form').find('button').click()
         cy.url().should('include', PAYMENT_LINKS_URL(GatewayAccountType.TEST))
+      })
+    })
+  })
+})
+
+
+describe('Create Welsh payment link journey', () => {
+  beforeEach(() => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
+  })
+
+  describe('Admin view', () => {
+    const USER_ROLE = 'admin'
+    beforeEach(() => {
+      setupStubs(USER_ROLE)
+      cy.visit(CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST, true), { failOnStatusCode: false })
+    })
+
+    describe('payment link details page', () => {
+
+      it('welsh only ui functions', () => {
+        cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link (Welsh)')
+        cy.get('.govuk-hint').should('contain.text', 'Talu am drwydded barcio')
+        cy.get('.govuk-hint').should('contain.text', 'Give your users more information in Welsh.')
+        cy.get('#service-content').find('.govuk-heading-s').should('not.exist')
       })
     })
   })
