@@ -9,6 +9,11 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import paths from '@root/paths'
 import formatServicePathsFor from '@utils/format-service-paths-for'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import createLogger from '@utils/logger'
+
+const logger = createLogger(__filename)
+
+const SandboxModePaymentProviders = [PaymentProviders.SANDBOX, PaymentProviders.STRIPE]
 
 const GoLiveInProgressStages = [
   GoLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY,
@@ -78,6 +83,18 @@ const ServiceStatus = {
       },
     }
   },
+  RESTRICTED: {
+    tag: 'Not taking payments',
+    colour: 'govuk-tag--red',
+    text: "You're not taking payments at the moment and you cannot make refunds. To start taking payments, email",
+    action: {
+      href: 'mailto:govuk-pay-support@digital.cabinet-office.gov.uk',
+      text: 'govuk-pay-support@digital.cabinet-office.gov.uk',
+    },
+  },
+  UNKNOWN: {
+    tag: undefined,
+  },
 }
 
 function isServiceRequest(req: express.Request): req is ServiceRequest {
@@ -85,8 +102,25 @@ function isServiceRequest(req: express.Request): req is ServiceRequest {
 }
 
 const determineServiceStatus = (service: Service, account: GatewayAccount) => {
-  if (service.currentGoLiveStage === GoLiveStage.LIVE && account.type !== GatewayAccountType.TEST) {
-    if (account.getActiveCredential() !== undefined) {
+  const currentGoLiveStage = service.currentGoLiveStage
+  const isTestGatewayAccount = account.type === GatewayAccountType.TEST
+  const isLiveGatewayAccount = account.type === GatewayAccountType.LIVE
+  const isSandboxPaymentProvider = SandboxModePaymentProviders.includes(account.paymentProvider)
+  const isPendingGoLive = ![GoLiveStage.LIVE, GoLiveStage.DENIED].includes(currentGoLiveStage)
+  const hasActiveCredential = account.getActiveCredential() !== undefined
+  const hasGoneLive = currentGoLiveStage === GoLiveStage.LIVE
+
+  const isNotLiveYet = isTestGatewayAccount && isSandboxPaymentProvider && isPendingGoLive
+  const isInSandboxMode = isTestGatewayAccount && isSandboxPaymentProvider && hasGoneLive
+  const isInLiveMode = isLiveGatewayAccount && hasGoneLive
+  const isWorldpayTestService = account.paymentProvider === PaymentProviders.WORLDPAY && isTestGatewayAccount
+
+  if (account.disabled === true) {
+    return ServiceStatus.RESTRICTED
+  }
+
+  if (isInLiveMode) {
+    if (hasActiveCredential) {
       return ServiceStatus.LIVE
     } else {
       switch (account.paymentProvider) {
@@ -110,17 +144,7 @@ const determineServiceStatus = (service: Service, account: GatewayAccount) => {
     }
   }
 
-  if (GoLiveInProgressStages.includes(service.currentGoLiveStage)) {
-    return ServiceStatus.GO_LIVE_IN_PROGRESS(
-      formatServicePathsFor(paths.service.requestToGoLive.index, service.externalId) as string
-    )
-  }
-
-  if (account.paymentProvider === PaymentProviders.WORLDPAY && account.type === GatewayAccountType.TEST) {
-    return ServiceStatus.WORLDPAY_TEST
-  }
-
-  if (service.currentGoLiveStage === GoLiveStage.LIVE && account.type === GatewayAccountType.TEST) {
+  if (isInSandboxMode) {
     return ServiceStatus.SANDBOX_MODE(
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.dashboard.index,
@@ -130,13 +154,31 @@ const determineServiceStatus = (service: Service, account: GatewayAccount) => {
     )
   }
 
-  if (GoLiveRequestedStages.includes(service.currentGoLiveStage)) {
+  if (isWorldpayTestService) {
+    return ServiceStatus.WORLDPAY_TEST
+  }
+
+  if (GoLiveRequestedStages.includes(currentGoLiveStage) && isNotLiveYet) {
     return ServiceStatus.GO_LIVE_REQUESTED
   }
 
-  return ServiceStatus.NOT_LIVE_YET(
-    formatServicePathsFor(paths.service.requestToGoLive.index, service.externalId) as string
+  if (GoLiveInProgressStages.includes(currentGoLiveStage) && isNotLiveYet) {
+    return ServiceStatus.GO_LIVE_IN_PROGRESS(
+      formatServicePathsFor(paths.service.requestToGoLive.index, service.externalId) as string
+    )
+  }
+
+  if (currentGoLiveStage === GoLiveStage.NOT_STARTED && isNotLiveYet) {
+    return ServiceStatus.NOT_LIVE_YET(
+      formatServicePathsFor(paths.service.requestToGoLive.index, service.externalId) as string
+    )
+  }
+
+  // this should never happen
+  logger.error(
+    `Service in unknown state [service_external_id: ${service.externalId}, gateway_account_external_id: ${account.externalId}]`
   )
+  return ServiceStatus.UNKNOWN
 }
 
 const prepareTemplateData = (req: express.Request, controllerData: Record<string, unknown>) => {

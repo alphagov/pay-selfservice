@@ -5,12 +5,14 @@
       <aside aria-label="Service name">
         <p class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-3">
           <strong>{{ serviceHeader.serviceName.en }}</strong>
-          {{
-            govukTag({
-            text: serviceHeader.serviceStatus.tag,
-            classes: "govuk-!-margin-left-1 " + serviceHeader.serviceStatus.colour
-            })
-          }}
+          {% if serviceHeader.serviceStatus.tag %}
+            {{
+              govukTag({
+              text: serviceHeader.serviceStatus.tag,
+              classes: "govuk-!-margin-left-1 " + serviceHeader.serviceStatus.colour
+              })
+            }}
+          {% endif %}
         </p>
         {% if serviceHeader.serviceStatus.text %}
           <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">
