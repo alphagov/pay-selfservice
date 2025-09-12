@@ -302,7 +302,7 @@ describe('Create English payment link journey', () => {
         cy.get('h1').should('contain', 'Is the payment for a fixed amount?')
         cy.url().should('include', CREATE_PAYMENT_LINK_AMOUNT_URL(GatewayAccountType.TEST))
       })
-      
+
       it('should navigate to the index page', () => {
         cy.get('#service-content').find('form').find('button').click()
         cy.url().should('include', PAYMENT_LINKS_URL(GatewayAccountType.TEST))
