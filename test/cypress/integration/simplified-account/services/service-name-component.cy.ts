@@ -9,6 +9,7 @@ import CredentialState from '@models/constants/credential-state'
 const USER_EXTERNAL_ID = 'user456def'
 const GATEWAY_ACCOUNT_ID = 117
 const SERVICE_EXTERNAL_ID = 'service123abc'
+const GATEWAY_ACCOUNT_DISABLED = true
 const SERVICE_NAME = {
   en: 'McDuck Enterprises',
   cy: 'Mentrau McDuck',
@@ -18,7 +19,8 @@ const setupStubs = (
   gatewayAccountType: string,
   goLiveStage: string,
   paymentProvider: string,
-  credentialState: string
+  credentialState: string,
+  gatewayAccountDisabled = false
 ) => {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
@@ -33,6 +35,7 @@ const setupStubs = (
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       type: gatewayAccountType,
       payment_provider: paymentProvider,
+      disabled: gatewayAccountDisabled,
       gateway_account_credentials: [
         {
           state: credentialState,
@@ -67,6 +70,30 @@ describe('Service Name Component', () => {
   describe('live service - sandbox mode', () => {
     beforeEach(() => {
       setupStubs(GatewayAccountType.TEST, GoLiveStage.LIVE, PaymentProviders.SANDBOX, CredentialState.ACTIVE)
+    })
+
+    it('should display service in sandbox mode', () => {
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/dashboard`)
+      cy.get('#service-name').find('.govuk-body').should('contain.text', SERVICE_NAME.en)
+      cy.get('#service-name').find('.govuk-tag').should('contain.text', 'Sandbox mode')
+      cy.get('#service-name').find('.govuk-tag').should('have.class', 'govuk-tag--blue')
+      cy.get('#service-name').find('p').should('have.length', 2)
+      cy.get('#service-name')
+        .find('p')
+        .eq(1)
+        .should(
+          'contain.text',
+          "You're in sandbox mode. Some settings are not available. Only test payment data is shown."
+        )
+        .find('a')
+        .should('contain.text', 'Exit sandbox mode')
+        .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/dashboard`)
+    })
+  })
+
+  describe('live service - sandbox mode with worldpay test account (LEGACY)', () => {
+    beforeEach(() => {
+      setupStubs(GatewayAccountType.TEST, GoLiveStage.LIVE, PaymentProviders.WORLDPAY, CredentialState.ACTIVE)
     })
 
     it('should display service in sandbox mode', () => {
@@ -232,6 +259,54 @@ describe('Service Name Component', () => {
       cy.get('#service-name').find('.govuk-body').should('contain.text', SERVICE_NAME.en)
       cy.get('#service-name').find('.govuk-tag').should('contain.text', 'Worldpay test')
       cy.get('#service-name').find('.govuk-tag').should('have.class', 'govuk-tag--blue')
+      cy.get('#service-name').find('p').should('have.length', 1)
+    })
+  })
+
+  describe('live service - account disabled', () => {
+    beforeEach(() => {
+      setupStubs(
+        GatewayAccountType.LIVE,
+        GoLiveStage.LIVE,
+        PaymentProviders.WORLDPAY,
+        CredentialState.ACTIVE,
+        GATEWAY_ACCOUNT_DISABLED
+      )
+    })
+
+    it('should display service as restricted', () => {
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/dashboard`)
+      cy.get('#service-name').find('.govuk-body').should('contain.text', SERVICE_NAME.en)
+      cy.get('#service-name').find('.govuk-tag').should('contain.text', 'Not taking payments')
+      cy.get('#service-name').find('.govuk-tag').should('have.class', 'govuk-tag--red')
+      cy.get('#service-name').find('p').should('have.length', 2)
+      cy.get('#service-name')
+        .find('p')
+        .eq(1)
+        .should(
+          'contain.text',
+          "You're not taking payments at the moment and you cannot make refunds. To start taking payments, email"
+        )
+        .find('a')
+        .should('contain.text', 'govuk-pay-support@digital.cabinet-office.gov.uk')
+        .should('have.attr', 'href', 'mailto:govuk-pay-support@digital.cabinet-office.gov.uk')
+    })
+  })
+
+  describe('live service - odd state', () => {
+    beforeEach(() => {
+      setupStubs(
+        GatewayAccountType.LIVE,
+        GoLiveStage.TERMS_AGREED_GOV_BANKING_WORLDPAY, // should not be possible to be anything other than GoLiveStage.LIVE with this configuration
+        PaymentProviders.WORLDPAY,
+        CredentialState.ACTIVE
+      )
+    })
+
+    it('should display service with no tag', () => {
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/dashboard`)
+      cy.get('#service-name').find('.govuk-body').should('contain.text', SERVICE_NAME.en)
+      cy.get('#service-name').find('.govuk-tag').should('not.exist')
       cy.get('#service-name').find('p').should('have.length', 1)
     })
   })

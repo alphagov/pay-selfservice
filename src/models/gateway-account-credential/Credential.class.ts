@@ -9,43 +9,40 @@ class Credential {
   public googlePayMerchantId?: string
   public rawResponse?: CredentialData
 
-  withStripeAccountId (stripeAccountId: string) {
+  withStripeAccountId(stripeAccountId: string) {
     this.stripeAccountId = stripeAccountId
     return this
   }
 
-  withOneOffCustomerInitiated (oneOffCustomerInitiated: WorldpayCredential) {
+  withOneOffCustomerInitiated(oneOffCustomerInitiated: WorldpayCredential) {
     this.oneOffCustomerInitiated = oneOffCustomerInitiated
     return this
   }
 
-  withRecurringCustomerInitiated (recurringCustomerInitiated: WorldpayCredential) {
+  withRecurringCustomerInitiated(recurringCustomerInitiated: WorldpayCredential) {
     this.recurringCustomerInitiated = recurringCustomerInitiated
     return this
   }
 
-  withRecurringMerchantInitiated (recurringMerchantInitiated: WorldpayCredential) {
+  withRecurringMerchantInitiated(recurringMerchantInitiated: WorldpayCredential) {
     this.recurringMerchantInitiated = recurringMerchantInitiated
     return this
   }
 
-  withGooglePayMerchantId (googlePayMerchantId: string) {
+  withGooglePayMerchantId(googlePayMerchantId: string) {
     this.googlePayMerchantId = googlePayMerchantId
     return this
   }
 
   /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
    * you should instead add any rawResponse data as part of the constructor */
-  withRawResponse (data: CredentialData) {
-    /** @deprecated this is a temporary compatability fix! If you find yourself using this for new code
-     * you should instead add any rawResponse data as part of the constructor */
+  withRawResponse(data: CredentialData) {
     this.rawResponse = data
     return this
   }
 
-  static fromJson (data: CredentialData) {
-    const credential = new Credential()
-      .withRawResponse(data)
+  static fromJson(data: CredentialData) {
+    const credential = new Credential().withRawResponse(data)
     if (data?.stripe_account_id) {
       credential.withStripeAccountId(data.stripe_account_id)
     }
