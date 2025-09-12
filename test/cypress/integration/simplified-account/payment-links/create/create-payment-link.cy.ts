@@ -37,6 +37,34 @@ const CREATE_PAYMENT_LINK_REVIEW_URL = (serviceMode = 'test') =>
 const PAYMENT_LINK_REPORTING_COLUMNS_URL = (serviceMode = 'test', columnHeader: string) =>
   `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links/create/reporting-column/${columnHeader}`
 
+const createPaymentLinkWithTitle = (title: string, createUrl: string) => {
+  cy.visit(createUrl);
+  cy.get('#service-content').find('form').find('#name')
+    .click().focused()
+    .type(title)
+  cy.get('#service-content').find('form').find('button').click()
+};
+
+const createPaymentLinkWithReference = (title: string, createUrl: string) => {
+  createPaymentLinkWithTitle(title, createUrl);
+  cy.get('#reference-type-standard').click()
+  cy.get('#service-content').find('form').find('button').click()
+};
+
+const createPaymentLinkWithAmount = (title: string, createUrl: string) => {
+  createPaymentLinkWithReference(title, createUrl);
+  cy.get('#amount-type-variable').click()
+  cy.get('#service-content').find('form').find('button').click()
+};
+
+const createPaymentLinkWithMetadata = (title: string, createUrl: string, columnHeader: string, cellConetent: string) => {
+  createPaymentLinkWithAmount(title, createUrl);
+  cy.get('.govuk-button--secondary').click()
+  cy.get('#service-content').find('form').find('#reporting-column').click().focused().clear().type(columnHeader)
+  cy.get('#service-content').find('form').find('#cell-content').click().focused().clear().type(cellConetent)
+  cy.get('#service-content').find('form').find('button').contains('Add reporting column').click()
+};
+
 const setupStubs = (role = 'admin', gatewayAccountType = 'test', products: object[] = []) => {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
@@ -124,7 +152,7 @@ describe('Create English payment link journey', () => {
 
     describe('payment link reference page', () => {
       beforeEach(() => {
-        cy.createPaymentLinkWithTitle('A link with title', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+        createPaymentLinkWithTitle('A link with title', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
       })
       it('English only ui functions', () => {
         cy.get('h1').should('contain', 'Will your users already have a payment reference?')
@@ -155,14 +183,14 @@ describe('Create English payment link journey', () => {
       })
 
       it('should navigate to amount page page', () => {
-        cy.createPaymentLinkWithReference('A link with reference', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+        createPaymentLinkWithReference('A link with reference', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
         cy.url().should('include', CREATE_PAYMENT_LINK_AMOUNT_URL(GatewayAccountType.TEST))
       })
     })
 
     describe('payment link amount page', () => {
       beforeEach(() => {
-        cy.createPaymentLinkWithReference('A link with different reference', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+        createPaymentLinkWithReference('A link with different reference', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
       })
 
       it('English only ui functions', () => {
@@ -189,14 +217,14 @@ describe('Create English payment link journey', () => {
       })
 
       it('should navigate to review page', () => {
-        cy.createPaymentLinkWithAmount('A link with amount', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+        createPaymentLinkWithAmount('A link with amount', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
         cy.url().should('include', CREATE_PAYMENT_LINK_REVIEW_URL(GatewayAccountType.TEST))
       })
     })
 
     describe('payment link reporting columns page', () => {
       beforeEach(() => {
-        cy.createPaymentLinkWithAmount('A link with different amount', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+        createPaymentLinkWithAmount('A link with different amount', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
         cy.get('.govuk-button--secondary').click()
       })
       it('English only ui functions', () => {
@@ -221,7 +249,7 @@ describe('Create English payment link journey', () => {
       })
 
       it('should navigate to review page and display the reporting column', () => {
-        cy.createPaymentLinkWithMetadata('A link with metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'invoice', '12345')
+        createPaymentLinkWithMetadata('A link with metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'invoice', '12345')
         cy.url().should('include', CREATE_PAYMENT_LINK_REVIEW_URL(GatewayAccountType.TEST))
 
         cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(5).should('exist').within(() => {
@@ -232,7 +260,7 @@ describe('Create English payment link journey', () => {
       })
 
       it('should navigate to review page and display the updated reporting column', () => {
-        cy.createPaymentLinkWithMetadata('A link with metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'invoice', '12345')
+        createPaymentLinkWithMetadata('A link with metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'invoice', '12345')
         cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(5).should('exist').within(() => {
           cy.get('.govuk-summary-list__actions a').click()
         })
@@ -248,7 +276,7 @@ describe('Create English payment link journey', () => {
       })
 
       it('should navigate to review page and not display the deleted reporting column', () => {
-        cy.createPaymentLinkWithMetadata('A link with metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'invoice', '12345')
+        createPaymentLinkWithMetadata('A link with metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'invoice', '12345')
         cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(5).should('exist').within(() => {
           cy.get('.govuk-summary-list__actions a').click()
         })
@@ -262,7 +290,7 @@ describe('Create English payment link journey', () => {
 
     describe('payment link review page', () => {
       beforeEach(() => {
-        cy.createPaymentLinkWithMetadata('A link with different metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'cost centre', '67890')
+        createPaymentLinkWithMetadata('A link with different metadata', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST), 'cost centre', '67890')
       })
       it('English only ui functions', () => {
         cy.get('h1').should('contain', 'Review your payment link details')
@@ -306,7 +334,7 @@ describe('Create Welsh payment link journey', () => {
 
     describe('payment link reference page', () => {
       beforeEach(() => {
-        cy.createPaymentLinkWithTitle('A link with title', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST, true))
+        createPaymentLinkWithTitle('A link with title', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST, true))
       })
       it('Welsh only ui functions', () => {
         cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link (Welsh)')
@@ -320,7 +348,7 @@ describe('Create Welsh payment link journey', () => {
 
     describe('payment link amount page', () => {
       beforeEach(() => {
-        cy.createPaymentLinkWithReference('A link with different reference', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST, true))
+        createPaymentLinkWithReference('A link with different reference', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST, true))
       })
 
       it('Welsh only ui functions', () => {
@@ -337,7 +365,7 @@ describe('Create Welsh payment link journey', () => {
 
     describe('payment link reporting columns page', () => {
       beforeEach(() => {
-        cy.createPaymentLinkWithAmount('A link with different amount', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST, true))
+        createPaymentLinkWithAmount('A link with different amount', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST, true))
         cy.get('.govuk-button--secondary').click()
       })
       it('Welsh only ui functions', () => {
