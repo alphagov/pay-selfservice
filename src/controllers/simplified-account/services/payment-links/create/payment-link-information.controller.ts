@@ -16,7 +16,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   const { account, service } = req
   const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
   const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
-  const isUsingEnglishServiceName = currentSession.useEnglishServiceName === 'true' || (req.query.useEnglishServiceName as string) === 'true'
+  const isUsingEnglishServiceName = currentSession.useEnglishServiceName ?? (req.query.useEnglishServiceName as string) === 'true'
 
   // handle case where welsh payment link is selected but no welsh service name is set
   if (isWelsh && !service.serviceName.cy && !isUsingEnglishServiceName && account.type !== GatewayAccountType.TEST) {
@@ -62,7 +62,7 @@ async function post(req: ServiceRequest<CreateLinkInformationBody>, res: Service
   const { account, service } = req
   const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
   const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
-  const isUsingEnglishServiceName = currentSession.useEnglishServiceName === 'true' || (req.query.useEnglishServiceName as string) === 'true'
+  const isUsingEnglishServiceName = currentSession.useEnglishServiceName ?? (req.query.useEnglishServiceName as string) === 'true'
   const serviceName = isWelsh ? (service.serviceName.cy ?? service.name) : service.name
 
   const validations = [
@@ -102,7 +102,7 @@ async function post(req: ServiceRequest<CreateLinkInformationBody>, res: Service
     paymentLinkTitle: req.body.name,
     paymentLinkDescription: req.body.description,
     language: isWelsh ? 'cy' : 'en',
-    useEnglishServiceName: isUsingEnglishServiceName ? 'true' : 'false',
+    useEnglishServiceName: isUsingEnglishServiceName,
     serviceNamePath: slugifyString(serviceName),
     productNamePath: slugifyString(req.body.name),
   } as PaymentLinkCreationSession)

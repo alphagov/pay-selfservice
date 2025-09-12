@@ -249,7 +249,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Title',
           language: 'cy',
-          useEnglishServiceName: 'true',
+          useEnglishServiceName: true,
           serviceNamePath: 'test-service',
           productNamePath: 'welsh-title',
         }
