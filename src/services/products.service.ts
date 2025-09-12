@@ -1,11 +1,11 @@
 import ProductsClient from '@services/clients/pay/ProductsClient.class'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
-import ProductType from '@models/products/product-type'
+import { ProductType } from '@models/products/product-type'
 import { ProductUpdateRequestData } from '@models/products/dto/ProductUpdateRequest.dto'
 
 const productsClient = new ProductsClient()
 
-const getProducts = (gatewayAccountId: number, productType: string) =>
+const getProducts = (gatewayAccountId: number, productType: ProductType) =>
   productsClient.products.getByGatewayAccountIdAndProductType(gatewayAccountId, productType)
 
 const getProductByExternalId = (productExternalId: string) => productsClient.products.getByExternalId(productExternalId)
@@ -15,6 +15,9 @@ const getProductByGatewayAccountIdAndExternalId = (gatewayAccountId: number, pro
 
 const deleteProduct = (gatewayAccountId: number, productExternalId: string) =>
   productsClient.products.delete(gatewayAccountId, productExternalId)
+
+const disableProduct = (gatewayAccountId: number, productExternalId: string) =>
+  productsClient.products.disable(gatewayAccountId, productExternalId)
 
 const updateProduct = (gatewayAccountId: number, productExternalId: string, updateRequest: ProductUpdateRequestData) =>
   productsClient.products.patchByGatewayAccountIdAndExternalId(gatewayAccountId, productExternalId, updateRequest)
@@ -47,4 +50,5 @@ export {
   updateProduct,
   createDemoProduct,
   createProduct,
+  disableProduct,
 }

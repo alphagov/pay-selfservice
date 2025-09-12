@@ -4,7 +4,7 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import Product from '@models/products/Product.class'
 import { validProductResponse } from '@test/fixtures/product.fixtures'
 import { ProductData } from '@models/products/dto/Product.dto'
-import ProductType from '@models/products/product-type'
+import { ProductType } from '@models/products/product-type'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 
@@ -146,11 +146,7 @@ describe('Controller: services/payment-links/delete', () => {
       })
 
       it('should call deleteProduct with correct parameters', () => {
-        sinon.assert.calledOnceWithExactly(
-          mockProductsService.deleteProduct,
-          GATEWAY_ACCOUNT_ID,
-          PRODUCT_EXTERNAL_ID
-        )
+        sinon.assert.calledOnceWithExactly(mockProductsService.deleteProduct, GATEWAY_ACCOUNT_ID, PRODUCT_EXTERNAL_ID)
       })
 
       it('should redirect to payment links index', () => {
