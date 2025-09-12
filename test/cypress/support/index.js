@@ -54,7 +54,7 @@ Cypress.Commands.add('createPaymentLinkWithMetadata', (title, createUrl, columnH
   cy.createPaymentLinkWithAmount(title, createUrl);
   cy.get('.govuk-button--secondary').click()
   cy.get('#service-content').find('form').find('#reporting-column').click().focused().clear().type(columnHeader)
-  cy.get('#service-content').find('form').find('#cell-content').click().focused().type(cellConetent)
+  cy.get('#service-content').find('form').find('#cell-content').click().focused().clear().type(cellConetent)
   cy.get('#service-content').find('form').find('button').contains('Add reporting column').click()
 });
 
