@@ -12,5 +12,7 @@ PLATFORM: ${process.platform}/${process.arch}
 NODE_ENV: ${process.env.NODE_ENV ?? 'development'}, ${process.version}
 HOST/PORT: ${process.env.BIND_HOST ?? '127.0.0.1'}:${process.env.PORT ?? 3000}
 ==============================================`
+const badVar = "semi not cool man";
+console.log(badVar)
 console.log(banner)
 server.start()
