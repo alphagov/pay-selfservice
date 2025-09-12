@@ -25,7 +25,7 @@ const { nextRequest, call, res } = new ControllerTestBuilder(
   .withService({
     name: 'McDuck Enterprises',
     serviceName: { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' },
-    externalId: SERVICE_EXTERNAL_ID
+    externalId: SERVICE_EXTERNAL_ID,
   })
   .build()
 
@@ -220,9 +220,8 @@ describe('controller: services/payment-links/create/payment-link-information', (
             validGatewayAccount({
               gateway_account_id: GATEWAY_ACCOUNT_ID,
               external_id: SERVICE_EXTERNAL_ID,
-              type: GatewayAccountType.LIVE
-              }
-            )
+              type: GatewayAccountType.LIVE,
+            })
           ),
           session: {
             pageData: {
@@ -236,10 +235,7 @@ describe('controller: services/payment-links/create/payment-link-information', (
 
       it('should redirect the user to a new page to add the Welsh service name', () => {
         sinon.assert.calledOnce(res.redirect)
-        sinon.assert.calledWith(
-          res.redirect,
-          sinon.match(/payment-links.create.add-welsh-service-name/)
-        )
+        sinon.assert.calledWith(res.redirect, sinon.match(/payment-links.create.add-welsh-service-name/))
       })
     })
 
@@ -350,32 +346,32 @@ describe('controller: services/payment-links/create/payment-link-information', (
           language: 'cy',
           serviceNamePath: 'test-service',
           productNamePath: 'previous-title',
-      }
+        }
 
-      nextRequest({
-        session: {
-          pageData: {
-            createPaymentLink: sessionData,
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
           },
-        },
-        body: {
-          name: 'Welsh Payment Link',
-          description: 'Welsh Description',
-        },
+          body: {
+            name: 'Welsh Payment Link',
+            description: 'Welsh Description',
+          },
+        })
+
+        const result = await call('post')
+        const thisRequest = result.req as Record<string, unknown>
+        const session = thisRequest.session as { pageData: { createPaymentLink: { language: string } } }
+        sessionLanguage = session.pageData.createPaymentLink.language
       })
 
-      const result = await call('post')
-      const thisRequest = result.req as Record<string, unknown>
-      const session = thisRequest.session as { pageData: { createPaymentLink: { language: string } } }
-      sessionLanguage = session.pageData.createPaymentLink.language
+      it('should retain Welsh language from session and redirect', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/payment-links.*reference/))
+        sinon.assert.match(sessionLanguage, 'cy')
+      })
     })
-
-    it('should retain Welsh language from session and redirect', () => {
-      sinon.assert.calledOnce(res.redirect)
-      sinon.assert.calledWith(res.redirect, sinon.match(/payment-links.*reference/))
-      sinon.assert.match(sessionLanguage, 'cy')
-    })
-  })
 
     describe('when the user is coming back from the review page (FROM_REVIEW_QUERY_PARAM set to true)', () => {
       beforeEach(async () => {
