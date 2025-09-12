@@ -6,11 +6,11 @@ const paths = require('../../paths')
 
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const productsClient = require('../../services/clients/products.client.js')
-const productTypes = require('../../utils/product-types')
+const { ProductType } = require('@models/products/product-type')
 const publicAuthClient = require('../../services/clients/public-auth.client')
 const supportedLanguage = require('@models/constants/supported-language')
 
-module.exports = async function createPaymentLink (req, res) {
+module.exports = async function createPaymentLink(req, res) {
   const gatewayAccountId = req.account.gateway_account_id
   const {
     paymentLinkTitle,
@@ -23,7 +23,7 @@ module.exports = async function createPaymentLink (req, res) {
     paymentReferenceLabel,
     paymentReferenceHint,
     isWelsh,
-    metadata
+    metadata,
   } = lodash.get(req, 'session.pageData.createPaymentLink', {})
 
   if (!paymentLinkTitle) {
@@ -40,22 +40,22 @@ module.exports = async function createPaymentLink (req, res) {
         description: `Token for “${paymentLinkTitle}” payment link`,
         token_account_type: req.account.type,
         service_external_id: req.service.externalId,
-        service_mode: req.account.type
-      }
+        service_mode: req.account.type,
+      },
     })
 
     const productPayload = {
       payApiToken: createTokenResponse.token,
       gatewayAccountId,
       name: paymentLinkTitle,
-      type: productTypes.ADHOC,
+      type: ProductType.ADHOC,
       serviceNamePath,
       productNamePath,
       metadata,
       language: isWelsh ? supportedLanguage.WELSH : supportedLanguage.ENGLISH,
       referenceEnabled: paymentReferenceType === 'custom',
-      ...paymentLinkDescription && { description: paymentLinkDescription },
-      ...paymentLinkAmount && { price: paymentLinkAmount }
+      ...(paymentLinkDescription && { description: paymentLinkDescription }),
+      ...(paymentLinkAmount && { price: paymentLinkAmount }),
     }
 
     if (paymentReferenceType === 'custom') {
@@ -75,7 +75,7 @@ module.exports = async function createPaymentLink (req, res) {
     logger.info('Created payment link', {
       product_external_id: req.params && req.params.productExternalId,
       has_metadata: !!numberOfMetadataKeys,
-      number_of_metadata_keys: numberOfMetadataKeys
+      number_of_metadata_keys: numberOfMetadataKeys,
     })
 
     lodash.unset(req, 'session.pageData.createPaymentLink')
