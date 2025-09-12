@@ -43,16 +43,17 @@
   {% set breadcrumbItems = (breadcrumbItems.push({
     text: "My services", href: routes.services.index
   }), breadcrumbItems) %}
-{% endif %}
 
-{% if not hideServiceHeader and currentService.name %}
-  {% set breadcrumbItems = (breadcrumbItems.push({
-    html: accountLabelWithTag
-  }), breadcrumbItems) %}
-{% endif %}
+  {% if not hideServiceHeader and currentService.name %}
+    {% set breadcrumbItems = (breadcrumbItems.push({
+      html: accountLabelWithTag
+    }), breadcrumbItems) %}
+  {% endif %}
 
-{% if breadcrumbItems | length > 0 %}
-  {{ breadcrumbs(breadcrumbItems) }}
+  {% if breadcrumbItems | length > 0 %}
+    {{ breadcrumbs(breadcrumbItems) }}
+  {% endif %}
+
 {% endif %}
 
 {% if not hideServiceNav and not hideServiceHeader and not NEW_SERVICE_NAV %}

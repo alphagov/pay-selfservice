@@ -1,0 +1,45 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block pageTitle %}
+  Add a Welsh service name - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+{% endblock %}
+
+{% block serviceContent %}
+  <span class="govuk-caption-l">Create {{ serviceMode }} payment link (Welsh)</span>
+  <form id="edit-service-name" method="post" action="{{ submitLink }}" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    {{ govukInput({
+      label: {
+        html: "Welsh service name (<span lang=\"cy\">Cymraeg</span>)",
+        classes: "govuk-label--l",
+        isPageHeading: true
+      },
+      errorMessage: { text: errors.formErrors['serviceName'] } if errors.formErrors['serviceName'] else false,
+      id: "service-name",
+      name: "serviceName",
+      value: serviceName,
+      classes: "govuk-!-width-two-thirds",
+      type: "text",
+      spellcheck: true,
+      hint: {
+        text: "This is what your users will see when making a payment."
+      },
+      attributes: {
+        lang: "cy"
+      }
+    }) }}
+  </form>
+
+  <div class="govuk-button-group">
+    {{ govukButton({
+      text: "Continue",
+      attributes: { form: "edit-service-name" }
+    }) }}
+  </div>
+
+  <a class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" href="{{ createWelshPaymentLinkLinkWithEnglishServiceName }}">
+  Use English service name instead</a>
+
+{% endblock %}

@@ -6,7 +6,7 @@ const { validationResult, check } = require('express-validator')
 const { formatValidationErrors } = require('@utils/simplified-account/format')
 const { updateStripeDetailsUploadEntityDocument } = require('@services/stripe-details.service')
 const { checkTaskCompletion } = require('@middleware/simplified-account')
-const { stripeDetailsTasks } = require('@utils/simplified-account/settings/stripe-details/tasks')
+const StripeTaskIdentifiers = require('@models/task-workflows/task-identifiers/stripe-task-identifiers')
 
 async function get (req, res) {
   return response(req, res, 'simplified-account/settings/stripe-details/government-entity-document/index', {
@@ -50,8 +50,8 @@ async function post (req, res, next) {
       req.flash('messages', {
         state: 'success',
         icon: '&check;',
-        heading: 'Service connected to Stripe',
-        body: 'This service can now take payments'
+        heading: 'Information sent to Stripe',
+        body: 'Stripe is checking your information. We will contact you if there is a problem'
       })
       res.redirect(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type))
     })
@@ -59,7 +59,7 @@ async function post (req, res, next) {
       if (err.type === 'StripeInvalidRequestError' && err.param === 'file') {
         return postErrorResponse(req, res, {
           summary: [{
-            text: 'Error uploading file to stripe. Try uploading a file with one of the following types: pdf, jpeg, png',
+            text: 'Error uploading file to Stripe. Try uploading a file with one of the following types: pdf, jpeg, png',
             href: '#government-entity-document'
           }]
         })
@@ -77,6 +77,6 @@ const postErrorResponse = (req, res, errors) => {
 }
 
 module.exports = {
-  get: [checkTaskCompletion(stripeDetailsTasks.governmentEntityDocument.name), get],
-  post: [checkTaskCompletion(stripeDetailsTasks.governmentEntityDocument.name), post]
+  get: [checkTaskCompletion(StripeTaskIdentifiers.DOC.connectorName), get],
+  post: [checkTaskCompletion(StripeTaskIdentifiers.DOC.connectorName), post]
 }
