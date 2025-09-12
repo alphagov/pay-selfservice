@@ -8,7 +8,6 @@ on:
       pact_broker_password:
         required: true
 
-
 permissions:
   contents: read
 
@@ -26,6 +25,50 @@ jobs:
     uses: alphagov/pay-ci/.github/workflows/_run-node-install-and-compile.yml@master
     with:
       has_cypress_tests: true
+
+  formatting-check:
+      name: Formatting check
+      runs-on: ubuntu-latest
+      needs: [ install-and-compile ]
+      steps:
+        - name: Checkout
+          uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
+        - name: Setup
+          uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+          with:
+            node-version-file: ".nvmrc"
+        - name: Cache build directories
+          uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
+          with:
+            path: |
+              node_modules
+              govuk_modules
+              public
+              dist
+            key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}
+        - name: Cache pacts directory
+          if: ${{ inputs.publish_pacts }}
+          uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
+          with:
+            path: pacts
+            key: ${{ runner.os }}-build-id-${{ github.head_ref }}-${{ github.sha }}-pacts
+        - name: Check PR changes for formatting
+          run: |
+            git fetch origin ${{ github.base_ref }} --depth=1
+            CHANGED_FILES=$(git diff --name-only --diff-filter=AM origin/${{ github.base_ref }}...HEAD | \
+              grep -E '\.(js|ts|json|css|scss|html|njk)$' || true)
+
+            if [ -z "$CHANGED_FILES" ]; then
+              echo "No files to check"
+              exit 0
+            fi
+
+            if ! echo "$CHANGED_FILES" | xargs npx prettier --check; then
+              echo "❌ detected files are not formatted correctly"
+              exit 1
+            fi
+
+            echo "✅ all files are formatted"
 
   tests:
     name: "Unit tests and pacts"
