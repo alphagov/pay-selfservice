@@ -8,7 +8,7 @@ import lodash from 'lodash'
 import { createProduct } from '@services/products.service'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import { createPaymentLinkToken } from '@services/tokens.service'
-import { ProductType } from "@models/products/product-type";
+import { ProductType } from '@models/products/product-type'
 
 const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
 
@@ -29,22 +29,22 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     service,
     account,
     ...(currentSession.metadata && {
-        metadata: Object.entries(currentSession.metadata).reduce(
-          (acc, [key, value]) => {
-            acc[key] = {
-              value,
-              link: formatServiceAndAccountPathsFor(
-                paths.simplifiedAccount.paymentLinks.metadata.update,
-                req.service.externalId,
-                req.account.type,
-                key
-              ),
-            }
-            return acc
-          },
-          {} as Record<string, Record<string, string>>
-        ),
-      }),
+      metadata: Object.entries(currentSession.metadata).reduce(
+        (acc, [key, value]) => {
+          acc[key] = {
+            value,
+            link: formatServiceAndAccountPathsFor(
+              paths.simplifiedAccount.paymentLinks.metadata.update,
+              req.service.externalId,
+              req.account.type,
+              key
+            ),
+          }
+          return acc
+        },
+        {} as Record<string, Record<string, string>>
+      ),
+    }),
     backLink: formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.paymentLinks.amount,
       service.externalId,
@@ -79,17 +79,17 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     pageData: currentSession,
     isWelsh,
     serviceMode: account.type,
-    createJourney: true
+    createJourney: true,
   })
 }
 
 async function post(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
   const indexPath = formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.paymentLinks.index,
-      service.externalId,
-      account.type
-    )
+    paths.simplifiedAccount.paymentLinks.index,
+    service.externalId,
+    account.type
+  )
 
   const pageData = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
   if (lodash.isEmpty(pageData)) {
@@ -113,19 +113,19 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     .withType(ProductType.ADHOC)
 
   const paymentLink = await createProduct(createProductRequest)
-  const successBannerBody = account.type === GatewayAccountType.TEST ?
-    `You can <a href="${paymentLink.links.pay.href}/"
+  const successBannerBody =
+    account.type === GatewayAccountType.TEST
+      ? `You can <a href="${paymentLink.links.pay.href}/"
         class="govuk-link govuk-link--no-visited-state" target="_blank">test your payment link</a>.`
       : ''
   req.flash('messages', {
     state: 'success',
     icon: '&check;',
     heading: `${paymentLink.name} has been created`,
-    body: successBannerBody
+    body: successBannerBody,
   })
   lodash.unset(req, CREATE_SESSION_KEY)
   return res.redirect(indexPath)
 }
 
 export { get, post }
-

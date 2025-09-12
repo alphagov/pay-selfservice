@@ -1,7 +1,7 @@
-import ControllerTestBuilder from "@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class";
-import GatewayAccountType from "@models/gateway-account/gateway-account-type";
-import sinon from "sinon";
-import {Message} from "@utils/types/express/Message";
+import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import sinon from 'sinon'
+import { Message } from '@utils/types/express/Message'
 
 const GATEWAY_ACCOUNT_ID = 100
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'ga-123-external-id-abc'
@@ -15,11 +15,11 @@ const { call, res, req } = new ControllerTestBuilder(
 )
   .withStubs({
     '@services/products.service': {
-      disableProduct: disableProductStub
+      disableProduct: disableProductStub,
     },
   })
   .withParams({
-    productExternalId: PRODUCT_EXTERNAL_ID
+    productExternalId: PRODUCT_EXTERNAL_ID,
   })
   .withAccount({
     id: GATEWAY_ACCOUNT_ID,
@@ -49,7 +49,9 @@ describe('test-with-your-users/disable controller tests', () => {
       it('should redirect to the links page', async () => {
         await call('post')
 
-        res.redirect.should.have.been.calledWith(`/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/test-with-your-users/links`)
+        res.redirect.should.have.been.calledWith(
+          `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/test-with-your-users/links`
+        )
       })
 
       it('should set a success message on the session', async () => {
@@ -68,14 +70,21 @@ describe('test-with-your-users/disable controller tests', () => {
       it('should redirect to the links page', async () => {
         await call('post')
 
-        res.redirect.should.have.been.calledWith(`/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/test-with-your-users/links`)
+        res.redirect.should.have.been.calledWith(
+          `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/test-with-your-users/links`
+        )
       })
 
       it('should set an error message on the session', async () => {
         await call('post')
 
         req.flash.should.have.been.calledOnce
-        req.flash.should.have.been.calledWith('messages', Message.GenericError('Something went wrong when deleting the prototype link. Please try again or contact support.'))
+        req.flash.should.have.been.calledWith(
+          'messages',
+          Message.GenericError(
+            'Something went wrong when deleting the prototype link. Please try again or contact support.'
+          )
+        )
       })
     })
   })

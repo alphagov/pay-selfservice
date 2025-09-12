@@ -4,7 +4,7 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import Product from '@models/products/Product.class'
 import { validProductResponse } from '@test/fixtures/product.fixtures'
 import { ProductData } from '@models/products/dto/Product.dto'
-import { ProductType } from "@models/products/product-type";
+import { ProductType } from '@models/products/product-type'
 import { afterEach } from 'mocha'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
@@ -30,7 +30,7 @@ const PRODUCT_REF_AMOUNT_DETAIL = new Product(
     price: 999999,
     reference_enabled: true,
     reference_label: 'Invoice number',
-    description: 'Eyewear for the discerning trillionaire'
+    description: 'Eyewear for the discerning trillionaire',
   }) as ProductData
 )
 
@@ -88,9 +88,9 @@ describe('controller: services/payment-links', () => {
                 details: 'Eyewear for the discerning trillionaire',
                 amount: '£9,999.99',
                 editLink: '/service/service123abc/account/test/payment-links/cf3hp2',
-                deleteLink: '/service/service123abc/account/test/payment-links/cf3hp2/delete'
-              }
-            ]
+                deleteLink: '/service/service123abc/account/test/payment-links/cf3hp2/delete',
+              },
+            ],
           }
         )
       })
@@ -105,7 +105,7 @@ describe('controller: services/payment-links', () => {
           },
           account: {
             type: GatewayAccountType.LIVE,
-          }
+          },
         })
         await call('get')
       })
@@ -134,9 +134,9 @@ describe('controller: services/payment-links', () => {
                 details: undefined,
                 amount: 'User can choose',
                 editLink: '/service/service123abc/account/live/payment-links/cf3hp2',
-                deleteLink: '/service/service123abc/account/live/payment-links/cf3hp2/delete'
-              }
-            ]
+                deleteLink: '/service/service123abc/account/live/payment-links/cf3hp2/delete',
+              },
+            ],
           }
         )
       })

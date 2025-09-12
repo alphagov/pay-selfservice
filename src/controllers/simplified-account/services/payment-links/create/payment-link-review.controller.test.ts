@@ -7,7 +7,7 @@ import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import { ProductType } from "@models/products/product-type"
+import { ProductType } from '@models/products/product-type'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -53,8 +53,8 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
           paymentReferenceLabel: 'Order Number',
           paymentReferenceHint: 'Enter your order number',
           metadata: {
-            'existing_column': 'a_value',
-            'another_column': 'another_value'
+            existing_column: 'a_value',
+            another_column: 'another_value',
           },
         }
 
@@ -119,11 +119,15 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
         const context = mockResponse.args[0][3] as Record<string, unknown>
         const metadata = context.metadata as Record<string, Record<string, string>>
         const updateMetadataLink = metadata.existing_column.link
-        sinon.assert.match(updateMetadataLink, formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.paymentLinks.metadata.update,
-          SERVICE_EXTERNAL_ID,
-          GatewayAccountType.TEST,
-          'existing_column'))
+        sinon.assert.match(
+          updateMetadataLink,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.metadata.update,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST,
+            'existing_column'
+          )
+        )
       })
 
       it('should set createJourney in context', () => {
@@ -192,9 +196,9 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
         nextRequest({
           session: {},
           user: {
-            email: 'test@example.com'
+            email: 'test@example.com',
           },
-          flash: sinon.stub()
+          flash: sinon.stub(),
         })
         await call('post')
       })
@@ -210,9 +214,9 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
         name: 'Test Payment Link',
         links: {
           pay: {
-            href: 'https://pay-test-link.gov.uk'
-          }
-        }
+            href: 'https://pay-test-link.gov.uk',
+          },
+        },
       }
 
       beforeEach(async () => {
@@ -232,7 +236,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
           paymentReferenceType: 'custom',
           paymentReferenceLabel: 'Order Number',
           paymentReferenceHint: 'Enter your order number',
-          paymentLinkAmount: 1500
+          paymentLinkAmount: 1500,
         }
 
         nextRequest({
@@ -243,20 +247,20 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
           },
           flash: req.flash,
           user: {
-            email: 'test@example.com'
+            email: 'test@example.com',
           },
           service: {
             name: 'McDuck Enterprises',
             serviceName: { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' },
-            externalId: SERVICE_EXTERNAL_ID
+            externalId: SERVICE_EXTERNAL_ID,
           },
           account: new GatewayAccount(
             validGatewayAccount({
               gateway_account_id: GATEWAY_ACCOUNT_ID,
               external_id: SERVICE_EXTERNAL_ID,
-              type: GatewayAccountType.TEST
-              })
-            )
+              type: GatewayAccountType.TEST,
+            })
+          ),
         })
 
         await call('post')
@@ -283,15 +287,15 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
         sinon.assert.calledOnce(mockCreateProduct)
 
         const expectedCreateProductRequest: CreateProductRequest = new CreateProductRequest()
-            .withGatewayAccountId(GATEWAY_ACCOUNT_ID)
-            .withServiceNamePath('test-service')
-            .withProductNamePath('test-payment-link')
-            .withApiToken('big-beautiful-token')
-            .withName('Test Payment Link')
-            .withLanguage('en')
-            .withDescription('Test Description')
-            .withPrice(1500)
-            .withType(ProductType.ADHOC)
+          .withGatewayAccountId(GATEWAY_ACCOUNT_ID)
+          .withServiceNamePath('test-service')
+          .withProductNamePath('test-payment-link')
+          .withApiToken('big-beautiful-token')
+          .withName('Test Payment Link')
+          .withLanguage('en')
+          .withDescription('Test Description')
+          .withPrice(1500)
+          .withType(ProductType.ADHOC)
         sinon.assert.calledWith(mockCreateProduct, expectedCreateProductRequest)
       })
 
@@ -308,7 +312,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
             state: 'success',
             icon: '&check;',
             heading: 'Test Payment Link has been created',
-            body: sinon.match("test your payment link")
+            body: sinon.match('test your payment link'),
           })
         )
       })
@@ -319,9 +323,9 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
         name: 'Test Payment Link',
         links: {
           pay: {
-            href: 'https://pay-test-link.gov.uk'
-          }
-        }
+            href: 'https://pay-test-link.gov.uk',
+          },
+        },
       }
 
       beforeEach(async () => {
@@ -341,7 +345,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
           paymentReferenceType: 'custom',
           paymentReferenceLabel: 'Order Number',
           paymentReferenceHint: 'Enter your order number',
-          paymentLinkAmount: 1500
+          paymentLinkAmount: 1500,
         }
 
         nextRequest({
@@ -352,20 +356,20 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
           },
           flash: req.flash,
           user: {
-            email: 'test@example.com'
+            email: 'test@example.com',
           },
           service: {
             name: 'McDuck Enterprises',
             serviceName: { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' },
-            externalId: SERVICE_EXTERNAL_ID
+            externalId: SERVICE_EXTERNAL_ID,
           },
           account: new GatewayAccount(
             validGatewayAccount({
               gateway_account_id: GATEWAY_ACCOUNT_ID,
               external_id: SERVICE_EXTERNAL_ID,
-              type: GatewayAccountType.LIVE
-              })
-            )
+              type: GatewayAccountType.LIVE,
+            })
+          ),
         })
 
         await call('post')
@@ -379,7 +383,7 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
             state: 'success',
             icon: '&check;',
             heading: 'Test Payment Link has been created',
-            body: ''
+            body: '',
           })
         )
       })

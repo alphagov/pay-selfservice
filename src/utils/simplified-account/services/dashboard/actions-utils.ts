@@ -2,16 +2,16 @@ import Service from '@models/service/Service.class'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import User from '@models/user/User.class'
 import GoLiveStage from '@models/constants/go-live-stage'
-import PaymentProviders, {STRIPE, WORLDPAY} from '@models/constants/payment-providers'
+import PaymentProviders, { STRIPE, WORLDPAY } from '@models/constants/payment-providers'
 import PspTestAccountStage from '@models/constants/psp-test-account-stage'
-import {getProducts} from '@services/products.service'
+import { getProducts } from '@services/products.service'
 import createLogger from '@utils/logger'
 import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import CredentialState from '@models/constants/credential-state'
-import {getConnectorStripeAccountSetup, getStripeAccountCapabilities} from '@services/stripe-details.service'
+import { getConnectorStripeAccountSetup, getStripeAccountCapabilities } from '@services/stripe-details.service'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
-import { ProductType } from "@models/products/product-type";
+import { ProductType } from '@models/products/product-type'
 
 const logger = createLogger(__filename)
 
@@ -68,10 +68,7 @@ const displayDemoAndTestPaymentLinks = (account: GatewayAccount) => {
 const getTelephonePaymentLink = async (user: User, service: Service, gatewayAccountId: number) => {
   if (service.agentInitiatedMotoEnabled && user.hasPermission(service.externalId, 'agent-initiated-moto:create')) {
     try {
-      const telephonePaymentLinks = await getProducts(
-        gatewayAccountId,
-        ProductType.AGENT_INITIATED_MOTO,
-      )
+      const telephonePaymentLinks = await getProducts(gatewayAccountId, ProductType.AGENT_INITIATED_MOTO)
       if (telephonePaymentLinks.length >= 1) {
         return telephonePaymentLinks[0].links.pay.href
       }
@@ -86,7 +83,7 @@ const getActionsToDisplay = (
   service: Service,
   account: GatewayAccount,
   user: User,
-  displayTelephonePaymentLink: boolean,
+  displayTelephonePaymentLink: boolean
 ) => {
   const actionsToDisplay = []
 
@@ -155,7 +152,8 @@ const getAccountStatus = async (account: GatewayAccount, service: Service) => {
     ...(account.providerSwitchEnabled && {
       targetPaymentProvider: account.getSwitchingCredential().paymentProvider,
     }),
-    ...(currentCredential?.paymentProvider === PaymentProviders.STRIPE && await getStripeAccountStatus(account, service)),
+    ...(currentCredential?.paymentProvider === PaymentProviders.STRIPE &&
+      (await getStripeAccountStatus(account, service))),
   }
 }
 
@@ -165,7 +163,7 @@ const getStripeAccountStatus = async (account: GatewayAccount, service: Service)
     const stripeAccount = await getStripeAccountCapabilities(account)
     return {
       gatewayAccountStripeProgress,
-      stripeAccount
+      stripeAccount,
     }
   } catch (err) {
     logger.error('Problem retrieving Stripe account details', err)

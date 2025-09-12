@@ -3,7 +3,7 @@ const _ = require('lodash')
 const proxyquire = require('proxyquire')
 
 module.exports = class ControllerTestBuilder {
-  constructor (controllerPath) {
+  constructor(controllerPath) {
     this.controllerPath = controllerPath
     this.next = sinon.stub()
     this.req = {
@@ -13,81 +13,81 @@ module.exports = class ControllerTestBuilder {
       query: {},
       flash: sinon.stub(),
       session: {},
-      params: {}
+      params: {},
     }
     this.res = {
       redirect: sinon.spy(),
       json: sinon.spy(),
-      locals: {}
+      locals: {},
     }
     this.nextReq = null
     this.nextRes = null
     this.nextStubsData = null
   }
 
-  withAccountType (type) {
+  withAccountType(type) {
     this.req.account.type = type
     return this
   }
 
-  withUser (user) {
+  withUser(user) {
     this.req.user = user
     return this
   }
 
-  withAccount (account) {
+  withAccount(account) {
     this.req.account = account
     return this
   }
 
-  withServiceExternalId (serviceExternalId) {
+  withServiceExternalId(serviceExternalId) {
     this.req.service.externalId = serviceExternalId
     return this
   }
 
-  withService (service) {
+  withService(service) {
     this.req.service = service
     return this
   }
 
-  withStubs (stubs) {
+  withStubs(stubs) {
     this.stubs = stubs
     return this
   }
 
-  withParams (params) {
+  withParams(params) {
     this.req.params = params
     return this
   }
 
-  withUrl (url) {
+  withUrl(url) {
     this.req.url = url
     return this
   }
 
-  withSession (session) {
+  withSession(session) {
     this.req.session = session
     return this
   }
 
-  nextRequest (params) {
+  nextRequest(params) {
     this.nextReq = _.merge({}, this.req, params)
     return this
   }
 
-  nextResponse (params) {
+  nextResponse(params) {
     this.nextRes = _.merge({}, this.res, params)
     return this
   }
 
-  nextStubs (stubs) {
+  nextStubs(stubs) {
     this.nextStubsData = stubs
     return this
   }
 
-  build () {
+  build() {
     let controller = proxyquire(this.controllerPath, {
-      ...this.stubs
+      ...this.stubs,
     })
     return {
       req: this.req,
@@ -102,11 +102,11 @@ module.exports = class ControllerTestBuilder {
         const _req = this.nextReq || this.req
         const _res = this.nextRes || this.res
 
-        if ( !(fn instanceof Array && fn.reduce((acc, curr) => acc && typeof curr === 'function', true)) ) {
+        if (!(fn instanceof Array && fn.reduce((acc, curr) => acc && typeof curr === 'function', true))) {
           throw new Error('not a validation chain')
         }
 
-        for (let i = 0; i < fn.length; i ++) {
+        for (let i = 0; i < fn.length; i++) {
           await fn[i](_req, _res, this.next)
         }
       },
@@ -114,9 +114,13 @@ module.exports = class ControllerTestBuilder {
       call: async (method, index) => {
         if (this.nextStubsData) {
           Object.assign(this.stubs, this.nextStubsData) // copy by ref
-          controller = Object.assign({}, controller, proxyquire(this.controllerPath, {
-            ...this.stubs
-          }))
+          controller = Object.assign(
+            {},
+            controller,
+            proxyquire(this.controllerPath, {
+              ...this.stubs,
+            })
+          )
           this.nextStubsData = null
         }
         let fn
@@ -133,7 +137,7 @@ module.exports = class ControllerTestBuilder {
         const currentRes = this.nextRes || this.res
         this.nextReq = this.nextRes = null
         return { result, req: currentReq, res: currentRes }
-      }
+      },
     }
   }
 }

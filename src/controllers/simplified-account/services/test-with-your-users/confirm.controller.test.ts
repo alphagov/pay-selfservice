@@ -1,9 +1,9 @@
 import sinon from 'sinon'
 
-import ControllerTestBuilder from "@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class";
-import GatewayAccountType from "@models/gateway-account/gateway-account-type";
-import formatServiceAndAccountPathsFor from "@utils/simplified-account/format/format-service-and-account-paths-for";
-import paths from "@root/paths";
+import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import paths from '@root/paths'
 
 const mockResponse = sinon.stub()
 
@@ -29,9 +29,9 @@ const { call, res, req } = new ControllerTestBuilder(
   .withSession({
     pageData: {
       testWithYourUsers: {
-        prototypeLink: 'https://pay.test/test-prototype-link'
-      }
-    }
+        prototypeLink: 'https://pay.test/test-prototype-link',
+      },
+    },
   })
   .build()
 
@@ -54,8 +54,12 @@ describe('test-with-your-users/confirm controller tests', () => {
 
       mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
         prototypeLink: 'https://pay.test/test-prototype-link',
-        prototypesLink: formatServiceAndAccountPathsFor(paths.simplifiedAccount.testWithYourUsers.links,  SERVICE_EXTERNAL_ID, GatewayAccountType.TEST),
+        prototypesLink: formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.testWithYourUsers.links,
+          SERVICE_EXTERNAL_ID,
+          GatewayAccountType.TEST
+        ),
       })
     })
-  });
+  })
 })

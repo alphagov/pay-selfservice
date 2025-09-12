@@ -1,5 +1,3 @@
 import * as array from './array'
 
-export {
-  array
-}
+export { array }
