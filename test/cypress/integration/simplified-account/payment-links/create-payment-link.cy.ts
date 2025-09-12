@@ -138,6 +138,12 @@ describe('Create English payment link journey', () => {
           .should('include', 'reference-page.svg')
       })
 
+      it('should navigate back to details page when back link is clicked', () => {
+        cy.get('.service-pane').find('.govuk-back-link').click()
+        cy.get('#service-content').find('h1').should('contain.text', 'Enter payment link details')
+        cy.url().should('include', CREATE_PAYMENT_LINK_URL(GatewayAccountType.TEST))
+      })
+
       it('should validate form inputs', () => {
         cy.get('#reference-type-custom').click()
 
@@ -167,6 +173,12 @@ describe('Create English payment link journey', () => {
           .should('include', 'amount-and-confirm-page.svg')
       })
 
+      it('should navigate back to reference page when back link is clicked', () => {
+        cy.get('.service-pane').find('.govuk-back-link').click()
+        cy.get('#service-content').find('h1').should('contain.text', 'Will your users already have a payment reference?')
+        cy.url().should('include', CREATE_PAYMENT_LINK_REFERENCE_URL(GatewayAccountType.TEST))
+      })
+
       it('should validate form inputs', () => {
         cy.get('#amount-type-fixed').click()
         cy.get('#service-content').find('form').find('#payment-amount').click().focused().clear()
@@ -190,6 +202,12 @@ describe('Create English payment link journey', () => {
       it('English only ui functions', () => {
         cy.get('h1').should('contain', 'Reporting column')
         cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link')
+      })
+
+      it('should navigate back to review page when back link is clicked', () => {
+        cy.get('.service-pane').find('.govuk-back-link').click()
+        cy.get('h1').should('contain', 'Review your payment link details')
+        cy.url().should('include', CREATE_PAYMENT_LINK_REVIEW_URL(GatewayAccountType.TEST))
       })
 
       it('should validate form inputs', () => {
@@ -251,6 +269,12 @@ describe('Create English payment link journey', () => {
         cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link')
       })
 
+      it('should navigate back to amount page when back link is clicked', () => {
+        cy.get('.service-pane').find('.govuk-back-link').click()
+        cy.get('h1').should('contain', 'Is the payment for a fixed amount?')
+        cy.url().should('include', CREATE_PAYMENT_LINK_AMOUNT_URL(GatewayAccountType.TEST))
+      })
+      
       it('should navigate to the index page', () => {
         cy.get('#service-content').find('form').find('button').click()
         cy.url().should('include', PAYMENT_LINKS_URL(GatewayAccountType.TEST))
