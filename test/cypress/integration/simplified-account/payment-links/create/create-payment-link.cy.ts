@@ -283,7 +283,6 @@ describe('Create English payment link journey', () => {
   })
 })
 
-
 describe('Create Welsh payment link journey', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
@@ -347,5 +346,3 @@ describe('Create Welsh payment link journey', () => {
     })
   })
 })
-
-
