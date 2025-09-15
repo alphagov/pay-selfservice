@@ -278,6 +278,13 @@ simplifiedAccount.post(
   servicesController.agreements.cancel.post
 )
 
+// transactions
+simplifiedAccount.get(
+  paths.simplifiedAccount.transactions.index,
+  experimentalFeature,
+  servicesController.transactions.get
+)
+
 // settings index
 simplifiedAccount.get(paths.simplifiedAccount.settings.index, defaultViewDecider)
 

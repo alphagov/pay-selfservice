@@ -303,6 +303,9 @@ module.exports = {
         },
       },
     },
+    transactions: {
+      index: '/transactions',
+    },
   },
   service: {
     root: `/service/:${keys.SERVICE_EXTERNAL_ID}`,
