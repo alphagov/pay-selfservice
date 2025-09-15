@@ -37,7 +37,7 @@ const PAYMENT_LINK_REPORTING_COLUMNS_URL = (serviceMode = 'test', columnHeader: 
 
 const createPaymentLinkWithTitle = (title: string, createUrl: string) => {
   cy.visit(createUrl)
-  cy.get('#service-content').find('form').find('#name').click().focused().type(title)
+  cy.get('#service-content').find('form').find('#name').click().focused().type(title, { delay: 0 })
   cy.get('#service-content').find('form').find('button').click()
 }
 
@@ -61,8 +61,8 @@ const createPaymentLinkWithMetadata = (
 ) => {
   createPaymentLinkWithAmount(title, createUrl)
   cy.get('.govuk-button--secondary').click()
-  cy.get('#service-content').find('form').find('#reporting-column').click().focused().clear().type(columnHeader)
-  cy.get('#service-content').find('form').find('#cell-content').click().focused().clear().type(cellConetent)
+  cy.get('#service-content').find('form').find('#reporting-column').click().focused().clear().type(columnHeader, { delay: 0 })
+  cy.get('#service-content').find('form').find('#cell-content').click().focused().clear().type(cellConetent, { delay: 0 })
   cy.get('#service-content').find('form').find('button').contains('Add reporting column').click()
 }
 
@@ -133,7 +133,7 @@ describe('Create English payment link journey', () => {
       })
 
       it('should navigate to reference page', () => {
-        cy.get('#service-content').find('form').find('#name').click().focused().type('A payment link name')
+        cy.get('#service-content').find('form').find('#name').click().focused().type('A payment link name', { delay: 0 })
         cy.get('#service-content').find('form').find('button').click()
 
         cy.url().should('include', CREATE_PAYMENT_LINK_REFERENCE_URL(GatewayAccountType.TEST))
@@ -288,8 +288,8 @@ describe('Create English payment link journey', () => {
           .within(() => {
             cy.get('.govuk-summary-list__actions a').click()
           })
-        cy.get('#service-content').find('form').find('#reporting-column').click().focused().clear().type('account')
-        cy.get('#service-content').find('form').find('#cell-content').click().focused().clear().type('ABCDE')
+        cy.get('#service-content').find('form').find('#reporting-column').click().focused().clear().type('account', { delay: 0 })
+        cy.get('#service-content').find('form').find('#cell-content').click().focused().clear().type('ABCDE', { delay: 0 })
         cy.get('#service-content').find('form').find('button').contains('Save changes').click()
 
         cy.get('.govuk-summary-list')
@@ -321,8 +321,8 @@ describe('Create English payment link journey', () => {
           .within(() => {
             cy.get('.govuk-summary-list__actions a').click()
           })
-        cy.get('#service-content').find('form').find('#reporting-column').click().focused().clear().type('account')
-        cy.get('#service-content').find('form').find('#cell-content').click().focused().clear().type('ABCDE')
+        cy.get('#service-content').find('form').find('#reporting-column').click().focused().clear().type('account', { delay: 0 })
+        cy.get('#service-content').find('form').find('#cell-content').click().focused().clear().type('ABCDE', { delay: 0 })
         cy.get('#service-content').find('form').find('button').contains('Delete reporting column').click()
 
         cy.get('.govuk-summary-list').find('.govuk-summary-list__row').eq(5).should('not.exist')
