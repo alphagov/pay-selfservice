@@ -4,7 +4,6 @@ import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import Service from '@models/service/Service.class'
 import UserPermissions from '@models/user/permissions'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import formatAccountPathsFor from '@utils/format-account-paths-for'
 
 export = (account: GatewayAccount, service: Service, currentUrl: string, permissions: Record<string, boolean>) => {
   const navBuilder = new NavigationBuilder(currentUrl, permissions)
@@ -24,7 +23,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
     .add({
       id: 'transactions',
       name: 'transactions',
-      path: formatAccountPathsFor(paths.account.transactions.index, account.externalId) as string,
+      path: formatServiceAndAccountPathsFor(paths.simplifiedAccount.transactions.index, service.externalId, account.type),
       hasPermission: UserPermissions.transactions.transactionsRead
     })
     .add({
