@@ -144,6 +144,8 @@ module.exports = function (req, data, template) {
   // TODO update this as url.parse is deprecated
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   const currentUrl = req.baseUrl && req.path ? req.baseUrl + req.path : 'unavailable'
+
+  convertedData.currentPath = currentPath
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(
       currentPath,
