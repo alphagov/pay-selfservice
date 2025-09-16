@@ -10,7 +10,7 @@
         <th class="govuk-table__header" scope="col" id="amount-header">Net</th>
         {% endif %}
       <th class="govuk-table__header" scope="col" id="brand-header">Card brand</th>
-      <th class="govuk-table__header" scope="col" id="state-header">State</th>
+      <th class="govuk-table__header" scope="col" id="state-header">Payment Status</th>
       <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="time-header">Date created</th>
     </tr>
   </thead>
@@ -45,7 +45,7 @@
       {% endif %}
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand">{{result.card_details.card_brand}}</td>
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.state_friendly}}</td>
-      <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time">{{result.created}}</td>
+      <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time">{{result.createdDate}}</td>
     </tr>
   {% endfor %}
   </tbody>
