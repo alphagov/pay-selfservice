@@ -10,6 +10,17 @@
   }
 }
 
+.transactions-filter-simplified-account {
+  form {
+    margin: 0 govuk-spacing(3);
+    padding: govuk-spacing(3) 0;
+  }
+
+  .govuk-hint {
+    color: $govuk-text-colour;
+  }
+}
+
 .datetime-filter {
   float: left;
   width: 100%;
