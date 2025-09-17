@@ -28,7 +28,7 @@
           {{result.total_amount}}
           <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
         {%- else -%}
-          <span style="white-space: pre">{{result.amount}}</span>
+          <span style="white-space: pre">{{result.amountInPounds()}}</span>
         {%- endif -%}
       </td>
       {% if isStripeAccount %}
@@ -43,8 +43,8 @@
           </span>
         </td>
       {% endif %}
-      <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand">{{result.card_details.card_brand}}</td>
-      <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.state_friendly}}</td>
+      <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand">{{result.cardBrand}}</td>
+      <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.state.status}}</td>
       <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time">{{result.createdDate}}</td>
     </tr>
   {% endfor %}
