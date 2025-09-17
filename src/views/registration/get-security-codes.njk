@@ -8,59 +8,63 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-one-half">
-
-    {{ errorSummary ({
-      errors: errors,
-      hrefs: {
-        'sign-in-method': '#sign-in-method'
-      }
-    }) }}
+    {{
+      errorSummary ({
+        errors: errors,
+        hrefs: {
+          'sign-in-method': '#sign-in-method'
+        }
+      })
+    }}
 
     <form method="post" novalidate>
-      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
-      {{ govukRadios({
-        name: "sign-in-method",
-        fieldset: {
-          legend: {
-            text: "Choose how to get security codes",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
-        hint: {
-          text: "To finish creating your account, you need to choose a way to prove it's you when you sign in"
-        },
-        errorMessage: { text: errors['sign-in-method'] } if errors['sign-in-method'] else false,
-        attributes: {
-          'data-cy': 'radios-security-code'
-        },
-        items: [
-          {
-            value: "SMS",
-            text: "Text message",
-            attributes: {
-              'data-cy': 'radio-option-sms'
+      {{
+        govukRadios({
+          name: "sign-in-method",
+          fieldset: {
+            legend: {
+              text: "Choose how to get security codes",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
             }
           },
-          {
-            value: "APP",
-            text: "Authenticator app for your smartphone, tablet or computer",
-            attributes: {
-            'data-cy': 'radio-option-app'
-          }
-          }
-        ]
-      }) }}
-
+          hint: {
+            text: "To finish creating your account, you need to choose a way to prove it's you when you sign in"
+          },
+          errorMessage: { text: errors['sign-in-method'] } if errors['sign-in-method'] else false,
+          attributes: {
+            'data-cy': 'radios-security-code'
+          },
+          items: [
+            {
+              value: "SMS",
+              text: "Text message",
+              attributes: {
+                'data-cy': 'radio-option-sms'
+              }
+            },
+            {
+              value: "APP",
+              text: "Authenticator app for your smartphone, tablet or computer",
+              attributes: {
+              'data-cy': 'radio-option-app'
+            }
+            }
+          ]
+        })
+      }}
       {% include "../two-factor-auth/_authenticator-app-details.njk" %}
 
-      {{ govukButton({
-        text: "Continue",
-        attributes: {
-          id: "continue"
-        }
-      }) }}
+      {{
+        govukButton({
+          text: "Continue",
+          attributes: {
+            id: "continue"
+          }
+        })
+      }}
     </form>
   </div>
 {% endblock %}

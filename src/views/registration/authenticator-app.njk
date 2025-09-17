@@ -9,51 +9,56 @@
 {% block beforeContent %}
   {{ super() }}
   {{
-  govukBackLink({
-    text: "Back",
-    href: routes.register.securityCodes
-  })
+    govukBackLink({
+      text: "Back",
+      href: routes.register.securityCodes
+    })
   }}
 {% endblock %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-
-    {{ errorSummary ({
-      errors: errors,
-      hrefs: {
-        'code': '#code'
-      }
-    }) }}
+    {{
+      errorSummary ({
+        errors: errors,
+        hrefs: {
+          'code': '#code'
+        }
+      })
+    }}
 
     <h1 class="govuk-heading-l">Set up an authenticator app</h1>
 
     {% include "../two-factor-auth/_authenticator-app-instructions.njk" %}
 
     <form method="post" novalidate>
-      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
-      {{ govukInput({
-        label: {
-          text: "Security code",
-          isPageHeading: false
-        },
-        hint: {
-          text: 'This is the 6-digit number shown in your authenticator app'
-        },
-        id: "code",
-        name: "code",
-        inputmode: "numeric",
-        pattern: "[0-9]*",
-        autocomplete: "off",
-        classes: "govuk-input--width-10",
-        errorMessage: { text: errors['code'] } if errors['code'] else false
-      }) }}
+      {{
+        govukInput({
+          label: {
+            text: "Security code",
+            isPageHeading: false
+          },
+          hint: {
+            text: 'This is the 6-digit number shown in your authenticator app'
+          },
+          id: "code",
+          name: "code",
+          inputmode: "numeric",
+          pattern: "[0-9]*",
+          autocomplete: "off",
+          classes: "govuk-input--width-10",
+          errorMessage: { text: errors['code'] } if errors['code'] else false
+        })
+      }}
 
       {{ govukButton({ text: "Continue" }) }}
 
       <p class="govuk-body">
-        <a href="{{ routes.register.securityCodes }}" class="govuk-link govuk-link--no-visited-state">Get a code another way</a>
+        <a href="{{ routes.register.securityCodes }}" class="govuk-link govuk-link--no-visited-state"
+          >Get a code another way</a
+        >
       </p>
     </form>
   </div>

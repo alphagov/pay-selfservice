@@ -8,41 +8,46 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-one-half">
-
-    {{ errorSummary ({
-      errors: errors,
-      hrefs: {
-        'email': '#email'
-      }
-    }) }}
+    {{
+      errorSummary ({
+        errors: errors,
+        hrefs: {
+          'email': '#email'
+        }
+      })
+    }}
 
     <form method="post" novalidate>
-      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
-      {{ govukInput({
-        label: {
-          text: "Enter your email address",
-          classes: "govuk-label--l",
-          isPageHeading: true
-        },
-        hint: {
-          text: "Must be from a government organisation"
-        },
-        id: "email",
-        name: "email",
-        type: "email",
-        autocomplete: "work email",
-        spellcheck: false,
-        errorMessage: { text: errors['email'] } if errors['email'] else false,
-        value: email
-      }) }}
+      {{
+        govukInput({
+          label: {
+            text: "Enter your email address",
+            classes: "govuk-label--l",
+            isPageHeading: true
+          },
+          hint: {
+            text: "Must be from a government organisation"
+          },
+          id: "email",
+          name: "email",
+          type: "email",
+          autocomplete: "work email",
+          spellcheck: false,
+          errorMessage: { text: errors['email'] } if errors['email'] else false,
+          value: email
+        })
+      }}
 
-      {{ govukButton({
-        text: "Continue",
-        attributes: {
-          id: "continue"
-        }
-      }) }}
+      {{
+        govukButton({
+          text: "Continue",
+          attributes: {
+            id: "continue"
+          }
+        })
+      }}
     </form>
   </div>
 {% endblock %}
