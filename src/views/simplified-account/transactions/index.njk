@@ -1,3 +1,4 @@
+{% from "govuk/components/accordion/macro.njk" import govukAccordion %}
 {% extends "simplified-account/services/service-layout.njk" %}
 {% set fullWidth = true %}
 
@@ -64,6 +65,22 @@
   {% endif %}
 
   {% include "./filter.njk" %}
+
+  {{ govukAccordion({
+    id: "accordion-default",
+    classes: "disable-accordion-controls",
+    rememberExpanded: false,
+    items: [
+      {
+        heading: {
+        text: "Advanced search"
+      },
+        content: {
+        html: ''
+      }
+      }
+    ]
+  }) }}
 
   {% include "transactions/display-size.njk" %}
 
