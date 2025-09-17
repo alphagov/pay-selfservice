@@ -56,3 +56,9 @@
     margin-left: auto;
   }
 }
+
+#service-name {
+  .govuk-tag {
+    max-width: 100%;
+  }
+}
