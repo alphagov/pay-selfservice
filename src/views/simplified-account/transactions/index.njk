@@ -82,6 +82,15 @@
     ]
   }) }}
 
+  <div class="govuk-button-group">
+    {{ govukButton({
+      text: "Search transactions",
+      href: ""
+    }) }}
+
+    <a class="govuk-link govuk-link--no-visited-state" href="">Clear filters</a>
+  </div>
+
   {% include "transactions/display-size.njk" %}
 
   <h3 class="govuk-heading-s govuk-!-font-weight-regular govuk-!-margin-top-3" id="total-results">
