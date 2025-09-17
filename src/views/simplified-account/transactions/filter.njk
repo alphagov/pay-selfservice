@@ -210,22 +210,5 @@
     {% if filters.metadataValue or filters.agreementId %}
       {% set detailsElementOpenHtml = 'open="true"' %}
     {% endif %}
-
-    <div class="govuk-grid-column-one-quarter inputs-less-margin">
-      {{
-        govukButton({
-          text: 'Search transactions',
-          classes: 'govuk-!-width-full',
-          attributes: {
-            id: "filter"
-          }
-        })
-      }}
-    </div>
-    <div class="govuk-grid-column-one-quarter inputs-less-margin">
-      {% if hasFilters %}
-      <a href="{{clearRedirect}}" class="govuk-link govuk-link--no-visited-state clear-filter">Clear filter</a>
-      {% endif %}
-    </div>
   </form>
 </div>
