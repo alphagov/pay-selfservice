@@ -1,0 +1,274 @@
+<div class="transactions-filter-simplified-account govuk-grid-row">
+  <form class="govuk-clearfix" method="get" action="{{search_path}}" novalidate autocomplete="off">
+    <div class="govuk-grid-row govuk-!-padding-left-3 govuk-!-padding-right-3">
+      <div class="govuk-grid-column-one-quarter inputs-less-margin">
+        {{
+          govukInput({
+            id: 'reference',
+            name: 'reference',
+            value: filters.reference,
+            spellcheck: false,
+            attributes: {
+              'autocapitalize': 'none',
+              'data-cy': 'reference-filter'
+            },
+            classes: 'govuk-!-font-size-16',
+            formGroup: {
+              classes: 'transactions-search-reference-form-group'
+            },
+            label: {
+              text: 'Reference number',
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: 'Enter full or partial number',
+              classes: 'govuk-!-font-size-14'
+            }
+          })
+        }}
+      </div>
+            <div class="govuk-grid-column-one-quarter inputs-less-margin">
+        {{
+          govukInput({
+            id: 'email',
+            name: 'email',
+            value: filters.email,
+            type: 'text',
+            inputmode: 'email',
+            spellcheck: false,
+
+            attributes: {
+              'autocapitalize': 'none',
+              'data-cy': 'email-filter',
+              'autocomplete': 'off',
+              'data-1p-ignore': ''
+            },
+            classes: 'govuk-!-font-size-16',
+            label: {
+              text: 'Email address',
+              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+            },
+            hint: {
+              text: 'Enter full or partial email',
+              classes: 'govuk-!-font-size-14'
+            }
+          })
+        }}
+      </div>
+      <div class="govuk-grid-column-one-quarter">
+        <fieldset class="govuk-fieldset">
+          <legend class="govuk-visually-hidden">
+              Payment status
+          </legend>
+          {# When JavaScript enhances the select to a multi-select, the label element’s for attribute will reference a button element #}
+          {# WAVE complains about this but it is valid according to the HTML standard and the label will activate the button #}
+          {{
+            govukSelect({
+              id: "state",
+              name: "state",
+              classes: 'govuk-!-font-size-16',
+              label: {
+                text: "Payment status",
+                classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+              },
+              hint: {
+                text: "Select a status",
+                classes: 'govuk-!-font-size-14'
+              },
+              attributes: {
+                'data-enhance-multiple': true
+              },
+              items: eventStates
+            })
+          }}
+          </fieldset>
+      </div>
+    </div>
+    <div class="govuk-grid-row govuk-!-padding-left-3 govuk-!-padding-right-3">
+
+
+      <div class="govuk-grid-column-one-half">
+        <div class="govuk-form-group govuk-!-margin-bottom-0">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-!-font-weight-bold govuk-!-font-size-16 govuk-!-display-block govuk-!-margin-bottom-0">
+              Date range
+            </legend>
+            <fieldset class="govuk-fieldset datetime-filter datetime-filter-from">
+              <legend class="govuk-visually-hidden">
+                From this date and time
+              </legend>
+              {{
+                govukInput({
+                  id: 'fromDate',
+                  name: 'fromDate',
+                  value: filters.fromDate,
+                  classes: 'date-picker start govuk-!-font-size-16',
+                  label: {
+                    text: 'Start date',
+                    classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                  },
+                  attributes: {
+                    autocomplete: 'off'
+                  },
+                  formGroup: {
+                    classes: 'datetime-filter__input-container datetime-filter__input-container--date-input'
+                  }
+                })
+              }}
+              {{
+                govukInput({
+                  id: 'fromTime',
+                  name: 'fromTime',
+                  value: filters.fromTime,
+                  classes: 'time-picker start govuk-!-font-size-16',
+                  label: {
+                    text: 'Start time',
+                    classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                  },
+                  attributes: {
+                    autocomplete: 'off'
+                  },
+                  formGroup: {
+                    classes: 'datetime-filter__input-container datetime-filter__input-container--time-input'
+                  }
+                })
+              }}
+            </fieldset>
+              <fieldset class="govuk-fieldset datetime-filter datetime-filter-to">
+                <div class="govuk-form-group datetime-filter-to__container">
+                  <legend class="datetime-separator">
+                    to<span class="govuk-visually-hidden"> this date and time</span>
+                  </legend>
+
+                  <div class="govuk-form-group govuk-!-margin-bottom-0 datetime-filter-to__container {% if isInvalidDateRange %}govuk-!-padding-left-3 govuk-!-margin-bottom-2 govuk-form-group--error{% endif %}">
+                    {% if isInvalidDateRange %}
+                      <p class="govuk-error-message govuk-!-font-size-16 end-date-error-message" data-cy="from-date-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> End date must be after start date
+                      </p>
+                    {% endif %}
+
+                    {% set cssClassesForToDateInput = 'date-picker end govuk-!-font-size-16 ' %}
+                    {% set cssClassesForToDateFormGroup = 'datetime-filter__input-container datetime-filter__input-container--date-input filter-date-input' %}
+
+                    {% if isInvalidDateRange %}
+                      {% set cssClassesForToDateInput =  cssClassesForToDateInput + ' govuk-input--error govuk-!-margin-bottom-0 govuk-!-padding-right-1' %}
+                      {% set cssClassesForToDateFormGroup = cssClassesForToDateFormGroup + ' govuk-!-margin-bottom-0' %}
+                    {% endif %}
+
+                    {{
+                      govukInput({
+                        id: 'toDate',
+                        name: 'toDate',
+                        value: filters.toDate,
+                        classes: cssClassesForToDateInput,
+                        label: {
+                          text: 'End date',
+                          classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                        },
+                        attributes: {
+                          autocomplete: 'off',
+                          'data-cy': 'to-date-field'
+                        },
+                        formGroup: {
+                          classes: cssClassesForToDateFormGroup
+                        }
+                      })
+                    }}
+
+                    {{
+                      govukInput({
+                        id: 'toTime',
+                        name: 'toTime',
+                        value: filters.toTime,
+                        classes: 'time-picker end govuk-!-font-size-16',
+                        label: {
+                          text: 'End time',
+                          classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+                        },
+                        attributes: {
+                          autocomplete: 'off'
+                        },
+                        formGroup: {
+                          classes: 'datetime-filter__input-container datetime-filter__input-container--time-input'
+                        }
+                      })
+                    }}
+                  </div>
+                </div>
+              </fieldset>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+    {% if filters.metadataValue or filters.agreementId %}
+      {% set detailsElementOpenHtml = 'open="true"' %}
+    {% endif %}
+    <div class="govuk-grid-column-full">
+      <div class="govuk-grid-column-one-half">
+        <details class="govuk-details" {{ detailsElementOpenHtml }}>
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              Advanced filters
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            {{
+              govukInput({
+                id: 'metadataValue',
+                name: 'metadataValue',
+                value: filters.metadataValue,
+                classes: 'govuk-!-font-size-16',
+                label: {
+                  text: 'Search by metadata or reporting column',
+                  classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+                },
+                hint: {
+                  text: 'Enter full value',
+                  classes: 'govuk-!-font-size-14'
+                }
+              })
+            }}
+            {% if recurringEnabled %}
+            {{
+              govukInput({
+                id: 'agreementId',
+                name: 'agreementId',
+                value: filters.agreementId,
+                spellcheck: false,
+                attributes: {
+                  'autocapitalize': 'none'
+                },
+                classes: 'govuk-!-font-size-16',
+                label: {
+                  text: 'Search by agreement',
+                  classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+                },
+                hint: {
+                  text: 'Enter agreement identifier',
+                  classes: 'govuk-!-font-size-14'
+                }
+              })
+            }}
+            {% endif %}
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="govuk-grid-column-one-quarter inputs-less-margin">
+      {{
+        govukButton({
+          text: 'Search transactions',
+          classes: 'govuk-!-width-full',
+          attributes: {
+            id: "filter"
+          }
+        })
+      }}
+    </div>
+    <div class="govuk-grid-column-one-quarter inputs-less-margin">
+      {% if hasFilters %}
+      <a href="{{clearRedirect}}" class="govuk-link govuk-link--no-visited-state clear-filter">Clear filter</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
