@@ -10,17 +10,29 @@ import tokenStubs from '@test/cypress/stubs/token-stubs'
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const GATEWAY_ACCOUNT_ID = 117
-const SERVICE_NAME = {
-  en: 'McDuck Enterprises',
-  cy: 'Mentrau McDuck',
+
+interface ServiceName {
+  en: string
+  cy?: string
+}
+
+const SERVICE_NAME: ServiceName = {
+  en: 'McDuck Council',
+  cy: 'Cyngor McDuck',
+}
+
+const ENGLISH_ONLY_SERVICE_NAME: ServiceName = {
+  en: 'McDuck Council',
+  cy: undefined,
 }
 
 const PAYMENT_LINKS_URL = (serviceMode = 'test') =>
   `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links`
 
-const CREATE_PAYMENT_LINK_URL = (serviceMode = 'test', isWelsh = false) => {
+const CREATE_PAYMENT_LINK_URL = (serviceMode = 'test', isWelsh = false, useEnglishServiceName = false) => {
   const languageParam = isWelsh ? '?language=cy' : ''
-  return `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links/create${languageParam}`
+  const useEnglishServiceNameParam = useEnglishServiceName ? '&useEnglishServiceName=true' : ''
+  return `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links/create${languageParam}${useEnglishServiceNameParam}`
 }
 
 const CREATE_PAYMENT_LINK_REFERENCE_URL = (serviceMode = 'test') =>
@@ -78,12 +90,17 @@ const createPaymentLinkWithMetadata = (
   cy.get('#service-content').find('form').find('button').contains('Add reporting column').click()
 }
 
-const setupStubs = (role = 'admin', gatewayAccountType = 'test', products: object[] = []) => {
+const setupStubs = (
+  role = 'admin',
+  gatewayAccountType = 'test',
+  serviceName: ServiceName = SERVICE_NAME,
+  products: object[] = []
+) => {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
       userExternalId: USER_EXTERNAL_ID,
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
-      serviceName: SERVICE_NAME,
+      serviceName: serviceName,
       serviceExternalId: SERVICE_EXTERNAL_ID,
       role: (ROLES as Record<string, object>)[role],
     }),
@@ -142,6 +159,16 @@ describe('Create English payment link journey', () => {
         cy.get('.govuk-hint').should('contain.text', 'Give your users more information.')
         cy.get('#service-content').find('.govuk-heading-s').should('contain.text', 'Example of what users will see')
         cy.get('#service-content').find('img').should('have.attr', 'src').should('include', 'start-page.svg')
+      })
+
+      it('should display the prospective web address containing the English service name', () => {
+        cy.get('#service-content')
+          .find('form')
+          .find('#name')
+          .click()
+          .focused()
+          .type('A payment link name', { delay: 0 })
+        cy.get('.url-preview').should('contain.text', 'mcduck-council/payment-link-name')
       })
 
       it('should navigate to reference page', () => {
@@ -417,6 +444,16 @@ describe('Create Welsh payment link journey', () => {
         cy.get('.govuk-hint').should('contain.text', 'Give your users more information in Welsh.')
         cy.get('#service-content').find('.govuk-heading-s').should('not.exist')
       })
+
+      it('should display the prospective web address containing the Welsh service name', () => {
+        cy.get('#service-content')
+          .find('form')
+          .find('#name')
+          .click()
+          .focused()
+          .type('A payment link name', { delay: 0 })
+        cy.get('.url-preview').should('contain.text', 'cyngor-mcduck/payment-link-name')
+      })
     })
 
     describe('payment link reference page', () => {
@@ -463,6 +500,63 @@ describe('Create Welsh payment link journey', () => {
       })
       it('Welsh only ui functions', () => {
         cy.get('.govuk-caption-l').should('contain.text', 'Create test payment link (Welsh)')
+      })
+    })
+  })
+
+  describe('Live account when the Welsh service name is missing', () => {
+    const USER_ROLE = 'admin'
+    beforeEach(() => {
+      setupStubs(USER_ROLE, GatewayAccountType.LIVE, ENGLISH_ONLY_SERVICE_NAME)
+    })
+
+    describe('payment link Welsh service name page', () => {
+      beforeEach(() => {
+        cy.visit(CREATE_PAYMENT_LINK_URL(GatewayAccountType.LIVE, true), { failOnStatusCode: false })
+      })
+
+      it('should allow the user to set a Welsh service name', () => {
+        cy.get('.govuk-caption-l').should('contain.text', 'Create live payment link (Welsh)')
+        cy.get('.govuk-label').should('contain.text', 'Welsh service name')
+        cy.get('.govuk-hint').should('contain.text', 'This is what your users will see when making a payment.')
+      })
+
+      it('should validate service name length', () => {
+        const longServiceName =
+          'This is a very long service name that exceeds the fifty character limit and should trigger validation error'
+        cy.get('#service-content').find('form').find('#service-name').click().focused().clear().type(longServiceName)
+        cy.get('#service-content').find('button').click()
+        cy.get('.govuk-error-summary')
+          .should('exist')
+          .should('contain.text', 'Service name must be 50 characters or fewer')
+        cy.get('#service-content').find('form').find('#service-name').should('have.class', 'govuk-input--error')
+      })
+
+      it('accessibility check', () => {
+        cy.a11yCheck()
+      })
+    })
+
+    describe('when the user chooses to use the English service name', () => {
+      beforeEach(() => {
+        cy.visit(CREATE_PAYMENT_LINK_URL(GatewayAccountType.LIVE, true, true), { failOnStatusCode: false })
+      })
+
+      it('should show the details page for a Welsh payment link', () => {
+        cy.get('.govuk-caption-l').should('contain.text', 'Create live payment link (Welsh)')
+        cy.get('.govuk-hint').should('contain.text', 'Talu am drwydded barcio')
+        cy.get('.govuk-hint').should('contain.text', 'Give your users more information in Welsh.')
+        cy.get('#service-content').find('.govuk-heading-s').should('not.exist')
+      })
+
+      it('should display the prospective web address containing the English service name', () => {
+        cy.get('#service-content')
+          .find('form')
+          .find('#name')
+          .click()
+          .focused()
+          .type('A payment link name', { delay: 0 })
+        cy.get('.url-preview').should('contain.text', 'mcduck-council/payment-link-name')
       })
     })
   })
