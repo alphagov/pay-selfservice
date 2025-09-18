@@ -1,5 +1,5 @@
 <div class="transactions-filter-simplified-account govuk-grid-row">
-  <form class="govuk-clearfix" method="get" action="{{search_path}}" novalidate autocomplete="off">
+  <form class="govuk-clearfix" method="get" action="{{ search_path }}" novalidate autocomplete="off">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third inputs-less-margin">
         {{
@@ -36,7 +36,6 @@
             type: 'text',
             inputmode: 'email',
             spellcheck: false,
-
             attributes: {
               'autocapitalize': 'none',
               'data-cy': 'email-filter',
@@ -56,9 +55,9 @@
         }}
       </div>
       <div class="govuk-grid-column-one-third">
-        <fieldset class="govuk-fieldset">
+        
           <legend class="govuk-visually-hidden">
-              Payment status
+            Payment status
           </legend>
           {# When JavaScript enhances the select to a multi-select, the label element’s for attribute will reference a button element #}
           {# WAVE complains about this but it is valid according to the HTML standard and the label will activate the button #}
@@ -78,7 +77,7 @@
               attributes: {
                 'data-enhance-multiple': true
               },
-              items: [{ 
+              items: [{
                 value: "all",
                 text: "All"
               },
@@ -88,14 +87,14 @@
               }]
             })
           }}
-          </fieldset>
+        
       </div>
     </div>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
         <fieldset class="govuk-fieldset">
           <legend class="govuk-visually-hidden">
-              Date filters
+            Date filters
           </legend>
           {# When JavaScript enhances the select to a multi-select, the label element’s for attribute will reference a button element #}
           {# WAVE complains about this but it is valid according to the HTML standard and the label will activate the button #}
@@ -109,13 +108,13 @@
                 classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
               },
               hint: {
-                text: "Select a range or enter  manually",
+                text: "Select a range or enter manually",
                 classes: 'govuk-!-font-size-14'
               },
               attributes: {
                 'data-enhance-multiple': true
               },
-              items: [{ 
+              items: [{
                 value: "yesterday",
                 text: "Yesterday"
               },
@@ -173,11 +172,27 @@
                   }
                 })
               }}
-          </fieldset>
+          </fieldset>  
+        <div class="govuk-grid-column-one-third">
+          {{ govukCheckboxes({
+            name: "time",
+            classes: "govuk-checkboxes--small",
+            fieldset: {
+              legend: {
+                text: "time",
+                isPageHeading: true,
+                classes: "govuk-visually-hidden"
+              }
+            },
+            items: [
+              {
+                value: "time",
+                text: "Include time"
+              }
+            ]
+          }) }}
         </div>
       </div>
-    
-
     </div>
     
     {% if filters.metadataValue or filters.agreementId %}
