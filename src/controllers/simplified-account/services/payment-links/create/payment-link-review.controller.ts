@@ -111,6 +111,9 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     .withLanguage(pageData.language)
     .withMetadata(pageData.metadata)
     .withType(ProductType.ADHOC)
+    .withReferenceEnabled(pageData.paymentReferenceType === 'custom')
+    .withReferenceHint(pageData.paymentReferenceHint)
+    .withReferenceLabel(pageData.paymentReferenceLabel)
 
   const paymentLink = await createProduct(createProductRequest)
   const successBannerBody =
