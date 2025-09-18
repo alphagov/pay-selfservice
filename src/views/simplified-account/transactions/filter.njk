@@ -1,6 +1,6 @@
 <div class="transactions-filter-simplified-account govuk-grid-row">
   <form class="govuk-clearfix" method="get" action="{{search_path}}" novalidate autocomplete="off">
-    <div class="govuk-grid-row govuk-!-padding-left-3 govuk-!-padding-right-3">
+    <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third inputs-less-margin">
         {{
           govukInput({
@@ -91,6 +91,7 @@
           </fieldset>
       </div>
     </div>
+    <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
         <fieldset class="govuk-fieldset">
           <legend class="govuk-visually-hidden">
@@ -126,8 +127,6 @@
           }}
         </fieldset>
       </div>
-      
-    <div class="govuk-grid-row govuk-!-padding-left-3">
       <div class="govuk-grid-column">
         <div class="govuk-form-group govuk-!-margin-bottom-0">
           <fieldset class="govuk-fieldset">
@@ -161,23 +160,26 @@
                   id: 'fromTime',
                   name: 'fromTime',
                   value: filters.fromTime,
-                  classes: 'time-picker start govuk-!-font-size-16',
+                  classes: 'date-picker end govuk-!-font-size-16',
                   label: {
-                    text: 'Start time',
+                    text: 'End date',
                     classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
                   },
                   attributes: {
                     autocomplete: 'off'
                   },
                   formGroup: {
-                    classes: 'datetime-filter__input-container datetime-filter__input-container--time-input'
+                    classes: 'datetime-filter__input-container datetime-filter__input-container--date-input'
                   }
                 })
               }}
           </fieldset>
         </div>
       </div>
+    
+
     </div>
+    
     {% if filters.metadataValue or filters.agreementId %}
       {% set detailsElementOpenHtml = 'open="true"' %}
     {% endif %}
