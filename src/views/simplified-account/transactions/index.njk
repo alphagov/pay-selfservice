@@ -97,6 +97,7 @@
     classes: "govuk-button--secondary"
   }) }}
 
+  {% if isBST %}
   <details class="govuk-details">
     <summary class="govuk-details__summary">
       <span class="govuk-details__summary-text">
@@ -108,6 +109,7 @@
       If you want to download a day’s transactions, you can change your filters so it’s one hour ahead, for example 01:00:00 to 01:00:00 instead of 00:00:00 to 00:00:00.
     </div>
   </details>
+  {% endif %}
 
   {% include "transactions/display-size.njk" %}
 
