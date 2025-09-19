@@ -22,6 +22,7 @@ const possibleActions = {
   requestPspTestAccount: 3,
   goLive: 4,
   telephonePaymentLink: 5,
+  switchMode: 6,
 }
 
 const goLiveStartedStages = [
@@ -65,6 +66,18 @@ const displayDemoAndTestPaymentLinks = (account: GatewayAccount) => {
   )
 }
 
+const displaySwitchMode = (service: Service, account: GatewayAccount) => {
+  if (account.type === GatewayAccountType.LIVE) {
+    return true
+  }
+
+  if (account.type === GatewayAccountType.TEST && service.currentGoLiveStage === GoLiveStage.LIVE) {
+    return true
+  }
+
+  return false
+}
+
 const getTelephonePaymentLink = async (user: User, service: Service, gatewayAccountId: number) => {
   if (service.agentInitiatedMotoEnabled && user.hasPermission(service.externalId, 'agent-initiated-moto:create')) {
     try {
@@ -104,6 +117,10 @@ const getActionsToDisplay = (
 
   if (displayTelephonePaymentLink) {
     actionsToDisplay.push(possibleActions.telephonePaymentLink)
+  }
+
+  if (displaySwitchMode(service, account)) {
+    actionsToDisplay.push(possibleActions.switchMode)
   }
 
   return actionsToDisplay
@@ -146,6 +163,7 @@ const getAccountStatus = async (account: GatewayAccount, service: Service) => {
   const unconfigured = currentCredential?.state === CredentialState.CREATED
   return {
     disabled: account.disabled,
+    type: account.type,
     unconfigured,
     paymentProvider: currentCredential?.paymentProvider,
     isSwitching: account.providerSwitchEnabled,

@@ -254,11 +254,11 @@ describe('Service Name Component', () => {
       setupStubs(GatewayAccountType.TEST, GoLiveStage.NOT_STARTED, PaymentProviders.WORLDPAY, CredentialState.ACTIVE)
     })
 
-    it('should display service as not live yet', () => {
+    it('should display service as worldpay test', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/dashboard`)
       cy.get('#service-name').find('.govuk-body').should('contain.text', SERVICE_NAME.en)
       cy.get('#service-name').find('.govuk-tag').should('contain.text', 'Worldpay test')
-      cy.get('#service-name').find('.govuk-tag').should('have.class', 'govuk-tag--blue')
+      cy.get('#service-name').find('.govuk-tag').should('have.class', 'govuk-tag--grey')
       cy.get('#service-name').find('p').should('have.length', 1)
     })
   })

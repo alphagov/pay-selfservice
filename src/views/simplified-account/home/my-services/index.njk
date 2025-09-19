@@ -1,0 +1,19 @@
+{% extends "layout.njk" %}
+{% from "macro/system-messages.njk" import systemMessages %}
+
+{% block pageTitle %}
+  My services - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  {% if messages is defined and messages is iterable and messages|length > 0 %}
+    <div class="govuk-grid-column-full">{{ systemMessages({ messages: messages }) }}</div>
+  {% endif %}
+
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-l">My services</h1>
+  </div>
+
+  <div class="govuk-grid-column-two-thirds">{% include "./_services.njk" %}</div>
+  <div class="govuk-grid-column-one-third">{% include "./_side-bar-links.njk" %}</div>
+{% endblock %}

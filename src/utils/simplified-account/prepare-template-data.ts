@@ -48,7 +48,7 @@ const ServiceStatus = {
   },
   WORLDPAY_TEST: {
     tag: 'Worldpay test',
-    colour: 'govuk-tag--blue',
+    colour: 'govuk-tag--grey',
   },
   PSP_ONBOARDING: (href: string) => {
     return {

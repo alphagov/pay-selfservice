@@ -96,11 +96,11 @@ const DEFAULT_PRODUCTS_RESPONSE = [
   {
     links: {
       pay: {
-        method: "GET",
-        href: "https://pay.me/pay/reference/blah"
-      }
-    }
-  }
+        method: 'GET',
+        href: 'https://pay.me/pay/reference/blah',
+      },
+    },
+  },
 ]
 
 const mockResponse = sinon.stub()
@@ -212,10 +212,10 @@ describe('controller: services/dashboard', () => {
         await call('get')
       })
 
-      it('should enable demo payment, test payment link dashboard actions', () => {
+      it('should enable switch mode, demo payment, test payment link dashboard actions', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         const dashboardActions = context.dashboardActions as number[]
-        sinon.assert.match(dashboardActions, [0, 1])
+        sinon.assert.match(dashboardActions, [0, 1, 6])
       })
 
       it('should set go live status as not started', () => {
@@ -360,10 +360,10 @@ describe('controller: services/dashboard', () => {
         await call('get')
       })
 
-      it('should enable demo payment and test payment link dashboard actions', () => {
+      it('should enable switch mode, demo payment and test payment link dashboard actions', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         const dashboardActions = context.dashboardActions as number[]
-        sinon.assert.match(dashboardActions, [0, 1])
+        sinon.assert.match(dashboardActions, [0, 1, 6])
       })
 
       it('should set go live status as not started', () => {
@@ -397,10 +397,10 @@ describe('controller: services/dashboard', () => {
           await call('get')
         })
 
-        it('should enable manage payment links dashboard action', () => {
+        it('should enable switch mode, manage payment links dashboard action', () => {
           const context = mockResponse.args[0][3] as Record<string, unknown>
           const dashboardActions = context.dashboardActions as number[]
-          sinon.assert.match(dashboardActions, [2])
+          sinon.assert.match(dashboardActions, [2, 6])
         })
 
         it('should set go live status as not available', () => {
@@ -444,10 +444,10 @@ describe('controller: services/dashboard', () => {
           mockStripeDetailsService.getStripeAccountCapabilities.resolves(DEFAULT_STRIPE_CAPABILITIES_RESPONSE)
         })
 
-        it('should enable manage payment links dashboard action', () => {
+        it('should enable switch mode, manage payment links dashboard action', () => {
           const context = mockResponse.args[0][3] as Record<string, unknown>
           const dashboardActions = context.dashboardActions as number[]
-          sinon.assert.match(dashboardActions, [2])
+          sinon.assert.match(dashboardActions, [2, 6])
         })
 
         it('should set go live status as not available', () => {
@@ -496,10 +496,10 @@ describe('controller: services/dashboard', () => {
           await call('get')
         })
 
-        it('should enable manage payment links dashboard action', () => {
+        it('should enable switch mode, manage payment links dashboard action', () => {
           const context = mockResponse.args[0][3] as Record<string, unknown>
           const dashboardActions = context.dashboardActions as number[]
-          sinon.assert.match(dashboardActions, [2])
+          sinon.assert.match(dashboardActions, [2, 6])
         })
 
         it('should set go live status as not available', () => {
@@ -534,10 +534,10 @@ describe('controller: services/dashboard', () => {
           await call('get')
         })
 
-        it('should enable manage payment links dashboard action', () => {
+        it('should enable switch mode, manage payment links dashboard action', () => {
           const context = mockResponse.args[0][3] as Record<string, unknown>
           const dashboardActions = context.dashboardActions as number[]
-          sinon.assert.match(dashboardActions, [2])
+          sinon.assert.match(dashboardActions, [2, 6])
         })
 
         it('should set go live status as not available', () => {
@@ -607,10 +607,10 @@ describe('controller: services/dashboard', () => {
         await call('get')
       })
 
-      it('should enable manage payment links dashboard action', () => {
+      it('should enable switch mode, manage payment links dashboard action', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         const dashboardActions = context.dashboardActions as number[]
-        sinon.assert.match(dashboardActions, [2])
+        sinon.assert.match(dashboardActions, [2, 6])
       })
 
       it('should set go live status as not available', () => {
@@ -659,19 +659,16 @@ describe('controller: services/dashboard', () => {
         await call('get')
       })
 
-      it('should enable manage payment links and telephone payment dashboard actions', () => {
+      it('should enable switch mode, manage payment links and telephone payment dashboard actions', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         const dashboardActions = context.dashboardActions as number[]
-        sinon.assert.match(dashboardActions, [2, 5])
+        sinon.assert.match(dashboardActions, [2, 5, 6])
       })
 
       it('should set telephone payment link', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         const links = context.links as Record<string, Record<string, string>>
-        sinon.assert.match(
-          links.dashboardActions.telephonePaymentLink,
-          DEFAULT_PRODUCTS_RESPONSE[0].links.pay.href,
-        )
+        sinon.assert.match(links.dashboardActions.telephonePaymentLink, DEFAULT_PRODUCTS_RESPONSE[0].links.pay.href)
       })
     })
 
