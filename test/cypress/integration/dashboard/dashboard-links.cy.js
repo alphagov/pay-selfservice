@@ -1,3 +1,5 @@
+import CredentialState from '@models/constants/credential-state'
+
 const userStubs = require('../../stubs/user-stubs')
 const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
@@ -27,7 +29,15 @@ function getStubsForDashboard (gatewayAccountId, type, paymentProvider, goLiveSt
       gateway_account_id: gatewayAccountId,
       type: type,
       payment_provider: paymentProvider,
-      external_id: gatewayAccountExternalId
+      external_id: gatewayAccountExternalId,
+      gateway_account_credentials: [
+        {
+          state: CredentialState.ACTIVE,
+          payment_provider: paymentProvider,
+          credentials: {},
+          external_id: 'credential123abc',
+        },
+      ],
     }),
     transactionsSummaryStubs.getDashboardStatistics(),
     gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }))
@@ -40,26 +50,32 @@ describe('the links are displayed correctly on the dashboard', () => {
       cy.setEncryptedCookies(userExternalId)
     })
 
-    it('should display 2 links for a live service sandbox account', () => {
+    it('should display 3 links for a live service in sandbox mode', () => {
       cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.SANDBOX, GoLiveStage.LIVE))
 
       cy.visit(dashboardUrl(GatewayAccountType.TEST))
-      cy.get('.links__box').should('have.length', 2)
+      cy.get('.links__box').should('have.length', 3)
+
+      cy.get('#switch-mode').should('exist')
+      cy.get('#switch-mode').should('contain.text', 'Exit sandbox mode')
+      cy.get('#switch-mode').should('have.class', 'flex-grid--column-third')
 
       cy.get('#demo-payment-link').should('exist')
-      cy.get('#demo-payment-link').should('have.class', 'flex-grid--column-half')
-      cy.get('#demo-payment-link').should('not.have.class', 'border-bottom')
+      cy.get('#demo-payment-link').should('have.class', 'flex-grid--column-third')
 
       cy.get('#test-payment-link-link').should('exist')
-      cy.get('#test-payment-link-link').should('have.class', 'flex-grid--column-half')
-      cy.get('#test-payment-link-link').should('not.have.class', 'border-bottom')
+      cy.get('#test-payment-link-link').should('have.class', 'flex-grid--column-third')
     })
 
-    it('should display 1 link for a live service non-sandbox account', () => {
+    it('should display 2 links for a live service in live mode', () => {
       cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.LIVE, PaymentProviders.WORLDPAY, GoLiveStage.LIVE))
 
       cy.visit(dashboardUrl(GatewayAccountType.LIVE))
-      cy.get('.links__box').should('have.length', 1)
+      cy.get('.links__box').should('have.length', 2)
+
+      cy.get('#switch-mode').should('exist')
+      cy.get('#switch-mode').should('contain.text', 'Enter sandbox mode')
+      cy.get('#switch-mode').should('have.class', 'flex-grid--column-half')
 
       cy.get('#payment-links-link').should('exist')
       cy.get('#payment-links-link').should('have.class', 'flex-grid--column-half')

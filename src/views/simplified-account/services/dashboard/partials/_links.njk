@@ -12,7 +12,7 @@
 >
   <div class="flex-grid--row">
     {% if possibleActions.switchMode in dashboardActions %}
-      <article class="{{ columnClass }} links__box" id="enter-sandbox-mode">
+      <article class="{{ columnClass }} links__box" id="switch-mode">
         <a href="{{ links.dashboardActions.switchMode }}">
           {% if accountStatus.type === 'live' %}
             <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Enter sandbox mode</h2>
