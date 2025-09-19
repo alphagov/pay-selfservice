@@ -1,5 +1,6 @@
 {% extends "../layout.njk" %}
 {% from "../macro/error-summary.njk" import errorSummary %}
+{% set isSignInActive = true %}
 
 {% block pageTitle %}
   Check your mobile phone number - GOV.UK Pay
@@ -8,42 +9,45 @@
 {% block beforeContent %}
   {{ super() }}
   {{
-  govukBackLink({
-    text: "Back",
-    href: routes.register.smsCode
-  })
+    govukBackLink({
+      text: "Back",
+      href: routes.register.smsCode
+    })
   }}
 {% endblock %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-one-half">
-
-    {{ errorSummary ({
-      errors: errors,
-      hrefs: {
-        'phone': '#phone'
-      }
-    }) }}
+    {{
+      errorSummary ({
+        errors: errors,
+        hrefs: {
+          'phone': '#phone'
+        }
+      })
+    }}
 
     <h1 class="govuk-heading-l">Check your mobile phone number</h1>
 
     <p class="govuk-body">Check your mobile phone number is correct, then resend the security code.</p>
 
     <form method="post" novalidate>
-      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
-      {{ govukInput({
-        label: {
-          text: "Mobile phone number",
-          classes: "govuk-label--s"
-        },
-        id: "phone",
-        name: "phone",
-        type: "tel",
-        autocomplete: "mobile tel",
-        errorMessage: { text: errors['phone'] } if errors['phone'] else false,
-        value: phoneNumber
-      }) }}
+      {{
+        govukInput({
+          label: {
+            text: "Mobile phone number",
+            classes: "govuk-label--s"
+          },
+          id: "phone",
+          name: "phone",
+          type: "tel",
+          autocomplete: "mobile tel",
+          errorMessage: { text: errors['phone'] } if errors['phone'] else false,
+          value: phoneNumber
+        })
+      }}
 
       {{ govukButton({ text: "Resend security code" }) }}
     </form>

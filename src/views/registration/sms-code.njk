@@ -1,5 +1,6 @@
 {% extends "../layout.njk" %}
 {% from "../macro/error-summary.njk" import errorSummary %}
+{% set isSignInActive = true %}
 
 {% block pageTitle %}
   Check your phone - GOV.UK Pay
@@ -8,58 +9,76 @@
 {% block beforeContent %}
   {{ super() }}
   {{
-  govukBackLink({
-    text: "Back",
-    href: routes.register.phoneNumber
-  })
+    govukBackLink({
+      text: "Back",
+      href: routes.register.phoneNumber
+    })
   }}
 {% endblock %}
 
 {% block mainContent %}
   <div class="govuk-grid-column-one-half">
-
-    {{ errorSummary ({
-      errors: errors,
-      hrefs: {
-        'code': '#code'
-      }
-    }) }}
+    {{
+      errorSummary ({
+        errors: errors,
+        hrefs: {
+          'code': '#code'
+        }
+      })
+    }}
 
     <h1 class="govuk-heading-l">Check your phone</h1>
 
-    {{ govukInsetText({
-      text: "We have sent a code to " + redactedPhoneNumber + "."
-    }) }}
+    {{
+      govukInsetText({
+        text: "We have sent a code to " + redactedPhoneNumber + "."
+      })
+    }}
 
     <form method="post" novalidate>
-      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
-      {{ govukInput({
-        label: {
-          text: "Enter the 6 digit security code",
-          isPageHeading: false
-        },
-        id: "code",
-        name: "code",
-        classes: "govuk-input--width-10",
-        errorMessage: { text: errors['code'] } if errors['code'] else false
-      }) }}
+      {{
+        govukInput({
+          label: {
+            text: "Enter the 6 digit security code",
+            isPageHeading: false
+          },
+          id: "code",
+          name: "code",
+          classes: "govuk-input--width-10",
+          errorMessage: { text: errors['code'] } if errors['code'] else false
+        })
+      }}
+
 
       {% set detailsHTML %}
-      <p class="govuk-body">Try to <a class="govuk-link govuk-link govuk-link--no-visited-state" href="{{ routes.register.resendCode }}">send the code again</a>, or <a class="govuk-link govuk-link govuk-link--no-visited-state" href="{{ routes.register.securityCodes }}">get a code another way</a>.
+        <p class="govuk-body">
+          Try to
+          <a class="govuk-link govuk-link govuk-link--no-visited-state" href="{{ routes.register.resendCode }}"
+            >send the code again</a
+          >, or
+          <a class="govuk-link govuk-link govuk-link--no-visited-state" href="{{ routes.register.securityCodes }}"
+            >get a code another way</a
+          >.
+        </p>
       {% endset %}
 
-      {{ govukDetails({
-        summaryText: "Problems with the code?",
-        html: detailsHTML
-      }) }}
+      {{
+        govukDetails({
+          summaryText: "Problems with the code?",
+          html: detailsHTML
+        })
+      }}
 
-      {{ govukButton({
-        text: "Continue",
-        attributes: {
-          id: "continue"
-        }
-      }) }}
+      {{
+        govukButton({
+          text: "Continue",
+          attributes: {
+            id: "continue"
+          }
+        })
+      }}
     </form>
   </div>
 {% endblock %}
