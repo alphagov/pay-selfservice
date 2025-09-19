@@ -100,10 +100,6 @@ const getActionsToDisplay = (
 ) => {
   const actionsToDisplay = []
 
-  if (displaySwitchMode(service, account)) {
-    actionsToDisplay.push(possibleActions.switchMode)
-  }
-
   if (displayDemoAndTestPaymentLinks(account)) {
     actionsToDisplay.push(possibleActions.demoPayment)
     actionsToDisplay.push(possibleActions.testPaymentLink)
@@ -121,6 +117,10 @@ const getActionsToDisplay = (
 
   if (displayTelephonePaymentLink) {
     actionsToDisplay.push(possibleActions.telephonePaymentLink)
+  }
+
+  if (displaySwitchMode(service, account)) {
+    actionsToDisplay.push(possibleActions.switchMode)
   }
 
   return actionsToDisplay
