@@ -16,7 +16,7 @@ export interface TransactionData {
   email: string
   payment_provider: string
   created_date: string
-  card_details: CardDetailsData
+  card_details?: CardDetailsData
   delayed_capture: boolean
   gateway_transaction_id: string
   refund_summary: {
