@@ -1,3 +1,5 @@
+// TODO delete me when new My Services is live
+
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const paths = require('@root/paths')
 const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')

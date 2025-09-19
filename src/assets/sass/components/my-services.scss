@@ -42,7 +42,7 @@
   @include govuk-font($size: 19, $weight: bold);
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     top: 50%;
     left: 0;
@@ -50,6 +50,112 @@
     width: 1.5rem;
     height: 1.5rem;
     border-radius: 50%;
-    background-color: govuk-colour("green");
+    background-color: govuk-colour('green');
+  }
+}
+
+// -- NEW PP-14457
+
+#service-links__container {
+  margin-bottom: govuk-spacing(5);
+  border-bottom: 1px solid govuk-colour('mid-grey');
+  max-width: 620px;
+}
+
+#service-search__container {
+  display: none;
+  #service-search-input__container {
+    position: relative;
+    width: 100%;
+    #service-search__input {
+      padding-right: 35px;
+    }
+    #service-search__clear-button {
+      display: none;
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      background-color: transparent;
+      color: black;
+      cursor: pointer;
+      margin-right: 5px;
+      padding: 0 10px;
+      border: none;
+      outline: none;
+      z-index: 1;
+      font-size: 27px;
+      line-height: 30px;
+      font-weight: bold;
+      &:focus {
+        outline: 3px solid $govuk-focus-colour;
+      }
+    }
+  }
+}
+
+.service-link {
+  padding-right: 10px;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 10px;
+  border-top: 1px solid govuk-colour('mid-grey');
+  padding-top: 15px;
+  padding-bottom: 15px;
+
+  &:hover {
+    background-color: #f8f8f8;
+    cursor: pointer;
+  }
+
+  > a {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.service-link__name {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  column-gap: 10px;
+
+  @include govuk-media-query($until: desktop) {
+    flex-direction: column;
+    row-gap: 10px;
+  }
+}
+
+.service-link__status {
+  .govuk-tag {
+    max-width: 100%;
+  }
+}
+
+.chevron {
+  width: 7px;
+  height: 7px;
+  border-top: 3px solid #1d70b8;
+  border-right: 3px solid #1d70b8;
+  rotate: 45deg;
+}
+
+.service-link .service-link__overlay-link {
+  position: static;
+  &:before {
+    content: '';
+    overflow: hidden;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    white-space: nowrap;
+    z-index: 0;
   }
 }
