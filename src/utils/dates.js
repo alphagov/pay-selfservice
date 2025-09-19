@@ -37,12 +37,17 @@ module.exports = (function () {
     return moment(date).tz('Europe/London').format('HH:mm:ss')
   }
 
+  const isBritishSummerTime = function () {
+    return moment().tz("Europe/London").isDST();
+  }
+
   return {
     dateToDefaultFormat,
     fromDateToApiFormat,
     toDateToApiFormat,
     utcToDisplay,
     utcToDate,
-    utcToTime
+    utcToTime,
+    isBritishSummerTime
   }
 }())

@@ -1,6 +1,7 @@
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { searchTransactions } from '@services/transactions.service'
 import { response } from '@utils/response'
+import { isBritishSummerTime } from '@utils/dates'
 
 // async function get(req: ServiceRequest, res: ServiceResponse) {
 //   const { service, account } = req
@@ -16,7 +17,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const results = await searchTransactions(gatewayAccountId)
 
   return response(req, res, 'simplified-account/transactions/index', {
-    results: results.transactions
+    results: results.transactions,
+    isBST: isBritishSummerTime() as boolean
   })
 }
 
