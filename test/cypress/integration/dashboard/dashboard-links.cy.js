@@ -11,9 +11,9 @@ const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = '42'
 const gatewayAccountExternalId = 'a-gateway-account-external-id'
 const serviceExternalId = 'service123abc'
-const dashboardUrl =  (gatewayAccountType) => `/service/${serviceExternalId}/account/${gatewayAccountType}/dashboard`
+const dashboardUrl = (gatewayAccountType) => `/service/${serviceExternalId}/account/${gatewayAccountType}/dashboard`
 
-function getStubsForDashboard (gatewayAccountId, type, paymentProvider, goLiveStage, pspTestAccountStage, createdDate) {
+function getStubsForDashboard(gatewayAccountId, type, paymentProvider, goLiveStage, pspTestAccountStage, createdDate) {
   const stubs = []
 
   stubs.push(
@@ -23,7 +23,7 @@ function getStubsForDashboard (gatewayAccountId, type, paymentProvider, goLiveSt
       serviceExternalId,
       goLiveStage,
       pspTestAccountStage,
-      createdDate
+      createdDate,
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(serviceExternalId, type, {
       gateway_account_id: gatewayAccountId,
@@ -40,7 +40,8 @@ function getStubsForDashboard (gatewayAccountId, type, paymentProvider, goLiveSt
       ],
     }),
     transactionsSummaryStubs.getDashboardStatistics(),
-    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }))
+    gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId })
+  )
   return stubs
 }
 
@@ -51,7 +52,10 @@ describe('the links are displayed correctly on the dashboard', () => {
     })
 
     it('should display 3 links for a live service in sandbox mode', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.SANDBOX, GoLiveStage.LIVE))
+      cy.task(
+        'setupStubs',
+        getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.SANDBOX, GoLiveStage.LIVE)
+      )
 
       cy.visit(dashboardUrl(GatewayAccountType.TEST))
       cy.get('.links__box').should('have.length', 3)
@@ -68,7 +72,10 @@ describe('the links are displayed correctly on the dashboard', () => {
     })
 
     it('should display 2 links for a live service in live mode', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.LIVE, PaymentProviders.WORLDPAY, GoLiveStage.LIVE))
+      cy.task(
+        'setupStubs',
+        getStubsForDashboard(gatewayAccountId, GatewayAccountType.LIVE, PaymentProviders.WORLDPAY, GoLiveStage.LIVE)
+      )
 
       cy.visit(dashboardUrl(GatewayAccountType.LIVE))
       cy.get('.links__box').should('have.length', 2)
@@ -82,7 +89,17 @@ describe('the links are displayed correctly on the dashboard', () => {
     })
 
     it('should display 3 links for a test sandbox account created since onboarding flow changed on 29/08/2024', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.SANDBOX, GoLiveStage.NOT_STARTED, null, '2024-08-30'))
+      cy.task(
+        'setupStubs',
+        getStubsForDashboard(
+          gatewayAccountId,
+          GatewayAccountType.TEST,
+          PaymentProviders.SANDBOX,
+          GoLiveStage.NOT_STARTED,
+          null,
+          '2024-08-30'
+        )
+      )
 
       cy.visit(dashboardUrl(GatewayAccountType.TEST))
       cy.get('.links__box').should('have.length', 3)
@@ -100,7 +117,17 @@ describe('the links are displayed correctly on the dashboard', () => {
     })
 
     it('should display 4 links for a test sandbox account created before 29/08/2024', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.SANDBOX, GoLiveStage.NOT_STARTED, null, '2024-08-28'))
+      cy.task(
+        'setupStubs',
+        getStubsForDashboard(
+          gatewayAccountId,
+          GatewayAccountType.TEST,
+          PaymentProviders.SANDBOX,
+          GoLiveStage.NOT_STARTED,
+          null,
+          '2024-08-28'
+        )
+      )
 
       cy.visit(dashboardUrl(GatewayAccountType.TEST))
       cy.get('.links__box').should('have.length', 4)
@@ -119,7 +146,15 @@ describe('the links are displayed correctly on the dashboard', () => {
     })
 
     it('should display 2 links for a test non-sandbox account (except Stripe)', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.WORLDPAY, GoLiveStage.NOT_STARTED))
+      cy.task(
+        'setupStubs',
+        getStubsForDashboard(
+          gatewayAccountId,
+          GatewayAccountType.TEST,
+          PaymentProviders.WORLDPAY,
+          GoLiveStage.NOT_STARTED
+        )
+      )
 
       cy.visit(dashboardUrl(GatewayAccountType.TEST))
       cy.get('.links__box').should('have.length', 2)
@@ -132,7 +167,15 @@ describe('the links are displayed correctly on the dashboard', () => {
     })
 
     it('should display 3 links (demo payment, test with users and request to go live) for a Stripe test account', () => {
-      cy.task('setupStubs', getStubsForDashboard(gatewayAccountId, GatewayAccountType.TEST, PaymentProviders.STRIPE, GoLiveStage.NOT_STARTED))
+      cy.task(
+        'setupStubs',
+        getStubsForDashboard(
+          gatewayAccountId,
+          GatewayAccountType.TEST,
+          PaymentProviders.STRIPE,
+          GoLiveStage.NOT_STARTED
+        )
+      )
 
       cy.visit(dashboardUrl(GatewayAccountType.TEST))
       cy.get('.links__box').should('have.length', 3)
