@@ -296,6 +296,9 @@ describe('controller: services/payment-links/create/payment-link-review', () => 
           .withDescription('Test Description')
           .withPrice(1500)
           .withType(ProductType.ADHOC)
+          .withReferenceEnabled(true)
+          .withReferenceLabel('Order Number')
+          .withReferenceHint('Enter your order number')
         sinon.assert.calledWith(mockCreateProduct, expectedCreateProductRequest)
       })
 

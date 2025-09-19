@@ -10,4 +10,7 @@ export interface CreateProductRequestData {
   service_name_path?: string
   product_name_path?: string
   metadata?: Record<string, string>
+  reference_enabled: boolean
+  reference_hint?: string
+  reference_label?: string
 }

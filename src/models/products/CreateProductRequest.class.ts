@@ -12,6 +12,9 @@ export class CreateProductRequest {
   private serviceNamePath!: string
   private productNamePath!: string
   private metadata?: Record<string, string>
+  private referenceEnabled!: boolean
+  private referenceHint?: string
+  private referenceLabel?: string
 
   withApiToken(apiToken: string) {
     this.apiToken = apiToken
@@ -68,6 +71,21 @@ export class CreateProductRequest {
     return this
   }
 
+  withReferenceEnabled(referenceEnabled: boolean) {
+    this.referenceEnabled = referenceEnabled
+    return this
+  }
+
+  withReferenceHint(referenceHint?: string) {
+    this.referenceHint = referenceHint
+    return this
+  }
+
+  withReferenceLabel(referenceLabel?: string) {
+    this.referenceLabel = referenceLabel
+    return this
+  }
+
   toPayload(): CreateProductRequestData {
     return {
       pay_api_token: this.apiToken,
@@ -81,6 +99,9 @@ export class CreateProductRequest {
       service_name_path: this.serviceNamePath,
       product_name_path: this.productNamePath,
       metadata: this.metadata,
+      reference_enabled: this.referenceEnabled,
+      reference_hint: this.referenceHint,
+      reference_label: this.referenceLabel,
     }
   }
 }
