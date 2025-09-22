@@ -1,41 +1,39 @@
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 
-{{
-  govukServiceNavigation({
-    classes: "govuk-service-navigation__list--last-item-right",
-    navigation: [
-      {
-        href: "https://www.payments.service.gov.uk/getstarted/",
-        text: "Get started"
-      } if not loggedIn,
-      {
-        href: paths.services.index,
-        text: "My services",
-        current: currentPath == paths.services.index
-      } if loggedIn,
-      {
-        href: paths.user.profile.index,
-        text: "My profile",
-        current: currentPath == paths.user.profile.index
-      } if loggedIn,
-      {
-        href: "https://www.payments.service.gov.uk/using-govuk-pay/",
-        text: "Features"
-      },
-      {
-        href: "https://docs.payments.service.gov.uk",
-        text: "Documentation"
-      },
-      {
-        href: "https://www.payments.service.gov.uk/support/",
-        text: "Support"
-      },
-      {
-        href: paths.user.logOut,
-        text: "Sign out" if loggedIn else "Sign in",
-        current: isSignInActive
-      }
-    ],
-    collapseNavigationOnMobile: true
-  })
-}}
+{{ govukServiceNavigation({
+  classes: "govuk-service-navigation__list--last-item-right",
+  navigation: [
+    {
+      href: "https://www.payments.service.gov.uk/getstarted/",
+      text: "Get started"
+    } if not loggedIn,
+    {
+      href: paths.services.index,
+      text: "My services",
+      current: currentPath == paths.services.index
+    } if loggedIn,
+    {
+      href: paths.user.profile.index,
+      text: "My profile",
+      current: currentPath == paths.user.profile.index
+    } if loggedIn,
+    {
+      href: "https://www.payments.service.gov.uk/using-govuk-pay/",
+      text: "Features"
+    },
+    {
+      href: "https://docs.payments.service.gov.uk",
+      text: "Documentation"
+    },
+    {
+      href: "https://www.payments.service.gov.uk/support/",
+      text: "Support"
+    },
+    {
+      href: paths.user.logOut,
+      text: "Sign out" if loggedIn else "Sign in",
+      current: isSignInActive
+    }
+  ],
+  collapseNavigationOnMobile: true
+}) }}

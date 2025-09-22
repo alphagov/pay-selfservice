@@ -1,60 +1,56 @@
 {% if loggedIn %}
-  {%
-    set payHeaderNavigation = [
-      {
-        text: "My profile",
-        href: routes.user.profile.index,
-        active: email.length > 0,
-        attributes: {
-          id: "my-profile"
-        }
-      },
-      {
-        text: "Features",
-        href: "https://www.payments.service.gov.uk/using-govuk-pay/"
-      },
-      {
-        text: "Documentation",
-        href: "https://docs.payments.service.gov.uk"
-      },
-      {
-        text: "Sign out",
-        href: routes.user.logOut,
-        attributes: {
-          id: "logout"
-        }
+  {% set payHeaderNavigation = [
+    {
+      text: "My profile",
+      href: routes.user.profile.index,
+      active: email.length > 0,
+      attributes: {
+        id: "my-profile"
       }
-    ]
-  %}
+    },
+    {
+      text: "Features",
+      href: "https://www.payments.service.gov.uk/using-govuk-pay/"
+    },
+    {
+      text: "Documentation",
+      href: "https://docs.payments.service.gov.uk"
+    },
+    {
+      text: "Sign out",
+      href: routes.user.logOut,
+      attributes: {
+        id: "logout"
+      }
+    }
+  ] %}
 {% else %}
-  {%
-    set payHeaderNavigation = [
-      {
-        text: "About",
-        href: "https://www.payments.service.gov.uk/#main"
-      },
-      {
-        text: "Features",
-        href: "https://www.payments.service.gov.uk/using-govuk-pay/"
-      },
-      {
-        text: "Documentation",
-        href: "https://docs.payments.service.gov.uk"
-      },
-      {
-        text: "Support",
-        href: "https://www.payments.service.gov.uk/support/"
-      },
-      {
-        text: "Sign in",
-        href: routes.user.logIn,
-        active: isSignInActive,
-        attributes: {
-          id: "login"
-        }
+  {% set payHeaderNavigation = [
+    {
+      text: "About",
+      href: "https://www.payments.service.gov.uk/#main"
+    },
+    {
+      text: "Features",
+      href: "https://www.payments.service.gov.uk/using-govuk-pay/"
+    },
+    {
+      text: "Documentation",
+      href: "https://docs.payments.service.gov.uk"
+    },
+    {
+      text: "Support",
+      href: "https://www.payments.service.gov.uk/support/"
+    },
+    {
+      text: "Sign in",
+      href: routes.user.logIn,
+      active: isSignInActive,
+      attributes: {
+        id: "login"
       }
-    ]
-  %}
+    }
+  ] %}
 {% endif %}
 {{
   govukHeader({
