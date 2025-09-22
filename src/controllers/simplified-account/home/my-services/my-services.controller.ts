@@ -1,7 +1,6 @@
 import { response } from '@utils/response'
 import express from 'express'
 import paths, { formattedPathFor } from '@root/paths'
-import createLogger from '@utils/logger'
 import { getGatewayAccountsByIds } from '@services/gateway-accounts.service'
 import {
   sortByLiveThenName,
@@ -9,7 +8,6 @@ import {
   mergeServicesWithGatewayAccounts,
 } from '@utils/simplified-account/home/my-services/service-presentation-utils'
 import User from '@models/user/User.class'
-const logger = createLogger(__filename)
 
 async function get(
   req: express.Request & {
@@ -38,7 +36,6 @@ async function get(
   let services
   if (gatewayAccountIds.length > 0) {
     const gatewayAccounts = await getGatewayAccountsByIds(gatewayAccountIds)
-    logger.debug('finished gatewayaccounts')
     services = mergeServicesWithGatewayAccounts(userServiceRoles, gatewayAccounts, flags).sort((a, b) =>
       sortByLiveThenName(a, b)
     )
