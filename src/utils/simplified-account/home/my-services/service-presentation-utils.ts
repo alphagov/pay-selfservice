@@ -1,5 +1,5 @@
 import GoLiveStage from '@models/constants/go-live-stage'
-import { SANDBOX, STRIPE, WORLDPAY } from '@models/constants/payment-providers'
+import PaymentProviders from '@models/constants/payment-providers'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import ServiceRole from '@models/service/ServiceRole.class'
@@ -10,7 +10,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import Service from '@models/service/Service.class'
 
 const logger = createLogger(__filename)
-const SUPPORTED_ACCOUNT_PROVIDERS = [STRIPE, SANDBOX, WORLDPAY]
+const SUPPORTED_ACCOUNT_PROVIDERS = [PaymentProviders.STRIPE, PaymentProviders.SANDBOX, PaymentProviders.WORLDPAY]
 
 export interface ViewFlags {
   recentlyInvitedServiceExternalId?: string
@@ -86,8 +86,8 @@ const sortByLiveThenName = (a: MergedServiceWithGateways, b: MergedServiceWithGa
 const isWorldpayTestService = (gatewayAccounts: MappedGateway[]) => {
   return (
     gatewayAccounts.length === 1 &&
-    gatewayAccounts[0].type === 'test' &&
-    gatewayAccounts[0].paymentProvider === WORLDPAY
+    gatewayAccounts[0].type === GatewayAccountType.TEST &&
+    gatewayAccounts[0].paymentProvider === PaymentProviders.WORLDPAY
   )
 }
 
@@ -123,7 +123,7 @@ const mergeServicesWithGatewayAccounts = (
 
     const associatedGatewayAccounts = [...mappedLiveGatewayAccounts, ...mappedTestGatewayAccounts]
       .map((account): MappedGateway => {
-        if (account.paymentProvider === STRIPE) {
+        if (account.paymentProvider === PaymentProviders.STRIPE) {
           flags.hasAccountWithPayouts = true
         }
         return {
@@ -169,7 +169,7 @@ const filterTestGateways = (testGatewayAccounts: GatewayAccount[], service: Serv
     if (accounts.length === 1) {
       if (SUPPORTED_ACCOUNT_PROVIDERS.includes(accounts[0].paymentProvider)) return true
       logger.warn(
-        `Resolved test account is not of supported type [service_external_id: ${service.externalId}, payment_provider: ${accounts[0].paymentProvider}]`
+        `Resolved test account is not a supported payment provider [service_external_id: ${service.externalId}, payment_provider: ${accounts[0].paymentProvider}]`
       )
       return false
     }

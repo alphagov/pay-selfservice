@@ -27,7 +27,7 @@ async function get(
   }
 
   const gatewayAccountIds = userServiceRoles.flatMap((role) => {
-    if (role?.service?.gatewayAccountIds && Array.isArray(role.service.gatewayAccountIds)) {
+    if (Array.isArray(role?.service?.gatewayAccountIds)) {
       return role.service.gatewayAccountIds.map((id) => parseInt(id))
     }
     return []
@@ -49,7 +49,8 @@ async function get(
     payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, pathFilter) as string,
     services,
     flags,
-    messages: res.locals?.flash?.messages ?? [
+    messages: [
+      ...(res.locals?.flash?.messages ?? []),
       ...(flags.recentlyInvitedServiceName
         ? [
             {

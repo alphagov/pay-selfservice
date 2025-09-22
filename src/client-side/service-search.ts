@@ -86,9 +86,9 @@ class ServiceSearch {
 }
 
 export default function inject() {
-  if (document.getElementById(SEARCH_CONTAINER_ID)) {
-    document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById(SEARCH_CONTAINER_ID)) {
       new ServiceSearch()
-    })
-  }
+    }
+  })
 }
