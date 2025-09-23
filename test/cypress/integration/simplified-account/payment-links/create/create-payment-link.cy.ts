@@ -510,6 +510,17 @@ describe('Create Welsh payment link journey', () => {
       setupStubs(USER_ROLE, GatewayAccountType.LIVE, ENGLISH_ONLY_SERVICE_NAME)
     })
 
+    describe('when the user clicks "create a payment link in Welsh"', () => {
+      it('should redirect them to the Welsh service name page', () => {
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/payment-links`)
+        cy.contains('a.govuk-link', 'Create a live payment link in Welsh').click()
+        cy.location('pathname').should(
+          'eq',
+          `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/payment-links/create/add-welsh-service-name`
+        )
+      })
+    })
+
     describe('payment link Welsh service name page', () => {
       beforeEach(() => {
         cy.visit(CREATE_PAYMENT_LINK_URL(GatewayAccountType.LIVE, true), { failOnStatusCode: false })
@@ -530,6 +541,22 @@ describe('Create Welsh payment link journey', () => {
           .should('exist')
           .should('contain.text', 'Service name must be 50 characters or fewer')
         cy.get('#service-content').find('form').find('#service-name').should('have.class', 'govuk-input--error')
+      })
+
+      it('should let the user choosse to use the English service name', () => {
+        cy.contains('a.govuk-link', 'Use English service name instead').click()
+        cy.location('pathname').should(
+          'eq',
+          `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/payment-links/create`
+        )
+        cy.url().then(($url) => {
+          const parsedUrl = new URL($url)
+          const searchParams = Object.fromEntries(parsedUrl.searchParams)
+          expect(searchParams).to.deep.equal({
+            language: 'cy',
+            useEnglishServiceName: 'true',
+          })
+        })
       })
 
       it('accessibility check', () => {
