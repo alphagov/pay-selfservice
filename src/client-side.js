@@ -14,6 +14,7 @@ import addServiceSpinner from '@root/client-side/add-service-spinner'
 import requestTestAccountSpinner from '@root/client-side/request-test-account-spinner'
 import newContractTermsBanner from '@root/client-side/new-contract-terms-banner'
 import awaitJQuery from '@utils/client-side/await-jquery'
+import serviceSearch from '@root/client-side/service-search'
 
 // --- govuk-frontend init ---
 initAll()
@@ -35,3 +36,4 @@ initNiceUrl()
 newContractTermsBanner()
 addServiceSpinner()
 requestTestAccountSpinner()
+serviceSearch()
