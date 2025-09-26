@@ -1,6 +1,6 @@
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { response } from '@utils/response'
-import { getProductByExternalId, deleteProduct } from '@services/products.service'
+import { getProductByGatewayAccountIdAndExternalId, deleteProduct } from '@services/products.service'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
@@ -16,7 +16,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const { productExternalId } = req.params
   const { service, account } = req
 
-  const paymentLink = await getProductByExternalId(productExternalId)
+  const paymentLink = await getProductByGatewayAccountIdAndExternalId(account.id, productExternalId)
 
   const backLinkUrl = formatServiceAndAccountPathsFor(
     paths.simplifiedAccount.paymentLinks.index,
@@ -40,7 +40,7 @@ async function post(req: ServiceRequest<DeletePaymentLinkBody>, res: ServiceResp
   const { productExternalId } = req.params
   const { service, account } = req
 
-  const paymentLink = await getProductByExternalId(productExternalId)
+  const paymentLink = await getProductByGatewayAccountIdAndExternalId(account.id, productExternalId)
 
   const validations = [
     body('confirmDelete')
@@ -91,10 +91,10 @@ async function post(req: ServiceRequest<DeletePaymentLinkBody>, res: ServiceResp
   deleteProduct(account.id, productExternalId)
     .then(() => {
       req.flash('messages', {
-              state: 'success',
-              icon: '&check;',
-              heading: `Successfully deleted ${paymentLink.name}`
-            })
+        state: 'success',
+        icon: '&check;',
+        heading: `Successfully deleted ${paymentLink.name}`,
+      })
       res.redirect(
         formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
       )

@@ -49,7 +49,7 @@ const setupStubs = (
   ]
 
   if (setupProductStub) {
-    stubs.push(productStubs.getProductByExternalId(PRODUCT_EXTERNAL_ID, product))
+    stubs.push(productStubs.getProductByExternalIdAndGatewayAccountIdStub(product, GATEWAY_ACCOUNT_ID))
   }
 
   if (setupDeleteStub) {
@@ -117,15 +117,11 @@ describe('Delete Payment Link', () => {
       })
 
       it('should have a submit button', () => {
-        cy.get('button[type="submit"]')
-          .should('exist')
-          .should('contain.text', 'Save changes')
+        cy.get('button[type="submit"]').should('exist').should('contain.text', 'Save changes')
       })
 
       it('should have CSRF token', () => {
-        cy.get('input[name="csrfToken"]')
-          .should('exist')
-          .should('have.attr', 'type', 'hidden')
+        cy.get('input[name="csrfToken"]').should('exist').should('have.attr', 'type', 'hidden')
       })
 
       it('accessibility check', () => {
@@ -182,17 +178,13 @@ describe('Delete Payment Link', () => {
       it('should focus on error summary when validation fails', () => {
         cy.get('form button[type="submit"]').first().click()
 
-        cy.get('.govuk-error-summary')
-          .should('exist')
-          .should('have.focus')
+        cy.get('.govuk-error-summary').should('exist').should('have.focus')
       })
 
       it('should allow clicking error summary link to focus on field', () => {
         cy.get('form button[type="submit"]').first().click()
 
-        cy.get('.govuk-error-summary a')
-          .should('exist')
-          .click()
+        cy.get('.govuk-error-summary a').should('exist').click()
 
         cy.get('input[name="confirmDelete"]').first().should('have.focus')
       })
@@ -208,8 +200,7 @@ describe('Delete Payment Link', () => {
         cy.get('input[value="yes"]').check()
         cy.get('form button[type="submit"]').first().click()
 
-        cy.get('.govuk-error-summary, .govuk-notification-banner--error, h1')
-          .should('exist')
+        cy.get('.govuk-error-summary, .govuk-notification-banner--error, h1').should('exist')
       })
     })
   })
@@ -272,16 +263,13 @@ describe('Delete Payment Link', () => {
           payment_provider: SANDBOX,
         }),
         productStubs.getProductsByGatewayAccountIdAndTypeStub([PAYMENT_LINK], GATEWAY_ACCOUNT_ID, 'ADHOC'),
-        productStubs.getProductByExternalId(PRODUCT_EXTERNAL_ID, PAYMENT_LINK),
+        productStubs.getProductByExternalIdAndGatewayAccountIdStub(PAYMENT_LINK, GATEWAY_ACCOUNT_ID),
         productStubs.deleteProductStub(PAYMENT_LINK, GATEWAY_ACCOUNT_ID),
       ])
 
       cy.visit(PAYMENT_LINKS_INDEX_URL())
 
-      cy.get('.govuk-summary-card__actions')
-        .find('a')
-        .contains('Delete')
-        .click()
+      cy.get('.govuk-summary-card__actions').find('a').contains('Delete').click()
 
       cy.url().should('include', DELETE_PAYMENT_LINK_URL())
       cy.get('h1').should('contain.text', 'Are you sure you want to delete Gold coin polishing?')
