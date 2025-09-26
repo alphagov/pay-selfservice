@@ -246,12 +246,43 @@ simplifiedAccount.post(
 )
 
 // test with your users
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index.get)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.links, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.links.get)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create.get)
-simplifiedAccount.post(paths.simplifiedAccount.testWithYourUsers.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create.postValidation, testWithYourUsersController.create.post)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.confirm, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.confirm.get)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.disable, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.disable.post)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.index,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.index.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.links,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.links.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.create,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.create.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.testWithYourUsers.create,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.create.postValidation,
+  testWithYourUsersController.create.post
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.confirm,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.confirm.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.disable,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.disable.post
+)
 
 // agreements
 simplifiedAccount.get(
@@ -276,6 +307,14 @@ simplifiedAccount.post(
   paths.simplifiedAccount.agreements.cancel,
   permission('agreements:update'),
   servicesController.agreements.cancel.post
+)
+
+// transactions
+simplifiedAccount.get(
+  paths.simplifiedAccount.transactions.index,
+  experimentalFeature,
+  permission('transactions:read'),
+  servicesController.transactions.list.get
 )
 
 // settings index

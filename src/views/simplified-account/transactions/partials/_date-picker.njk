@@ -1,0 +1,43 @@
+<br class="transactions-list__br" />
+<legend class="govuk-visually-hidden">Date range</legend>
+{#<fieldset class="govuk-fieldset datetime-filter datetime-filter-from">#}
+{#  <legend class="govuk-visually-hidden">From this date and time</legend>#}
+{{
+  govukInput({
+    id: 'fromDate',
+    name: 'fromDate',
+    value: filters.fromDate,
+    lasses: 'date-picker start govuk-!-font-size-16',
+    label: {
+      text: 'Start date',
+      classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+    },
+    attributes: {
+      autocomplete: 'off'
+    },
+    formGroup: {
+      classes: 'datetime-filter__input-container datetime-filter__input-container--date-input'
+    }
+  })
+}}
+{#</fieldset>#}
+{#<fieldset class="govuk-fieldset datetime-filter datetime-filter-to">#}
+{{
+  govukInput({
+    id: 'fromTime',
+    name: 'fromTime',
+    value: filters.fromTime,
+    classes: 'date-picker end govuk-!-font-size-16',
+    label: {
+      text: 'End date',
+      classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
+    },
+    attributes: {
+      autocomplete: 'off'
+    },
+    formGroup: {
+      classes: 'datetime-filter__input-container datetime-filter__input-container--date-input'
+    }
+  })
+}}
+{#</fieldset>#}

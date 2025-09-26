@@ -1,0 +1,38 @@
+{% from './macro/_stripe-transaction-row.njk' import stripeTransactionRow %}
+{% from './macro/_worldpay-transaction-row.njk' import worldpayTransactionRow %}
+
+{% if results.length %}
+  <table id="transactions-list" class="govuk-table transactions-list-table">
+    <thead class="govuk-table__head govuk-!-font-size-14">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col" id="reference-header">Reference number</th>
+        <th class="govuk-table__header" scope="col" id="email-header">Email</th>
+        <th class="govuk-table__header" scope="col" id="amount-header">Amount</th>
+        {% if isStripeAccount %}
+          <th class="govuk-table__header" scope="col" id="amount-header">PSP Fee</th>
+          <th class="govuk-table__header" scope="col" id="amount-header">Net</th>
+        {% endif %}
+        <th class="govuk-table__header" scope="col" id="brand-header">Card brand</th>
+        <th class="govuk-table__header" scope="col" id="state-header">Payment Status</th>
+        <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="time-header">Date created</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      {% for transaction in results %}
+        {% if isStripeAccount %}
+          {{ stripeTransactionRow(transaction) }}
+        {% else %}
+          {{ worldpayTransactionRow(transaction) }}
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  {% if not isInvalidDateRange %}
+    {% if (allServicesTimeout) %}
+      <p class="govuk-body" id="update-filters-after-timeout">Update the filters and select the Filter button.</p>
+    {% else %}
+      <p class="govuk-body" id="no-results">There are no results for the filters you used. TODO</p>
+    {% endif %}
+  {% endif %}
+{% endif %}
