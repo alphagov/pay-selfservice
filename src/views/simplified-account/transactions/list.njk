@@ -66,10 +66,10 @@
             </td>
           {% endif %}
           <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand vertical-align-middle">
-            {{ result.cardDetails?.cardBrand }}
+            {{ result.cardDetails.cardBrand }}
           </td>
           <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state vertical-align-middle">
-            {{ result.state.status }}
+            {{ result.state.status | capitalize }}
           </td>
           <td
             class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time vertical-align-middle"
