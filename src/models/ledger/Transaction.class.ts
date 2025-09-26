@@ -1,6 +1,7 @@
 import { TransactionData } from '@models/ledger/dto/Transaction.dto'
 import { DateTime } from 'luxon'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
+import { TransactionCardDetails } from '@models/ledger/TransactionCardDetails'
 
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
@@ -16,7 +17,7 @@ class Transaction {
   readonly amount: number // pence
   readonly createdDate: DateTime
   readonly email: string
-  readonly cardBrand?: string
+  readonly cardDetails?: TransactionCardDetails
 
   constructor(data: TransactionData) {
     this.gatewayAccountId = data.gateway_account_id
@@ -28,7 +29,7 @@ class Transaction {
     this.amount = data.amount
     this.createdDate = DateTime.fromISO(data.created_date)
     this.email = data.email
-    this.cardBrand = data.card_details?.card_brand
+    this.cardDetails = data.card_details ? TransactionCardDetails.fromJson(data.card_details) : undefined
   }
 
   amountInPounds(): string {
@@ -36,6 +37,4 @@ class Transaction {
   }
 }
 
-export {
-  Transaction
-}
+export { Transaction }

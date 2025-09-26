@@ -6,9 +6,9 @@ export interface TransactionData {
   credential_external_id: string
   amount: number
   state: {
-    finished: boolean,
+    finished: boolean
     status: string
-  },
+  }
   description: string
   reference: string
   language: string
@@ -26,7 +26,8 @@ export interface TransactionData {
     amount_submitted: number
     amount_refunded: number
   }
-  settlement_summary: { // optional?
+  settlement_summary: {
+    // optional?
     capture_submit_time: string
     captured_date: string
   }

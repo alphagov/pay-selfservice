@@ -12,19 +12,19 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
     .add({
       id: 'dashboard',
       name: 'dashboard',
-      path: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.dashboard.index,
-        service.externalId,
-        account.type
-      ),
+      path: formatServiceAndAccountPathsFor(paths.simplifiedAccount.dashboard.index, service.externalId, account.type),
       hasPermission: UserPermissions.any,
     })
     // TODO update this to use formatServiceAndAccountPathsFor when transactions views are moved
     .add({
       id: 'transactions',
       name: 'transactions',
-      path: formatServiceAndAccountPathsFor(paths.simplifiedAccount.transactions.index, service.externalId, account.type),
-      hasPermission: UserPermissions.transactions.transactionsRead
+      path: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.transactions.index,
+        service.externalId,
+        account.type
+      ),
+      hasPermission: UserPermissions.transactions.transactionsRead,
     })
     .add({
       id: 'payment-links',
@@ -39,11 +39,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
     .add({
       id: 'agreements',
       name: 'agreements',
-      path: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.agreements.index,
-        service.externalId,
-        account.type
-      ),
+      path: formatServiceAndAccountPathsFor(paths.simplifiedAccount.agreements.index, service.externalId, account.type),
       hasPermission: UserPermissions.agreements.agreementsRead,
       conditions: account.recurringEnabled,
     })

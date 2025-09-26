@@ -6,7 +6,7 @@ const ledgerClient = new LedgerClient()
 const searchTransactions = async (gatewayAccountId: number) => {
   const queryParams: LedgerTransactionParams = {
     accountIds: [gatewayAccountId],
-    displaySize: 5
+    displaySize: 5,
   }
   return await ledgerClient.transactions(new LedgerTransactionParamsData(queryParams))
 }
