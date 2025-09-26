@@ -19,7 +19,7 @@
         <tr class="transactions-list--row govuk-table__row vertical-align-top">
           <th
             scope="row"
-            class="charge-column reference govuk-table__header"
+            class="transactions-list--item govuk-table__header vertical-align-middle"
             data-gateway-transaction-id="{{ result.gateway_transaction_id }}"
           >
             <a
@@ -31,8 +31,13 @@
               {{ result.reference }}
             </a>
           </th>
-          <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 email">{{ result.email }}</td>
-          <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14" id="amount">
+          <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 email vertical-align-middle">
+            {{ result.email }}
+          </td>
+          <td
+            class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14 vertical-align-middle"
+            id="amount"
+          >
             {%- if result.total_amount and result.corporate_card_surcharge -%}
               {{ result.total_amount }}
               <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
@@ -41,10 +46,16 @@
             {%- endif -%}
           </td>
           {% if isStripeAccount %}
-            <td data-cell-type="fee" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">
+            <td
+              data-cell-type="fee"
+              class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state vertical-align-middle"
+            >
               {{ result.fee }}
             </td>
-            <td data-cell-type="net" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">
+            <td
+              data-cell-type="net"
+              class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state vertical-align-middle"
+            >
               <span style="white-space: pre">
                 {%- if result.transaction_type === 'DISPUTE' -%}
                   {{ result.net_amount }}
@@ -54,14 +65,16 @@
               </span>
             </td>
           {% endif %}
-          <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand">
+          <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand vertical-align-middle">
             {{ result.cardDetails?.cardBrand }}
           </td>
-          <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">
+          <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state vertical-align-middle">
             {{ result.state.status }}
           </td>
-          <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time">
-            {{ result.createdDate }}
+          <td
+            class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time vertical-align-middle"
+          >
+            {{ result.createdDate | shortTime }} - <wbr />{{ result.createdDate | zonedDate }}
           </td>
         </tr>
       {% endfor %}
