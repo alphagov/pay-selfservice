@@ -1,182 +1,26 @@
 <div class="transactions-filter-simplified-account govuk-grid-row">
   <form class="govuk-clearfix" method="get" action="{{ search_path }}" novalidate autocomplete="off">
     <div class="govuk-grid-row">
-      <div class="govuk-grid-column-one-third inputs-less-margin">
-        {{
-          govukInput({
-            id: 'reference',
-            name: 'reference',
-            value: filters.reference,
-            spellcheck: false,
-            attributes: {
-              'autocapitalize': 'none',
-              'data-cy': 'reference-filter'
-            },
-            classes: 'govuk-!-font-size-16',
-            formGroup: {
-              classes: 'transactions-search-reference-form-group'
-            },
-            label: {
-              text: 'Reference number',
-              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-            },
-            hint: {
-              text: 'Enter full or partial number',
-              classes: 'govuk-!-font-size-14'
-            }
-          })
-        }}
-      </div>
-      <div class="govuk-grid-column-one-third inputs-less-margin">
-        {{
-          govukInput({
-            id: 'email',
-            name: 'email',
-            value: filters.email,
-            type: 'text',
-            inputmode: 'email',
-            spellcheck: false,
-            attributes: {
-              'autocapitalize': 'none',
-              'data-cy': 'email-filter',
-              'autocomplete': 'off',
-              'data-1p-ignore': ''
-            },
-            classes: 'govuk-!-font-size-16',
-            label: {
-              text: 'Email address',
-              classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-            },
-            hint: {
-              text: 'Enter full or partial email',
-              classes: 'govuk-!-font-size-14'
-            }
-          })
-        }}
-      </div>
-      <div class="govuk-grid-column-one-third">
-        
-          <legend class="govuk-visually-hidden">
-            Payment status
-          </legend>
-          {# When JavaScript enhances the select to a multi-select, the label element’s for attribute will reference a button element #}
-          {# WAVE complains about this but it is valid according to the HTML standard and the label will activate the button #}
-          {{
-            govukSelect({
-              id: "state",
-              name: "state",
-              classes: 'govuk-!-font-size-16',
-              label: {
-                text: "Payment status",
-                classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-              },
-              hint: {
-                text: "Select a status",
-                classes: 'govuk-!-font-size-14'
-              },
-              attributes: {
-                'data-enhance-multiple': true
-              },
-              items: [{
-                value: "all",
-                text: "All"
-              },
-              {
-                value: "success",
-                text: "Success"
-              }]
-            })
-          }}
-        
-      </div>
+      <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_reference-input.njk" %}</div>
+      <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_email-input.njk" %}</div>
+      <div class="govuk-grid-column-one-third">{% include "./partials/_status-select.njk" %}</div>
     </div>
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
-        <fieldset class="govuk-fieldset">
-          <legend class="govuk-visually-hidden">
-            Date filters
-          </legend>
-          {# When JavaScript enhances the select to a multi-select, the label element’s for attribute will reference a button element #}
-          {# WAVE complains about this but it is valid according to the HTML standard and the label will activate the button #}
-          {{
-            govukSelect({
-              id: "dateFilter",
-              name: "dateFilter",
-              classes: 'govuk-!-font-size-16',
-              label: {
-                text: "Date filters",
-                classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
-              },
-              hint: {
-                text: "Select a range or enter manually",
-                classes: 'govuk-!-font-size-14'
-              },
-              attributes: {
-                'data-enhance-multiple': true
-              },
-              items: [{
-                value: "yesterday",
-                text: "Yesterday"
-              },
-              {
-                value: "today",
-                text: "Today"
-              }]
-            })
-          }}
-        </fieldset>
+        <fieldset class="govuk-fieldset">{% include "./partials/_date-filter-select.njk" %}</fieldset>
       </div>
-      <div class="govuk-grid-column">
+      <div class="govuk-grid-column-one-third">
         <div class="govuk-form-group govuk-!-margin-bottom-0">
-          <fieldset class="govuk-fieldset">
-            <legend class="govuk-visually-hidden">
-              Date range
-            </legend>
-            <fieldset class="govuk-fieldset datetime-filter datetime-filter-from">
-              <legend class="govuk-visually-hidden">
-                From this date and time
-              </legend>
-              {{
-                govukInput({
-                  id: 'fromDate',
-                  name: 'fromDate',
-                  value: filters.fromDate,
-                  classes: 'date-picker start govuk-!-font-size-16',
-                  label: {
-                    text: 'Start date',
-                    classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
-                  },
-                  attributes: {
-                    autocomplete: 'off'
-                  },
-                  formGroup: {
-                    classes: 'datetime-filter__input-container datetime-filter__input-container--date-input'
-                  }
-                })
-              }}
-              {{
-                govukInput({
-                  id: 'fromTime',
-                  name: 'fromTime',
-                  value: filters.fromTime,
-                  classes: 'date-picker end govuk-!-font-size-16',
-                  label: {
-                    text: 'End date',
-                    classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
-                  },
-                  attributes: {
-                    autocomplete: 'off'
-                  },
-                  formGroup: {
-                    classes: 'datetime-filter__input-container datetime-filter__input-container--date-input'
-                  }
-                })
-              }}
-          </fieldset>  
-        <div class="govuk-grid-column-one-third">
-          {{ govukCheckboxes({
+          <fieldset class="govuk-fieldset">{% include "./partials/_date-picker.njk" %}</fieldset>
+        </div>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <br class="transactions-list__br" />
+        <br class="transactions-list__br govuk-!-margin-bottom-2" />
+        {{
+          govukCheckboxes({
             name: "time",
-            classes: "govuk-checkboxes--small",
+            classes: "govuk-checkboxes--small transactions-list-time__checkbox",
             fieldset: {
               legend: {
                 text: "time",
@@ -187,14 +31,17 @@
             items: [
               {
                 value: "time",
-                text: "Include time"
+                text: "Include time",
+                label: {
+                  classes: " transactions-list-time__checkbox-label"
+                }
               }
             ]
-          }) }}
-        </div>
+          })
+        }}
       </div>
     </div>
-    
+
     {% if filters.metadataValue or filters.agreementId %}
       {% set detailsElementOpenHtml = 'open="true"' %}
     {% endif %}
