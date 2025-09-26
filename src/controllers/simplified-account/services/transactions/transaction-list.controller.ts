@@ -6,17 +6,8 @@ import getPagination from '@utils/simplified-account/pagination'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 
-// async function get(req: ServiceRequest, res: ServiceResponse) {
-//   const { service, account } = req
-//   const gatewayAccountId = account.id
-//   const results = await searchTransactions(gatewayAccountId)
-
-//   return res.status(200).json(results)
-// }
-
 async function get(req: ServiceRequest, res: ServiceResponse) {
-  const { service, account } = req
-  const gatewayAccountId = account.id
+  const gatewayAccountId = req.account.id
   const results = await searchTransactions(gatewayAccountId)
   const PAGE_SIZE = 10
 
@@ -25,8 +16,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   const transactionsUrl = formatServiceAndAccountPathsFor(
     paths.simplifiedAccount.transactions.index,
-    service.externalId,
-    account.type
+    req.service.externalId,
+    req.account.type
   )
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
@@ -45,8 +36,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   return response(req, res, 'simplified-account/transactions/index', {
     results: results.transactions,
-    isBST: isBritishSummerTime() as boolean,
-    pagination: pagination
+    isBST: isBritishSummerTime(),
+    pagination: pagination,
   })
 }
 
