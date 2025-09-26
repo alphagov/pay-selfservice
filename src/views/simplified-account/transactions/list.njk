@@ -1,3 +1,6 @@
+{% from './macro/_stripe-transaction-row.njk' import stripeTransactionRow %}
+{% from './macro/_worldpay-transaction-row.njk' import worldpayTransactionRow %}
+
 {% if results.length %}
   <table id="transactions-list" class="govuk-table transactions-list-table">
     <thead class="govuk-table__head govuk-!-font-size-14">
@@ -15,68 +18,12 @@
       </tr>
     </thead>
     <tbody class="govuk-table__body">
-      {% for result in results %}
-        <tr class="transactions-list--row govuk-table__row vertical-align-top">
-          <th
-            scope="row"
-            class="transactions-list--item govuk-table__header vertical-align-middle"
-            data-gateway-transaction-id="{{ result.gateway_transaction_id }}"
-          >
-            <a
-              class="govuk-link govuk-!-font-weight-regular govuk-!-font-size-14 reference govuk-!-display-block"
-              id="charge-id-{{ result.charge_id }}"
-              data-charge-id="{{ result.charge_id }}"
-              href="{{ result.link }}"
-            >
-              {{ result.reference }}
-            </a>
-          </th>
-          <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 email vertical-align-middle">
-            {{ result.email }}
-          </td>
-          <td
-            class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14 vertical-align-middle"
-            id="amount"
-          >
-            {%- if result.total_amount and result.corporate_card_surcharge -%}
-              {{ result.total_amount }}
-              <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
-            {%- else -%}
-              <span style="white-space: pre">{{ result.amountInPounds() }}</span>
-            {%- endif -%}
-          </td>
-          {% if isStripeAccount %}
-            <td
-              data-cell-type="fee"
-              class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state vertical-align-middle"
-            >
-              {{ result.fee }}
-            </td>
-            <td
-              data-cell-type="net"
-              class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state vertical-align-middle"
-            >
-              <span style="white-space: pre">
-                {%- if result.transaction_type === 'DISPUTE' -%}
-                  {{ result.net_amount }}
-                {%- else -%}
-                  {{ result.net_amount or result.total_amount or result.amount }}
-                {%- endif -%}
-              </span>
-            </td>
-          {% endif %}
-          <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand vertical-align-middle">
-            {{ result.cardDetails.cardBrand }}
-          </td>
-          <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state vertical-align-middle">
-            {{ result.state.status | capitalize }}
-          </td>
-          <td
-            class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time vertical-align-middle"
-          >
-            {{ result.createdDate | shortTime }} - <wbr />{{ result.createdDate | zonedDate }}
-          </td>
-        </tr>
+      {% for transaction in results %}
+        {% if isStripeAccount %}
+          {{ stripeTransactionRow(transaction) }}
+        {% else %}
+          {{ worldpayTransactionRow(transaction) }}
+        {% endif %}
       {% endfor %}
     </tbody>
   </table>

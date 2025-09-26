@@ -1,0 +1,58 @@
+{% macro stripeTransactionRow(transaction) %}
+  <tr class="transactions-list--row govuk-table__row vertical-align-top">
+    <th
+      scope="row"
+      class="transactions-list--item govuk-table__header vertical-align-middle"
+      data-gateway-transaction-id="{{ transaction.gateway_transaction_id }}"
+    >
+      <a
+        class="govuk-link govuk-!-font-weight-regular govuk-!-font-size-14 reference govuk-!-display-block"
+        id="charge-id-{{ transaction.charge_id }}"
+        data-charge-id="{{ transaction.charge_id }}"
+        href="{{ transaction.link }}"
+      >
+        {{ transaction.reference }}
+      </a>
+    </th>
+    <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 email vertical-align-middle">
+      {{ transaction.email }}
+    </td>
+    <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14 vertical-align-middle" id="amount">
+      {%- if transaction.total_amount and transaction.corporate_card_surcharge -%}
+        {{ transaction.total_amount }}
+        <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
+      {%- else -%}
+        <span style="white-space: pre">{{ transaction.amountInPounds() }}</span>
+      {%- endif -%}
+    </td>
+    <td
+      data-cell-type="fee"
+      class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state vertical-align-middle"
+    >
+      {{ transaction.fee }}
+    </td>
+    <td
+      data-cell-type="net"
+      class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state vertical-align-middle"
+    >
+      <span style="white-space: pre">
+        {%- if transaction.transaction_type === 'DISPUTE' -%}
+          {{ transaction.net_amount }}
+        {%- else -%}
+          {{ transaction.net_amount or transaction.total_amount or transaction.amount }}
+        {%- endif -%}
+      </span>
+    </td>
+    <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand vertical-align-middle">
+      {{ transaction.cardDetails.cardBrand }}
+    </td>
+    <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state vertical-align-middle">
+      {{ transaction.state.status | capitalize }}
+    </td>
+    <td
+      class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time vertical-align-middle"
+    >
+      {{ transaction.createdDate | shortTime }} - <wbr />{{ transaction.createdDate | zonedDate }}
+    </td>
+  </tr>
+{% endmacro %}
