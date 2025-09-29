@@ -1,5 +1,12 @@
 import { body } from 'express-validator'
 import { demoPaymentSchema } from '@utils/simplified-account/validation/demo-payment.schema'
+import { getProductByServiceAndProductPath } from '@services/products.service'
+import slugifyString from '@utils/simplified-account/format/slugify-string'
+import lodash from 'lodash'
+import {
+  CREATE_SESSION_KEY,
+  PaymentLinkCreationSession,
+} from '@controllers/simplified-account/services/payment-links/create/constants'
 
 const paymentLinkSchema = {
   info: {
@@ -20,6 +27,33 @@ const paymentLinkSchema = {
         .withMessage('Details must be less than 5000 characters')
         .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
         .withMessage('Details contains invalid characters'),
+    },
+  },
+  existing: {
+    paymentLink: {
+      validate: body('paymentLink')
+        .trim()
+        .notEmpty()
+        .withMessage('Enter a payment link address')
+        .bail()
+        .isLength({ max: 230 })
+        .withMessage('a payment link address must be 230 characters or fewer')
+        .custom(async (value, { req }) => {
+          const currentSession = lodash.get(req, CREATE_SESSION_KEY, {}) as PaymentLinkCreationSession
+          let result
+          try {
+            result = await getProductByServiceAndProductPath(
+              String(currentSession.serviceNamePath),
+              slugifyString(String(value))
+            )
+          } catch {
+            return true
+          }
+          if (result) {
+            throw new Error()
+          }
+        })
+        .withMessage('The website address is already taken'),
     },
   },
   reference: {

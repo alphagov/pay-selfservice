@@ -1,3 +1,6 @@
+import { ServiceRequest } from '@utils/types/express'
+import lodash from 'lodash'
+
 export interface PaymentLinkCreationSession {
   paymentLinkTitle: string
   paymentLinkDescription?: string
@@ -18,3 +21,16 @@ export interface PaymentLinkCreationSession {
 
 export const CREATE_SESSION_KEY = 'session.pageData.createPaymentLink'
 export const FROM_REVIEW_QUERY_PARAM = 'fromReview'
+
+export function getSession<T>(
+  req: ServiceRequest<T>,
+  defaultValue: PaymentLinkCreationSession
+): PaymentLinkCreationSession
+export function getSession<T>(req: ServiceRequest<T>): PaymentLinkCreationSession
+
+export function getSession<T>(
+  req: ServiceRequest<T>,
+  defaultValue?: PaymentLinkCreationSession
+): PaymentLinkCreationSession {
+  return lodash.get(req, CREATE_SESSION_KEY, defaultValue ?? ({} as PaymentLinkCreationSession))
+}
