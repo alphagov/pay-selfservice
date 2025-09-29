@@ -48,19 +48,20 @@
       }}
     </div>
 
-    {{
-      govukButton({
-        text: 'Continue',
-        classes: 'button'
-      })
-    }}
-    &nbsp;
-    {{
-      govukButton({
-        text: "Change The Title Instead",
-        classes: "govuk-button--secondary",
-        href: "/service/" + currentService.externalId + "/account/" + accountType + "/payment-links/create"
-      })
-    }}
+    <div class="govuk-button-group">
+      {{
+        govukButton({
+          text: 'Continue',
+          classes: 'button'
+        })
+      }}
+      {{
+        govukButton({
+          text: "Change The Title Instead",
+          classes: "govuk-button--secondary",
+          href: "/service/" + currentService.externalId + "/account/" + accountType + "/payment-links/create"
+        })
+      }}
+    </div>
   </form>
 {% endblock %}
