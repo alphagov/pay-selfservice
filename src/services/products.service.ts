@@ -8,6 +8,9 @@ const productsClient = new ProductsClient()
 const getProducts = (gatewayAccountId: number, productType: ProductType) =>
   productsClient.products.getByGatewayAccountIdAndProductType(gatewayAccountId, productType)
 
+const getProductByServiceAndProductPath = (serviceNamePath: string, productNamePath: string) =>
+  productsClient.products.getByServiceAndProductPath(serviceNamePath, productNamePath)
+
 const getProductByExternalId = (productExternalId: string) => productsClient.products.getByExternalId(productExternalId)
 
 const getProductByGatewayAccountIdAndExternalId = (gatewayAccountId: number, productExternalId: string) =>
@@ -46,6 +49,7 @@ export {
   getProducts,
   getProductByExternalId,
   getProductByGatewayAccountIdAndExternalId,
+  getProductByServiceAndProductPath,
   deleteProduct,
   updateProduct,
   createDemoProduct,

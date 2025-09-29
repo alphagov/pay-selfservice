@@ -9,13 +9,15 @@ import lodash from 'lodash'
 import slugifyString from '@utils/simplified-account/format/slugify-string'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { getProductByServiceAndProductPath } from '@services/products.service'
+import { isWelshSelected } from '@utils/simplified-account/is-welsh'
 
 const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { account, service } = req
   const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
-  const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
+  const isWelsh = isWelshSelected(req)
   const isUsingEnglishServiceName =
     currentSession.useEnglishServiceName ?? (req.query.useEnglishServiceName as string) === 'true'
 
@@ -106,10 +108,18 @@ async function post(req: ServiceRequest<CreateLinkInformationBody>, res: Service
     productNamePath: slugifyString(req.body.name),
   } as PaymentLinkCreationSession)
 
-  const redirectPath =
-    (req.query[FROM_REVIEW_QUERY_PARAM] as string) === 'true'
-      ? paths.simplifiedAccount.paymentLinks.review
-      : paths.simplifiedAccount.paymentLinks.reference
+  let redirectPath
+  try {
+    // if Payment Link exists redirect to existingPaymentLink page
+    await getProductByServiceAndProductPath(slugifyString(serviceName), slugifyString(req.body.name))
+    redirectPath = paths.simplifiedAccount.paymentLinks.existingPaymentLink
+  } catch {
+    // if Payment Link unique redirect to review if fromReview else reference page
+    redirectPath =
+      (req.query[FROM_REVIEW_QUERY_PARAM] as string) === 'true'
+        ? paths.simplifiedAccount.paymentLinks.review
+        : paths.simplifiedAccount.paymentLinks.reference
+  }
 
   return res.redirect(formatServiceAndAccountPathsFor(redirectPath, service.externalId, account.type))
 }

@@ -1,0 +1,66 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+
+{% set servicePageTitle %}
+  Change the unique part of the website address - Payment links - {{ serviceName }} - GOV.UK Pay
+{% endset %}
+
+{% block serviceContent %}
+  <span class="govuk-caption-l">Create {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
+  <h1 class="govuk-heading-l">Change the unique part of the website address</h1>
+
+  <form method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+
+    <div class="govuk-form-group {% if flash.genericError %}govuk-form-group--error{% endif %}">
+      <div id="payment-name-path-hint" class="govuk-hint">
+        The website address we automatically generated for this payment link is already taken. You need to choose a new
+        one. It is currently <b>/{{ productNamePath | removeIndefiniteArticles | slugify }}</b>. This will not change
+        the payment link title.
+      </div>
+      <br />
+      <span
+        class="govuk-hint pay-text-black"
+        style="background-color: #f3f3f3; border: 1px solid #b1b4b6; padding: 5px; display: inline-block; word-break: break-all;"
+      >
+        {{ friendlyURL }}/{{ currentService.name | removeIndefiniteArticles | slugify }}/
+      </span>
+
+      {{
+        govukInput({
+         id: "payment-link",
+         name: "paymentLink",
+          value: formValues.paymentLink,
+          errorMessage: { text: errors.formErrors['paymentLink'] } if errors.formErrors['paymentLink'] else false,
+          classes: "govuk-!-width-one-half",
+          spellcheck: false,
+          type: "text",
+          attributes: {
+          "autocapitalize": "none",
+          "autofocus": "true",
+          "data-confirmation-filter": "slugify",
+          "aria-describedby": "payment-name-path-hint"
+          }
+        })
+      }}
+    </div>
+
+    {{
+      govukButton({
+        text: 'Continue',
+        classes: 'button'
+      })
+    }}
+    &nbsp;
+    {{
+      govukButton({
+        text: "Change The Title Instead",
+        classes: "govuk-button--secondary",
+        href: "/service/" + currentService.externalId + "/account/" + accountType + "/payment-links/create"
+      })
+    }}
+  </form>
+{% endblock %}
