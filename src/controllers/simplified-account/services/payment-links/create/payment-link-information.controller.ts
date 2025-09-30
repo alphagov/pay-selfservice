@@ -10,19 +10,26 @@ import slugifyString from '@utils/simplified-account/format/slugify-string'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { getProductByServiceAndProductPath } from '@services/products.service'
-import { isWelshSelected } from '@utils/simplified-account/is-welsh'
+import {
+  getCurrentSession,
+  isUsingEnglishServiceName,
+  isWelshSelected,
+} from '@utils/simplified-account/languageSelectionUtils'
 
 const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { account, service } = req
-  const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
+  const currentSession = getCurrentSession(req)
   const isWelsh = isWelshSelected(req)
-  const isUsingEnglishServiceName =
-    currentSession.useEnglishServiceName ?? (req.query.useEnglishServiceName as string) === 'true'
 
   // handle case where welsh payment link is selected but no welsh service name is set
-  if (isWelsh && !service.serviceName.cy && !isUsingEnglishServiceName && account.type !== GatewayAccountType.TEST) {
+  if (
+    isWelsh &&
+    !service.serviceName.cy &&
+    !isUsingEnglishServiceName(req, currentSession) &&
+    account.type !== GatewayAccountType.TEST
+  ) {
     return res.redirect(
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.paymentLinks.addWelshServiceName,

@@ -12,7 +12,7 @@ import {
   getSession,
   PaymentLinkCreationSession,
 } from '@controllers/simplified-account/services/payment-links/create/constants'
-import { isWelshSelected } from '@utils/simplified-account/is-welsh'
+import { isWelshSelected } from '@utils/simplified-account/languageSelectionUtils'
 import type Service from '@models/service/Service.class'
 import type GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 
