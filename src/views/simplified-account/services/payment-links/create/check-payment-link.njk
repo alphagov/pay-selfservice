@@ -7,42 +7,40 @@
 {% set servicePageTitle %}
   Change the unique part of the website address - Payment links - {{ serviceName }} - GOV.UK Pay
 {% endset %}
-
 {% block serviceContent %}
   <span class="govuk-caption-l">Create {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
   <h1 class="govuk-heading-l">Change the unique part of the website address</h1>
 
   <form method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+    <div id="payment-name-path-hint" class="govuk-hint">
+      The website address we automatically generated for this payment link is already taken. You need to choose a new
+      one. It is currently <b>/{{ productNamePath | removeIndefiniteArticles | slugify }}</b>. This will not change the
+      payment link title.
+    </div>
 
-    <div class="govuk-form-group {% if flash.genericError %}govuk-form-group--error{% endif %}">
-      <div id="payment-name-path-hint" class="govuk-hint">
-        The website address we automatically generated for this payment link is already taken. You need to choose a new
-        one. It is currently <b>/{{ productNamePath | removeIndefiniteArticles | slugify }}</b>. This will not change
-        the payment link title.
-      </div>
-      <br />
-      <span
-        class="govuk-hint pay-text-black"
-        style="background-color: #f3f3f3; border: 1px solid #b1b4b6; padding: 5px; display: inline-block; word-break: break-all;"
-      >
-        {{ friendlyURL }}/{{ currentService.name | removeIndefiniteArticles | slugify }}/
-      </span>
+    <span
+      class="govuk-hint pay-text-black"
+      style="background-color: #f3f3f3; border: 1px solid #b1b4b6; padding: 5px; display: inline; word-break: keep-all;
+        line-height: 2; box-decoration-break: clone; -webkit-box-decoration-break: clone;"
+    >
+      {{ friendlyURL }}/{{ currentService.name | removeIndefiniteArticles | slugify }}/
+    </span>
 
+    <div class="govuk-!-width-one-half" style="display: inline-block; margin-left: 10px;">
       {{
         govukInput({
-         id: "payment-link",
-         name: "paymentLink",
+          id: "payment-link",
+          name: "paymentLink",
           value: formValues.paymentLink,
           errorMessage: { text: errors.formErrors['paymentLink'] } if errors.formErrors['paymentLink'] else false,
-          classes: "govuk-!-width-one-half",
           spellcheck: false,
           type: "text",
           attributes: {
-          "autocapitalize": "none",
-          "autofocus": "true",
-          "data-confirmation-filter": "slugify",
-          "aria-describedby": "payment-name-path-hint"
+            "autocapitalize": "none",
+            "autofocus": "true",
+            "data-confirmation-filter": "slugify",
+            "aria-describedby": "payment-name-path-hint"
           }
         })
       }}
