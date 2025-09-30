@@ -46,6 +46,7 @@ const setupStubs = (role = 'admin', gatewayAccountType = 'test', products: objec
       payment_provider: SANDBOX,
     }),
     productStubs.getProductsByGatewayAccountIdAndTypeStub(products, GATEWAY_ACCOUNT_ID, 'ADHOC'),
+    productStubs.getProductByExternalIdAndGatewayAccountIdStub(PAYMENT_LINK_1, GATEWAY_ACCOUNT_ID),
   ])
 }
 
@@ -256,22 +257,12 @@ describe('PaymentLinks dashboard', () => {
             cy.get('.govuk-body')
               .should('have.length', 10)
               .then(($elements) => {
-                cy.wrap($elements.eq(0)).should(
-                  'contain.text',
-                  'You can create test payment links'
-                )
-                cy.wrap($elements.eq(1)).should(
-                  'contain.text',
-                  'You can test prefilling the amount'
-                )
-                cy.wrap($elements.eq(2)).should(
-                  'contain.text',
-                  'You can test adding metadata'
-                )
+                cy.wrap($elements.eq(0)).should('contain.text', 'You can create test payment links')
+                cy.wrap($elements.eq(1)).should('contain.text', 'You can test prefilling the amount')
+                cy.wrap($elements.eq(2)).should('contain.text', 'You can test adding metadata')
               })
 
-            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link')
-              .should('be.visible')
+            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link').should('be.visible')
 
             cy.contains('a', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
               .should('be.visible')
@@ -286,8 +277,8 @@ describe('PaymentLinks dashboard', () => {
                   .find('a')
                   .should('have.length', 2)
                   .then(($elements) => {
-                    cy.wrap($elements.eq(0)).contains('Edit') // todo navigate to the page once implemented
-                    cy.wrap($elements.eq(1)).contains('Delete') // todo navigate to the page once implemented
+                    cy.wrap($elements.eq(0)).contains('Edit')
+                    cy.wrap($elements.eq(1)).contains('Delete')
                   })
                 cy.wrap($elements.eq(1))
                   .find('.govuk-summary-card__actions')
@@ -295,13 +286,29 @@ describe('PaymentLinks dashboard', () => {
                   .find('a')
                   .should('have.length', 2)
                   .then(($elements) => {
-                    cy.wrap($elements.eq(0)).contains('Edit') // todo navigate to the page once implemented
-                    cy.wrap($elements.eq(1)).contains('Delete') // todo navigate to the page once implemented
+                    cy.wrap($elements.eq(0)).contains('Edit')
+                    cy.wrap($elements.eq(1)).contains('Delete')
                   })
               })
           })
         })
+
+        it('should navigate to edit page and back for payment link', () => {
+          cy.get('.govuk-summary-card').eq(0).find('.govuk-summary-card__actions').find('a').contains('Edit').click()
+          cy.get('h1').should('contain.text', 'Payment link details')
+          cy.get('.govuk-caption-l').should('contain.text', 'Edit test payment link')
+          cy.get('.govuk-back-link').click()
+          checkTitleAndHeading('Test payment links', SERVICE_NAME.en)
+        })
+
+        it('should navigate to delete page and back for payment link', () => {
+          cy.get('.govuk-summary-card').eq(0).find('.govuk-summary-card__actions').find('a').contains('Delete').click()
+          cy.get('h1').should('contain.text', `Are you sure you want to delete ${PAYMENT_LINK_1.name}`)
+          cy.get('.govuk-back-link').click()
+          checkTitleAndHeading('Test payment links', SERVICE_NAME.en)
+        })
       })
+
       describe('No payment links', () => {
         beforeEach(() => {
           setupStubs(USER_ROLE, SERVICE_MODE)
@@ -329,22 +336,12 @@ describe('PaymentLinks dashboard', () => {
             cy.get('.govuk-body')
               .should('have.length', 10)
               .then(($elements) => {
-                cy.wrap($elements.eq(0)).should(
-                  'contain.text',
-                  'You can create test payment links'
-                )
-                cy.wrap($elements.eq(1)).should(
-                  'contain.text',
-                  'You can test prefilling the amount'
-                )
-                cy.wrap($elements.eq(2)).should(
-                  'contain.text',
-                  'You can test adding metadata'
-                )
+                cy.wrap($elements.eq(0)).should('contain.text', 'You can create test payment links')
+                cy.wrap($elements.eq(1)).should('contain.text', 'You can test prefilling the amount')
+                cy.wrap($elements.eq(2)).should('contain.text', 'You can test adding metadata')
               })
 
-            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link')
-              .should('be.visible')
+            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link').should('be.visible')
 
             cy.contains('a', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
               .should('be.visible')
@@ -398,8 +395,7 @@ describe('PaymentLinks dashboard', () => {
                 )
               })
 
-            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link')
-              .should('be.visible')
+            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link').should('be.visible')
 
             cy.contains('a', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
               .should('be.visible')
@@ -412,10 +408,25 @@ describe('PaymentLinks dashboard', () => {
               .find('a')
               .should('have.length', 2)
               .then(($elements) => {
-                cy.wrap($elements.eq(0)).contains('Edit') // todo navigate to the page once implemented
-                cy.wrap($elements.eq(1)).contains('Delete') // todo navigate to the page once implemented
+                cy.wrap($elements.eq(0)).contains('Edit')
+                cy.wrap($elements.eq(1)).contains('Delete')
               })
           })
+        })
+
+        it('should navigate to edit page and back for payment link', () => {
+          cy.get('.govuk-summary-card').find('.govuk-summary-card__actions').find('a').contains('Edit').click()
+          cy.get('h1').should('contain.text', 'Payment link details')
+          cy.get('.govuk-caption-l').should('contain.text', 'Edit live payment link')
+          cy.get('.govuk-back-link').click()
+          checkTitleAndHeading('Live payment links', SERVICE_NAME.en)
+        })
+
+        it('should navigate to delete page and back for payment link', () => {
+          cy.get('.govuk-summary-card').find('.govuk-summary-card__actions').find('a').contains('Delete').click()
+          cy.get('h1').should('contain.text', `Are you sure you want to delete ${PAYMENT_LINK_1.name}`)
+          cy.get('.govuk-back-link').click()
+          checkTitleAndHeading('Live payment links', SERVICE_NAME.en)
         })
       })
       describe('No payment links', () => {
@@ -459,8 +470,7 @@ describe('PaymentLinks dashboard', () => {
                 )
               })
 
-            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link')
-              .should('be.visible')
+            cy.contains('a.govuk-button', 'Create a ' + SERVICE_MODE + ' payment link').should('be.visible')
 
             cy.contains('a', 'Create a ' + SERVICE_MODE + ' payment link in Welsh')
               .should('be.visible')
