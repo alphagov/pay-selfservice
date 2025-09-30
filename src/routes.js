@@ -1,3 +1,8 @@
+// -- NOT PAYMENT LINKS RELATED
+const { EXPERIMENTAL_FEATURES_FLAG } = process.env
+const EXPERIMENTAL_FEATURES = EXPERIMENTAL_FEATURES_FLAG === 'true'
+// --
+
 const { Router } = require('express')
 const passport = require('passport')
 
@@ -50,10 +55,11 @@ const requestPspTestAccountController = require('./controllers/request-psp-test-
 const registrationController = require('./controllers/registration/registration.controller')
 const privacyController = require('./controllers/privacy/privacy.controller')
 const servicesController = require('./controllers/simplified-account/services')
+const homeController = require('./controllers/simplified-account/home')
 
 const simplifiedAccountRoutes = require('./simplified-account-routes')
 const { registrationSuccess } = require('@services/auth.service')
-const { account: routes} = require('@root/paths')
+const { account: routes } = require('@root/paths')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 
 // Assignments
@@ -68,18 +74,10 @@ const {
   register,
   services,
   staticPaths,
-  user
+  user,
 } = paths
-const {
-  dashboard,
-  paymentLinks,
-  prototyping,
-  transactions,
-} = paths.account
-const {
-  requestPspTestAccount,
-  requestToGoLive,
-} = paths.service
+const { dashboard, paymentLinks, prototyping, transactions } = paths.account
+const { requestPspTestAccount, requestToGoLive } = paths.service
 
 // Exports
 module.exports.generateRoute = generateRoute
@@ -162,6 +160,11 @@ module.exports.bind = function (app) {
   // -------------------------
 
   // My services
+  if (EXPERIMENTAL_FEATURES) {
+    app.get(services.index, userIsAuthorised, homeController.myServices.get)
+  } else {
+    app.get(services.index, userIsAuthorised, servicesController.myServices.get)
+  }
   app.get(services.index, userIsAuthorised, servicesController.myServices.get)
   app.get(services.create.index, userIsAuthorised, createServiceController.get)
   app.post(services.create.index, userIsAuthorised, createServiceController.post)
@@ -171,7 +174,11 @@ module.exports.bind = function (app) {
   // All service transactions
   app.get(allServiceTransactions.index, userIsAuthorised, allTransactionsController.getController)
   app.get(allServiceTransactions.indexStatusFilter, userIsAuthorised, allTransactionsController.getController)
-  app.get(allServiceTransactions.indexStatusFilterWithoutSearch, userIsAuthorised, allTransactionsController.noAutosearchTransactions)
+  app.get(
+    allServiceTransactions.indexStatusFilterWithoutSearch,
+    userIsAuthorised,
+    allTransactionsController.noAutosearchTransactions
+  )
   app.get(allServiceTransactions.download, userIsAuthorised, allTransactionsController.downloadTransactions)
   app.get(allServiceTransactions.downloadStatusFilter, userIsAuthorised, allTransactionsController.downloadTransactions)
   app.get(allServiceTransactions.redirectDetail, userIsAuthorised, transactionDetailRedirectController)
@@ -215,14 +222,46 @@ module.exports.bind = function (app) {
   // Request to go live
   service.get(requestToGoLive.index, permission('go-live-stage:read'), requestToGoLiveIndexController.get)
   service.post(requestToGoLive.index, permission('go-live-stage:update'), requestToGoLiveIndexController.post)
-  service.get(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.get)
-  service.post(requestToGoLive.organisationName, permission('go-live-stage:update'), requestToGoLiveOrganisationNameController.post)
-  service.get(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.get)
-  service.post(requestToGoLive.organisationAddress, permission('go-live-stage:update'), requestToGoLiveOrganisationAddressController.post)
-  service.get(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.get)
-  service.post(requestToGoLive.chooseHowToProcessPayments, permission('go-live-stage:update'), requestToGoLiveChooseHowToProcessPaymentsController.post)
-  service.get(requestToGoLive.chooseTakesPaymentsOverPhone, permission('go-live-stage:update'), requestToGoLiveChooseTakesPaymentsOverPhoneController.get)
-  service.post(requestToGoLive.chooseTakesPaymentsOverPhone, permission('go-live-stage:update'), requestToGoLiveChooseTakesPaymentsOverPhoneController.post)
+  service.get(
+    requestToGoLive.organisationName,
+    permission('go-live-stage:update'),
+    requestToGoLiveOrganisationNameController.get
+  )
+  service.post(
+    requestToGoLive.organisationName,
+    permission('go-live-stage:update'),
+    requestToGoLiveOrganisationNameController.post
+  )
+  service.get(
+    requestToGoLive.organisationAddress,
+    permission('go-live-stage:update'),
+    requestToGoLiveOrganisationAddressController.get
+  )
+  service.post(
+    requestToGoLive.organisationAddress,
+    permission('go-live-stage:update'),
+    requestToGoLiveOrganisationAddressController.post
+  )
+  service.get(
+    requestToGoLive.chooseHowToProcessPayments,
+    permission('go-live-stage:update'),
+    requestToGoLiveChooseHowToProcessPaymentsController.get
+  )
+  service.post(
+    requestToGoLive.chooseHowToProcessPayments,
+    permission('go-live-stage:update'),
+    requestToGoLiveChooseHowToProcessPaymentsController.post
+  )
+  service.get(
+    requestToGoLive.chooseTakesPaymentsOverPhone,
+    permission('go-live-stage:update'),
+    requestToGoLiveChooseTakesPaymentsOverPhoneController.get
+  )
+  service.post(
+    requestToGoLive.chooseTakesPaymentsOverPhone,
+    permission('go-live-stage:update'),
+    requestToGoLiveChooseTakesPaymentsOverPhoneController.post
+  )
   service.get(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.get)
   service.post(requestToGoLive.agreement, permission('go-live-stage:update'), requestToGoLiveAgreementController.post)
 
@@ -237,7 +276,10 @@ module.exports.bind = function (app) {
   // Dashboard
   // TODO: remove this redirect once all service views are migrated to service/acct model
   account.get(dashboard.index, (req, res, next) => {
-    return res.redirect(301, formatServiceAndAccountPathsFor(paths.simplifiedAccount.dashboard.index, req.service.externalId, req.account.type))
+    return res.redirect(
+      301,
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.dashboard.index, req.service.externalId, req.account.type)
+    )
   })
 
   // Transactions
@@ -261,11 +303,31 @@ module.exports.bind = function (app) {
   account.post(paymentLinks.amount, permission('tokens:create'), paymentLinksController.postAmount)
   account.get(paymentLinks.review, permission('tokens:create'), paymentLinksController.getReview)
   account.post(paymentLinks.review, permission('tokens:create'), paymentLinksController.postReview)
-  account.get(paymentLinks.addMetadata, permission('tokens:create'), paymentLinksController.getAddReportingColumn.showAddMetadataPage)
-  account.get(paymentLinks.editMetadata, permission('tokens:create'), paymentLinksController.getAddReportingColumn.showEditMetadataPage)
-  account.post(paymentLinks.addMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.addMetadata)
-  account.post(paymentLinks.editMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.editMetadata)
-  account.post(paymentLinks.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
+  account.get(
+    paymentLinks.addMetadata,
+    permission('tokens:create'),
+    paymentLinksController.getAddReportingColumn.showAddMetadataPage
+  )
+  account.get(
+    paymentLinks.editMetadata,
+    permission('tokens:create'),
+    paymentLinksController.getAddReportingColumn.showEditMetadataPage
+  )
+  account.post(
+    paymentLinks.addMetadata,
+    permission('tokens:create'),
+    paymentLinksController.postUpdateReportingColumn.addMetadata
+  )
+  account.post(
+    paymentLinks.editMetadata,
+    permission('tokens:create'),
+    paymentLinksController.postUpdateReportingColumn.editMetadata
+  )
+  account.post(
+    paymentLinks.deleteMetadata,
+    permission('tokens:create'),
+    paymentLinksController.postUpdateReportingColumn.deleteMetadata
+  )
 
   account.get(paymentLinks.manage.index, permission('transactions:read'), paymentLinksController.getManage)
   account.get(paymentLinks.manage.disable, permission('tokens:create'), paymentLinksController.getDisable)
@@ -273,17 +335,45 @@ module.exports.bind = function (app) {
   account.post(paymentLinks.manage.delete, permission('tokens:create'), paymentLinksController.deleteLink.post)
   account.get(paymentLinks.manage.edit, permission('tokens:create'), paymentLinksController.getEdit)
   account.post(paymentLinks.manage.edit, permission('tokens:create'), paymentLinksController.postEdit)
-  account.get(paymentLinks.manage.editInformation, permission('tokens:create'), paymentLinksController.getEditInformation)
-  account.post(paymentLinks.manage.editInformation, permission('tokens:create'), paymentLinksController.postEditInformation)
+  account.get(
+    paymentLinks.manage.editInformation,
+    permission('tokens:create'),
+    paymentLinksController.getEditInformation
+  )
+  account.post(
+    paymentLinks.manage.editInformation,
+    permission('tokens:create'),
+    paymentLinksController.postEditInformation
+  )
   account.get(paymentLinks.manage.editReference, permission('tokens:create'), paymentLinksController.getEditReference)
   account.post(paymentLinks.manage.editReference, permission('tokens:create'), paymentLinksController.postEditReference)
   account.get(paymentLinks.manage.editAmount, permission('tokens:create'), paymentLinksController.getEditAmount)
   account.post(paymentLinks.manage.editAmount, permission('tokens:create'), paymentLinksController.postEditAmount)
-  account.get(paymentLinks.manage.addMetadata, permission('tokens:create'), paymentLinksController.getAddReportingColumn.showAddMetadataPage)
-  account.post(paymentLinks.manage.addMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.addMetadata)
-  account.get(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.getAddReportingColumn.showEditMetadataPage)
-  account.post(paymentLinks.manage.editMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.editMetadata)
-  account.post(paymentLinks.manage.deleteMetadata, permission('tokens:create'), paymentLinksController.postUpdateReportingColumn.deleteMetadata)
+  account.get(
+    paymentLinks.manage.addMetadata,
+    permission('tokens:create'),
+    paymentLinksController.getAddReportingColumn.showAddMetadataPage
+  )
+  account.post(
+    paymentLinks.manage.addMetadata,
+    permission('tokens:create'),
+    paymentLinksController.postUpdateReportingColumn.addMetadata
+  )
+  account.get(
+    paymentLinks.manage.editMetadata,
+    permission('tokens:create'),
+    paymentLinksController.getAddReportingColumn.showEditMetadataPage
+  )
+  account.post(
+    paymentLinks.manage.editMetadata,
+    permission('tokens:create'),
+    paymentLinksController.postUpdateReportingColumn.editMetadata
+  )
+  account.post(
+    paymentLinks.manage.deleteMetadata,
+    permission('tokens:create'),
+    paymentLinksController.postUpdateReportingColumn.deleteMetadata
+  )
 
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
@@ -297,7 +387,7 @@ module.exports.bind = function (app) {
     if (accountUrls.isLegacyAccountsUrl(req.url)) {
       logger.info('Accounts URL utility forwarding a legacy account URL', {
         url: req.originalUrl,
-        session_has_user: !!req.user
+        session_has_user: !!req.user,
       })
       if (!req.user) {
         if (req.session) {
@@ -311,7 +401,7 @@ module.exports.bind = function (app) {
       return
     }
     logger.info('Page not found', {
-      url: req.originalUrl
+      url: req.originalUrl,
     })
     next(new NotFoundError('Route not found'))
   })
