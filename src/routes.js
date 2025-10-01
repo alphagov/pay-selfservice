@@ -291,6 +291,9 @@ module.exports.bind = function (app) {
   // Settings
   app.use(paths.simplifiedAccount.root, simplifiedAccountRoutes)
 
+  app.use(paths.account.root, account)
+  app.use(paths.service.root, service)
+
   // security.txt — https://gds-way.cloudapps.digital/standards/vulnerability-disclosure.html
   const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'
   app.get('/.well-known/security.txt', (req, res) => res.redirect(securitytxt))
