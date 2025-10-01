@@ -46,16 +46,16 @@ const serviceNavigationItems = (currentPath, permissions, type, currentUrl, serv
     current: pathLookup(currentPath, paths.simplifiedAccount.agreements.index),
     permissions: permissions.agreements_read && (account.recurring_enabled ?? account.recurringEnabled)
   })
-  if (type === 'card') {
-    navigationItems.push({
-      id: 'navigation-menu-payment-links',
-      name: 'Payment links',
-      url: (permissions.token_create && formatAccountPathsFor(paths.account.paymentLinks.start, gatewayAccountExternalId)) ||
-        formatAccountPathsFor(paths.account.paymentLinks.manage.index, gatewayAccountExternalId),
-      current: currentPath !== '/' && flattenNestedValues(paths.account.paymentLinks).filter(path => currentPath.includes(path)).length,
-      permissions: permissions.transactions_read
-    })
-  }
+  // if (type === 'card') {
+  //   navigationItems.push({
+  //     id: 'navigation-menu-payment-links',
+  //     name: 'Payment links',
+  //     url: (permissions.token_create && formatAccountPathsFor(paths.account.paymentLinks.start, gatewayAccountExternalId)) ||
+  //       formatAccountPathsFor(paths.account.paymentLinks.manage.index, gatewayAccountExternalId),
+  //     current: currentPath !== '/' && flattenNestedValues(paths.account.paymentLinks).filter(path => currentPath.includes(path)).length,
+  //     permissions: permissions.transactions_read
+  //   })
+  // }
   navigationItems.push({
     id: 'navigation-menu-settings',
     name: 'Settings',
@@ -96,7 +96,7 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
   ]
 }
 
-function yourPSPNavigationItems (account, currentPath = '') {
+function yourPSPNavigationItems(account, currentPath = '') {
   const credentialsToLink = getPSPPageLinks(account)
   const isSingleCredential = credentialsToLink.length === 1
   return credentialsToLink.map((credential) => {
@@ -110,7 +110,7 @@ function yourPSPNavigationItems (account, currentPath = '') {
   })
 }
 
-function getPSPNavigationName (credential) {
+function getPSPNavigationName(credential) {
   if (credential.state === CREDENTIAL_STATE.RETIRED) {
     return `Old PSP - ${formatPSPname(credential.payment_provider)}`
   } else if ((process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true') && (credential.payment_provider === 'stripe')) {
