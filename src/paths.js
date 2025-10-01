@@ -140,7 +140,7 @@ module.exports = {
         metadata: {
           add: '/payment-links/:productExternalId/add/reporting-column',
           update: '/payment-links/:productExternalId/edit/reporting-column/:metadataKey',
-        }
+        },
       },
       review: '/payment-links/review',
       delete: '/payment-links/:productExternalId/delete',

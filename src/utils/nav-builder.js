@@ -16,7 +16,7 @@ const mainSettingsPaths = [
   paths.account.toggleBillingAddress,
   paths.account.emailNotifications,
   paths.account.toggleMotoMaskCardNumberAndSecurityCode,
-  paths.account.defaultBillingAddressCountry
+  paths.account.defaultBillingAddressCountry,
 ]
 
 const serviceNavigationItems = (currentPath, permissions, type, currentUrl, service = {}, account = {}) => {
@@ -28,7 +28,7 @@ const serviceNavigationItems = (currentPath, permissions, type, currentUrl, serv
     name: 'Dashboard',
     url: formatAccountPathsFor(paths.account.dashboard.index, gatewayAccountExternalId),
     current: pathLookup(currentPath, paths.account.dashboard.index),
-    permissions: true
+    permissions: true,
   })
   if (type === 'card') {
     navigationItems.push({
@@ -36,7 +36,7 @@ const serviceNavigationItems = (currentPath, permissions, type, currentUrl, serv
       name: 'Transactions',
       url: formatAccountPathsFor(paths.account.transactions.index, gatewayAccountExternalId),
       current: pathLookup(currentPath, paths.account.transactions.index),
-      permissions: permissions.transactions_read
+      permissions: permissions.transactions_read,
     })
   }
   navigationItems.push({
@@ -44,14 +44,14 @@ const serviceNavigationItems = (currentPath, permissions, type, currentUrl, serv
     name: 'Agreements',
     url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.agreements.index, serviceExternalId, account.type),
     current: pathLookup(currentPath, paths.simplifiedAccount.agreements.index),
-    permissions: permissions.agreements_read && (account.recurring_enabled ?? account.recurringEnabled)
+    permissions: permissions.agreements_read && (account.recurring_enabled ?? account.recurringEnabled),
   })
   navigationItems.push({
     id: 'navigation-menu-settings',
     name: 'Settings',
     url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.index, serviceExternalId, account.type),
     current: currentUrl.includes('settings'),
-    permissions: true
+    permissions: true,
   })
   return navigationItems
 }
@@ -63,26 +63,26 @@ const adminNavigationItems = (currentPath, permissions, type, paymentProvider, a
       name: 'Settings',
       url: formatAccountPathsFor(paths.account.settings.index, account.external_id),
       current: pathLookup(currentPath, mainSettingsPaths),
-      permissions: type === 'card'
+      permissions: type === 'card',
     },
     ...yourPSPNavigationItems(account, currentPath).map((yourPSPNavigationItem) => ({
       ...yourPSPNavigationItem,
-      permissions: permissions.gateway_credentials_update
+      permissions: permissions.gateway_credentials_update,
     })),
     {
       id: 'navigation-menu-switch-psp',
       name: 'Switch PSP',
       url: formatAccountPathsFor(paths.account.switchPSP.index, account.external_id),
       current: pathLookup(currentPath, paths.account.switchPSP.index),
-      permissions: permissions.gateway_credentials_update && account.provider_switch_enabled
+      permissions: permissions.gateway_credentials_update && account.provider_switch_enabled,
     },
     {
       id: 'navigation-menu-payment-types',
       name: 'Card types',
       url: formatAccountPathsFor(paths.account.paymentTypes.index, account.external_id),
       current: pathLookup(currentPath, paths.account.paymentTypes.index),
-      permissions: permissions.payment_types_read && type === 'card'
-    }
+      permissions: permissions.payment_types_read && type === 'card',
+    },
   ]
 }
 
@@ -92,10 +92,13 @@ function yourPSPNavigationItems(account, currentPath = '') {
   return credentialsToLink.map((credential) => {
     const navName = getPSPNavigationName(credential)
     return {
-      id: (credential.state === CREDENTIAL_STATE.ACTIVE) || isSingleCredential ? 'navigation-menu-your-psp' : `navigation-menu-your-psp-${credential.external_id}`,
+      id:
+        credential.state === CREDENTIAL_STATE.ACTIVE || isSingleCredential
+          ? 'navigation-menu-your-psp'
+          : `navigation-menu-your-psp-${credential.external_id}`,
       name: navName,
       url: formatAccountPathsFor(paths.account.yourPsp.index, account.external_id, credential.external_id),
-      current: currentPath.includes(credential.external_id)
+      current: currentPath.includes(credential.external_id),
     }
   })
 }
@@ -103,7 +106,7 @@ function yourPSPNavigationItems(account, currentPath = '') {
 function getPSPNavigationName(credential) {
   if (credential.state === CREDENTIAL_STATE.RETIRED) {
     return `Old PSP - ${formatPSPname(credential.payment_provider)}`
-  } else if ((process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true') && (credential.payment_provider === 'stripe')) {
+  } else if (process.env.ENABLE_STRIPE_ONBOARDING_TASK_LIST === 'true' && credential.payment_provider === 'stripe') {
     return 'Information for Stripe'
   } else {
     return `Your PSP - ${formatPSPname(credential.payment_provider)}`
@@ -113,5 +116,5 @@ function getPSPNavigationName(credential) {
 module.exports = {
   serviceNavigationItems,
   adminNavigationItems,
-  yourPSPNavigationItems
+  yourPSPNavigationItems,
 }
