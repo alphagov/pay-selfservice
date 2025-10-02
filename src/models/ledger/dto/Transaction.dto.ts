@@ -6,9 +6,9 @@ export interface TransactionData {
   credential_external_id: string
   amount: number
   state: {
-    finished: boolean,
+    finished: boolean
     status: string
-  },
+  }
   description: string
   reference: string
   language: string
@@ -16,7 +16,7 @@ export interface TransactionData {
   email: string
   payment_provider: string
   created_date: string
-  card_details: CardDetailsData
+  card_details?: CardDetailsData
   delayed_capture: boolean
   gateway_transaction_id: string
   refund_summary: {
@@ -26,7 +26,8 @@ export interface TransactionData {
     amount_submitted: number
     amount_refunded: number
   }
-  settlement_summary: { // optional?
+  settlement_summary: {
+    // optional?
     capture_submit_time: string
     captured_date: string
   }

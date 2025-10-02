@@ -1,0 +1,29 @@
+<legend class="govuk-visually-hidden">Payment status</legend>
+{# When JavaScript enhances the select to a multi-select, the label element’s for attribute will reference a button element #}
+{# WAVE complains about this but it is valid according to the HTML standard and the label will activate the button #}
+{{
+  govukSelect({
+    id: "state",
+    name: "state",
+    classes: 'govuk-!-font-size-16',
+    label: {
+      text: "Payment status",
+      classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+    },
+    hint: {
+      text: "Select a status",
+      classes: 'govuk-!-font-size-14'
+    },
+    attributes: {
+      'data-enhance-multiple': true
+    },
+    items: [{
+      value: "all",
+      text: "All"
+    },
+      {
+        value: "success",
+        text: "Success"
+      }]
+  })
+}}
