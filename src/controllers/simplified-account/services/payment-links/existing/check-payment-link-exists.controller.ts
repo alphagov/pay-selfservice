@@ -42,11 +42,15 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
   )
   if (hasErrors) return
 
+  // Safely extract paymentLink as a string from request body, defaulting to empty if invalid
+  const body = req.body as PaymentLinkBody
+  const paymentLinkValue = typeof body.paymentLink === 'string' ? body.paymentLink : ''
   lodash.set(req, CREATE_SESSION_KEY, {
     ...session,
-    productNamePath: slugifyString(session.productNamePath),
+    productNamePath: paymentLinkValue,
     friendlyURL: FRIENDLY_URL,
     serviceNamePath: slugifyString(service.name),
+    paymentLinkTitle: slugifyString(session.productNamePath),
   } as PaymentLinkCreationSession)
 
   res.redirect(
@@ -55,6 +59,10 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
 }
 
 // Interfaces
+interface PaymentLinkBody {
+  paymentLink?: string
+}
+
 interface RenderOptions {
   backLink: string
   serviceMode: string
