@@ -36,17 +36,27 @@
 
   {% set eventsTableRows = [] %}
   {% for eventKey, eventData in events %}
+
+
+    {% set eventDescription %}
+      <p class="govuk-!-margin-0"><strong>{{ eventData.description }}</strong></p>
+      {% if eventData.metadata %}
+        <p class="govuk-!-margin-0" style="max-width: 280px; overflow-wrap: anywhere;">{{ eventData.metadata }}</p>
+      {% endif %}
+    {% endset %}
+
     {%
       set eventsTableRows = (eventsTableRows.push([
         {
-          text: eventData.description
+          html: eventDescription
         },
         {
           text: eventData.formattedAmount,
           format: "numeric"
         },
         {
-          text: eventData.timestamp
+          text: eventData.timestamp,
+          format: "numeric"
         }
       ]), eventsTableRows)
     %}
@@ -56,15 +66,16 @@
     govukTable({
       caption: "Transaction events",
       captionClasses: "govuk-table__caption--m",
-      firstCellIsHeader: true,
+      firstCellIsHeader: false,
       rows: eventsTableRows
     })
   }}
 
-  <!--{{ events | dump }}
-  <hr />
-
-  {{ transaction | dump }}
-  <hr />
-  {{ data | dump }}-->
+  <!--<hr />
+  {{ data.disputed | dump }}
+  {{ data.state | dump }}
+  {{ data.transactionType | dump }}
+  {{ data.data | dump }}
+  <br />
+  <a class="govuk-button govuk-button--secondary" href="{{ oldView }}">GOTO old view</a>-->
 {% endblock %}

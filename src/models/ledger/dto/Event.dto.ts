@@ -1,5 +1,6 @@
 import { EventType } from '../types/event-type'
 import { ResourceType } from '../types/resource-type'
+import { StateData } from './State.dto'
 
 export interface EventsData {
   transaction_id: string
@@ -11,14 +12,6 @@ export interface EventData {
   resource_type: ResourceType
   event_type: EventType
   timestamp: string
-  state: EventStateData
+  state: StateData
   data?: Record<string, unknown>
-}
-
-export interface EventStateData {
-  status: string
-  finished: boolean
-  code?: string
-  message?: string
-  can_retry?: boolean
 }

@@ -1,7 +1,7 @@
 export const ResourceType = {
-  PAYMENT: 'PAYMENT' as ResourceType,
-  REFUND: 'REFUND' as ResourceType,
-  DISPUTE: 'DISPUTE' as ResourceType,
-}
+  PAYMENT: 'PAYMENT',
+  REFUND: 'REFUND',
+  DISPUTE: 'DISPUTE',
+} as const
 
-export type ResourceType = 'PAYMENT' | 'REFUND' | 'DISPUTE'
+export type ResourceType = (typeof ResourceType)[keyof typeof ResourceType]

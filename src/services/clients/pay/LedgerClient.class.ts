@@ -67,6 +67,17 @@ class LedgerClient extends BaseClient {
         const response = await this.get<EventsData>(path, 'get events for transaction')
         return response.data.events.map((eventData) => new Event(eventData))
       },
+      disputes: async (transactionExternalId: string, gatewayAccountId: number) => {
+        const path =
+          '/v1/transaction/{transactionExternalId}/transaction?gateway_account_id={gatewayAccountId}&transaction_type=DISPUTE'
+            .replace('{transactionExternalId}', encodeURIComponent(transactionExternalId))
+            .replace('{gatewayAccountId}', encodeURIComponent(gatewayAccountId))
+        const response = await this.get<{
+          parent_transaction_id: string
+          transactions: TransactionData[]
+        }>(path, 'get disputes for transaction')
+        return response.data.transactions.map((transactionData) => new Transaction(transactionData))
+      },
     }
   }
 

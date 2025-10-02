@@ -25,4 +25,7 @@ const getTransaction = async (transactionExternalId: string, gatewayAccountId: n
 const getEvents = async (transactionExternalId: string, gatewayAccountId: number) =>
   await ledgerClient.transactions.events(transactionExternalId, gatewayAccountId)
 
-export { dashboardTransactionSummary, getTransaction, getEvents }
+const getDisputes = async (transactionExternalId: string, gatewayAccountId: number) =>
+  await ledgerClient.transactions.disputes(transactionExternalId, gatewayAccountId)
+
+export { dashboardTransactionSummary, getTransaction, getEvents, getDisputes }

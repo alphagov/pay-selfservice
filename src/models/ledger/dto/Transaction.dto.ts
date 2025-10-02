@@ -2,16 +2,19 @@ import { AuthorisationSummaryData } from '@models/common/authorisation-summary/d
 import { SettlementSummaryData } from '@models/common/settlement-summary/dto/SettlementSummary.dto'
 import { CardDetailsData } from '@models/common/card-details/dto/CardDetails.dto'
 import { RefundSummaryData } from '@models/common/refund-summary/dto/RefundSummary.dto'
+import { ResourceType } from '../types/resource-type'
+import { StateData } from './State.dto'
 
 export interface TransactionData {
   gateway_account_id: string
   service_id: string
   credential_external_id: string
   amount: number
-  state: {
-    finished: boolean
-    status: string
-  }
+  net_amount?: number
+  total_amount?: number
+  corporate_card_surcharge?: number
+  fee?: number
+  state: StateData
   description: string
   reference: string
   language: string
@@ -25,7 +28,7 @@ export interface TransactionData {
   refund_summary: RefundSummaryData
   settlement_summary: SettlementSummaryData
   authorisation_summary?: AuthorisationSummaryData
-  transaction_type: string
+  transaction_type: ResourceType
   wallet_type?: string
   moto: boolean
   live: boolean

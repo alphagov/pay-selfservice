@@ -5,6 +5,9 @@ import { AuthorisationSummary } from '@models/common/authorisation-summary/Autho
 import { RefundSummary } from '@models/common/refund-summary/RefundSummary.class'
 import { SettlementSummary } from '@models/common/settlement-summary/SettlementSummary.class'
 import { CardDetails } from '@models/common/card-details/CardDetails.class'
+import { ResourceType } from './types/resource-type'
+import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFriendlyNames } from './types/status'
+import { State } from './State.class'
 
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
@@ -13,11 +16,12 @@ class Transaction {
   readonly externalId: string
   readonly gatewayTransactionId: string
   readonly reference: string
-  readonly state: {
-    finished: boolean
-    status: string
-  }
+  readonly state: State
   readonly amount: number // pence
+  readonly corporateCardSurcharge?: number // pence
+  readonly netAmount?: number // pence
+  readonly totalAmount?: number // pence
+  readonly fee?: number // pence
   readonly createdDate: DateTime
   readonly description: string
   readonly paymentProvider: string
@@ -28,6 +32,7 @@ class Transaction {
   readonly settlementSummary: SettlementSummary
   readonly authorisationSummary?: AuthorisationSummary
   readonly cardDetails?: CardDetails
+  readonly transactionType: ResourceType
   readonly data: TransactionData
 
   constructor(data: TransactionData) {
@@ -36,8 +41,12 @@ class Transaction {
     this.externalId = data.transaction_id
     this.gatewayTransactionId = data.gateway_transaction_id
     this.reference = data.reference
-    this.state = data.state
+    this.state = new State(data.state)
     this.amount = data.amount
+    this.corporateCardSurcharge = data.corporate_card_surcharge
+    this.netAmount = data.net_amount
+    this.totalAmount = data.total_amount
+    this.fee = data.fee
     this.createdDate = DateTime.fromISO(data.created_date)
     this.description = data.description
     this.paymentProvider = data.payment_provider
@@ -50,11 +59,25 @@ class Transaction {
       ? new AuthorisationSummary(data.authorisation_summary)
       : undefined
     this.cardDetails = data.card_details ? new CardDetails(data.card_details) : undefined
+    this.transactionType = data.transaction_type
     this.data = data
   }
 
   amountInPounds(): string {
     return penceToPoundsWithCurrency(this.amount)
+  }
+
+  get friendlyTransactionStatus(): string {
+    switch (this.transactionType) {
+      case ResourceType.PAYMENT:
+        return PaymentStatusFriendlyNames[this.state.status] ?? this.state.status
+      case ResourceType.REFUND:
+        return RefundStatusFriendlyNames[this.state.status] ?? this.state.status
+      case ResourceType.DISPUTE:
+        return DisputeStatusFriendlyNames[this.state.status] ?? this.state.status
+      default:
+        return this.state.status
+    }
   }
 }
 
