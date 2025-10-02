@@ -7,7 +7,7 @@ const {
   legacyConnectorTransactionParity,
   legacyConnectorEventsParity,
   legacyConnectorTransactionsParity,
-  legacyConnectorTransactionSummaryParity
+  legacyConnectorTransactionSummaryParity,
 } = require('./utils/ledger-legacy-connector-parity')
 const getQueryStringForParams = require('../../utils/get-query-string-for-params')
 const qs = require('qs')
@@ -17,12 +17,15 @@ const defaultOptions = {
   json: true,
   service: 'ledger',
   limit_total_size: 5001,
-  limit_total: true
+  limit_total: true,
 }
 
 const client = new Client(defaultOptions.service)
 
-const transaction = async function transaction (id, gatewayAccountId, options = {}) {
+/**
+ * @deprecated use src/services/clients/pay/LedgerClient.class.ts
+ */
+const transaction = async function transaction(id, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   let url = `${baseUrl}/v1/transaction/${id}?account_id=${gatewayAccountId}`
   if (options.transaction_type) {
@@ -34,7 +37,10 @@ const transaction = async function transaction (id, gatewayAccountId, options = 
   return body
 }
 
-const transactionWithAccountOverride = async function transactionWithAccountOverride (id, options = {}) {
+/**
+ * @deprecated use src/services/clients/pay/LedgerClient.class.ts
+ */
+const transactionWithAccountOverride = async function transactionWithAccountOverride(id, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/transaction', id)
   const fullUrl = `${url}?override_account_id_restriction=true`
@@ -43,7 +49,10 @@ const transactionWithAccountOverride = async function transactionWithAccountOver
   return response.data
 }
 
-async function getDisputesForTransaction (id, gatewayAccountId, options = {}) {
+/**
+ * @deprecated use src/services/clients/pay/LedgerClient.class.ts
+ */
+async function getDisputesForTransaction(id, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/transaction', id, 'transaction')
   const fullUrl = `${url}?gateway_account_id=${gatewayAccountId}&transaction_type=DISPUTE`
@@ -52,7 +61,10 @@ async function getDisputesForTransaction (id, gatewayAccountId, options = {}) {
   return response.data
 }
 
-const events = async function events (transactionId, gatewayAccountId, options = {}) {
+/**
+ * @deprecated use src/services/clients/pay/LedgerClient.class.ts
+ */
+const events = async function events(transactionId, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/transaction', transactionId, 'event')
   const fullUrl = `${url}?gateway_account_id=${gatewayAccountId}`
@@ -62,13 +74,16 @@ const events = async function events (transactionId, gatewayAccountId, options =
   return body
 }
 
-const transactions = async function transactions (gatewayAccountIds = [], filters = {}, options = {}) {
+/**
+ * @deprecated use src/services/clients/pay/LedgerClient.class.ts
+ */
+const transactions = async function transactions(gatewayAccountIds = [], filters = {}, options = {}) {
   const formatOptions = { arrayFormat: 'comma' }
   const path = '/v1/transaction'
   const params = {
     account_id: gatewayAccountIds,
     limit_total: defaultOptions.limit_total,
-    limit_total_size: defaultOptions.limit_total_size
+    limit_total_size: defaultOptions.limit_total_size,
   }
 
   const formattedParams = qs.stringify(params, formatOptions)
@@ -76,21 +91,20 @@ const transactions = async function transactions (gatewayAccountIds = [], filter
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   const url = `${baseUrl}${path}?${formattedParams}&${formattedFilterParams}`
   configureClient(client, url)
-  const response = await client.get(
-    url,
-    'List transactions for a given gateway account ID',
-    {
-      loggingMetadata: {
-        gateway_account_ids: gatewayAccountIds,
-        multiple_accounts: gatewayAccountIds.length > 1,
-        filters: Object.keys(filters).sort().join(', ')
-      }
-    }
-  )
+  const response = await client.get(url, 'List transactions for a given gateway account ID', {
+    loggingMetadata: {
+      gateway_account_ids: gatewayAccountIds,
+      multiple_accounts: gatewayAccountIds.length > 1,
+      filters: Object.keys(filters).sort().join(', '),
+    },
+  })
   return legacyConnectorTransactionsParity(response.data)
 }
 
-const transactionSummary = async function transactionSummary (gatewayAccountId, fromDate, toDate, options = {}) {
+/**
+ * @deprecated use src/services/clients/pay/LedgerClient.class.ts
+ */
+const transactionSummary = async function transactionSummary(gatewayAccountId, fromDate, toDate, options = {}) {
   const path = '/v1/report/transactions-summary'
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   const url = `${baseUrl}${path}?account_id=${gatewayAccountId}&from_date=${fromDate}&to_date=${toDate}`
@@ -100,7 +114,7 @@ const transactionSummary = async function transactionSummary (gatewayAccountId, 
   return body
 }
 
-const payouts = async function payouts (gatewayAccountIds = [], page = 1, displaySize, options = {}) {
+const payouts = async function payouts(gatewayAccountIds = [], page = 1, displaySize, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   let url = `${baseUrl}/v1/payout?gateway_account_id=${gatewayAccountIds.join(',')}&state=paidout&page=${page}`
   if (displaySize) {
@@ -117,7 +131,11 @@ const payouts = async function payouts (gatewayAccountIds = [], page = 1, displa
  * we haven't realised yet. For now, we additionally send the gateway account ID but the intention is to remove the need
  * to send this.
  */
-const agreements = async function agreements (serviceId, live, accountId, page = 1, options = {}) {
+
+/**
+ * @deprecated use src/services/clients/pay/LedgerClient.class.ts
+ */
+const agreements = async function agreements(serviceId, live, accountId, page = 1, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   let url = `${baseUrl}/v1/agreement?service_id=${serviceId}&account_id=${accountId}&live=${live}&page=${page}`
   if (options.filters) {
@@ -129,7 +147,10 @@ const agreements = async function agreements (serviceId, live, accountId, page =
   return response.data
 }
 
-const agreement = async function agreement (id, serviceId, options = {}) {
+/**
+ * @deprecated use src/services/clients/pay/LedgerClient.class.ts
+ */
+const agreement = async function agreement(id, serviceId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultOptions.baseUrl
   const url = `${baseUrl}/v1/agreement/${id}?service_id=${serviceId}`
   configureClient(client, url)
@@ -146,5 +167,5 @@ module.exports = {
   events,
   transactionSummary,
   agreements,
-  agreement
+  agreement,
 }

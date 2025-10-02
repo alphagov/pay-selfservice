@@ -23,7 +23,12 @@ const getAgreement = async (agreementExternalId: string, serviceExternalId: stri
   return await ledgerClient.agreements.get(agreementExternalId, serviceExternalId)
 }
 
-const cancelAgreement = async (serviceExternalId: string, accountType: string, agreementExternalId: string, actioningUser: User) => {
+const cancelAgreement = async (
+  serviceExternalId: string,
+  accountType: string,
+  agreementExternalId: string,
+  actioningUser: User
+) => {
   const cancelRequest = new AgreementCancelRequest(actioningUser.email, actioningUser.externalId)
   await connectorClient.agreements.cancel(serviceExternalId, accountType, agreementExternalId, cancelRequest)
 }
@@ -32,9 +37,9 @@ const getTransactionsForAgreement = async (gatewayAccountId: number, agreementEx
   const queryParams: LedgerTransactionParams = {
     accountIds: [gatewayAccountId],
     agreementId: agreementExternalId,
-    displaySize: 5
+    displaySize: 5,
   }
-  return await ledgerClient.transactions(new LedgerTransactionParamsData(queryParams))
+  return await ledgerClient.transactions.search(new LedgerTransactionParamsData(queryParams))
 }
 
 export { searchAgreements, getAgreement, getTransactionsForAgreement, cancelAgreement }

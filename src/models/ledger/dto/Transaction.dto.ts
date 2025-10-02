@@ -1,4 +1,7 @@
+import { AuthorisationSummaryData } from '@models/common/authorisation-summary/dto/AuthorisationSummary.dto'
+import { SettlementSummaryData } from '@models/common/settlement-summary/dto/SettlementSummary.dto'
 import { CardDetailsData } from '@models/common/card-details/dto/CardDetails.dto'
+import { RefundSummaryData } from '@models/common/refund-summary/dto/RefundSummary.dto'
 
 export interface TransactionData {
   gateway_account_id: string
@@ -6,36 +9,24 @@ export interface TransactionData {
   credential_external_id: string
   amount: number
   state: {
-    finished: boolean,
+    finished: boolean
     status: string
-  },
+  }
   description: string
   reference: string
   language: string
   return_url: string
-  email: string
+  email?: string
   payment_provider: string
   created_date: string
-  card_details: CardDetailsData
+  card_details?: CardDetailsData
   delayed_capture: boolean
   gateway_transaction_id: string
-  refund_summary: {
-    status: string
-    user_external_id?: string
-    amount_available: number
-    amount_submitted: number
-    amount_refunded: number
-  }
-  settlement_summary: { // optional?
-    capture_submit_time: string
-    captured_date: string
-  }
-  authorisation_summary: {
-    three_d_secure: {
-      required: boolean
-    }
-  }
+  refund_summary: RefundSummaryData
+  settlement_summary: SettlementSummaryData
+  authorisation_summary?: AuthorisationSummaryData
   transaction_type: string
+  wallet_type?: string
   moto: boolean
   live: boolean
   source: string
