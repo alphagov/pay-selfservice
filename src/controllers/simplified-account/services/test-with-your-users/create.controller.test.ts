@@ -185,7 +185,7 @@ describe('test-with-your-users/create controller tests', () => {
         createTokenStub.should.have.been.calledOnce
         createTokenStub.should.have.been.calledWith(
           new CreateTokenRequest()
-            .withGatewayAccountId(GATEWAY_ACCOUNT_ID)
+            .withGatewayAccountId(`${GATEWAY_ACCOUNT_ID}`)
             .withServiceExternalId(SERVICE_EXTERNAL_ID)
             .withServiceMode(GatewayAccountType.TEST)
             .withDescription(`Token for Prototype: This is a valid description`)

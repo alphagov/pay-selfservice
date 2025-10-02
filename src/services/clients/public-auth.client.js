@@ -9,7 +9,7 @@ const SERVICE_NAME = 'publicauth'
 /**
  * @param {string} accountId
  */
-const getUrlForAccountId = accountId => `${PUBLIC_AUTH_URL}/${accountId}`
+const getUrlForAccountId = (accountId) => `${PUBLIC_AUTH_URL}/${accountId}`
 
 /**
  * Get active tokens for account
@@ -18,7 +18,7 @@ const getUrlForAccountId = accountId => `${PUBLIC_AUTH_URL}/${accountId}`
  *  accountId: accountId
  * }
  */
-async function getActiveTokensForAccount (params) {
+async function getActiveTokensForAccount(params) {
   this.client = new Client(SERVICE_NAME)
   const url = getUrlForAccountId(params.accountId)
   configureClient(this.client, url)
@@ -36,7 +36,7 @@ async function getActiveTokensForAccount (params) {
  * @param {Object} params
  * @returns {Promise}
  */
-async function getRevokedTokensForAccount (params) {
+async function getRevokedTokensForAccount(params) {
   this.client = new Client(SERVICE_NAME)
   const url = `${getUrlForAccountId(params.accountId)}?state=revoked`
   configureClient(this.client, url)
@@ -59,7 +59,7 @@ async function getRevokedTokensForAccount (params) {
  * @param {Object} params
  * @returns {Promise}
  */
-async function createTokenForAccount (params) {
+async function createTokenForAccount(params) {
   this.client = new Client(SERVICE_NAME)
   const url = process.env.PUBLIC_AUTH_URL
   configureClient(this.client, url)
@@ -81,7 +81,7 @@ async function createTokenForAccount (params) {
  * @param {Object} params
  * @returns {Promise}
  */
-async function updateToken (params) {
+async function updateToken(params) {
   this.client = new Client(SERVICE_NAME)
   const url = process.env.PUBLIC_AUTH_URL
   configureClient(this.client, url)
@@ -90,6 +90,9 @@ async function updateToken (params) {
 }
 
 /**
+ * @deprecated this endpoint violates the HTTP DELETE specification by including a request body
+ * This should be replaced with a PUT or PATCH endpoint
+ *
  * Delete a token
  *
  * Expects {
@@ -103,7 +106,7 @@ async function updateToken (params) {
  * @param {Object} params
  * @returns {Promise}
  */
-async function deleteTokenForAccount (params) {
+async function deleteTokenForAccount(params) {
   this.client = new Client(SERVICE_NAME)
   const url = getUrlForAccountId(params.accountId)
   configureClient(this.client, url)
@@ -111,7 +114,7 @@ async function deleteTokenForAccount (params) {
   return response.data
 }
 
-async function revokeTokensForAccount (accountId) {
+async function revokeTokensForAccount(accountId) {
   this.client = new Client(SERVICE_NAME)
   const url = `${PUBLIC_AUTH_URL}/${accountId}/revoke-all`
   configureClient(this.client, url)
@@ -123,7 +126,7 @@ async function revokeTokensForAccount (accountId) {
  * @param {string} tokenLink
  * @return {Promise<*>}
  */
-async function getKeyByTokenLink (accountId, tokenLink) {
+async function getKeyByTokenLink(accountId, tokenLink) {
   this.client = new Client(SERVICE_NAME)
   const url = `${process.env.PUBLIC_AUTH_URL}/${accountId}/${tokenLink}`
   configureClient(this.client, url)
@@ -138,5 +141,5 @@ module.exports = {
   createTokenForAccount,
   updateToken,
   deleteTokenForAccount,
-  revokeTokensForAccount
+  revokeTokensForAccount,
 }

@@ -1,30 +1,27 @@
-const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const sinon = require('sinon')
-const { expect } = require('chai')
-const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
-const paths = require('@root/paths')
-
+import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
+import sinon, { SinonSpyCall } from 'sinon'
+import paths from '@root/paths'
+import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import { expect } from 'chai'
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const ACCOUNT_TYPE = 'live'
 
 const mockResponse = sinon.stub()
 
-const {
-  res,
-  nextRequest,
-  call
-} = new ControllerTestBuilder('@controllers/simplified-account/settings/api-keys/create/new-key-details.controller')
+const { res, nextRequest, call } = new ControllerTestBuilder(
+  '@controllers/simplified-account/settings/api-keys/create/new-key-details.controller'
+)
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
-    '@utils/response': { response: mockResponse }
+    '@utils/response': { response: mockResponse },
   })
   .build()
 
 describe('Controller: settings/api-keys//create/new-key-details', () => {
   describe('get', () => {
     describe('key details present on session', () => {
-      let thisCall
+      let thisCall: { req: { session: unknown }; res: { redirect: SinonSpyCall } }
       beforeEach(async () => {
         nextRequest({
           session: {
@@ -32,11 +29,11 @@ describe('Controller: settings/api-keys//create/new-key-details', () => {
               newApiKey: {
                 details: {
                   name: 'S MCDUCK PROD CI',
-                  key: 'api_live_dontleakme1234'
-                }
-              }
-            }
-          }
+                  key: 'api_live_dontleakme1234',
+                },
+              },
+            },
+          },
         })
         thisCall = await call('get')
       })
@@ -46,16 +43,21 @@ describe('Controller: settings/api-keys//create/new-key-details', () => {
       })
 
       it('should call the response method with context', () => {
-        sinon.assert.calledOnceWithExactly(mockResponse,
+        sinon.assert.calledOnceWithExactly(
+          mockResponse,
           thisCall.req,
           res,
           'simplified-account/settings/api-keys/create/new-api-key-details',
           {
             details: {
               name: 'S MCDUCK PROD CI',
-              key: 'api_live_dontleakme1234'
+              key: 'api_live_dontleakme1234',
             },
-            backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
+            backLink: formatServiceAndAccountPathsFor(
+              paths.simplifiedAccount.settings.apiKeys.index,
+              SERVICE_EXTERNAL_ID,
+              ACCOUNT_TYPE
+            ),
           }
         )
       })
@@ -70,8 +72,13 @@ describe('Controller: settings/api-keys//create/new-key-details', () => {
       })
 
       it('should redirect the user', () => {
-        sinon.assert.calledOnceWithExactly(res.redirect,
-          formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.apiKeys.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
+        sinon.assert.calledOnceWithExactly(
+          res.redirect,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.apiKeys.index,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
         )
       })
     })
