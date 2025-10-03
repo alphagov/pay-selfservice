@@ -14,57 +14,65 @@ const transactionDetails = (
   { transaction, dispute }: { transaction: Transaction; dispute?: Transaction },
   service: Service
 ) => {
-  const details = {
-    'Reference number': transaction.reference,
-    'Service name': service.serviceName.en,
-    Description: transaction.description,
-    'Date created': transaction.createdDate.toFormat(DATESTAMP_FORMAT),
-    'Payment status': transaction.friendlyTransactionStatus,
-    ...(transaction.authorisationSummary && {
-      '3D Secure (3DS)': transaction.authorisationSummary.threeDSecure.required ? 'Required' : 'Not required',
-    }),
-  }
-
-  const amount = {
-    'Payment amount':
-      transaction.totalAmount && transaction.corporateCardSurcharge
-        ? `${penceToPoundsWithCurrency(transaction.totalAmount)} (including card fee of ${penceToPoundsWithCurrency(transaction.corporateCardSurcharge)})`
-        : penceToPoundsWithCurrency(transaction.amount),
-    ...(transaction.fee && {
-      'Provider fee': penceToPoundsWithCurrency(transaction.fee),
-    }),
-    ...(transaction.netAmount && {
-      'Net amount': penceToPoundsWithCurrency(transaction.netAmount),
-    }),
-    ...(transaction.refundSummary.amountRefunded > 0 && {
-      'Refunded amount': `–${penceToPoundsWithCurrency(transaction.refundSummary.amountRefunded)}`,
-    }),
-  }
-
-  const method = {
-    ...(transaction.cardDetails
-      ? {
-          'Payment type': transaction.walletType ? changeCase.titleCase(transaction.walletType) : 'Card',
-          'Card brand': transaction.cardDetails.cardBrand,
-          'Name on card': transaction.cardDetails.cardholderName,
-          'Card number': `•••• ${transaction.cardDetails.lastDigitsCardNumber}`,
-          'Card expiry date': transaction.cardDetails.expiryDate,
-        }
-      : {}),
-    Email: transaction.email,
-  }
-
-  const provider = {
-    Provider: changeCase.upperCaseFirst(transaction.paymentProvider),
-    'Provider ID': transaction.gatewayTransactionId,
-    'GOV.UK Pay ID': transaction.externalId,
-  }
-
   const view = {
-    'Transaction Details': details,
-    Amount: amount,
-    'Payment method': method,
-    'Payment provider': provider,
+    'Transaction Details': {
+      'Reference number': transaction.reference,
+      'Service name': service.serviceName.en,
+      Description: transaction.description,
+      'Date created': transaction.createdDate.toFormat(DATESTAMP_FORMAT),
+      'Payment status': transaction.friendlyTransactionStatus,
+      ...(transaction.authorisationSummary && {
+        '3D Secure (3DS)': transaction.authorisationSummary.threeDSecure.required ? 'Required' : 'Not required',
+      }),
+    },
+    Amount: {
+      'Payment amount':
+        transaction.totalAmount && transaction.corporateCardSurcharge
+          ? `${penceToPoundsWithCurrency(transaction.totalAmount)} (including card fee of ${penceToPoundsWithCurrency(transaction.corporateCardSurcharge)})`
+          : penceToPoundsWithCurrency(transaction.amount),
+      ...(transaction.fee && {
+        'Provider fee': penceToPoundsWithCurrency(transaction.fee),
+      }),
+      ...(transaction.netAmount && {
+        'Net amount': penceToPoundsWithCurrency(transaction.netAmount),
+      }),
+      ...(transaction.refundSummary &&
+        transaction.refundSummary.amountRefunded > 0 && {
+          'Refunded amount': `–${penceToPoundsWithCurrency(transaction.refundSummary.amountRefunded)}`,
+        }),
+    },
+    'Payment method': {
+      ...(transaction.cardDetails
+        ? {
+            'Payment type': transaction.walletType ? changeCase.titleCase(transaction.walletType) : 'Card',
+            'Card brand': transaction.cardDetails.cardBrand,
+            'Name on card': transaction.cardDetails.cardholderName,
+            'Card number': `•••• ${transaction.cardDetails.lastDigitsCardNumber}`,
+            'Card expiry date': transaction.cardDetails.expiryDate,
+          }
+        : {}),
+      Email: transaction.email,
+    },
+    'Payment provider': {
+      Provider: changeCase.upperCaseFirst(transaction.paymentProvider),
+      'Provider ID': transaction.gatewayTransactionId,
+      'GOV.UK Pay ID': transaction.externalId,
+    },
+    'Dispute details': {
+      ...(dispute && {
+        Status: dispute.friendlyTransactionStatus,
+        'Date disputed': dispute.createdDate.toFormat(DATESTAMP_FORMAT),
+        'Disputed amount': penceToPoundsWithCurrency(dispute.amount),
+        ...(dispute.fee && {
+          'Provider dispute fee': penceToPoundsWithCurrency(dispute.fee),
+        }),
+        ...(dispute.netAmount && {
+          'Dispute net amount': penceToPoundsWithCurrency(dispute.netAmount),
+        }),
+        Reason: dispute.friendlyReason,
+        'Evidence due by': dispute.evidenceDueDate,
+      }),
+    },
   }
 
   return _.omitBy(view, (value) => {

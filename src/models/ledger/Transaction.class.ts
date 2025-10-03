@@ -8,6 +8,7 @@ import { CardDetails } from '@models/common/card-details/CardDetails.class'
 import { ResourceType } from './types/resource-type'
 import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFriendlyNames } from './types/status'
 import { State } from './State.class'
+import { parseReason, Reason, ReasonFriendlyNames } from './types/reason'
 
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
@@ -28,11 +29,13 @@ class Transaction {
   readonly email?: string
   readonly walletType?: string
   readonly disputed: boolean
-  readonly refundSummary: RefundSummary
-  readonly settlementSummary: SettlementSummary
+  readonly refundSummary?: RefundSummary
+  readonly settlementSummary?: SettlementSummary
   readonly authorisationSummary?: AuthorisationSummary
   readonly cardDetails?: CardDetails
   readonly transactionType: ResourceType
+  readonly reason?: Reason
+  readonly evidenceDueDate?: DateTime
   readonly data: TransactionData
 
   constructor(data: TransactionData) {
@@ -53,13 +56,13 @@ class Transaction {
     this.walletType = data.wallet_type
     this.email = data.email
     this.disputed = data.disputed
-    this.refundSummary = new RefundSummary(data.refund_summary)
-    this.settlementSummary = new SettlementSummary(data.settlement_summary)
-    this.authorisationSummary = data.authorisation_summary
-      ? new AuthorisationSummary(data.authorisation_summary)
-      : undefined
-    this.cardDetails = data.card_details ? new CardDetails(data.card_details) : undefined
+    this.refundSummary = data.refund_summary && new RefundSummary(data.refund_summary)
+    this.settlementSummary = data.settlement_summary && new SettlementSummary(data.settlement_summary)
+    this.authorisationSummary = data.authorisation_summary && new AuthorisationSummary(data.authorisation_summary)
+    this.cardDetails = data.card_details && new CardDetails(data.card_details)
     this.transactionType = data.transaction_type
+    this.reason = data.reason ? parseReason(data.reason) : undefined
+    this.evidenceDueDate = data.evidence_due_date ? DateTime.fromISO(data.evidence_due_date) : undefined
     this.data = data
   }
 
@@ -77,6 +80,12 @@ class Transaction {
         return DisputeStatusFriendlyNames[this.state.status] ?? this.state.status
       default:
         return this.state.status
+    }
+  }
+
+  get friendlyReason() {
+    if (this.reason !== undefined) {
+      return ReasonFriendlyNames[this.reason] ?? ReasonFriendlyNames.OTHER
     }
   }
 }

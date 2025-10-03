@@ -25,8 +25,8 @@ export interface TransactionData {
   card_details?: CardDetailsData
   delayed_capture: boolean
   gateway_transaction_id: string
-  refund_summary: RefundSummaryData
-  settlement_summary: SettlementSummaryData
+  refund_summary?: RefundSummaryData
+  settlement_summary?: SettlementSummaryData
   authorisation_summary?: AuthorisationSummaryData
   transaction_type: ResourceType
   wallet_type?: string
@@ -37,4 +37,6 @@ export interface TransactionData {
   agreement_id: string
   disputed: boolean
   transaction_id: string
+  evidence_due_date?: string // dispute only
+  reason?: string // dispute only
 }
