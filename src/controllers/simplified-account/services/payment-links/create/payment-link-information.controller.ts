@@ -22,15 +22,10 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   const { account, service } = req
   const currentSession = getCurrentSession(req)
   const isWelsh = isWelshSelected(req)
-  const isUsingEnglishServiceNameBool = isUsingEnglishServiceName(req, currentSession)
+  const usingEnglishServiceName = isUsingEnglishServiceName(req, currentSession)
 
   // handle case where welsh payment link is selected but no welsh service name is set
-  if (
-    isWelsh &&
-    !service.serviceName.cy &&
-    !isUsingEnglishServiceNameBool &&
-    account.type !== GatewayAccountType.TEST
-  ) {
+  if (isWelsh && !service.serviceName.cy && !usingEnglishServiceName && account.type !== GatewayAccountType.TEST) {
     return res.redirect(
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.paymentLinks.addWelshServiceName,
@@ -58,7 +53,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     friendlyURL: PRODUCTS_FRIENDLY_BASE_URI,
     serviceName,
     isWelsh,
-    isUsingEnglishServiceName: isUsingEnglishServiceNameBool,
+    isUsingEnglishServiceName: usingEnglishServiceName,
     serviceMode: account.type,
     createJourney: true,
   })
