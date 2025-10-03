@@ -5,7 +5,7 @@ import { VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY, filterNextUrl } from '@u
 import { WORLDPAY } from '@models/constants/payment-providers'
 import formatPSPName from '@utils/format-PSP-name'
 import paths from '@root/paths'
-import chargeService from '@services/charge.service'
+import { createCharge, getCharge } from '@services/charge.service'
 import ChargeRequest from '@models/charge/ChargeRequest.class'
 import CREDENTIAL_STATE from '@models/constants/credential-state'
 import worldpayDetailsService from '@services/worldpay-details.service'
@@ -52,8 +52,7 @@ function post(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
     .withCredentialExternalId(targetCredential.externalId)
     .withMoto(account.allowMoto)
 
-  chargeService
-    .createCharge(service.externalId, account.type, chargeRequest)
+  createCharge(service.externalId, account.type, chargeRequest)
     .then((response) => {
       req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY] = response.chargeId
       res.redirect(filterNextUrl(response) as string)
@@ -73,8 +72,8 @@ function getInbound(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
   if (!chargeExternalId) {
     throw new Error('No charge found on session')
   }
-  chargeService
-    .getCharge(service.externalId, account.type, chargeExternalId)
+
+  getCharge(service.externalId, account.type, chargeExternalId)
     .then(async (charge) => {
       if (charge.state.status === 'success') {
         // TODO move me to more generic service
@@ -103,8 +102,4 @@ function getInbound(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
     .catch((err) => next(err))
 }
 
-export {
-  get,
-  getInbound,
-  post,
-}
+export { get, getInbound, post }
