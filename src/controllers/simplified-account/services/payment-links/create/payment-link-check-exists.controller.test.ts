@@ -10,7 +10,7 @@ const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 const mockResponse = sinon.stub()
 
 const { nextRequest, call, res } = new ControllerTestBuilder(
-  '@controllers/simplified-account/services/payment-links/existing/check-payment-link-exists.controller'
+  '@controllers/simplified-account/services/payment-links/create/payment-link-check-exists.controller'
 )
   .withStubs({
     '@utils/response': { response: mockResponse },
