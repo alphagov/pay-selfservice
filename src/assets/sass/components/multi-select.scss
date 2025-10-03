@@ -7,19 +7,19 @@
 
 .multi-select__title {
   border: 2px solid $govuk-text-colour;
-  padding: 8px 5px;
+  padding: 8px 14px 8px 14px;
   border-radius: 0;
   min-height: 34px;
-  background-color: govuk-colour("white");
+  background-color: govuk-colour('white');
   text-align: left;
-  background-image: url("/assets/images/dd-arrow.svg");
+  background-image: url('/assets/images/dd-arrow-down.svg');
   background-repeat: no-repeat;
   background-position: right 10px top 6px;
   -webkit-appearance: none;
   appearance: none;
   max-width: 100%;
   cursor: pointer;
-  @include govuk-font($size: 16);
+  @include govuk-font($size: 19);
 
   div {
     overflow: hidden;
@@ -48,7 +48,7 @@
   @extend .govuk-clearfix;
   top: 0;
   left: 0;
-  background-color: govuk-colour("white");
+  background-color: govuk-colour('white');
   z-index: 10;
   position: absolute;
   border: 2px solid $govuk-text-colour;
@@ -56,20 +56,43 @@
   width: 100%;
 
   .multi-select-dropdown__close-button {
+    text-align: left;
     min-height: 34px;
+    background-repeat: no-repeat;
+    background-color: #f3f2f1;
+    background-position: right 10px top 6px;
+    -webkit-appearance: none;
+    background-image: url('/assets/images/dd-arrow-up.svg');
     width: 100%;
     margin-bottom: 0;
+    &:hover {
+      background-color: #b1b4b6;
+    }
+  }
+
+  .govuk-checkboxes__label::before {
+    left: 14px;
+    top: 10px;
+  }
+
+  .govuk-checkboxes__label::after {
+    left: 20px;
+    top: 17px;
   }
 
   .multi-select-dropdown__inner-container {
-    padding: 6px 14px;
     overflow-y: scroll;
     overflow-x: hidden;
 
     .govuk-checkboxes__item {
+      padding-left: 14px;
       label {
         width: 100%;
         padding-left: 5px;
+      }
+      &:hover {
+        background: #b1b4b6;
+        cursor: pointer;
       }
     }
   }
