@@ -1,5 +1,5 @@
 import * as information from './payment-link-information.controller'
-import * as existingPaymentLink from '../existing/check-payment-link-exists.controller'
+import * as existingPaymentLink from './payment-link-check-exists.controller'
 import * as addWelshServiceName from './payment-link-add-welsh-service-name.controller'
 import * as reference from './payment-link-reference.controller'
 import * as amount from './payment-link-amount.controller'

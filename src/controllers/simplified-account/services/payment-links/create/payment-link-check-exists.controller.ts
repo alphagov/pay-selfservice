@@ -5,7 +5,7 @@ import paths from '@root/paths'
 import slugifyString from '@utils/simplified-account/format/slugify-string'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { ValidationChain, validationResult } from 'express-validator'
-import formatValidationErrors from '../../../../../utils/simplified-account/format/format-validation-errors'
+import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import {
   CREATE_SESSION_KEY,
@@ -48,7 +48,6 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
   lodash.set(req, CREATE_SESSION_KEY, {
     ...session,
     productNamePath: paymentLinkValue,
-    friendlyURL: FRIENDLY_URL,
     serviceNamePath: slugifyString(service.name),
     paymentLinkTitle: slugifyString(session.productNamePath),
   } as PaymentLinkCreationSession)
@@ -58,7 +57,6 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
   )
 }
 
-// Interfaces
 interface PaymentLinkBody {
   paymentLink?: string
 }
@@ -74,7 +72,6 @@ interface RenderOptions {
   errors?: object
 }
 
-// Support functions
 function redirectToIndex(res: ServiceResponse, serviceId: string, accountType: string) {
   res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, serviceId, accountType))
 }
@@ -124,19 +121,17 @@ async function validateAndRenderErrors(
 ): Promise<boolean> {
   await validate.run(req)
   const errors = validationResult(req)
-  if (!errors.isEmpty()) {
-    const formatted = formatValidationErrors(errors)
-    renderPage(req, res, {
-      ...renderOptions,
-      errors: {
-        summary: formatted.errorSummary,
-        formErrors: formatted.formErrors,
-      },
-      formValues: req.body,
-    })
-    return true
-  }
-  return false
+  if (errors.isEmpty()) return false
+  const formatted = formatValidationErrors(errors)
+  renderPage(req, res, {
+    ...renderOptions,
+    errors: {
+      summary: formatted.errorSummary,
+      formErrors: formatted.formErrors,
+    },
+    formValues: req.body,
+  })
+  return true
 }
 
 export { get, post }
