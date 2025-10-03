@@ -15,7 +15,8 @@ const zonedDate = (dateString: string) => {
     return ''
   }
 
-  return date.toFormat('H:mm:ss (ZZZZ)')
+  const formattedDate = date.toFormat('H:mm:ss (ZZZZ)')
+  return formattedDate.includes('GMT+1') ? date.toFormat('H:mm:ss') + ' (BST)' : formattedDate
 }
 
 export = {
