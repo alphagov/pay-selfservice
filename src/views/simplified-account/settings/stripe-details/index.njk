@@ -8,77 +8,93 @@
 {% block settingsContent %}
   {% if providerSwitchEnabled %}
     {% set switchMessage %}
-      Your service is ready to switch PSP from {{ currentPsp | smartCaps }} to {{ switchingPsp | smartCaps }}.<br>
-      <a class="govuk-link govuk-link--no-visited-state" href="{{ switchPspLink }}">Switch to {{ switchingPsp | smartCaps }}.</a>
+      Your service is ready to switch PSP from {{ currentPsp | smartCaps }} to {{ switchingPsp | smartCaps }}.<br />
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ switchPspLink }}"
+        >Switch to {{ switchingPsp | smartCaps }}.</a
+      >
     {% endset %}
 
-    {{ govukInsetText({
-      html: switchMessage,
-      classes: "service-settings-inset-text--grey"
-    }) }}
+    {{
+      govukInsetText({
+        html: switchMessage,
+        classes: "service-settings-inset-text--grey"
+      })
+    }}
   {% endif %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   {% if incompleteTasks %}
     <p class="govuk-body">This information will be sent to Stripe so that your service can take payments.</p>
     <h2 class="govuk-heading-s">Stripe Account ID</h2>
-    <p class="govuk-body" data-cy="stripe-account-id">{{stripeAccountId}}</p>
+    <p class="govuk-body" data-cy="stripe-account-id">{{ stripeAccountId }}</p>
     <h3 class="govuk-heading-s">Add your organisation's details</h3>
-    {{ taskList({
-      tasks: tasks,
-      idPrefix: 'stripe-details'
-    }) }}
+    {{
+      taskList({
+        tasks: tasks,
+        idPrefix: 'stripe-details'
+      })
+    }}
   {% else %}
-    <p class="govuk-body">This information has been sent to Stripe so that your service can take payments. For
-      security
-      reasons we cannot show all the information submitted to Stripe.</p>
+    <p class="govuk-body">
+      This information has been sent to Stripe so that your service can take payments. For security reasons we cannot
+      show all the information submitted to Stripe.
+    </p>
 
-    <p class="govuk-body">If you need to change the details below or upload another Government Entity document, <a
+    <p class="govuk-body">
+      If you need to change the details below or upload another Government Entity document,
+      <a
         class="govuk-link govuk-link--no-visited-state"
-        href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk?subject=Change request - Stripe details [service external id: {{ serviceExternalId }}]">contact
-        GOV.UK Pay</a>
+        href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk?subject=Change request - Stripe details [service external id: {{ serviceExternalId }}]"
+        >contact GOV.UK Pay</a
+      >
     </p>
 
     <h2 class="govuk-heading-s">Stripe Account ID</h2>
-    <p class="govuk-body" data-cy="stripe-account-id">{{stripeAccountId}}</p>
+    <p class="govuk-body" data-cy="stripe-account-id">{{ stripeAccountId }}</p>
 
     {% if javascriptUnavailable %}
       {% for section, content in answers %}
         {% set rows = [] %}
         {% for key, value in content.rows %}
-          {% set rows = (rows.push({
-            key: {
-              text: key
-            },
-            value: {
-              text: value
-            }
-          }), rows) %}
+          {%
+            set rows = (rows.push({
+              key: {
+                text: key
+              },
+              value: {
+                text: value
+              }
+            }), rows)
+          %}
         {% endfor %}
-        {{ govukSummaryList({
-          card: {
-            title: {
-              text: content.title
-            }
-          },
-          rows: rows
-        }) }}
+        {{
+          govukSummaryList({
+            card: {
+              title: {
+                text: content.title
+              }
+            },
+            rows: rows
+          })
+        }}
       {% endfor %}
     {% else %}
       <noscript>
-        <meta http-equiv="refresh" content="0; url=?noscript=true">
-        <p class="govuk-body">You are being redirected, please wait...
-          If you are not redirected, <a class="govuk-body govuk-link--no-visited-state" href="?noscript=true">click
-            here</a>.</p>
+        <meta http-equiv="refresh" content="0; url=?noscript=true" />
+        <p class="govuk-body">
+          You are being redirected, please wait... If you are not redirected,
+          <a class="govuk-body govuk-link--no-visited-state" href="?noscript=true">click here</a>.
+        </p>
       </noscript>
 
       <div id="spinner-container">
-        {{ spinner({
-          text: "Loading account details..."
-        }) }}
+        {{
+          spinner({
+            text: "Loading account details..."
+          })
+        }}
       </div>
 
-      <div id="loaded-content-container" style="display: none;">
-      </div>
+      <div id="loaded-content-container" style="display: none;"></div>
 
       <script>
         document.addEventListener('DOMContentLoaded', async () => {
@@ -98,12 +114,16 @@
                 </div>
                 <div class="govuk-summary-card__content">
                   <dl class="govuk-summary-list">
-                    ${Object.entries(content.rows).map(([key, value]) => `
+                    ${Object.entries(content.rows)
+                      .map(
+                        ([key, value]) => `
                       <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">${key}</dt>
                         <dd class="govuk-summary-list__value">${value}</dd>
                       </div>
-                    `).join('')}
+                    `
+                      )
+                      .join('')}
                   </dl>
                 </div>
               </div>

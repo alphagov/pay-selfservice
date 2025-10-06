@@ -7,7 +7,10 @@ import * as responsiblePerson from './responsible-person/responsible-person.cont
 import * as vatNumber from './vat-number/vat-number.controller'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { response } from '@utils/response'
-import { getStripeAccountOnboardingDetails, getStripeAccountIdForGatewayAccount } from '@services/stripe-details.service'
+import {
+  getStripeAccountOnboardingDetails,
+  getStripeAccountIdForGatewayAccount,
+} from '@services/stripe-details.service'
 import paths from '@root/paths'
 import StripeTasks from '@models/task-workflows/StripeTasks.class'
 import PaymentProviders from '@models/constants/payment-providers'
