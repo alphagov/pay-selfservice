@@ -39,7 +39,8 @@
   {% include "includes/header.njk" %}
   {% if NEW_GOVUK_HEADER %}
     {% include "includes/service-navigation.njk" %}
-    {% block serviceHeader %}{% endblock %}
+    {% block serviceHeader %}
+    {% endblock %}
   {% endif %}
 {% endblock %}
 
@@ -53,7 +54,8 @@
   <div class="govuk-grid-row">
     {% block sideNavigation %}{% endblock %}
     {% include "includes/flash.njk" %}
-    {% block mainContent %}{% endblock %}
+    {% block mainContent %}
+    {% endblock %}
   </div>
 {% endblock %}
 

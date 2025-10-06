@@ -15,15 +15,21 @@
 {% block settingsContent %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   <p class="govuk-body">Use webhooks to send a message to your application when a payment is processed.</p>
-  <p class="govuk-body">Find out more about {{ "setting up webhooks in your
-      application" | docsLink("webhooks") }}.
+  <p class="govuk-body">
+    Find out more about
+    {{
+      "setting up webhooks in your
+      application" | docsLink("webhooks")
+    }}.
   </p>
 
-  {{ govukButton({
-    text: "Create a new webhook",
-    classes: "govuk-button",
-    href: createWebhookLink
-  }) }}
+  {{
+    govukButton({
+      text: "Create a new webhook",
+      classes: "govuk-button",
+      href: createWebhookLink
+    })
+  }}
 
   {% if (activeWebhooks.length + deactivatedWebhooks.length) == 0 %}
     <h2 class="govuk-heading-m">There are no configured webhooks</h2>
@@ -34,53 +40,54 @@
 
       {% for webhook in activeWebhooks %}
         {% set webhookTitle %}
-          <span class="govuk-!-margin-left-1">{{ webhook.description }}</span><br>
-          <div class="govuk-!-margin-top-1">
-            {{ webhookStatus(webhook.status) }}
-          </div>
+          {{ webhook.description }}
+          <br />
+          <div class="govuk-!-margin-top-1">{{ webhookStatus(webhook.status) }}</div>
         {% endset %}
 
         {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
-        {{ govukSummaryList({
-          card: {
-            title: {
-              html: webhookTitle,
-              classes: "multiline-title"
+        {{
+          govukSummaryList({
+            card: {
+              title: {
+                html: webhookTitle,
+                classes: "multiline-title"
+              },
+              actions: {
+                items: [
+                  {
+                    href: webhook.detailUrl,
+                    text: 'View',
+                    classes: "govuk-link govuk-link--no-visited-state"
+                  },
+                  {
+                    href: webhook.updateUrl,
+                    text: 'Update',
+                    classes: "govuk-link govuk-link--no-visited-state"
+                  }
+                ]
+              }
             },
-            actions: {
-              items: [
-                {
-                  href: webhook.detailUrl,
-                  text: 'View',
-                  classes: "govuk-link govuk-link--no-visited-state"
-                },
-                {
-                  href: webhook.updateUrl,
-                  text: 'Update',
-                  classes: "govuk-link govuk-link--no-visited-state"
-                }
-              ]
-            }
-          },
-          rows: [
-            {
-              key: {
-              text: 'Callback URL'
-            },
-              value: {
-              text: webhook.callbackUrl
-            }
-            },
-            {
-              key: {
-              text: 'Payment events sent by this webhook'
-            },
-              value: {
-              html: webhookSubscriptionsList
-            }
-            }
-          ]
-        }) }}
+            rows: [
+              {
+                key: {
+                text: 'Callback URL'
+              },
+                value: {
+                text: webhook.callbackUrl
+              }
+              },
+              {
+                key: {
+                text: 'Payment events sent by this webhook'
+              },
+                value: {
+                html: webhookSubscriptionsList
+              }
+              }
+            ]
+          })
+        }}
       {% endfor %}
     {% endif %}
 
@@ -89,52 +96,53 @@
 
       {% for webhook in deactivatedWebhooks %}
         {% set webhookTitle %}
-          <span class="govuk-!-margin-left-1">{{ webhook.description }}</span><br>
-          <div class="govuk-!-margin-top-1">
-            {{ webhookStatus(webhook.status) }}
-          </div>
+          {{ webhook.description }}
+          <br />
+          <div class="govuk-!-margin-top-1">{{ webhookStatus(webhook.status) }}</div>
         {% endset %}
         {% set webhookSubscriptionsList = webhookSubscriptions(webhook) %}
-        {{ govukSummaryList({
-          card: {
-            title: {
-              html: webhookTitle,
-              classes: "multiline-title"
+        {{
+          govukSummaryList({
+            card: {
+              title: {
+                html: webhookTitle,
+                classes: "multiline-title"
+              },
+              actions: {
+                items: [
+                  {
+                    href: webhook.detailUrl,
+                    text: 'View',
+                    classes: "govuk-link govuk-link--no-visited-state"
+                  },
+                  {
+                    href: webhook.updateUrl,
+                    text: 'Update',
+                    classes: "govuk-link govuk-link--no-visited-state"
+                  }
+                ]
+              }
             },
-            actions: {
-              items: [
-                {
-                  href: webhook.detailUrl,
-                  text: 'View',
-                  classes: "govuk-link govuk-link--no-visited-state"
-                },
-                {
-                  href: webhook.updateUrl,
-                  text: 'Update',
-                  classes: "govuk-link govuk-link--no-visited-state"
-                }
-              ]
-            }
-          },
-          rows: [
-            {
-              key: {
-              text: 'Callback URL'
-            },
-              value: {
-              text: webhook.callbackUrl
-            }
-            },
-            {
-              key: {
-              text: 'Payment events sent by this webhook'
-            },
-              value: {
-              html: webhookSubscriptionsList
-            }
-            }
-          ]
-        }) }}
+            rows: [
+              {
+                key: {
+                text: 'Callback URL'
+              },
+                value: {
+                text: webhook.callbackUrl
+              }
+              },
+              {
+                key: {
+                text: 'Payment events sent by this webhook'
+              },
+                value: {
+                html: webhookSubscriptionsList
+              }
+              }
+            ]
+          })
+        }}
       {% endfor %}
     {% endif %}
   {% endif %}

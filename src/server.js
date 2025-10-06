@@ -125,7 +125,7 @@ function initialiseTemplateEngine(app) {
   nunjucksEnvironment.addFilter('boolToText', boolToText)
   nunjucksEnvironment.addFilter('boolToOnOrOff', boolToOnOrOff)
   nunjucksEnvironment.addFilter('addKey', (obj, key, value) => {
-    return Object.assign({}, obj, {[key]: value})
+    return Object.assign({}, obj, { [key]: value })
   })
 }
 
@@ -164,9 +164,9 @@ function initialise() {
       logger.debug(req.url)
       res.json({
         workspace: {
-              root: process.env.PROJECT_DIR,
-              uuid: sessionId
-            }
+          root: process.env.PROJECT_DIR,
+          uuid: sessionId,
+        },
       })
     })
   }

@@ -1,0 +1,81 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+
+{% set servicePageTitle %}
+  Transaction details {{ transaction.externalId }}
+{% endset %}
+
+{% block serviceContent %}
+  {% for sectionKey, sectionData in transaction %}
+
+    {% if (loop.first == true) %}
+      <h1 class="govuk-heading-l">{{ sectionKey }}</h1>
+    {% else %}
+      <h2 class="govuk-heading-m">{{ sectionKey }}</h2>
+    {% endif %}
+
+    {% set rows = [] %}
+    {% for key, value in sectionData %}
+      {% if value %}
+        {%
+          set rows = (rows.push({
+            key: {
+              text: key
+            },
+            value: {
+              text: value
+            }
+          }), rows)
+        %}
+      {% endif %}
+    {% endfor %}
+
+    {{ govukSummaryList({ rows: rows }) }}
+  {% endfor %}
+
+  {% set eventsTableRows = [] %}
+  {% for eventKey, eventData in events %}
+
+
+    {% set eventDescription %}
+      <p class="govuk-!-margin-0"><strong>{{ eventData.description }}</strong></p>
+      {% if eventData.metadata %}
+        <p class="govuk-!-margin-0" style="max-width: 280px; overflow-wrap: anywhere;">{{ eventData.metadata }}</p>
+      {% endif %}
+    {% endset %}
+
+    {%
+      set eventsTableRows = (eventsTableRows.push([
+        {
+          html: eventDescription
+        },
+        {
+          text: eventData.formattedAmount,
+          format: "numeric"
+        },
+        {
+          text: eventData.timestamp,
+          format: "numeric"
+        }
+      ]), eventsTableRows)
+    %}
+  {% endfor %}
+
+  {{
+    govukTable({
+      caption: "Transaction events",
+      captionClasses: "govuk-table__caption--m",
+      firstCellIsHeader: false,
+      rows: eventsTableRows
+    })
+  }}
+
+  <!--<hr />
+  {{ data.disputed | dump }}
+  {{ data.state | dump }}
+  {{ data.transactionType | dump }}
+  {{ data.data | dump }}
+  <br />
+  <a class="govuk-button govuk-button--secondary" href="{{ oldView }}">GOTO old view</a>-->
+{% endblock %}
