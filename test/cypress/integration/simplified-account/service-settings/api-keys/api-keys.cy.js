@@ -374,7 +374,7 @@ describe('Settings - API keys', () => {
         cy.contains('h1', 'API key name').should('exist')
       })
 
-      it.only('should re-name the api key successfully', () => {
+      it('should re-name the api key successfully', () => {
         cy.get('.govuk-summary-card').within(() => {
           cy.contains('h2', 'mathematical clothes').should('exist')
           cy.contains('a', 'Change name').click()
