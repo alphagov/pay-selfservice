@@ -8,7 +8,7 @@ const stripeAccountSetupStubs = require('@test/cypress/stubs/stripe-account-setu
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'gatewayaccount789ghi'
-const GATEWAY_ACCOUNT_ID = 11
+const GATEWAY_ACCOUNT_ID = '11'
 const USER_EMAIL = 'homer@simpson.com'
 const API_KEY_TOKEN = 'TOKEN1234'
 
@@ -20,36 +20,42 @@ const setupStubs = (options = {}) => {
       serviceName: { en: 'My cool service' },
       serviceExternalId: SERVICE_EXTERNAL_ID,
       role: ROLES[options.role || 'admin'],
-      email: USER_EMAIL
+      email: USER_EMAIL,
     }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
       paymentProvider: options.paymentProvider || 'sandbox',
-      type: options.type || 'test'
+      type: options.type || 'test',
     }),
     stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       responsiblePerson: false,
       bankAccount: false,
       vatNumber: false,
-      companyNumber: false
+      companyNumber: false,
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, options.type || 'test', {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
       payment_provider: options.paymentProvider || 'sandbox',
-      type: options.type || 'test'
+      type: options.type || 'test',
     }),
     // create api key
-    apiKeysStubs.createApiKey(GATEWAY_ACCOUNT_ID, USER_EMAIL, `Token for Prototype: Test prototype link description`, API_KEY_TOKEN, {
-      type: 'PRODUCTS',
-      serviceExternalId: SERVICE_EXTERNAL_ID,
-      serviceMode: options.type || 'test'
-    }),
+    apiKeysStubs.createApiKey(
+      GATEWAY_ACCOUNT_ID,
+      USER_EMAIL,
+      `Token for Prototype: Test prototype link description`,
+      API_KEY_TOKEN,
+      {
+        type: 'PRODUCTS',
+        serviceExternalId: SERVICE_EXTERNAL_ID,
+        serviceMode: options.type || 'test',
+      }
+    ),
     // create product
     productsStubs.postCreateProductSuccess(),
-    productsStubs.getProductsByGatewayAccountIdAndTypeStub([], GATEWAY_ACCOUNT_ID, 'PROTOTYPE')
+    productsStubs.getProductsByGatewayAccountIdAndTypeStub([], GATEWAY_ACCOUNT_ID, 'PROTOTYPE'),
   ])
 }
 
@@ -92,7 +98,7 @@ describe('create prototype links page', () => {
         setupStubs({
           role: 'admin',
           paymentProvider: 'stripe',
-          type: 'test'
+          type: 'test',
         })
       })
 
@@ -108,7 +114,7 @@ describe('create prototype links page', () => {
         setupStubs({
           role: 'admin',
           paymentProvider: 'sandbox',
-          type: 'test'
+          type: 'test',
         })
       })
 
@@ -124,7 +130,7 @@ describe('create prototype links page', () => {
         setupStubs({
           role: 'admin',
           paymentProvider: 'stripe',
-          type: 'live'
+          type: 'live',
         })
       })
 
@@ -141,7 +147,7 @@ describe('create prototype links page', () => {
         setupStubs({
           role: 'admin',
           paymentProvider: 'worldpay',
-          type: 'test'
+          type: 'test',
         })
       })
 
@@ -242,8 +248,11 @@ describe('create prototype links page', () => {
       cy.contains('button', 'Create prototype link').click()
       cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/confirm`)
 
-      cy.contains('a', 'http://products-ui.url/pay/cf3hp2')
-        .should('have.attr', 'href', 'http://products-ui.url/pay/cf3hp2')
+      cy.contains('a', 'http://products-ui.url/pay/cf3hp2').should(
+        'have.attr',
+        'href',
+        'http://products-ui.url/pay/cf3hp2'
+      )
 
       cy.contains('a', 'See prototype links').click()
 

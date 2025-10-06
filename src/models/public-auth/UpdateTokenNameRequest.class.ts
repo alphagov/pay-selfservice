@@ -16,10 +16,8 @@ export class UpdateTokenNameRequest {
 
   toJson(): UpdateTokenNameRequestData {
     return {
-      payload: {
-        token_link: this.tokenLink,
-        description: this.name,
-      },
+      token_link: this.tokenLink,
+      description: this.name,
     }
   }
 }

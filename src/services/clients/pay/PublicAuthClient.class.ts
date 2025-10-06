@@ -30,19 +30,19 @@ class PublicAuthClient extends BaseClient {
       getActive: async (gatewayAccountId: string) => {
         const path = '/{gatewayAccountId}'.replace('{gatewayAccountId}', encodeURIComponent(gatewayAccountId))
 
-        const response = await this.get<TokenData[]>(path, 'get active tokens for account')
-        return response.data.map((tokenData) => new Token(tokenData))
+        const response = await this.get<{ tokens: TokenData[] }>(path, 'get active tokens for account')
+        return response.data.tokens.map((tokenData) => new Token(tokenData))
       },
 
       getRevoked: async (gatewayAccountId: string) => {
         const path = '/{gatewayAccountId}'.replace('{gatewayAccountId}', encodeURIComponent(gatewayAccountId))
 
-        const response = await this.get<TokenData[]>(path, 'get revoked tokens for account', {
+        const response = await this.get<{ tokens: TokenData[] }>(path, 'get revoked tokens for account', {
           params: {
             state: 'revoked',
           },
         })
-        return response.data.map((tokenData) => new Token(tokenData))
+        return response.data.tokens.map((tokenData) => new Token(tokenData))
       },
 
       getByTokenLink: async (gatewayAccountId: number, tokenLink: string) => {
