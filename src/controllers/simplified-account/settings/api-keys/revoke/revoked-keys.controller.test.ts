@@ -9,9 +9,7 @@ const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = '1337'
 
 const mockResponse = sinon.stub()
-const mockApiKeysService = {
-  getRevokedKeys: sinon.stub().resolves([]),
-}
+const mockGetRevokedTokens = sinon.stub().resolves([])
 
 const { req, res, next, call } = new ControllerTestBuilder(
   '@controllers/simplified-account/settings/api-keys/revoke/revoked-keys.controller'
@@ -23,7 +21,9 @@ const { req, res, next, call } = new ControllerTestBuilder(
   })
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/api-keys.service': mockApiKeysService,
+    '@services/tokens.service': {
+      getRevokedTokens: mockGetRevokedTokens,
+    },
   })
   .build()
 
@@ -41,12 +41,12 @@ describe('Controller: settings/api-keys/revoked-keys', () => {
       ]
 
       beforeEach(async () => {
-        mockApiKeysService.getRevokedKeys.resolves(revokedKeys)
+        mockGetRevokedTokens.resolves(revokedKeys)
         await call('get')
       })
 
       it('should call getRevokedKeys with args', () => {
-        sinon.assert.calledOnceWithExactly(mockApiKeysService.getRevokedKeys, GATEWAY_ACCOUNT_ID)
+        sinon.assert.calledOnceWithExactly(mockGetRevokedTokens, GATEWAY_ACCOUNT_ID)
       })
 
       it('should call the response method with context', () => {
@@ -68,12 +68,12 @@ describe('Controller: settings/api-keys/revoked-keys', () => {
     })
     describe('when revoked keys are not present', () => {
       beforeEach(async () => {
-        mockApiKeysService.getRevokedKeys.resolves([])
+        mockGetRevokedTokens.resolves([])
         await call('get')
       })
 
       it('should call getRevokedKeys with args', () => {
-        sinon.assert.calledOnceWithExactly(mockApiKeysService.getRevokedKeys, GATEWAY_ACCOUNT_ID)
+        sinon.assert.calledOnceWithExactly(mockGetRevokedTokens, GATEWAY_ACCOUNT_ID)
       })
 
       it('should not call the response method ', () => {

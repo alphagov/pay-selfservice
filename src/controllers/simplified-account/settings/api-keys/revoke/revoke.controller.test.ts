@@ -10,10 +10,9 @@ const TOKEN_LINK = 'token456def'
 const TOKEN_DESC = 'S MCDUCK API DEV'
 const GATEWAY_ACCOUNT_ID = '1337'
 const mockResponse = sinon.stub()
-const mockApiKeysService = {
-  getKeyByTokenLink: sinon.stub().resolves(new Token().withDescription(TOKEN_DESC).withTokenLink(TOKEN_LINK)),
-  revokeKey: sinon.stub().resolves(),
-}
+
+const mockGetTokens = sinon.stub().resolves(new Token().withDescription(TOKEN_DESC).withTokenLink(TOKEN_LINK))
+const mockRevokeKey = sinon.stub().resolves()
 
 const { req, res, nextRequest, call } = new ControllerTestBuilder(
   '@controllers/simplified-account/settings/api-keys/revoke/revoke.controller'
@@ -28,7 +27,12 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder(
   })
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/api-keys.service': mockApiKeysService,
+    '@services/tokens.service': {
+      getTokenByTokenLink: mockGetTokens,
+    },
+    '@services/api-keys.service': {
+      revokeKey: mockRevokeKey,
+    },
   })
   .build()
 
@@ -39,7 +43,7 @@ describe('Controller: settings/api-keys/revoke', () => {
     })
 
     it('should call getKeyByTokenLink', () => {
-      sinon.assert.calledOnceWithExactly(mockApiKeysService.getKeyByTokenLink, GATEWAY_ACCOUNT_ID, TOKEN_LINK)
+      sinon.assert.calledOnceWithExactly(mockGetTokens, GATEWAY_ACCOUNT_ID, TOKEN_LINK)
     })
 
     it('should call the response method with context', () => {
@@ -64,7 +68,7 @@ describe('Controller: settings/api-keys/revoke', () => {
       })
 
       it('should not call revokeKey', () => {
-        sinon.assert.notCalled(mockApiKeysService.revokeKey)
+        sinon.assert.notCalled(mockRevokeKey)
         sinon.assert.notCalled(req.flash)
       })
 
@@ -112,7 +116,7 @@ describe('Controller: settings/api-keys/revoke', () => {
       })
 
       it('should not call revokeKey', () => {
-        sinon.assert.notCalled(mockApiKeysService.revokeKey)
+        sinon.assert.notCalled(mockRevokeKey)
         sinon.assert.notCalled(req.flash)
       })
 
@@ -139,7 +143,7 @@ describe('Controller: settings/api-keys/revoke', () => {
       })
 
       it('should call revokeKey with args', () => {
-        sinon.assert.calledOnceWithExactly(mockApiKeysService.revokeKey, GATEWAY_ACCOUNT_ID, TOKEN_LINK)
+        sinon.assert.calledOnceWithExactly(mockRevokeKey, GATEWAY_ACCOUNT_ID, TOKEN_LINK)
         sinon.assert.calledOnceWithExactly(req.flash, 'messages', {
           state: 'success',
           icon: '&check;',
