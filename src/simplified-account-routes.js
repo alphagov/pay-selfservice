@@ -11,6 +11,7 @@ const {
   pspSwitchRedirect,
   canStartPspPaymentVerificationTask,
   experimentalFeature,
+  worldpayAccountIsActive,
 } = require('@middleware/simplified-account')
 const restrictToSwitchingAccount = require('@middleware/restrict-to-switching-account')
 const restrictToSandboxOrStripeTestAccount = require('@middleware/restrict-to-sandbox-or-stripe-test-account')
@@ -246,12 +247,43 @@ simplifiedAccount.post(
 )
 
 // test with your users
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index.get)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.links, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.links.get)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create.get)
-simplifiedAccount.post(paths.simplifiedAccount.testWithYourUsers.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create.postValidation, testWithYourUsersController.create.post)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.confirm, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.confirm.get)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.disable, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.disable.post)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.index,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.index.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.links,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.links.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.create,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.create.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.testWithYourUsers.create,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.create.postValidation,
+  testWithYourUsersController.create.post
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.confirm,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.confirm.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.disable,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.disable.post
+)
 
 // agreements
 simplifiedAccount.get(
@@ -476,11 +508,13 @@ simplifiedAccount.post(
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.cardPayments.googlePay,
   permission('payment-types:update'),
+  worldpayAccountIsActive,
   serviceSettingsController.cardPayments.googlePay.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.cardPayments.googlePay,
   permission('payment-types:update'),
+  worldpayAccountIsActive,
   serviceSettingsController.cardPayments.googlePay.post
 )
 simplifiedAccount.get(

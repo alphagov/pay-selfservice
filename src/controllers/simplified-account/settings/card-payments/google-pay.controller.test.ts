@@ -1,9 +1,9 @@
-const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const { expect } = require('chai')
-const sinon = require('sinon')
-const paths = require('@root/paths')
-const { WORLDPAY, STRIPE } = require('@models/constants/payment-providers')
-const { formatSimplifiedAccountPathsFor } = require('@utils/simplified-account/format')
+import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
+import { expect } from 'chai'
+import sinon from 'sinon'
+import paths from '@root/paths'
+import { WORLDPAY, STRIPE, SANDBOX } from '@models/constants/payment-providers'
+import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
@@ -12,22 +12,19 @@ const mockResponse = sinon.stub()
 const mockUpdateGooglePay = sinon.spy()
 const mockUpdateGooglePayMerchantId = sinon.spy()
 
-const {
-  req,
-  res,
-  nextRequest,
-  call
-} = new ControllerTestBuilder('@controllers/simplified-account/settings/card-payments/google-pay.controller')
+const { req, res, nextRequest, call } = new ControllerTestBuilder(
+  '@controllers/simplified-account/settings/card-payments/google-pay.controller'
+)
   .withAccount({
     type: ACCOUNT_TYPE,
     allowGooglePay: false,
-    paymentProvider: STRIPE
+    paymentProvider: STRIPE,
   })
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/card-payments.service': { updateAllowGooglePay: mockUpdateGooglePay },
-    '@services/worldpay-details.service': { updateGooglePayMerchantId: mockUpdateGooglePayMerchantId }
+    '@services/worldpay-details.service': { updateGooglePayMerchantId: mockUpdateGooglePayMerchantId },
   })
   .build()
 
@@ -35,7 +32,7 @@ describe('Controller: settings/card-payments/google-pay', () => {
   describe('get', () => {
     describe('a non-worldpay account', () => {
       beforeEach(async () => {
-        await call('get', 1)
+        await call('get')
       })
       it('should call the response method', () => {
         expect(mockResponse).to.have.been.calledOnce
@@ -47,10 +44,12 @@ describe('Controller: settings/card-payments/google-pay', () => {
       })
 
       it('should pass context data to the response method', () => {
-        const context = mockResponse.args[0][3]
+        const context = mockResponse.args[0][3] as unknown
         expect(context).to.not.have.property('currentGooglePayMerchantId')
         expect(context).to.have.property('currentState').to.equal('off')
-        expect(context).to.have.property('backLink').to.equal(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments`)
+        expect(context)
+          .to.have.property('backLink')
+          .to.equal(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments`)
       })
     })
 
@@ -62,17 +61,17 @@ describe('Controller: settings/card-payments/google-pay', () => {
             getCurrentCredential: () => {
               return {
                 credentials: {
-                  googlePayMerchantId: 'blah'
-                }
+                  googlePayMerchantId: 'blah',
+                },
               }
-            }
-          }
+            },
+          },
         })
-        await call('get', 1)
+        await call('get')
       })
 
       it('should include google pay merchant id in the context', () => {
-        const context = mockResponse.args[0][3]
+        const context = mockResponse.args[0][3] as unknown
         expect(context).to.have.property('currentGooglePayMerchantId').to.equal('blah')
       })
     })
@@ -81,9 +80,9 @@ describe('Controller: settings/card-payments/google-pay', () => {
     describe('a non-worldpay account', () => {
       beforeEach(async () => {
         nextRequest({
-          body: { googlePay: 'on' }
+          body: { googlePay: 'on' },
         })
-        await call('post', 1)
+        await call('post')
       })
 
       it('should not update Google Pay merchant id', () => {
@@ -96,8 +95,13 @@ describe('Controller: settings/card-payments/google-pay', () => {
       })
 
       it('should redirect to the card payments index page', () => {
-        sinon.assert.calledOnceWithExactly(res.redirect,
-          formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
+        sinon.assert.calledOnceWithExactly(
+          res.redirect,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.cardPayments.index,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
         )
       })
     })
@@ -107,25 +111,26 @@ describe('Controller: settings/card-payments/google-pay', () => {
         nextRequest({
           body: {
             googlePay: 'on',
-            googlePayMerchantId: '0123456789abcde'
+            googlePayMerchantId: '0123456789abcde',
           },
           user: {
-            externalId: 'user-123-abc'
+            externalId: 'user-123-abc',
           },
           account: {
             paymentProvider: WORLDPAY,
             getCurrentCredential: () => {
               return {
-                externalId: 'credential-123-abc'
+                externalId: 'credential-123-abc',
               }
-            }
-          }
+            },
+          },
         })
-        await call('post', 1)
+        await call('post')
       })
 
       it('should update Google Pay merchant id', () => {
-        sinon.assert.calledOnceWithExactly(mockUpdateGooglePayMerchantId,
+        sinon.assert.calledOnceWithExactly(
+          mockUpdateGooglePayMerchantId,
           SERVICE_EXTERNAL_ID,
           ACCOUNT_TYPE,
           'credential-123-abc',
@@ -140,8 +145,13 @@ describe('Controller: settings/card-payments/google-pay', () => {
       })
 
       it('should redirect to the card payments index page', () => {
-        sinon.assert.calledOnceWithExactly(res.redirect,
-          formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.cardPayments.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
+        sinon.assert.calledOnceWithExactly(
+          res.redirect,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.cardPayments.index,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
         )
       })
     })
