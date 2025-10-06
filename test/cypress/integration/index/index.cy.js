@@ -28,6 +28,8 @@ describe('The index page', () => {
     it('should display the header and footer correctly when logged in', () => {
       cy.visit('/')
 
+      cy.percySnapshot()
+
       cy.log('should display the GOV.UK header correctly')
 
       cy.get('[data-cy=header]').should('have.css', 'background-color', 'rgb(29, 112, 184)')
