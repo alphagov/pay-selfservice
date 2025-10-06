@@ -15,6 +15,7 @@ const mockStripeDetailsService = {
   getStripeAccountOnboardingDetails: sinon.stub().resolves({
     foo: 'bar',
   }),
+  getStripeAccountIdForGatewayAccount: sinon.stub().returns('accnt_1234'),
 }
 
 const { req, res, nextRequest, nextResponse, call } = new ControllerTestBuilder(
@@ -75,6 +76,10 @@ describe('Controller: settings/stripe-details', () => {
       it('should pass context data to the response method', () => {
         expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(true)
         expect(mockResponse.args[0][3]).to.have.property('serviceExternalId').to.equal(SERVICE_ID)
+      })
+
+      it('should pass stripe account ID to the response method', () => {
+        expect(mockResponse.args[0][3]).to.have.property('stripeAccountId').to.equal('accnt_1234')
       })
 
       it('should pass Stripe details tasks to the response method', () => {

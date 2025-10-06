@@ -254,5 +254,6 @@ export {
   updateConnectorStripeProgress,
   getStripeAccountOnboardingDetails,
   getStripeAccountCapabilities,
+  getStripeAccountIdForGatewayAccount,
   getConnectorStripeAccountSetup,
 }

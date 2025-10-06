@@ -7,7 +7,7 @@ import * as responsiblePerson from './responsible-person/responsible-person.cont
 import * as vatNumber from './vat-number/vat-number.controller'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { response } from '@utils/response'
-import { getStripeAccountOnboardingDetails } from '@services/stripe-details.service'
+import { getStripeAccountOnboardingDetails, getStripeAccountIdForGatewayAccount } from '@services/stripe-details.service'
 import paths from '@root/paths'
 import StripeTasks from '@models/task-workflows/StripeTasks.class'
 import PaymentProviders from '@models/constants/payment-providers'
@@ -34,6 +34,7 @@ async function get(
   const account = req.account
   const service = req.service
   const credentialIsActive = account.getActiveCredential() !== undefined
+  const stripeAccountId = getStripeAccountIdForGatewayAccount(account)
   const stripeTasks = new StripeTasks(req.gatewayAccountStripeProgress, account, service.externalId)
   let answers = {}
   // load account onboarding details synchronously if javascript is unavailable
@@ -67,6 +68,7 @@ async function get(
     serviceExternalId: service.externalId,
     answers,
     currentPsp: req.account.paymentProvider,
+    stripeAccountId,
     providerSwitchEnabled: account.providerSwitchEnabled,
     ...(req.account.providerSwitchEnabled && {
       switchingPsp: PaymentProviders.WORLDPAY, // Stripe can only switch to Worldpay (currently)
