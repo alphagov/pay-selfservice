@@ -11,7 +11,6 @@ import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/
 import { GatewayAccountSwitchPaymentProviderRequestData } from '@models/gateway-account/dto/GatewayAccountSwitchPaymentProviderRequest.dto'
 import { AgreementCancelRequest } from '@models/agreements/AgreementCancelRequest.class'
 import { AgreementCancelRequestData } from '@models/agreements/dto/AgreementCancelRequest.dto'
-import { configureClient } from '@services/clients/base/config'
 import { CardTypeData } from '@models/card-type/dto/CardType.dto'
 import { CardType } from '@models/card-type/CardType.class'
 import { UpdateAcceptedCardTypesRequestData } from '@models/card-type/dto/UpdateAcceptedCardTypesRequest.dto'
