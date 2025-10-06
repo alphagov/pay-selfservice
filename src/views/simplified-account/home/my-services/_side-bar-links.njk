@@ -1,15 +1,15 @@
 {% if services.length %}
-  <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-2">
+  <h3 class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-2">
     <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-link--no-visited-state"
       >Transactions for all services</a
     >
-  </p>
+  </h3>
   <p class="govuk-body">View transactions for all of your services</p>
 
   {% if flags.hasAccountWithPayouts %}
-    <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-2">
+    <h3 class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-2">
       <a href="{{ payoutsPath }}" class="govuk-link govuk-link--no-visited-state">Payments to your bank account</a>
-    </p>
+    </h3>
     <p class="govuk-body">Download CSV reports to see what payments have gone into your bank account</p>
   {% endif %}
 {% endif %}
