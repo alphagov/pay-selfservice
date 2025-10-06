@@ -2,7 +2,7 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import { expect } from 'chai'
 import sinon from 'sinon'
 import paths from '@root/paths'
-import { WORLDPAY, STRIPE, SANDBOX } from '@models/constants/payment-providers'
+import { WORLDPAY, STRIPE } from '@models/constants/payment-providers'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 
 const ACCOUNT_TYPE = 'test'
