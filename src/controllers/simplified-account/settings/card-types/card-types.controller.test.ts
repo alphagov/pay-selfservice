@@ -91,19 +91,19 @@ describe('Controller: settings/card-types', () => {
     })
 
     it('should pass req, res and template path to the response method', () => {
-      expect(mockResponse.args[0][0].user).to.deep.equal(adminUser) // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+      expect(mockResponse.args[0][0].user).to.deep.equal(adminUser)
       expect(mockResponse.args[0][1]).to.deep.equal(res)
       expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/card-types/index')
     })
 
     it('should pass context data to the response method', () => {
       expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('debitCards').length(1)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       expect(mockResponse.args[0][3].cardTypes.debitCards[0]).to.deep.include({ text: 'Visa debit', checked: true })
       expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('creditCards').length(2)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       expect(mockResponse.args[0][3].cardTypes.creditCards[0]).to.deep.include({ text: 'Visa credit', checked: false })
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       expect(mockResponse.args[0][3].cardTypes.creditCards[1]).to.deep.include({
         text: 'American Express',
         checked: false,
@@ -126,7 +126,7 @@ describe('Controller: settings/card-types', () => {
     })
 
     it('should pass req, res and template path to the response method', () => {
-      expect(mockResponse.args[0][0].user).to.deep.equal(viewOnlyUser) // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+      expect(mockResponse.args[0][0].user).to.deep.equal(viewOnlyUser)
       expect(mockResponse.args[0][1]).to.deep.equal(res)
       expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/card-types/index')
     })
@@ -137,17 +137,17 @@ describe('Controller: settings/card-types', () => {
         .to.have.property('debit/enabled')
         .to.have.property('cards')
         .to.deep.equal(['Visa debit'])
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       expect(mockResponse.args[0][3].cardTypes)
         .to.have.property('debit/disabled')
         .to.have.property('cards')
         .to.have.length(0)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       expect(mockResponse.args[0][3].cardTypes)
         .to.have.property('credit/enabled')
         .to.have.property('cards')
         .to.have.length(0)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       expect(mockResponse.args[0][3].cardTypes['credit/disabled'].cards).to.deep.equal([
         'Visa credit',
         'American Express',
@@ -219,12 +219,12 @@ describe('Controller: settings/card-types', () => {
         .to.have.property('errors')
         .to.deep.include({ summary: [{ text: 'You must choose at least one card', href: '#' }] })
       expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('debitCards').length(1)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       expect(mockResponse.args[0][3].cardTypes.debitCards[0]).to.deep.include({ text: 'Visa debit', checked: false })
       expect(mockResponse.args[0][3]).to.have.property('cardTypes').to.have.property('creditCards').length(2)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       expect(mockResponse.args[0][3].cardTypes.creditCards[0]).to.deep.include({ text: 'Visa credit', checked: false })
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       expect(mockResponse.args[0][3].cardTypes.creditCards[1]).to.deep.include({
         text: 'American Express',
         checked: false,
