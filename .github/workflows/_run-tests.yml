@@ -82,10 +82,10 @@ jobs:
       pact_broker_username: ${{ secrets.pact_broker_username }}
       pact_broker_password: ${{ secrets.pact_broker_password }}
 
-  cypress-tests:
-    name: "Cypress"
+  cypress-tests-percy::
+    name: "Cypress with Percy"
     needs: [ install-and-compile ]
-    uses: alphagov/pay-ci/.github/workflows/_run-node-cypress-tests.yml@master
+    uses: alphagov/pay-ci/.github/workflows/_run-node-cypress-tests-percy.yml@pp-13751-add-percy-to-gha
     with:
       LIBGL_ALWAYS_SOFTWARE: "1"
 
