@@ -1,7 +1,7 @@
-const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const { expect } = require('chai')
-const sinon = require('sinon')
-const paths = require('@root/paths')
+import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
+import { expect } from 'chai'
+import sinon from 'sinon'
+import paths from '@root/paths'
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
@@ -11,18 +11,20 @@ const GATEWAY_ACCOUNT_ID = '123'
 const mockResponse = sinon.stub()
 const mockUpdateCollectBillingAddress = sinon.spy()
 
-const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/card-payments/collect-billing-address.controller')
+const { req, res, nextRequest, call } = new ControllerTestBuilder(
+  '@controllers/simplified-account/settings/card-payments/collect-billing-address.controller'
+)
   .withAccount({
     type: ACCOUNT_TYPE,
-    id: GATEWAY_ACCOUNT_ID
+    id: GATEWAY_ACCOUNT_ID,
   })
   .withService({
     externalId: SERVICE_EXTERNAL_ID,
-    collectBillingAddress: false
+    collectBillingAddress: false,
   })
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/card-payments.service': { updateCollectBillingAddress: mockUpdateCollectBillingAddress }
+    '@services/card-payments.service': { updateCollectBillingAddress: mockUpdateCollectBillingAddress },
   })
   .build()
 
@@ -41,15 +43,17 @@ describe('Controller: settings/card-payments/collect-billing-address', () => {
     })
 
     it('should pass context data to the response method', () => {
-      const context = mockResponse.args[0][3]
+      const context = mockResponse.args[0][3] as unknown
       expect(context).to.have.property('currentState').to.equal('off')
-      expect(context).to.have.property('backLink').to.equal(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments`)
+      expect(context)
+        .to.have.property('backLink')
+        .to.equal(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments`)
     })
   })
   describe('post', () => {
     beforeEach(async () => {
       nextRequest({
-        body: { collectBillingAddress: 'on' }
+        body: { collectBillingAddress: 'on' },
       })
       await call('post')
     })
