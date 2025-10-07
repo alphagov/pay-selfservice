@@ -1,30 +1,31 @@
-const sinon = require('sinon')
-const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
-const paths = require('@root/paths')
-const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const chai = require('chai')
-const expect = chai.expect
-
+import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
+import sinon from 'sinon'
+import paths from '@root/paths'
+import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import { expect } from 'chai'
 const mockResponse = sinon.stub()
 
 const ACCOUNT_TYPE = 'live'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
 
-const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/simplified-account/settings/organisation-details/organisation-details.controller')
+const { res, call, nextRequest } = new ControllerTestBuilder(
+  '@controllers/simplified-account/settings/organisation-details/organisation-details.controller'
+)
   .withService({
     id: '123',
-    externalId: SERVICE_EXTERNAL_ID
+    externalId: SERVICE_EXTERNAL_ID,
   })
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
-    '@utils/response': { response: mockResponse }
+    '@utils/response': { response: mockResponse },
   })
   .build()
 
 describe('Controller: settings/organisation-details', () => {
   describe('get', () => {
     describe('where organisation details have been set', () => {
-      let thisCall
+      let thisCall: { req: unknown; result?: unknown; res?: unknown }
+
       beforeEach(async () => {
         nextRequest({
           service: {
@@ -35,10 +36,10 @@ describe('Controller: settings/organisation-details', () => {
               addressPostcode: 'SP21NG',
               addressCountry: 'US',
               telephoneNumber: '01234567890',
-              url: 'https://www.cpghm.example.com'
-            }
+              url: 'https://www.cpghm.example.com',
+            },
           },
-          account: { type: ACCOUNT_TYPE }
+          account: { type: ACCOUNT_TYPE },
         })
         thisCall = await call('get')
       })
@@ -48,7 +49,11 @@ describe('Controller: settings/organisation-details', () => {
       })
 
       it('should call the response method with req, res, template path, and context', () => {
-        expect(mockResponse).to.have.been.calledWith(thisCall.req, res, 'simplified-account/settings/organisation-details/index')
+        expect(mockResponse).to.have.been.calledWith(
+          thisCall.req,
+          res,
+          'simplified-account/settings/organisation-details/index'
+        )
       })
 
       it('should pass the context to the response method', () => {
@@ -58,21 +63,29 @@ describe('Controller: settings/organisation-details', () => {
             organisationName: 'Compu-Global-Hyper-Mega-Net',
             address: '742 Evergreen Terrace<br>Springfield<br>SP21NG',
             telephoneNumber: '01234567890',
-            url: 'https://www.cpghm.example.com'
+            url: 'https://www.cpghm.example.com',
           },
-          editOrganisationDetailsHref: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
+          editOrganisationDetailsHref: formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.organisationDetails.edit,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          ),
         })
       })
     })
 
     describe('where organisation details have not been set', () => {
-      beforeEach(async () => {
-        call('get')
-      })
+      it('should call the redirect method with the edit organisation details url', async () => {
+        await call('get')
 
-      it('should call the redirect method with the edit organisation details url', () => {
         expect(res.redirect).to.have.been.calledOnce
-        expect(res.redirect).to.have.been.calledWith(formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.organisationDetails.edit, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE))
+        expect(res.redirect).to.have.been.calledWith(
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.organisationDetails.edit,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
       })
     })
   })
