@@ -1,82 +1,51 @@
-import { expect } from 'chai'
+import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
-import Service from '@models/service/Service.class'
-import { validServiceResponse } from '@test/fixtures/service.fixtures'
-import User from '@models/user/User.class'
-import proxyquire from 'proxyquire'
+import paths from '@root/paths'
+import { expect } from 'chai'
 
-let req, res, responseStub, customParagraphController, updateCustomParagraphByServiceIdAndAccountTypeStub
+const ACCOUNT_TYPE = 'test'
+const ACCOUNT_ID = '1337'
+const SERVICE_EXTERNAL_ID = 'service-id-123abc'
+const SERVICE_NAME = 'My Service'
 
-const getController = (stubs = {}) => {
-  return proxyquire('./custom-paragraph.controller', {
-    '@utils/response': { response: stubs.response },
-    '@services/email.service': {
-      updateCustomParagraphByServiceIdAndAccountType: stubs.updateCustomParagraphByServiceIdAndAccountType,
-    },
+const mockResponse = sinon.stub()
+const updateCustomParagraphStub = sinon.stub().resolves()
+
+const { res, call } = new ControllerTestBuilder(
+  '@controllers/simplified-account/settings/email-notifications/templates/remove-custom-paragraph.controller'
+)
+  .withService({
+    externalId: SERVICE_EXTERNAL_ID,
+    name: SERVICE_NAME,
   })
-}
-
-const setupTest = (body = {}) => {
-  responseStub = sinon.spy()
-  updateCustomParagraphByServiceIdAndAccountTypeStub = sinon.stub().resolves({ status: 200 })
-  customParagraphController = getController({
-    response: responseStub,
-    updateCustomParagraphByServiceIdAndAccountType: updateCustomParagraphByServiceIdAndAccountTypeStub,
-  })
-  res = {
-    redirect: sinon.spy(),
-  }
-  req = {
-    body,
-    flash: sinon.stub(),
-    account: {
-      type: ACCOUNT_TYPE,
-      rawResponse: {
-        email_collection_mode: 'MANDATORY',
-        email_notifications: {
-          PAYMENT_CONFIRMED: {
-            enabled: true,
-            template_body: 'Do this next',
-          },
-        },
+  .withAccount({
+    type: ACCOUNT_TYPE,
+    id: ACCOUNT_ID,
+    emailCollectionMode: 'MANDATORY',
+    emailNotifications: {
+      paymentConfirmed: {
+        enabled: true,
+        templateBody: 'Do this next',
       },
     },
-    service: new Service(
-      validServiceResponse({
-        external_id: SERVICE_EXTERNAL_ID,
-        name: SERVICE_NAME,
-      })
-    ),
-    user: new User({
-      service_roles: [
-        {
-          role: {
-            name: 'admin',
-          },
-          service: validServiceResponse({
-            external_id: SERVICE_EXTERNAL_ID,
-            name: SERVICE_NAME,
-          }),
-        },
-      ],
-    }),
-  }
-}
+  })
+  .withStubs({
+    '@utils/response': { response: mockResponse },
+    '@services/email.service': { updateCustomParagraphByServiceIdAndAccountType: updateCustomParagraphStub },
+  })
+  .build()
 
-describe('postRemoveCustomParagraph', () => {
-  beforeEach(async () => {
-    const body = { customParagraph: 'a test custom paragraph' }
-    setupTest(body)
-    await customParagraphController.postRemoveCustomParagraph(req, res)
+describe('post', () => {
+  it('should update the confirmation template', async () => {
+    await call('post')
+
+    expect(updateCustomParagraphStub.calledOnce).to.be.true
+    expect(updateCustomParagraphStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, '')).to.be.true
   })
 
-  it('should update the confirmation template', () => {
-    expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledOnce).to.be.true
-    expect(updateCustomParagraphByServiceIdAndAccountTypeStub.calledWith(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, '')).to.be
-      .true
-  })
+  it('should redirect to the templates page', async () => {
+    await call('post')
 
-  it('should redirect to the templates page', () => {
     expect(res.redirect.calledOnce).to.be.true
     expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.emailNotifications.templates)
   })

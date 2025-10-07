@@ -1,7 +1,6 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
 import paths from '@root/paths'
-import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { expect } from 'chai'
 
 const ACCOUNT_TYPE = 'test'
@@ -118,7 +117,9 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
         })
       })
 
-      it('should redirect to the templates page', () => {
+      it('should redirect to the templates page', async () => {
+        await call('post')
+
         expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.emailNotifications.templates)
       })
@@ -138,9 +139,10 @@ describe('Controller: settings/email-notifications/templates/custom-paragraph', 
       })
 
       it('should pass req, res and template path to the response method', async () => {
-        await call('post')
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const { req: thisReq } = await call('post')
 
-        expect(mockResponse.args[0]).to.include(req)
+        expect(mockResponse.args[0]).to.include(thisReq)
         expect(mockResponse.args[0]).to.include(res)
         expect(mockResponse.args[0]).to.include('simplified-account/settings/email-notifications/custom-paragraph')
       })

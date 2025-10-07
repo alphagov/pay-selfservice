@@ -6,9 +6,9 @@ import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 function get(req: ServiceRequest, res: ServiceResponse) {
   const messages = res.locals?.flash?.messages ?? []
 
-  response(req, res, 'simplified-account/settings/email-notifications/templates', {
+  return response(req, res, 'simplified-account/settings/email-notifications/templates', {
     messages,
-    customEmailText: req.account.rawResponse.email_notifications.PAYMENT_CONFIRMED.template_body,
+    customEmailText: req.account.emailNotifications.paymentConfirmed.templateBody,
     serviceName: req.service.name,
     customParagraphHref: formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.settings.emailNotifications.customParagraph,
