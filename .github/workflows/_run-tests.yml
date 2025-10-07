@@ -82,7 +82,7 @@ jobs:
       pact_broker_username: ${{ secrets.pact_broker_username }}
       pact_broker_password: ${{ secrets.pact_broker_password }}
 
-  cypress-tests-percy::
+  cypress-tests::
     name: "Cypress with Percy"
     needs: [ install-and-compile ]
     uses: alphagov/pay-ci/.github/workflows/_run-node-cypress-tests-percy.yml@pp-13751-add-percy-to-gha
