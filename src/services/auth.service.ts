@@ -10,7 +10,7 @@ import passportCustom from 'passport-custom'
 import createLogger from '@utils/logger'
 import sessionValidator from '@services/session-validator.js'
 import paths from '@root/paths.js'
-import userService from '@services/user.service.js'
+import userService from '@services/user.service'
 import { addField } from '@services/clients/base/request-context'
 // @ts-expect-error js commons is not updated for typescript support yet
 import { logging } from '@govuk-pay/pay-js-commons'

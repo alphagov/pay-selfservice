@@ -29,7 +29,7 @@ class AdminUsersClient extends BaseClient {
     return {
       findByExternalId: async (userExternalId: string) => {
         const path = '/v1/api/users/{userExternalId}'.replace('{userExternalId}', encodeURIComponent(userExternalId))
-        const response = await this.get<UserData>(path, 'get a user')
+        const response = await this.get<UserData>(path, 'find a user')
         return new User(response.data)
       },
 
@@ -48,12 +48,16 @@ class AdminUsersClient extends BaseClient {
           '{userExternalId}',
           encodeURIComponent(userExternalId)
         )
-        const response = await this.post<{ code: string }, UserData>(path, { code }, 'find a user')
+        const response = await this.post<{ code: string }, UserData>(
+          path,
+          { code },
+          'authenticate a second factor auth token entered by user'
+        )
         return new User(response.data)
       },
 
       findMultipleByExternalIds: async (userExternalIds: string[]) => {
-        const path = '/v1/api/users/'
+        const path = '/v1/api/users'
         const response = await this.get<UserData[]>(path, 'find multiple users', {
           params: { ids: userExternalIds },
         })
@@ -78,13 +82,13 @@ class AdminUsersClient extends BaseClient {
       },
 
       getForgottenPassword: async (code: string) => {
-        const path = `/v1/api/forgotten-passwords/${code}`
+        const path = '/v1/api/forgotten-passwords/{code}'.replace('{code}', encodeURIComponent(code))
         const response = await this.get<ForgottenPasswordData>(path, 'get a forgotten password')
         return new ForgottenPassword(response.data)
       },
 
       incrementSessionVersion: async (userExternalId: string) => {
-        const path = '/v1/api/users/{userExternalId}/'.replace('{userExternalId}', encodeURIComponent(userExternalId))
+        const path = '/v1/api/users/{userExternalId}'.replace('{userExternalId}', encodeURIComponent(userExternalId))
         const patchRequest = {
           op: 'append',
           path: 'sessionVersion',
@@ -108,10 +112,10 @@ class AdminUsersClient extends BaseClient {
       },
 
       updateServiceRole: async (userExternalId: string, serviceExternalId: string, roleName: string) => {
-        const path = '/v1/api/users/{userExternalId}/services/{serviceExternalId'
+        const path = '/v1/api/users/{userExternalId}/services/{serviceExternalId}'
           .replace('{userExternalId}', encodeURIComponent(userExternalId))
           .replace('{serviceExternalId}', serviceExternalId)
-        const response = await this.post<{ role_name: string }, UserData>(
+        const response = await this.put<{ role_name: string }, UserData>(
           path,
           { role_name: roleName },
           'update user role on a service'
@@ -120,7 +124,7 @@ class AdminUsersClient extends BaseClient {
       },
 
       assignServiceRole: async (userExternalId: string, serviceExternalId: string, roleName: string) => {
-        const path = '/v1/api/users/{userExternalId}/services/{serviceExternalId'.replace(
+        const path = '/v1/api/users/{userExternalId}/services'.replace(
           '{userExternalId}',
           encodeURIComponent(userExternalId)
         )
@@ -146,7 +150,7 @@ class AdminUsersClient extends BaseClient {
           '{userExternalId}',
           encodeURIComponent(userExternalId)
         )
-        const response = await this.post<{ code: string; second_factor: string }, UserData>(
+        await this.post<{ code: string; second_factor: string }, UserData>(
           path,
           {
             code,
@@ -154,26 +158,20 @@ class AdminUsersClient extends BaseClient {
           },
           'configure a new OTP key and method'
         )
-        return new User(response.data)
       },
 
       updatePhoneNumber: async (userExternalId: string, phoneNumber: string) => {
-        const path = '/v1/api/users/{userExternalId}/'.replace('{userExternalId}', encodeURIComponent(userExternalId))
+        const path = '/v1/api/users/{userExternalId}'.replace('{userExternalId}', encodeURIComponent(userExternalId))
         const patchRequest = {
           op: 'replace',
           path: 'telephone_number',
           value: phoneNumber,
         }
-        const response = await this.patch<UpdateUserRequestData, UserData>(
-          path,
-          patchRequest,
-          'update a phone number for a user'
-        )
-        return new User(response.data)
+        await this.patch<UpdateUserRequestData, UserData>(path, patchRequest, 'update a phone number for a user')
       },
 
       updateFeatures: async (userExternalId: string, features: string) => {
-        const path = '/v1/api/users/{userExternalId}/'.replace('{userExternalId}', encodeURIComponent(userExternalId))
+        const path = '/v1/api/users/{userExternalId}'.replace('{userExternalId}', encodeURIComponent(userExternalId))
         const patchRequest = {
           op: 'replace',
           path: 'features',

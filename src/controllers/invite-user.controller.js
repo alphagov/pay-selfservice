@@ -1,6 +1,6 @@
 const lodash = require('lodash')
 const { response } = require('../utils/response.js')
-const userService = require('../services/user.service.js')
+const userService = require('../services/user.service')
 const paths = require('../paths.js')
 const rolesModule = require('../utils/roles')
 const { isValidEmail } = require('@utils/email-tools')
@@ -14,18 +14,18 @@ const messages = {
     return {
       error: {
         title: 'This person has already been invited',
-        message: `You cannot send an invitation to ${email} because they have received one already, or may be an existing team member.`
+        message: `You cannot send an invitation to ${email} because they have received one already, or may be an existing team member.`,
       },
       link: {
         link: formatServicePathsFor(paths.service.teamMembers.index, externalServiceId),
-        text: 'View all team members'
+        text: 'View all team members',
       },
-      enable_link: true
+      enable_link: true,
     }
-  }
+  },
 }
 
-function index (req, res) {
+function index(req, res) {
   const roles = rolesModule.roles
   const externalServiceId = req.service.externalId
   const teamMemberIndexLink = formatServicePathsFor(paths.service.teamMembers.index, externalServiceId)
@@ -41,13 +41,13 @@ function index (req, res) {
     view: { id: roles['view-only'].extId },
     viewAndInitiateMoto: { id: roles['view-and-initiate-moto'].extId },
     viewRefundAndInitiateMoto: { id: roles['view-refund-and-initiate-moto'].extId },
-    invitee
+    invitee,
   }
 
   return response(req, res, 'team-members/team-member-invite', data)
 }
 
-async function invite (req, res, next) {
+async function invite(req, res, next) {
   const senderId = req.user.externalId
   const externalServiceId = req.service.externalId
   const invitee = req.body['invitee-email'].trim()
@@ -85,5 +85,5 @@ async function invite (req, res, next) {
 
 module.exports = {
   index,
-  invite
+  invite,
 }

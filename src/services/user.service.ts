@@ -17,8 +17,8 @@ const authenticateSecondFactor = (userExternalId: string, code: string) => {
   return adminUsersClient.users.authenticateSecondFactor(userExternalId, code)
 }
 
-const findByExternalId = (externalId: string) => {
-  return adminUsersClient.users.findByExternalId(externalId)
+const findByExternalId = (userExternalId: string) => {
+  return adminUsersClient.users.findByExternalId(userExternalId)
 }
 
 const findMultipleByExternalIds = (userExternalIds: string[]) => {
