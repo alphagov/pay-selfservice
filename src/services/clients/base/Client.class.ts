@@ -25,7 +25,11 @@ export default interface IClient {
     data: PayloadType,
     description: string
   ) => Promise<AxiosResponse<ResponseDataType>>
-  delete: <ResponseDataType>(url: string, description: string) => Promise<AxiosResponse<ResponseDataType>>
+  delete: <ResponseDataType>(
+    url: string,
+    description: string,
+    config?: AxiosRequestConfig
+  ) => Promise<AxiosResponse<ResponseDataType>>
 }
 
 export abstract class BaseClient {
@@ -79,8 +83,9 @@ export abstract class BaseClient {
 
   protected async delete<ResponseDataType>(
     resourcePath: string,
-    description: string
+    description: string,
+    config?: AxiosRequestConfig
   ): Promise<AxiosResponse<ResponseDataType>> {
-    return await this.client.delete(resourcePath, description)
+    return await this.client.delete(resourcePath, description, config)
   }
 }

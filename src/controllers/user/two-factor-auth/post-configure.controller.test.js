@@ -23,12 +23,12 @@ describe('Configure new second factor method post controller', () => {
       flash: sinon.spy(),
       session: {
         pageData: {
-          twoFactorAuthMethod
-        }
-      }
+          twoFactorAuthMethod,
+        },
+      },
     }
     res = {
-      redirect: sinon.spy()
+      redirect: sinon.spy(),
     }
     next = sinon.spy()
     configureNewOtpKeySpy.resetHistory()
@@ -44,8 +44,8 @@ describe('Configure new second factor method post controller', () => {
       expect(req.session.pageData).to.have.property('configureTwoFactorAuthMethodRecovered')
       expect(req.session.pageData.configureTwoFactorAuthMethodRecovered).to.deep.equal({
         errors: {
-          securityCode: 'Enter your security code'
-        }
+          securityCode: 'Enter your security code',
+        },
       })
     })
   })
@@ -80,8 +80,8 @@ describe('Configure new second factor method post controller', () => {
         expect(req.session.pageData).to.have.property('configureTwoFactorAuthMethodRecovered')
         expect(req.session.pageData.configureTwoFactorAuthMethodRecovered).to.deep.equal({
           errors: {
-            securityCode: 'The security code you’ve used is incorrect or has expired'
-          }
+            securityCode: 'The security code you’ve used is incorrect or has expired',
+          },
         })
       })
     })
@@ -98,8 +98,8 @@ describe('Configure new second factor method post controller', () => {
         expect(req.session.pageData).to.have.property('configureTwoFactorAuthMethodRecovered')
         expect(req.session.pageData.configureTwoFactorAuthMethodRecovered).to.deep.equal({
           errors: {
-            securityCode: 'The security code you’ve used is incorrect or has expired'
-          }
+            securityCode: 'The security code you’ve used is incorrect or has expired',
+          },
         })
       })
 
@@ -116,8 +116,9 @@ describe('Configure new second factor method post controller', () => {
         expect(req.session.pageData).to.have.property('configureTwoFactorAuthMethodRecovered')
         expect(req.session.pageData.configureTwoFactorAuthMethodRecovered).to.deep.equal({
           errors: {
-            securityCode: 'The security code you entered is not correct, try entering it again or wait for your authenticator app to give you a new code'
-          }
+            securityCode:
+              'The security code you entered is not correct, try entering it again or wait for your authenticator app to give you a new code',
+          },
         })
       })
     })
@@ -136,10 +137,10 @@ describe('Configure new second factor method post controller', () => {
   })
 })
 
-function getController (configureNewOtpKeySpy) {
+function getController(configureNewOtpKeySpy) {
   return proxyquire('./post-configure.controller', {
-    '../../../services/user.service.js': {
-      configureNewOtpKey: configureNewOtpKeySpy
-    }
+    '../../../services/user.service': {
+      configureNewOtpKey: configureNewOtpKeySpy,
+    },
   })
 }
