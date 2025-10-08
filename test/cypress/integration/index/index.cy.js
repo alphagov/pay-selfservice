@@ -12,7 +12,7 @@ describe('The index page', () => {
 
     cy.task('setupStubs', [
       userStubs.getUserSuccess({ userExternalId, gatewayAccountId }),
-      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId })
+      gatewayAccountStubs.getGatewayAccountsSuccess({ gatewayAccountId }),
     ])
   })
 
@@ -38,12 +38,10 @@ describe('The index page', () => {
       cy.get('[data-cy=header]')
         .find('.govuk-header__container')
         .should('have.css', 'border-bottom-color', 'rgb(255, 255, 255)')
-      cy.get('[data-cy=header]')
-        .find('.govuk-header__product-name')
-        .should('contain', 'Pay')
+      cy.get('[data-cy=header]').find('.govuk-header__product-name').should('contain', 'Pay')
 
       cy.log('should display the GOV.UK footer correctly')
-       
+
       cy.get('[data-cy=footer]')
         .should('have.css', 'background-color', 'rgb(244, 248, 251)')
         .should('have.css', 'border-top-color', 'rgb(29, 112, 184)')
@@ -65,7 +63,7 @@ describe('The index page', () => {
         .parent()
         .find('a')
         .should('have.length', 4)
-    
+
       cy.log('should display the Legal Terms section with 5 links when logged in')
 
       cy.get('[data-cy=footer]')
