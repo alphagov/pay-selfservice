@@ -91,7 +91,7 @@ jobs:
     with:
       LIBGL_ALWAYS_SOFTWARE: "1"
     secrets:
-      percy_token: ${{ secrets.PERCY_TOKEN }}
+      percy_token: ${{ secrets.percy_token }}
 
   pact-providers-contract-tests:
     name: "Provider tests"
