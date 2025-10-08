@@ -142,7 +142,7 @@ module.exports = function (req, data, template) {
   convertedData.informationNeeded = informationNeeded(account)
   // TODO update this as url.parse is deprecated
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
-  const currentUrl = req.baseUrl && req.path ? req.baseUrl + req.path : 'unavailable'
+  const currentUrl = (req.baseUrl || req.baseUrl === '') && (req.path || req.path === '')  ? req.baseUrl + req.path : 'unavailable'
   if (permissions) {
     convertedData.serviceNavigationItems = serviceNavigationItems(
       currentPath,
@@ -164,6 +164,10 @@ module.exports = function (req, data, template) {
       convertedData.serviceNavigation = serviceNavigation(account, service, currentUrl, permissions)
       convertedData.serviceSettings = serviceSettingsNavigation(account, service, currentUrl, permissions)
     }
+    console.log('new service nav:', convertedData.NEW_SERVICE_NAV)
+    console.log(currentUrl)
+    console.log(req.baseUrl)
+    console.log(req.path)
   }
   convertedData._features = {}
   if (req.user && req.user.features) {
