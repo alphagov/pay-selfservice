@@ -38,6 +38,6 @@ export class ConfirmController extends BaseModule {
       ),
     }
 
-    return response(req, res, 'simplified-account/services/test-with-your-users/confirm', context)
+    return response(req, res, 'modules/service/test-with-your-users/views/confirm', context)
   }
 }

@@ -49,15 +49,12 @@ async function getGatewayAccount(serviceExternalId: string, accountType: string)
       serviceExternalId,
       accountType,
     }
-    return await getGatewayAccountByServiceExternalIdAndType(
-      params.serviceExternalId,
-      params.accountType
-    )
+    return await getGatewayAccountByServiceExternalIdAndType(params.serviceExternalId, params.accountType)
   } catch (err) {
     // type assertion nastiness, js-commons is not yet ts-commons
     if (err instanceof RESTClientError) {
       const clientError = err as {
-        errorCode: number,
+        errorCode: number
         message: string
       }
       const logContext = {
@@ -77,7 +74,6 @@ async function getGatewayAccount(serviceExternalId: string, accountType: string)
 }
 
 async function getSimplifiedAccount(req: Request, _: Response, next: NextFunction) {
-  console.log('hit4')
   const request = req
   try {
     const serviceExternalId = request.params[SERVICE_EXTERNAL_ID]

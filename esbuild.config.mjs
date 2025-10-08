@@ -19,7 +19,7 @@ const buildOptions = {
   minify: !isDev,
   outExtension: {
     '.css': '.css',
-    '.js': '.js'
+    '.js': '.js',
   },
   alias: {
     '@root': resolve(__dirname, 'src'),
@@ -29,8 +29,8 @@ const buildOptions = {
     '@services': resolve(__dirname, 'src/services'),
     '@utils': resolve(__dirname, 'src/utils'),
     '@views': resolve(__dirname, 'src/views'),
-    '@test': resolve(__dirname, 'test')
-  }
+    '@test': resolve(__dirname, 'test'),
+  },
 }
 
 const clientBuild = {
@@ -38,7 +38,7 @@ const clientBuild = {
   sourcemap: isDev ? 'inline' : false,
   entryPoints: [
     { out: 'assets/stylesheets/application', in: 'src/assets/sass/application.scss' },
-    { out: 'assets/js/client', in: 'src/client-side.js' }
+    { out: 'assets/js/client', in: 'src/client-side.js' },
   ],
   format: 'iife',
   platform: 'browser',
@@ -49,40 +49,38 @@ const clientBuild = {
       quietDeps: true,
       silenceDeprecations: ['import'],
       style: isDev ? 'expanded' : 'compressed',
-      type: 'css'
+      type: 'css',
     }),
     copy({
       resolveFrom: 'cwd',
       assets: [
         {
           from: ['node_modules/govuk-frontend/dist/govuk/assets/rebrand/**/*'],
-          to: ['dist/govuk-frontend-assets']
+          to: ['dist/govuk-frontend-assets'],
         },
         {
           from: ['node_modules/govuk-frontend/dist/govuk/assets/fonts/**/*'],
-          to: ['dist/govuk-frontend-assets/fonts']
+          to: ['dist/govuk-frontend-assets/fonts'],
         },
         {
           from: ['src/assets/images/**/*'],
-          to: ['dist/assets/images']
+          to: ['dist/assets/images'],
         },
         {
           from: ['src/assets/csv/**/*'],
-          to: ['dist/assets/csv']
-        }
-      ]
-    })
+          to: ['dist/assets/csv'],
+        },
+      ],
+    }),
   ],
   external: ['*.svg', '*.png', '*.woff', '*.woff2'],
-  metafile: true
+  metafile: true,
 }
 
 const serverBuild = {
   ...buildOptions,
   sourcemap: 'inline',
-  entryPoints: [
-    { out: 'application', in: 'src/start.ts' }
-  ],
+  entryPoints: [{ out: 'application', in: 'src/start.ts' }],
   platform: 'node',
   target: 'es2022',
   format: 'cjs',
@@ -94,15 +92,19 @@ const serverBuild = {
         {
           from: ['src/views/**/*.njk'],
           to: ['dist/views'],
-          watch: isDev
+          watch: isDev,
+        },
+        {
+          from: ['src/modules/**/*.njk'],
+          to: ['dist/views/modules'],
         },
         {
           from: ['node_modules/govuk-frontend/dist/**/*.njk'],
-          to: ['dist/views']
-        }
-      ]
-    })
-  ]
+          to: ['dist/views'],
+        },
+      ],
+    }),
+  ],
 }
 
 export { clientBuild, serverBuild }
@@ -120,11 +122,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.log('🚧 starting build...')
     executeTypeScriptCompile()
     await Promise.all([
-      build(clientBuild).then(async result => {
+      build(clientBuild).then(async (result) => {
         console.log(await analyzeMetafile(result.metafile))
         return result
       }),
-      build(serverBuild)
+      build(serverBuild),
     ])
     console.log('✅ build done')
   })

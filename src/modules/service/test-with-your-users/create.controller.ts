@@ -63,7 +63,7 @@ export class CreateController extends BaseModule {
       ...lodash.get(req, 'session.pageData.createPrototypeLink', {}),
     }
 
-    return response(req, res, 'simplified-account/services/test-with-your-users/create', context)
+    return response(req, res, 'modules/service/test-with-your-users/views/create', context)
   }
 
   static postMiddleware = [postValidation as unknown as RequestHandler]
@@ -72,7 +72,7 @@ export class CreateController extends BaseModule {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       const formattedErrors = formatValidationErrors(errors)
-      return response(req, res, 'simplified-account/services/test-with-your-users/create', {
+      return response(req, res, 'modules/service/test-with-your-users/views/create', {
         errors: {
           summary: formattedErrors.errorSummary,
           formErrors: formattedErrors.formErrors,

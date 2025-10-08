@@ -12,7 +12,7 @@ import permission from '@middleware/permission'
 const logger = createLogger(__filename)
 
 export class DisableController extends BaseModule {
-  static path = '/service/:serviceExternalId/account/:accountType/test-with-your-users/disable'
+  static path = '/service/:serviceExternalId/account/:accountType/test-with-your-users/links/disable/:productExternalId'
 
   static middleware = [
     simplifiedAccountStrategy,
@@ -22,12 +22,12 @@ export class DisableController extends BaseModule {
     experimentalFeature,
   ]
 
-  static async post(req: ServiceRequest, res: ServiceResponse) {
+  static async get(req: ServiceRequest, res: ServiceResponse) {
     return productsClient.product
       .disable(req.account.id, req.params.productExternalId)
       .then(() => {
         req.flash('messages', Message.Success('Prototype link deleted'))
-        res.redirect(LinksController.formatPath(req.service.externalId, req.account.type))
+        return res.redirect(LinksController.formatPath(req.service.externalId, req.account.type))
       })
       .catch((err: Error) => {
         logger.error(`Disable product failed - ${err.message}`)
@@ -37,7 +37,7 @@ export class DisableController extends BaseModule {
             'Something went wrong when deleting the prototype link. Please try again or contact support.'
           )
         )
-        res.redirect(LinksController.formatPath(req.service.externalId, req.account.type))
+        return res.redirect(LinksController.formatPath(req.service.externalId, req.account.type))
       })
   }
 }

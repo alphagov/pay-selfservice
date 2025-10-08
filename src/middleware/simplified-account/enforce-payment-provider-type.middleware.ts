@@ -3,11 +3,14 @@ import { NextFunction } from 'express'
 
 import { NotFoundError } from '@root/errors'
 
-function enforcePaymentProviderType (paymentProvider: string) {
+function enforcePaymentProviderType(paymentProvider: string) {
   return function (req: ServiceRequest, _: ServiceResponse, next: NextFunction) {
+    console.log('enforcing payment provider at', req.path)
     const account = req.account
     if (!account.isSwitchingToProvider(paymentProvider) && account.paymentProvider !== paymentProvider) {
-      return next(new NotFoundError(`Attempted to access ${paymentProvider} setting for ${account.paymentProvider} service`))
+      return next(
+        new NotFoundError(`Attempted to access ${paymentProvider} setting for ${account.paymentProvider} service`)
+      )
     }
     next()
   }

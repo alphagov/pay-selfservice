@@ -45,7 +45,7 @@ export class TestWithYourUsersModule extends BaseModule {
       ),
     }
 
-    return response(req, res, 'simplified-account/services/test-with-your-users/index', context)
+    return response(req, res, 'modules/service/test-with-your-users/views/index', context)
   }
 
   static Confirm = ConfirmController
