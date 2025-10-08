@@ -85,18 +85,10 @@ const deleteUser = (serviceExternalId: string, removerExternalId: string, userEx
 }
 
 const provisionNewOtpKey = (userExternalId: string) => {
-  // if (!externalId) {
-  //   return Promise.reject(new Error('No externalId specified'))
-  // }
-
   return adminUsersClient.users.provisionNewOtpKey(userExternalId)
 }
 
 const configureNewOtpKey = (userExternalId: string, code: string, secondFactor: string) => {
-  // if (!externalId) {
-  //   return Promise.reject(new Error('No externalId specified'))
-  // }
-
   return adminUsersClient.users.configureNewOtpKey(userExternalId, code, secondFactor)
 }
 
