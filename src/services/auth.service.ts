@@ -110,7 +110,7 @@ function localStrategyLoginDirectAfterRegistration(req: Request, done: Authentic
     return
   }
   userService
-    .findByExternalId(registrationSession.userExternalId)
+    .findByExternalId(registrationSession.userExternalId as string)
     .then((user: User) => {
       registrationSession.destroy()
       done(null, user)
@@ -162,7 +162,12 @@ function passportClientSessionsCompatibility(req: Request, _: Response, next: Ne
   const request = req as ClientSessionsExpressRequest
   request.session.regenerate ??= (callback: (err?: unknown) => void) => {
     Object.keys(request.session).forEach((key) => {
-      if (key !== 'reset' && key !== 'setDuration' && key !== 'last_url' && typeof request.session[key] !== 'function') {
+      if (
+        key !== 'reset' &&
+        key !== 'setDuration' &&
+        key !== 'last_url' &&
+        typeof request.session[key] !== 'function'
+      ) {
         delete request.session[key]
       }
     })
