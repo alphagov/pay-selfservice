@@ -81,6 +81,18 @@ simplifiedAccount.post(
   servicesController.paymentLinks.create.information.post
 )
 simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.existingPaymentLink,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.create.existingPaymentLink.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.existingPaymentLink,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.create.existingPaymentLink.post
+)
+simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.addWelshServiceName,
   experimentalFeature,
   permission('tokens:create'),
@@ -246,12 +258,43 @@ simplifiedAccount.post(
 )
 
 // test with your users
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.index, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.index.get)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.links, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.links.get)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create.get)
-simplifiedAccount.post(paths.simplifiedAccount.testWithYourUsers.create, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.create.postValidation, testWithYourUsersController.create.post)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.confirm, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.confirm.get)
-simplifiedAccount.get(paths.simplifiedAccount.testWithYourUsers.disable, permission('transactions:read'), restrictToSandboxOrStripeTestAccount, testWithYourUsersController.disable.post)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.index,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.index.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.links,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.links.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.create,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.create.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.testWithYourUsers.create,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.create.postValidation,
+  testWithYourUsersController.create.post
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.confirm,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.confirm.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.testWithYourUsers.disable,
+  permission('transactions:read'),
+  restrictToSandboxOrStripeTestAccount,
+  testWithYourUsersController.disable.post
+)
 
 // agreements
 simplifiedAccount.get(
@@ -768,7 +811,6 @@ simplifiedAccount.get(
 
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
-const switchToStripePath = paths.simplifiedAccount.settings.switchPsp.switchToStripe
 const stripeDetailsRouter = new Router({ mergeParams: true }).use(
   enforceLiveAccountOnly,
   enforcePaymentProviderType(STRIPE),
