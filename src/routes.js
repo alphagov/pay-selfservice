@@ -290,7 +290,6 @@ module.exports.bind = function (app) {
   account.get(transactions.detail, permission('transactions-details:read'), transactionDetailController)
   account.post(transactions.refund, permission('refunds:create'), transactionRefundController)
 
-
   console.log('router:', modularRouter)
   app.use(modularRouter)
 
@@ -383,7 +382,6 @@ module.exports.bind = function (app) {
 
   app.use(paths.account.root, account)
   app.use(paths.service.root, service)
-
 
   // security.txt — https://gds-way.cloudapps.digital/standards/vulnerability-disclosure.html
   const securitytxt = 'https://vdp.cabinetoffice.gov.uk/.well-known/security.txt'

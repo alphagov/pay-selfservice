@@ -3,77 +3,78 @@
 {% set servicePageTitle = "Create a prototype link" %}
 {% set backLinkText = "Back to prototype links" %}
 
-
 {% block serviceContent %}
-  <h1 class="govuk-heading-l page-title">
-    {{ servicePageTitle }}
-  </h1>
+  <h1 class="govuk-heading-l page-title">{{ servicePageTitle }}</h1>
 
   <form method="post" novalidate>
-    <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
-
-    {{ govukInput({
-      name: "description",
-      id: "description",
-      label: {
-        text: "Payment description",
-        classes: "govuk-label--s"
-      },
-      hint: {
-        text: "Tell users what they are paying for"
-      },
-      value: prototypeLinkData.description,
-      spellcheck: true,
-      errorMessage: { text: errors.formErrors['description'] } if errors.formErrors['description'] else false
-    }) }}
-
-    {{ govukInput({
-      name: "paymentAmount",
-      id: "payment-amount",
-      label: {
-        html: "Payment amount <span class='govuk-visually-hidden'>in &pound;</span>",
-        classes: "govuk-label--s"
-      },
-      prefix: {
-        text: "£"
-      },
-      classes: "govuk-input--width-10",
-      attributes: {
-        'data-trim': true,
-        spellcheck: false
-      },
-      value: prototypeLinkData.paymentAmount,
-      errorMessage: { text: errors.formErrors['paymentAmount'] } if errors.formErrors['paymentAmount'] else false
-    }) }}
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
     {{
-    govukInput({
-      name: "confirmationPage",
-      id: "confirmation-page",
-      label: {
-        text: "Confirmation page",
-        classes: "govuk-label--s"
-      },
-      hint: {
-        text: "Enter the secure URL users will go to after they have completed the test payment"
-      },
-      type: "url",
-      spellcheck: false,
-      value: prototypeLinkData.confirmationPage,
-      attributes: {
-        "data-trim": true
-      },
-      errorMessage: { text: errors.formErrors['confirmationPage'] } if errors.formErrors['confirmationPage'] else false
-    })
+      govukInput({
+        name: "description",
+        id: "description",
+        label: {
+          text: "Payment description",
+          classes: "govuk-label--s"
+        },
+        hint: {
+          text: "Tell users what they are paying for"
+        },
+        value: prototypeLinkData.description,
+        spellcheck: true,
+        errorMessage: { text: errors.formErrors['description'] } if errors.formErrors['description'] else false
+      })
     }}
 
     {{
-    govukButton({
-      text: "Create prototype link",
-      attributes: {
-        id: "prototyping__links-button-create-prototype-link"
-      }
-    })
+      govukInput({
+        name: "paymentAmount",
+        id: "payment-amount",
+        label: {
+          html: "Payment amount <span class='govuk-visually-hidden'>in &pound;</span>",
+          classes: "govuk-label--s"
+        },
+        prefix: {
+          text: "£"
+        },
+        classes: "govuk-input--width-10",
+        attributes: {
+          'data-trim': true,
+          spellcheck: false
+        },
+        value: prototypeLinkData.paymentAmount,
+        errorMessage: { text: errors.formErrors['paymentAmount'] } if errors.formErrors['paymentAmount'] else false
+      })
+    }}
+
+    {{
+      govukInput({
+        name: "confirmationPage",
+        id: "confirmation-page",
+        label: {
+          text: "Confirmation page",
+          classes: "govuk-label--s"
+        },
+        hint: {
+          text: "Enter the secure URL users will go to after they have completed the test payment"
+        },
+        type: "url",
+        spellcheck: false,
+        value: prototypeLinkData.confirmationPage,
+        attributes: {
+          "data-trim": true
+        },
+        errorMessage: { text: errors.formErrors['confirmationPage'] } if errors.formErrors['confirmationPage'] else false
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Create prototype link",
+        attributes: {
+          id: "prototyping__links-button-create-prototype-link"
+        }
+      })
     }}
   </form>
 {% endblock %}

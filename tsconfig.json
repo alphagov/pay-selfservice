@@ -31,34 +31,20 @@
     "moduleResolution": "nodenext",
     "baseUrl": "./",
     "paths": {
-      "@controllers/*": [
-        "src/controllers/*"
-      ],
-      "@middleware/*": [
-        "src/middleware/*"
-      ],
-      "@models/*": [
-        "src/models/*"
-      ],
-      "@services/*": [
-        "src/services/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@views/*": [
-        "src/views/*"
-      ],
-      "@root/*": [
-        "src/*"
-      ],
-      "@test/*": [
-        "test/*"
-      ]
-    }
-    /* Specify a set of entries that re-map imports to additional lookup locations. */,
-    // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
-     "typeRoots": ["./types", "./node_modules/@types"],                                  /* Specify multiple folders that act like './node_modules/@types'. */
+      "@controllers/*": ["src/controllers/*"],
+      "@middleware/*": ["src/middleware/*"],
+      "@models/*": ["src/models/*"],
+      "@services/*": ["src/services/*"],
+      "@utils/*": ["src/utils/*"],
+      "@views/*": ["src/views/*"],
+      "@root/*": ["src/*"],
+      "@test/*": ["test/*"]
+    },
+    /* Specify a set of entries that re-map imports to additional lookup locations. */ // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ] /* Specify multiple folders that act like './node_modules/@types'. */,
     // "types": [],                                      /* Specify type package names to be included without being referenced in a source file. */
     // "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */
     // "moduleSuffixes": [],                             /* List of file name suffixes to search when resolving a module. */
@@ -105,7 +91,7 @@
     // "verbatimModuleSyntax": true,                     /* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */
     // "isolatedDeclarations": true,                     /* Require sufficient annotation on exports so other tools can trivially generate declaration files. */
     // "erasableSyntaxOnly": true,                       /* Do not allow runtime constructs that are not part of ECMAScript. */
-    "allowSyntheticDefaultImports": true,               /* Allow 'import x from y' when a module doesn't have a default export. */
+    "allowSyntheticDefaultImports": true /* Allow 'import x from y' when a module doesn't have a default export. */,
     "esModuleInterop": true,
     // "preserveSymlinks": true,                         /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */
     "forceConsistentCasingInFileNames": true,
@@ -135,8 +121,5 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true
   },
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "exclude": ["node_modules", "dist"]
 }

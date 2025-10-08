@@ -1,4 +1,4 @@
-export function formattedPathFor (path: string, ...pathParams: string[]) {
+export function formattedPathFor(path: string, ...pathParams: string[]) {
   const paramNames = path.split('/').filter((segment) => segment.startsWith(':'))
   paramNames.forEach((paramName, index) => {
     if (pathParams[index]) {
