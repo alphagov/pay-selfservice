@@ -62,6 +62,8 @@ const { registrationSuccess } = require('@services/auth.service')
 const { account: routes } = require('@root/paths')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 
+const { modularRouter } = require('@root/modular-router')
+
 // Assignments
 const {
   allServiceTransactions,
@@ -287,6 +289,9 @@ module.exports.bind = function (app) {
   account.get(transactions.download, permission('transactions-download:read'), transactionsDownloadController)
   account.get(transactions.detail, permission('transactions-details:read'), transactionDetailController)
   account.post(transactions.refund, permission('refunds:create'), transactionRefundController)
+
+  console.log('router:', modularRouter)
+  app.use(modularRouter)
 
   // Settings
   app.use(paths.simplifiedAccount.root, simplifiedAccountRoutes)

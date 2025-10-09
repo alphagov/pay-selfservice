@@ -19,7 +19,9 @@ function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
   const currentSession = getSession(req)
 
   if (lodash.isEmpty(currentSession)) {
-    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type))
+    return res.redirect(
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
+    )
   }
 
   const isWelsh = currentSession.language === 'cy'
@@ -37,11 +39,11 @@ function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
       backLink: formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.paymentLinks.review,
         req.service.externalId,
-        req.account.type,
+        req.account.type
       ),
       formValues,
       serviceMode: req.account.type,
-      isWelsh
+      isWelsh,
     })
   } catch (error) {
     next(error)
@@ -59,13 +61,14 @@ async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceRes
   const currentSession = getSession(req)
 
   if (lodash.isEmpty(currentSession)) {
-    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type))
+    return res.redirect(
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
+    )
   }
 
   const isWelsh = currentSession.language === 'cy'
 
   if (req.body.action === 'edit') {
-
     const validations = [
       paymentLinkSchema.metadata.columnHeader.edit.validate(currentSession.metadata ?? {}, req.params.metadataKey),
       paymentLinkSchema.metadata.cellContent.validate,
@@ -104,12 +107,12 @@ async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceRes
       metadata: {
         ...lodash.omit(currentSession.metadata, req.params.metadataKey),
         [req.body.reportingColumn]: req.body.cellContent,
-      }
+      },
     } as PaymentLinkCreationSession)
-    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
-  }
-
-  else if (req.body.action === 'delete') {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type)
+    )
+  } else if (req.body.action === 'delete') {
     const updatedMetadata = lodash.omit(currentSession.metadata, req.params.metadataKey)
 
     if (lodash.isEmpty(updatedMetadata)) {
@@ -119,20 +122,20 @@ async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceRes
     }
 
     lodash.set(req, CREATE_SESSION_KEY, currentSession)
-    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
+    return res.redirect(
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type)
+    )
   }
 }
 
 function checkKeyExistsOnSessionMetadata(
   session: PaymentLinkCreationSession,
-  req: ServiceRequest<UpdateLinkMetadataBody>
+  req: ServiceRequest
 ): asserts session is PaymentLinkCreationSession & {
   metadata: NonNullable<Record<string, string>>
 } {
   if (!Object.keys(session.metadata ?? {}).includes(req.params.metadataKey)) {
-    throw new NotFoundError(
-      `Metadata key was not found on product`
-    )
+    throw new NotFoundError(`Metadata key was not found on product`)
   }
 }
 

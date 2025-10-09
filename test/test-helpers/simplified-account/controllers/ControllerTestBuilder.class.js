@@ -25,6 +25,11 @@ module.exports = class ControllerTestBuilder {
     this.nextStubsData = null
   }
 
+  withController(controllerName) {
+    this.controllerName = controllerName
+    return this
+  }
+
   withAccountType(type) {
     this.req.account.type = type
     return this
@@ -89,6 +94,10 @@ module.exports = class ControllerTestBuilder {
     let controller = proxyquire(this.controllerPath, {
       ...this.stubs,
     })
+    if (this.controllerName) {
+      controller = controller[this.controllerName]
+    }
+
     return {
       req: this.req,
       res: this.res,
@@ -98,7 +107,17 @@ module.exports = class ControllerTestBuilder {
       nextStubs: this.nextStubs.bind(this),
 
       validate: async (validationMethod) => {
-        const fn = controller[validationMethod]
+        let fn
+        if (typeof validationMethod === 'string') {
+          fn = controller[validationMethod]
+        } else if (typeof validationMethod === 'function') {
+          fn = [validationMethod]
+        } else if (validationMethod instanceof Array) {
+          fn = validationMethod
+        } else {
+          throw new Error(`Unable to validate using ${validationMethod}`)
+        }
+
         const _req = this.nextReq || this.req
         const _res = this.nextRes || this.res
 

@@ -7,8 +7,6 @@ import { addField } from '@services/clients/base/request-context'
 import _ from 'lodash'
 // @ts-expect-error js commons is not updated for typescript support yet
 import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
-import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
-import Service from '@models/service/Service.class'
 import { getGatewayAccountByServiceExternalIdAndType } from '@services/gateway-accounts.service'
 const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, GATEWAY_ACCOUNT_EXTERNAL_ID } = keys
 
@@ -51,15 +49,12 @@ async function getGatewayAccount(serviceExternalId: string, accountType: string)
       serviceExternalId,
       accountType,
     }
-    return await getGatewayAccountByServiceExternalIdAndType(
-      params.serviceExternalId,
-      params.accountType
-    )
+    return await getGatewayAccountByServiceExternalIdAndType(params.serviceExternalId, params.accountType)
   } catch (err) {
     // type assertion nastiness, js-commons is not yet ts-commons
     if (err instanceof RESTClientError) {
       const clientError = err as {
-        errorCode: number,
+        errorCode: number
         message: string
       }
       const logContext = {
@@ -78,14 +73,8 @@ async function getGatewayAccount(serviceExternalId: string, accountType: string)
   }
 }
 
-interface AuthenticatedRequest extends Request {
-  user: User
-  account?: GatewayAccount
-  service?: Service
-}
-
 async function getSimplifiedAccount(req: Request, _: Response, next: NextFunction) {
-  const request = req as AuthenticatedRequest
+  const request = req
   try {
     const serviceExternalId = request.params[SERVICE_EXTERNAL_ID]
     const accountType = request.params[ACCOUNT_TYPE]
