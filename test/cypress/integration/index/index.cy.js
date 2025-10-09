@@ -31,7 +31,6 @@ describe('The index page', () => {
       cy.log('should display the GOV.UK header correctly')
 
       cy.percySnapshot()
-      cy.percySnapshot()
 
       cy.get('[data-cy=header]').should('have.css', 'background-color', 'rgb(29, 112, 184)')
       cy.get('[data-cy=header]').should('have.css', 'color', 'rgb(255, 255, 255)')
