@@ -6,37 +6,16 @@
     "target": "ES2022",
     "baseUrl": "./",
     "paths": {
-      "@controllers/*": [
-        "src/controllers/*"
-      ],
-      "@modules/*": [
-        "src/modules/*"
-      ],
-      "@middleware/*": [
-        "src/middleware/*"
-      ],
-      "@models/*": [
-        "src/models/*"
-      ],
-      "@services/*": [
-        "src/services/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@views/*": [
-        "src/views/*"
-      ],
-      "@root/*": [
-        "src/*"
-      ],
-      "@test/*": [
-        "test/*"
-      ]
+      "@controllers/*": ["src/controllers/*"],
+      "@modules/*": ["src/modules/*"],
+      "@middleware/*": ["src/middleware/*"],
+      "@models/*": ["src/models/*"],
+      "@services/*": ["src/services/*"],
+      "@utils/*": ["src/utils/*"],
+      "@views/*": ["src/views/*"],
+      "@root/*": ["src/*"],
+      "@test/*": ["test/*"]
     }
   },
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "exclude": ["node_modules", "dist"]
 }
