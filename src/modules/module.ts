@@ -12,7 +12,6 @@ export abstract class BaseModule {
   static postValidation?: ValidationChain[]
   static [key: string]: unknown
 
-  // @ts-ignore
   static router(router?: Router) {
     if (!this.path) {
       throw new Error(`path is undefined for module [${this.name}]`)
