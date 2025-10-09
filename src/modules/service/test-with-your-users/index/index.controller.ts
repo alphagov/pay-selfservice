@@ -1,4 +1,4 @@
-import { response } from '@utils/response.js'
+import { response } from '@utils/response'
 import paths from '@root/paths'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
@@ -27,17 +27,8 @@ export class TestWithYourUsersModule extends BaseModule {
   static get(req: ServiceRequest, res: ServiceResponse) {
     const context = {
       messages: res.locals?.flash?.messages ?? [],
-      productsTab: false,
-      createLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.testWithYourUsers.create,
-        req.service.externalId,
-        req.account.type
-      ),
-      prototypesLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.testWithYourUsers.links,
-        req.service.externalId,
-        req.account.type
-      ),
+      createLink: CreateController.formatPath(req.service.externalId, req.account.type),
+      prototypesLink: LinksController.formatPath(req.service.externalId, req.account.type),
       backLink: formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.dashboard.index,
         req.service.externalId,
@@ -48,8 +39,19 @@ export class TestWithYourUsersModule extends BaseModule {
     return response(req, res, 'modules/service/test-with-your-users/index/index', context)
   }
 
-  static Confirm = ConfirmController
-  static Create = CreateController
-  static Disable = DisableController
-  static Links = LinksController
+  static get Confirm() {
+    return ConfirmController
+  }
+
+  static get Create() {
+    return CreateController
+  }
+
+  static get Disable() {
+    return DisableController
+  }
+
+  static get Links() {
+    return LinksController
+  }
 }

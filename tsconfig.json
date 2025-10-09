@@ -32,6 +32,7 @@
     "baseUrl": "./",
     "paths": {
       "@controllers/*": ["src/controllers/*"],
+      "@modules/*": ["src/modules/*"],
       "@middleware/*": ["src/middleware/*"],
       "@models/*": ["src/models/*"],
       "@services/*": ["src/services/*"],

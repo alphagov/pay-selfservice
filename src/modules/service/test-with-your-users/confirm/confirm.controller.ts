@@ -1,6 +1,4 @@
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
-import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import paths from '@root/paths'
 import lodash from 'lodash'
 import { response } from '@utils/response'
 import { SESSION_KEY } from '../constants'
@@ -9,6 +7,7 @@ import restrictToSandboxOrStripeTestAccount from '@middleware/restrict-to-sandbo
 import { experimentalFeature, simplifiedAccountStrategy } from '@middleware/simplified-account'
 import userIsAuthorised from '@middleware/user-is-authorised'
 import permission from '@middleware/permission'
+import { TestWithYourUsersModule } from '@modules/service/test-with-your-users/index/index.controller'
 
 export class ConfirmController extends BaseModule {
   static path = '/service/:serviceExternalId/account/:accountType/test-with-your-users/confirm'
@@ -26,16 +25,7 @@ export class ConfirmController extends BaseModule {
 
     const context = {
       prototypeLink,
-      backLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.testWithYourUsers.links,
-        req.service.externalId,
-        req.account.type
-      ),
-      prototypesLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.testWithYourUsers.links,
-        req.service.externalId,
-        req.account.type
-      ),
+      prototypesLink: TestWithYourUsersModule.Links.formatPath(req.service.externalId, req.account.type),
     }
 
     return response(req, res, 'modules/service/test-with-your-users/confirm/confirm', context)

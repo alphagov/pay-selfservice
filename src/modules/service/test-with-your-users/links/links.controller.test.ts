@@ -12,9 +12,8 @@ const SERVICE_EXTERNAL_ID = 'service-123-external-id-abc'
 
 const getProductsStub = sinon.stub()
 
-const { call, res, req } = new ControllerTestBuilder(
-  '@controllers/simplified-account/services/test-with-your-users/links.controller'
-)
+const { call, res, req } = new ControllerTestBuilder('@modules/service/test-with-your-users/links/links.controller')
+  .withController('LinksController')
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/products.service': { getProducts: getProductsStub },
@@ -40,7 +39,7 @@ describe('test-with-your-users/links controller tests', () => {
       await call('get')
 
       mockResponse.should.have.been.calledOnce
-      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/services/test-with-your-users/links')
+      mockResponse.should.have.been.calledWith(req, res, 'modules/service/test-with-your-users/links/links')
     })
 
     it('should call the response method with the context object', async () => {
@@ -50,11 +49,6 @@ describe('test-with-your-users/links controller tests', () => {
         messages: [],
         createLink: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.testWithYourUsers.create,
-          SERVICE_EXTERNAL_ID,
-          GatewayAccountType.TEST
-        ),
-        prototypesLink: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.testWithYourUsers.links,
           SERVICE_EXTERNAL_ID,
           GatewayAccountType.TEST
         ),

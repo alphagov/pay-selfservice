@@ -771,7 +771,7 @@ const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
 const switchToStripePath = paths.simplifiedAccount.settings.switchPsp.switchToStripe
 const stripeDetailsRouter = new Router({ mergeParams: true }).use(
   enforceLiveAccountOnly,
-  // enforcePaymentProviderType(STRIPE),
+  enforcePaymentProviderType(STRIPE),
   permission('stripe-account-details:update'),
   stripeAccountSetupStrategy
 )

@@ -1,6 +1,5 @@
-import { response } from '@utils/response.js'
+import { response } from '@utils/response'
 import paths from '@root/paths'
-import productsClient from '@services/clients/products.client.js'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import restrictToSandboxOrStripeTestAccount from '@middleware/restrict-to-sandbox-or-stripe-test-account'
@@ -8,6 +7,9 @@ import { experimentalFeature, simplifiedAccountStrategy } from '@middleware/simp
 import userIsAuthorised from '@middleware/user-is-authorised'
 import permission from '@middleware/permission'
 import { BaseModule } from '@root/modules/module'
+import { getProducts } from '@services/products.service'
+import { ProductType } from '@models/products/product-type'
+import { TestWithYourUsersModule } from '@modules/service/test-with-your-users/index/index.controller'
 
 export class LinksController extends BaseModule {
   static path = '/service/:serviceExternalId/account/:accountType/test-with-your-users/links'
@@ -21,35 +23,17 @@ export class LinksController extends BaseModule {
   ]
 
   static async get(req: ServiceRequest, res: ServiceResponse) {
-    const prototypeProducts = await productsClient.product.getByGatewayAccountIdAndType(
-      `${req.account.id}`,
-      'PROTOTYPE'
-    )
+    const prototypeProducts = await getProducts(req.account.id, ProductType.PROTOTYPE)
 
     const context = {
       messages: res.locals?.flash?.messages ?? [],
-      productsTab: true,
-      createLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.testWithYourUsers.create,
-        req.service.externalId,
-        req.account.type
-      ),
-      indexLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.testWithYourUsers.index,
-        req.service.externalId,
-        req.account.type
-      ),
-      prototypesLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.testWithYourUsers.links,
-        req.service.externalId,
-        req.account.type
-      ),
+      createLink: TestWithYourUsersModule.Create.formatPath(req.service.externalId, req.account.type),
+      indexLink: TestWithYourUsersModule.formatPath(req.service.externalId, req.account.type),
       backLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.testWithYourUsers.index,
+        paths.simplifiedAccount.dashboard.index,
         req.service.externalId,
         req.account.type
       ),
-      productsLength: prototypeProducts.length,
       products: prototypeProducts,
     }
 

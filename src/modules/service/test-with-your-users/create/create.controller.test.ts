@@ -25,8 +25,9 @@ const createProductStub = sinon.stub()
 const createTokenStub = sinon.stub()
 
 const { call, res, req, nextRequest, validate } = new ControllerTestBuilder(
-  '@controllers/simplified-account/services/test-with-your-users/create.controller'
+  '@modules/service/test-with-your-users/create/create.controller'
 )
+  .withController('CreateController')
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/products.service': {
@@ -61,7 +62,7 @@ describe('test-with-your-users/create controller tests', () => {
     it('should call the response method with the request, response, and template path', async () => {
       await call('get')
 
-      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/services/test-with-your-users/create')
+      mockResponse.should.have.been.calledWith(req, res, 'modules/service/test-with-your-users/create/create')
     })
 
     it('should call the response method with the context object', async () => {
@@ -102,7 +103,7 @@ describe('test-with-your-users/create controller tests', () => {
         mockResponse.should.have.been.calledWith(
           sinon.match.any,
           sinon.match.any,
-          'simplified-account/services/test-with-your-users/create'
+          'modules/service/test-with-your-users/create/create'
         )
       })
 

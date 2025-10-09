@@ -9,6 +9,9 @@
       "@controllers/*": [
         "src/controllers/*"
       ],
+      "@modules/*": [
+        "src/modules/*"
+      ],
       "@middleware/*": [
         "src/middleware/*"
       ],

@@ -11,9 +11,8 @@ const GATEWAY_ACCOUNT_ID = '100'
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'ga-123-external-id-abc'
 const SERVICE_EXTERNAL_ID = 'service-123-external-id-abc'
 
-const { call, res, req } = new ControllerTestBuilder(
-  '@controllers/simplified-account/services/test-with-your-users/confirm.controller'
-)
+const { call, res, req } = new ControllerTestBuilder('@modules/service/test-with-your-users/confirm/confirm.controller')
+  .withController('ConfirmController')
   .withStubs({
     '@utils/response': { response: mockResponse },
   })
@@ -46,7 +45,7 @@ describe('test-with-your-users/confirm controller tests', () => {
     it('should call the response method with the request, response, and template path', async () => {
       await call('get')
 
-      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/services/test-with-your-users/confirm')
+      mockResponse.should.have.been.calledWith(req, res, 'modules/service/test-with-your-users/confirm/confirm')
     })
 
     it('should call the response method with the context object', async () => {

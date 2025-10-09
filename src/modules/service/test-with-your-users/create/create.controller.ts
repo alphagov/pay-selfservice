@@ -1,7 +1,5 @@
 import lodash from 'lodash'
-import { response } from '@utils/response.js'
-import paths from '@root/paths'
-import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { prototypeLinkSchema } from '@controllers/simplified-account/services/test-with-your-users/validation/prototype-link.schema'
 import { validationResult } from 'express-validator'
@@ -21,15 +19,9 @@ import { BaseModule } from '@root/modules/module'
 import { experimentalFeature, simplifiedAccountStrategy } from '@middleware/simplified-account'
 import userIsAuthorised from '@middleware/user-is-authorised'
 import permission from '@middleware/permission'
-import { RequestHandler } from 'express'
+import { TestWithYourUsersModule } from '@modules/service/test-with-your-users/index/index.controller'
 
 const PATH = '/service/:serviceExternalId/account/:accountType/test-with-your-users/create'
-
-const postValidation = [
-  prototypeLinkSchema.description.validate,
-  demoPaymentSchema.paymentAmount.validate,
-  prototypeLinkSchema.confirmationPage.validate,
-]
 
 interface CreatePrototypeLinkData {
   description: string
@@ -50,29 +42,25 @@ export class CreateController extends BaseModule {
 
   static get(req: ServiceRequest, res: ServiceResponse) {
     const context = {
-      backLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.testWithYourUsers.links,
-        req.service.externalId,
-        req.account.type
-      ),
-      confirmLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.testWithYourUsers.confirm,
-        req.service.externalId,
-        req.account.type
-      ),
+      backLink: TestWithYourUsersModule.Links.formatPath(req.service.externalId, req.account.type),
+      confirmLink: TestWithYourUsersModule.Confirm.formatPath(req.service.externalId, req.account.type),
       ...lodash.get(req, 'session.pageData.createPrototypeLink', {}),
     }
 
     return response(req, res, 'modules/service/test-with-your-users/create/create', context)
   }
 
-  static postMiddleware = [postValidation as unknown as RequestHandler]
+  static postValidation = [
+    prototypeLinkSchema.description.validate,
+    demoPaymentSchema.paymentAmount.validate,
+    prototypeLinkSchema.confirmationPage.validate,
+  ]
 
   static async post(req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceResponse) {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
       const formattedErrors = formatValidationErrors(errors)
-      return response(req, res, 'modules/service/test-with-your-users/views/create', {
+      return response(req, res, 'modules/service/test-with-your-users/create/create', {
         errors: {
           summary: formattedErrors.errorSummary,
           formErrors: formattedErrors.formErrors,
@@ -82,11 +70,7 @@ export class CreateController extends BaseModule {
           paymentAmount: req.body.paymentAmount,
           confirmationPage: req.body.confirmationPage,
         },
-        backLink: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.testWithYourUsers.index,
-          req.service.externalId,
-          req.account.type
-        ),
+        backLink: TestWithYourUsersModule.formatPath(req.service.externalId, req.account.type),
       })
     }
 

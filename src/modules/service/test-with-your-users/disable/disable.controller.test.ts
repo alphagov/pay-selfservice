@@ -10,9 +10,8 @@ const PRODUCT_EXTERNAL_ID = 'product-123-external-id-abc'
 
 const disableProductStub = sinon.stub()
 
-const { call, res, req } = new ControllerTestBuilder(
-  '@controllers/simplified-account/services/test-with-your-users/disable.controller'
-)
+const { call, res, req } = new ControllerTestBuilder('@modules/service/test-with-your-users/disable/disable.controller')
+  .withController('DisableController')
   .withStubs({
     '@services/products.service': {
       disableProduct: disableProductStub,
@@ -33,21 +32,21 @@ const { call, res, req } = new ControllerTestBuilder(
   .build()
 
 describe('test-with-your-users/disable controller tests', () => {
-  describe('post', () => {
+  describe('get', () => {
     describe('when disableProduct succeeds', () => {
       beforeEach(() => {
         disableProductStub.resolves()
       })
 
       it('should call disableProduct with the product external ID', async () => {
-        await call('post')
+        await call('get')
 
         disableProductStub.should.have.been.calledOnce
         disableProductStub.should.have.been.calledWith(GATEWAY_ACCOUNT_ID, PRODUCT_EXTERNAL_ID)
       })
 
       it('should redirect to the links page', async () => {
-        await call('post')
+        await call('get')
 
         res.redirect.should.have.been.calledWith(
           `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/test-with-your-users/links`
@@ -55,7 +54,7 @@ describe('test-with-your-users/disable controller tests', () => {
       })
 
       it('should set a success message on the session', async () => {
-        await call('post')
+        await call('get')
 
         req.flash.should.have.been.calledOnce
         req.flash.should.have.been.calledWith('messages', Message.Success('Prototype link deleted'))
@@ -68,7 +67,7 @@ describe('test-with-your-users/disable controller tests', () => {
       })
 
       it('should redirect to the links page', async () => {
-        await call('post')
+        await call('get')
 
         res.redirect.should.have.been.calledWith(
           `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/test-with-your-users/links`
@@ -76,7 +75,7 @@ describe('test-with-your-users/disable controller tests', () => {
       })
 
       it('should set an error message on the session', async () => {
-        await call('post')
+        await call('get')
 
         req.flash.should.have.been.calledOnce
         req.flash.should.have.been.calledWith(

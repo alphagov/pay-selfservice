@@ -24,6 +24,7 @@ const buildOptions = {
   alias: {
     '@root': resolve(__dirname, 'src'),
     '@controllers': resolve(__dirname, 'src/controllers'),
+    '@modules': resolve(__dirname, 'src/modules'),
     '@middleware': resolve(__dirname, 'src/middleware'),
     '@models': resolve(__dirname, 'src/models'),
     '@services': resolve(__dirname, 'src/services'),
