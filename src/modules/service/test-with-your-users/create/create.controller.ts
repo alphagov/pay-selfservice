@@ -12,11 +12,11 @@ import TokenUsageType from '@models/public-auth/token-usage-type'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import { createProduct } from '@services/products.service'
 import { ProductType } from '@models/products/product-type'
-import { SESSION_KEY } from './constants'
+import { SESSION_KEY } from '../constants'
 import { demoPaymentSchema } from '@utils/simplified-account/validation/demo-payment.schema'
 import { safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 import restrictToSandboxOrStripeTestAccount from '@middleware/restrict-to-sandbox-or-stripe-test-account'
-import { ConfirmController } from '@root/modules/service/test-with-your-users/confirm.controller'
+import { ConfirmController } from '@root/modules/service/test-with-your-users/confirm/confirm.controller'
 import { BaseModule } from '@root/modules/module'
 import { experimentalFeature, simplifiedAccountStrategy } from '@middleware/simplified-account'
 import userIsAuthorised from '@middleware/user-is-authorised'
@@ -63,7 +63,7 @@ export class CreateController extends BaseModule {
       ...lodash.get(req, 'session.pageData.createPrototypeLink', {}),
     }
 
-    return response(req, res, 'modules/service/test-with-your-users/views/create', context)
+    return response(req, res, 'modules/service/test-with-your-users/create/create', context)
   }
 
   static postMiddleware = [postValidation as unknown as RequestHandler]

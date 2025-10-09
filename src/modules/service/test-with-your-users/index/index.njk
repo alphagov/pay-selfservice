@@ -1,0 +1,52 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+{% extends "simplified-account/services/service-layout.njk" %}
+
+{% set servicePageTitle = "Test with your users" %}
+
+{% block serviceContent %}
+  <h1 class="govuk-heading-l page-title">{{ servicePageTitle }}</h1>
+
+  <p class="govuk-body">
+    Create a reusable link to integrate your service prototype with GOV.UK Pay and test with users.
+  </p>
+
+  {{
+    govukButton({
+      text: "Create prototype link",
+      href: createLink,
+      attributes: {
+        id: "prototyping__links-button-create"
+      }
+    })
+  }}
+
+  <div class="govuk-tabs">
+    <ul class="govuk-tabs__list">
+      <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+        <a class="govuk-tabs__tab" href="{{ indexLink }}"> Mock card numbers </a>
+      </li>
+      <li class="govuk-tabs__list-item">
+        <a class="govuk-tabs__tab" href="{{ prototypesLink }}"> Prototype links </a>
+      </li>
+    </ul>
+  </div>
+
+  <p class="govuk-body">Use this card number to test a successful payment. Don’t use real card numbers.</p>
+  {{
+    govukInsetText({
+      html: '<p class="govuk-!-font-size-24 govuk-!-font-weight-bold">4000<span class="govuk-!-padding-left-3 govuk-!-padding-right-3">0566</span><span class="govuk-!-padding-right-3">5566</span>5556</p>'
+    })
+  }}
+  <p class="govuk-body">
+    You can enter any valid value for the other details. For example, it doesn’t matter what expiry date you enter, but
+    it must be in the future.
+  </p>
+  <p class="govuk-body">
+    You can also use other card types and see errors.
+    <a
+      class="govuk-link"
+      href="https://docs.payments.service.gov.uk/testing_govuk_pay/#mock-card-numbers-for-testing-purposes"
+      >See more card types in our documentation</a
+    >.
+  </p>
+{% endblock %}

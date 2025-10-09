@@ -3,7 +3,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 import lodash from 'lodash'
 import { response } from '@utils/response'
-import { SESSION_KEY } from './constants'
+import { SESSION_KEY } from '../constants'
 import { BaseModule } from '@root/modules/module'
 import restrictToSandboxOrStripeTestAccount from '@middleware/restrict-to-sandbox-or-stripe-test-account'
 import { experimentalFeature, simplifiedAccountStrategy } from '@middleware/simplified-account'
@@ -38,6 +38,6 @@ export class ConfirmController extends BaseModule {
       ),
     }
 
-    return response(req, res, 'modules/service/test-with-your-users/views/confirm', context)
+    return response(req, res, 'modules/service/test-with-your-users/confirm/confirm', context)
   }
 }

@@ -1,20 +1,16 @@
 import { response } from '@utils/response.js'
 import paths from '@root/paths'
-import { ServiceRequest, ServiceResponse } from '@utils/types/express'
+import productsClient from '@services/clients/products.client.js'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import restrictToSandboxOrStripeTestAccount from '@middleware/restrict-to-sandbox-or-stripe-test-account'
-import { BaseModule } from '@root/modules/module'
 import { experimentalFeature, simplifiedAccountStrategy } from '@middleware/simplified-account'
 import userIsAuthorised from '@middleware/user-is-authorised'
 import permission from '@middleware/permission'
+import { BaseModule } from '@root/modules/module'
 
-import { ConfirmController } from './confirm.controller'
-import { DisableController } from './disable.controller'
-import { LinksController } from './links.controller'
-import { CreateController } from './create.controller'
-
-export class TestWithYourUsersModule extends BaseModule {
-  static path = '/service/:serviceExternalId/account/:accountType/test-with-your-users'
+export class LinksController extends BaseModule {
+  static path = '/service/:serviceExternalId/account/:accountType/test-with-your-users/links'
 
   static middleware = [
     simplifiedAccountStrategy,
@@ -24,12 +20,22 @@ export class TestWithYourUsersModule extends BaseModule {
     experimentalFeature,
   ]
 
-  static get(req: ServiceRequest, res: ServiceResponse) {
+  static async get(req: ServiceRequest, res: ServiceResponse) {
+    const prototypeProducts = await productsClient.product.getByGatewayAccountIdAndType(
+      `${req.account.id}`,
+      'PROTOTYPE'
+    )
+
     const context = {
       messages: res.locals?.flash?.messages ?? [],
-      productsTab: false,
+      productsTab: true,
       createLink: formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.testWithYourUsers.create,
+        req.service.externalId,
+        req.account.type
+      ),
+      indexLink: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.testWithYourUsers.index,
         req.service.externalId,
         req.account.type
       ),
@@ -39,17 +45,14 @@ export class TestWithYourUsersModule extends BaseModule {
         req.account.type
       ),
       backLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.dashboard.index,
+        paths.simplifiedAccount.testWithYourUsers.index,
         req.service.externalId,
         req.account.type
       ),
+      productsLength: prototypeProducts.length,
+      products: prototypeProducts,
     }
 
-    return response(req, res, 'modules/service/test-with-your-users/views/index', context)
+    return response(req, res, 'modules/service/test-with-your-users/links/links', context)
   }
-
-  static Confirm = ConfirmController
-  static Create = CreateController
-  static Disable = DisableController
-  static Links = LinksController
 }
