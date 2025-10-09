@@ -90,6 +90,8 @@ jobs:
     uses: alphagov/pay-ci/.github/workflows/_run-node-cypress-tests-percy.yml@pp-13751-add-percy-to-gha
     with:
       LIBGL_ALWAYS_SOFTWARE: "1"
+    secrets:
+      percy_token: ${{ secrets.percy_token }}
 
   pact-providers-contract-tests:
     name: "Provider tests"
