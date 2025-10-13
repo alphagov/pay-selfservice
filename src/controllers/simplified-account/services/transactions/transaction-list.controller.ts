@@ -25,11 +25,19 @@ const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: str
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const gatewayAccountId = req.account.id
-  const results = await searchTransactions(gatewayAccountId)
-  const PAGE_SIZE = 10
+  const PAGE_SIZE = 5
+  // temporary to test pagination
 
   let currentPage = 1
+  const pageQuery = req.query.page
+  if (pageQuery) {
+    const pageNumber = Number(pageQuery)
+    if (!isNaN(pageNumber) && pageNumber >= 1) {
+      currentPage = pageNumber
+    }
+  }
   const filters = {}
+  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE)
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   if (totalPages > 0 && currentPage > totalPages) {

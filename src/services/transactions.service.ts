@@ -3,10 +3,11 @@ import { LedgerTransactionParams, LedgerTransactionParamsData } from '@services/
 
 const ledgerClient = new LedgerClient()
 
-const searchTransactions = async (gatewayAccountId: number) => {
+const searchTransactions = async (gatewayAccountId: number, currentPage: number, pageSize: number) => {
   const queryParams: LedgerTransactionParams = {
     accountIds: [gatewayAccountId],
-    displaySize: 5,
+    displaySize: pageSize,
+    page: currentPage,
   }
   return await ledgerClient.transactions(new LedgerTransactionParamsData(queryParams))
 }
