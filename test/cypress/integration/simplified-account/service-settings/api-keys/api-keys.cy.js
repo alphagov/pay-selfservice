@@ -124,7 +124,7 @@ describe('Settings - API keys', () => {
 
         it('should return a 404 when trying to access the revoke page directly', () => {
           cy.request({
-            url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoked`,
+            url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys/revoked-keys`,
             failOnStatusCode: false,
           }).then((response) => {
             expect(response.status).to.eq(404)
