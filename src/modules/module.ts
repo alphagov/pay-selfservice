@@ -35,8 +35,8 @@ export abstract class BaseModule {
 
     Object.getOwnPropertyNames(this)
       .map((name) => this[name])
-      // @ts-expect-error this is fine
-      .filter((value: { prototype: unknown }) => value?.prototype instanceof BaseModule)
+      .filter((value) => typeof value === 'object' && value !== null)
+      .filter((value: { prototype?: unknown }) => value.prototype instanceof BaseModule)
       // @ts-expect-error this is fine
       .forEach((subModule: typeof BaseModule) => {
         subModule.router(router)
