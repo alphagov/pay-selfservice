@@ -50,6 +50,7 @@
       {{ transaction.state.status | capitalize }}
     </td>
     <td
+      style="text-align: left"
       class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time vertical-align-middle"
     >
       {{ transaction.createdDate | shortTime }} - <wbr />{{ transaction.createdDate | zonedDate }}
