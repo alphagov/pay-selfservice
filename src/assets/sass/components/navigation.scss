@@ -58,7 +58,13 @@
 }
 
 #service-name {
+  strong {
+    margin-right: govuk-spacing(1);
+  }
   .govuk-tag {
     max-width: 100%;
+    @include govuk-media-query($until: desktop) {
+      margin-top: govuk-spacing(1);
+    }
   }
 }

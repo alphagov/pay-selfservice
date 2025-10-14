@@ -3,7 +3,7 @@ const { Token } = require('@models/Token.class')
 
 const TOKEN_SOURCE = {
   API: 'API',
-  PRODUCTS: 'PRODUCTS'
+  PRODUCTS: 'PRODUCTS',
 }
 
 /**
@@ -23,7 +23,7 @@ const createKey = async (gatewayAccount, serviceExternalId, name, email, tokenSo
     token_type: 'CARD',
     token_account_type: gatewayAccount.type,
     service_external_id: serviceExternalId,
-    service_mode: gatewayAccount.type
+    service_mode: gatewayAccount.type,
   }
   const response = await publicAuthClient.createTokenForAccount({ payload })
   return response.token
@@ -37,7 +37,7 @@ const createKey = async (gatewayAccount, serviceExternalId, name, email, tokenSo
 const getRevokedKeys = async (gatewayAccountId) => {
   const response = await publicAuthClient.getRevokedTokensForAccount({ accountId: gatewayAccountId })
   const revokedTokens = response.tokens || []
-  return revokedTokens.map(tokenData => Token.fromJson(tokenData))
+  return revokedTokens.map((tokenData) => Token.fromJson(tokenData))
 }
 
 /**
@@ -47,9 +47,9 @@ const getRevokedKeys = async (gatewayAccountId) => {
  */
 const getActiveKeys = async (gatewayAccountId) => {
   const response = await publicAuthClient.getActiveTokensForAccount({
-    accountId: gatewayAccountId
+    accountId: gatewayAccountId,
   })
-  return response.tokens.map(tokenData => Token.fromJson(tokenData))
+  return response.tokens.map((tokenData) => Token.fromJson(tokenData))
 }
 
 /**
@@ -72,6 +72,8 @@ const getKeyByTokenLink = async (gatewayAccountId, tokenLink) => {
 }
 
 /**
+ * @deprecated the endpoint used here violates the HTTP DELETE specification by including a request body
+ *
  * @param {string} gatewayAccountId
  * @param {string} tokenLink
  * @return {Promise<*>}
@@ -79,7 +81,7 @@ const getKeyByTokenLink = async (gatewayAccountId, tokenLink) => {
 const revokeKey = async (gatewayAccountId, tokenLink) => {
   await publicAuthClient.deleteTokenForAccount({
     accountId: gatewayAccountId,
-    payload: { token_link: tokenLink }
+    payload: { token_link: tokenLink },
   })
 }
 
@@ -90,5 +92,5 @@ module.exports = {
   getKeyByTokenLink,
   getRevokedKeys,
   revokeKey,
-  TOKEN_SOURCE
+  TOKEN_SOURCE,
 }

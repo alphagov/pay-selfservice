@@ -23,7 +23,10 @@
   {% endif %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   {% if incompleteTasks %}
-    <h2 class="govuk-heading-s">Add your organisation's details</h2>
+    <p class="govuk-body">This information will be sent to Stripe so that your service can take payments.</p>
+    <h2 class="govuk-heading-s">Stripe Account ID</h2>
+    <p class="govuk-body" data-cy="stripe-account-id">{{ stripeAccountId }}</p>
+    <h3 class="govuk-heading-s">Add your organisation's details</h3>
     {{
       taskList({
         tasks: tasks,
@@ -44,6 +47,9 @@
         >contact GOV.UK Pay</a
       >
     </p>
+
+    <h2 class="govuk-heading-s">Stripe Account ID</h2>
+    <p class="govuk-body" data-cy="stripe-account-id">{{ stripeAccountId }}</p>
 
     {% if javascriptUnavailable %}
       {% for section, content in answers %}

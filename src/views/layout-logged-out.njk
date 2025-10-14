@@ -14,6 +14,7 @@
 {% endblock %}
 
 {% block header %}
+  {% set isSignInActive = true %}
   {% include "includes/header.njk" %}
   {% if NEW_GOVUK_HEADER %}
     {% include "includes/service-navigation.njk" %}
@@ -27,7 +28,8 @@
 {% block content %}
   <div class="govuk-grid-row">
     {% include "includes/flash.njk" %}
-    {% block mainContent %}{% endblock %}
+    {% block mainContent %}
+    {% endblock %}
   </div>
 {% endblock %}
 

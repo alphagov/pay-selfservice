@@ -71,7 +71,7 @@ async function post(req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceRe
 
   const token = await createToken(
     new CreateTokenRequest()
-      .withGatewayAccountId(req.account.id)
+      .withGatewayAccountId(`${req.account.id}`)
       .withServiceExternalId(req.service.externalId)
       .withServiceMode(req.account.type)
       .withDescription(`Token for Prototype: ${req.body.description}`)

@@ -1,0 +1,45 @@
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+
+{% if services.length %}
+  <div id="service-links__container">
+    {% if services.length > 7 %}
+      {% include "./_search.njk" %}
+    {% endif %}
+    {% for service in services %}
+      <div class="service-link" data-name="{{ service.name }}">
+        <div class="service-link__name">
+          <h2 class="govuk-body govuk-!-font-weight-bold govuk-!-margin-0">
+            <a href="{{ service.href }}" class="service-link__overlay-link govuk-link govuk-link--no-visited-state"
+              >{{ service.name }}</a
+            >
+          </h2>
+          <div class="service-link__status">
+            {% if service.status.tag %}
+              {{
+                govukTag({
+                text: service.status.tag.text,
+                classes: service.status.tag.colour
+                })
+              }}
+            {% endif %}
+          </div>
+        </div>
+        <div class="chevron"></div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="govuk-body">
+    You do not have any services set up at the moment. Either
+    <a href="{{ createServicePath }}" class="govuk-link govuk-link--no-visited-state">create a new one</a>
+    or contact an administrator of an existing service to be added to it.
+  </p>
+{% endif %}
+
+{{
+  govukButton({
+    classes: "govuk-button--secondary",
+    text: "Add a new service",
+    href: createServicePath
+  })
+}}

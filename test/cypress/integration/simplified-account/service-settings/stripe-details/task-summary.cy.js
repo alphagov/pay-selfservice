@@ -72,6 +72,13 @@ describe('Stripe details settings', () => {
       it('should show the correct heading', () => {
         cy.get('h1').should('contain', 'Stripe details')
       })
+      it('should show stripe account ID', () => {
+        cy.get('h2').should('contain', 'Stripe Account ID')
+        cy.get('[data-cy="stripe-account-id"]').should(
+          'contain',
+          STRIPE_CREDENTIAL_IN_ACTIVE_STATE.credentials.stripe_account_id
+        )
+      })
       describe('The settings navigation', () => {
         it('should show active "Stripe details" link in the setting navigation', () => {
           checkSettingsNavigation('Stripe details', SERVICE_SETTINGS_URL + '/stripe-details')
@@ -166,6 +173,10 @@ describe('Stripe details settings', () => {
       })
 
       it('should show stripe details', () => {
+        cy.get('[data-cy="stripe-account-id"]').should(
+          'contain',
+          STRIPE_CREDENTIAL_IN_ACTIVE_STATE.credentials.stripe_account_id
+        )
         cy.get('.govuk-summary-card').should('have.length', 3)
         cy.get('.govuk-summary-card').eq(0).should('contain', 'Sort code').should('contain', '10-88-00')
         cy.get('.govuk-summary-card').eq(1).should('contain', 'Service director').should('contain', 'Scrooge McDuck')

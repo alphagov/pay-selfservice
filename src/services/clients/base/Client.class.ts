@@ -1,12 +1,21 @@
 // @ts-expect-error js commons is not updated for typescript support yet
 import { Client } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/axios-base-client'
-import { AxiosResponse } from 'axios'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { configureClient } from '@services/clients/base/config'
 
 export default interface IClient {
   configure: (baseUrl: string, options: object) => void
-  get: <ResponseDataType>(url: string, description: string) => Promise<AxiosResponse<ResponseDataType>>
+  get: <ResponseDataType>(
+    url: string,
+    description: string,
+    config?: AxiosRequestConfig
+  ) => Promise<AxiosResponse<ResponseDataType>>
   post: <ResponseDataType, PayloadType>(
+    url: string,
+    data: PayloadType,
+    description: string
+  ) => Promise<AxiosResponse<ResponseDataType>>
+  put: <ResponseDataType, PayloadType>(
     url: string,
     data: PayloadType,
     description: string
@@ -38,9 +47,10 @@ export abstract class BaseClient {
 
   protected async get<ResponseDataType>(
     resourcePath: string,
-    description: string
+    description: string,
+    config?: AxiosRequestConfig
   ): Promise<AxiosResponse<ResponseDataType>> {
-    return await this.client.get(resourcePath, description)
+    return await this.client.get(resourcePath, description, config)
   }
 
   protected async post<PayloadType, ResponseDataType>(
@@ -51,6 +61,14 @@ export abstract class BaseClient {
     return await this.client.post(resourcePath, data, description)
   }
 
+  protected async put<PayloadType, ResponseDataType>(
+    resourcePath: string,
+    data: PayloadType,
+    description: string
+  ): Promise<AxiosResponse<ResponseDataType>> {
+    return await this.client.put(resourcePath, data, description)
+  }
+
   protected async patch<PayloadType, ResponseDataType>(
     resourcePath: string,
     data: PayloadType,
@@ -59,7 +77,10 @@ export abstract class BaseClient {
     return await this.client.patch(resourcePath, data, description)
   }
 
-  protected async delete<ResponseDataType>(resourcePath: string, description: string): Promise<AxiosResponse<ResponseDataType>> {
+  protected async delete<ResponseDataType>(
+    resourcePath: string,
+    description: string
+  ): Promise<AxiosResponse<ResponseDataType>> {
     return await this.client.delete(resourcePath, description)
   }
 }
