@@ -52,7 +52,8 @@
   <div class="pagination-with-count">
     <p data-cy="pagination-detail" class="govuk-body govuk-!-font-size-16">
       {% if pagination.total > 0 %}Showing {{ pagination.startIndex }} to {{ pagination.endIndex }} of{% endif %}
-      {{ pagination.total }} transactions
+      {{ pagination.total }}
+      transactions
     </p>
     <div style="margin: auto">
       {{ govukPagination(pagination | addKey('landmarkLabel', 'Bottom of table pagination')) }}
