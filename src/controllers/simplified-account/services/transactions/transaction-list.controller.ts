@@ -5,6 +5,7 @@ import { isBritishSummerTime } from '@utils/dates'
 import getPagination from '@utils/simplified-account/pagination'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
+import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
@@ -48,10 +49,34 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, urlGenerator)
 
+  const transactionsWithFee = results.transactions.map(transaction => {
+    const calculatedFee = transaction.amount * 0.003
+    const amountInPounds = transaction.amountInPounds()
+
+    return {
+      ...transaction,
+      fee: penceToPoundsWithCurrency(calculatedFee),
+      amountInPounds: amountInPounds,
+      net_amount: penceToPoundsWithCurrency(transaction.amount - calculatedFee)
+    }
+  })
+  // this is to enable testing and display of Stripe specific columns
+
   return response(req, res, 'simplified-account/transactions/index', {
-    results: results.transactions,
+    results: transactionsWithFee.map((transaction) => ({
+      ...transaction,
+      link: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.transactions.detail,
+        req.service.externalId,
+        req.account.type,
+        transaction.transactionExternalId
+      ),
+    })),
+
+
     isBST: isBritishSummerTime(),
     pagination: pagination,
+    isStripeAccount: true,
   })
 }
 
