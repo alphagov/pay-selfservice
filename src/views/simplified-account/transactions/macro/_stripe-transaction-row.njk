@@ -22,7 +22,7 @@
         {{ transaction.total_amount }}
         <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
       {%- else -%}
-        <span style="white-space: pre">{{ transaction.amountInPounds() }}</span>
+        <span style="white-space: pre">{{ transaction.amountInPounds }}</span>
       {%- endif -%}
     </td>
     <td
