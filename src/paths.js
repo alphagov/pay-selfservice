@@ -305,6 +305,7 @@ module.exports = {
     },
     transactions: {
       index: '/transactions',
+      detail: '/transactions/:chargeId',
     },
   },
   service: {
