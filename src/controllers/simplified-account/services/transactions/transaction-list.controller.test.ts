@@ -1,6 +1,5 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
-import { DateTime } from 'luxon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
@@ -34,7 +33,7 @@ const mockTransactionsService = {
   }),
 }
 
-const { nextRequest, call } = new ControllerTestBuilder(
+const { call } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/transactions/transaction-list.controller'
 )
   .withStubs({
