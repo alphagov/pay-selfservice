@@ -11,7 +11,7 @@ const mockTransactionsService = {
     total: 1,
     count: 1,
     page: 1,
-    results: [{
+    transactions: [{
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       serviceExternalId: SERVICE_EXTERNAL_ID,
       transactionExternalId: TRANSACTION_EXTERNAL_ID,

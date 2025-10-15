@@ -52,7 +52,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/transactions/index', {
     results: results.transactions.map((transaction) => ({
       ...transaction,
-      amountInPounds: transaction.amountInPounds(),
+      amountInPounds: penceToPoundsWithCurrency(transaction.amount),
       fee: transaction.fee ? penceToPoundsWithCurrency(transaction.fee) : undefined,
       netAmount: transaction.netAmount ? penceToPoundsWithCurrency(transaction.netAmount) : undefined,
       totalAmount: transaction.totalAmount ? penceToPoundsWithCurrency(transaction.totalAmount) : undefined,
@@ -67,7 +67,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
     isBST: isBritishSummerTime(),
     pagination: pagination,
-    isStripeAccount: true,
+    // isStripeAccount: true
   })
 }
 
