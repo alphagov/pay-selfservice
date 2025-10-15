@@ -15,6 +15,9 @@ class Transaction {
     status: string
   }
   readonly amount: number // pence
+  readonly netAmount?: number // pence
+  readonly totalAmount?: number // pence
+  readonly fee?: number // pence
   readonly createdDate: DateTime
   readonly email: string
   readonly cardDetails?: TransactionCardDetails
@@ -27,6 +30,9 @@ class Transaction {
     this.reference = data.reference
     this.state = data.state
     this.amount = data.amount
+    this.netAmount = data.net_amount
+    this.totalAmount = data.total_amount
+    this.fee = data.fee
     this.createdDate = DateTime.fromISO(data.created_date)
     this.email = data.email
     this.cardDetails = data.card_details ? TransactionCardDetails.fromJson(data.card_details) : undefined

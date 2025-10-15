@@ -5,6 +5,10 @@ export interface TransactionData {
   service_id: string
   credential_external_id: string
   amount: number
+  net_amount?: number
+  total_amount?: number
+  corporate_card_surcharge?: number
+  fee?: number
   state: {
     finished: boolean
     status: string
