@@ -3,11 +3,11 @@
 
 
 {% set servicePageTitle %}
-  Transaction details {{ data.externalId }}
+  Transaction details - {{ pageID }}
 {% endset %}
 
 {% block serviceContent %}
-  {% for sectionKey, sectionData in transaction %}
+  {% for sectionKey, sectionData in transactionViewHelper %}
 
     {% if (loop.first == true) %}
       <h1 class="govuk-heading-l">{{ sectionKey }}</h1>
@@ -72,10 +72,6 @@
   }}
 
   <!--<hr />
-  {{ data.disputed | dump }}
-  {{ data.state | dump }}
-  {{ data.transactionType | dump }}
-  {{ data.data | dump }}
-  <br />
-  <a class="govuk-button govuk-button--secondary" href="{{ oldView }}">GOTO old view</a>-->
+  <a class="govuk-button govuk-button--secondary" href="{{ oldView }}">GOTO old view</a>
+  -->
 {% endblock %}
