@@ -1,13 +1,12 @@
 .multi-select {
   @extend .govuk-clearfix;
-
   position: relative;
   width: 100%;
 }
 
 .multi-select__title {
   border: 2px solid $govuk-text-colour;
-  padding: 8px 14px 8px 14px;
+  padding: 8px 14px;
   border-radius: 0;
   min-height: 34px;
   background-color: govuk-colour('white');
@@ -51,7 +50,6 @@
   background-color: govuk-colour('white');
   z-index: 10;
   position: absolute;
-  border: 2px solid $govuk-text-colour;
   box-sizing: border-box;
   width: 100%;
 
@@ -64,7 +62,12 @@
     -webkit-appearance: none;
     background-image: url('/assets/images/dd-arrow-up.svg');
     width: 100%;
-    margin-bottom: 0;
+    margin-bottom: 3px;
+    border-radius: 0;
+    border: 2px solid govuk-colour('black');
+    box-shadow: none;
+    padding: 8px 14px;
+    @include govuk-font($size: 19);
     &:hover {
       background-color: #b1b4b6;
     }
@@ -73,6 +76,7 @@
   .govuk-checkboxes__label::before {
     left: 14px;
     top: 10px;
+    background: govuk-colour('white');
   }
 
   .govuk-checkboxes__label::after {
@@ -83,6 +87,7 @@
   .multi-select-dropdown__inner-container {
     overflow-y: scroll;
     overflow-x: hidden;
+    border: 2px solid govuk-colour('black');
 
     .govuk-checkboxes__item {
       padding-left: 14px;
