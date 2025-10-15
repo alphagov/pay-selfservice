@@ -1,6 +1,7 @@
 import {
   AuthorisationSummaryData,
-  ChargeData, Link,
+  ChargeData,
+  Link,
   RefundSummaryData,
   SettlementSummaryData,
 } from '@models/charge/dto/Charge.dto'
@@ -55,9 +56,9 @@ class Charge {
   readonly returnUrl: string
   readonly paymentProvider: string
   readonly createdDate: string
-  readonly refundSummary?: RefundSummary
-  readonly settlementSummary?: SettlementSummary
-  readonly authorisationSummary?: AuthorisationSummary
+  readonly refundSummary?: RefundSummary // todo use common models, shared with tx
+  readonly settlementSummary?: SettlementSummary // todo use common models, shared with tx
+  readonly authorisationSummary?: AuthorisationSummary // todo use common models, shared with tx
   readonly delayedCapture: boolean
   readonly moto: boolean
   readonly authorisationMode: string
@@ -77,7 +78,9 @@ class Charge {
     this.createdDate = data.created_date
     this.refundSummary = data.refund_summary ? new RefundSummary(data.refund_summary) : undefined
     this.settlementSummary = data.settlement_summary ? new SettlementSummary(data.settlement_summary) : undefined
-    this.authorisationSummary = data.authorisation_summary ? new AuthorisationSummary(data.authorisation_summary) : undefined
+    this.authorisationSummary = data.authorisation_summary
+      ? new AuthorisationSummary(data.authorisation_summary)
+      : undefined
     this.delayedCapture = data.delayed_capture
     this.moto = data.moto
     this.authorisationMode = data.authorisation_mode

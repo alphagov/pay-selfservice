@@ -3,11 +3,13 @@ import * as myServices from './my-services.controller'
 import * as demoPayment from './make-a-demo-payment/make-a-demo-payment.controller'
 import * as paymentLinks from './payment-links/payment-links.controller'
 import * as agreements from './agreements/agreements.controller'
+import * as transactions from './transactions'
 
 export = {
   myServices,
   dashboard,
   demoPayment,
   paymentLinks,
-  agreements
+  agreements,
+  transactions,
 }
