@@ -18,11 +18,11 @@
       {{ transaction.email }}
     </td>
     <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14 vertical-align-middle" id="amount">
-      {%- if transaction.total_amount and transaction.corporate_card_surcharge -%}
-        {{ transaction.total_amount }}
+      {%- if transaction.totalAmount and transaction.corporateCardSurcharge -%}
+        {{ transaction.totalAmount }}
         <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
       {%- else -%}
-        <span style="white-space: pre">{{ transaction.amountInPounds() }}</span>
+        <span style="white-space: pre">{{ transaction.amountInPounds }}</span>
       {%- endif -%}
     </td>
     <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand vertical-align-middle">

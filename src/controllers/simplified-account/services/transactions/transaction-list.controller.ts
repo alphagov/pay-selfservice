@@ -49,22 +49,14 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, urlGenerator)
 
-  const transactionsWithFee = results.transactions.map((transaction) => {
-    const calculatedFee = transaction.amount * 0.003
-    const amountInPounds = transaction.amountInPounds()
-
-    return {
-      ...transaction,
-      fee: penceToPoundsWithCurrency(calculatedFee),
-      amountInPounds: amountInPounds,
-      net_amount: penceToPoundsWithCurrency(transaction.amount - calculatedFee),
-    }
-  })
-  // this is to enable testing and display of Stripe specific columns
-
   return response(req, res, 'simplified-account/transactions/index', {
-    results: transactionsWithFee.map((transaction) => ({
+    results: results.transactions.map((transaction) => ({
       ...transaction,
+      amountInPounds: transaction.amountInPounds(),
+      fee: transaction.fee ? penceToPoundsWithCurrency(transaction.fee) : undefined,
+      netAmount: transaction.netAmount ? penceToPoundsWithCurrency(transaction.netAmount) : undefined,
+      totalAmount: transaction.totalAmount ? penceToPoundsWithCurrency(transaction.totalAmount) : undefined,
+      corporateCardSurcharge: transaction.corporateCardSurcharge,
       link: formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.transactions.detail,
         req.service.externalId,

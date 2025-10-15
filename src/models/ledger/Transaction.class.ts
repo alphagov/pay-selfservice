@@ -15,6 +15,7 @@ class Transaction {
     status: string
   }
   readonly amount: number // pence
+  readonly corporateCardSurcharge?: number // pence
   readonly netAmount?: number // pence
   readonly totalAmount?: number // pence
   readonly fee?: number // pence
@@ -30,6 +31,7 @@ class Transaction {
     this.reference = data.reference
     this.state = data.state
     this.amount = data.amount
+    this.corporateCardSurcharge = data.corporate_card_surcharge
     this.netAmount = data.net_amount
     this.totalAmount = data.total_amount
     this.fee = data.fee
