@@ -2,30 +2,30 @@ import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { response } from '@utils/response'
-import { CREATE_SESSION_KEY, PaymentLinkCreationSession } from './constants'
-import lodash from 'lodash'
+import { PaymentLinkCreationSession } from './constants'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { penceToPounds, safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 
-function getSession<T>(req: ServiceRequest<T>) {
-  return lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
-}
-
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
-  const currentSession = getSession(req)
+  const currentSession = PaymentLinkCreationSession.extract(req)
 
-  if (lodash.isEmpty(currentSession)) {
-    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type))
+  if (currentSession.isEmpty()) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
+    )
   }
 
   const isWelsh = currentSession.language === 'cy'
 
   const formValues = {
     amountTypeGroup: currentSession.paymentAmountType,
-    paymentAmount: currentSession.paymentAmountType === 'fixed' ? penceToPounds(currentSession.paymentLinkAmount) : undefined,
+    paymentAmount:
+      currentSession.paymentAmountType === 'fixed' && currentSession.paymentLinkAmount !== undefined
+        ? penceToPounds(currentSession.paymentLinkAmount)
+        : undefined,
     amountHint: currentSession.paymentAmountType === 'variable' ? currentSession.paymentAmountHint : undefined,
   }
 
@@ -40,7 +40,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     formValues,
     isWelsh,
     serviceMode: account.type,
-    createJourney: true
+    createJourney: true,
   })
 }
 
@@ -52,12 +52,14 @@ interface CreateLinkAmountBody {
 
 async function post(req: ServiceRequest<CreateLinkAmountBody>, res: ServiceResponse) {
   const { service, account } = req
-  const currentSession = getSession(req)
+  const currentSession = PaymentLinkCreationSession.extract(req)
 
-  if (lodash.isEmpty(currentSession)) {
-    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type))
+  if (currentSession.isEmpty()) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
+    )
   }
-  
+
   const isWelsh = currentSession.language === 'cy'
 
   const validations = [paymentLinkSchema.amount.type.validate]
@@ -90,17 +92,20 @@ async function post(req: ServiceRequest<CreateLinkAmountBody>, res: ServiceRespo
       formValues: req.body,
       isWelsh,
       serviceMode: account.type,
-      createJourney: true
+      createJourney: true,
     })
   }
 
-  lodash.set(req, CREATE_SESSION_KEY, {
-      ...lodash.get(req, CREATE_SESSION_KEY, {}),
-      paymentAmountType: req.body.amountTypeGroup,
-      paymentLinkAmount: req.body.amountTypeGroup === 'fixed' ? safeConvertPoundsStringToPence(req.body.paymentAmount) : undefined,
-      paymentAmountHint: req.body.amountTypeGroup === 'variable' ? req.body.amountHint : undefined,
-    } as PaymentLinkCreationSession)
-    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
+  PaymentLinkCreationSession.set(req, currentSession, {
+    paymentAmountType: req.body.amountTypeGroup,
+    paymentLinkAmount:
+      req.body.amountTypeGroup === 'fixed' ? safeConvertPoundsStringToPence(req.body.paymentAmount) : undefined,
+    paymentAmountHint: req.body.amountTypeGroup === 'variable' ? req.body.amountHint : undefined,
+  } as PaymentLinkCreationSession)
+
+  return res.redirect(
+    formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type)
+  )
 }
 
 export { get, post }

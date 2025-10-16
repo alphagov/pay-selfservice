@@ -81,6 +81,18 @@ simplifiedAccount.post(
   servicesController.paymentLinks.create.information.post
 )
 simplifiedAccount.get(
+  paths.simplifiedAccount.paymentLinks.existingPaymentLink,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.create.existingPaymentLink.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.paymentLinks.existingPaymentLink,
+  experimentalFeature,
+  permission('tokens:create'),
+  servicesController.paymentLinks.create.existingPaymentLink.post
+)
+simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.addWelshServiceName,
   experimentalFeature,
   permission('tokens:create'),
@@ -283,21 +295,16 @@ simplifiedAccount.get(
   restrictToSandboxOrStripeTestAccount,
   testWithYourUsersController.disable.post
 )
-
-// transactions
-
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.index,
   permission('transactions:read'),
   servicesController.transactions.get
 )
-
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.detail,
   permission('transactions-details:read'),
   servicesController.transactions.detail.get
 )
-
 // agreements
 simplifiedAccount.get(
   paths.simplifiedAccount.agreements.index,
@@ -813,7 +820,6 @@ simplifiedAccount.get(
 
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
-const switchToStripePath = paths.simplifiedAccount.settings.switchPsp.switchToStripe
 const stripeDetailsRouter = new Router({ mergeParams: true }).use(
   enforceLiveAccountOnly,
   enforcePaymentProviderType(STRIPE),

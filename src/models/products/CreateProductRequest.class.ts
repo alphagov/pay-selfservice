@@ -1,4 +1,5 @@
 import { CreateProductRequestData } from '@models/products/dto/CreateProductRequest.dto'
+import { SlugifiedString } from '@utils/simplified-account/format/slugify-string'
 
 export class CreateProductRequest {
   private apiToken!: string
@@ -9,8 +10,8 @@ export class CreateProductRequest {
   private type!: string
   private returnUrl?: string
   private language!: string
-  private serviceNamePath!: string
-  private productNamePath!: string
+  private serviceNamePath!: SlugifiedString
+  private productNamePath!: SlugifiedString
   private metadata?: Record<string, string>
   private referenceEnabled!: boolean
   private referenceHint?: string
@@ -56,12 +57,12 @@ export class CreateProductRequest {
     return this
   }
 
-  withServiceNamePath(serviceNamePath: string) {
+  withServiceNamePath(serviceNamePath: SlugifiedString) {
     this.serviceNamePath = serviceNamePath
     return this
   }
 
-  withProductNamePath(productNamePath: string) {
+  withProductNamePath(productNamePath: SlugifiedString) {
     this.productNamePath = productNamePath
     return this
   }

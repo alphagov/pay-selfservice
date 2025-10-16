@@ -167,6 +167,7 @@ module.exports = {
       },
       review: '/payment-links/review',
       delete: '/payment-links/:productExternalId/delete',
+      existingPaymentLink: '/payment-links/existing',
     },
     testWithYourUsers: {
       index: '/test-with-your-users',

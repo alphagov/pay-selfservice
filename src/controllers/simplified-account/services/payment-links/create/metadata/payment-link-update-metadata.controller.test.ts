@@ -2,6 +2,7 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { PaymentLinkCreationSession } from '../constants'
+import { SlugifiedString } from '@utils/simplified-account/format/slugify-string'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -23,7 +24,7 @@ const { nextRequest, call, res, next } = new ControllerTestBuilder(
   })
   .withService({
     name: 'Test Service',
-    externalId: SERVICE_EXTERNAL_ID
+    externalId: SERVICE_EXTERNAL_ID,
   })
   .withParams({
     metadataKey: METADATA_KEY,
@@ -39,18 +40,18 @@ describe('controller: services/payment-links/create/metadata/payment-link-update
           paymentLinkTitle: 'Test Payment Link',
           paymentLinkDescription: 'Test Description',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
           metadata: {
-            'existing_column': 'a_value',
-            'another_column': 'another_value'
+            existing_column: 'a_value',
+            another_column: 'another_value',
           },
         }
 
         nextRequest({
           params: {
-            metadataKey: METADATA_KEY
+            metadataKey: METADATA_KEY,
           },
           session: {
             pageData: {
@@ -101,18 +102,18 @@ describe('controller: services/payment-links/create/metadata/payment-link-update
           paymentLinkTitle: 'Test Payment Link',
           paymentLinkDescription: 'Test Description',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
           metadata: {
-            'existing_column': 'a_value',
-            'another_column': 'another_value'
+            existing_column: 'a_value',
+            another_column: 'another_value',
           },
         }
 
         nextRequest({
           params: {
-            metadataKey: 'invalid_key'
+            metadataKey: 'invalid_key',
           },
           session: {
             pageData: {
@@ -137,18 +138,18 @@ describe('controller: services/payment-links/create/metadata/payment-link-update
           paymentLinkTitle: 'Test Payment Link',
           paymentLinkDescription: 'Test Description',
           language: 'cy',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
           metadata: {
-            'existing_column': 'a_value',
-            'another_column': 'another_value'
+            existing_column: 'a_value',
+            another_column: 'another_value',
           },
         }
 
         nextRequest({
           params: {
-            metadataKey: METADATA_KEY
+            metadataKey: METADATA_KEY,
           },
           session: {
             pageData: {
@@ -185,39 +186,38 @@ describe('controller: services/payment-links/create/metadata/payment-link-update
     })
   })
 
-
   describe('post', () => {
     describe('with valid metadata key and edit action', () => {
       beforeEach(async () => {
-      mockResponse.resetHistory()
-      const sessionData: Partial<PaymentLinkCreationSession> = {
-        paymentLinkTitle: 'Test Payment Link',
-        paymentLinkDescription: 'Test Description',
-        language: 'en',
-        serviceNamePath: 'test-service',
-        productNamePath: 'test-payment-link',
-        paymentAmountType: 'variable',
-        metadata: {
-          'existing_column': 'a_value',
-          'another_column': 'another_value'
-        },
-      }
-
-      nextRequest({
-        params: {
-          metadataKey: METADATA_KEY
-        },
-        session: {
-          pageData: {
-            createPaymentLink: sessionData,
+        mockResponse.resetHistory()
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          paymentLinkDescription: 'Test Description',
+          language: 'en',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
+          paymentAmountType: 'variable',
+          metadata: {
+            existing_column: 'a_value',
+            another_column: 'another_value',
           },
-        },
-        body: {
-          action: 'edit',
-          reportingColumn: 'new_column',
-          cellContent: 'new_value',
-        },
-      })
+        }
+
+        nextRequest({
+          params: {
+            metadataKey: METADATA_KEY,
+          },
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+          body: {
+            action: 'edit',
+            reportingColumn: 'new_column',
+            cellContent: 'new_value',
+          },
+        })
 
         await call('post')
       })
@@ -235,18 +235,18 @@ describe('controller: services/payment-links/create/metadata/payment-link-update
           paymentLinkTitle: 'Test Payment Link',
           paymentLinkDescription: 'Test Description',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
           metadata: {
-            'existing_column': 'a_value',
-            'another_column': 'another_value'
+            existing_column: 'a_value',
+            another_column: 'another_value',
           },
         }
 
         nextRequest({
           params: {
-            metadataKey: METADATA_KEY
+            metadataKey: METADATA_KEY,
           },
           session: {
             pageData: {
@@ -254,7 +254,7 @@ describe('controller: services/payment-links/create/metadata/payment-link-update
             },
           },
           body: {
-            action: 'delete'
+            action: 'delete',
           },
         })
 
