@@ -11,25 +11,27 @@ const mockLedgerService = {
     total: 1,
     count: 1,
     page: 1,
-    transactions: [{
-      gatewayAccountId: GATEWAY_ACCOUNT_ID,
-      serviceExternalId: SERVICE_EXTERNAL_ID,
-      externalId: TRANSACTION_EXTERNAL_ID,
-      gatewayTransactionId: "11933338-20de-4792-bbee-8d19258dabc3",
-      reference: "REF 123",
-      state: {
-        finished: true,
-        code: "P0010",
-        message: "Payment method rejected",
-        status: "declined"
+    transactions: [
+      {
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        serviceExternalId: SERVICE_EXTERNAL_ID,
+        externalId: TRANSACTION_EXTERNAL_ID,
+        gatewayTransactionId: '11933338-20de-4792-bbee-8d19258dabc3',
+        reference: 'REF 123',
+        state: {
+          finished: true,
+          code: 'P0010',
+          message: 'Payment method rejected',
+          status: 'declined',
+        },
+        amount: 145600,
+        createdDate: '2025-09-12T11:47:32.980+01:00',
+        email: 'pay-me@example.com',
+        cardDetails: {
+          cardBrand: 'Visa',
+        },
       },
-      amount: 145600,
-      createdDate: "2025-09-12T11:47:32.980+01:00",
-      email: "pay-me@example.com",
-      cardDetails: {
-        cardBrand: "Visa"
-      }
-    }],
+    ],
   }),
 }
 
@@ -43,11 +45,12 @@ const { nextRequest, call } = new ControllerTestBuilder(
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount({
     id: GATEWAY_ACCOUNT_ID,
-    type: GatewayAccountType.TEST
+    type: GatewayAccountType.TEST,
   })
-  .withUrl(`https://wwww.payments.example.com/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions`)
+  .withUrl(
+    `https://wwww.payments.example.com/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions`
+  )
   .build()
-
 
 describe('controller: services/ledger', () => {
   describe('get', () => {
@@ -61,12 +64,7 @@ describe('controller: services/ledger', () => {
       })
 
       it('should pass correct template path to the response method', () => {
-        sinon.assert.calledWith(
-          mockResponse,
-          sinon.match.any,
-          sinon.match.any,
-          'simplified-account/transactions/index'
-        )
+        sinon.assert.calledWith(mockResponse, sinon.match.any, sinon.match.any, 'simplified-account/transactions/index')
       })
 
       it('should set results on the context', () => {
@@ -74,7 +72,7 @@ describe('controller: services/ledger', () => {
         const results = context.results as {
           count: number
           total: number
-          transactions: { link: string;[key: string]: unknown }[]
+          transactions: { link: string; [key: string]: unknown }[]
         }
         sinon.assert.match(results.count, 1)
         sinon.assert.match(results.total, 1)
@@ -93,48 +91,32 @@ describe('controller: services/ledger', () => {
     describe('with page parameter', () => {
       it('should pass valid page number to searchTransactions service', async () => {
         nextRequest({
-          query: { page: '2' }
+          query: { page: '2' },
         })
 
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          2,
-          5
-
-        )
+        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 2, 5)
       })
 
       it('should default to page 1 for invalid page parameter', async () => {
         nextRequest({
-          query: { page: 'invalid' }
+          query: { page: 'invalid' },
         })
 
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          1,
-          5
-        )
+        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, 5)
       })
 
       it('should default to page 1 for negative page number', async () => {
         nextRequest({
-          query: { page: '-1' }
+          query: { page: '-1' },
         })
 
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          1,
-          5
-        )
+        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, 5)
       })
     })
   })

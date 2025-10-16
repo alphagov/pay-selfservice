@@ -71,7 +71,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     isBST: isBritishSummerTime(),
     pagination: pagination,
     // isStripeAccount: req.account.paymentProvider === 'stripe'
-    isStripeAccount: true
+    isStripeAccount: true,
     // temporary to test Stripe specific elements
   })
 }
