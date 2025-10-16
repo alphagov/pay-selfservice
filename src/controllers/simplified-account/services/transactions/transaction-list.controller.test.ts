@@ -6,7 +6,7 @@ const SERVICE_EXTERNAL_ID = 'service123abc'
 const TRANSACTION_EXTERNAL_ID = 'transaction123abc'
 const GATEWAY_ACCOUNT_ID = 117
 const mockResponse = sinon.stub()
-const mockTransactionsService = {
+const mockLedgerService = {
   searchTransactions: sinon.stub().resolves({
     total: 1,
     count: 1,
@@ -14,7 +14,7 @@ const mockTransactionsService = {
     transactions: [{
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      transactionExternalId: TRANSACTION_EXTERNAL_ID,
+      externalId: TRANSACTION_EXTERNAL_ID,
       gatewayTransactionId: "11933338-20de-4792-bbee-8d19258dabc3",
       reference: "REF 123",
       state: {
@@ -38,7 +38,7 @@ const { nextRequest, call } = new ControllerTestBuilder(
 )
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/transactions.service': mockTransactionsService,
+    '@services/ledger.service': mockLedgerService,
   })
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount({
@@ -49,7 +49,7 @@ const { nextRequest, call } = new ControllerTestBuilder(
   .build()
 
 
-describe('controller: services/transactions', () => {
+describe('controller: services/ledger', () => {
   describe('get', () => {
     describe('transactions exist for service, no filters', () => {
       beforeEach(async () => {
@@ -99,7 +99,7 @@ describe('controller: services/transactions', () => {
         await call('get')
 
         sinon.assert.calledWith(
-          mockTransactionsService.searchTransactions,
+          mockLedgerService.searchTransactions,
           GATEWAY_ACCOUNT_ID,
           2,
           5
@@ -115,7 +115,7 @@ describe('controller: services/transactions', () => {
         await call('get')
 
         sinon.assert.calledWith(
-          mockTransactionsService.searchTransactions,
+          mockLedgerService.searchTransactions,
           GATEWAY_ACCOUNT_ID,
           1,
           5
@@ -130,7 +130,7 @@ describe('controller: services/transactions', () => {
         await call('get')
 
         sinon.assert.calledWith(
-          mockTransactionsService.searchTransactions,
+          mockLedgerService.searchTransactions,
           GATEWAY_ACCOUNT_ID,
           1,
           5

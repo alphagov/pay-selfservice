@@ -288,7 +288,7 @@ simplifiedAccount.get(
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.index,
   permission('transactions:read'),
-  servicesController.transactions.get
+  servicesController.transactions.list.get
 )
 
 simplifiedAccount.get(
