@@ -1,5 +1,5 @@
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
-import { searchTransactions } from '@services/transactions.service'
+import { searchTransactions } from '@services/ledger.service'
 import { response } from '@utils/response'
 import { isBritishSummerTime } from '@utils/dates'
 import getPagination from '@utils/simplified-account/pagination'
@@ -63,7 +63,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
           paths.simplifiedAccount.transactions.detail,
           req.service.externalId,
           req.account.type,
-          transaction.transactionExternalId
+          transaction.externalId
         ),
       })),
     },
