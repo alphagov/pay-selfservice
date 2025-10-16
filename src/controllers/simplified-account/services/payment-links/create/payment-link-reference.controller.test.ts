@@ -2,6 +2,7 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
+import { SlugifiedString } from '@utils/simplified-account/format/slugify-string'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -35,8 +36,8 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
           paymentLinkTitle: 'Test Payment Link',
           paymentLinkDescription: 'Test Description',
           language: 'en',
-          serviceNamePath: 'mcduck-enterprises',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'mcduck-enterprises' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentReferenceType: 'custom',
           paymentReferenceLabel: 'Order Number',
           paymentReferenceHint: 'Enter your order number',
@@ -97,8 +98,8 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Payment Link',
           language: 'cy',
-          serviceNamePath: 'test-service',
-          productNamePath: 'welsh-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'welsh-payment-link' as SlugifiedString,
           paymentReferenceType: 'standard',
           paymentReferenceLabel: 'Reference',
         }
@@ -152,8 +153,8 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentReferenceType: 'custom',
           paymentReferenceLabel: 'Old Label',
         }
@@ -185,8 +186,8 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentReferenceType: 'standard',
           paymentReferenceLabel: 'Reference',
         }
@@ -220,9 +221,9 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
-          paymentReferenceType: 'standard'
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
+          paymentReferenceType: 'standard',
         }
 
         res.redirect.resetHistory()
@@ -275,8 +276,8 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentReferenceType: 'standard',
           paymentReferenceLabel: 'Reference',
         }
@@ -325,8 +326,8 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentReferenceType: 'standard',
         }
 
@@ -368,8 +369,8 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentReferenceType: 'standard',
         }
 
@@ -407,8 +408,8 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentReferenceType: 'standard',
         }
 

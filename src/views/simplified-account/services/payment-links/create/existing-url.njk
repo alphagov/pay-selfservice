@@ -30,10 +30,10 @@
     <div class="govuk-!-width-one-half" style="display: inline-block; margin-top: 5px;">
       {{
         govukInput({
-          id: "payment-link",
-          name: "paymentLink",
-          value: formValues.paymentLink,
-          errorMessage: { text: errors.formErrors['paymentLink'] } if errors.formErrors['paymentLink'] else false,
+          id: "payment-link-path",
+          name: "paymentLinkPath",
+          value: formValues.paymentLinkPath,
+          errorMessage: { text: errors.formErrors['paymentLinkPath'] } if errors.formErrors['paymentLinkPath'] else false,
           spellcheck: false,
           type: "text",
           attributes: {

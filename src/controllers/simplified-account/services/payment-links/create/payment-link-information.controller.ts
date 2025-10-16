@@ -4,32 +4,27 @@ import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
-import { PaymentLinkCreationSession, CREATE_SESSION_KEY, FROM_REVIEW_QUERY_PARAM } from './constants'
-import lodash from 'lodash'
-import slugifyString from '@utils/simplified-account/format/slugify-string'
+import { PaymentLinkCreationSession, FROM_REVIEW_QUERY_PARAM } from './constants'
+import { slugifyString } from '@utils/simplified-account/format/slugify-string'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { getProductByServiceAndProductPath } from '@services/products.service'
-import {
-  getCurrentSession,
-  isUsingEnglishServiceName,
-  isWelshSelected,
-} from '@utils/simplified-account/languageSelectionUtils'
 
 const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { account, service } = req
-  const currentSession = getCurrentSession(req)
-  const isWelsh = isWelshSelected(req)
-  const isUsingEnglishServiceNameBool = isUsingEnglishServiceName(req, currentSession)
+  const currentSession = PaymentLinkCreationSession.extract(req)
+  const isWelshPaymentLink = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
+  const isUsingEnglishServiceName =
+    currentSession.useEnglishServiceName ?? (req.query.useEnglishServiceName as string) === 'true'
 
   // handle case where welsh payment link is selected but no welsh service name is set
   if (
-    isWelsh &&
+    isWelshPaymentLink &&
     !service.serviceName.cy &&
-    !isUsingEnglishServiceNameBool &&
-    account.type !== GatewayAccountType.TEST
+    !isUsingEnglishServiceName &&
+    account.type === GatewayAccountType.LIVE
   ) {
     return res.redirect(
       formatServiceAndAccountPathsFor(
@@ -39,7 +34,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       )
     )
   }
-  const serviceName = isWelsh ? (service.serviceName.cy ?? service.name) : service.name
+  const serviceName = isWelshPaymentLink ? (service.serviceName.cy ?? service.name) : service.name
 
   const formValues = {
     name: currentSession.paymentLinkTitle ?? '',
@@ -57,8 +52,8 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     formValues,
     friendlyURL: PRODUCTS_FRIENDLY_BASE_URI,
     serviceName,
-    isWelsh,
-    isUsingEnglishServiceName: isUsingEnglishServiceNameBool,
+    isWelsh: isWelshPaymentLink,
+    isUsingEnglishServiceName,
     serviceMode: account.type,
     createJourney: true,
   })
@@ -71,7 +66,7 @@ interface CreateLinkInformationBody {
 
 async function post(req: ServiceRequest<CreateLinkInformationBody>, res: ServiceResponse) {
   const { account, service } = req
-  const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
+  const currentSession = PaymentLinkCreationSession.extract(req)
   const isWelsh = currentSession.language === 'cy' || (req.query.language as string) === 'cy'
   const isUsingEnglishServiceName =
     currentSession.useEnglishServiceName ?? (req.query.useEnglishServiceName as string) === 'true'
@@ -106,8 +101,7 @@ async function post(req: ServiceRequest<CreateLinkInformationBody>, res: Service
     })
   }
 
-  lodash.set(req, CREATE_SESSION_KEY, {
-    ...currentSession,
+  PaymentLinkCreationSession.set(req, currentSession, {
     paymentLinkTitle: req.body.name,
     paymentLinkDescription: req.body.description,
     language: isWelsh ? 'cy' : 'en',

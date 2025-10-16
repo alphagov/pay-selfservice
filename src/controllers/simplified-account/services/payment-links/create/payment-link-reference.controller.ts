@@ -4,14 +4,13 @@ import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
-import { CREATE_SESSION_KEY, FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
-import lodash from 'lodash'
+import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
-  const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
-  if (lodash.isEmpty(currentSession)) {
+  const currentSession = PaymentLinkCreationSession.extract(req)
+  if (currentSession.isEmpty()) {
     return res.redirect(
       formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
     )
@@ -37,7 +36,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     formValues,
     isWelsh,
     serviceMode: account.type,
-    createJourney: true
+    createJourney: true,
   })
 }
 
@@ -49,8 +48,8 @@ interface CreateLinkReferenceBody {
 
 async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceResponse) {
   const { service, account } = req
-  const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
-  if (lodash.isEmpty(currentSession)) {
+  const currentSession = PaymentLinkCreationSession.extract(req)
+  if (currentSession.isEmpty()) {
     return res.redirect(
       formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
     )
@@ -85,24 +84,23 @@ async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceRe
       formValues: req.body,
       isWelsh,
       serviceMode: account.type,
-      createJourney: true
+      createJourney: true,
     })
   }
 
-  lodash.set(req, CREATE_SESSION_KEY, {
-    ...lodash.get(req, CREATE_SESSION_KEY, {}),
+  PaymentLinkCreationSession.set(req, currentSession, {
     paymentReferenceType: req.body.referenceTypeGroup,
     paymentReferenceLabel: req.body.referenceTypeGroup === 'custom' ? req.body.referenceLabel : undefined,
     paymentReferenceHint: req.body.referenceTypeGroup === 'custom' ? req.body.referenceHint : undefined,
     gatewayAccountId: account.id, // todo: remove me once implemented in simplified journey
   } as PaymentLinkCreationSession)
 
-  const redirectPath = req.query[FROM_REVIEW_QUERY_PARAM] === 'true'
-    ? paths.simplifiedAccount.paymentLinks.review
-    : paths.simplifiedAccount.paymentLinks.amount
+  const redirectPath =
+    req.query[FROM_REVIEW_QUERY_PARAM] === 'true'
+      ? paths.simplifiedAccount.paymentLinks.review
+      : paths.simplifiedAccount.paymentLinks.amount
 
   return res.redirect(formatServiceAndAccountPathsFor(redirectPath, service.externalId, account.type))
-
 }
 
 export { get, post }

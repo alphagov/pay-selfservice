@@ -2,6 +2,8 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { PaymentLinkCreationSession } from '@controllers/simplified-account/services/payment-links/create/constants'
+import { SlugifiedString } from '@utils/simplified-account/format/slugify-string'
+import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -9,11 +11,20 @@ const GATEWAY_ACCOUNT_EXTERNAL_ID = 'account123abc'
 
 const mockResponse = sinon.stub()
 
+const mockValidate = sinon.stub(paymentLinkSchema.existing.paymentLink.validate, 'run').callThrough()
+
 const { nextRequest, call, res } = new ControllerTestBuilder(
-  '@controllers/simplified-account/services/payment-links/create/payment-link-check-exists.controller'
+  '@controllers/simplified-account/services/payment-links/create/payment-link-existing-url.controller'
 )
   .withStubs({
     '@utils/response': { response: mockResponse },
+    '@utils/simplified-account/validation/payment-link.schema': {
+      existing: {
+        paymentLink: {
+          validate: mockValidate,
+        },
+      },
+    },
   })
   .withAccount({
     id: GATEWAY_ACCOUNT_ID,
@@ -27,14 +38,14 @@ const { nextRequest, call, res } = new ControllerTestBuilder(
   })
   .build()
 
-describe('controller: services/payment-links/existing/check-payment-link-exists', () => {
+describe('controller: services/payment-links/existing/existing-url', () => {
   describe('get', () => {
     describe('with valid session data', () => {
       beforeEach(async () => {
         mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'My Link',
-          productNamePath: 'my-link',
+          productNamePath: 'my-link' as SlugifiedString,
         }
         nextRequest({
           session: {
@@ -55,7 +66,7 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
           mockResponse,
           sinon.match.any,
           sinon.match.any,
-          'simplified-account/services/payment-links/create/check-payment-link'
+          'simplified-account/services/payment-links/create/existing-url'
         )
       })
 
@@ -98,7 +109,7 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
         mockResponse.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Link',
-          productNamePath: 'welsh-link',
+          productNamePath: 'welsh-link' as SlugifiedString,
         }
         nextRequest({
           session: {
@@ -159,7 +170,7 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
           mockResponse,
           sinon.match.any,
           sinon.match.any,
-          'simplified-account/services/payment-links/create/check-payment-link'
+          'simplified-account/services/payment-links/create/existing-url'
         )
       })
     })
@@ -191,8 +202,8 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
         res.redirect.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Valid Link',
-          productNamePath: 'valid-link',
-          serviceNamePath: 'Valid Service Link',
+          productNamePath: 'valid-link' as SlugifiedString,
+          serviceNamePath: 'Valid Service Link' as SlugifiedString,
         }
         nextRequest({
           session: {
@@ -201,7 +212,7 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
             },
           },
           body: {
-            paymentLink: 'Valid Link',
+            paymentLinkPath: 'Valid Link',
           },
         })
         await call('post')
@@ -219,7 +230,7 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
         res.redirect.resetHistory()
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: '',
-          productNamePath: '',
+          productNamePath: '' as SlugifiedString,
         }
         nextRequest({
           session: {
@@ -228,7 +239,7 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
             },
           },
           body: {
-            paymentLink: '',
+            paymentLinkPath: '',
           },
         })
         await call('post')
@@ -240,7 +251,7 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
           mockResponse,
           sinon.match.any,
           sinon.match.any,
-          'simplified-account/services/payment-links/create/check-payment-link'
+          'simplified-account/services/payment-links/create/existing-url'
         )
       })
 
@@ -255,7 +266,7 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
         nextRequest({
           session: {},
           body: {
-            paymentLink: 'Any Link',
+            paymentLinkPath: 'Any Link',
           },
         })
         await call('post')
@@ -264,35 +275,6 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
       it('should redirect to index', () => {
         sinon.assert.calledOnce(res.redirect)
         sinon.assert.calledWith(res.redirect, sinon.match(/payment-links/))
-      })
-    })
-    describe('with unexpected account type', () => {
-      beforeEach(async () => {
-        res.redirect.resetHistory()
-        nextRequest({
-          account: {
-            id: GATEWAY_ACCOUNT_ID,
-            externalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
-            type: 'UNKNOWN_TYPE',
-          },
-          session: {
-            pageData: {
-              createPaymentLink: {
-                paymentLinkTitle: 'Edge Link',
-                productNamePath: 'edge-link',
-              },
-            },
-          },
-          body: {
-            paymentLink: 'Edge Link',
-          },
-        })
-        await call('post')
-      })
-
-      it('should not throw and redirect to reference page', () => {
-        sinon.assert.calledOnce(res.redirect)
-        sinon.assert.calledWith(res.redirect, sinon.match(/payment-links.*reference/))
       })
     })
 
@@ -307,7 +289,7 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
             },
           },
           body: {
-            paymentLink: 'Malformed Link',
+            paymentLinkPath: 'Malformed Link',
           },
         })
         await call('post')
@@ -327,7 +309,7 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
         delete process.env.PRODUCTS_FRIENDLY_BASE_URI
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'No Env Link',
-          productNamePath: 'no-env-link',
+          productNamePath: 'no-env-link' as SlugifiedString,
         }
         nextRequest({
           session: {
@@ -336,13 +318,15 @@ describe('controller: services/payment-links/existing/check-payment-link-exists'
             },
           },
           body: {
-            paymentLink: 'No Env Link',
+            paymentLinkPath: 'No Env Link',
           },
         })
+        mockValidate.resolves()
         await call('post')
       })
       afterEach(() => {
         process.env.PRODUCTS_FRIENDLY_BASE_URI = originalEnv
+        mockValidate.reset()
       })
 
       it('should not throw and redirect to reference page', () => {

@@ -3,21 +3,19 @@ import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import lodash from 'lodash'
-import { CREATE_SESSION_KEY, PaymentLinkCreationSession } from '../constants'
+import { PaymentLinkCreationSession } from '../constants'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 
-function getSession<T>(req: ServiceRequest<T>) {
-  return lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
-}
-
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
-  const currentSession = getSession(req)
+  const currentSession = PaymentLinkCreationSession.extract(req)
 
-  if (lodash.isEmpty(currentSession)) {
-    return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type))
+  if (currentSession.isEmpty()) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
+    )
   }
 
   const isWelsh = currentSession.language === 'cy'
@@ -28,7 +26,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     backLink: formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.paymentLinks.review,
       req.service.externalId,
-      req.account.type,
+      req.account.type
     ),
     isWelsh,
     serviceMode: req.account.type,
@@ -43,7 +41,7 @@ interface CreateLinkMetadataBody {
 
 async function post(req: ServiceRequest<CreateLinkMetadataBody>, res: ServiceResponse) {
   const { service, account } = req
-  const currentSession = getSession(req)
+  const currentSession = PaymentLinkCreationSession.extract(req)
 
   const validations = [
     paymentLinkSchema.metadata.columnHeader.add.validate(currentSession.metadata ?? {}),
@@ -77,14 +75,16 @@ async function post(req: ServiceRequest<CreateLinkMetadataBody>, res: ServiceRes
     })
   }
 
-  lodash.set(req, CREATE_SESSION_KEY, {
-    ...lodash.get(req, CREATE_SESSION_KEY, {}),
+  PaymentLinkCreationSession.set(req, currentSession, {
     metadata: {
-    ...currentSession.metadata,
+      ...currentSession.metadata,
       [req.body.reportingColumn]: req.body.cellContent,
-    }
+    },
   } as PaymentLinkCreationSession)
-  return res.redirect(formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type))
+
+  return res.redirect(
+    formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.review, service.externalId, account.type)
+  )
 }
 
 export { get, post }
