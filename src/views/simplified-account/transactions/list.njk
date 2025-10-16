@@ -2,7 +2,7 @@
 {% from './macro/_worldpay-transaction-row.njk' import worldpayTransactionRow %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 
-{% if results.length %}
+{% if results.transactions.length %}
   <table id="transactions-list" class="govuk-table transactions-list-table" style="width:100%">
     <thead class="govuk-table__head govuk-!-font-size-14">
       <tr class="govuk-table__row">
@@ -40,7 +40,7 @@
       </tr>
     </thead>
     <tbody class="govuk-table__body">
-      {% for transaction in results %}
+      {% for transaction in results.transactions %}
         {% if isStripeAccount %}
           {{ stripeTransactionRow(transaction) }}
         {% else %}

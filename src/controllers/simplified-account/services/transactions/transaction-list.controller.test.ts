@@ -51,7 +51,7 @@ const { call } = new ControllerTestBuilder(
 
 describe('controller: services/transactions', () => {
   describe('get', () => {
-    describe('transcations exist for service, no filters', () => {
+    describe('transactions exist for service, no filters', () => {
       beforeEach(async () => {
         await call('get')
       })
@@ -67,6 +67,20 @@ describe('controller: services/transactions', () => {
           sinon.match.any,
           'simplified-account/transactions/index'
         )
+      })
+
+      it('should set results on the context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const results = context.results as {
+          count: number
+          total: number
+          transactions: { link: string;[key: string]: unknown }[]
+        }
+        sinon.assert.match(results.count, 1)
+        sinon.assert.match(results.total, 1)
+        sinon.assert.match(results.transactions, sinon.match.array.and(sinon.match.has('length', 1)))
+        sinon.assert.match(results.transactions[0], sinon.match.has('link', sinon.match.string))
+        sinon.assert.match(results.transactions[0], sinon.match.has('serviceExternalId', SERVICE_EXTERNAL_ID))
       })
 
       it('should set pagination on the context', () => {

@@ -26,6 +26,7 @@ const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: str
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const gatewayAccountId = req.account.id
+  const waah = req.account.paymentProvider;
   const PAGE_SIZE = 5
   // temporary to test pagination
 
@@ -50,20 +51,23 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, urlGenerator)
 
   return response(req, res, 'simplified-account/transactions/index', {
-    results: results.transactions.map((transaction) => ({
-      ...transaction,
-      amountInPounds: penceToPoundsWithCurrency(transaction.amount),
-      fee: transaction.fee ? penceToPoundsWithCurrency(transaction.fee) : undefined,
-      netAmount: transaction.netAmount ? penceToPoundsWithCurrency(transaction.netAmount) : undefined,
-      totalAmount: transaction.totalAmount ? penceToPoundsWithCurrency(transaction.totalAmount) : undefined,
-      corporateCardSurcharge: transaction.corporateCardSurcharge,
-      link: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.transactions.detail,
-        req.service.externalId,
-        req.account.type,
-        transaction.transactionExternalId
-      ),
-    })),
+    results: {
+      ...results,
+      transactions: results.transactions.map((transaction) => ({
+        ...transaction,
+        amountInPounds: penceToPoundsWithCurrency(transaction.amount),
+        fee: transaction.fee ? penceToPoundsWithCurrency(transaction.fee) : undefined,
+        netAmount: transaction.netAmount ? penceToPoundsWithCurrency(transaction.netAmount) : undefined,
+        totalAmount: transaction.totalAmount ? penceToPoundsWithCurrency(transaction.totalAmount) : undefined,
+        corporateCardSurcharge: transaction.corporateCardSurcharge,
+        link: formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.transactions.detail,
+          req.service.externalId,
+          req.account.type,
+          transaction.transactionExternalId
+        ),
+      })),
+    },
 
     isBST: isBritishSummerTime(),
     pagination: pagination,
