@@ -33,7 +33,7 @@ const mockTransactionsService = {
   }),
 }
 
-const { call } = new ControllerTestBuilder(
+const { nextRequest, call } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/transactions/transaction-list.controller'
 )
   .withStubs({
@@ -87,6 +87,54 @@ describe('controller: services/transactions', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         const pagination = context.pagination as Record<string, number | Record<string, unknown>>
         sinon.assert.match(pagination, sinon.match.object)
+      })
+    })
+
+    describe('with page parameter', () => {
+      it('should pass valid page number to searchTransactions service', async () => {
+        nextRequest({
+          query: { page: '2' }
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockTransactionsService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          2,
+          5
+
+        )
+      })
+
+      it('should default to page 1 for invalid page parameter', async () => {
+        nextRequest({
+          query: { page: 'invalid' }
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockTransactionsService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          1,
+          5
+        )
+      })
+
+      it('should default to page 1 for negative page number', async () => {
+        nextRequest({
+          query: { page: '-1' }
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockTransactionsService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          1,
+          5
+        )
       })
     })
   })

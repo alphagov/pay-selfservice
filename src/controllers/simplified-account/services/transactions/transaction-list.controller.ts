@@ -26,7 +26,6 @@ const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: str
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const gatewayAccountId = req.account.id
-  const waah = req.account.paymentProvider;
   const PAGE_SIZE = 5
   // temporary to test pagination
 
@@ -71,7 +70,9 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
     isBST: isBritishSummerTime(),
     pagination: pagination,
-    // isStripeAccount: true
+    // isStripeAccount: req.account.paymentProvider === 'stripe'
+    isStripeAccount: true
+    // temporary to test Stripe specific elements
   })
 }
 
