@@ -8,6 +8,8 @@ import {
 } from '@utils/simplified-account/services/transactions/transaction-presentation-utils'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 
+const DATESTAMP_FORMAT = 'dd LLL yyyy HH:mm:ss'
+
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const transaction = await getTransaction(req.params.transactionExternalId, req.account.id)
   const events = await getEvents(req.params.transactionExternalId, req.account.id)
@@ -18,9 +20,10 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   }
   return response(req, res, 'simplified-account/services/transactions/detail/index', {
     backLink: formatAccountPathsFor(paths.account.transactions.index, req.account.externalId) as string,
-    transaction: transactionDetails(txGrouping, req.service),
+    transactionViewHelper: transactionDetails(txGrouping, req.service),
     events: eventDetails(txGrouping),
-    data: transaction,
+    transaction,
+    pageID: `${transaction.createdDate.toFormat(DATESTAMP_FORMAT)} - ${transaction.reference}`,
     oldView: formatAccountPathsFor(
       paths.account.transactions.detail,
       req.account.externalId,
