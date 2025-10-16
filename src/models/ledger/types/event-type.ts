@@ -1,0 +1,27 @@
+// todo capture all possible events in this type
+
+export const EventType = {
+  PAYMENT_CREATED: 'PAYMENT_CREATED',
+  PAYMENT_STARTED: 'PAYMENT_STARTED',
+  AUTHORISATION_SUCCEEDED: 'AUTHORISATION_SUCCEEDED',
+  USER_APPROVED_FOR_CAPTURE: 'USER_APPROVED_FOR_CAPTURE',
+  REFUND_CREATED_BY_USER: 'REFUND_CREATED_BY_USER',
+  REFUND_SUCCEEDED: 'REFUND_SUCCEEDED',
+  QUEUED_FOR_CAPTURE: 'QUEUED_FOR_CAPTURE',
+  CANCELLED_BY_USER: 'CANCELLED_BY_USER',
+  AUTHORISATION_REJECTED: 'AUTHORISATION_REJECTED',
+} as const
+
+export type EventType = (typeof EventType)[keyof typeof EventType]
+
+export const EventTypeFriendlyNames: Record<EventType, string> = {
+  PAYMENT_CREATED: 'Created',
+  PAYMENT_STARTED: 'Started',
+  AUTHORISATION_SUCCEEDED: 'Submitted',
+  USER_APPROVED_FOR_CAPTURE: 'Successful',
+  REFUND_CREATED_BY_USER: 'Refund created',
+  REFUND_SUCCEEDED: 'Refund successful',
+  QUEUED_FOR_CAPTURE: 'Successful',
+  CANCELLED_BY_USER: 'Cancelled',
+  AUTHORISATION_REJECTED: 'Declined',
+}

@@ -1,4 +1,9 @@
+import { AuthorisationSummaryData } from '@models/common/authorisation-summary/dto/AuthorisationSummary.dto'
+import { SettlementSummaryData } from '@models/common/settlement-summary/dto/SettlementSummary.dto'
 import { CardDetailsData } from '@models/common/card-details/dto/CardDetails.dto'
+import { RefundSummaryData } from '@models/common/refund-summary/dto/RefundSummary.dto'
+import { ResourceType } from '../types/resource-type'
+import { StateData } from './State.dto'
 
 export interface TransactionData {
   gateway_account_id: string
@@ -9,38 +14,22 @@ export interface TransactionData {
   total_amount?: number
   corporate_card_surcharge?: number
   fee?: number
-  state: {
-    finished: boolean
-    status: string
-  }
+  state: StateData
   description: string
   reference: string
   language: string
   return_url: string
-  email: string
+  email?: string
   payment_provider: string
   created_date: string
   card_details?: CardDetailsData
   delayed_capture: boolean
   gateway_transaction_id: string
-  refund_summary: {
-    status: string
-    user_external_id?: string
-    amount_available: number
-    amount_submitted: number
-    amount_refunded: number
-  }
-  settlement_summary: {
-    // optional?
-    capture_submit_time: string
-    captured_date: string
-  }
-  authorisation_summary: {
-    three_d_secure: {
-      required: boolean
-    }
-  }
-  transaction_type: string
+  refund_summary?: RefundSummaryData
+  settlement_summary?: SettlementSummaryData
+  authorisation_summary?: AuthorisationSummaryData
+  transaction_type: ResourceType
+  wallet_type?: string
   moto: boolean
   live: boolean
   source: string
@@ -48,4 +37,6 @@ export interface TransactionData {
   agreement_id: string
   disputed: boolean
   transaction_id: string
+  evidence_due_date?: string // dispute only
+  reason?: string // dispute only
 }

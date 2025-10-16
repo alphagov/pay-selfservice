@@ -284,6 +284,19 @@ simplifiedAccount.get(
   testWithYourUsersController.disable.post
 )
 
+// transactions
+simplifiedAccount.get(
+  paths.simplifiedAccount.transactions.index,
+  permission('transactions:read'),
+  servicesController.transactions.get
+)
+
+simplifiedAccount.get(
+  paths.simplifiedAccount.transactions.detail,
+  permission('transactions-details:read'),
+  servicesController.transactions.detail.get
+)
+
 // agreements
 simplifiedAccount.get(
   paths.simplifiedAccount.agreements.index,

@@ -180,6 +180,10 @@ module.exports = {
       detail: '/agreements/:agreementExternalId',
       cancel: '/agreements/:agreementExternalId/cancel',
     },
+    transactions: {
+      index: '/transactions',
+      detail: '/transactions/:transactionExternalId',
+    },
     settings: {
       index: '/settings',
       serviceName: {
