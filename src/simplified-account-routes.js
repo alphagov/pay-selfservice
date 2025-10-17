@@ -285,15 +285,16 @@ simplifiedAccount.get(
 )
 
 // transactions
-
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.index,
+  experimentalFeature,
   permission('transactions:read'),
-  servicesController.transactions.get
+  servicesController.transactions.list.get
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.detail,
+  experimentalFeature,
   permission('transactions-details:read'),
   servicesController.transactions.detail.get
 )

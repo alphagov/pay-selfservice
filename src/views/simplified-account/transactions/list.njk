@@ -1,0 +1,70 @@
+{% from './macro/_stripe-transaction-row.njk' import stripeTransactionRow %}
+{% from './macro/_worldpay-transaction-row.njk' import worldpayTransactionRow %}
+{% from "govuk/components/pagination/macro.njk" import govukPagination %}
+
+{% if results.transactions.length %}
+  <table id="transactions-list" class="govuk-table transactions-list-table" style="width:100%">
+    <thead class="govuk-table__head govuk-!-font-size-14">
+      <tr class="govuk-table__row">
+        {% if isStripeAccount %}
+          <th class="govuk-table__header" scope="col" id="reference-header" style="width:17%">Reference number</th>
+          <th class="govuk-table__header" scope="col" id="email-header" style="width:13%">Email</th>
+          <th class="govuk-table__header" scope="col" id="amount-header" style="width:9%">Amount</th>
+          <th class="govuk-table__header" scope="col" id="amount-header" style="width:11%">Provider fee</th>
+          <th class="govuk-table__header" scope="col" id="amount-header" style="width:11%">Net</th>
+          <th class="govuk-table__header" scope="col" id="brand-header" style="width:11%">Card brand</th>
+          <th class="govuk-table__header" scope="col" id="state-header" style="width:14%">Payment Status</th>
+          <th
+            style="text-align: left; width:14%"
+            class="govuk-table__header govuk-table__header--numeric"
+            scope="col"
+            id="time-header"
+          >
+            Date created
+          </th>
+        {% else %}
+          <th class="govuk-table__header" scope="col" id="reference-header" style="width:18.5%">Reference number</th>
+          <th class="govuk-table__header" scope="col" id="email-header" style="width:25%">Email</th>
+          <th class="govuk-table__header" scope="col" id="amount-header" style="width:12.5%">Amount</th>
+          <th class="govuk-table__header" scope="col" id="brand-header" style="width:12.5%">Card brand</th>
+          <th class="govuk-table__header" scope="col" id="state-header" style="width:14%">Payment Status</th>
+          <th
+            style="text-align: left; width:17%"
+            class="govuk-table__header govuk-table__header--numeric"
+            scope="col"
+            id="time-header"
+          >
+            Date created
+          </th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      {% for transaction in results.transactions %}
+        {% if isStripeAccount %}
+          {{ stripeTransactionRow(transaction) }}
+        {% else %}
+          {{ worldpayTransactionRow(transaction) }}
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="pagination-with-count">
+    <p data-cy="pagination-detail" class="govuk-body govuk-!-font-size-16">
+      {% if pagination.total > 0 %}Showing {{ pagination.startIndex }} to {{ pagination.endIndex }} of{% endif %}
+      {{ pagination.total }}
+      transactions
+    </p>
+    <div style="margin: auto">
+      {{ govukPagination(pagination | addKey('landmarkLabel', 'Bottom of table pagination')) }}
+    </div>
+  </div>
+{% else %}
+  {% if not isInvalidDateRange %}
+    {% if (allServicesTimeout) %}
+      <p class="govuk-body" id="update-filters-after-timeout">Update the filters and select the Filter button.</p>
+    {% else %}
+      <p class="govuk-body" id="no-results">There are no results for the filters you used.</p>
+    {% endif %}
+  {% endif %}
+{% endif %}

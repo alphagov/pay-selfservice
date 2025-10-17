@@ -9,7 +9,7 @@ module.exports = (function () {
   }
 
   const fromDateToApiFormat = function (date, time) {
-    return (date) ? moment.tz(`${date} ${time}`, 'DD/M/YYYY HH:mm:ss', 'Europe/London').toISOString() : ''
+    return date ? moment.tz(`${date} ${time}`, 'DD/M/YYYY HH:mm:ss', 'Europe/London').toISOString() : ''
   }
 
   const toDateToApiFormat = function (date, time) {
@@ -22,7 +22,9 @@ module.exports = (function () {
       fixedTime = MAX_TIME
     }
 
-    return (date) ? moment.tz(`${date} ${fixedTime}`, 'DD/M/YYYY HH:mm:ss', 'Europe/London').add(increment, 'second').toISOString() : ''
+    return date
+      ? moment.tz(`${date} ${fixedTime}`, 'DD/M/YYYY HH:mm:ss', 'Europe/London').add(increment, 'second').toISOString()
+      : ''
   }
 
   const utcToDisplay = function (date) {
@@ -37,12 +39,17 @@ module.exports = (function () {
     return moment(date).tz('Europe/London').format('HH:mm:ss')
   }
 
+  const isBritishSummerTime = function () {
+    return moment().tz('Europe/London').isDST()
+  }
+
   return {
     dateToDefaultFormat,
     fromDateToApiFormat,
     toDateToApiFormat,
     utcToDisplay,
     utcToDate,
-    utcToTime
+    utcToTime,
+    isBritishSummerTime,
   }
-}())
+})()

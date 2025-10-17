@@ -1,0 +1,156 @@
+{% from "govuk/components/accordion/macro.njk" import govukAccordion %}
+{% extends "simplified-account/services/service-layout.njk" %}
+{% set fullWidth = true %}
+
+{% block pageTitle %}
+  {% if allServiceTransactions %}
+    Transactions for all services
+  {% else %}
+    Transactions - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
+  {% endif %}
+{% endblock %}
+
+{% block classesOnBodyTag %}transactions index{% endblock %}
+
+{% block beforeContent %}
+  {% if allServiceTransactions %}
+    {% set pageTitleBreadcrumbWithTag %}
+      <span>Transactions for all services</span>
+      <strong class="govuk-tag govuk-tag--grey service-info--tag "
+        >{{ "Live" if filterLiveAccounts else "Test" }}</strong
+      >
+    {% endset %}
+    {{
+      breadcrumbs([
+        { text: "My services", href: routes.services.index },
+        { html: pageTitleBreadcrumbWithTag  }
+      ])
+    }}
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block serviceContent %}
+  <div class="govuk-grid-column-full">
+    {% if (isInvalidDateRange) %}
+      {{
+        govukErrorSummary({
+          titleText: "There is a problem",
+          attributes: {
+            'data-cy': 'error-summary'
+          },
+          errorList: [
+            {
+              text: "End date must be after start date",
+              href: "#toDate"
+            }
+          ]
+        })
+      }}
+    {% endif %}
+
+    <h1 class="govuk-heading-l">
+      {% if allServiceTransactions %}
+        Transactions for all services
+        <strong class="govuk-tag govuk-tag--grey">{{ "Live" if filterLiveAccounts else "Test" }}</strong>
+      {% else %}
+        Transactions
+      {% endif %}
+    </h1>
+
+    {% if allServiceTransactions %}
+      {% if filterLiveAccounts %}
+        <p>
+          <a
+            class="govuk-link govuk-link--no-visited-state"
+            href="{{ routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') }}"
+            >Switch to test accounts</a
+          >
+        </p>
+      {% else %}
+        {% if hasLiveAccounts %}
+          <p>
+            <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.allServiceTransactions.index }}"
+              >Switch to live accounts</a
+            >
+          </p>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+    {% include "./filter.njk" %}
+
+    {{
+      govukAccordion({
+        id: "accordion-default",
+        classes: "disable-accordion-controls",
+        rememberExpanded: false,
+        items: [
+          {
+            heading: {
+            text: "Advanced search"
+          },
+            content: {
+            html: ''
+          }
+          }
+        ]
+      })
+    }}
+
+    <div class="govuk-button-group">
+      {{
+        govukButton({
+          text: "Search transactions",
+          href: ""
+        })
+      }}
+
+      <a class="govuk-link govuk-link--no-visited-state" href="">Clear filters</a>
+    </div>
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+
+    {{
+      govukButton({
+        text: "Download CSV",
+        classes: "govuk-button--secondary"
+      })
+    }}
+
+    {% if isBST %}
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text"> How times work in CSV downloads </span>
+        </summary>
+        <div class="govuk-details__text">
+          The UK is on British Summertime (BST) but CSV downloads are in UTC (Coordinated Universal Time), which is the
+          same as GMT (Greenwich Mean Time).<br /><br />
+          If you want to download a day’s transactions, you can change your filters so it’s one hour ahead, for example
+          01:00:00 to 01:00:00 instead of 00:00:00 to 00:00:00.
+        </div>
+      </details>
+    {% endif %}
+    {% include "transactions/display-size.njk" %}
+
+    {% if allServiceTransactions or permissions.transactions_download_read %}
+
+      {% if (hasResults) %}
+        {% if (showCsvDownload) %}
+          <p id="csv-download" class="govuk-body">
+            <a
+              href="{{ downloadTransactionLink }}"
+              id="download-transactions-link"
+              class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16"
+            >
+              Download all transaction details as a CSV file
+            </a>
+          </p>
+        {% else %}
+          <p id="csv-download" class="govuk-body">Filter results to download a CSV of transactions</p>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+    {% include "transactions/paginator.njk" %}
+    {% include "./list.njk" %}
+  </div>
+{% endblock %}

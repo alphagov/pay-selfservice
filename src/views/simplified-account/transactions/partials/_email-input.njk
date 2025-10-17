@@ -1,0 +1,25 @@
+{{
+  govukInput({
+    id: 'email',
+    name: 'email',
+    value: filters.email,
+    type: 'text',
+    inputmode: 'email',
+    spellcheck: false,
+    attributes: {
+      'autocapitalize': 'none',
+      'data-cy': 'email-filter',
+      'autocomplete': 'off',
+      'data-1p-ignore': ''
+    },
+    classes: 'govuk-!-font-size-16',
+    label: {
+      text: 'Email address',
+      classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+    },
+    hint: {
+      text: 'Enter full or partial email',
+      classes: 'govuk-!-font-size-14'
+    }
+  })
+}}
