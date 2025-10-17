@@ -8,7 +8,8 @@
     {
       "files": ["*.njk"],
       "options": {
-        "parser": "jinja-template"
+        "parser": "jinja-template",
+        "htmlWhitespaceSensitivity": "strict"
       }
     }
   ]
