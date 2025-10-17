@@ -1,55 +1,64 @@
 {% if results.length %}
-<table id="transactions-list" class="govuk-table transactions-list-table">
-  <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-      <th class="govuk-table__header" scope="col" id="reference-header">Reference number</th>
-      <th class="govuk-table__header" scope="col" id="email-header">Email</th>
-      <th class="govuk-table__header" scope="col" id="amount-header">Amount</th>
+  <table id="transactions-list" class="govuk-table transactions-list-table">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col" id="reference-header">Reference number</th>
+        <th class="govuk-table__header" scope="col" id="email-header">Email</th>
+        <th class="govuk-table__header" scope="col" id="amount-header">Amount</th>
         {% if isStripeAccount %}
-        <th class="govuk-table__header" scope="col" id="amount-header">PSP Fee</th>
-        <th class="govuk-table__header" scope="col" id="amount-header">Net</th>
+          <th class="govuk-table__header" scope="col" id="amount-header">PSP Fee</th>
+          <th class="govuk-table__header" scope="col" id="amount-header">Net</th>
         {% endif %}
-      <th class="govuk-table__header" scope="col" id="brand-header">Card brand</th>
-      <th class="govuk-table__header" scope="col" id="state-header">State</th>
-      <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="time-header">Date created</th>
-    </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-  {% for result in results %}
-    <tr class="transactions-list--row govuk-table__row vertical-align-top">
-      <th scope="row" class="charge-column reference govuk-table__header" data-gateway-transaction-id="{{result.gateway_transaction_id}}">
-        <a class="govuk-link govuk-!-font-weight-regular govuk-!-font-size-14 reference govuk-!-display-block" id="charge-id-{{result.charge_id}}" data-charge-id="{{result.charge_id}}" href="{{result.link}}">
-          {{result.reference}}
-        </a>
-      </th>
-      <td class="govuk-table__cell govuk-!-font-size-14 email">{{result.email}}</td>
-      <td class="govuk-table__cell amount govuk-!-font-size-14" id="amount">
-        {%- if result.total_amount and result.corporate_card_surcharge -%}
-          {{result.total_amount}}
-          <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
-        {%- else -%}
-          <span style="white-space: pre">{{result.amount}}</span>
-        {%- endif -%}
-      </td>
-      {% if isStripeAccount %}
-        <td data-cell-type="fee" class="govuk-table__cell govuk-!-font-size-14 state">{{result.fee}}</td>
-        <td data-cell-type="net" class="govuk-table__cell govuk-!-font-size-14 state">
-          <span style="white-space: pre">
-            {%- if result.transaction_type === 'DISPUTE' -%}
-              {{result.net_amount}}
+        <th class="govuk-table__header" scope="col" id="brand-header">Card brand</th>
+        <th class="govuk-table__header" scope="col" id="state-header">State</th>
+        <th class="govuk-table__header govuk-table__header--numeric" scope="col" id="time-header">Date created</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      {% for result in results %}
+        <tr class="transactions-list--row govuk-table__row vertical-align-top">
+          <th
+            scope="row"
+            class="charge-column reference govuk-table__header"
+            data-gateway-transaction-id="{{ result.gateway_transaction_id }}"
+          >
+            <a
+              class="govuk-link govuk-!-font-weight-regular govuk-!-font-size-14 reference govuk-!-display-block"
+              id="charge-id-{{ result.charge_id }}"
+              data-charge-id="{{ result.charge_id }}"
+              href="{{ result.link }}"
+            >
+              {{ result.reference }}
+            </a>
+          </th>
+          <td class="govuk-table__cell govuk-!-font-size-14 email">{{ result.email }}</td>
+          <td class="govuk-table__cell amount govuk-!-font-size-14" id="amount">
+            {%- if result.total_amount and result.corporate_card_surcharge -%}
+              {{ result.total_amount }}
+              <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
             {%- else -%}
-              {{ result.net_amount or result.total_amount or result.amount }}
+              <span style="white-space: pre">{{ result.amount }}</span>
             {%- endif -%}
-          </span>
-        </td>
-      {% endif %}
-      <td class="govuk-table__cell govuk-!-font-size-14 brand">{{result.card_details.card_brand}}</td>
-      <td class="govuk-table__cell govuk-!-font-size-14 state">{{result.state_friendly}}</td>
-      <td class="govuk-table__cell govuk-!-font-size-14 govuk-table__cell--numeric time">{{result.created}}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+          </td>
+          {% if isStripeAccount %}
+            <td data-cell-type="fee" class="govuk-table__cell govuk-!-font-size-14 state">{{ result.fee }}</td>
+            <td data-cell-type="net" class="govuk-table__cell govuk-!-font-size-14 state">
+              <span style="white-space: pre">
+                {%- if result.transaction_type === 'DISPUTE' -%}
+                  {{ result.net_amount }}
+                {%- else -%}
+                  {{ result.net_amount or result.total_amount or result.amount }}
+                {%- endif -%}
+              </span>
+            </td>
+          {% endif %}
+          <td class="govuk-table__cell govuk-!-font-size-14 brand">{{ result.card_details.card_brand }}</td>
+          <td class="govuk-table__cell govuk-!-font-size-14 state">{{ result.state_friendly }}</td>
+          <td class="govuk-table__cell govuk-!-font-size-14 govuk-table__cell--numeric time">{{ result.created }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% else %}
   {% if not isInvalidDateRange %}
     {% if (allServicesTimeout) %}
@@ -59,6 +68,3 @@
     {% endif %}
   {% endif %}
 {% endif %}
-
-
-
