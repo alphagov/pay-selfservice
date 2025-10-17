@@ -31,8 +31,8 @@
               {{ result.reference }}
             </a>
           </th>
-            <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 email">{{result.email}}</td>
-            <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14" id="amount">
+          <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 email">{{ result.email }}</td>
+          <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14" id="amount">
             {%- if result.total_amount and result.corporate_card_surcharge -%}
               {{ result.total_amount }}
               <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
@@ -41,7 +41,9 @@
             {%- endif -%}
           </td>
           {% if isStripeAccount %}
-            <td data-cell-type="fee" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">{{result.fee}}</td>
+            <td data-cell-type="fee" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">
+              {{ result.fee }}
+            </td>
             <td data-cell-type="net" class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state">
               <span style="white-space: pre">
                 {%- if result.transaction_type === 'DISPUTE' -%}
