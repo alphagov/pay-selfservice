@@ -2,7 +2,7 @@
   <tr class="transactions-list--row govuk-table__row vertical-align-top">
     <th
       scope="row"
-      class="transactions-list--item govuk-table__header vertical-align-middle"
+      class="govuk-table__header vertical-align-middle"
       data-gateway-transaction-id="{{ transaction.gateway_transaction_id }}"
     >
       <a
@@ -14,10 +14,10 @@
         {{ transaction.reference }}
       </a>
     </th>
-    <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 email vertical-align-middle">
+    <td class="govuk-table__cell govuk-!-font-size-14 email vertical-align-middle">
       {{ transaction.email }}
     </td>
-    <td class="govuk-table__cell transactions-list--item amount govuk-!-font-size-14 vertical-align-middle" id="amount">
+    <td class="govuk-table__cell amount govuk-!-font-size-14 vertical-align-middle" id="amount">
       {%- if transaction.totalAmount and transaction.corporateCardSurcharge -%}
         {{ transaction.totalAmount }}
         <span class="govuk-!-display-block govuk-!-font-size-14">(with card fee)</span>
@@ -25,15 +25,15 @@
         <span style="white-space: pre">{{ transaction.amountInPounds }}</span>
       {%- endif -%}
     </td>
-    <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 brand vertical-align-middle">
+    <td class="govuk-table__cell govuk-!-font-size-14 brand vertical-align-middle">
       {{ transaction.cardDetails.cardBrand }}
     </td>
-    <td class="govuk-table__cell transactions-list--item govuk-!-font-size-14 state vertical-align-middle">
+    <td class="govuk-table__cell govuk-!-font-size-14 state vertical-align-middle">
       {{ transaction.state.status | capitalize }}
     </td>
     <td
       style="text-align: left"
-      class="govuk-table__cell transactions-list--item govuk-!-font-size-14 govuk-table__cell--numeric time vertical-align-middle"
+      class="govuk-table__cell govuk-!-font-size-14 govuk-table__cell--numeric time vertical-align-middle"
     >
       {{ transaction.createdDate | shortTime }} - <br />{{ transaction.createdDate | zonedDate }}
     </td>

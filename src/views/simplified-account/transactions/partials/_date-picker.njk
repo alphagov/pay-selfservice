@@ -1,13 +1,11 @@
 <br class="transactions-list__br" />
 <legend class="govuk-visually-hidden">Date range</legend>
-{#<fieldset class="govuk-fieldset datetime-filter datetime-filter-from">#}
-{#  <legend class="govuk-visually-hidden">From this date and time</legend>#}
 {{
   govukInput({
     id: 'fromDate',
     name: 'fromDate',
     value: filters.fromDate,
-    lasses: 'date-picker start govuk-!-font-size-16',
+    classes: 'date-picker start govuk-!-font-size-16',
     label: {
       text: 'Start date',
       classes: 'govuk-!-font-size-14 govuk-!-margin-bottom-2'
@@ -20,8 +18,6 @@
     }
   })
 }}
-{#</fieldset>#}
-{#<fieldset class="govuk-fieldset datetime-filter datetime-filter-to">#}
 {{
   govukInput({
     id: 'fromTime',

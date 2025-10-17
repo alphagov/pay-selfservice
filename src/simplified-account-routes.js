@@ -287,12 +287,14 @@ simplifiedAccount.get(
 // transactions
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.index,
+  experimentalFeature,
   permission('transactions:read'),
   servicesController.transactions.list.get
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.detail,
+  experimentalFeature,
   permission('transactions-details:read'),
   servicesController.transactions.detail.get
 )
@@ -320,14 +322,6 @@ simplifiedAccount.post(
   paths.simplifiedAccount.agreements.cancel,
   permission('agreements:update'),
   servicesController.agreements.cancel.post
-)
-
-// transactions
-simplifiedAccount.get(
-  paths.simplifiedAccount.transactions.index,
-  experimentalFeature,
-  permission('transactions:read'),
-  servicesController.transactions.list.get
 )
 
 // settings index
