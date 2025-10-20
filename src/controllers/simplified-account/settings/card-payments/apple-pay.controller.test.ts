@@ -1,7 +1,7 @@
-const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
-const { expect } = require('chai')
-const sinon = require('sinon')
-const paths = require('@root/paths')
+import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
+import { expect } from 'chai'
+import sinon from 'sinon'
+import paths from '@root/paths'
 
 const ACCOUNT_TYPE = 'test'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
@@ -11,16 +11,18 @@ const GATEWAY_ACCOUNT_ID = '123'
 const mockResponse = sinon.stub()
 const mockUpdateApplePay = sinon.spy()
 
-const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/card-payments/apple-pay.controller')
+const { req, res, nextRequest, call } = new ControllerTestBuilder(
+  '@controllers/simplified-account/settings/card-payments/apple-pay.controller'
+)
   .withAccount({
     type: ACCOUNT_TYPE,
     id: GATEWAY_ACCOUNT_ID,
-    allowApplePay: false
+    allowApplePay: false,
   })
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/card-payments.service': { updateAllowApplePay: mockUpdateApplePay }
+    '@services/card-payments.service': { updateAllowApplePay: mockUpdateApplePay },
   })
   .build()
 
@@ -39,15 +41,17 @@ describe('Controller: settings/card-payments/apple-pay', () => {
     })
 
     it('should pass context data to the response method', () => {
-      const context = mockResponse.args[0][3]
+      const context = mockResponse.args[0][3] as unknown
       expect(context).to.have.property('currentState').to.equal('off')
-      expect(context).to.have.property('backLink').to.equal(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments`)
+      expect(context)
+        .to.have.property('backLink')
+        .to.equal(`/service/${SERVICE_EXTERNAL_ID}/account/test/settings/card-payments`)
     })
   })
   describe('post', () => {
     beforeEach(async () => {
       nextRequest({
-        body: { applePay: 'on' }
+        body: { applePay: 'on' },
       })
       await call('post')
     })
