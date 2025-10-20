@@ -454,12 +454,12 @@ simplifiedAccount.get(
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.emailNotifications.customParagraph,
   permission('email-notification-paragraph:update'),
-  serviceSettingsController.emailNotifications.customParagraph.postEditCustomParagraph
+  serviceSettingsController.emailNotifications.customParagraph.post
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.emailNotifications.removeCustomParagraph,
   permission('email-notification-paragraph:update'),
-  serviceSettingsController.emailNotifications.customParagraph.postRemoveCustomParagraph
+  serviceSettingsController.emailNotifications.customParagraph.remove.post
 )
 
 // organisation details

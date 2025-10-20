@@ -4,46 +4,52 @@
 
 {% block settingsContent %}
   <form id="payment-confirmation-email-toggle" method="post" novalidate>
-    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-    {{ govukRadios({
-      idPrefix: 'toggle',
-      name: 'paymentConfirmationEmailToggle',
-      hint: {
-        text: 'Users will receive an email confirming their payment from GOV.UK Pay'
-      } if emailCollectionMode === 'MANDATORY' else {
-        text: 'If they entered an email address, users will get a payment confirmation email from GOV.UK Pay'
-      },
-      fieldset: {
-        legend: {
-          text: 'Send payment confirmation emails',
-          isPageHeading: true,
-          classes: 'govuk-fieldset__legend--l'
-        }
-      },
-      items: [
-        {
-          value: 'true',
-          html: 'On',
-          label: {
-          classes: 'govuk-!-font-weight-bold'
-        } if emailCollectionMode === 'OPTIONAL',
-          checked: confirmationEnabled === true,
-          hint: {
-          text: 'Entering an email address is currently optional so users might not get a payment confirmation'
-        } if emailCollectionMode === 'OPTIONAL'
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+    {{
+      govukRadios({
+        idPrefix: 'toggle',
+        name: 'paymentConfirmationEmailToggle',
+        id: 'payment-confirmation-email-toggle',
+        hint: {
+          text: 'Users will receive an email confirming their payment from GOV.UK Pay'
+        } if emailCollectionMode === 'MANDATORY' else {
+          text: 'If they entered an email address, users will get a payment confirmation email from GOV.UK Pay'
         },
-        {
-          value: 'false',
-          html: 'Off',
-          label: {
-          classes: 'govuk-!-font-weight-bold'
-        } if emailCollectionMode === 'OPTIONAL',
-          checked: confirmationEnabled === false
-        }
-      ]
-    }) }}
-    {{ govukButton({
-      text: 'Save changes'
-    }) }}
+        errorMessage: { text: errors.formErrors['paymentConfirmationEmailToggle'] } if errors.formErrors['paymentConfirmationEmailToggle'] else false,
+        fieldset: {
+          legend: {
+            text: 'Send payment confirmation emails',
+            isPageHeading: true,
+            classes: 'govuk-fieldset__legend--l'
+          }
+        },
+        items: [
+          {
+            value: 'true',
+            html: 'On',
+            label: {
+            classes: 'govuk-!-font-weight-bold'
+          } if emailCollectionMode === 'OPTIONAL',
+            checked: confirmationEnabled === true,
+            hint: {
+            text: 'Entering an email address is currently optional so users might not get a payment confirmation'
+          } if emailCollectionMode === 'OPTIONAL'
+          },
+          {
+            value: 'false',
+            html: 'Off',
+            label: {
+            classes: 'govuk-!-font-weight-bold'
+          } if emailCollectionMode === 'OPTIONAL',
+            checked: confirmationEnabled === false
+          }
+        ]
+      })
+    }}
+    {{
+      govukButton({
+        text: 'Save changes'
+      })
+    }}
   </form>
 {% endblock %}
