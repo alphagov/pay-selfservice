@@ -56,6 +56,14 @@ class ProductsClient extends BaseClient {
         return new Product(response.data)
       },
 
+      getByServiceAndProductPath: async (serviceNamePath: string, productNamePath: string) => {
+        const path = '/v1/api/products?serviceNamePath={serviceNamePath}&productNamePath={productNamePath}'
+          .replace('{serviceNamePath}', encodeURIComponent(serviceNamePath))
+          .replace('{productNamePath}', encodeURIComponent(productNamePath))
+        const response = await this.get<ProductData>(path, 'find a product by its product path')
+        return new Product(response.data)
+      },
+
       create: async (createProductRequest: CreateProductRequest) => {
         const path = '/v1/api/products'
         const response = await this.post<CreateProductRequestData, ProductData>(
