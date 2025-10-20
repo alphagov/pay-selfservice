@@ -2,7 +2,18 @@
   form {
     margin: 0 govuk-spacing(3);
     padding: govuk-spacing(3) 0;
-    background: govuk-colour("light-grey");
+    background: govuk-colour('light-grey');
+  }
+
+  .govuk-hint {
+    color: $govuk-text-colour;
+  }
+}
+
+.transactions-filter-simplified-account {
+  form {
+    margin: 0 govuk-spacing(3);
+    padding: govuk-spacing(3) 0;
   }
 
   .govuk-hint {
@@ -25,7 +36,6 @@
     width: 50%;
     box-sizing: border-box;
 
-
     &--date-input,
     .govuk-form-group--error &--date-input {
       padding-right: govuk-spacing(1);
@@ -38,8 +48,6 @@
     }
   }
 }
-
-
 
 .datetime-filter-from {
   padding-right: govuk-spacing(3);
@@ -95,12 +103,29 @@
 
 .datepicker .datepicker-days table tr td.day.focused,
 .datepicker .datepicker-days table tr td.day:hover {
-    background: govuk-colour("yellow");
+  background: govuk-colour('yellow');
 }
 
 .datepicker .datepicker-days table tr td.active:active,
 .datepicker .datepicker-days table tr td.active.highlighted:active,
 .datepicker .datepicker-days table tr td.active.active,
 .datepicker .datepicker-days table tr td.active.highlighted.active {
-  background: govuk-colour("blue");
+  background: govuk-colour('blue');
+}
+
+.transactions-list__br {
+  line-height: 1.25rem;
+}
+
+.transactions-list-time__checkbox {
+  > .govuk-checkboxes__item {
+    > .govuk-checkboxes__input {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  &-label::before {
+    top: 8px !important;
+  }
 }

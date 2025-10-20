@@ -4,7 +4,6 @@ import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import Service from '@models/service/Service.class'
 import UserPermissions from '@models/user/permissions'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import formatAccountPathsFor from '@utils/format-account-paths-for'
 
 export = (account: GatewayAccount, service: Service, currentUrl: string, permissions: Record<string, boolean>) => {
   const navBuilder = new NavigationBuilder(currentUrl, permissions)
@@ -13,19 +12,19 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
     .add({
       id: 'dashboard',
       name: 'dashboard',
-      path: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.dashboard.index,
-        service.externalId,
-        account.type
-      ),
+      path: formatServiceAndAccountPathsFor(paths.simplifiedAccount.dashboard.index, service.externalId, account.type),
       hasPermission: UserPermissions.any,
     })
     // TODO update this to use formatServiceAndAccountPathsFor when transactions views are moved
     .add({
       id: 'transactions',
       name: 'transactions',
-      path: formatAccountPathsFor(paths.account.transactions.index, account.externalId) as string,
-      hasPermission: UserPermissions.transactions.transactionsRead
+      path: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.transactions.index,
+        service.externalId,
+        account.type
+      ),
+      hasPermission: UserPermissions.transactions.transactionsRead,
     })
     .add({
       id: 'payment-links',
@@ -40,11 +39,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
     .add({
       id: 'agreements',
       name: 'agreements',
-      path: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.agreements.index,
-        service.externalId,
-        account.type
-      ),
+      path: formatServiceAndAccountPathsFor(paths.simplifiedAccount.agreements.index, service.externalId, account.type),
       hasPermission: UserPermissions.agreements.agreementsRead,
       conditions: account.recurringEnabled,
     })
