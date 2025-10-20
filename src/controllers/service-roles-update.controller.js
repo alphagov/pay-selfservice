@@ -6,7 +6,7 @@ const rolesModule = require('../utils/roles')
 const roles = rolesModule.roles
 const getRole = rolesModule.getRoleByExtId
 
-const userService = require('../services/user.service.js')
+const userService = require('../services/user.service')
 
 const { renderErrorView, response } = require('../utils/response')
 
@@ -15,21 +15,31 @@ const hasSameService = (admin, user, externalServiceId) => {
 }
 
 const serviceIdMismatchView = (req, res, adminUserExternalId, targetServiceExternalId, targetUserExternalId) => {
-  logger.error(`Service mismatch when admin:${adminUserExternalId} attempting to assign new role on service:${targetServiceExternalId} for user:${targetUserExternalId} without existing role`)
+  logger.error(
+    `Service mismatch when admin:${adminUserExternalId} attempting to assign new role on service:${targetServiceExternalId} for user:${targetUserExternalId} without existing role`
+  )
   return renderErrorView(req, res, 'Unable to update permissions for this user')
 }
 
 const formatServicePathsFor = require('../utils/format-service-paths-for')
 
-async function index (req, res, next) {
+async function index(req, res, next) {
   const externalUserId = req.params.externalUserId
   const serviceExternalId = req.service.externalId
   const serviceHasAgentInitiatedMotoEnabled = req.service.agentInitiatedMotoEnabled
 
-  const viewData = user => {
-    const editPermissionsLink = formatServicePathsFor(paths.service.teamMembers.permissions, serviceExternalId, user.externalId)
+  const viewData = (user) => {
+    const editPermissionsLink = formatServicePathsFor(
+      paths.service.teamMembers.permissions,
+      serviceExternalId,
+      user.externalId
+    )
     const teamMemberIndexLink = formatServicePathsFor(paths.service.teamMembers.index, serviceExternalId)
-    const teamMemberProfileLink = formatServicePathsFor(paths.service.teamMembers.show, serviceExternalId, user.externalId)
+    const teamMemberProfileLink = formatServicePathsFor(
+      paths.service.teamMembers.show,
+      serviceExternalId,
+      user.externalId
+    )
 
     const role = user.getRoleForService(serviceExternalId)
     return {
@@ -40,24 +50,24 @@ async function index (req, res, next) {
       serviceHasAgentInitiatedMotoEnabled,
       admin: {
         id: roles.admin.extId,
-        checked: _.get(role, 'name') === 'admin' ? 'checked' : ''
+        checked: _.get(role, 'name') === 'admin' ? 'checked' : '',
       },
       viewAndRefund: {
         id: roles['view-and-refund'].extId,
-        checked: _.get(role, 'name') === 'view-and-refund' ? 'checked' : ''
+        checked: _.get(role, 'name') === 'view-and-refund' ? 'checked' : '',
       },
       view: {
         id: roles['view-only'].extId,
-        checked: _.get(role, 'name') === 'view-only' ? 'checked' : ''
+        checked: _.get(role, 'name') === 'view-only' ? 'checked' : '',
       },
       viewAndInitiateMoto: {
         id: roles['view-and-initiate-moto'].extId,
-        checked: _.get(role, 'name') === 'view-and-initiate-moto' ? 'checked' : ''
+        checked: _.get(role, 'name') === 'view-and-initiate-moto' ? 'checked' : '',
       },
       viewRefundAndInitiateMoto: {
         id: roles['view-refund-and-initiate-moto'].extId,
-        checked: _.get(role, 'name') === 'view-refund-and-initiate-moto' ? 'checked' : ''
-      }
+        checked: _.get(role, 'name') === 'view-refund-and-initiate-moto' ? 'checked' : '',
+      },
     }
   }
 
@@ -77,7 +87,7 @@ async function index (req, res, next) {
   }
 }
 
-async function update (req, res, next) {
+async function update(req, res, next) {
   const externalUserId = req.params.externalUserId
   const serviceExternalId = req.service.externalId
   const targetRoleExtId = parseInt(req.body['role-input'])
@@ -115,5 +125,5 @@ async function update (req, res, next) {
 
 module.exports = {
   index,
-  update
+  update,
 }

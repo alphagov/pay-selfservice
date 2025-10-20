@@ -11,14 +11,14 @@ const alwaysValidPassword = function (password) {
 }
 
 const userService = function (commonPasswordMock) {
-  return proxyquire('@services/user.service.js', {
-    'common-password': commonPasswordMock || alwaysValidPassword
+  return proxyquire('@services/user.service', {
+    'common-password': commonPasswordMock || alwaysValidPassword,
   })
 }
 
 const forgottenPassword = function (commonPasswordMock) {
   return proxyquire('@controllers/forgotten-password.controller.js', {
-    '@services/user.service.js': userService(commonPasswordMock)
+    '@services/user.service': userService(commonPasswordMock),
   })
 }
 
@@ -40,8 +40,8 @@ describe('forgotten_password_controller', function () {
     const res = resFixtures.getStubbedRes()
     const username = req.body.username
 
-    adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
-      .validForgottenPasswordCreateRequest(username))
+    adminusersMock
+      .post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures.validForgottenPasswordCreateRequest(username))
       .reply(200)
 
     await forgottenPasswordController.emailPost(req, res)
@@ -57,8 +57,8 @@ describe('forgotten_password_controller', function () {
     sinon.assert.calledWithMatch(res.render, 'forgotten-password/index', {
       username: '',
       errors: {
-        username: 'Enter an email address'
-      }
+        username: 'Enter an email address',
+      },
     })
   })
 
@@ -67,8 +67,8 @@ describe('forgotten_password_controller', function () {
     const res = resFixtures.getStubbedRes()
     const username = req.body.username
 
-    adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
-      .validForgottenPasswordCreateRequest(username))
+    adminusersMock
+      .post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures.validForgottenPasswordCreateRequest(username))
       .reply(404)
 
     await forgottenPasswordController.emailPost(req, res)
@@ -80,8 +80,8 @@ describe('forgotten_password_controller', function () {
     const res = resFixtures.getStubbedRes()
     const username = req.body.username
 
-    adminusersMock.post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures
-      .validForgottenPasswordCreateRequest(username))
+    adminusersMock
+      .post(FORGOTTEN_PASSWORD_RESOURCE, userFixtures.validForgottenPasswordCreateRequest(username))
       .reply(500)
 
     await forgottenPasswordController.emailPost(req, res)
@@ -96,8 +96,7 @@ describe('forgotten_password_controller', function () {
 
     const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ code: token })
 
-    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
-      .reply(200, forgottenPasswordResponse)
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`).reply(200, forgottenPasswordResponse)
 
     await forgottenPasswordController.newPasswordGet(req, res)
     sinon.assert.calledWith(res.render, 'forgotten-password/new-password', { id: token })
@@ -108,11 +107,14 @@ describe('forgotten_password_controller', function () {
     const res = resFixtures.getStubbedRes()
     const token = req.params.id
 
-    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
-      .reply(404)
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`).reply(404)
 
     await forgottenPasswordController.newPasswordGet(req, res)
-    sinon.assert.calledWith(req.flash, 'genericError', 'The password reset request has expired or is invalid. Please try again.')
+    sinon.assert.calledWith(
+      req.flash,
+      'genericError',
+      'The password reset request has expired or is invalid. Please try again.'
+    )
     sinon.assert.calledWith(res.redirect, '/login')
   })
 
@@ -124,18 +126,16 @@ describe('forgotten_password_controller', function () {
     const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId, code: token })
     const userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
-    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
-      .reply(200, userResponse)
+    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`).reply(200, userResponse)
 
-    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
-      .reply(200, forgottenPasswordResponse)
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`).reply(200, forgottenPasswordResponse)
 
-    adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
-      .validUpdatePasswordRequest(token, req.body.password))
+    adminusersMock
+      .post(RESET_PASSWORD_RESOURCE, userFixtures.validUpdatePasswordRequest(token, req.body.password))
       .reply(204)
 
-    adminusersMock.patch(`${USER_RESOURCE}/${userExternalId}`, userFixtures
-      .validIncrementSessionVersionRequest())
+    adminusersMock
+      .patch(`${USER_RESOURCE}/${userExternalId}`, userFixtures.validIncrementSessionVersionRequest())
       .reply(200)
 
     await forgottenPasswordController.newPasswordPost(req, res)
@@ -152,18 +152,16 @@ describe('forgotten_password_controller', function () {
     const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId, code: token })
     const userResponse = userFixtures.validUserResponse({ external_id: userExternalId })
 
-    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
-      .reply(200, forgottenPasswordResponse)
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`).reply(200, forgottenPasswordResponse)
 
-    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
-      .reply(200, userResponse)
+    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`).reply(200, userResponse)
 
-    adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
-      .validUpdatePasswordRequest(token, req.body.password))
+    adminusersMock
+      .post(RESET_PASSWORD_RESOURCE, userFixtures.validUpdatePasswordRequest(token, req.body.password))
       .reply(204)
 
-    adminusersMock.patch(`${USER_RESOURCE}/${userExternalId}`, userFixtures
-      .validIncrementSessionVersionRequest())
+    adminusersMock
+      .patch(`${USER_RESOURCE}/${userExternalId}`, userFixtures.validIncrementSessionVersionRequest())
       .reply(500)
 
     await forgottenPasswordController.newPasswordPost(req, res)
@@ -182,18 +180,16 @@ describe('forgotten_password_controller', function () {
     const token = req.params.id
     const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId, code: token })
 
-    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
-      .reply(200, forgottenPasswordResponse)
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`).reply(200, forgottenPasswordResponse)
 
-    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
-      .reply(200, userResponse)
+    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`).reply(200, userResponse)
 
     await forgottenPasswordController.newPasswordPost(req, res)
     sinon.assert.calledWithMatch(res.render, 'forgotten-password/new-password', {
       id: token,
       errors: {
-        password: 'Password must be 10 characters or more'
-      }
+        password: 'Password must be 10 characters or more',
+      },
     })
   })
 
@@ -206,14 +202,12 @@ describe('forgotten_password_controller', function () {
     const token = req.params.id
     const forgottenPasswordResponse = userFixtures.validForgottenPasswordResponse({ userExternalId, code: token })
 
-    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`)
-      .reply(200, forgottenPasswordResponse)
+    adminusersMock.get(`${FORGOTTEN_PASSWORD_RESOURCE}/${token}`).reply(200, forgottenPasswordResponse)
 
-    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`)
-      .reply(200, userResponse)
+    adminusersMock.get(`${USER_RESOURCE}/${userExternalId}`).reply(200, userResponse)
 
-    adminusersMock.post(RESET_PASSWORD_RESOURCE, userFixtures
-      .validUpdatePasswordRequest(token, req.body.password))
+    adminusersMock
+      .post(RESET_PASSWORD_RESOURCE, userFixtures.validUpdatePasswordRequest(token, req.body.password))
       .reply(500)
 
     await forgottenPasswordController.newPasswordPost(req, res)

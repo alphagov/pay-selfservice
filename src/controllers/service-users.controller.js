@@ -1,7 +1,7 @@
 const _ = require('lodash')
 
 const { renderErrorView, response } = require('../utils/response.js')
-const userService = require('../services/user.service.js')
+const userService = require('../services/user.service')
 const paths = require('../paths.js')
 const roles = require('../utils/roles').roles
 const secondFactorMethod = require('@models/constants/second-factor-method')
@@ -17,7 +17,7 @@ const mapByRoles = function (users, externalServiceId, currentUser) {
     if (roles[userRoleName]) {
       const mappedUser = {
         email: user.email,
-        external_id: user.externalId
+        external_id: user.externalId,
       }
       if (currentUser.externalId === user.externalId) {
         mappedUser.is_current = true
@@ -40,7 +40,7 @@ const mapInvitesByRoles = function (invitedUsers) {
     if (roles[user.role]) {
       const mappedUser = {
         email: user.email,
-        expired: user.expired
+        expired: user.expired,
       }
       userRolesMap[user.role].push(mappedUser)
     }
@@ -51,13 +51,13 @@ const mapInvitesByRoles = function (invitedUsers) {
 /**
  * Team members list view
  */
-async function index (req, res, next) {
+async function index(req, res, next) {
   const externalServiceId = req.service.externalId
 
   try {
     const [members, invitedMembers] = await Promise.all([
       userService.getServiceUsers(externalServiceId),
-      userService.getInvitedUsers(externalServiceId)
+      userService.getInvitedUsers(externalServiceId),
     ])
     const teamMembers = mapByRoles(members, externalServiceId, req.user)
     const invitedTeamMembers = mapInvitesByRoles(invitedMembers)
@@ -67,7 +67,7 @@ async function index (req, res, next) {
       team_members: teamMembers,
       inviteTeamMemberLink,
       invited_team_members: invitedTeamMembers,
-      number_invited_members: invitedMembers.length
+      number_invited_members: invitedMembers.length,
     })
   } catch (err) {
     next(err)
@@ -77,7 +77,7 @@ async function index (req, res, next) {
 /**
  * Show Team member details
  */
-async function show (req, res, next) {
+async function show(req, res, next) {
   const externalServiceId = req.service.externalId
   const externalUserId = req.params.externalUserId
   if (externalUserId === req.user.externalId) {
@@ -88,8 +88,16 @@ async function show (req, res, next) {
     const user = await userService.findByExternalId(externalUserId)
     const hasSameService = user.hasService(externalServiceId) && req.user.hasService(externalServiceId)
     const roleInList = roles[_.get(user.getRoleForService(externalServiceId), 'name')]
-    const editPermissionsLink = formatServicePathsFor(paths.service.teamMembers.permissions, externalServiceId, externalUserId)
-    const removeTeamMemberLink = formatServicePathsFor(paths.service.teamMembers.delete, externalServiceId, externalUserId)
+    const editPermissionsLink = formatServicePathsFor(
+      paths.service.teamMembers.permissions,
+      externalServiceId,
+      externalUserId
+    )
+    const removeTeamMemberLink = formatServicePathsFor(
+      paths.service.teamMembers.delete,
+      externalServiceId,
+      externalUserId
+    )
     const teamMemberIndexLink = formatServicePathsFor(paths.service.teamMembers.index, externalServiceId)
 
     if (roleInList && hasSameService) {
@@ -98,7 +106,7 @@ async function show (req, res, next) {
         role: roleInList.description,
         teamMemberIndexLink,
         editPermissionsLink,
-        removeTeamMemberLink
+        removeTeamMemberLink,
       })
     } else {
       return renderErrorView(req, res, 'You do not have the rights to access this service.', 403)
@@ -111,7 +119,7 @@ async function show (req, res, next) {
 /**
  * Delete a Team member
  */
-async function remove (req, res, next) {
+async function remove(req, res, next) {
   const userToRemoveExternalId = req.params.externalUserId
   const externalServiceId = req.service.externalId
   const removerExternalId = req.user.externalId
@@ -131,13 +139,13 @@ async function remove (req, res, next) {
       const messageUserHasBeenDeleted = {
         error: {
           title: 'This person has already been removed',
-          message: 'This person has already been removed by another administrator.'
+          message: 'This person has already been removed by another administrator.',
         },
         link: {
           link: formatServicePathsFor(paths.service.teamMembers.index, externalServiceId),
-          text: 'View all team members'
+          text: 'View all team members',
         },
-        enable_link: true
+        enable_link: true,
       }
       response(req, res, 'error-with-link', messageUserHasBeenDeleted)
     } else {
@@ -149,7 +157,7 @@ async function remove (req, res, next) {
 /**
  * Show 'My profile'
  */
-async function profile (req, res, next) {
+async function profile(req, res, next) {
   try {
     const user = await userService.findByExternalId(req.user.externalId)
     response(req, res, 'team-members/team-member-profile', {
@@ -157,7 +165,7 @@ async function profile (req, res, next) {
       email: user.email,
       telephone_number: user.telephoneNumber,
       two_factor_auth: user.secondFactor,
-      two_factor_auth_link: paths.user.profile.twoFactorAuth.index
+      two_factor_auth_link: paths.user.profile.twoFactorAuth.index,
     })
   } catch (err) {
     next(err)
@@ -168,5 +176,5 @@ module.exports = {
   index,
   show,
   remove,
-  profile
+  profile,
 }
