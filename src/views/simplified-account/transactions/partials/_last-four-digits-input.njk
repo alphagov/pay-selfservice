@@ -1,0 +1,23 @@
+{{
+  govukInput({
+    id: 'lastDigitsCardNumber',
+    name: 'lastDigitsCardNumber',
+    value: filters.lastDigitsCardNumber,
+    classes: 'govuk-!-font-size-16',
+    label: {
+      text: 'Last 4 card numbers',
+      classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+    },
+    hint: {
+      text: 'Last 4 digits of associated card',
+      classes: 'govuk-!-font-size-14'
+    },
+    attributes: {
+      "autocomplete": "off",
+      "inputmode": "numeric",
+      "pattern": "[0-9]*",
+      "maxlength": "4",
+      'data-1p-ignore': ''
+    }
+  })
+}}

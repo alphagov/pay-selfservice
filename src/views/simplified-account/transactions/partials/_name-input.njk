@@ -1,0 +1,21 @@
+{{
+  govukInput({
+    id: 'cardholderName',
+    name: 'cardholderName',
+    value: filters.cardholderName,
+    spellcheck: false,
+    classes: 'govuk-!-font-size-16',
+    attributes: {
+      'autocomplete': 'off',
+      'data-1p-ignore': ''
+    },
+    label: {
+      text: 'Name on card',
+      classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+    },
+            hint: {
+            text: 'Enter full or partial name',
+            classes: 'govuk-!-font-size-14'
+    }
+  })
+}}

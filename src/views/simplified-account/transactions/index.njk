@@ -32,7 +32,7 @@
 {% endblock %}
 
 {% block serviceContent %}
-  <div class="govuk-grid-column-full">
+  <div class="govuk-grid-column-full" style="padding: 0">
     {% if (isInvalidDateRange) %}
       {{
         govukErrorSummary({
@@ -80,6 +80,10 @@
     {% endif %}
     {% include "./filter.njk" %}
 
+    {% set advancedFilters %}
+      {% include "./advanced-filter.njk" %}
+    {% endset %}
+
     {{
       govukAccordion({
         id: "accordion-default",
@@ -91,7 +95,7 @@
             text: "Advanced search"
           },
             content: {
-            html: ''
+            html: advancedFilters
           }
           }
         ]

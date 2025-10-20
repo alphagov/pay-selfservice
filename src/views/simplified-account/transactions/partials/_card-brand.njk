@@ -1,0 +1,33 @@
+<legend class="govuk-visually-hidden">Card brand</legend>
+{# When JavaScript enhances the select to a multi-select, the label element’s for attribute will reference a button element #}
+{# WAVE complains about this but it is valid according to the HTML standard and the label will activate the button #}
+{{
+  govukSelect({
+    id: "card-brand",
+    name: "brand",
+    classes: 'govuk-!-font-size-16',
+    label: {
+      text: "Card brand",
+      classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+    },
+    hint: {
+      text: "Select a brand",
+      classes: 'govuk-!-font-size-14'
+    },
+    attributes: {
+      'data-enhance-multiple': true
+    },
+    items: [{
+      value: "visa",
+      text: "Visa"
+    },
+      {
+        value: "mastercard",
+        text: "Mastercard"
+      },
+      {
+        value: "amex",
+        text: "American Express"
+      }]
+  })
+}}
