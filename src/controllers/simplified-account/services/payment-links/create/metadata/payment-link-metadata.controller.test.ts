@@ -2,6 +2,7 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { PaymentLinkCreationSession } from '.././constants'
+import { SlugifiedString } from '@utils/simplified-account/format/slugify-string'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -23,7 +24,7 @@ const { nextRequest, call, res } = new ControllerTestBuilder(
   .withService({
     name: 'McDuck Enterprises',
     serviceName: { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' },
-    externalId: SERVICE_EXTERNAL_ID
+    externalId: SERVICE_EXTERNAL_ID,
   })
   .build()
 
@@ -36,8 +37,8 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
           paymentLinkTitle: 'Test Payment Link',
           paymentLinkDescription: 'Test Description',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
         }
 
@@ -88,8 +89,8 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Payment Link',
           language: 'cy',
-          serviceNamePath: 'test-service',
-          productNamePath: 'welsh-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'welsh-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
         }
 
@@ -136,8 +137,8 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
           paymentLinkTitle: 'Test Payment Link',
           paymentLinkDescription: 'Test Description',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
         }
 
@@ -169,8 +170,8 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
         }
 
@@ -216,8 +217,8 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
         }
 
@@ -265,8 +266,8 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
         }
 
@@ -314,8 +315,8 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
         }
 
@@ -367,8 +368,8 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
         }
 
@@ -420,10 +421,10 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
-          metadata: { 'existing_column': 'existing_value' }
+          metadata: { existing_column: 'existing_value' },
         }
 
         mockResponse.resetHistory()
@@ -471,18 +472,18 @@ describe('controller: services/payment-links/create/metadata/payment-link-metada
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
           metadata: {},
         }
 
         const maximumColumns = 15
-        sessionData.metadata ??= {};
-        
+        sessionData.metadata ??= {}
+
         for (let i = 1; i <= maximumColumns; i++) {
-          const columnName = `existing_column_${i}`;
-          sessionData.metadata[columnName] = 'existing value';
+          const columnName = `existing_column_${i}`
+          sessionData.metadata[columnName] = 'existing value'
         }
 
         mockResponse.resetHistory()

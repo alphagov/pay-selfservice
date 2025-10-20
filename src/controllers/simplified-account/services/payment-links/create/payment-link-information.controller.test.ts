@@ -4,6 +4,7 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { PaymentLinkCreationSession, FROM_REVIEW_QUERY_PARAM } from './constants'
 import { validGatewayAccount } from '@test/fixtures/gateway-account.fixtures'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
+import { SlugifiedString } from '@utils/simplified-account/format/slugify-string'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -81,8 +82,8 @@ describe('controller: services/payment-links/create/payment-link-information', (
           paymentLinkTitle: 'Existing Title',
           paymentLinkDescription: 'Existing Description',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'existing-title',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'existing-title' as SlugifiedString,
         }
 
         nextRequest({
@@ -110,8 +111,8 @@ describe('controller: services/payment-links/create/payment-link-information', (
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Title',
           language: 'cy',
-          serviceNamePath: 'test-service',
-          productNamePath: 'welsh-title',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'welsh-title' as SlugifiedString,
         }
 
         nextRequest({
@@ -155,8 +156,8 @@ describe('controller: services/payment-links/create/payment-link-information', (
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Title',
           language: 'cy',
-          serviceNamePath: 'test-service',
-          productNamePath: 'welsh-title',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'welsh-title' as SlugifiedString,
         }
 
         nextRequest({
@@ -207,8 +208,8 @@ describe('controller: services/payment-links/create/payment-link-information', (
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Title',
           language: 'cy',
-          serviceNamePath: 'test-service',
-          productNamePath: 'welsh-title',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'welsh-title' as SlugifiedString,
         }
 
         nextRequest({
@@ -246,8 +247,8 @@ describe('controller: services/payment-links/create/payment-link-information', (
           paymentLinkTitle: 'Welsh Title',
           language: 'cy',
           useEnglishServiceName: true,
-          serviceNamePath: 'test-service',
-          productNamePath: 'welsh-title',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'welsh-title' as SlugifiedString,
         }
 
         nextRequest({
@@ -344,8 +345,8 @@ describe('controller: services/payment-links/create/payment-link-information', (
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Previous Title',
           language: 'cy',
-          serviceNamePath: 'test-service',
-          productNamePath: 'previous-title',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'previous-title' as SlugifiedString,
         }
 
         nextRequest({

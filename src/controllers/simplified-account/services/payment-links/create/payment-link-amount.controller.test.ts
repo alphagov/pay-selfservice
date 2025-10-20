@@ -2,6 +2,7 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { PaymentLinkCreationSession } from './constants'
+import { SlugifiedString } from '@utils/simplified-account/format/slugify-string'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const GATEWAY_ACCOUNT_ID = 117
@@ -23,7 +24,7 @@ const { nextRequest, call, res } = new ControllerTestBuilder(
   .withService({
     name: 'McDuck Enterprises',
     serviceName: { en: 'McDuck Enterprises', cy: 'Mentrau McDuck' },
-    externalId: SERVICE_EXTERNAL_ID
+    externalId: SERVICE_EXTERNAL_ID,
   })
   .build()
 
@@ -36,10 +37,10 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
           paymentLinkTitle: 'Test Payment Link',
           paymentLinkDescription: 'Test Description',
           language: 'en',
-          serviceNamePath: 'mcduck-enterprises',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'mcduck-enterprises' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'fixed',
-          paymentLinkAmount: 2499
+          paymentLinkAmount: 2499,
         }
 
         nextRequest({
@@ -96,8 +97,8 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Welsh Payment Link',
           language: 'cy',
-          serviceNamePath: 'test-service',
-          productNamePath: 'welsh-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'welsh-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
           paymentAmountHint: 'whatever',
         }
@@ -127,7 +128,6 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
       })
     })
 
-
     describe('with empty session data', () => {
       beforeEach(async () => {
         res.redirect.resetHistory()
@@ -153,8 +153,8 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'variable',
           paymentAmountHint: 'whatever',
         }
@@ -187,8 +187,8 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'fixed',
           paymentLinkAmount: 1299,
         }
@@ -239,8 +239,8 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'fixed',
           paymentLinkAmount: 2499,
         }
@@ -287,8 +287,8 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'fixed',
         }
 
@@ -303,7 +303,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
           },
           body: {
             amountTypeGroup: 'fixed',
-            paymentAmount: undefined
+            paymentAmount: undefined,
           },
         })
 
@@ -329,8 +329,8 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'fixed',
         }
 
@@ -346,7 +346,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
           },
           body: {
             amountTypeGroup: 'fixed',
-            paymentAmount: (minimumAmount - 1).toString()
+            paymentAmount: (minimumAmount - 1).toString(),
           },
         })
 
@@ -372,8 +372,8 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'fixed',
         }
 
@@ -389,7 +389,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
           },
           body: {
             amountTypeGroup: 'fixed',
-            paymentAmount: (maximumAmount + 1).toString()
+            paymentAmount: (maximumAmount + 1).toString(),
           },
         })
 
@@ -415,8 +415,8 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentAmountType: 'fixed',
         }
 
@@ -431,7 +431,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
           },
           body: {
             amountTypeGroup: 'fixed',
-            paymentAmount: 'something'
+            paymentAmount: 'something',
           },
         })
 
@@ -457,8 +457,8 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
         const sessionData: Partial<PaymentLinkCreationSession> = {
           paymentLinkTitle: 'Test Payment Link',
           language: 'en',
-          serviceNamePath: 'test-service',
-          productNamePath: 'test-payment-link',
+          serviceNamePath: 'test-service' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
           paymentReferenceType: 'standard',
         }
 
@@ -475,7 +475,7 @@ describe('controller: services/payment-links/create/payment-link-amount', () => 
           },
           body: {
             amountTypeGroup: 'variable',
-            amountHint: invalidAmountHint
+            amountHint: invalidAmountHint,
           },
         })
 

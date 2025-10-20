@@ -3,8 +3,7 @@ import { response } from '@utils/response'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import paths from '@root/paths'
-import { CREATE_SESSION_KEY, FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
-import lodash from 'lodash'
+import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
 import { createProduct } from '@services/products.service'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import { createPaymentLinkToken } from '@services/tokens.service'
@@ -14,9 +13,9 @@ const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
-  const currentSession = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
+  const currentSession = PaymentLinkCreationSession.extract(req)
 
-  if (lodash.isEmpty(currentSession)) {
+  if (currentSession.isEmpty()) {
     return res.redirect(
       formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
     )
@@ -91,8 +90,8 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     account.type
   )
 
-  const pageData = lodash.get(req, CREATE_SESSION_KEY, {} as PaymentLinkCreationSession)
-  if (lodash.isEmpty(pageData)) {
+  const currentSession = PaymentLinkCreationSession.extract(req)
+  if (currentSession.isEmpty()) {
     return res.redirect(
       formatServiceAndAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, service.externalId, account.type)
     )
@@ -103,17 +102,17 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
   const createProductRequest = new CreateProductRequest()
     .withApiToken(token)
     .withGatewayAccountId(account.id)
-    .withServiceNamePath(pageData.serviceNamePath)
-    .withProductNamePath(pageData.productNamePath)
-    .withName(pageData.paymentLinkTitle)
-    .withDescription(pageData.paymentLinkDescription ?? '')
-    .withPrice(pageData.paymentLinkAmount)
-    .withLanguage(pageData.language)
-    .withMetadata(pageData.metadata)
+    .withServiceNamePath(currentSession.serviceNamePath!)
+    .withProductNamePath(currentSession.productNamePath!)
+    .withName(currentSession.paymentLinkTitle!)
+    .withDescription(currentSession.paymentLinkDescription ?? '')
+    .withPrice(currentSession.paymentLinkAmount!)
+    .withLanguage(currentSession.language!)
+    .withMetadata(currentSession.metadata)
     .withType(ProductType.ADHOC)
-    .withReferenceEnabled(pageData.paymentReferenceType === 'custom')
-    .withReferenceHint(pageData.paymentReferenceHint)
-    .withReferenceLabel(pageData.paymentReferenceLabel)
+    .withReferenceEnabled(currentSession.paymentReferenceType === 'custom')
+    .withReferenceHint(currentSession.paymentReferenceHint)
+    .withReferenceLabel(currentSession.paymentReferenceLabel)
 
   const paymentLink = await createProduct(createProductRequest)
   const successBannerBody =
@@ -127,7 +126,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     heading: `${paymentLink.name} has been created`,
     body: successBannerBody,
   })
-  lodash.unset(req, CREATE_SESSION_KEY)
+  PaymentLinkCreationSession.clear(req)
   return res.redirect(indexPath)
 }
 

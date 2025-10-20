@@ -1,5 +1,9 @@
 import { body } from 'express-validator'
 import { demoPaymentSchema } from '@utils/simplified-account/validation/demo-payment.schema'
+import { getProductByServiceAndProductPath } from '@services/products.service'
+import { slugifyString } from '@utils/simplified-account/format/slugify-string'
+import { PaymentLinkCreationSession } from '@controllers/simplified-account/services/payment-links/create/constants'
+import { ServiceRequest } from '@utils/types/express'
 
 const paymentLinkSchema = {
   info: {
@@ -20,6 +24,29 @@ const paymentLinkSchema = {
         .withMessage('Details must be less than 5000 characters')
         .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
         .withMessage('Details contains invalid characters'),
+    },
+  },
+  existing: {
+    paymentLink: {
+      validate: body('paymentLinkPath')
+        .trim()
+        .notEmpty()
+        .withMessage('Enter a payment link address')
+        .bail()
+        .isLength({ max: 230 })
+        .withMessage('a payment link address must be 230 characters or fewer')
+        .custom(async (value: string, { req }) => {
+          const currentSession = PaymentLinkCreationSession.extract(req as ServiceRequest)
+          if (!currentSession.serviceNamePath || !value) {
+            return Promise.reject(new Error())
+          }
+          const paymentLink = await getProductByServiceAndProductPath(
+            slugifyString(currentSession.serviceNamePath),
+            slugifyString(value)
+          ).catch(() => undefined)
+          return paymentLink ? Promise.reject(new Error()) : Promise.resolve()
+        })
+        .withMessage('The website address is already taken'),
     },
   },
   reference: {
