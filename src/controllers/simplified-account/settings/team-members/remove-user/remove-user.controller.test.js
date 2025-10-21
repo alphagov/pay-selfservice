@@ -8,45 +8,41 @@ const ControllerTestBuilder = require('@test/test-helpers/simplified-account/con
 const ACCOUNT_TYPE = 'test'
 const SERVICE_ID = 'service-id-123abc'
 
-const adminUser = new User(
-  userFixtures.validUserResponse({
-    external_id: 'user-id-for-admin-user',
-    email: 'admin-user@users.gov.uk',
-    service_roles: {
-      service: {
-        service: { external_id: SERVICE_ID },
-        role: { name: 'admin' },
-      },
-    },
-  })
-)
+const adminUser = new User(userFixtures.validUserResponse({
+  external_id: 'user-id-for-admin-user',
+  email: 'admin-user@users.gov.uk',
+  service_roles: {
+    service: {
+      service: { external_id: SERVICE_ID },
+      role: { name: 'admin' }
+    }
+  }
+}))
 
-const viewOnlyUser = new User(
-  userFixtures.validUserResponse({
+const viewOnlyUser = new User(userFixtures.validUserResponse(
+  {
     external_id: 'user-id-to-remove',
     email: 'user-to-remove@users.gov.uk',
     service_roles: {
-      service: {
-        service: { external_id: SERVICE_ID },
-        role: { name: 'view-only' },
-      },
-    },
-  })
-)
+      service:
+        {
+          service: { external_id: SERVICE_ID },
+          role: { name: 'view-only' }
+        }
+    }
+  }))
 
 const mockResponse = sinon.stub()
 const mockRenderErrorView = sinon.spy()
 const mockFindByExternalId = sinon.stub()
-const mockDelete = sinon.stub().returns({})
+const mockDelete = sinon.stub().returns({ })
 
-const { req, res, nextRequest, call } = new ControllerTestBuilder(
-  '@controllers/simplified-account/settings/team-members/remove-user/remove-user.controller'
-)
+const { req, res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/team-members/remove-user/remove-user.controller')
   .withServiceExternalId(SERVICE_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse, renderErrorView: mockRenderErrorView },
-    '@services/user.service': { findByExternalId: mockFindByExternalId, deleteUser: mockDelete },
+    '@services/user.service': { findByExternalId: mockFindByExternalId, delete: mockDelete }
   })
   .withUser(adminUser)
   .build()
@@ -57,7 +53,7 @@ describe('Controller: settings/team-members/remove-user', () => {
       beforeEach(async () => {
         mockFindByExternalId.resolves(viewOnlyUser)
         nextRequest({
-          params: { externalUserId: 'user-id-to-remove' },
+          params: { externalUserId: 'user-id-to-remove' }
         })
         await call('get')
       })
@@ -74,9 +70,8 @@ describe('Controller: settings/team-members/remove-user', () => {
           'simplified-account/settings/team-members/remove-user',
           {
             email: 'user-to-remove@users.gov.uk',
-            backLink: '/service/service-id-123abc/account/test/settings/team-members',
-          }
-        )
+            backLink: '/service/service-id-123abc/account/test/settings/team-members'
+          })
       })
     })
 
@@ -84,19 +79,14 @@ describe('Controller: settings/team-members/remove-user', () => {
       beforeEach(async () => {
         mockFindByExternalId.resolves(adminUser)
         nextRequest({
-          params: { externalUserId: 'user-id-for-admin-user' },
+          params: { externalUserId: 'user-id-for-admin-user' }
         })
         await call('get')
       })
 
       it('should call the renderErrorView method', () => {
         sinon.assert.calledWith(
-          mockRenderErrorView,
-          { ...req, params: { externalUserId: 'user-id-for-admin-user' } },
-          res,
-          'You cannot remove yourself from a service',
-          403
-        )
+          mockRenderErrorView, { ...req, params: { externalUserId: 'user-id-for-admin-user' } }, res, 'You cannot remove yourself from a service', 403)
       })
     })
   })
@@ -107,7 +97,7 @@ describe('Controller: settings/team-members/remove-user', () => {
         mockFindByExternalId.resolves(adminUser)
         nextRequest({
           params: { externalUserId: 'user-id-to-remove' },
-          body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'yes' },
+          body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'yes' }
         })
         await call('post')
       })
@@ -120,7 +110,7 @@ describe('Controller: settings/team-members/remove-user', () => {
         sinon.assert.calledWith(req.flash, 'messages', {
           state: 'success',
           icon: '&check;',
-          heading: 'Successfully removed user-to-remove@users.gov.uk',
+          heading: 'Successfully removed user-to-remove@users.gov.uk'
         })
         expect(res.redirect.calledOnce).to.be.true
         expect(res.redirect.args[0][0]).to.include(paths.simplifiedAccount.settings.teamMembers.index)
@@ -132,7 +122,7 @@ describe('Controller: settings/team-members/remove-user', () => {
         mockFindByExternalId.resolves(viewOnlyUser)
         nextRequest({
           params: { externalUserId: 'user-id-to-remove' },
-          body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'no' },
+          body: { email: 'user-to-remove@users.gov.uk', confirmRemoveUser: 'no' }
         })
         await call('post')
       })
@@ -149,7 +139,7 @@ describe('Controller: settings/team-members/remove-user', () => {
         mockFindByExternalId.resolves(adminUser)
         nextRequest({
           params: { externalUserId: 'user-id-for-admin-user' },
-          body: { email: 'admin-user@users.gov.uk', confirmRemoveUser: 'yes' },
+          body: { email: 'admin-user@users.gov.uk', confirmRemoveUser: 'yes' }
         })
         await call('post')
       })
@@ -160,7 +150,7 @@ describe('Controller: settings/team-members/remove-user', () => {
           {
             ...req,
             params: { externalUserId: 'user-id-for-admin-user' },
-            body: { email: 'admin-user@users.gov.uk', confirmRemoveUser: 'yes' },
+            body: { email: 'admin-user@users.gov.uk', confirmRemoveUser: 'yes' }
           },
           res,
           'You cannot remove yourself from a service',

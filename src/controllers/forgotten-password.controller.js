@@ -1,15 +1,18 @@
 'use strict'
 
 const paths = require('../paths.js')
-const userService = require('../services/user.service')
+const userService = require('../services/user.service.js')
 const logger = require('../utils/logger')(__filename)
-const { validateEmail, validatePassword } = require('../utils/validation/server-side-form-validations')
+const {
+  validateEmail,
+  validatePassword
+} = require('../utils/validation/server-side-form-validations')
 
-const emailGet = function emailGet(req, res) {
+const emailGet = function emailGet (req, res) {
   res.render('forgotten-password/index')
 }
 
-const emailPost = async function emailPost(req, res) {
+const emailPost = async function emailPost (req, res) {
   const username = req.body.username
 
   const validEmail = validateEmail(username)
@@ -17,8 +20,8 @@ const emailPost = async function emailPost(req, res) {
     return res.render('forgotten-password/index', {
       username,
       errors: {
-        username: validEmail.message,
-      },
+        username: validEmail.message
+      }
     })
   }
 
@@ -38,11 +41,11 @@ const emailPost = async function emailPost(req, res) {
   }
 }
 
-const passwordRequested = function passwordRequested(req, res) {
+const passwordRequested = function passwordRequested (req, res) {
   res.render('forgotten-password/password-requested')
 }
 
-const newPasswordGet = async function newPasswordGet(req, res) {
+const newPasswordGet = async function newPasswordGet (req, res) {
   const { id } = req.params
   try {
     await userService.findByResetToken(id)
@@ -53,21 +56,21 @@ const newPasswordGet = async function newPasswordGet(req, res) {
   }
 }
 
-const newPasswordPost = async function newPasswordPost(req, res) {
+const newPasswordPost = async function newPasswordPost (req, res) {
   try {
     const { id } = req.params
     const password = req.body.password
 
     const forgottenPassword = await userService.findByResetToken(id)
-    const user = await userService.findByExternalId(forgottenPassword.userExternalId)
+    const user = await userService.findByExternalId(forgottenPassword.user_external_id)
 
     const validPassword = validatePassword(password)
     if (!validPassword.valid) {
       return res.render('forgotten-password/new-password', {
         id,
         errors: {
-          password: validPassword.message,
-        },
+          password: validPassword.message
+        }
       })
     }
 
@@ -91,5 +94,5 @@ module.exports = {
   emailPost,
   passwordRequested,
   newPasswordGet,
-  newPasswordPost,
+  newPasswordPost
 }

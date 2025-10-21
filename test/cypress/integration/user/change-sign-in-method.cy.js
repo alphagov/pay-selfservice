@@ -13,7 +13,7 @@ describe('Change sign in method', () => {
 
           cy.task('setupStubs', [
             userStubs.getUserSuccess({ userExternalId, telephoneNumber: null, secondFactor: 'APP', provisionalOtpKey }),
-            userStubs.postProvisionSecondFactorSuccess(userExternalId),
+            userStubs.postProvisionSecondFactorSuccess(userExternalId)
           ])
 
           cy.visit('/my-profile/two-factor-auth')
@@ -36,24 +36,18 @@ describe('Change sign in method', () => {
           cy.get('button').contains('Continue').click()
 
           // check that an error message is displayed
-          cy.get('.govuk-error-summary')
-            .should('exist')
-            .within(() => {
-              cy.get('h2').should('contain', 'There is a problem')
-              cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
-              cy.get('[data-cy=error-summary-list-item]')
-                .first()
-                .contains('Enter a telephone number')
-                .should('have.attr', 'href', '#phone')
-            })
+          cy.get('.govuk-error-summary').should('exist').within(() => {
+            cy.get('h2').should('contain', 'There is a problem')
+            cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
+            cy.get('[data-cy=error-summary-list-item]').first()
+              .contains('Enter a telephone number')
+              .should('have.attr', 'href', '#phone')
+          })
           cy.title().should('equal', 'Enter your mobile phone number - GOV.UK Pay')
 
-          cy.get('.govuk-form-group--error > input#phone')
-            .parent()
-            .should('exist')
-            .within(() => {
-              cy.get('.govuk-error-message').should('contain', 'Enter a telephone number')
-            })
+          cy.get('.govuk-form-group--error > input#phone').parent().should('exist').within(() => {
+            cy.get('.govuk-error-message').should('contain', 'Enter a telephone number')
+          })
 
           // check that invalid phone number is pre-filled
           cy.get('input#phone').should('have.value', '0')
@@ -69,12 +63,12 @@ describe('Change sign in method', () => {
               userExternalId,
               telephoneNumber: validPhoneNumber,
               secondFactor: 'APP',
-              provisionalOtpKey,
+              provisionalOtpKey
             }),
             userStubs.postProvisionSecondFactorSuccess(userExternalId),
             userStubs.patchUpdateUserPhoneNumberSuccess(userExternalId, validPhoneNumber),
             userStubs.postSecondFactorSuccess(userExternalId, true),
-            userStubs.postActivateSecondFactorSuccess(userExternalId, { code: '123456', secondFactor: 'SMS' }),
+            userStubs.postActivateSecondFactorSuccess(userExternalId, { code: '123456', secondFactor: 'SMS' })
           ])
 
           cy.get('button').contains('Continue').click()
@@ -98,24 +92,18 @@ describe('Change sign in method', () => {
           cy.get('button').contains('Resend security code').click()
 
           // check that an error message is displayed
-          cy.get('.govuk-error-summary')
-            .should('exist')
-            .within(() => {
-              cy.get('h2').should('contain', 'There is a problem')
-              cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
-              cy.get('[data-cy=error-summary-list-item]')
-                .first()
-                .contains('Enter a telephone number')
-                .should('have.attr', 'href', '#phone')
-            })
+          cy.get('.govuk-error-summary').should('exist').within(() => {
+            cy.get('h2').should('contain', 'There is a problem')
+            cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
+            cy.get('[data-cy=error-summary-list-item]').first()
+              .contains('Enter a telephone number')
+              .should('have.attr', 'href', '#phone')
+          })
           cy.title().should('equal', 'Resend security code - GOV.UK Pay')
 
-          cy.get('.govuk-form-group--error > input#phone')
-            .parent()
-            .should('exist')
-            .within(() => {
-              cy.get('.govuk-error-message').should('contain', 'Enter a telephone number')
-            })
+          cy.get('.govuk-form-group--error > input#phone').parent().should('exist').within(() => {
+            cy.get('.govuk-error-message').should('contain', 'Enter a telephone number')
+          })
 
           // check the submitted phone number is displayed back
           cy.get('input#phone').should('have.value', validPhoneNumber + '000')
@@ -127,32 +115,24 @@ describe('Change sign in method', () => {
 
           // check we are sent back to the page to enter the security code with a notification message
           cy.title().should('equal', 'Check your phone - GOV.UK Pay')
-          cy.get('.govuk-notification-banner--success')
-            .should('exist')
-            .should('contain', 'Another security code has been sent to your phone')
+          cy.get('.govuk-notification-banner--success').should('exist').should('contain', 'Another security code has been sent to your phone')
 
           // submit the page wihout entering a code
           cy.get('button').contains('Complete').click()
 
           // check that an error is displayed
-          cy.get('.govuk-error-summary')
-            .should('exist')
-            .within(() => {
-              cy.get('h2').should('contain', 'There is a problem')
-              cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
-              cy.get('[data-cy=error-summary-list-item]')
-                .first()
-                .contains('Enter your security code')
-                .should('have.attr', 'href', '#code')
-            })
+          cy.get('.govuk-error-summary').should('exist').within(() => {
+            cy.get('h2').should('contain', 'There is a problem')
+            cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
+            cy.get('[data-cy=error-summary-list-item]').first()
+              .contains('Enter your security code')
+              .should('have.attr', 'href', '#code')
+          })
           cy.title().should('equal', 'Check your phone - GOV.UK Pay')
 
-          cy.get('.govuk-form-group--error > input#code')
-            .parent()
-            .should('exist')
-            .within(() => {
-              cy.get('.govuk-error-message').should('contain', 'Enter your security code')
-            })
+          cy.get('.govuk-form-group--error > input#code').parent().should('exist').within(() => {
+            cy.get('.govuk-error-message').should('contain', 'Enter your security code')
+          })
 
           // enter a valid code and submit
           cy.get('input#code').type('123456', { delay: 0 })
@@ -161,13 +141,8 @@ describe('Change sign in method', () => {
           // check we're redirected to the "My profile" page with a success message
           cy.title().should('equal', 'My profile - GOV.UK Pay')
           cy.get('.govuk-notification-banner--success').should('exist')
-          cy.get(
-            '.govuk-notification-banner--success > .govuk-notification-banner__content > p.govuk-notification-banner__heading'
-          ).should('contain', 'Your sign-in method has been updated')
-          cy.get('.govuk-notification-banner--success > .govuk-notification-banner__content > p.govuk-body').should(
-            'contain',
-            'We’ll send you a text message when you next sign in.'
-          )
+          cy.get('.govuk-notification-banner--success > .govuk-notification-banner__content > p.govuk-notification-banner__heading').should('contain', 'Your sign-in method has been updated')
+          cy.get('.govuk-notification-banner--success > .govuk-notification-banner__content > p.govuk-body').should('contain', 'We’ll send you a text message when you next sign in.')
         })
       })
     })
@@ -178,7 +153,7 @@ describe('Change sign in method', () => {
 
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, telephoneNumber: null, secondFactor: 'APP', provisionalOtpKey }),
-          userStubs.postProvisionSecondFactorSuccess(userExternalId),
+          userStubs.postProvisionSecondFactorSuccess(userExternalId)
         ])
 
         cy.visit('/my-profile/two-factor-auth')
@@ -202,7 +177,7 @@ describe('Change sign in method', () => {
         cy.task('setupStubs', [
           userStubs.getUserSuccess({ userExternalId, telephoneNumber: null, secondFactor: 'SMS', provisionalOtpKey }),
           userStubs.postProvisionSecondFactorSuccess(userExternalId),
-          userStubs.postActivateSecondFactorSuccess(userExternalId, { secondFactor: 'APP', code: '123456' }),
+          userStubs.postActivateSecondFactorSuccess(userExternalId, { secondFactor: 'APP', code: '123456' })
         ])
 
         cy.visit('/my-profile/two-factor-auth')
@@ -231,13 +206,8 @@ describe('Change sign in method', () => {
         // check we're redirected to the "My profile" page with a success message
         cy.title().should('equal', 'My profile - GOV.UK Pay')
         cy.get('.govuk-notification-banner--success').should('exist')
-        cy.get(
-          '.govuk-notification-banner--success > .govuk-notification-banner__content > p.govuk-notification-banner__heading'
-        ).should('contain', 'Your sign-in method has been updated')
-        cy.get('.govuk-notification-banner--success > .govuk-notification-banner__content > p.govuk-body').should(
-          'contain',
-          'Use your authenticator app when you next sign in.'
-        )
+        cy.get('.govuk-notification-banner--success > .govuk-notification-banner__content > p.govuk-notification-banner__heading').should('contain', 'Your sign-in method has been updated')
+        cy.get('.govuk-notification-banner--success > .govuk-notification-banner__content > p.govuk-body').should('contain', 'Use your authenticator app when you next sign in.')
       })
     })
   })
