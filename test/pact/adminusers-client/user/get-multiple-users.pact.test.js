@@ -68,7 +68,7 @@ describe('adminusers client - get users', function () {
     afterEach(() => provider.verify())
 
     it('should find users successfully', function () {
-      const result = expect(adminUsersClient.getUsersByExternalIds(existingExternalIds))
+      const result = expect(adminUsersClient.users.findMultipleByExternalIds(existingExternalIds))
 
       return result.to.be.fulfilled.then(function (users) {
         users.forEach((user, index) => {
@@ -106,7 +106,7 @@ describe('adminusers client - get users', function () {
     afterEach(() => provider.verify())
 
     it('should respond 404 if user not found', function () {
-      return expect(adminUsersClient.getUsersByExternalIds(existingExternalIds)).to.be.rejected.then(
+      return expect(adminUsersClient.users.findMultipleByExternalIds(existingExternalIds)).to.be.rejected.then(
         function (response) {
           expect(response.errorCode).to.equal(404)
         }
