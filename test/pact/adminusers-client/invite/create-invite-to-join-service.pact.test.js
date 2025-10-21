@@ -2,10 +2,10 @@ const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const inviteFixtures = require('../../../fixtures/invite.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
+const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 
 chai.use(chaiAsPromised)
 
@@ -22,38 +22,53 @@ describe('adminusers client - create invite to join service', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
     const opts = await provider.setup()
-    adminUsersClient = getAdminUsersClient({ baseUrl: `http://127.0.0.1:${opts.port}` })
+    adminUsersClient = new AdminUsersClient(`http://127.0.0.1:${opts.port}`)
   })
   after(() => provider.finalize())
 
   describe('success', function () {
-    const validCreateInviteRequest = inviteFixtures.validCreateInviteToJoinServiceRequest({ externalServiceId: existingServiceExternalId, sender: invitingUserExternalId })
+    const validCreateInviteRequest = inviteFixtures.validCreateInviteToJoinServiceRequest({
+      externalServiceId: existingServiceExternalId,
+      sender: invitingUserExternalId,
+    })
     const response = inviteFixtures.validInviteResponse({ ...validCreateInviteRequest })
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${INVITES_PATH}`)
-          .withState(`a user exists with external id ${invitingUserExternalId} with admin role for service with id ${existingServiceExternalId}`)
-          .withUponReceiving('a valid create invite to join service request')
-          .withMethod('POST')
-          .withRequestBody(validCreateInviteRequest)
-          .withStatusCode(201)
-          .withResponseBody(pactify(response))
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${INVITES_PATH}`)
+            .withState(
+              `a user exists with external id ${invitingUserExternalId} with admin role for service with id ${existingServiceExternalId}`
+            )
+            .withUponReceiving('a valid create invite to join service request')
+            .withMethod('POST')
+            .withRequestBody(validCreateInviteRequest)
+            .withStatusCode(201)
+            .withResponseBody(pactify(response))
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('should create a invite successfully', function (done) {
-      adminUsersClient.createInviteToJoinService(validCreateInviteRequest.email, validCreateInviteRequest.sender, existingServiceExternalId, validCreateInviteRequest.role_name).should.be.fulfilled.then(function (inviteResponse) {
-        expect(inviteResponse.email).to.be.equal(validCreateInviteRequest.email)
-      }).should.notify(done)
+      adminUsersClient.invites
+        .createInviteToJoinService(
+          validCreateInviteRequest.email,
+          validCreateInviteRequest.sender,
+          existingServiceExternalId,
+          validCreateInviteRequest.role_name
+        )
+        .should.be.fulfilled.then(function (inviteResponse) {
+          expect(inviteResponse.email).to.be.equal(validCreateInviteRequest.email)
+        })
+        .should.notify(done)
     })
   })
 })
