@@ -11,7 +11,7 @@ export class ForgottenPassword {
   readonly userExternalId: string
 
   constructor(forgottenPasswordData: ForgottenPasswordData) {
-    this.links = forgottenPasswordData.links
+    this.links = forgottenPasswordData._links
     this.code = forgottenPasswordData.code
     this.date = forgottenPasswordData.date
     this.userExternalId = forgottenPasswordData.user_external_id

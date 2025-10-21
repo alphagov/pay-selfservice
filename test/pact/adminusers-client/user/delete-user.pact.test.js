@@ -15,6 +15,7 @@ describe('adminusers client - delete user', function () {
     consumer: 'selfservice',
     provider: 'adminusers',
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
+    logLevel: 'debug',
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
     pactfileWriteMode: 'merge',
@@ -54,7 +55,7 @@ describe('adminusers client - delete user', function () {
 
     it('should delete a user successfully', function (done) {
       adminUsersClient.services
-        .removeUser(serviceId, removerId, userId)
+        .removeUser(serviceId, userId, removerId)
         .should.be.fulfilled.then(() => {})
         .should.notify(done)
     })
@@ -115,12 +116,16 @@ describe('adminusers client - delete user', function () {
     afterEach(() => provider.verify())
 
     it('should return not found when resource is not found (user or service)', function (done) {
-      adminUsersClient.services
-        .removeUser(serviceId, removerId, otherUserId)
-        .should.be.rejected.then((response) => {
-          expect(response.errorCode).to.equal(404)
-        })
-        .should.notify(done)
+      try {
+        adminUsersClient.services
+          .removeUser(serviceId, otherUserId, removerId)
+          .should.be.rejected.then((response) => {
+            expect(response.errorCode).to.equal(404)
+          })
+          .should.notify(done)
+      } catch (e) {
+        console.log(e)
+      }
     })
   })
 
@@ -150,9 +155,9 @@ describe('adminusers client - delete user', function () {
 
     afterEach(() => provider.verify())
 
-    it('should return forbidden when remover dos not ex', function (done) {
+    it('should return forbidden when remover does not exist', function (done) {
       adminUsersClient.services
-        .removeUser(serviceId, nonExistentRemoverId, userId)
+        .removeUser(serviceId, userId, nonExistentRemoverId)
         .should.be.rejected.then((response) => {
           expect(response.errorCode).to.equal(403)
         })

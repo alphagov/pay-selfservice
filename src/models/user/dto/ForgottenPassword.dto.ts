@@ -1,5 +1,5 @@
 export interface ForgottenPasswordData {
-  links: LinkData[]
+  _links: LinkData[]
   code: string
   date: string
   user_external_id: string

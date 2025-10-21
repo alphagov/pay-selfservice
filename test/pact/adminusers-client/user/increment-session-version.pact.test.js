@@ -5,6 +5,7 @@ const chaiAsPromised = require('chai-as-promised')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
+const { userResponsePactifier } = require('@test/test-helpers/pact/pactifier')
 
 chai.use(chaiAsPromised)
 
@@ -31,6 +32,7 @@ describe('adminusers client - session', function () {
   describe('increment session version  API - success', () => {
     const request = userFixtures.validIncrementSessionVersionRequest()
     const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
+    const userResponse = userFixtures.validUserResponse({ external_id: existingExternalId, session_version: 1 })
 
     before((done) => {
       provider
@@ -40,6 +42,7 @@ describe('adminusers client - session', function () {
             .withUponReceiving('a valid increment session version update request')
             .withMethod('PATCH')
             .withRequestBody(request)
+            .withResponseBody(userResponsePactifier.pactify(userResponse))
             .build()
         )
         .then(() => done())

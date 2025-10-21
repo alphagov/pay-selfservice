@@ -53,7 +53,7 @@ describe('adminusers client - get forgotten password', function () {
           expect(forgottenPassword.code).to.be.equal(validForgottenPasswordResponse.code)
           expect(forgottenPassword.date).to.be.equal(validForgottenPasswordResponse.date)
           expect(forgottenPassword.username).to.be.equal(validForgottenPasswordResponse.username)
-          expect(forgottenPassword._links.length).to.be.equal(validForgottenPasswordResponse._links.length)
+          expect(forgottenPassword.links.length).to.be.equal(validForgottenPasswordResponse._links.length)
         })
         .should.notify(done)
     })

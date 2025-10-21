@@ -6,6 +6,7 @@ const inviteFixtures = require('../../../fixtures/invite.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
+const { CreateInviteRequest } = require('@models/service/CreateInviteRequest.class')
 
 chai.use(chaiAsPromised)
 
@@ -60,10 +61,11 @@ describe('adminusers client - create invite to join service', function () {
     it('should create a invite successfully', function (done) {
       adminUsersClient.invites
         .createInviteToJoinService(
-          validCreateInviteRequest.email,
-          validCreateInviteRequest.sender,
-          existingServiceExternalId,
-          validCreateInviteRequest.role_name
+          new CreateInviteRequest()
+            .withServiceExternalId(existingServiceExternalId)
+            .withInviteeEmailAddress(validCreateInviteRequest.email)
+            .withSenderUserExternalId(validCreateInviteRequest.sender)
+            .withRoleName(validCreateInviteRequest.role_name)
         )
         .should.be.fulfilled.then(function (inviteResponse) {
           expect(inviteResponse.email).to.be.equal(validCreateInviteRequest.email)
