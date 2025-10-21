@@ -198,12 +198,12 @@ class AdminUsersClient extends BaseClient {
         return response.data.map((userData) => new User(userData))
       },
 
-      deleteUser: async (serviceExternalId: string, userExternalId: string, removerUserExternalId: string) => {
+      removeUser: async (serviceExternalId: string, userExternalId: string, removerUserExternalId: string) => {
         const path = '/v1/api/services/{serviceExternalId}/users/{userExternalId}'
           .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
           .replace('{userExternalId}', encodeURIComponent(userExternalId))
 
-        await this.delete<void>(path, 'delete a user from a service', {
+        await this.delete<void>(path, 'remove a user from a service', {
           headers: {
             [HEADER_USER_CONTEXT]: removerUserExternalId,
           },

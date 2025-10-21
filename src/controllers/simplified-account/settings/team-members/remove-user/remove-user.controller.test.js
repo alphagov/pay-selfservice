@@ -46,7 +46,7 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder(
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse, renderErrorView: mockRenderErrorView },
-    '@services/user.service': { findByExternalId: mockFindByExternalId, deleteUser: mockDelete },
+    '@services/user.service': { findByExternalId: mockFindByExternalId, removeUserFromService: mockDelete },
   })
   .withUser(adminUser)
   .build()

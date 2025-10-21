@@ -80,8 +80,8 @@ const getInvitedUsers = (serviceExternalId: string) => {
   return adminUsersClient.invites.getInvitedUsers(serviceExternalId)
 }
 
-const deleteUser = (serviceExternalId: string, removerExternalId: string, userExternalId: string) => {
-  return adminUsersClient.services.deleteUser(serviceExternalId, userExternalId, removerExternalId)
+const removeUserFromService = (serviceExternalId: string, removerExternalId: string, userExternalId: string) => {
+  return adminUsersClient.services.removeUser(serviceExternalId, userExternalId, removerExternalId)
 }
 
 const provisionNewOtpKey = (userExternalId: string) => {
@@ -116,7 +116,7 @@ export = {
   assignServiceRole,
   createInviteToJoinService,
   getInvitedUsers,
-  deleteUser,
+  removeUserFromService,
   provisionNewOtpKey,
   configureNewOtpKey,
   updatePhoneNumber,

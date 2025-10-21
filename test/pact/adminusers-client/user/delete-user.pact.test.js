@@ -53,8 +53,8 @@ describe('adminusers client - delete user', function () {
     afterEach(() => provider.verify())
 
     it('should delete a user successfully', function (done) {
-      adminUsersClient.users
-        .deleteUser(serviceId, removerId, userId)
+      adminUsersClient.services
+        .removeUser(serviceId, removerId, userId)
         .should.be.fulfilled.then(() => {})
         .should.notify(done)
     })
@@ -82,8 +82,8 @@ describe('adminusers client - delete user', function () {
     afterEach(() => provider.verify())
 
     it('should conflict when remover and user to delete coincide', function (done) {
-      adminUsersClient.users
-        .deleteUser(serviceId, removerId, removerId)
+      adminUsersClient.services
+        .removeUser(serviceId, removerId, removerId)
         .should.be.rejected.then((response) => {
           expect(response.errorCode).to.equal(409)
         })
@@ -115,8 +115,8 @@ describe('adminusers client - delete user', function () {
     afterEach(() => provider.verify())
 
     it('should return not found when resource is not found (user or service)', function (done) {
-      adminUsersClient.users
-        .deleteUser(serviceId, removerId, otherUserId)
+      adminUsersClient.services
+        .removeUser(serviceId, removerId, otherUserId)
         .should.be.rejected.then((response) => {
           expect(response.errorCode).to.equal(404)
         })
@@ -151,8 +151,8 @@ describe('adminusers client - delete user', function () {
     afterEach(() => provider.verify())
 
     it('should return forbidden when remover dos not ex', function (done) {
-      adminUsersClient.users
-        .deleteUser(serviceId, nonExistentRemoverId, userId)
+      adminUsersClient.services
+        .removeUser(serviceId, nonExistentRemoverId, userId)
         .should.be.rejected.then((response) => {
           expect(response.errorCode).to.equal(403)
         })

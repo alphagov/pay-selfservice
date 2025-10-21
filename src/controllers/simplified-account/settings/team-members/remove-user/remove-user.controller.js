@@ -74,7 +74,7 @@ async function post(req, res, next) {
   }
 
   try {
-    await userService.deleteUser(externalServiceId, removerExternalId, userToRemoveExternalId)
+    await userService.removeUserFromService(externalServiceId, removerExternalId, userToRemoveExternalId)
     req.flash('messages', { state: 'success', icon: '&check;', heading: 'Successfully removed ' + userToRemoveEmail })
     res.redirect(
       formatSimplifiedAccountPathsFor(
