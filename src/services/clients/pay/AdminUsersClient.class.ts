@@ -18,8 +18,8 @@ class AdminUsersClient extends BaseClient {
   public services
   public invites
 
-  constructor() {
-    super(SERVICE_BASE_URL, SERVICE_NAME)
+  constructor(baseUrl?: string) {
+    super(baseUrl ?? SERVICE_BASE_URL, SERVICE_NAME)
     this.users = this.usersClient
     this.services = this.servicesClient
     this.invites = this.invitesClient
@@ -59,7 +59,7 @@ class AdminUsersClient extends BaseClient {
       findMultipleByExternalIds: async (userExternalIds: string[]) => {
         const path = '/v1/api/users'
         const response = await this.get<UserData[]>(path, 'find multiple users', {
-          params: { ids: userExternalIds },
+          params: { ids: userExternalIds.join(',') },
         })
         return response.data.map((userData) => new User(userData))
       },
@@ -247,4 +247,4 @@ class AdminUsersClient extends BaseClient {
   }
 }
 
-export default AdminUsersClient
+export = AdminUsersClient
