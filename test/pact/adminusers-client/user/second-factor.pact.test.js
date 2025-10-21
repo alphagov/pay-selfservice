@@ -101,7 +101,7 @@ describe('adminusers client', function () {
     afterEach(() => provider.verify())
 
     it('authenticate a valid 2FA token successfully', function (done) {
-      adminUsersClient
+      adminUsersClient.users
         .authenticateSecondFactor(existingExternalId, token)
         .should.be.fulfilled.then(function (createdUser) {
           expect(createdUser.externalId).to.be.equal(existingExternalId)
@@ -132,7 +132,7 @@ describe('adminusers client', function () {
     afterEach(() => provider.verify())
 
     it('error bad request an invalid 2FA token', function (done) {
-      adminUsersClient
+      adminUsersClient.users
         .authenticateSecondFactor(existingExternalId, token)
         .should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(400)
@@ -164,7 +164,7 @@ describe('adminusers client', function () {
     afterEach(() => provider.verify())
 
     it('error unauthorized an expired/unauthorized 2FA token', function (done) {
-      adminUsersClient
+      adminUsersClient.users
         .authenticateSecondFactor(existingExternalId, token)
         .should.be.rejected.then(function (response) {
           expect(response.errorCode).to.equal(401)
