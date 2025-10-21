@@ -2,9 +2,9 @@ const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 
 chai.use(chaiAsPromised)
 
@@ -19,12 +19,12 @@ describe('adminusers client - session', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
     const opts = await provider.setup()
-    adminUsersClient = getAdminUsersClient({ baseUrl: `http://127.0.0.1:${opts.port}` })
+    adminUsersClient = new AdminUsersClient(`http://127.0.0.1:${opts.port}`)
   })
   after(() => provider.finalize())
 
@@ -33,20 +33,22 @@ describe('adminusers client - session', function () {
     const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}`)
-          .withState('a user exists')
-          .withUponReceiving('a valid increment session version update request')
-          .withMethod('PATCH')
-          .withRequestBody(request)
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}`)
+            .withState('a user exists')
+            .withUponReceiving('a valid increment session version update request')
+            .withMethod('PATCH')
+            .withRequestBody(request)
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('should increment session version successfully', function (done) {
-      adminUsersClient.incrementSessionVersionForUser(existingExternalId).should.be.fulfilled.notify(done)
+      adminUsersClient.users.incrementSessionVersion(existingExternalId).should.be.fulfilled.notify(done)
     })
   })
 
@@ -55,24 +57,29 @@ describe('adminusers client - session', function () {
     const request = userFixtures.validIncrementSessionVersionRequest()
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${USER_PATH}/${nonExistentExternalId}`)
-          .withState('a user does not exist')
-          .withUponReceiving('a valid increment session version request')
-          .withMethod('PATCH')
-          .withRequestBody(request)
-          .withResponseHeaders({})
-          .withStatusCode(404)
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${nonExistentExternalId}`)
+            .withState('a user does not exist')
+            .withUponReceiving('a valid increment session version request')
+            .withMethod('PATCH')
+            .withRequestBody(request)
+            .withResponseHeaders({})
+            .withStatusCode(404)
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('should return not found if user not exist', function (done) {
-      adminUsersClient.incrementSessionVersionForUser(nonExistentExternalId).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+      adminUsersClient.users
+        .incrementSessionVersion(nonExistentExternalId)
+        .should.be.rejected.then(function (response) {
+          expect(response.errorCode).to.equal(404)
+        })
+        .should.notify(done)
     })
   })
 })

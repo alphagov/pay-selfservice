@@ -2,8 +2,8 @@ const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
+const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 const SERVICES_PATH = '/v1/api/services'
 let adminUsersClient
 const expect = chai.expect
@@ -17,12 +17,12 @@ describe('adminusers client - delete user', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
     const opts = await provider.setup()
-    adminUsersClient = getAdminUsersClient({ baseUrl: `http://127.0.0.1:${opts.port}` })
+    adminUsersClient = adminUsersClient = new AdminUsersClient(`http://127.0.0.1:${opts.port}`)
   })
   after(() => provider.finalize())
 
@@ -32,18 +32,20 @@ describe('adminusers client - delete user', function () {
 
   describe('delete user API - success', () => {
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${userId}`)
-          .withState('a user and user admin exists in service with the given ids before a delete operation')
-          .withUponReceiving('a valid delete user from service request')
-          .withMethod('DELETE')
-          .withRequestHeaders({
-            Accept: 'application/json',
-            'GovUkPay-User-Context': removerId
-          })
-          .withResponseHeaders({})
-          .withStatusCode(204)
-          .build())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${userId}`)
+            .withState('a user and user admin exists in service with the given ids before a delete operation')
+            .withUponReceiving('a valid delete user from service request')
+            .withMethod('DELETE')
+            .withRequestHeaders({
+              Accept: 'application/json',
+              'GovUkPay-User-Context': removerId,
+            })
+            .withResponseHeaders({})
+            .withStatusCode(204)
+            .build()
+        )
         .then(() => done())
         .catch(done)
     })
@@ -51,26 +53,28 @@ describe('adminusers client - delete user', function () {
     afterEach(() => provider.verify())
 
     it('should delete a user successfully', function (done) {
-      adminUsersClient.deleteUser(serviceId, removerId, userId).should.be.fulfilled
-        .then(() => {
-        })
+      adminUsersClient.users
+        .deleteUser(serviceId, removerId, userId)
+        .should.be.fulfilled.then(() => {})
         .should.notify(done)
     })
   })
 
   describe('delete user API - remove user itself - conflict', () => {
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${removerId}`)
-          .withUponReceiving('a valid delete user from service request but remover is equal to user to be removed')
-          .withMethod('DELETE')
-          .withRequestHeaders({
-            Accept: 'application/json',
-            'GovUkPay-User-Context': removerId
-          })
-          .withResponseHeaders({})
-          .withStatusCode(409)
-          .build())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${removerId}`)
+            .withUponReceiving('a valid delete user from service request but remover is equal to user to be removed')
+            .withMethod('DELETE')
+            .withRequestHeaders({
+              Accept: 'application/json',
+              'GovUkPay-User-Context': removerId,
+            })
+            .withResponseHeaders({})
+            .withStatusCode(409)
+            .build()
+        )
         .then(() => done())
         .catch(done)
     })
@@ -78,8 +82,9 @@ describe('adminusers client - delete user', function () {
     afterEach(() => provider.verify())
 
     it('should conflict when remover and user to delete coincide', function (done) {
-      adminUsersClient.deleteUser(serviceId, removerId, removerId).should.be.rejected
-        .then((response) => {
+      adminUsersClient.users
+        .deleteUser(serviceId, removerId, removerId)
+        .should.be.rejected.then((response) => {
           expect(response.errorCode).to.equal(409)
         })
         .should.notify(done)
@@ -90,17 +95,19 @@ describe('adminusers client - delete user', function () {
     const otherUserId = 'user-does-not-exist'
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${otherUserId}`)
-          .withUponReceiving('an invalid delete user from service request as user does not exist')
-          .withMethod('DELETE')
-          .withRequestHeaders({
-            Accept: 'application/json',
-            'GovUkPay-User-Context': removerId
-          })
-          .withResponseHeaders({})
-          .withStatusCode(404)
-          .build())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${otherUserId}`)
+            .withUponReceiving('an invalid delete user from service request as user does not exist')
+            .withMethod('DELETE')
+            .withRequestHeaders({
+              Accept: 'application/json',
+              'GovUkPay-User-Context': removerId,
+            })
+            .withResponseHeaders({})
+            .withStatusCode(404)
+            .build()
+        )
         .then(() => done())
         .catch(done)
     })
@@ -108,8 +115,9 @@ describe('adminusers client - delete user', function () {
     afterEach(() => provider.verify())
 
     it('should return not found when resource is not found (user or service)', function (done) {
-      adminUsersClient.deleteUser(serviceId, removerId, otherUserId).should.be.rejected
-        .then((response) => {
+      adminUsersClient.users
+        .deleteUser(serviceId, removerId, otherUserId)
+        .should.be.rejected.then((response) => {
           expect(response.errorCode).to.equal(404)
         })
         .should.notify(done)
@@ -122,18 +130,20 @@ describe('adminusers client - delete user', function () {
     const userId = 'pact-user-no-remover-test'
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${userId}`)
-          .withState('a user exists but not the remover before a delete operation')
-          .withUponReceiving('a non existent user context')
-          .withMethod('DELETE')
-          .withRequestHeaders({
-            Accept: 'application/json',
-            'GovUkPay-User-Context': nonExistentRemoverId
-          })
-          .withResponseHeaders({})
-          .withStatusCode(403)
-          .build())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${SERVICES_PATH}/${serviceId}/users/${userId}`)
+            .withState('a user exists but not the remover before a delete operation')
+            .withUponReceiving('a non existent user context')
+            .withMethod('DELETE')
+            .withRequestHeaders({
+              Accept: 'application/json',
+              'GovUkPay-User-Context': nonExistentRemoverId,
+            })
+            .withResponseHeaders({})
+            .withStatusCode(403)
+            .build()
+        )
         .then(() => done())
         .catch(done)
     })
@@ -141,8 +151,9 @@ describe('adminusers client - delete user', function () {
     afterEach(() => provider.verify())
 
     it('should return forbidden when remover dos not ex', function (done) {
-      adminUsersClient.deleteUser(serviceId, nonExistentRemoverId, userId).should.be.rejected
-        .then((response) => {
+      adminUsersClient.users
+        .deleteUser(serviceId, nonExistentRemoverId, userId)
+        .should.be.rejected.then((response) => {
           expect(response.errorCode).to.equal(403)
         })
         .should.notify(done)
