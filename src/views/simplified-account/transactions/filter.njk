@@ -1,49 +1,47 @@
-<div class="transactions-filter-simplified-account govuk-grid-row">
-  <form class="govuk-clearfix" method="get" action="{{ search_path }}" novalidate autocomplete="off">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_reference-input.njk" %}</div>
-      <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_email-input.njk" %}</div>
-      <div class="govuk-grid-column-one-third">{% include "./partials/_status-select.njk" %}</div>
+<div class="transactions-filter-simplified-account govuk-grid-row" style="padding: 15">
+  <div class="govuk-grid-row govuk-clearfix">
+    <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_reference-input.njk" %}</div>
+    <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_email-input.njk" %}</div>
+    <div class="govuk-grid-column-one-third">{% include "./partials/_status-select.njk" %}</div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third" >
+      <fieldset class="govuk-fieldset">{% include "./partials/_date-filter-select.njk" %}</fieldset>
     </div>
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-one-third">
-        <fieldset class="govuk-fieldset">{% include "./partials/_date-filter-select.njk" %}</fieldset>
-      </div>
-      <div class="govuk-grid-column-one-third">
-        <div class="govuk-form-group govuk-!-margin-bottom-0">
-          <fieldset class="govuk-fieldset">{% include "./partials/_date-picker.njk" %}</fieldset>
-        </div>
-      </div>
-      <div class="govuk-grid-column-one-third">
-        <br class="transactions-list__br" />
-        <br class="transactions-list__br govuk-!-margin-bottom-2" />
-        {{
-          govukCheckboxes({
-            name: "time",
-            classes: "govuk-checkboxes--small transactions-list-time__checkbox",
-            fieldset: {
-              legend: {
-                text: "time",
-                isPageHeading: true,
-                classes: "govuk-visually-hidden"
-              }
-            },
-            items: [
-              {
-                value: "time",
-                text: "Include time",
-                label: {
-                  classes: " transactions-list-time__checkbox-label"
-                }
-              }
-            ]
-          })
-        }}
+    <div class="govuk-grid-column-one-third">
+      <div class="govuk-form-group govuk-!-margin-bottom-0">
+        <fieldset class="govuk-fieldset">{% include "./partials/_date-picker.njk" %}</fieldset>
       </div>
     </div>
+    <div class="govuk-grid-column-one-third">
+      <br class="transactions-list__br" />
+      <br class="transactions-list__br govuk-!-margin-bottom-2" />
+      {{
+        govukCheckboxes({
+          name: "time",
+          classes: "govuk-checkboxes--small transactions-list-time__checkbox",
+          fieldset: {
+            legend: {
+              text: "time",
+              isPageHeading: true,
+              classes: "govuk-visually-hidden"
+            }
+          },
+          items: [
+            {
+              value: "time",
+              text: "Include time",
+              label: {
+                classes: " transactions-list-time__checkbox-label"
+              }
+            }
+          ]
+        })
+      }}
+    </div>
+  </div>
 
-    {% if filters.metadataValue or filters.agreementId %}
-      {% set detailsElementOpenHtml = 'open="true"' %}
-    {% endif %}
-  </form>
+  {% if filters.metadataValue or filters.agreementId %}
+    {% set detailsElementOpenHtml = 'open="true"' %}
+  {% endif %}
 </div>

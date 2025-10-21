@@ -1,17 +1,15 @@
 <div class="transactions-filter-simplified-account govuk-grid-row">
-  <form class="govuk-clearfix" method="get" action="{{ search_path }}" novalidate autocomplete="off">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_name-input.njk" %}</div>
-      <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_last-four-digits-input.njk" %}</div>
-      <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_metadata-input.njk" %}</div>
-    </div>
-    
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column-one-third inputs-less-margin">
-        <div class="govuk-form-group govuk-!-margin-bottom-0">
-          <fieldset class="govuk-fieldset">{% include "./partials/_card-brand.njk" %}</fieldset>
-        </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_name-input.njk" %}</div>
+    <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_last-four-digits-input.njk" %}</div>
+    <div class="govuk-grid-column-one-third inputs-less-margin">{% include "./partials/_metadata-input.njk" %}</div>
+  </div>
+  
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third inputs-less-margin">
+      <div class="govuk-form-group govuk-!-margin-bottom-0">
+        <fieldset class="govuk-fieldset">{% include "./partials/_card-brand.njk" %}</fieldset>
       </div>
     </div>
-  </form>
+  </div>
 </div>
