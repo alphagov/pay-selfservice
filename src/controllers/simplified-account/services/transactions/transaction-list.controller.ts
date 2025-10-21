@@ -6,6 +6,7 @@ import getPagination from '@utils/simplified-account/pagination'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
+import { email } from '@pact-foundation/pact/src/dsl/matchers'
 
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
@@ -37,8 +38,10 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       currentPage = pageNumber
     }
   }
-  const filters = {}
-  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE)
+  const filters = {
+    ...(req.query.cardholderName && { cardholderName: req.query.cardholderName as string }),
+  }
+  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, filters)
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   if (totalPages > 0 && currentPage > totalPages) {
@@ -70,6 +73,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
     isBST: isBritishSummerTime(),
     pagination: pagination,
+    filters,
     // isStripeAccount: req.account.paymentProvider === 'stripe'
     isStripeAccount: true,
     // temporary to test Stripe specific elements
