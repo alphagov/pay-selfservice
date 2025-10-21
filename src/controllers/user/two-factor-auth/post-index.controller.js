@@ -2,7 +2,7 @@
 
 const lodash = require('lodash')
 
-const userService = require('../../../services/user.service')
+const userService = require('../../../services/user.service.js')
 const paths = require('../../../paths')
 const secondFactorMethod = require('@models/constants/second-factor-method')
 

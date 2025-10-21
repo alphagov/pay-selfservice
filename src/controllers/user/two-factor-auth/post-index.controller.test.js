@@ -18,10 +18,10 @@ describe('Select new second factor method post controller', () => {
     req = {
       body: {},
       session: {},
-      flash: sinon.spy(),
+      flash: sinon.spy()
     }
     res = {
-      redirect: sinon.spy(),
+      redirect: sinon.spy()
     }
     next = sinon.spy()
     provisionNewOtpKeySpy.resetHistory()
@@ -31,19 +31,17 @@ describe('Select new second factor method post controller', () => {
   describe('The user selects SMS as the new method', () => {
     describe('The user has a phone number set', () => {
       it('should make requests to adminusers and redirect to configure page', async () => {
-        req.user = new User(
-          userFixtures.validUserResponse({
-            external_id: userExternalId,
-            telephone_number: '+441134960000',
-          })
-        )
+        req.user = new User(userFixtures.validUserResponse({
+          external_id: userExternalId,
+          telephone_number: '+441134960000'
+        }))
         req.body['two-fa-method'] = 'SMS'
 
         await controllerWithAdminusersSuccessSpies(req, res, next)
 
         expect(req.session).to.have.property('pageData')
         expect(req.session.pageData).to.deep.equal({
-          twoFactorAuthMethod: 'SMS',
+          twoFactorAuthMethod: 'SMS'
         })
         sinon.assert.calledWith(provisionNewOtpKeySpy, userExternalId)
         sinon.assert.calledWith(sendProvisionalOtpSpy, userExternalId)
@@ -53,19 +51,17 @@ describe('Select new second factor method post controller', () => {
 
     describe('The user does not have a phone number set', () => {
       it('should redirect to phone number page', async () => {
-        req.user = new User(
-          userFixtures.validUserResponse({
-            external_id: userExternalId,
-            telephone_number: null,
-          })
-        )
+        req.user = new User(userFixtures.validUserResponse({
+          external_id: userExternalId,
+          telephone_number: null
+        }))
         req.body['two-fa-method'] = 'SMS'
 
         await controllerWithAdminusersSuccessSpies(req, res, next)
 
         expect(req.session).to.have.property('pageData')
         expect(req.session.pageData).to.deep.equal({
-          twoFactorAuthMethod: 'SMS',
+          twoFactorAuthMethod: 'SMS'
         })
         sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.phoneNumber)
         sinon.assert.notCalled(provisionNewOtpKeySpy)
@@ -76,18 +72,16 @@ describe('Select new second factor method post controller', () => {
 
   describe('The user selects APP as the new method', () => {
     it('should call adminusers and redirect to the configure page', async () => {
-      req.user = new User(
-        userFixtures.validUserResponse({
-          external_id: userExternalId,
-        })
-      )
+      req.user = new User(userFixtures.validUserResponse({
+        external_id: userExternalId
+      }))
       req.body['two-fa-method'] = 'APP'
 
       await controllerWithAdminusersSuccessSpies(req, res, next)
 
       expect(req.session).to.have.property('pageData')
       expect(req.session.pageData).to.deep.equal({
-        twoFactorAuthMethod: 'APP',
+        twoFactorAuthMethod: 'APP'
       })
       sinon.assert.calledWith(provisionNewOtpKeySpy, userExternalId)
       sinon.assert.calledWith(res.redirect, paths.user.profile.twoFactorAuth.configure)
@@ -97,11 +91,9 @@ describe('Select new second factor method post controller', () => {
 
   describe('There is an error contacting adminusers', () => {
     it('should call next with an error', async () => {
-      req.user = new User(
-        userFixtures.validUserResponse({
-          external_id: userExternalId,
-        })
-      )
+      req.user = new User(userFixtures.validUserResponse({
+        external_id: userExternalId
+      }))
       req.body['two-fa-method'] = 'APP'
 
       const error = new Error('Error from adminusers')
@@ -115,12 +107,12 @@ describe('Select new second factor method post controller', () => {
     })
   })
 
-  function getController(provisionNewOtpKeySpy, sendProvisionalOtpSpy) {
+  function getController (provisionNewOtpKeySpy, sendProvisionalOtpSpy) {
     return proxyquire('./post-index.controller', {
-      '../../../services/user.service': {
+      '../../../services/user.service.js': {
         provisionNewOtpKey: provisionNewOtpKeySpy,
-        sendProvisionalOTP: sendProvisionalOtpSpy,
-      },
+        sendProvisionalOTP: sendProvisionalOtpSpy
+      }
     })
   }
 })

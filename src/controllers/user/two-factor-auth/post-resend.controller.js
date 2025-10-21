@@ -1,19 +1,19 @@
 'use strict'
 
-const userService = require('../../../services/user.service')
+const userService = require('../../../services/user.service.js')
 const paths = require('../../../paths')
 const { invalidTelephoneNumber } = require('../../../utils/telephone-number-utils')
 const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 const { response } = require('../../../utils/response')
 
-module.exports = async function resendSmsCode(req, res, next) {
+module.exports = async function resendSmsCode (req, res, next) {
   const { phone } = req.body
   if (invalidTelephoneNumber(phone)) {
     const pageData = {
       phone,
       errors: {
-        phone: validationErrors.invalidTelephoneNumber,
-      },
+        phone: validationErrors.invalidTelephoneNumber
+      }
     }
     return response(req, res, 'two-factor-auth/resend-sms-code', pageData)
   }
