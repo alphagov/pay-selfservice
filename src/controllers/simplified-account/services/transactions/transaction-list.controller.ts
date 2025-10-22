@@ -69,7 +69,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
     isBST: isBritishSummerTime(),
     pagination: pagination,
-    isStripeAccount: req.account.paymentProvider === 'stripe'
+    isStripeAccount: req.account.paymentProvider === 'stripe',
   })
 }
 

@@ -5,6 +5,7 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const TRANSACTION_EXTERNAL_ID = 'transaction123abc'
 const GATEWAY_ACCOUNT_ID = 117
+const PAGE_SIZE = 20
 const mockResponse = sinon.stub()
 const mockLedgerService = {
   searchTransactions: sinon.stub().resolves({
@@ -72,7 +73,7 @@ describe('controller: services/ledger', () => {
         const results = context.results as {
           count: number
           total: number
-          transactions: { link: string; [key: string]: unknown }[]
+          transactions: { link: string;[key: string]: unknown }[]
         }
         sinon.assert.match(results.count, 1)
         sinon.assert.match(results.total, 1)
@@ -96,7 +97,7 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 2, 5)
+        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 2, PAGE_SIZE)
       })
 
       it('should default to page 1 for invalid page parameter', async () => {
@@ -106,7 +107,7 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, 5)
+        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, PAGE_SIZE)
       })
 
       it('should default to page 1 for negative page number', async () => {
@@ -116,7 +117,7 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, 5)
+        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, PAGE_SIZE)
       })
     })
   })
