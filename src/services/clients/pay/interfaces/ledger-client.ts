@@ -7,6 +7,7 @@ export interface LedgerTransactionParams {
   page?: number
   cardholderName?: string
   lastDigitsCardNumber?: string
+  metadataValue?: string
 }
 
 export class LedgerTransactionParamsData {
@@ -18,6 +19,7 @@ export class LedgerTransactionParamsData {
   readonly page: string
   readonly cardholder_name?: string
   readonly last_digits_card_number?: string
+  readonly metadata_value?: string
 
   constructor(params: LedgerTransactionParams) {
     this.account_id = params.accountIds.join(',')
@@ -28,6 +30,7 @@ export class LedgerTransactionParamsData {
     this.page = params.page?.toString() ?? '1'
     this.cardholder_name = params.cardholderName?.toString() ?? undefined
     this.last_digits_card_number = params.lastDigitsCardNumber?.toString() ?? undefined
+    this.metadata_value = params.metadataValue?.toString() ?? undefined
   }
 
   asQueryString(): string {

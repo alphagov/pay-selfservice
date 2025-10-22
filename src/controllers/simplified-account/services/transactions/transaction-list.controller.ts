@@ -39,7 +39,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   }
   const filters = {
     ...(req.query.cardholderName && { cardholderName: req.query.cardholderName as string }),
-    ...(req.query.lastDigitsCardNumber && { lastDigitsCardNumber: req.query.lastDigitsCardNumber as string })
+    ...(req.query.lastDigitsCardNumber && { lastDigitsCardNumber: req.query.lastDigitsCardNumber as string }),
+    ...(req.query.metadataValue && { metadataValue: req.query.metadataValue as string }),
   }
   const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, filters)
 
