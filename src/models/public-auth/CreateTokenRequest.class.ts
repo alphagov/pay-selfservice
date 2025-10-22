@@ -1,14 +1,16 @@
 import { CreateTokenRequestData } from '@models/public-auth/dto/CreateTokenRequest.dto'
 
 export class CreateTokenRequest {
-  private gatewayAccountId!: number
+  private gatewayAccountId!: string
   private serviceExternalId!: string
   private serviceMode!: string
   private description!: string
   private createdBy!: string
   private tokenUsageType!: string
+  private tokenAccountType?: string
+  private tokenType?: string
 
-  withGatewayAccountId(gatewayAccountId: number) {
+  withGatewayAccountId(gatewayAccountId: string) {
     this.gatewayAccountId = gatewayAccountId
     return this
   }
@@ -38,6 +40,16 @@ export class CreateTokenRequest {
     return this
   }
 
+  withTokenAccountType(tokenAccountType: string) {
+    this.tokenAccountType = tokenAccountType
+    return this
+  }
+
+  withTokenType(tokenType: string) {
+    this.tokenType = tokenType
+    return this
+  }
+
   toPayload(): CreateTokenRequestData {
     return {
       account_id: this.gatewayAccountId,
@@ -46,6 +58,8 @@ export class CreateTokenRequest {
       description: this.description,
       created_by: this.createdBy,
       type: this.tokenUsageType,
+      token_account_type: this.tokenAccountType,
+      token_type: this.tokenType,
     }
   }
 }

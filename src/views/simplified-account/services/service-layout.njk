@@ -4,14 +4,17 @@
 {% from "govuk/components/skip-link/macro.njk" import govukSkipLink %}
 
 {% block pageTitle %}
-  {{ servicePageTitle }} - {{ currentService.name }} - GOV.UK Pay
+  {{ servicePageTitle }}
+  - {{ currentService.name }} - GOV.UK Pay
 {% endblock %}
 
 {% block skipLink %}
-  {{ govukSkipLink({
-    text: "Skip to main content",
-    href: "#service-content"
-  }) }}
+  {{
+    govukSkipLink({
+      text: "Skip to main content",
+      href: "#service-content"
+    })
+  }}
 {% endblock %}
 
 {% block sideNavigation %}
@@ -28,19 +31,23 @@
   <div class="{% if NEW_SERVICE_NAV %}govuk-grid-column-three-quarters{% else %}govuk-grid-column-full{% endif %}">
     <div class="service-pane {% if fullWidth %}service-pane--full-width{% endif %}">
       {% if backLink %}
-        {{ govukBackLink({
-          text: "Back",
-          href: backLink
-        }) }}
+        {{
+          govukBackLink({
+            text: "Back",
+            href: backLink
+          })
+        }}
       {% endif %}
       {% if messages is defined and messages is iterable and messages|length > 0 %}
         {{ systemMessages({ messages: messages }) }}
       {% endif %}
       {% if errors %}
-        {{ govukErrorSummary({
-          titleText: "There is a problem",
-          errorList: errors.summary
-        }) }}
+        {{
+          govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errors.summary
+          })
+        }}
       {% endif %}
       <div id="service-content">
         {% block serviceContent %}

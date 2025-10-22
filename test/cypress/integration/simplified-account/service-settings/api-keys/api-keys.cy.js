@@ -7,7 +7,7 @@ const checkSettingsNavigation = require('@test/cypress/integration/simplified-ac
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
-const GATEWAY_ACCOUNT_ID = 11
+const GATEWAY_ACCOUNT_ID = '11'
 const ACCOUNT_TYPE = 'test'
 const USER_EMAIL = 'potter@wand.com'
 const API_KEYS_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`
@@ -244,7 +244,7 @@ describe('Settings - API keys', () => {
             type: 'API',
             serviceExternalId: SERVICE_EXTERNAL_ID,
             tokenType: 'CARD',
-            tokenAccountType: 'test'
+            tokenAccountType: 'test',
           }),
         ])
         cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`)

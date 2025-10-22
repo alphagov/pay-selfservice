@@ -1,0 +1,24 @@
+{{
+  govukInput({
+    id: 'reference',
+    name: 'reference',
+    value: filters.reference,
+    spellcheck: false,
+    attributes: {
+      'autocapitalize': 'none',
+      'data-cy': 'reference-filter'
+    },
+    classes: 'govuk-!-font-size-16',
+    formGroup: {
+      classes: 'transactions-search-reference-form-group'
+    },
+    label: {
+      text: 'Reference number',
+      classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
+    },
+    hint: {
+      text: 'Enter full or partial number',
+      classes: 'govuk-!-font-size-14'
+    }
+  })
+}}

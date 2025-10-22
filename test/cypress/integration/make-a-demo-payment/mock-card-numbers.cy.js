@@ -7,7 +7,7 @@ const productsStubs = require('@test/cypress/stubs/products-stubs')
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'gatewayaccount789ghi'
-const GATEWAY_ACCOUNT_ID = 11
+const GATEWAY_ACCOUNT_ID = '11'
 const USER_EMAIL = 'homer@simpson.com'
 const API_KEY_TOKEN = 'TOKEN1234'
 const PAYMENT_LINK_EXTERNAL_ID = 'paymentlink123abc'
@@ -26,17 +26,17 @@ const setupStubs = (options = {}) => {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
       payment_provider: options.paymentProvider || 'sandbox',
-      type: options.type || 'test'
+      type: options.type || 'test',
     }),
     apiKeysStubs.createApiKey(GATEWAY_ACCOUNT_ID, USER_EMAIL, 'Token for Demo Payment', API_KEY_TOKEN, {
       type: 'PRODUCTS',
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      serviceMode: 'test'
+      serviceMode: 'test',
     }),
     productsStubs.postCreateProductSuccess({
       external_id: PAYMENT_LINK_EXTERNAL_ID,
     }),
-    productsStubs.getProductsByGatewayAccountIdAndTypeStub([], GATEWAY_ACCOUNT_ID, 'PROTOTYPE')
+    productsStubs.getProductsByGatewayAccountIdAndTypeStub([], GATEWAY_ACCOUNT_ID, 'PROTOTYPE'),
   ])
 }
 
@@ -48,7 +48,7 @@ describe('mock card numbers page tests', () => {
   describe('for a non-stripe account', () => {
     beforeEach(() => {
       setupStubs({
-        paymentProvider: 'sandbox'
+        paymentProvider: 'sandbox',
       })
     })
 
@@ -61,7 +61,11 @@ describe('mock card numbers page tests', () => {
     it('should show the correct non-stripe mock card number', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       cy.contains('a', 'Continue').click()
-      cy.get('a.govuk-back-link').should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
+      cy.get('a.govuk-back-link').should(
+        'have.attr',
+        'href',
+        `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`
+      )
       cy.get('h1').should('contain.text', 'Mock card number')
       cy.get('p').contains(/^4000056655665556/)
     })
@@ -70,14 +74,18 @@ describe('mock card numbers page tests', () => {
   describe('for a stripe account', () => {
     beforeEach(() => {
       setupStubs({
-        paymentProvider: 'stripe'
+        paymentProvider: 'stripe',
       })
     })
 
     it('should show the correct stripe mock card number', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
       cy.contains('a', 'Continue').click()
-      cy.get('a.govuk-back-link').should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)
+      cy.get('a.govuk-back-link').should(
+        'have.attr',
+        'href',
+        `/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`
+      )
       cy.get('h1').should('contain.text', 'Mock card number')
       cy.get('p').contains(/^4000058260000005/)
     })
@@ -90,7 +98,7 @@ describe('mock card numbers page tests', () => {
 
     it('should redirect to the test payment link when clicking the "make a test payment" button', () => {
       cy.intercept('GET', `http://products-ui.url/pay/${PAYMENT_LINK_EXTERNAL_ID}`, {
-        statusCode: 200
+        statusCode: 200,
       }).as('paymentLinkRedirect')
 
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/demo-payment`)

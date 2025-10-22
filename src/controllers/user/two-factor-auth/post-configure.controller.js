@@ -3,14 +3,14 @@
 const lodash = require('lodash')
 
 const paths = require('../../../paths')
-const userService = require('../../../services/user.service.js')
+const userService = require('../../../services/user.service')
 const secondFactorMethod = require('@models/constants/second-factor-method')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const { validateOtp } = require('../../../utils/validation/server-side-form-validations')
 const { validationErrors } = require('../../../utils/validation/field-validation-checks')
 const { sanitiseSecurityCode } = require('../../../utils/security-code-utils')
 
-module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
+module.exports = async function postUpdateSecondFactorMethod(req, res, next) {
   const code = sanitiseSecurityCode(req.body.code)
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', secondFactorMethod.APP)
 
@@ -18,8 +18,8 @@ module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
   if (!validationResult.valid) {
     lodash.set(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {
       errors: {
-        securityCode: validationResult.message
-      }
+        securityCode: validationResult.message,
+      },
     })
     return res.redirect(paths.user.profile.twoFactorAuth.configure)
   }
@@ -30,13 +30,14 @@ module.exports = async function postUpdateSecondFactorMethod (req, res, next) {
     return res.redirect(paths.user.profile.index)
   } catch (err) {
     if (err instanceof RESTClientError && (err.errorCode === 401 || err.errorCode === 400)) {
-      const error = method === secondFactorMethod.SMS
-        ? validationErrors.invalidOrExpiredSecurityCodeSMS
-        : validationErrors.invalidOrExpiredSecurityCodeApp
+      const error =
+        method === secondFactorMethod.SMS
+          ? validationErrors.invalidOrExpiredSecurityCodeSMS
+          : validationErrors.invalidOrExpiredSecurityCodeApp
       lodash.set(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {
         errors: {
-          securityCode: error
-        }
+          securityCode: error,
+        },
       })
       return res.redirect(paths.user.profile.twoFactorAuth.configure)
     } else {

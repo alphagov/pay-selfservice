@@ -163,10 +163,11 @@ module.exports = {
         metadata: {
           add: '/payment-links/:productExternalId/add/reporting-column',
           update: '/payment-links/:productExternalId/edit/reporting-column/:metadataKey',
-        }
+        },
       },
       review: '/payment-links/review',
       delete: '/payment-links/:productExternalId/delete',
+      existingPaymentLink: '/payment-links/existing',
     },
     testWithYourUsers: {
       index: '/test-with-your-users',
@@ -179,6 +180,10 @@ module.exports = {
       index: '/agreements',
       detail: '/agreements/:agreementExternalId',
       cancel: '/agreements/:agreementExternalId/cancel',
+    },
+    transactions: {
+      index: '/transactions',
+      detail: '/transactions/:transactionExternalId',
     },
     settings: {
       index: '/settings',

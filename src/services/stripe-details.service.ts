@@ -15,7 +15,10 @@ const logger = createLogger(__filename)
 const connectorClient = new ConnectorClient()
 
 const getConnectorStripeAccountSetup = async (serviceExternalId: string, accountType: string) => {
-  return connectorClient.gatewayAccounts.getStripeAccountSetupByServiceExternalIdAndAccountType(serviceExternalId, accountType)
+  return connectorClient.gatewayAccounts.getStripeAccountSetupByServiceExternalIdAndAccountType(
+    serviceExternalId,
+    accountType
+  )
 }
 
 const updateConnectorStripeProgress = async (service: Service, gatewayAccount: GatewayAccount, step: string) => {
@@ -254,5 +257,6 @@ export {
   updateConnectorStripeProgress,
   getStripeAccountOnboardingDetails,
   getStripeAccountCapabilities,
+  getStripeAccountIdForGatewayAccount,
   getConnectorStripeAccountSetup,
 }
