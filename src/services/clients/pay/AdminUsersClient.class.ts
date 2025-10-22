@@ -219,7 +219,7 @@ class AdminUsersClient extends BaseClient {
   private get invitesClient() {
     return {
       createInviteToJoinService: async (createInviteRequest: CreateInviteRequest) => {
-        const path = 'v1/api/invites/create-invite-to-join-service'
+        const path = '/v1/api/invites/create-invite-to-join-service'
         const response = await this.post<CreateInviteRequestData, InviteData>(
           path,
           createInviteRequest.toJson(),
@@ -229,7 +229,7 @@ class AdminUsersClient extends BaseClient {
       },
 
       getInvitedUsers: async (serviceExternalId: string) => {
-        const path = 'v1/api/invites'
+        const path = '/v1/api/invites'
         const response = await this.get<InviteData[]>(path, 'get invited users for a service', {
           params: {
             serviceId: serviceExternalId,
@@ -239,9 +239,8 @@ class AdminUsersClient extends BaseClient {
       },
 
       sendOTP: async (inviteCode: string) => {
-        const path = '/v1/api/invites/{inviteCode}/second-otp'.replace('{inviteCode}', encodeURIComponent(inviteCode))
-        const response = await this.post<void, UserData>(path, undefined, 'find a user')
-        return new User(response.data)
+        const path = '/v1/api/invites/{inviteCode}/send-otp'.replace('{inviteCode}', encodeURIComponent(inviteCode))
+        await this.post<void, UserData>(path, undefined, 'find a user')
       },
     }
   }
