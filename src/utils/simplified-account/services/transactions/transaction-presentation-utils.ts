@@ -70,7 +70,9 @@ const transactionDetails = (
           'Dispute net amount': penceToPoundsWithCurrency(dispute.netAmount),
         }),
         Reason: dispute.friendlyReason,
-        'Evidence due by': dispute.evidenceDueDate,
+        ...(dispute.evidenceDueDate && {
+          'Evidence due by': dispute.evidenceDueDate.toFormat(DATESTAMP_FORMAT),
+        }),
       }),
     },
   }
