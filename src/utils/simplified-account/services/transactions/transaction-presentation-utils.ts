@@ -73,7 +73,7 @@ const transactionDetails = (
               </span>
             </summary>
             <div class="govuk-details__text">
-              If you lose a payment dispute, Stripe will deduct the disputed amount and an additional £20.00 dispute fee from your account.
+              If you lose a payment dispute, Stripe will deduct the disputed amount and an additional ${penceToPoundsWithCurrency(dispute.fee)} dispute fee from your account.
             </div>
           </details>`,
           },
