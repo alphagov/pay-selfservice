@@ -64,7 +64,19 @@ const transactionDetails = (
         'Date disputed': dispute.createdDate.toFormat(DATESTAMP_FORMAT),
         'Disputed amount': penceToPoundsWithCurrency(dispute.amount),
         ...(dispute.fee && {
-          'Provider dispute fee': penceToPoundsWithCurrency(dispute.fee),
+          'Provider dispute fee': {
+            html: `${penceToPoundsWithCurrency(dispute.fee)}
+          <details class="govuk-details small-arrow govuk-!-font-size-16">
+            <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                What is this fee?
+              </span>
+            </summary>
+            <div class="govuk-details__text">
+              If you lose a payment dispute, Stripe will deduct the disputed amount and an additional ${penceToPoundsWithCurrency(dispute.fee)} dispute fee from your account.
+            </div>
+          </details>`,
+          },
         }),
         ...(dispute.netAmount && {
           'Dispute net amount': penceToPoundsWithCurrency(dispute.netAmount),
