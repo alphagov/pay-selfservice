@@ -2,10 +2,10 @@ const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
-const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
+const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 
 chai.use(chaiAsPromised)
 
@@ -22,30 +22,32 @@ describe('adminusers client', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
     const opts = await provider.setup()
-    adminUsersClient = getAdminUsersClient({ baseUrl: `http://127.0.0.1:${opts.port}` })
+    adminUsersClient = new AdminUsersClient(`http://127.0.0.1:${opts.port}`)
   })
   after(() => provider.finalize())
 
   describe('send new second factor API - success', () => {
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor`)
-          .withState('a user exists')
-          .withUponReceiving('a valid second factor post request')
-          .withMethod('POST')
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor`)
+            .withState('a user exists')
+            .withUponReceiving('a valid second factor post request')
+            .withMethod('POST')
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('should send a new 2FA token successfully', function (done) {
-      adminUsersClient.sendSecondFactor(existingExternalId).should.be.fulfilled.notify(done)
+      adminUsersClient.users.sendOTP(existingExternalId).should.be.fulfilled.notify(done)
     })
   })
 
@@ -53,22 +55,27 @@ describe('adminusers client', function () {
     const externalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // non existent external id
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${USER_PATH}/${externalId}/second-factor`)
-          .withUponReceiving('a second factor post request for a non-existent user')
-          .withMethod('POST')
-          .withStatusCode(404)
-          .withResponseHeaders({})
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${externalId}/second-factor`)
+            .withUponReceiving('a second factor post request for a non-existent user')
+            .withMethod('POST')
+            .withStatusCode(404)
+            .withResponseHeaders({})
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('should return not found if user not exist', function (done) {
-      adminUsersClient.sendSecondFactor(externalId).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      }).should.notify(done)
+      adminUsersClient.users
+        .sendOTP(externalId)
+        .should.be.rejected.then(function (response) {
+          expect(response.errorCode).to.equal(404)
+        })
+        .should.notify(done)
     })
   })
 
@@ -78,23 +85,28 @@ describe('adminusers client', function () {
     const response = userFixtures.validUserResponse({ external_id: existingExternalId })
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor/authenticate`)
-          .withState('a user exists')
-          .withUponReceiving('a valid authenticate second factor token request')
-          .withRequestBody(request)
-          .withResponseBody(userResponsePactifier.pactify(response))
-          .withMethod('POST')
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor/authenticate`)
+            .withState('a user exists')
+            .withUponReceiving('a valid authenticate second factor token request')
+            .withRequestBody(request)
+            .withResponseBody(userResponsePactifier.pactify(response))
+            .withMethod('POST')
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('authenticate a valid 2FA token successfully', function (done) {
-      adminUsersClient.authenticateSecondFactor(existingExternalId, token).should.be.fulfilled.then(function (createdUser) {
-        expect(createdUser.externalId).to.be.equal(existingExternalId)
-      }).should.notify(done)
+      adminUsersClient.users
+        .authenticateSecondFactor(existingExternalId, token)
+        .should.be.fulfilled.then(function (createdUser) {
+          expect(createdUser.externalId).to.be.equal(existingExternalId)
+        })
+        .should.notify(done)
     })
   })
 
@@ -104,23 +116,28 @@ describe('adminusers client', function () {
     const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor/authenticate`)
-          .withState('a user exists')
-          .withUponReceiving('a invalid authenticate second factor token request')
-          .withRequestBody(request)
-          .withMethod('POST')
-          .withStatusCode(400)
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor/authenticate`)
+            .withState('a user exists')
+            .withUponReceiving('a invalid authenticate second factor token request')
+            .withRequestBody(request)
+            .withMethod('POST')
+            .withStatusCode(400)
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('error bad request an invalid 2FA token', function (done) {
-      adminUsersClient.authenticateSecondFactor(existingExternalId, token).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(400)
-      }).should.notify(done)
+      adminUsersClient.users
+        .authenticateSecondFactor(existingExternalId, token)
+        .should.be.rejected.then(function (response) {
+          expect(response.errorCode).to.equal(400)
+        })
+        .should.notify(done)
     })
   })
 
@@ -130,24 +147,29 @@ describe('adminusers client', function () {
     const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor/authenticate`)
-          .withState('a user exists')
-          .withUponReceiving('an expired/unauthorized second factor token request')
-          .withRequestBody(request)
-          .withMethod('POST')
-          .withStatusCode(401)
-          .withResponseHeaders({})
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}/second-factor/authenticate`)
+            .withState('a user exists')
+            .withUponReceiving('an expired/unauthorized second factor token request')
+            .withRequestBody(request)
+            .withMethod('POST')
+            .withStatusCode(401)
+            .withResponseHeaders({})
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('error unauthorized an expired/unauthorized 2FA token', function (done) {
-      adminUsersClient.authenticateSecondFactor(existingExternalId, token).should.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(401)
-      }).should.notify(done)
+      adminUsersClient.users
+        .authenticateSecondFactor(existingExternalId, token)
+        .should.be.rejected.then(function (response) {
+          expect(response.errorCode).to.equal(401)
+        })
+        .should.notify(done)
     })
   })
 })

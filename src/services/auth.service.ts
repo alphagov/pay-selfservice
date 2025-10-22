@@ -10,7 +10,7 @@ import passportCustom from 'passport-custom'
 import createLogger from '@utils/logger'
 import sessionValidator from '@services/session-validator.js'
 import paths from '@root/paths.js'
-import userService from '@services/user.service.js'
+import userService from '@services/user.service'
 import { addField } from '@services/clients/base/request-context'
 // @ts-expect-error js commons is not updated for typescript support yet
 import { logging } from '@govuk-pay/pay-js-commons'
@@ -110,7 +110,7 @@ function localStrategyLoginDirectAfterRegistration(req: Request, done: Authentic
     return
   }
   userService
-    .findByExternalId(registrationSession.userExternalId)
+    .findByExternalId(registrationSession.userExternalId as string)
     .then((user: User) => {
       registrationSession.destroy()
       done(null, user)
@@ -162,7 +162,12 @@ function passportClientSessionsCompatibility(req: Request, _: Response, next: Ne
   const request = req as ClientSessionsExpressRequest
   request.session.regenerate ??= (callback: (err?: unknown) => void) => {
     Object.keys(request.session).forEach((key) => {
-      if (key !== 'reset' && key !== 'setDuration' && key !== 'last_url' && typeof request.session[key] !== 'function') {
+      if (
+        key !== 'reset' &&
+        key !== 'setDuration' &&
+        key !== 'last_url' &&
+        typeof request.session[key] !== 'function'
+      ) {
         delete request.session[key]
       }
     })

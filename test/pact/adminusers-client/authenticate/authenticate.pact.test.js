@@ -5,11 +5,11 @@ const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
-const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const User = require('@models/user/User.class')
 const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
+const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 
 // Constants
 const AUTHENTICATE_PATH = '/v1/api/users/authenticate'
@@ -26,12 +26,12 @@ describe('adminusers client - authenticate', () => {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
     const opts = await provider.setup()
-    adminUsersClient = getAdminUsersClient({ baseUrl: `http://127.0.0.1:${opts.port}` })
+    adminUsersClient = new AdminUsersClient(`http://127.0.0.1:${opts.port}`)
   })
   after(() => provider.finalize())
 
@@ -42,26 +42,28 @@ describe('adminusers client - authenticate', () => {
     const validPasswordResponse = userFixtures.validUserResponse({ email: existingUserEmail })
     const request = userFixtures.validPasswordAuthenticateRequest({
       email: existingUserEmail,
-      password: validPassword
+      password: validPassword,
     })
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
-          .withUponReceiving('a correct password for a user')
-          .withState(`a user exists with email ${existingUserEmail} and password ${validPassword}`)
-          .withMethod('POST')
-          .withRequestBody(request)
-          .withResponseBody(userResponsePactifier.pactify(validPasswordResponse))
-          .withStatusCode(200)
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
+            .withUponReceiving('a correct password for a user')
+            .withState(`a user exists with email ${existingUserEmail} and password ${validPassword}`)
+            .withMethod('POST')
+            .withRequestBody(request)
+            .withResponseBody(userResponsePactifier.pactify(validPasswordResponse))
+            .withStatusCode(200)
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
-    it('should return the right authentication success response', done => {
-      adminUsersClient.authenticateUser(existingUserEmail, validPassword).then((response) => {
+    it('should return the right authentication success response', (done) => {
+      adminUsersClient.users.authenticate(existingUserEmail, validPassword).then((response) => {
         expect(response).to.deep.equal(new User(validPasswordResponse))
         done()
       })
@@ -71,35 +73,39 @@ describe('adminusers client - authenticate', () => {
   describe('user authentication fails', () => {
     const invalidPassword = 'some-password'
     const invalidPasswordResponse = userFixtures.invalidPasswordAuthenticateResponse()
-    const request = userFixtures
-      .validPasswordAuthenticateRequest({
-        email: existingUserEmail,
-        password: invalidPassword
-      })
+    const request = userFixtures.validPasswordAuthenticateRequest({
+      email: existingUserEmail,
+      password: invalidPassword,
+    })
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
-          .withUponReceiving('an incorrect password for a user')
-          .withState(`a user exists with email ${existingUserEmail} and password ${validPassword}`)
-          .withMethod('POST')
-          .withRequestBody(request)
-          .withResponseBody(userResponsePactifier.pactify(invalidPasswordResponse))
-          .withStatusCode(401)
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${AUTHENTICATE_PATH}`)
+            .withUponReceiving('an incorrect password for a user')
+            .withState(`a user exists with email ${existingUserEmail} and password ${validPassword}`)
+            .withMethod('POST')
+            .withRequestBody(request)
+            .withResponseBody(userResponsePactifier.pactify(invalidPasswordResponse))
+            .withStatusCode(401)
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
-    it('should return the right authentication failure response', done => {
-      adminUsersClient.authenticateUser(existingUserEmail, invalidPassword).then(() => {
-        done('should not resolve here')
-      }).catch(err => {
-        expect(err.errorCode).to.equal(401)
-        expect(err.message).to.deep.equal(invalidPasswordResponse.errors.join(', '))
-        done()
-      })
+    it('should return the right authentication failure response', (done) => {
+      adminUsersClient.users
+        .authenticate(existingUserEmail, invalidPassword)
+        .then(() => {
+          done('should not resolve here')
+        })
+        .catch((err) => {
+          expect(err.errorCode).to.equal(401)
+          expect(err.message).to.deep.equal(invalidPasswordResponse.errors.join(', '))
+          done()
+        })
     })
   })
 })
