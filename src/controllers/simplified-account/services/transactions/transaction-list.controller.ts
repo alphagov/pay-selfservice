@@ -14,13 +14,18 @@ const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: str
     accountType
   )
 
-  return (pageNumber: number) => {
+  const getPath = (pageNumber: number) => {
     let path = `${transactionsUrl}?page=${pageNumber}`
     if (filters && Object.keys(filters).length !== 0) {
       const filterParams = new URLSearchParams(filters).toString()
       path = `${path}&${filterParams}`
     }
     return path
+  }
+
+  return {
+    transactionsUrl: transactionsUrl,
+    path: getPath
   }
 }
 
@@ -49,9 +54,9 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     currentPage = totalPages
   }
 
-  const urlGenerator = getUrlGenerator(filters, req.service.externalId, req.account.type)
+  const { transactionsUrl, path } = getUrlGenerator(filters, req.service.externalId, req.account.type)
 
-  const pagination = getPagination(currentPage, PAGE_SIZE, results.total, urlGenerator)
+  const pagination = getPagination(currentPage, PAGE_SIZE, results.total, path)
 
   return response(req, res, 'simplified-account/transactions/index', {
     results: {
@@ -75,7 +80,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     isBST: isBritishSummerTime(),
     pagination: pagination,
     // isStripeAccount: req.account.paymentProvider === 'stripe'
-    isStripeAccount: true,
+    // isStripeAccount: true,
+    clearRedirect: transactionsUrl
     // temporary to test Stripe specific elements
   })
 }
