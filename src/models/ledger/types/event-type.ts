@@ -10,6 +10,10 @@ export const EventType = {
   QUEUED_FOR_CAPTURE: 'QUEUED_FOR_CAPTURE',
   CANCELLED_BY_USER: 'CANCELLED_BY_USER',
   AUTHORISATION_REJECTED: 'AUTHORISATION_REJECTED',
+  DISPUTE_CREATED: 'DISPUTE_CREATED',
+  DISPUTE_EVIDENCE_SUBMITTED: 'DISPUTE_EVIDENCE_SUBMITTED',
+  DISPUTE_LOST: 'DISPUTE_LOST',
+  DISPUTE_WON: 'DISPUTE_WON',
 } as const
 
 export type EventType = (typeof EventType)[keyof typeof EventType]
@@ -24,4 +28,8 @@ export const EventTypeFriendlyNames: Record<EventType, string> = {
   QUEUED_FOR_CAPTURE: 'Successful',
   CANCELLED_BY_USER: 'Cancelled',
   AUTHORISATION_REJECTED: 'Declined',
+  DISPUTE_CREATED: 'Dispute awaiting evidence',
+  DISPUTE_EVIDENCE_SUBMITTED: 'Dispute under review',
+  DISPUTE_LOST: 'Dispute lost to customer',
+  DISPUTE_WON: 'Dispute won in your favour',
 }

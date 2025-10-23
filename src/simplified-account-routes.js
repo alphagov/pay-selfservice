@@ -11,6 +11,7 @@ const {
   pspSwitchRedirect,
   canStartPspPaymentVerificationTask,
   experimentalFeature,
+  worldpayAccountIsActive,
 } = require('@middleware/simplified-account')
 const restrictToSwitchingAccount = require('@middleware/restrict-to-switching-account')
 const restrictToSandboxOrStripeTestAccount = require('@middleware/restrict-to-sandbox-or-stripe-test-account')
@@ -453,12 +454,12 @@ simplifiedAccount.get(
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.emailNotifications.customParagraph,
   permission('email-notification-paragraph:update'),
-  serviceSettingsController.emailNotifications.customParagraph.postEditCustomParagraph
+  serviceSettingsController.emailNotifications.customParagraph.post
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.emailNotifications.removeCustomParagraph,
   permission('email-notification-paragraph:update'),
-  serviceSettingsController.emailNotifications.customParagraph.postRemoveCustomParagraph
+  serviceSettingsController.emailNotifications.customParagraph.remove.post
 )
 
 // organisation details
@@ -532,11 +533,13 @@ simplifiedAccount.post(
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.cardPayments.googlePay,
   permission('payment-types:update'),
+  worldpayAccountIsActive,
   serviceSettingsController.cardPayments.googlePay.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.cardPayments.googlePay,
   permission('payment-types:update'),
+  worldpayAccountIsActive,
   serviceSettingsController.cardPayments.googlePay.post
 )
 simplifiedAccount.get(

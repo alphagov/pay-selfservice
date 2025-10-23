@@ -5,9 +5,10 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const random = require('../../../../src/utils/random')
-const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
+const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 let adminUsersClient
+
 const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
 
 chai.use(chaiAsPromised)
@@ -22,29 +23,29 @@ describe('adminusers client - get users', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
     const opts = await provider.setup()
-    adminUsersClient = getAdminUsersClient({ baseUrl: `http://127.0.0.1:${opts.port}` })
+    adminUsersClient = adminUsersClient = new AdminUsersClient(`http://127.0.0.1:${opts.port}`)
   })
+
   after(() => provider.finalize())
 
   describe('success', () => {
-    const existingExternalIds = [
-      random.randomUuid(),
-      random.randomUuid()
-    ]
+    const existingExternalIds = [random.randomUuid(), random.randomUuid()]
 
-    const params = existingExternalIds.map(existingExternalId => {
+    const params = existingExternalIds.map((existingExternalId) => {
       return {
         external_id: existingExternalId,
-        service_roles: [{
-          service: {
-            gateway_account_ids: ['666', '7']
-          }
-        }]
+        service_roles: [
+          {
+            service: {
+              gateway_account_ids: ['666', '7'],
+            },
+          },
+        ],
       }
     })
 
@@ -52,20 +53,22 @@ describe('adminusers client - get users', function () {
     const usersPactified = userResponsePactifier.pactifySimpleArray(expectedUsers)
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(USER_PATH)
-          .withQuery('ids', existingExternalIds.join())
-          .withState('the given external id all refer to existing users')
-          .withUponReceiving('a valid get users request')
-          .withResponseBody(usersPactified)
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(USER_PATH)
+            .withQuery('ids', existingExternalIds.join())
+            .withState('the given external id all refer to existing users')
+            .withUponReceiving('a valid get users request')
+            .withResponseBody(usersPactified)
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('should find users successfully', function () {
-      const result = expect(adminUsersClient.getUsersByExternalIds(existingExternalIds))
+      const result = expect(adminUsersClient.users.findMultipleByExternalIds(existingExternalIds))
 
       return result.to.be.fulfilled.then(function (users) {
         users.forEach((user, index) => {
@@ -75,36 +78,39 @@ describe('adminusers client - get users', function () {
           expect(user.serviceRoles[0].service.gatewayAccountIds.length).to.be.equal(2)
           expect(user.telephoneNumber).to.be.equal(expectedUsers[index].telephone_number)
           expect(user.otpKey).to.be.equal(expectedUsers[index].otp_key)
-          expect(user.serviceRoles[0].role.permissions.length).to.be.equal(expectedUsers[index].service_roles[0].role.permissions.length)
+          expect(user.serviceRoles[0].role.permissions.length).to.be.equal(
+            expectedUsers[index].service_roles[0].role.permissions.length
+          )
         })
       })
     })
   })
 
   describe('not found', () => {
-    const existingExternalIds = [
-      random.randomUuid(),
-      random.randomUuid()
-    ]
+    const existingExternalIds = [random.randomUuid(), random.randomUuid()]
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(USER_PATH)
-          .withQuery('ids', existingExternalIds.join())
-          .withState('no users exits with the given external id')
-          .withUponReceiving('a valid get users request of an non existing user')
-          .withStatusCode(404)
-          .withResponseHeaders({})
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(USER_PATH)
+            .withQuery('ids', existingExternalIds.join())
+            .withState('no users exits with the given external id')
+            .withUponReceiving('a valid get users request of an non existing user')
+            .withStatusCode(404)
+            .withResponseHeaders({})
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('should respond 404 if user not found', function () {
-      return expect(adminUsersClient.getUsersByExternalIds(existingExternalIds)).to.be.rejected.then(function (response) {
-        expect(response.errorCode).to.equal(404)
-      })
+      return expect(adminUsersClient.users.findMultipleByExternalIds(existingExternalIds)).to.be.rejected.then(
+        function (response) {
+          expect(response.errorCode).to.equal(404)
+        }
+      )
     })
   })
 })
