@@ -19,3 +19,32 @@
 .capitalize {
   text-transform: capitalize;
 }
+
+.transactions-list {
+  &__worldpay-header {
+    &--reference {
+      width: 16%
+    }
+
+    &--email {
+      width: 33%
+    }
+
+    &--amount {
+      width: 11%
+    }
+
+    &--brand {
+      width: 10%
+    }
+
+    &--state {
+      width: 14%
+    }
+
+    &--date {
+      text-align: left;
+      width: 16%;
+    }
+  }
+}
