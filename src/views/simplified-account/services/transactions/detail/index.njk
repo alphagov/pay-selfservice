@@ -24,6 +24,8 @@
               text: key
             },
             value: {
+              html: value.html
+            } if value.html else {
               text: value
             }
           }), rows)
