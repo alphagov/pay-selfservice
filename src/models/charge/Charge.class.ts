@@ -1,44 +1,7 @@
-import {
-  AuthorisationSummaryData,
-  ChargeData,
-  Link,
-  RefundSummaryData,
-  SettlementSummaryData,
-} from '@models/charge/dto/Charge.dto'
-
-class RefundSummary {
-  readonly status: string
-  readonly userExternalId: string | null
-  readonly amountAvailable: number
-  readonly amountSubmitted: number
-
-  constructor(data: RefundSummaryData) {
-    this.status = data.status
-    this.userExternalId = data.user_external_id
-    this.amountAvailable = data.amount_available
-    this.amountSubmitted = data.amount_submitted
-  }
-}
-
-class SettlementSummary {
-  readonly captureSubmitTime: string | null
-  readonly capturedDate: string | null
-
-  constructor(data: SettlementSummaryData) {
-    this.captureSubmitTime = data.capture_submit_time
-    this.capturedDate = data.captured_date
-  }
-}
-
-class AuthorisationSummary {
-  readonly threeDSecure: {
-    required: boolean
-  }
-
-  constructor(data: AuthorisationSummaryData) {
-    this.threeDSecure = data.three_d_secure
-  }
-}
+import { ChargeData, Link } from '@models/charge/dto/Charge.dto'
+import { AuthorisationSummary } from '@models/common/authorisation-summary/AuthorisationSummary.class'
+import { SettlementSummary } from '@models/common/settlement-summary/SettlementSummary.class'
+import { RefundSummary } from '@models/common/refund-summary/RefundSummary.class'
 
 interface ChargeState {
   finished: boolean
@@ -56,9 +19,9 @@ class Charge {
   readonly returnUrl: string
   readonly paymentProvider: string
   readonly createdDate: string
-  readonly refundSummary?: RefundSummary // todo use common models, shared with tx
-  readonly settlementSummary?: SettlementSummary // todo use common models, shared with tx
-  readonly authorisationSummary?: AuthorisationSummary // todo use common models, shared with tx
+  readonly refundSummary?: RefundSummary
+  readonly settlementSummary?: SettlementSummary
+  readonly authorisationSummary?: AuthorisationSummary
   readonly delayedCapture: boolean
   readonly moto: boolean
   readonly authorisationMode: string
