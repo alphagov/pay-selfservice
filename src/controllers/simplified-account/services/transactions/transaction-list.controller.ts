@@ -6,6 +6,8 @@ import getPagination from '@utils/simplified-account/pagination'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
+import { getAllCardTypes } from '@services/card-types.service'
+import lodash from 'lodash'
 
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
@@ -45,8 +47,17 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     ...(req.query.cardholderName && { cardholderName: req.query.cardholderName as string }),
     ...(req.query.lastDigitsCardNumber && { lastDigitsCardNumber: req.query.lastDigitsCardNumber as string }),
     ...(req.query.metadataValue && { metadataValue: req.query.metadataValue as string }),
+    ...(req.query.brand && { brand: req.query.brand as string }),
   }
   const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, filters)
+  const cardTypes = await getAllCardTypes()
+
+  const cardBrands = lodash.uniqBy(cardTypes, 'brand').map((card) => {
+    return {
+      value: card.brand,
+      text: card.label === 'Jcb' ? card.label.toUpperCase() : card.label,
+    }
+  })
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   if (totalPages > 0 && currentPage > totalPages) {
@@ -80,6 +91,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     pagination: pagination,
     clearRedirect: transactionsUrl,
     isStripeAccount: req.account.paymentProvider === 'stripe',
+    cardBrands,
+    filters,
   })
 }
 
