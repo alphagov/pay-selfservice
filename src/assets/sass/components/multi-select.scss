@@ -5,18 +5,18 @@
 }
 
 .multi-select__title {
+  width: 100%;
   border: 2px solid $govuk-text-colour;
-  padding: 8px 14px;
+  padding: 5px 5px;
   border-radius: 0;
   min-height: 34px;
   background-color: govuk-colour('white');
   text-align: left;
   background-image: url('/assets/images/dd-arrow-down.svg');
   background-repeat: no-repeat;
-  background-position: right 10px top 6px;
+  background-position: right 10px center;
   -webkit-appearance: none;
   appearance: none;
-  max-width: 100%;
   cursor: pointer;
   @include govuk-font($size: 19);
 
@@ -56,17 +56,17 @@
   .multi-select-dropdown__close-button {
     text-align: left;
     min-height: 34px;
-    background-repeat: no-repeat;
     background-color: #f3f2f1;
-    background-position: right 10px top 6px;
     -webkit-appearance: none;
     background-image: url('/assets/images/dd-arrow-up.svg');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
     width: 100%;
     margin-bottom: 3px;
     border-radius: 0;
     border: 2px solid govuk-colour('black');
     box-shadow: none;
-    padding: 8px 14px;
+    padding: 5px 5px;
     @include govuk-font($size: 19);
     &:hover {
       background-color: #b1b4b6;
@@ -88,6 +88,10 @@
     overflow-y: scroll;
     overflow-x: hidden;
     border: 2px solid govuk-colour('black');
+
+    .govuk-checkboxes__label {
+      word-wrap: break-word;
+    }
 
     .govuk-checkboxes__item {
       padding-left: 14px;

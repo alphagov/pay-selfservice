@@ -2,9 +2,6 @@
 import multiSelectTemplate from '@views/includes/multi-select.njk'
 import { renderString } from 'nunjucks'
 
-const MAXIMUM_VISIBLE_ITEMS = 8.5
-const MINIMUM_VISIBLE_ITEMS = 3.5
-
 const SELECTORS = {
   enhance: 'select[data-enhance-multiple]',
   topLevel: '.multi-select',
@@ -13,11 +10,11 @@ const SELECTORS = {
   dropdown: '.multi-select-dropdown',
   scrollContainer: '.multi-select-dropdown__inner-container',
   item: '.govuk-checkboxes__input',
-  currentSelections: '.multi-select-current-selections'
+  currentSelections: '.multi-select-current-selections',
 }
 
 // http://youmightnotneedjquery.com/#ready
-function ready (fn) {
+function ready(fn) {
   if (document.readyState !== 'loading') {
     fn()
   } else {
@@ -25,13 +22,11 @@ function ready (fn) {
   }
 }
 
-const randomElementId = () => `el-${Math.floor((Math.random() * 100000) + 1)}`
+const randomElementId = () => `el-${Math.floor(Math.random() * 100000 + 1)}`
 
 const updateDisplayedValue = (elem) => {
   const allItems = [...elem.querySelectorAll(SELECTORS.item)]
-  const selectedItemNames = allItems
-    .filter(item => item.checked)
-    .map(item => item.labels[0].innerHTML.trim())
+  const selectedItemNames = allItems.filter((item) => item.checked).map((item) => item.labels[0].innerHTML.trim())
   elem.querySelector(SELECTORS.currentSelections).innerText = selectedItemNames.length
     ? selectedItemNames.join(', ')
     : allItems[0].labels[0].innerHTML.trim()
@@ -41,15 +36,15 @@ const onItemChange = (event) => {
   const { target } = event
   const topLevel = target.closest(SELECTORS.topLevel)
   const allItems = [...topLevel.querySelectorAll(SELECTORS.item)]
-  const items = allItems.filter(item => item.value)
-  const allCheckbox = allItems.find(item => !item.value)
+  const items = allItems.filter((item) => item.value)
+  const allCheckbox = allItems.find((item) => !item.value)
 
   target.focus()
 
   if (target.value) {
     allCheckbox.checked = false
   } else {
-    items.forEach(item => {
+    items.forEach((item) => {
       item.checked = !target.checked
     })
   }
@@ -62,11 +57,9 @@ const onOpenButtonClick = (event) => {
   event.stopPropagation()
 
   // Close all other dropdowns first
-  document.querySelectorAll(SELECTORS.dropdown).forEach(dropdown => {
+  document.querySelectorAll(SELECTORS.dropdown).forEach((dropdown) => {
     dropdown.style.visibility = 'hidden'
-    dropdown.closest(SELECTORS.topLevel)
-      .querySelector(SELECTORS.openButton)
-      .setAttribute('aria-expanded', 'false')
+    dropdown.closest(SELECTORS.topLevel).querySelector(SELECTORS.openButton).setAttribute('aria-expanded', 'false')
   })
 
   const topLevel = target.closest(SELECTORS.topLevel)
@@ -89,44 +82,55 @@ const onCloseButtonClick = (event) => {
 
 const closeMultiSelectOnEscapeKeypress = () => {
   document.body.addEventListener('keydown', (e) => {
-    if (e.keyCode === 27) {
-      document.querySelectorAll(SELECTORS.dropdown).forEach(element => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll(SELECTORS.dropdown).forEach((element) => {
         if (element.style.visibility === 'visible') {
           element.style.visibility = 'hidden'
-          element.closest(SELECTORS.topLevel)
-            .querySelector(SELECTORS.openButton)
-            .focus()
+          element.closest(SELECTORS.topLevel).querySelector(SELECTORS.openButton).focus()
         }
       })
     }
   })
 }
 
+function setDropdownHeight(openButton, scrollContainer, items) {
+  const minVisibleItems = 3.5
+
+  const itemHeight = items.length > 0 ? items[0].offsetHeight : 0
+  if (!itemHeight) return
+
+  const availableSpace = window.innerHeight - openButton.getBoundingClientRect().top
+  const maxVisibleItems = Math.max(minVisibleItems, Math.floor(availableSpace / itemHeight) - 1.5)
+
+  if (availableSpace - itemHeight * items.length < 0) {
+    scrollContainer.style.maxHeight = `${maxVisibleItems * itemHeight}px`
+  } else {
+    scrollContainer.style.maxHeight = ''
+  }
+}
+
 const closeMultiSelectOnOutOfBoundsClick = () => {
   document.addEventListener('click', (event) => {
-    document.querySelectorAll(SELECTORS.dropdown).forEach(dropdown => {
-      if (!dropdown.contains(event.target) &&
-        !event.target.closest(SELECTORS.openButton)) {
+    document.querySelectorAll(SELECTORS.dropdown).forEach((dropdown) => {
+      if (!dropdown.contains(event.target) && !event.target.closest(SELECTORS.openButton)) {
         dropdown.style.visibility = 'hidden'
-        dropdown.closest(SELECTORS.topLevel)
-          .querySelector(SELECTORS.openButton)
-          .setAttribute('aria-expanded', false)
+        dropdown.closest(SELECTORS.topLevel).querySelector(SELECTORS.openButton).setAttribute('aria-expanded', false)
       }
     })
   })
 }
 
 const progressivelyEnhanceSelects = () => {
-  document.querySelectorAll(SELECTORS.enhance).forEach(select => {
+  document.querySelectorAll(SELECTORS.enhance).forEach((select) => {
     const configuration = {
       id: select.id || randomElementId(),
       name: select.getAttribute('name'),
-      items: [...select.querySelectorAll('option')].map(option => ({
+      items: [...select.querySelectorAll('option')].map((option) => ({
         text: option.innerText,
         value: option.value,
         id: option.id || randomElementId(),
-        checked: option.hasAttribute('selected')
-      }))
+        checked: option.hasAttribute('selected'),
+      })),
     }
 
     select.outerHTML = renderString(multiSelectTemplate, configuration)
@@ -138,24 +142,20 @@ const progressivelyEnhanceSelects = () => {
     const dropdown = newMultiSelect.querySelector(SELECTORS.dropdown)
     const scrollContainer = newMultiSelect.querySelector(SELECTORS.scrollContainer)
 
-    openButton.addEventListener('click', onOpenButtonClick)
+    setDropdownHeight(openButton, scrollContainer, items)
+
+    openButton.addEventListener('click', (event) => {
+      setDropdownHeight(openButton, scrollContainer, items)
+      onOpenButtonClick(event)
+    })
     closeButton.addEventListener('click', onCloseButtonClick)
-    items.forEach(item => item.addEventListener('change', onItemChange))
-
-    const itemHeight = [...items]
-      .reduce((sum, item) => sum + item.parentNode.offsetHeight, 0) / items.length
-
-    const maxVisibleItems = Math.min(
-      Math.floor(((window.innerHeight - openButton.getBoundingClientRect().top) / itemHeight) - 0.5) + 0.5,
-      MAXIMUM_VISIBLE_ITEMS
-    )
-    const visibleItems = Math.max(maxVisibleItems, MINIMUM_VISIBLE_ITEMS)
-
-    if ((window.innerHeight - openButton.getBoundingClientRect().top) - itemHeight * items.length < 0) {
-      scrollContainer.style.maxHeight = `${visibleItems * itemHeight}px`
-    }
+    items.forEach((item) => item.addEventListener('change', onItemChange))
 
     updateDisplayedValue(dropdown.parentNode)
+
+    window.addEventListener('resize', () => {
+      setDropdownHeight(openButton, scrollContainer, items)
+    })
   })
 
   closeMultiSelectOnEscapeKeypress()
