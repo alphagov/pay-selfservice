@@ -1,0 +1,75 @@
+<h2 class="govuk-heading-m govuk-!-margin-top-8">Dispute details</h2>
+
+{% macro feeInfo(feeValue) %}
+  {{ feeValue }}
+  <details class="govuk-details small-arrow govuk-!-font-size-16">
+    <summary class="govuk-details__summary">
+      <span class="govuk-details__summary-text"> What is this fee? </span>
+    </summary>
+    <div class="govuk-details__text">
+      If you lose a payment dispute, Stripe will deduct the disputed amount and an additional
+      {{ transaction.dispute.displayValues.fee }} dispute fee from your account.
+    </div>
+  </details>
+{% endmacro %}
+
+{%
+  set disputeDetailsRows =  [
+    {
+      key: { text: 'Status' },
+      value: { text: transaction.dispute.displayValues.status }
+    },
+    {
+      key: { text: 'Date disputed' },
+      value: { text: transaction.dispute.displayValues.createdDate }
+    },
+    {
+      key: { text: 'Disputed amount' },
+      value: { text: transaction.dispute.displayValues.amount }
+    }
+  ]
+%}
+
+{% if transaction.dispute.fee %}
+  {%
+    set disputeDetailsRows = disputeDetailsRows.concat([
+      {
+        key: { text: 'Provider dispute fee' },
+        value: { html: feeInfo(transaction.dispute._locals.formatted.fee) }
+      }
+    ])
+  %}
+{% endif %}
+
+{% if transaction.dispute.netAmount %}
+  {%
+    set disputeDetailsRows = disputeDetailsRows.concat([
+      {
+        key: { text: 'Dispute net amount' },
+        value: { text: transaction.dispute._locals.formatted.netAmount }
+      }
+    ])
+  %}
+{% endif %}
+
+{%
+  set disputeDetailsRows = disputeDetailsRows.concat([
+    {
+      key: { text: 'Reason' },
+      value: { text: transaction.dispute._locals.formatted.disputeReason }
+    }
+  ])
+%}
+
+{% if transaction.dispute.evidenceDueDate %}
+  {%
+    set disputeDetailsRows = disputeDetailsRows.concat([
+      {
+        key: { text: 'Evidence due by' },
+        value: { text: transaction.dispute._locals.formatted.evidenceDueDate }
+      }
+    ])
+  %}
+{% endif %}
+
+{{ govukSummaryList({ rows: disputeDetailsRows }) }}

@@ -35,6 +35,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const statusNames = isStripeAccount ? statusFriendlyNamesWithDisputes : statusFriendlyNames
 
   const [cardTypes, results] = await Promise.all([getAllCardTypes(), searchTransactions(transactionSearchParams)])
+  results.transactions.forEach((tx) => tx._locals.links.bind(req.service.externalId, req.account.type))
 
   const eventStates = statusNames.map((state) => {
     return {

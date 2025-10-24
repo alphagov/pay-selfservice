@@ -1,4 +1,4 @@
-{% macro stripeTransactionRow(transaction) %}
+{% macro stripeTransactionRow(transaction, service, account) %}
   <tr class="transactions-list--row govuk-table__row vertical-align-top">
     <th
       scope="row"
@@ -9,35 +9,35 @@
         class="govuk-link govuk-!-font-weight-regular govuk-!-font-size-16 reference govuk-!-display-block"
         id="charge-id-{{ transaction.externalId }}"
         data-charge-id="{{ transaction.externalId }}"
-        href="{{ transaction._links.detail(currentService.externalId, currentGatewayAccount.type) }}"
+        href="{{ transaction._locals.links.detail }}"
       >
-        {{ transaction.displayValues.reference }}
+        {{ transaction._locals.formatted.reference }}
       </a>
     </th>
     <td class="govuk-table__cell govuk-!-font-size-16 email vertical-align-middle"
-      >{{ transaction.displayValues.email }}</td
+      >{{ transaction._locals.formatted.email }}</td
     >
     <td class="govuk-table__cell amount govuk-!-font-size-16 vertical-align-middle" id="amount">
       {%- if transaction.totalAmount and transaction.corporateCardSurcharge -%}
-        {{ transaction.displayValues.totalAmount }}
+        {{ transaction._locals.formatted.totalAmount }}
         <span class="govuk-!-display-block govuk-!-font-size-16">(with card fee)</span>
       {%- else -%}
-        <span style="white-space: pre">{{ transaction.displayValues.amountInPounds }}</span>
+        <span style="white-space: pre">{{ transaction._locals.formatted.amountInPounds }}</span>
       {%- endif -%}
     </td>
     <td data-cell-type="fee" class="govuk-table__cell govuk-!-font-size-16 state vertical-align-middle">
-      {{ transaction.displayValues.fee }}
+      {{ transaction._locals.formatted.fee }}
     </td>
     <td data-cell-type="net" class="govuk-table__cell govuk-!-font-size-16 state vertical-align-middle">
       <span style="white-space: pre">
         {%- if transaction.transactionType === 'DISPUTE' -%}
-          {{ transaction.displayValues.netAmount }}
+          {{ transaction._locals.formatted.netAmount }}
         {% elif transaction.netAmount %}
-          {{ transaction.displayValues.netAmount }}
+          {{ transaction._locals.formatted.netAmount }}
         {% elif transaction.totalAmount %}
-          {{ transaction.displayValues.totalAmount }}
+          {{ transaction._locals.formatted.totalAmount }}
         {%- else -%}
-          {{ transaction.displayValues.amountInPounds }}
+          {{ transaction._locals.formatted.amountInPounds }}
         {%- endif -%}
       </span>
     </td>

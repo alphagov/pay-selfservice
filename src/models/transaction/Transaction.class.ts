@@ -16,18 +16,9 @@ import { State } from './State.class'
 import { parseReason, Reason, ReasonFriendlyNames } from './types/reason'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 import { TransactionLinksGenerator } from '@models/transaction/TransactionLinksGenerator.class'
+import { TransactionDisplayValues } from '@models/transaction/TransactionDisplayValues.class'
 
 const TITLE_FRIENDLY_DATESTAMP_FORMAT = 'dd LLLL yyyy HH:mm:ss'
-
-interface DisplayValues {
-  fee: string
-  amountInPounds: string
-  totalAmount: string
-  netAmount: string
-  email: string | undefined
-  reference: string
-  status: string | undefined
-}
 
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
@@ -57,8 +48,11 @@ class Transaction {
   readonly evidenceDueDate?: DateTime
   readonly data: TransactionData
   readonly paymentDetails?: Transaction
-  readonly displayValues: DisplayValues
-  readonly _links: TransactionLinksGenerator
+
+  readonly _locals: {
+    links: TransactionLinksGenerator
+    formatted: TransactionDisplayValues
+  }
 
   constructor(data: TransactionData) {
     this.gatewayAccountId = data.gateway_account_id
@@ -88,21 +82,10 @@ class Transaction {
     this.data = data
     this.paymentDetails = data.payment_details && new Transaction(data.payment_details)
 
-    const isRefund = this.transactionType === 'REFUND'
-    const isWonDispute = this.transactionType === 'DISPUTE' && this.state.status === 'WON'
-
-    this.displayValues = {
-      fee: this.fee ? penceToPoundsWithCurrency(this.fee) : '',
-      amountInPounds:
-        isRefund || isWonDispute ? penceToPoundsWithCurrency(-this.amount) : penceToPoundsWithCurrency(-this.amount),
-      netAmount: this.netAmount ? penceToPoundsWithCurrency(this.netAmount) : '',
-      totalAmount: this.totalAmount ? penceToPoundsWithCurrency(this.totalAmount) : '',
-      email: isRefund ? this.paymentDetails!.email : this.email,
-      reference: isRefund ? this.paymentDetails!.reference : this.reference,
-      status: getFriendlyStatus(this.transactionType, this.state.status),
+    this._locals = {
+      links: new TransactionLinksGenerator(this.externalId),
+      formatted: new TransactionDisplayValues(this),
     }
-
-    this._links = new TransactionLinksGenerator(this.externalId)
   }
 
   refundableAmountRemainingInPounds(): string {
@@ -134,6 +117,14 @@ class Transaction {
     if (this.reason !== undefined) {
       return ReasonFriendlyNames[this.reason] ?? ReasonFriendlyNames.OTHER
     }
+  }
+
+  isDispute(): boolean {
+    return this.transactionType === ResourceType.DISPUTE
+  }
+
+  isAtLeastPartiallyRefunded(): boolean {
+    return (this.refundSummary && this.refundSummary.amountRefunded > 0) ?? false
   }
 
   isPartiallyRefunded(): boolean {

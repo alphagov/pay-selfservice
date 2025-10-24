@@ -1,0 +1,60 @@
+<h2 class="govuk-heading-m govuk-!-margin-top-8">Payment method</h2>
+{% set paymentMethodRows = [] %}
+
+{% if transaction.cardDetails %}
+  {%
+    set paymentMethodRows = paymentMethodRows.concat([
+      {
+        key: {
+        text: 'Payment type'
+      },
+        value: {
+        text: transaction._locals.formatted.paymentType
+      }
+      }, {
+        key: {
+          text: 'Card brand'
+        },
+        value: {
+          text: transaction.cardDetails.cardBrand
+        }
+      }, {
+        key: {
+          text: 'Name on card'
+        },
+        value: {
+          text: transaction.cardDetails.cardholderName
+        }
+      }, {
+        key: {
+          text: 'Card number'
+        },
+        value: {
+          text: transaction._locals.formatted.cardNumber
+        }
+      }, {
+        key: {
+          text: 'Card expiry date'
+        },
+        value: {
+          text: transaction.cardDetails.expiryDate
+        }
+      }
+    ])
+  %}
+{% endif %}
+
+{%
+  set paymentMethodRows = paymentMethodRows.concat([
+    {
+      key: {
+        text: 'Email'
+      },
+      value: {
+        text: transaction.email
+      }
+    }
+  ])
+%}
+
+{{ govukSummaryList({ rows: paymentMethodRows }) }}

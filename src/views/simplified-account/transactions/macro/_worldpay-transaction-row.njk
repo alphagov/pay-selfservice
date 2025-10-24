@@ -1,4 +1,4 @@
-{% macro worldpayTransactionRow(transaction) %}
+{% macro worldpayTransactionRow(transaction, service, account) %}
   <tr class="transactions-list--row govuk-table__row vertical-align-top">
     <th
       scope="row"
@@ -9,27 +9,27 @@
         class="govuk-link govuk-!-font-weight-regular govuk-!-font-size-16 reference govuk-!-display-block"
         id="charge-id-{{ transaction.externalId }}"
         data-charge-id="{{ transaction.externalId }}"
-        href="{{ transaction._links.detail(currentService.externalId, currentGatewayAccount.type) }}"
+        href="{{ transaction._locals.links.detail }}"
       >
         {{ transaction.reference }}
       </a>
     </th>
     <td class="govuk-table__cell govuk-!-font-size-16 email vertical-align-middle"
-      >{{ transaction.displayValues.email }}</td
+      >{{ transaction._locals.formatted.email }}</td
     >
     <td class="govuk-table__cell amount govuk-!-font-size-16 vertical-align-middle" id="amount">
       {%- if transaction.totalAmount and transaction.corporateCardSurcharge -%}
-        {{ transaction.displayValues.totalAmount }}
+        {{ transaction._locals.formatted.totalAmount }}
         <span class="govuk-!-display-block govuk-!-font-size-16">(with card fee)</span>
       {%- else -%}
-        <span style="white-space: pre">{{ transaction.displayValues.amountInPounds }}</span>
+        <span style="white-space: pre">{{ transaction._locals.formatted.amountInPounds }}</span>
       {%- endif -%}
     </td>
     <td class="govuk-table__cell govuk-!-font-size-16 brand vertical-align-middle">
       {{ transaction.cardDetails.cardBrand }}
     </td>
     <td class="govuk-table__cell govuk-!-font-size-16 state vertical-align-middle">
-      {{ transaction.displayValues.status }}
+      {{ transaction._locals.formatted.status }}
     </td>
     <td
       style="text-align: left"
