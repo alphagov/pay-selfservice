@@ -2,4 +2,13 @@
   table-layout: fixed;
   word-wrap: break-word;
   overflow-wrap: break-word;
+
+  .summary-list__key {
+    padding-right: 40px !important;
+  }
+
+  .summary-list__row {
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+  }
 }
