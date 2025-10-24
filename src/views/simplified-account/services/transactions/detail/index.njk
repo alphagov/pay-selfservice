@@ -7,6 +7,8 @@
 {% endset %}
 
 {% block serviceContent %}
+  {% include './partials/_details.njk' %}
+
   {% for sectionKey, sectionData in transactionViewHelper %}
 
     {% if (loop.first == true) %}

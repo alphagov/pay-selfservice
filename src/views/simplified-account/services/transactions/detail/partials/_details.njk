@@ -1,0 +1,49 @@
+{#...(transaction.authorisationSummary && { '3D Secure (3DS)': transaction.authorisationSummary.threeDSecure.required ?#}
+{#'Required' : 'Not required',#}
+{{
+  govukSummaryList({ rows: [
+    {
+      key: {
+        text: 'Reference number'
+      },
+      value: {
+        text: transaction.reference
+      }
+    }, {
+      key: {
+        text: 'Service name'
+      },
+      value: {
+        text: currentService.serviceName.en
+      }
+    }, {
+      key: {
+        text: 'Description'
+      },
+      value: {
+        text: transaction.description
+      }
+    }, {
+      key: {
+        text: 'Date created'
+      },
+      value: {
+        text: transaction.createdDate.toFormat('dd LLL yyyy — HH:mm:ss')
+      }
+    }, {
+      key: {
+        text: 'Payment status'
+      },
+      value: {
+        text: transaction.friendlyTransactionStatus
+      }
+    }, {
+      key: {
+        text: '3D Secure (3DS)'
+      },
+      value: {
+        text: 'Required' if transaction.authorisationSummary.threeDSecure.required else 'Not required'
+      }
+    } if transaction.authorisationSummary else null
+  ] })
+}}
