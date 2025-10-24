@@ -12,7 +12,12 @@ import { parseReason, Reason } from './types/reason'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 import { TransactionLinksGenerator } from '@models/transaction/TransactionLinksGenerator.class'
 import { TransactionDisplayValues } from '@models/transaction/TransactionDisplayValues.class'
+<<<<<<< HEAD
 import { PaymentDetails } from '@models/transaction/PaymentDetails.class'
+=======
+
+const TITLE_FRIENDLY_DATESTAMP_FORMAT = 'dd LLLL yyyy HH:mm:ss'
+>>>>>>> a2d62973f (PP-15001 Refactor Transction detail page to declarative nunjucks)
 
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
@@ -41,7 +46,11 @@ class Transaction {
   readonly reason?: Reason
   readonly evidenceDueDate?: DateTime
   readonly data: TransactionData
+<<<<<<< HEAD
   readonly paymentDetails?: PaymentDetails
+=======
+  readonly paymentDetails?: Transaction
+>>>>>>> a2d62973f (PP-15001 Refactor Transction detail page to declarative nunjucks)
 
   readonly _locals: {
     links: TransactionLinksGenerator
@@ -108,6 +117,14 @@ class Transaction {
   }
 
   hasRefund(): boolean {
+    return (this.refundSummary && this.refundSummary.amountRefunded > 0) ?? false
+  }
+
+  isDispute(): boolean {
+    return this.transactionType === ResourceType.DISPUTE
+  }
+
+  isAtLeastPartiallyRefunded(): boolean {
     return (this.refundSummary && this.refundSummary.amountRefunded > 0) ?? false
   }
 
