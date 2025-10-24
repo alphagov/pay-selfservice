@@ -56,6 +56,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     return {
       value: card.brand,
       text: card.label === 'Jcb' ? card.label.toUpperCase() : card.label,
+      selected: filters.brand === card.brand,
     }
   })
 
@@ -91,7 +92,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     pagination: pagination,
     clearRedirect: transactionsUrl,
     isStripeAccount: req.account.paymentProvider === 'stripe',
-    cardBrands,
+    cardBrands: [{ value: '', text: 'Any', }, ...cardBrands],
     filters,
   })
 }
