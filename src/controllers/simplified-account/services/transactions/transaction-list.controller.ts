@@ -92,7 +92,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     pagination: pagination,
     clearRedirect: transactionsUrl,
     isStripeAccount: req.account.paymentProvider === 'stripe',
-    cardBrands: [{ value: '', text: 'Any', }, ...cardBrands],
+    cardBrands: [{ value: '', text: 'Any' }, ...cardBrands],
     filters,
   })
 }
