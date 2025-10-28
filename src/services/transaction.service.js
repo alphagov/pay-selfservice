@@ -86,6 +86,8 @@ const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, cha
       .uniq()
       .value()
 
+    
+
     if (userIds.length !== 0) {
       const users = await userService.findMultipleByExternalIds(userIds)
       return transactionView.buildPaymentView(charge, transactionEvents, disputeTransaction, isCorporateExemptionsEnabled, users)

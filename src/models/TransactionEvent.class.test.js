@@ -5,7 +5,7 @@ const TransactionEvent = require('./TransactionEvent.class')
 const states = require('../utils/states')
 const dates = require('../utils/dates')
 
-describe('Transaction event model', () => {
+describe.only('Transaction event model', () => {
   it('should build transaction event correctly for payment transaction data', () => {
     const eventData = {
       type: 'PAYMENT',
@@ -22,6 +22,10 @@ describe('Transaction event model', () => {
     }
 
     const transactionEvent = new TransactionEvent(eventData)
+
+    console.log('Type:', eventData.type)
+    console.log('State:', eventData.state)
+    console.log('Generated friendly name:', transactionEvent.state_friendly)
 
     expect(transactionEvent.type).to.equal('PAYMENT')
     expect(transactionEvent.amount).to.equal(5000)
@@ -62,6 +66,10 @@ describe('Transaction event model', () => {
 
     const transactionEvent = new TransactionEvent(eventData)
 
+    console.log('Type:', eventData.type)
+    console.log('State:', eventData.state)
+    console.log('Generated friendly name:', transactionEvent.state_friendly)
+
     expect(transactionEvent.type).to.equal('REFUND')
     expect(transactionEvent.amount).to.equal(2500)
     expect(transactionEvent.refund_reference).to.equal('refund_123abc')
@@ -85,6 +93,10 @@ describe('Transaction event model', () => {
     }
 
     const transactionEvent = new TransactionEvent(eventData)
+
+    console.log('Type:', eventData.type)
+    console.log('State:', eventData.state)
+    console.log('Generated friendly name:', transactionEvent.state_friendly)
 
     expect(transactionEvent.type).to.equal('DISPUTE')
     expect(transactionEvent.amount).to.equal(7500)
@@ -132,6 +144,10 @@ describe('Transaction event model', () => {
 
     const transactionEvent = new TransactionEvent(eventData)
 
+    console.log('Type:', eventData.type)
+    console.log('State:', eventData.state)
+    console.log('Generated friendly name:', transactionEvent.state_friendly)
+
     expect(transactionEvent.type).to.equal('DISPUTE')
     expect(transactionEvent.amount).to.equal(7500)
 
@@ -149,6 +165,10 @@ describe('Transaction event model', () => {
     }
 
     const transactionEvent = new TransactionEvent(eventData)
+
+    console.log('Type:', eventData.type)
+    console.log('State:', eventData.state)
+    console.log('Generated friendly name:', transactionEvent.state_friendly)
 
     expect(transactionEvent.type).to.equal('PAYMENT')
     expect(transactionEvent.amount).to.equal(1000)
@@ -185,6 +205,10 @@ describe('Transaction event model', () => {
 
     const transactionEvent = new TransactionEvent(eventData)
 
+    console.log('Type:', eventData.type)
+    console.log('State:', eventData.state)
+    console.log('Generated friendly name:', transactionEvent.state_friendly)
+
     expect(transactionEvent.amount).to.equal(undefined)
     expect(transactionEvent.amount_friendly).to.equal('£NaN')
     expect(transactionEvent.state_friendly).to.equal(
@@ -193,5 +217,73 @@ describe('Transaction event model', () => {
         'REFUND'
       )
     )
+  })
+
+  // TODO: Remove. I am just investigating.
+  it('TEMPORARY!  log friendly names for payment events / states', () => {
+    console.log('\nINVESTIGATING PAYMENT EVENTS FRIENDLY NAMES')
+    const paymentStates = ['created', 'started', 'submitted', 'capturable', 'success', 'declined', 'timedout', 'cancelled', 'error']
+
+    paymentStates.forEach(status => {
+      const eventData = {
+        type: 'PAYMENT',
+        amount: 1000,
+        updated: '2022-07-30T16:22:10.000Z',
+        state: { status }
+      }
+      const transactionEvent = new TransactionEvent(eventData)
+      console.log(`PAYMENT with status '${status}' is displayed with friendly name '${transactionEvent.state_friendly}'`)
+    })
+  })
+
+  it('TEMPORARY! log friendly names for refund events / states', () => {
+    console.log('\nINVESTIGATING REFUND EVENTS FRIENDLY NAMES')
+    const refundStates = ['submitted', 'error', 'success']
+
+    refundStates.forEach(status => {
+      const eventData = {
+        type: 'REFUND',
+        amount: 1000,
+        updated: '2022-07-30T16:22:10.000Z',
+        state: { status }
+      }
+      const transactionEvent = new TransactionEvent(eventData)
+      console.log(`REFUND with status '${status}' is displayed with friendly name '${transactionEvent.state_friendly}'`)
+    })
+  })
+
+  it('TEMPORARY! log friendly names for various dispute events / states', () => {
+    console.log('\nINVESTIGATING DISPUTE EVENTS FRIENDLY NAMES')
+    const disputeStates = ['needs_response', 'under_review', 'won', 'lost']
+
+    disputeStates.forEach(status => {
+      const eventData = {
+        type: 'DISPUTE',
+        amount: 1000,
+        updated: '2022-07-30T16:22:10.000Z',
+        state: { status }
+      }
+      const transactionEvent = new TransactionEvent(eventData)
+      console.log(`DISPUTE with status '${status}' is displayed with friendly name '${transactionEvent.state_friendly}'`)
+    })
+  })
+
+  it('TEMPORARY! log friendly names for failed states with error codes', () => {
+    console.log('\nINVESTIGATING FAILED STATES WITH ERROR CODES')
+    const errorCodes = ['P0010', 'P0020', 'P0030']
+
+    errorCodes.forEach(code => {
+      const eventData = {
+        type: 'PAYMENT',
+        amount: 1000,
+        updated: '2022-07-30T16:22:10.000Z',
+        state: {
+          status: 'failed',
+          code: code
+        }
+      }
+      const transactionEvent = new TransactionEvent(eventData)
+      console.log(`PAYMENT with status 'failed' and code '${code}' is displayed with friendly name '${transactionEvent.state_friendly}'`)
+    })
   })
 })
