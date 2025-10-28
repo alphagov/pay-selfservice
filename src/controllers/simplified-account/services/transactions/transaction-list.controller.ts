@@ -6,6 +6,7 @@ import getPagination from '@utils/simplified-account/pagination'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
+import { PaymentStatusFriendlyNames } from '@models/ledger/types/status'
 
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
@@ -37,7 +38,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     }
   }
   const filters = {}
-  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE)
+  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, 'payment')
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   if (totalPages > 0 && currentPage > totalPages) {
@@ -58,6 +59,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         netAmount: transaction.netAmount ? penceToPoundsWithCurrency(transaction.netAmount) : undefined,
         totalAmount: transaction.totalAmount ? penceToPoundsWithCurrency(transaction.totalAmount) : undefined,
         corporateCardSurcharge: transaction.corporateCardSurcharge,
+        formattedState: PaymentStatusFriendlyNames[transaction.state.status],
         link: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.transactions.detail,
           req.service.externalId,

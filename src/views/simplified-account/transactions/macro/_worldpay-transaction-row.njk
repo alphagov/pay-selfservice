@@ -27,7 +27,7 @@
       {{ transaction.cardDetails.cardBrand }}
     </td>
     <td class="govuk-table__cell govuk-!-font-size-16 state vertical-align-middle">
-      {{ transaction.state.status | capitalize }}
+      {{ transaction.formattedState }}
     </td>
     <td
       style="text-align: left"
