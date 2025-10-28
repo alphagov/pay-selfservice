@@ -74,7 +74,7 @@ describe('controller: services/ledger', () => {
         const results = context.results as {
           count: number
           total: number
-          transactions: { link: string;[key: string]: unknown }[]
+          transactions: { link: string; [key: string]: unknown }[]
         }
         sinon.assert.match(results.count, 1)
         sinon.assert.match(results.total, 1)
