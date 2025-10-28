@@ -1,7 +1,7 @@
 import { AuthorisationSummaryData } from '@models/common/authorisation-summary/dto/AuthorisationSummary.dto'
 import { SettlementSummaryData } from '@models/common/settlement-summary/dto/SettlementSummary.dto'
 import { CardDetailsData } from '@models/common/card-details/dto/CardDetails.dto'
-import { RefundSummaryData } from '@models/common/refund-summary/dto/RefundSummary.dto'
+import { LedgerRefundSummaryData } from '@models/common/refund-summary/dto/LedgerRefundSummary.dto'
 import { ResourceType } from '../types/resource-type'
 import { StateData } from './State.dto'
 
@@ -25,7 +25,7 @@ export interface TransactionData {
   card_details?: CardDetailsData
   delayed_capture: boolean
   gateway_transaction_id: string
-  refund_summary?: RefundSummaryData
+  refund_summary?: LedgerRefundSummaryData
   settlement_summary?: SettlementSummaryData
   authorisation_summary?: AuthorisationSummaryData
   transaction_type: ResourceType
