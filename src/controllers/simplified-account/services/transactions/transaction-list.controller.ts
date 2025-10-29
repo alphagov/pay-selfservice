@@ -7,6 +7,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { PaymentStatusFriendlyNames } from '@models/ledger/types/status'
+import { ResourceType } from '@models/ledger/types/resource-type'
 
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
@@ -38,7 +39,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     }
   }
   const filters = {}
-  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, 'payment')
+  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, ResourceType.PAYMENT)
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   if (totalPages > 0 && currentPage > totalPages) {
