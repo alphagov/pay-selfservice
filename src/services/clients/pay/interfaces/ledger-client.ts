@@ -9,6 +9,7 @@ export interface LedgerTransactionParams {
   lastDigitsCardNumber?: string
   metadataValue?: string
   brand?: string
+  type?: string
 }
 
 export class LedgerTransactionParamsData {
@@ -22,6 +23,7 @@ export class LedgerTransactionParamsData {
   readonly last_digits_card_number?: string
   readonly metadata_value?: string
   readonly card_brands?: string
+  readonly transaction_type?: string
 
   constructor(params: LedgerTransactionParams) {
     this.account_id = params.accountIds.join(',')
@@ -34,6 +36,7 @@ export class LedgerTransactionParamsData {
     this.last_digits_card_number = params.lastDigitsCardNumber?.toString() ?? undefined
     this.metadata_value = params.metadataValue?.toString() ?? undefined
     this.card_brands = params.brand?.toString() ?? undefined
+    this.transaction_type = params.type ?? undefined
   }
 
   asQueryString(): string {

@@ -1,3 +1,4 @@
+import { ResourceType } from '@models/ledger/types/resource-type'
 import LedgerClient from '@services/clients/pay/LedgerClient.class'
 import { LedgerTransactionParams, LedgerTransactionParamsData } from '@services/clients/pay/interfaces/ledger-client'
 
@@ -27,13 +28,16 @@ const searchTransactions = async (
   gatewayAccountId: number,
   currentPage: number,
   pageSize: number,
-  filters?: Record<string, string>
+  transactionType: ResourceType,
+  filters?: Record<string, string>,
+
 ) => {
   const queryParams: LedgerTransactionParams = {
     accountIds: [gatewayAccountId],
     displaySize: pageSize,
     page: currentPage,
     ...filters,
+    type: transactionType,
   }
   return await ledgerClient.transactions.search(new LedgerTransactionParamsData(queryParams))
 }

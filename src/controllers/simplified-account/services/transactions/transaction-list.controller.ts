@@ -8,6 +8,8 @@ import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { getAllCardTypes } from '@services/card-types.service'
 import lodash from 'lodash'
+import { PaymentStatusFriendlyNames } from '@models/ledger/types/status'
+import { ResourceType } from '@models/ledger/types/resource-type'
 
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
@@ -49,7 +51,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     ...(req.query.metadataValue && { metadataValue: req.query.metadataValue as string }),
     ...(req.query.brand && { brand: req.query.brand as string }),
   }
-  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, filters)
+
   const cardTypes = await getAllCardTypes()
 
   const cardBrands = lodash.uniqBy(cardTypes, 'brand').map((card) => {
@@ -59,6 +61,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       selected: filters.brand === card.brand,
     }
   })
+
+  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, ResourceType.PAYMENT, filters)
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   if (totalPages > 0 && currentPage > totalPages) {
@@ -79,6 +83,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         netAmount: transaction.netAmount ? penceToPoundsWithCurrency(transaction.netAmount) : undefined,
         totalAmount: transaction.totalAmount ? penceToPoundsWithCurrency(transaction.totalAmount) : undefined,
         corporateCardSurcharge: transaction.corporateCardSurcharge,
+        formattedState: PaymentStatusFriendlyNames[transaction.state.status],
         link: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.transactions.detail,
           req.service.externalId,

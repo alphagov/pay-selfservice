@@ -5,7 +5,6 @@ import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import _ from 'lodash'
 import changeCase from 'change-case'
 import { EventType } from '@models/ledger/types/event-type'
-import { ResourceType } from '@models/ledger/types/resource-type'
 import { Status } from '@models/ledger/types/status'
 
 const DATESTAMP_FORMAT = 'dd LLL yyyy — HH:mm:ss'
@@ -102,7 +101,7 @@ const eventDetails = ({ events }: { events: Event[] }) => {
     >((acc, event, index) => {
       acc[index] = {
         description: event.friendlyEventType,
-        formattedAmount: `${event.resourceType === ResourceType.REFUND ? '–' : ''}${penceToPoundsWithCurrency(event.amount)}`,
+        formattedAmount: `${event.isNegativeMovement ? '–' : ''}${penceToPoundsWithCurrency(event.amount)}`,
         timestamp: event.timestamp.toFormat(DATESTAMP_FORMAT),
         ...(event.eventType === EventType.REFUND_CREATED_BY_USER && {
           metadata: `Submitted by: ${event.metadata?.user_email as string}`,
