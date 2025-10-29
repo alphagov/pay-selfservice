@@ -1,3 +1,4 @@
+import { ResourceType } from '@models/ledger/types/resource-type'
 import LedgerClient from '@services/clients/pay/LedgerClient.class'
 import { LedgerTransactionParams, LedgerTransactionParamsData } from '@services/clients/pay/interfaces/ledger-client'
 
@@ -23,11 +24,17 @@ const dashboardTransactionSummary = async (gatewayAccountId: number, fromDateTim
 const getTransaction = async (transactionExternalId: string, gatewayAccountId: number) =>
   await ledgerClient.transactions.get(transactionExternalId, gatewayAccountId)
 
-const searchTransactions = async (gatewayAccountId: number, currentPage: number, pageSize: number) => {
+const searchTransactions = async (
+  gatewayAccountId: number,
+  currentPage: number,
+  pageSize: number,
+  transactionType: ResourceType
+) => {
   const queryParams: LedgerTransactionParams = {
     accountIds: [gatewayAccountId],
     displaySize: pageSize,
     page: currentPage,
+    type: transactionType,
   }
   return await ledgerClient.transactions.search(new LedgerTransactionParamsData(queryParams))
 }
