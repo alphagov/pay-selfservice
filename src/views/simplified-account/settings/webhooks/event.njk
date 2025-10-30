@@ -5,78 +5,85 @@
 {% set settingsPageTitle = heading + " event details - " + webhookDescription %}
 
 {% block settingsContent %}
-
   <h1 class="govuk-heading-l">{{ heading }}</h1>
 
   {% set resourceLink %}
-    <a class="govuk-link" href="{{ resourceLink }}"><span class="govuk-visually-hidden">GOV.UK payment ID </span>{{ event.resource_id }}</a>
+    <a class="govuk-link" href="{{ resourceLink }}"
+      ><span class="govuk-visually-hidden">GOV.UK payment ID </span>{{ event.resource_id }}</a
+    >
   {% endset %}
-  {{ govukSummaryList({
-    classes: "webhooks-summary-card",
-    rows: [
-      {
-        key: {
-          text: 'GOV.UK payment ID'
+  {{
+    govukSummaryList({
+      classes: "webhooks-summary-card",
+      rows: [
+        {
+          key: {
+            text: 'GOV.UK payment ID'
+          },
+          value: {
+            html: resourceLink
+          }
         },
-        value: {
-          html: resourceLink
-        }
-      },
-      {
-        key: {
-          text: 'Event date'
+        {
+          key: {
+            text: 'Event date'
+          },
+          value: {
+            html: event.event_date | govukDate()
+          }
         },
-        value: {
-          html: event.event_date | govukDate()
+        {
+          key: {
+            text: 'Status'
+          },
+          value: {
+            html: webhookEventStatus(event.latest_attempt.status)
+          }
         }
-      },
-      {
-        key: {
-          text: 'Status'
-        },
-        value: {
-          html: webhookEventStatus(event.latest_attempt.status)
-        }
-      }
-    ]
-  }) }}
+      ]
+    })
+  }}
 
-  {{ govukDetails({
-    summaryText: heading + " event body",
-    html: '<pre class="json-block"><code>' + event.resource | dump(4) + '</code></pre>'
-  }) }}
+  {{
+    govukDetails({
+      summaryText: heading + " event body",
+      html: '<pre class="json-block"><code>' + event.resource | dump(4) + '</code></pre>'
+    })
+  }}
 
   <h2 class="govuk-heading-m">Delivery attempts</h2>
   {% set attemptRows = [] %}
   {% for attempt in attempts %}
-    {% set attemptRow = [
-      { text: attempt.send_at | govukDate({ preserveTime: true }) },
-      { html: webhookEventStatus(attempt.status) },
-      { text: (attempt.status_code if attempt.status_code else 'None') },
-      { text: attempt.result }
-    ] %}
+    {%
+      set attemptRow = [
+        { text: attempt.send_at | govukDate({ preserveTime: true }) },
+        { html: webhookEventStatus(attempt.status) },
+        { text: (attempt.status_code if attempt.status_code else 'None') },
+        { text: attempt.result }
+      ]
+    %}
     {% set attemptRows = (attemptRows.push(attemptRow), attemptRows) %}
   {% endfor %}
 
+  {{
+    govukTable({
+      firstCellIsHeader: false,
+      head: [
+        {
+          text: "Attempt date"
+        },
+        {
+          text: "Status"
+        },
+        {
+          text: "Status code"
+        },
+        {
+          text: "Result"
+        }
+      ],
+      rows: attemptRows
 
-  {{ govukTable({
-    firstCellIsHeader: false,
-    head: [
-      {
-        text: "Attempt date"
-      },
-      {
-        text: "Status"
-      },
-      {
-        text: "Status code"
-      },
-      {
-        text: "Result"
-      }
-    ],
-    rows: attemptRows
-
-  }) }}
-
+    })
+  }}
 {% endblock %}

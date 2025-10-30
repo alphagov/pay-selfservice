@@ -33,9 +33,14 @@ const attempts = [
     result: '403 Forbidden'
   }
 ]
+const webhook = {
+  description: 'My webhook'
+}
+
 const mockResponse = sinon.stub()
 const mockGetWebhookMessage = sinon.stub().resolves(event)
 const mockGetWebhookMessageAttempts = sinon.stub().resolves(attempts)
+const mockGetWebhook = sinon.stub().resolves(webhook)
 
 const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/webhooks/event/event.controller')
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
@@ -44,7 +49,7 @@ const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simpl
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/webhooks.service':
-      { getWebhookMessage: mockGetWebhookMessage, getWebhookMessageAttempts: mockGetWebhookMessageAttempts }
+      { getWebhookMessage: mockGetWebhookMessage, getWebhookMessageAttempts: mockGetWebhookMessageAttempts, getWebhook: mockGetWebhook }
   })
   .build()
 

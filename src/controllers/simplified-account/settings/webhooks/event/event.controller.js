@@ -15,15 +15,20 @@ async function get(req, res) {
   const webhook = await webhooksService.getWebhook(req.params.webhookExternalId, req.service.externalId, req.account.id)
 
   response(req, res, 'simplified-account/settings/webhooks/event', {
-    backLink: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.webhooks.detail, req.service.externalId, req.account.type, req.params.webhookExternalId),
+    backLink: formatSimplifiedAccountPathsFor(
+      paths.simplifiedAccount.settings.webhooks.detail,
+      req.service.externalId,
+      req.account.type,
+      req.params.webhookExternalId
+    ),
     resourceLink: formatAccountPathsFor(paths.account.transactions.detail, req.account.externalId, event.resource_id),
     eventTypes: constants.webhooks.humanReadableSubscriptions,
     event,
     attempts,
-    webhookDescription: webhook.description
+    webhookDescription: webhook.description,
   })
 }
 
 module.exports = {
-  get
+  get,
 }

@@ -4,39 +4,43 @@
 
 {% block settingsContent %}
   <form id="revoke-key-form" method="post" novalidate>
-    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
-    {{ govukRadios({
-      name: 'revokeKey',
-      errorMessage: { text: errors.formErrors['revokeKey'] } if errors.formErrors['revokeKey'] else false,
-      fieldset: {
-        legend: {
-          text: 'Are you sure you want to revoke ' + name + '?',
-          isPageHeading: true,
-          classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
-        }
-      },
-      hint: {
-        text: 'The key will stop working immediately. Any integration you’ve created will no longer work.'
-      },
-      items: [
-        {
-          text: 'Yes',
-          value: 'yes',
-          id: 'yes-radio'
+    {{
+      govukRadios({
+        name: 'revokeKey',
+        errorMessage: { text: errors.formErrors['revokeKey'] } if errors.formErrors['revokeKey'] else false,
+        fieldset: {
+          legend: {
+            text: 'Are you sure you want to revoke ' + name + '?',
+            isPageHeading: true,
+            classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
+          }
         },
-        {
-          text: 'No',
-          value: 'no',
-          id: 'no-radio'
+        hint: {
+          text: 'The key will stop working immediately. Any integration you’ve created will no longer work.'
+        },
+        items: [
+          {
+            text: 'Yes',
+            value: 'yes',
+            id: 'yes-radio'
+          },
+          {
+            text: 'No',
+            value: 'no',
+            id: 'no-radio'
+          }
+        ]
+      })
+    }}
+    {{
+      govukButton({
+        text: 'Save changes',
+        attributes: {
+          id: "revoke-button"
         }
-      ]
-    }) }}
-    {{ govukButton({
-      text: 'Save changes',
-      attributes: {
-        id: "revoke-button"
-      }
-    }) }}
+      })
+    }}
   </form>
 {% endblock %}

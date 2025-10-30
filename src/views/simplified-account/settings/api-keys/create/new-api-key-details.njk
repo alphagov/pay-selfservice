@@ -5,20 +5,25 @@
 {% block settingsContent %}
   <h1 class="govuk-heading-l page-title">{{ settingsPageTitle }}</h1>
 
-  {{ govukInsetText({
-    html: "Copy your key to somewhere safe.<br><br>You won’t be able to see it again once you leave this page."
-  }) }}
+  {{
+    govukInsetText({
+      html: "Copy your key to somewhere safe.<br><br>You won’t be able to see it again once you leave this page."
+    })
+  }}
 
   <p class="govuk-body">
-    You must copy the whole key, including the <span class="key-prefix">api_test_</span> or <span class="key-prefix">api_live_</span> prefix.
+    You must copy the whole key, including the <span class="key-prefix">api_test_</span> or
+    <span class="key-prefix">api_live_</span> prefix.
   </p>
 
-  {{ govukWarningText(
-    {
-      text: 'API security',
-      iconFallbackText: 'Warning'
-    }
-  ) }}
+  {{
+    govukWarningText(
+      {
+        text: 'API security',
+        iconFallbackText: 'Warning'
+      }
+    )
+  }}
 
   <ul class="govuk-list govuk-list--bullet">
     <li>You must store your API keys securely.</li>
@@ -27,29 +32,30 @@
   </ul>
 
   <p class="govuk-body">
-    More about <a class="govuk-link" href="https://docs.payments.service.gov.uk/security/#securing-your-developer-keys">
-    securing your API keys</a>.
+    More about
+    <a class="govuk-link" href="https://docs.payments.service.gov.uk/security/#securing-your-developer-keys">
+      securing your API keys</a
+    >.
   </p>
 
-  <h2 class="govuk-heading-m">
-    {{ details.name }}
-  </h2>
+  <h2 class="govuk-heading-m"> {{ details.name }} </h2>
   <div>
     <span id="api-key" class="code copy-this-api-key govuk-!-margin-top-6">{{ details.key }}</span>
   </div>
 
-  {{ govukButton({
-    text: "Copy API key to clipboard",
-    classes: "govuk-button--secondary govuk-!-margin-top-6",
-    attributes: {
-      id: "copy-key-button",
-      "data-copy-text": true,
-      "data-target": "copy-this-api-key",
-      "data-success": "API key has been copied",
-      "data-notification-target": "copy-this-api-key-notification"
-    }
-  }) }}
+  {{
+    govukButton({
+      text: "Copy API key to clipboard",
+      classes: "govuk-button--secondary govuk-!-margin-top-6",
+      attributes: {
+        id: "copy-key-button",
+        "data-copy-text": true,
+        "data-target": "copy-this-api-key",
+        "data-success": "API key has been copied",
+        "data-notification-target": "copy-this-api-key-notification"
+      }
+    })
+  }}
 
   <div class="copy-this-api-key-notification govuk-visually-hidden" aria-live="assertive"></div>
-
 {% endblock %}
