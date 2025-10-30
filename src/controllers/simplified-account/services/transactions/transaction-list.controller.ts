@@ -25,11 +25,12 @@ const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: str
 }
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
+  const { service, account, query } = req
   const gatewayAccountId = req.account.id
   const PAGE_SIZE = 20
 
   let currentPage = 1
-  const pageQuery = req.query.page
+  const pageQuery = query.page
   if (pageQuery) {
     const pageNumber = Number(pageQuery)
     if (!isNaN(pageNumber) && pageNumber >= 1) {
@@ -44,9 +45,15 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     currentPage = totalPages
   }
 
-  const urlGenerator = getUrlGenerator(filters, req.service.externalId, req.account.type)
+  const urlGenerator = getUrlGenerator(filters, service.externalId, account.type)
 
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, urlGenerator)
+
+  const transactionsDownloadLink = formatServiceAndAccountPathsFor(
+    paths.simplifiedAccount.transactions.download,
+    service.externalId,
+    account.type
+  )
 
   return response(req, res, 'simplified-account/transactions/index', {
     results: {
@@ -60,16 +67,16 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         corporateCardSurcharge: transaction.corporateCardSurcharge,
         link: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.transactions.detail,
-          req.service.externalId,
-          req.account.type,
+          service.externalId,
+          account.type,
           transaction.externalId
         ),
       })),
     },
-
+    transactionsDownloadLink: transactionsDownloadLink,
     isBST: isBritishSummerTime(),
     pagination: pagination,
-    isStripeAccount: req.account.paymentProvider === 'stripe',
+    isStripeAccount: account.paymentProvider === 'stripe',
   })
 }
 

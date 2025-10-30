@@ -183,6 +183,7 @@ module.exports = {
     },
     transactions: {
       index: '/transactions',
+      download: '/transactions/download',
       detail: '/transactions/:transactionExternalId',
     },
     settings: {

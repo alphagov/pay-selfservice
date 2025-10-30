@@ -113,10 +113,10 @@
     {{
       govukButton({
         text: "Download CSV",
-        classes: "govuk-button--secondary"
+        classes: "govuk-button--secondary",
+        href: transactionsDownloadLink
       })
     }}
-
     {% if isBST %}
       <details class="govuk-details">
         <summary class="govuk-details__summary">
