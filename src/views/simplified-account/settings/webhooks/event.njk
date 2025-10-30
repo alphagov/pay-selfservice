@@ -2,7 +2,7 @@
 {% from "./macro/webhook-event-status.njk" import webhookEventStatus %}
 
 {% set heading = eventTypes[event.event_type | upper] %}
-{% set settingsPageTitle = heading + " event details" %}
+{% set settingsPageTitle = heading + " event details - " + webhookDescription %}
 
 {% block settingsContent %}
 
