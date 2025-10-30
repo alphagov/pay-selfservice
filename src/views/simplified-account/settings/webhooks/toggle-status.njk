@@ -4,32 +4,36 @@
 
 {% block settingsContent %}
   <form id="toggle-webhook-status" method="post" novalidate>
-    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
-    {{ govukRadios({
-      name: 'toggleActive',
-      idPrefix: 'toggle-active',
-      errorMessage: { text: errors.formErrors['toggleActive'] } if errors.formErrors['toggleActive'] else false,
-      fieldset: {
-        legend: {
-          text: 'Are you sure you want to ' + ('activate ' if webhook.status === 'INACTIVE' else 'deactivate ') + webhook.description + '?',
-          isPageHeading: true,
-          classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
-        }
-      },
-      items: [
-        {
-          value: 'yes',
-          text: 'Yes'
+    {{
+      govukRadios({
+        name: 'toggleActive',
+        idPrefix: 'toggle-active',
+        errorMessage: { text: errors.formErrors['toggleActive'] } if errors.formErrors['toggleActive'] else false,
+        fieldset: {
+          legend: {
+            text: 'Are you sure you want to ' + ('activate ' if webhook.status === 'INACTIVE' else 'deactivate ') + webhook.description + '?',
+            isPageHeading: true,
+            classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
+          }
         },
-        {
-          value: 'no',
-          text: 'No'
-        }
-      ]
-    }) }}
-    {{ govukButton({
-      text: 'Save changes'
-    }) }}
+        items: [
+          {
+            value: 'yes',
+            text: 'Yes'
+          },
+          {
+            value: 'no',
+            text: 'No'
+          }
+        ]
+      })
+    }}
+    {{
+      govukButton({
+        text: 'Save changes'
+      })
+    }}
   </form>
 {% endblock %}

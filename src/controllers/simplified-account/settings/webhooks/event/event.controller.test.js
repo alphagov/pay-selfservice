@@ -13,7 +13,7 @@ const RESOURCE_URL = `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/transactions/${CHA
 
 const event = {
   external_id: WEBHOOK_EVENT_EXTERNAL_ID,
-  resource_id: CHARGE_ID
+  resource_id: CHARGE_ID,
 }
 const attempts = [
   {
@@ -22,7 +22,7 @@ const attempts = [
     status: 'FAILED',
     response_time: 447,
     status_code: 403,
-    result: '403 Forbidden'
+    result: '403 Forbidden',
   },
   {
     created_date: '2025-02-25T12:36:52.819Z',
@@ -30,11 +30,11 @@ const attempts = [
     status: 'FAILED',
     response_time: 473,
     status_code: 403,
-    result: '403 Forbidden'
-  }
+    result: '403 Forbidden',
+  },
 ]
 const webhook = {
-  description: 'My webhook'
+  description: 'My webhook',
 }
 
 const mockResponse = sinon.stub()
@@ -42,14 +42,19 @@ const mockGetWebhookMessage = sinon.stub().resolves(event)
 const mockGetWebhookMessageAttempts = sinon.stub().resolves(attempts)
 const mockGetWebhook = sinon.stub().resolves(webhook)
 
-const { res, nextRequest, call } = new ControllerTestBuilder('@controllers/simplified-account/settings/webhooks/event/event.controller')
+const { res, nextRequest, call } = new ControllerTestBuilder(
+  '@controllers/simplified-account/settings/webhooks/event/event.controller'
+)
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccountType(ACCOUNT_TYPE)
   .withAccount({ type: ACCOUNT_TYPE, id: GATEWAY_ACCOUNT_EXTERNAL_ID })
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/webhooks.service':
-      { getWebhookMessage: mockGetWebhookMessage, getWebhookMessageAttempts: mockGetWebhookMessageAttempts, getWebhook: mockGetWebhook }
+    '@services/webhooks.service': {
+      getWebhookMessage: mockGetWebhookMessage,
+      getWebhookMessageAttempts: mockGetWebhookMessageAttempts,
+      getWebhook: mockGetWebhook,
+    },
   })
   .build()
 
@@ -59,8 +64,8 @@ describe('Controller: settings/webhooks/event', () => {
       nextRequest({
         params: { webhookExternalId: WEBHOOK_EXTERNAL_ID, eventId: WEBHOOK_EVENT_EXTERNAL_ID },
         account: {
-          externalId: GATEWAY_ACCOUNT_EXTERNAL_ID
-        }
+          externalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
+        },
       })
       await call('get')
     })
@@ -72,7 +77,10 @@ describe('Controller: settings/webhooks/event', () => {
     })
 
     it('should pass req, res and template path to the response method', () => {
-      expect(mockResponse.args[0][0].params).to.deep.equal({ webhookExternalId: WEBHOOK_EXTERNAL_ID, eventId: WEBHOOK_EVENT_EXTERNAL_ID })
+      expect(mockResponse.args[0][0].params).to.deep.equal({
+        webhookExternalId: WEBHOOK_EXTERNAL_ID,
+        eventId: WEBHOOK_EVENT_EXTERNAL_ID,
+      })
       expect(mockResponse.args[0]).to.include(res)
       expect(mockResponse.args[0]).to.include('simplified-account/settings/webhooks/event')
     })
