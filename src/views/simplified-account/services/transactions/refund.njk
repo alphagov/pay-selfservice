@@ -1,0 +1,17 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+
+
+{% set servicePageTitle %}
+  Refund - {{ transaction.titleFriendlyCreatedDate }} - {{ transaction.reference }} - {{ pageID }}
+{% endset %}
+
+{% block serviceContent %}
+  <form method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+    {{
+      govukButton({
+        text: "Confirm refund"
+      })
+    }}
+  </form>
+{% endblock %}
