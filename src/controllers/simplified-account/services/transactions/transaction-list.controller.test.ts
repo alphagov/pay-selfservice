@@ -39,11 +39,12 @@ const mockLedgerService = {
         externalId: TRANSACTION_EXTERNAL_ID,
         gatewayTransactionId: '11933338-20de-4792-bbee-8d19258dabc3',
         reference: 'REF 123',
+        transactionType: 'PAYMENT',
         state: {
           finished: true,
           code: 'P0010',
           message: 'Payment method rejected',
-          status: 'declined',
+          status: 'DECLINED',
         },
         amount: 145600,
         createdDate: '2025-09-12T11:47:32.980+01:00',

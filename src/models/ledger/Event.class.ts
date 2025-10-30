@@ -28,6 +28,15 @@ class Event {
       return EventTypeFriendlyNames[this.eventType] ?? this.eventType // fall back to ledger type if not present in friendly names
     }
   }
+
+  get isNegativeMovement(): boolean {
+    return (
+      this.resourceType === ResourceType.REFUND ||
+      this.eventType === EventType.DISPUTE_CREATED ||
+      this.eventType === EventType.DISPUTE_EVIDENCE_SUBMITTED ||
+      this.eventType === EventType.DISPUTE_LOST
+    )
+  }
 }
 
 export { Event }
