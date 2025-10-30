@@ -50,9 +50,19 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     ...(req.query.lastDigitsCardNumber && { lastDigitsCardNumber: req.query.lastDigitsCardNumber as string }),
     ...(req.query.metadataValue && { metadataValue: req.query.metadataValue as string }),
     ...(req.query.brand && { brand: req.query.brand as string }),
+
   }
 
   const cardTypes = await getAllCardTypes()
+  const statuses = Object.entries(PaymentStatusFriendlyNames).map(([statusKey, friendlyName]) => {
+    return {
+      value: statusKey,
+      text: friendlyName,
+      selected: false,
+    }
+
+    // TODO needs updating - this returns suplicates
+  })
 
   const cardBrands = lodash.uniqBy(cardTypes, 'brand').map((card) => {
     return {
@@ -99,6 +109,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     isStripeAccount: req.account.paymentProvider === 'stripe',
     cardBrands: [{ value: '', text: 'Any' }, ...cardBrands],
     filters,
+    statuses: [{ value: '', text: 'All' }, ...statuses]
   })
 }
 
