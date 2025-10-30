@@ -9,7 +9,6 @@ import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { getAllCardTypes } from '@services/card-types.service'
 import lodash from 'lodash'
 import { PaymentStatusFriendlyNames } from '@models/ledger/types/status'
-import { ResourceType } from '@models/ledger/types/resource-type'
 
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
@@ -51,7 +50,6 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     ...(req.query.metadataValue && { metadataValue: req.query.metadataValue as string }),
     ...(req.query.brand && { brand: req.query.brand as string }),
     ...(req.query.reference && { reference: req.query.reference as string }),
-
   }
 
   const cardTypes = await getAllCardTypes()
@@ -73,7 +71,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     }
   })
 
-  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, ResourceType.PAYMENT, filters)
+  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, filters)
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   if (totalPages > 0 && currentPage > totalPages) {
@@ -110,7 +108,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     isStripeAccount: req.account.paymentProvider === 'stripe',
     cardBrands: [{ value: '', text: 'Any' }, ...cardBrands],
     filters,
-    statuses: [{ value: '', text: 'All' }, ...statuses]
+    statuses: [{ value: '', text: 'All' }, ...statuses],
   })
 }
 
