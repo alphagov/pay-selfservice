@@ -10,6 +10,8 @@ import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFri
 import { State } from './State.class'
 import { parseReason, Reason, ReasonFriendlyNames } from './types/reason'
 
+const TITLE_FRIENDLY_DATESTAMP_FORMAT = 'dd LLLL yyyy HH:mm:ss'
+
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
   readonly gatewayAccountId: string
@@ -83,10 +85,18 @@ class Transaction {
     }
   }
 
+  get titleFriendlyCreatedDate(): string {
+    return this.createdDate.toFormat(TITLE_FRIENDLY_DATESTAMP_FORMAT)
+  }
+
   get friendlyReason() {
     if (this.reason !== undefined) {
       return ReasonFriendlyNames[this.reason] ?? ReasonFriendlyNames.OTHER
     }
+  }
+
+  isFullyRefunded() {
+    return this.refundSummary && this.refundSummary.amountRefunded === this.amount
   }
 }
 

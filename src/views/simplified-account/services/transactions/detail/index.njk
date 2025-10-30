@@ -16,6 +16,16 @@
 
     {% if (loop.first == true) %}
       <h1 class="govuk-heading-l govuk-!-margin-top-6">{{ sectionKey }}</h1>
+
+      {% if not transaction.isFullyRefunded() %}
+        {{
+          govukButton({
+            text: "Refund payment",
+            classes: "govuk-button--secondary",
+            href: refundLink
+          })
+        }}
+      {% endif %}
     {% else %}
       <h2 class="govuk-heading-m govuk-!-margin-top-8">{{ sectionKey }}</h2>
     {% endif %}

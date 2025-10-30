@@ -184,6 +184,7 @@ module.exports = {
     transactions: {
       index: '/transactions',
       detail: '/transactions/:transactionExternalId',
+      refund: '/transactions/:transactionExternalId/refund',
     },
     settings: {
       index: '/settings',
