@@ -12,6 +12,8 @@ export interface LedgerTransactionParams {
   type?: string
   reference?: string
   email?: string
+  fromDate?: string
+  toDate?: string
 }
 
 export class LedgerTransactionParamsData {
@@ -28,6 +30,8 @@ export class LedgerTransactionParamsData {
   readonly transaction_type?: string
   readonly reference?: string
   readonly email?: string
+  readonly from_date?: string
+  readonly to_date?: string
 
   constructor(params: LedgerTransactionParams) {
     this.account_id = params.accountIds.join(',')
@@ -43,6 +47,8 @@ export class LedgerTransactionParamsData {
     this.transaction_type = params.type ?? undefined
     this.reference = params.reference ?? undefined
     this.email = params.email ?? undefined
+    this.from_date = params.fromDate ?? undefined
+    this.to_date = params.toDate ?? undefined
   }
 
   asQueryString(): string {

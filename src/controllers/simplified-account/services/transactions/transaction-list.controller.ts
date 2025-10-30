@@ -44,6 +44,9 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       currentPage = pageNumber
     }
   }
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
   const filters = {
     ...(req.query.cardholderName && { cardholderName: req.query.cardholderName as string }),
     ...(req.query.lastDigitsCardNumber && { lastDigitsCardNumber: req.query.lastDigitsCardNumber as string }),
@@ -51,6 +54,9 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     ...(req.query.brand && { brand: req.query.brand as string }),
     ...(req.query.reference && { reference: req.query.reference as string }),
     ...(req.query.email && { email: req.query.email as string }),
+    ...(req.query.dateFilter && {
+      fromDate: req.query.dateFilter === 'today' ? today.toISOString() : (undefined as string),
+    }),
   }
 
   const cardTypes = await getAllCardTypes()
