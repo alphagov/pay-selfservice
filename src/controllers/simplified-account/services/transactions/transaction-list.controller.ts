@@ -38,7 +38,7 @@ const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: str
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account, query } = req
   const gatewayAccountId = req.account.id
-  const PAGE_SIZE = 5
+  const PAGE_SIZE = 20
 
   let currentPage = 1
   const pageQuery = query.page

@@ -128,7 +128,7 @@
     {% if allServiceTransactions or permissions.transactions_download_read %}
 
       {% if (hasResults) %}
-        {% if (showCsvDownload == false) %}
+        {% if (showCsvDownload) %}
           {{
             govukButton({
               text: "Download CSV",
