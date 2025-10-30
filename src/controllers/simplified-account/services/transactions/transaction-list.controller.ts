@@ -9,7 +9,6 @@ import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { getAllCardTypes } from '@services/card-types.service'
 import lodash from 'lodash'
 import { PaymentStatusFriendlyNames } from '@models/ledger/types/status'
-import { ResourceType } from '@models/ledger/types/resource-type'
 
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
