@@ -10,6 +10,7 @@ const CARDHOLDER_NAME = 'Sam Holder'
 const LAST_DIGITS_CARD_NUMBER = '1234'
 const METADATA_VALUE = 'order-5678'
 const CARD_BRAND = 'visa'
+const REFERENCE = 'REF 123'
 const PAYMENT_TRANSACTION_TYPE = 'PAYMENT'
 const mockResponse = sinon.stub()
 const mockLedgerService = {
@@ -23,7 +24,7 @@ const mockLedgerService = {
         serviceExternalId: SERVICE_EXTERNAL_ID,
         externalId: TRANSACTION_EXTERNAL_ID,
         gatewayTransactionId: '11933338-20de-4792-bbee-8d19258dabc3',
-        reference: 'REF 123',
+        reference: REFERENCE,
         state: {
           finished: true,
           code: 'P0010',
@@ -127,6 +128,37 @@ describe('controller: services/ledger', () => {
 
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.filters, { brand: CARD_BRAND })
+      })
+    })
+
+    describe('with valid reference filter', () => {
+      it('should pass reference filter to searchTransactions service', async () => {
+        nextRequest({
+          query: { reference: REFERENCE },
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockLedgerService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          1,
+          PAGE_SIZE,
+          PAYMENT_TRANSACTION_TYPE,
+
+          { reference: REFERENCE },
+        )
+      })
+
+      it('should include filters in context', async () => {
+        nextRequest({
+          query: { reference: REFERENCE },
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.filters, { reference: REFERENCE },)
       })
     })
 

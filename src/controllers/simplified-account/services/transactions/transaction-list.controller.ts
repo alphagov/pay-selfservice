@@ -50,6 +50,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     ...(req.query.lastDigitsCardNumber && { lastDigitsCardNumber: req.query.lastDigitsCardNumber as string }),
     ...(req.query.metadataValue && { metadataValue: req.query.metadataValue as string }),
     ...(req.query.brand && { brand: req.query.brand as string }),
+    ...(req.query.reference && { reference: req.query.reference as string }),
 
   }
 
