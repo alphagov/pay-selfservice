@@ -110,13 +110,6 @@
     </div>
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-    {{
-      govukButton({
-        text: "Download CSV",
-        classes: "govuk-button--secondary",
-        href: transactionsDownloadLink
-      })
-    }}
     {% if isBST %}
       <details class="govuk-details">
         <summary class="govuk-details__summary">
@@ -135,18 +128,26 @@
     {% if allServiceTransactions or permissions.transactions_download_read %}
 
       {% if (hasResults) %}
-        {% if (showCsvDownload) %}
-          <p id="csv-download" class="govuk-body">
-            <a
-              href="{{ downloadTransactionLink }}"
-              id="download-transactions-link"
-              class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16"
-            >
-              Download all transaction details as a CSV file
-            </a>
-          </p>
+        {% if (showCsvDownload == false) %}
+          {{
+            govukButton({
+              text: "Download CSV",
+              classes: "govuk-button--secondary",
+              href: transactionsDownloadLink
+            })
+          }}
         {% else %}
-          <p id="csv-download" class="govuk-body">Filter results to download a CSV of transactions</p>
+          <p id="csv-download" class="govuk-body">Filter results to less than 5000 to download a CSV of transactions</p>
+          {{
+            govukButton({
+              text: "Download CSV",
+              classes: "govuk-button--secondary govuk-button--disabled",
+              attributes: {
+                "aria-disabled": "true",
+                disabled: "disabled"
+              }
+            })
+          }}
         {% endif %}
       {% endif %}
     {% endif %}

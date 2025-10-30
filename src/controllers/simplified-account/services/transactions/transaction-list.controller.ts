@@ -9,6 +9,16 @@ import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { PaymentStatusFriendlyNames } from '@models/ledger/types/status'
 import { ResourceType } from '@models/ledger/types/resource-type'
 
+const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
+
+const showCsvDownload = (total: number, filters: Record<string, unknown> = {}): boolean => {
+  if (total <= LEDGER_TRANSACTION_COUNT_LIMIT) {
+    return true
+  }
+
+  return Object.keys(filters).some((key) => key !== 'page' && key !== 'pageSize')
+}
+
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
     paths.simplifiedAccount.transactions.index,
@@ -25,11 +35,10 @@ const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: str
     return path
   }
 }
-
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account, query } = req
   const gatewayAccountId = req.account.id
-  const PAGE_SIZE = 20
+  const PAGE_SIZE = 5
 
   let currentPage = 1
   const pageQuery = query.page
@@ -80,6 +89,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     isBST: isBritishSummerTime(),
     pagination: pagination,
     isStripeAccount: account.paymentProvider === 'stripe',
+    hasResults: results.total !== 0,
+    showCsvDownload: showCsvDownload(results.total, filters),
   })
 }
 
