@@ -11,6 +11,7 @@ export interface LedgerTransactionParams {
   brand?: string
   type?: string
   reference?: string
+  email?: string
 }
 
 export class LedgerTransactionParamsData {
@@ -26,6 +27,7 @@ export class LedgerTransactionParamsData {
   readonly card_brands?: string
   readonly transaction_type?: string
   readonly reference?: string
+  readonly email?: string
 
   constructor(params: LedgerTransactionParams) {
     this.account_id = params.accountIds.join(',')
@@ -40,6 +42,7 @@ export class LedgerTransactionParamsData {
     this.card_brands = params.brand?.toString() ?? undefined
     this.transaction_type = params.type ?? undefined
     this.reference = params.reference ?? undefined
+    this.email = params.email ?? undefined
   }
 
   asQueryString(): string {

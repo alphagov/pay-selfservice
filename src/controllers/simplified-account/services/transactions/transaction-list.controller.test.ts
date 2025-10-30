@@ -7,6 +7,7 @@ const TRANSACTION_EXTERNAL_ID = 'transaction123abc'
 const GATEWAY_ACCOUNT_ID = 117
 const PAGE_SIZE = 20
 const CARDHOLDER_NAME = 'Sam Holder'
+const EMAIL = 'sam_holder@example.com'
 const LAST_DIGITS_CARD_NUMBER = '1234'
 const METADATA_VALUE = 'order-5678'
 const CARD_BRAND = 'visa'
@@ -32,7 +33,7 @@ const mockLedgerService = {
         },
         amount: 145600,
         createdDate: '2025-09-12T11:47:32.980+01:00',
-        email: 'pay-me@example.com',
+        email: EMAIL,
         cardDetails: {
           cardBrand: 'Visa',
         },
@@ -126,6 +127,36 @@ describe('controller: services/ledger', () => {
 
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.filters, { brand: CARD_BRAND })
+      })
+    })
+
+    describe('with valid email filter', () => {
+      it('should pass email filter to searchTransactions service', async () => {
+        nextRequest({
+          query: { email: EMAIL },
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockLedgerService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          1,
+          PAGE_SIZE,
+
+          { email: EMAIL }
+        )
+      })
+
+      it('should include filters in context', async () => {
+        nextRequest({
+          query: { email: EMAIL },
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.filters, { email: EMAIL })
       })
     })
 

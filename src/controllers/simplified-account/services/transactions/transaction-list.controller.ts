@@ -50,6 +50,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     ...(req.query.metadataValue && { metadataValue: req.query.metadataValue as string }),
     ...(req.query.brand && { brand: req.query.brand as string }),
     ...(req.query.reference && { reference: req.query.reference as string }),
+    ...(req.query.email && { email: req.query.email as string }),
   }
 
   const cardTypes = await getAllCardTypes()
