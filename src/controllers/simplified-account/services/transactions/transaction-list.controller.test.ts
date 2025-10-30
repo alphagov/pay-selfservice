@@ -10,7 +10,6 @@ const CARDHOLDER_NAME = 'Sam Holder'
 const LAST_DIGITS_CARD_NUMBER = '1234'
 const METADATA_VALUE = 'order-5678'
 const CARD_BRAND = 'visa'
-const PAYMENT_TRANSACTION_TYPE = 'PAYMENT'
 const mockResponse = sinon.stub()
 const mockLedgerService = {
   searchTransactions: sinon.stub().resolves({
@@ -83,7 +82,7 @@ describe('controller: services/ledger', () => {
         const results = context.results as {
           count: number
           total: number
-          transactions: { link: string;[key: string]: unknown }[]
+          transactions: { link: string; [key: string]: unknown }[]
         }
         sinon.assert.match(results.count, 1)
         sinon.assert.match(results.total, 1)
@@ -112,7 +111,6 @@ describe('controller: services/ledger', () => {
           GATEWAY_ACCOUNT_ID,
           1,
           PAGE_SIZE,
-          PAYMENT_TRANSACTION_TYPE,
 
           { brand: CARD_BRAND }
         )
@@ -143,7 +141,6 @@ describe('controller: services/ledger', () => {
           GATEWAY_ACCOUNT_ID,
           1,
           PAGE_SIZE,
-          PAYMENT_TRANSACTION_TYPE,
 
           { cardholderName: CARDHOLDER_NAME }
         )
@@ -174,7 +171,6 @@ describe('controller: services/ledger', () => {
           GATEWAY_ACCOUNT_ID,
           1,
           PAGE_SIZE,
-          PAYMENT_TRANSACTION_TYPE,
 
           { lastDigitsCardNumber: LAST_DIGITS_CARD_NUMBER }
         )
@@ -205,7 +201,6 @@ describe('controller: services/ledger', () => {
           GATEWAY_ACCOUNT_ID,
           1,
           PAGE_SIZE,
-          PAYMENT_TRANSACTION_TYPE,
 
           { metadataValue: METADATA_VALUE }
         )
@@ -239,7 +234,6 @@ describe('controller: services/ledger', () => {
           GATEWAY_ACCOUNT_ID,
           1,
           PAGE_SIZE,
-          PAYMENT_TRANSACTION_TYPE,
 
           {
             cardholderName: CARDHOLDER_NAME,

@@ -28,16 +28,13 @@ const searchTransactions = async (
   gatewayAccountId: number,
   currentPage: number,
   pageSize: number,
-  transactionType: ResourceType,
-  filters?: Record<string, string>,
-
+  filters?: Record<string, string>
 ) => {
   const queryParams: LedgerTransactionParams = {
     accountIds: [gatewayAccountId],
     displaySize: pageSize,
     page: currentPage,
     ...filters,
-    type: transactionType,
   }
   return await ledgerClient.transactions.search(new LedgerTransactionParamsData(queryParams))
 }

@@ -62,7 +62,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     }
   })
 
-  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, ResourceType.PAYMENT, filters)
+  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, filters)
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   if (totalPages > 0 && currentPage > totalPages) {
