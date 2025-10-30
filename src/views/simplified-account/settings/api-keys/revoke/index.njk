@@ -1,6 +1,6 @@
 {% extends "simplified-account/settings/settings-layout.njk" %}
 
-{% set settingsPageTitle = "Revoke " + ("test" if accountType === 'test' else "live") + " API key" %}
+{% set settingsPageTitle = "Revoke " + name %}
 
 {% block settingsContent %}
   <form id="revoke-key-form" method="post" novalidate>
