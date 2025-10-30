@@ -72,6 +72,10 @@ class Transaction {
     return penceToPoundsWithCurrency(this.amount)
   }
 
+  refundAmountRemainingInPounds(): string {
+    return this.refundSummary?.amountAvailable ? penceToPoundsWithCurrency(this.refundSummary?.amountAvailable) : ''
+  }
+
   get friendlyTransactionStatus(): string {
     switch (this.transactionType) {
       case ResourceType.PAYMENT:
@@ -95,8 +99,12 @@ class Transaction {
     }
   }
 
+  isPartiallyRefunded(): boolean {
+    return (this.refundSummary && this.refundSummary.amountRefunded !== this.amount) ?? false
+  }
+
   isFullyRefunded() {
-    return this.refundSummary && this.refundSummary.amountRefunded === this.amount
+    return (this.refundSummary && this.refundSummary.amountRefunded === this.amount) ?? false
   }
 }
 
