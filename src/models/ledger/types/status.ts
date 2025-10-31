@@ -1,3 +1,5 @@
+import { ResourceType } from "./resource-type"
+
 export const Status = {
   // used for payments only
   UNDEFINED: 'UNDEFINED',
@@ -53,4 +55,14 @@ export const PaymentStatusFriendlyNames: Partial<Record<Status, string>> = {
   SUBMITTED: 'In progress',
   SUCCESS: 'Successful',
   ERROR: 'Error',
+}
+
+export const FriendlyNamesByType: Record<ResourceType, Partial<Record<Status, string>>> = {
+  PAYMENT: PaymentStatusFriendlyNames,
+  DISPUTE: DisputeStatusFriendlyNames,
+  REFUND: RefundStatusFriendlyNames,
+}
+
+export function getFriendlyStatus(statusType: ResourceType, status: Status): string | undefined {
+  return FriendlyNamesByType[statusType][status]
 }

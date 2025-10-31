@@ -8,7 +8,7 @@ import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { getAllCardTypes } from '@services/card-types.service'
 import lodash from 'lodash'
-import { PaymentStatusFriendlyNames } from '@models/ledger/types/status'
+import { PaymentStatusFriendlyNames, getFriendlyStatus } from '@models/ledger/types/status'
 import { getPeriodUKDateTimeRange, Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
@@ -102,7 +102,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         netAmount: transaction.netAmount ? penceToPoundsWithCurrency(transaction.netAmount) : undefined,
         totalAmount: transaction.totalAmount ? penceToPoundsWithCurrency(transaction.totalAmount) : undefined,
         corporateCardSurcharge: transaction.corporateCardSurcharge,
-        formattedState: PaymentStatusFriendlyNames[transaction.state.status],
+        formattedStatus: getFriendlyStatus(transaction.transactionType, transaction.state.status),
         link: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.transactions.detail,
           req.service.externalId,
