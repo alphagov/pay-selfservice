@@ -33,6 +33,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     serviceMode: req.account.type,
     formValues: { paymentLink: currentSession.paymentLinkTitle },
     service: serviceName,
+    paymentLinkTitle: currentSession.paymentLinkTitle,
     friendlyURL: FRIENDLY_URL,
     productNamePath: currentSession.productNamePath,
     isWelsh: isWelshPaymentLink,
