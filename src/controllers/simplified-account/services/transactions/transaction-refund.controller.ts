@@ -13,6 +13,16 @@ import { Message } from '@utils/types/express/Message'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const transaction = await getTransaction(req.params.transactionExternalId, req.account.id)
+  if (transaction.isFullyRefunded()) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.transactions.detail,
+        req.service.externalId,
+        req.account.type,
+        req.params.transactionExternalId
+      )
+    )
+  }
 
   return response(req, res, 'simplified-account/services/transactions/refund', {
     transaction,
@@ -32,6 +42,16 @@ interface TransactionRefundBody {
 
 async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResponse) {
   const transaction = await getTransaction(req.params.transactionExternalId, req.account.id)
+  if (transaction.isFullyRefunded()) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.transactions.detail,
+        req.service.externalId,
+        req.account.type,
+        req.params.transactionExternalId
+      )
+    )
+  }
 
   const validations = [
     transactionRefundSchema.refundPayment.validate,

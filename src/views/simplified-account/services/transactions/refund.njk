@@ -1,4 +1,6 @@
 {% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 
 {% set servicePageTitle %}
@@ -7,25 +9,21 @@
 
 
 {% set partialRefundHTML %}
-  <div class="govuk-form-group">
-    <label class="govuk-label" for="refund-amount">
-      Refund amount
-      <span class="govuk-visually-hidden">in &pound;</span>
-    </label>
-    <div class="govuk-input__wrapper">
-      <div class="govuk-input__prefix" aria-hidden="true">£</div>
-      <input
-        class="govuk-input govuk-input--width-10"
-        aria-label="Enter amount in pounds"
-        name="partialRefundAmount"
-        autofocus
-        data-non-numeric
-        type="text"
-        id="partial-refund-amount"
-        value="{{ partialRefundAmount }}"
-      />
-    </div>
-  </div>
+  {{
+    govukInput({
+      name: 'partialRefundAmount',
+      id: 'partial-refund-amount',
+      value: partialRefundAmount,
+      prefix: {
+        text: "£"
+      },
+      label: {
+        html: 'Refund amount <span class="govuk-visually-hidden">in &pound;</span>'
+      },
+      classes: 'govuk-input--width-10',
+      errorMessage: { text: errors.formErrors['partialRefundAmount'] } if errors.formErrors['partialRefundAmount'] else false
+    })
+  }}
 {% endset %}
 
 {% block serviceContent %}

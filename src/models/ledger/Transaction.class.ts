@@ -104,11 +104,11 @@ class Transaction {
   }
 
   isPartiallyRefunded(): boolean {
-    return (this.refundSummary && this.refundSummary.amountSubmitted !== this.amount) ?? false
+    return (this.refundSummary && this.refundSummary.amountAvailable !== this.amount) ?? false
   }
 
   isFullyRefunded() {
-    return (this.refundSummary && this.refundSummary.amountSubmitted === this.amount) ?? false
+    return (this.refundSummary && this.refundSummary.amountAvailable === 0) ?? false
   }
 }
 
