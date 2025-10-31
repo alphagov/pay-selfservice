@@ -3,9 +3,8 @@ import urlJoin from '@utils/simplified-account/format/url'
 
 const escapeRegExp = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-const formattedPathFor = (route: string, ...pathParams: (string | undefined)[]): string => {
+export const formattedPathFor = (route: string, ...pathParams: (string | undefined)[]): string => {
   const paramNames = route.split('/').filter((segment) => segment.startsWith(':'))
-
   const encodedValues = pathParams.map((v) => (v === undefined ? undefined : encodeURIComponent(String(v))))
 
   return paramNames.reduce((currentRoute, paramName, index) => {
@@ -28,4 +27,12 @@ function formatServiceAndAccountPathsFor(
   return formattedPathFor(completePath, serviceExternalId, accountType, ...params)
 }
 
-export = formatServiceAndAccountPathsFor
+export default formatServiceAndAccountPathsFor
+
+const maybeModule = typeof module !== 'undefined' ? (module as unknown as { exports?: unknown }) : undefined
+if (maybeModule) {
+  maybeModule.exports = Object.assign(formatServiceAndAccountPathsFor, {
+    formattedPathFor,
+    default: formatServiceAndAccountPathsFor,
+  })
+}
