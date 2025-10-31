@@ -14,6 +14,7 @@ const SERVICE_NAME = {
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 10
 const WEBHOOK_ID = 'webhook-id-1'
+const WEBHOOK_DESCRIPTION = 'My first webhook'
 
 const webhookEvent = {
   webhook_id: WEBHOOK_ID,
@@ -81,7 +82,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       external_id: WEBHOOK_ID,
       callback_url: 'https://www.callback-url.gov.uk',
-      description: 'My first webhook',
+      description: WEBHOOK_DESCRIPTION,
       created_date: '2024-08-20T14:00:00.000Z',
       subscriptions: ['card_payment_captured', 'card_payment_succeeded']
     }),
@@ -104,7 +105,7 @@ describe('for an admin', () => {
   })
 
   it('should show title and heading', () => {
-    cy.title().should('eq', 'Payment captured event details - Settings - McDuck Enterprises - GOV.UK Pay')
+    cy.title().should('eq', `Payment captured event details - ${WEBHOOK_DESCRIPTION} - Settings - ${SERVICE_NAME.en} - GOV.UK Pay`)
     cy.get('h1.govuk-heading-l').should('have.text', 'Payment captured')
   })
 
@@ -167,6 +168,6 @@ describe('for a non-admin user', () => {
   })
 })
 
-function formatDateTime (isoTimeString) {
+function formatDateTime(isoTimeString) {
   return moment(isoTimeString).tz('Europe/London').format('D MMMM YYYY HH:mm')
 }

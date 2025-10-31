@@ -12,6 +12,7 @@ const GATEWAY_ACCOUNT_ID = 100
 const ACCOUNT_TYPE = 'test'
 const WEBHOOK_EXTERNAL_ID = 'webhook-789-ghi'
 const CALLBACK_URL = 'https://www.compuglobalhypermeganet.example.com'
+const WEBHOOK_DESCRIPTION = 'a really awesome webhook'
 
 const setStubs = (opts = {}, additionalStubs = []) => {
   const options = Object.assign({}, {
@@ -25,7 +26,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
     service_id: SERVICE_EXTERNAL_ID,
     external_id: WEBHOOK_EXTERNAL_ID,
     callback_url: CALLBACK_URL,
-    description: 'a really awesome webhook',
+    description: WEBHOOK_DESCRIPTION,
     live: options.accountType === 'live',
     status: options.webhookStatus
   }
@@ -83,7 +84,7 @@ describe('webhook settings - toggle webhook status', () => {
           cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
           cy.get('h1').should('contain', 'Are you sure you want to deactivate a really awesome webhook?')
-          cy.title().should('eq', 'Deactivate webhook - Settings - Compu-Global-Hyper-Mega-Net - GOV.UK Pay')
+          cy.title().should('eq', `Deactivate webhook - ${WEBHOOK_DESCRIPTION} - Settings - ${SERVICE_NAME.en} - GOV.UK Pay`)
         })
 
         it('should show active "Webhooks" link', () => {
@@ -114,7 +115,7 @@ describe('webhook settings - toggle webhook status', () => {
           cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
 
           cy.get('h1').should('contain', 'Are you sure you want to activate a really awesome webhook')
-          cy.title().should('eq', 'Activate webhook - Settings - Compu-Global-Hyper-Mega-Net - GOV.UK Pay')
+          cy.title().should('eq', `Activate webhook - ${WEBHOOK_DESCRIPTION} - Settings - ${SERVICE_NAME.en} - GOV.UK Pay`)
         })
       })
     })
