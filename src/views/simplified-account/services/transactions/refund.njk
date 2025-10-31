@@ -35,6 +35,7 @@
     {{
       govukRadios({
         name: 'refundPayment',
+        idPrefix: 'refund-payment',
         errorMessage: { text: errors.formErrors['refundPayment'] } if errors.formErrors['refundPayment'] else false,
         fieldset: {
           legend: {
@@ -48,7 +49,7 @@
             text: 'Remaining amount' if transaction.isPartiallyRefunded() else 'Full amount',
             value: 'full',
             hint: {
-              text: 'Refund the ' + ('remaining' if transaction.isPartiallyRefunded() else 'full') + ' amount of ' + (transaction.refundAmountRemainingInPounds() if transaction.isPartiallyRefunded() else transaction.amountInPounds())
+              text: 'Refund the ' + ('remaining' if transaction.isPartiallyRefunded() else 'full') + ' amount of ' + transaction.refundableAmountRemainingInPounds()
             }
           },
           {

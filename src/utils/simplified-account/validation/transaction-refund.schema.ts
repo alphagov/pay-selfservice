@@ -27,8 +27,10 @@ const transactionRefundSchema = {
           'Enter an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”'
         )
         .bail()
-        .isFloat({ min: 0, max: transaction.amount / 100 })
-        .withMessage(`Enter a refund amount greater than £0.00 and less than ${transaction.amountInPounds()}`)
+        .isFloat({ min: 0, max: transaction.getRefundableAmountRemaining() / 100 })
+        .withMessage(
+          `Enter a refund amount greater than £0.00 and less than ${transaction.refundableAmountRemainingInPounds()}`
+        )
         .bail()
         .custom((value: string) => {
           // two decimal places
