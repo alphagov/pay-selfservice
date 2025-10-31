@@ -255,6 +255,7 @@ describe('Settings - API keys', () => {
         cy.contains('h1', 'API key name').should('exist')
         cy.get('input[name="keyName"]').type(API_KEY_DESCRIPTION)
         cy.contains('button', 'Continue').click()
+        cy.title().should('eq', `${API_KEY_DESCRIPTION} - Settings - My cool service - GOV.UK Pay`)
         cy.contains('h1', 'New API key').should('exist')
         cy.contains('h2', API_KEY_DESCRIPTION).should('exist')
         cy.get('#api-key').should('contain.text', EXPECTED_TOKEN)
