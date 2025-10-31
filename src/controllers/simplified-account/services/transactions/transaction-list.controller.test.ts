@@ -210,6 +210,13 @@ describe('controller: services/ledger', () => {
             {
               externalId: TRANSACTION_EXTERNAL_ID,
               amount: 100,
+              // add minimal state to avoid reading `status` on undefined
+              state: {
+                finished: false,
+                code: '',
+                message: '',
+                status: 'UNKNOWN',
+              },
             },
           ],
         })

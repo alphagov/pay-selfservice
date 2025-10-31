@@ -42,7 +42,7 @@ describe('controller: simplified-account/services/transactions/download-csv/tran
     })
     .withServiceExternalId(SERVICE_EXTERNAL_ID)
     .withAccount({
-      gateway_account_id: GATEWAY_ACCOUNT_ID,
+      id: GATEWAY_ACCOUNT_ID,
       payment_provider: undefined,
       allow_moto: false,
       type: GatewayAccountType.TEST,
@@ -61,7 +61,14 @@ describe('controller: simplified-account/services/transactions/download-csv/tran
       setHeader: sinon.stub(),
       write: sinon.stub(),
       end: sinon.stub(),
-      locals: {},
+      locals: {
+        account: {
+          id: GATEWAY_ACCOUNT_ID,
+          payment_provider: undefined,
+          allow_moto: false,
+          type: GatewayAccountType.TEST,
+        },
+      },
     })
 
     // reset default stubs behaviour
@@ -104,7 +111,7 @@ describe('controller: simplified-account/services/transactions/download-csv/tran
   it('edge: stripe provider adds feeHeaders to csv filters', async () => {
     nextRequest({
       account: {
-        gateway_account_id: GATEWAY_ACCOUNT_ID,
+        id: GATEWAY_ACCOUNT_ID,
         payment_provider: 'stripe',
         allow_moto: false,
         type: GatewayAccountType.TEST,
@@ -121,7 +128,7 @@ describe('controller: simplified-account/services/transactions/download-csv/tran
   it('allow_moto sets motoHeader true in filters', async () => {
     nextRequest({
       account: {
-        gateway_account_id: GATEWAY_ACCOUNT_ID,
+        id: GATEWAY_ACCOUNT_ID,
         payment_provider: undefined,
         allow_moto: true,
         type: GatewayAccountType.TEST,
@@ -138,7 +145,7 @@ describe('controller: simplified-account/services/transactions/download-csv/tran
   it('live account causes logCsvFileStreamComplete live flag to be true', async () => {
     nextRequest({
       account: {
-        gateway_account_id: GATEWAY_ACCOUNT_ID,
+        id: GATEWAY_ACCOUNT_ID,
         payment_provider: undefined,
         allow_moto: false,
         type: 'live',
