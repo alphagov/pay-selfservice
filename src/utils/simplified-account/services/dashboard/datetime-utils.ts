@@ -1,6 +1,12 @@
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 
-export type Period = 'today' | 'yesterday' | 'previous-seven-days' | 'previous-thirty-days'
+export type Period =
+  | 'today'
+  | 'yesterday'
+  | 'previous-seven-days'
+  | 'previous-thirty-days'
+  | 'previous-month'
+  | 'previous-year'
 
 interface DateTimeRange {
   start: DateTime
@@ -42,6 +48,22 @@ export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
         start: yesterday.minus({ days: 29 }).startOf('day'),
         end: yesterday.endOf('day'),
       }
+
+    case 'previous-month': {
+      const lastMonth = now.minus({ months: 1 })
+      return {
+        start: lastMonth.startOf('month'),
+        end: lastMonth.endOf('month'),
+      }
+    }
+
+    case 'previous-year': {
+      const lastYear = now.minus({ years: 1 })
+      return {
+        start: lastYear.startOf('year'),
+        end: lastYear.endOf('year'),
+      }
+    }
 
     default:
       // today

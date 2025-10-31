@@ -5,7 +5,7 @@
   govukSelect({
     id: "dateFilter",
     name: "dateFilter",
-    classes: 'govuk-!-font-size-16',
+    classes: 'govuk-!-font-size-19',
     label: {
       text: "Date filters",
       classes: 'govuk-label--s govuk-!-font-size-16 govuk-!-margin-bottom-0'
@@ -14,24 +14,33 @@
       text: "Select a range or enter manually",
       classes: 'govuk-!-font-size-16'
     },
-    attributes: {
-      'data-enhance-multiple': true
-    },
     items: [{
-      value: "last-year",
-      text: "Last year"
+      value: "previous-year",
+      text: "Last year",
+      selected: filters.dateFilter === 'previous-year'
     },
     {
       value: "today",
-      text: "Today"
+      text: "Today",
+      selected: filters.dateFilter === 'today'
     },
     {
       value: "yesterday",
-      text: "Yesterday"
+      text: "Yesterday",
+      selected: filters.dateFilter === 'yesterday'
     },
     {
-      value: "last-month",
-      text: "Last month"
+      value: "previous-month",
+      text: "Last month",
+      selected: filters.dateFilter === 'previous-month'
+    },
+    {
+      value: "tbc",
+      text: "Between two dates"
+    },
+    {
+      value: "",
+      text: "All time (last 7 years)"
     }]
   })
 }}

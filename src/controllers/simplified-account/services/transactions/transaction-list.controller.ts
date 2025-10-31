@@ -9,6 +9,7 @@ import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { getAllCardTypes } from '@services/card-types.service'
 import lodash from 'lodash'
 import { PaymentStatusFriendlyNames } from '@models/ledger/types/status'
+import { getPeriodUKDateTimeRange, Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
@@ -44,8 +45,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       currentPage = pageNumber
     }
   }
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+
+  const dateRange = getPeriodUKDateTimeRange(req.query.dateFilter as Period)
 
   const filters = {
     ...(req.query.cardholderName && { cardholderName: req.query.cardholderName as string }),
@@ -55,7 +56,9 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     ...(req.query.reference && { reference: req.query.reference as string }),
     ...(req.query.email && { email: req.query.email as string }),
     ...(req.query.dateFilter && {
-      fromDate: req.query.dateFilter === 'today' ? today.toISOString() : (undefined as string),
+      dateFilter: req.query.dateFilter as string,
+      fromDate: dateRange.start.toISO()!,
+      toDate: dateRange.end.toISO()!,
     }),
   }
 
@@ -67,7 +70,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       selected: false,
     }
 
-    // TODO needs updating - this returns suplicates
+    // TODO needs updating - this returns duplicates
   })
 
   const cardBrands = lodash.uniqBy(cardTypes, 'brand').map((card) => {
