@@ -10,31 +10,25 @@ import { getAllCardTypes } from '@services/card-types.service'
 import lodash from 'lodash'
 import { PaymentStatusFriendlyNames } from '@models/ledger/types/status'
 
-const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
-  const transactionsUrl = formatServiceAndAccountPathsFor(
-    paths.simplifiedAccount.transactions.index,
-    serviceExternalId,
-    accountType
-  )
-
+const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
   const getPath = (pageNumber: number) => {
-    let path = `${transactionsUrl}?page=${pageNumber}`
-    if (filters && Object.keys(filters).length !== 0) {
-      const filterParams = new URLSearchParams(filters).toString()
-      path = `${path}&${filterParams}`
-    }
-    return path
+    const params = new URLSearchParams(filters)
+    params.set('page', String(pageNumber))
+    return `${transactionsUrl}?${params.toString()}`
   }
 
-  return {
-    transactionsUrl: transactionsUrl,
-    path: getPath,
-  }
+  return { path: getPath }
 }
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const gatewayAccountId = req.account.id
   const PAGE_SIZE = 20
+
+  const transactionsUrl = formatServiceAndAccountPathsFor(
+    paths.simplifiedAccount.transactions.index,
+    req.service.externalId,
+    req.account.type
+  )
 
   let currentPage = 1
   const pageQuery = req.query.page
@@ -68,7 +62,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     currentPage = totalPages
   }
 
-  const { transactionsUrl, path } = getUrlGenerator(filters, req.service.externalId, req.account.type)
+  const { path } = getUrlGenerator(filters, transactionsUrl)
 
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, path)
 
