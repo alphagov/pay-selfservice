@@ -1,5 +1,5 @@
 import LedgerClient from '@services/clients/pay/LedgerClient.class'
-import { LedgerTransactionParams, LedgerTransactionParamsData } from '@services/clients/pay/interfaces/ledger-client'
+import { LedgerTransactionParams, LedgerTransactionParamsData } from '@models/ledger/dto/TransactionSearchParams.dto'
 
 const ledgerClient = new LedgerClient()
 
