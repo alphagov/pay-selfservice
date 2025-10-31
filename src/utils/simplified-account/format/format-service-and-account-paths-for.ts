@@ -3,11 +3,8 @@ import urlJoin from '@utils/simplified-account/format/url'
 
 const escapeRegExp = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-export const formattedPathFor = (route: string, ...pathParams: (string | undefined)[]): string => {
-  const paramNames = route
-    .split('/')
-    .filter((segment) => segment.startsWith(':'))
-    .map((segment) => segment.slice(1)) // remove leading ':'
+const formattedPathFor = (route: string, ...pathParams: (string | undefined)[]): string => {
+  const paramNames = route.split('/').filter((segment) => segment.startsWith(':'))
 
   const encodedValues = pathParams.map((v) => (v === undefined ? undefined : encodeURIComponent(String(v))))
 
@@ -15,19 +12,20 @@ export const formattedPathFor = (route: string, ...pathParams: (string | undefin
     const value = encodedValues[index]
     if (value === undefined) return currentRoute
 
-    const pattern = new RegExp(`:${escapeRegExp(paramName)}(?=/|$)`, 'g')
+    const nameWithoutColon = paramName.slice(1)
+    const pattern = new RegExp(`:${escapeRegExp(nameWithoutColon)}(?=/|$)`, 'g')
     return currentRoute.replace(pattern, value)
   }, route)
 }
 
-const formatServiceAndAccountPathsFor = (
+function formatServiceAndAccountPathsFor(
   route: string,
   serviceExternalId: string,
   accountType: string,
   ...params: string[]
-): string => {
+): string {
   const completePath = urlJoin(paths.simplifiedAccount.root, route)
   return formattedPathFor(completePath, serviceExternalId, accountType, ...params)
 }
 
-export default formatServiceAndAccountPathsFor
+export = formatServiceAndAccountPathsFor
