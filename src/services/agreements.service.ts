@@ -1,7 +1,7 @@
 import LedgerClient from '@services/clients/pay/LedgerClient.class'
 import ConnectorClient from '@services/clients/pay/ConnectorClient.class'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
-import { LedgerTransactionParams, LedgerTransactionParamsData } from '@services/clients/pay/interfaces/ledger-client'
+import { LedgerTransactionParams, LedgerTransactionParamsData } from '@models/ledger/dto/TransactionSearchParams.dto'
 import { AgreementCancelRequest } from '@models/agreements/AgreementCancelRequest.class'
 import User from '@models/user/User.class'
 

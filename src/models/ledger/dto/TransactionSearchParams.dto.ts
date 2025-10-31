@@ -5,6 +5,10 @@ export interface LedgerTransactionParams {
   limitTotalSize?: number
   displaySize?: number
   page?: number
+  cardholderName?: string
+  lastDigitsCardNumber?: string
+  metadataValue?: string
+  brand?: string
   type?: string
 }
 
@@ -15,6 +19,10 @@ export class LedgerTransactionParamsData {
   readonly limit_total_size: string
   readonly display_size?: string
   readonly page: string
+  readonly cardholder_name?: string
+  readonly last_digits_card_number?: string
+  readonly metadata_value?: string
+  readonly card_brands?: string
   readonly transaction_type?: string
 
   constructor(params: LedgerTransactionParams) {
@@ -24,6 +32,10 @@ export class LedgerTransactionParamsData {
     this.limit_total_size = params.limitTotalSize?.toString() ?? '5001'
     this.display_size = params.displaySize?.toString() ?? undefined
     this.page = params.page?.toString() ?? '1'
+    this.cardholder_name = params.cardholderName?.toString() ?? undefined
+    this.last_digits_card_number = params.lastDigitsCardNumber?.toString() ?? undefined
+    this.metadata_value = params.metadataValue?.toString() ?? undefined
+    this.card_brands = params.brand?.toString() ?? undefined
     this.transaction_type = params.type ?? undefined
   }
 

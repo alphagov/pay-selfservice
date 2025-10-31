@@ -27,7 +27,7 @@ const randomElementId = () => `el-${Math.floor(Math.random() * 100000 + 1)}`
 const updateDisplayedValue = (elem) => {
   const allItems = [...elem.querySelectorAll(SELECTORS.item)]
   const selectedItemNames = allItems.filter((item) => item.checked).map((item) => item.labels[0].innerHTML.trim())
-  elem.querySelector(SELECTORS.currentSelections).innerText = selectedItemNames.length
+  elem.querySelector(SELECTORS.currentSelections).textContent = selectedItemNames.length
     ? selectedItemNames.join(', ')
     : allItems[0].labels[0].innerHTML.trim()
 }
@@ -126,7 +126,7 @@ const progressivelyEnhanceSelects = () => {
       id: select.id || randomElementId(),
       name: select.getAttribute('name'),
       items: [...select.querySelectorAll('option')].map((option) => ({
-        text: option.innerText,
+        text: option.textContent,
         value: option.value,
         id: option.id || randomElementId(),
         checked: option.hasAttribute('selected'),
