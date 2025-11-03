@@ -12,22 +12,27 @@ const GATEWAY_ACCOUNT_ID = 100
 const ACCOUNT_TYPE = 'test'
 const WEBHOOK_EXTERNAL_ID = 'webhook-789-ghi'
 const CALLBACK_URL = 'https://www.compuglobalhypermeganet.example.com'
+const WEBHOOK_DESCRIPTION = 'a really awesome webhook'
 
 const setStubs = (opts = {}, additionalStubs = []) => {
-  const options = Object.assign({}, {
-    role: 'admin',
-    accountType: ACCOUNT_TYPE,
-    webhookStatus: 'ACTIVE'
-  }, opts)
+  const options = Object.assign(
+    {},
+    {
+      role: 'admin',
+      accountType: ACCOUNT_TYPE,
+      webhookStatus: 'ACTIVE',
+    },
+    opts
+  )
 
   const WEBHOOK = {
     gateway_account_id: GATEWAY_ACCOUNT_ID,
     service_id: SERVICE_EXTERNAL_ID,
     external_id: WEBHOOK_EXTERNAL_ID,
     callback_url: CALLBACK_URL,
-    description: 'a really awesome webhook',
+    description: WEBHOOK_DESCRIPTION,
     live: options.accountType === 'live',
-    status: options.webhookStatus
+    status: options.webhookStatus,
   }
 
   cy.task('setupStubs', [
@@ -36,23 +41,24 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       serviceName: SERVICE_NAME,
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role: ROLES[options.role]
+      role: ROLES[options.role],
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
-      type: options.accountType
+      type: options.accountType,
     }),
     webhookStubs.getWebhookSuccess(WEBHOOK),
     webhooksStubs.getWebhookSigningSecret({
       service_id: SERVICE_EXTERNAL_ID,
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       external_id: WEBHOOK_EXTERNAL_ID,
-      signing_key: '123-signing-secret-456'
+      signing_key: '123-signing-secret-456',
     }),
     webhooksStubs.getWebhookMessagesListSuccess({
-      external_id: WEBHOOK_EXTERNAL_ID
+      external_id: WEBHOOK_EXTERNAL_ID,
     }),
-    ...additionalStubs])
+    ...additionalStubs,
+  ])
 }
 
 describe('webhook settings - toggle webhook status', () => {
@@ -66,7 +72,7 @@ describe('webhook settings - toggle webhook status', () => {
         beforeEach(() => {
           setStubs({
             role: 'admin',
-            webhookStatus: 'ACTIVE'
+            webhookStatus: 'ACTIVE',
           })
         })
 
@@ -75,21 +81,33 @@ describe('webhook settings - toggle webhook status', () => {
 
           cy.get('a').contains('Deactivate webhook').click()
 
-          cy.location('pathname')
-            .should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+          )
         })
 
         it('should show the correct heading and title', () => {
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+          )
 
           cy.get('h1').should('contain', 'Are you sure you want to deactivate a really awesome webhook?')
-          cy.title().should('eq', 'Deactivate webhook - Settings - Compu-Global-Hyper-Mega-Net - GOV.UK Pay')
+          cy.title().should(
+            'eq',
+            `Deactivate webhook - ${WEBHOOK_DESCRIPTION} - Settings - ${SERVICE_NAME.en} - GOV.UK Pay`
+          )
         })
 
         it('should show active "Webhooks" link', () => {
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+          )
 
-          checkSettingsNavigation('Webhooks', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks`)
+          checkSettingsNavigation(
+            'Webhooks',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks`
+          )
         })
       })
 
@@ -97,7 +115,7 @@ describe('webhook settings - toggle webhook status', () => {
         beforeEach(() => {
           setStubs({
             role: 'admin',
-            webhookStatus: 'INACTIVE'
+            webhookStatus: 'INACTIVE',
           })
         })
 
@@ -106,15 +124,22 @@ describe('webhook settings - toggle webhook status', () => {
 
           cy.get('a').contains('Activate webhook').click()
 
-          cy.location('pathname')
-            .should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+          cy.location('pathname').should(
+            'eq',
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+          )
         })
 
         it('should show the correct heading and title', () => {
-          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+          cy.visit(
+            `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+          )
 
           cy.get('h1').should('contain', 'Are you sure you want to activate a really awesome webhook')
-          cy.title().should('eq', 'Activate webhook - Settings - Compu-Global-Hyper-Mega-Net - GOV.UK Pay')
+          cy.title().should(
+            'eq',
+            `Activate webhook - ${WEBHOOK_DESCRIPTION} - Settings - ${SERVICE_NAME.en} - GOV.UK Pay`
+          )
         })
       })
     })
@@ -123,37 +148,52 @@ describe('webhook settings - toggle webhook status', () => {
         beforeEach(() => {
           setStubs({
             role: 'admin',
-            webhookStatus: 'ACTIVE'
+            webhookStatus: 'ACTIVE',
           })
         })
 
         describe('when no option is selected', () => {
           it('should show the form with a validation error', () => {
-            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+            )
 
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.location('pathname').should(
+              'eq',
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+            )
 
             cy.get('.govuk-error-summary')
               .should('exist')
               .should('contain.text', 'Confirm if you want to deactivate a really awesome webhook')
 
-            cy.get('#toggle-active-error').should('contain.text', 'Confirm if you want to deactivate a really awesome webhook')
+            cy.get('#toggle-active-error').should(
+              'contain.text',
+              'Confirm if you want to deactivate a really awesome webhook'
+            )
           })
         })
 
         describe('when "no" is selected', () => {
           it('should redirect to the webhook details page', () => {
-            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+            )
 
-            cy.get('div.govuk-radios__item').filter(':contains("No")').first()
+            cy.get('div.govuk-radios__item')
+              .filter(':contains("No")')
+              .first()
               .within(() => {
                 cy.get('input.govuk-radios__input').click()
               })
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+            cy.location('pathname').should(
+              'eq',
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`
+            )
           })
         })
 
@@ -162,21 +202,28 @@ describe('webhook settings - toggle webhook status', () => {
             cy.task('setupStubs', [
               webhookStubs.patchUpdateWebhookSuccess(SERVICE_EXTERNAL_ID, WEBHOOK_EXTERNAL_ID, GATEWAY_ACCOUNT_ID, {
                 path: 'status',
-                value: 'INACTIVE'
-              })
+                value: 'INACTIVE',
+              }),
             ])
           })
 
           it('should redirect to the webhook details page', () => {
-            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+            )
 
-            cy.get('div.govuk-radios__item').filter(':contains("No")').first()
+            cy.get('div.govuk-radios__item')
+              .filter(':contains("No")')
+              .first()
               .within(() => {
                 cy.get('input.govuk-radios__input').click()
               })
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+            cy.location('pathname').should(
+              'eq',
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`
+            )
           })
         })
       })
@@ -185,37 +232,52 @@ describe('webhook settings - toggle webhook status', () => {
         beforeEach(() => {
           setStubs({
             role: 'admin',
-            webhookStatus: 'INACTIVE'
+            webhookStatus: 'INACTIVE',
           })
         })
 
         describe('when no option is selected', () => {
           it('should show the form with a validation error', () => {
-            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+            )
 
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.location('pathname').should(
+              'eq',
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+            )
 
             cy.get('.govuk-error-summary')
               .should('exist')
               .should('contain.text', 'Confirm if you want to activate a really awesome webhook')
 
-            cy.get('#toggle-active-error').should('contain.text', 'Confirm if you want to activate a really awesome webhook')
+            cy.get('#toggle-active-error').should(
+              'contain.text',
+              'Confirm if you want to activate a really awesome webhook'
+            )
           })
         })
 
         describe('when "no" is selected', () => {
           it('should redirect to the webhook details page', () => {
-            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+            )
 
-            cy.get('div.govuk-radios__item').filter(':contains("No")').first()
+            cy.get('div.govuk-radios__item')
+              .filter(':contains("No")')
+              .first()
               .within(() => {
                 cy.get('input.govuk-radios__input').click()
               })
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+            cy.location('pathname').should(
+              'eq',
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`
+            )
           })
         })
 
@@ -224,21 +286,28 @@ describe('webhook settings - toggle webhook status', () => {
             cy.task('setupStubs', [
               webhookStubs.patchUpdateWebhookSuccess(SERVICE_EXTERNAL_ID, WEBHOOK_EXTERNAL_ID, GATEWAY_ACCOUNT_ID, {
                 path: 'status',
-                value: 'ACTIVE'
-              })
+                value: 'ACTIVE',
+              }),
             ])
           })
 
           it('should redirect to the webhook details page', () => {
-            cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`)
+            cy.visit(
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`
+            )
 
-            cy.get('div.govuk-radios__item').filter(':contains("No")').first()
+            cy.get('div.govuk-radios__item')
+              .filter(':contains("No")')
+              .first()
               .within(() => {
                 cy.get('input.govuk-radios__input').click()
               })
             cy.get('button').contains('Save changes').click()
 
-            cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
+            cy.location('pathname').should(
+              'eq',
+              `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`
+            )
           })
         })
       })
@@ -248,30 +317,30 @@ describe('webhook settings - toggle webhook status', () => {
   describe('for a non-existent webhook', () => {
     beforeEach(() => {
       setStubs({
-        role: 'admin'
+        role: 'admin',
       })
     })
 
     it('should return a 404', () => {
       cy.request({
         url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/this-webhook-does-not-exist/toggle-status`,
-        failOnStatusCode: false
-      }).then(response => expect(response.status).to.eq(404))
+        failOnStatusCode: false,
+      }).then((response) => expect(response.status).to.eq(404))
     })
   })
 
   describe('for a non-admin user', () => {
     beforeEach(() => {
       setStubs({
-        role: 'view-only'
+        role: 'view-only',
       })
     })
 
     it('should return a 403', () => {
       cy.request({
         url: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}/toggle-status`,
-        failOnStatusCode: false
-      }).then(response => expect(response.status).to.eq(403))
+        failOnStatusCode: false,
+      }).then((response) => expect(response.status).to.eq(403))
     })
   })
 })

@@ -36,6 +36,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       req.account.externalId,
       req.params.transactionExternalId
     ) as string,
+    messages: res.locals.flash?.messages ?? [],
   })
 }
 
