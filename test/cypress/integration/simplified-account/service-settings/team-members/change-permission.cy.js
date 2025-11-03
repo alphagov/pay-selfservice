@@ -5,6 +5,7 @@ const inviteStubs = require('../../../../stubs/invite-stubs')
 
 const ADMIN_USER_ID = 'admin-user-id'
 const VIEW_ONLY_USER_ID = 'view-only-user-id'
+const VIEW_ONLY_USER_EMAIL = 'view-only-user@example.com'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const TEST_ACCOUNT_TYPE = 'test'
 const TEST_GATEWAY_ACCOUNT_ID = 10
@@ -19,7 +20,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
   )
   const viewOnlyUserStubOpts = userStubs.getUserWithServiceRoleStubOpts(
     VIEW_ONLY_USER_ID,
-    'view-only-user@example.com',
+    VIEW_ONLY_USER_EMAIL,
     SERVICE_EXTERNAL_ID,
     'view-only'
   )
@@ -73,7 +74,7 @@ describe('Team members settings', () => {
 
     it('should show the show the correct heading, title and form with correct elements', () => {
       cy.get('h1').should('contain', 'Change permission for view-only-user@example.com')
-      cy.title().should('eq', 'Change permission - Settings - My cool service - GOV.UK Pay')
+      cy.title().should('eq', `Change permission - ${VIEW_ONLY_USER_EMAIL} - Settings - My cool service - GOV.UK Pay`)
       cy.get('input[type="radio"][value="admin"]').should('not.be.checked')
       cy.get('input[type="radio"][value="view-and-refund"]').should('not.be.checked')
       cy.get('input[type="radio"][value="view-only"]').should('be.checked')

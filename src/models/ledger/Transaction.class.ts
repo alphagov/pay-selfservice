@@ -2,13 +2,15 @@ import { TransactionData } from '@models/ledger/dto/Transaction.dto'
 import { DateTime } from 'luxon'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { AuthorisationSummary } from '@models/common/authorisation-summary/AuthorisationSummary.class'
-import { RefundSummary } from '@models/common/refund-summary/RefundSummary.class'
+import { LedgerRefundSummary } from '@models/common/refund-summary/LedgerRefundSummary.class'
 import { SettlementSummary } from '@models/common/settlement-summary/SettlementSummary.class'
 import { CardDetails } from '@models/common/card-details/CardDetails.class'
 import { ResourceType } from './types/resource-type'
 import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFriendlyNames } from './types/status'
 import { State } from './State.class'
 import { parseReason, Reason, ReasonFriendlyNames } from './types/reason'
+
+const TITLE_FRIENDLY_DATESTAMP_FORMAT = 'dd LLLL yyyy HH:mm:ss'
 
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
@@ -29,7 +31,7 @@ class Transaction {
   readonly email?: string
   readonly walletType?: string
   readonly disputed: boolean
-  readonly refundSummary?: RefundSummary
+  readonly refundSummary?: LedgerRefundSummary
   readonly settlementSummary?: SettlementSummary
   readonly authorisationSummary?: AuthorisationSummary
   readonly cardDetails?: CardDetails
@@ -56,7 +58,7 @@ class Transaction {
     this.walletType = data.wallet_type
     this.email = data.email
     this.disputed = data.disputed
-    this.refundSummary = data.refund_summary && new RefundSummary(data.refund_summary)
+    this.refundSummary = data.refund_summary && new LedgerRefundSummary(data.refund_summary)
     this.settlementSummary = data.settlement_summary && new SettlementSummary(data.settlement_summary)
     this.authorisationSummary = data.authorisation_summary && new AuthorisationSummary(data.authorisation_summary)
     this.cardDetails = data.card_details && new CardDetails(data.card_details)
@@ -68,6 +70,14 @@ class Transaction {
 
   amountInPounds(): string {
     return penceToPoundsWithCurrency(this.amount)
+  }
+
+  refundableAmountRemainingInPounds(): string {
+    return penceToPoundsWithCurrency(this.getRefundableAmountRemaining())
+  }
+
+  getRefundableAmountRemaining() {
+    return this.refundSummary ? this.refundSummary.amountAvailable : this.amount
   }
 
   get friendlyTransactionStatus(): string {
@@ -83,10 +93,22 @@ class Transaction {
     }
   }
 
+  get titleFriendlyCreatedDate(): string {
+    return this.createdDate.toFormat(TITLE_FRIENDLY_DATESTAMP_FORMAT)
+  }
+
   get friendlyReason() {
     if (this.reason !== undefined) {
       return ReasonFriendlyNames[this.reason] ?? ReasonFriendlyNames.OTHER
     }
+  }
+
+  isPartiallyRefunded(): boolean {
+    return (this.refundSummary && this.refundSummary.amountAvailable !== this.amount) ?? false
+  }
+
+  isFullyRefunded() {
+    return (this.refundSummary && this.refundSummary.amountAvailable === 0) ?? false
   }
 }
 

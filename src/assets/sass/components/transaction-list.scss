@@ -19,3 +19,59 @@
 .capitalize {
   text-transform: capitalize;
 }
+
+.transactions-list {
+  &__worldpay-header {
+    &--reference {
+      width: 16%;
+    }
+
+    &--email {
+      width: 33%;
+    }
+
+    &--amount {
+      width: 11%;
+    }
+
+    &--brand {
+      width: 11%;
+    }
+
+    &--state {
+      width: 13%;
+    }
+
+    &--date {
+      text-align: left;
+      width: 16%;
+    }
+  }
+
+  &__stripe-header {
+    &--reference {
+      width: 14.5%;
+    }
+
+    &--email {
+      width: 20%;
+    }
+
+    &--amount {
+      width: 9%;
+    }
+
+    &--brand {
+      width: 12%;
+    }
+
+    &--state {
+      width: 10.5%;
+    }
+
+    &--date {
+      text-align: left;
+      width: 15.5%;
+    }
+  }
+}

@@ -310,6 +310,19 @@ simplifiedAccount.get(
   permission('transactions-details:read'),
   servicesController.transactions.detail.get
 )
+simplifiedAccount.get(
+  paths.simplifiedAccount.transactions.refund,
+  experimentalFeature,
+  permission('refunds:create'),
+  servicesController.transactions.refund.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.transactions.refund,
+  experimentalFeature,
+  permission('refunds:create'),
+  servicesController.transactions.refund.post
+)
+
 // agreements
 simplifiedAccount.get(
   paths.simplifiedAccount.agreements.index,

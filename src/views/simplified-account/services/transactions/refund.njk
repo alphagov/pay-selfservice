@@ -1,0 +1,74 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+
+{% set servicePageTitle %}
+  Refund - {{ transaction.titleFriendlyCreatedDate }} - {{ transaction.reference }} - {{ pageID }}
+{% endset %}
+
+
+{% set partialRefundHTML %}
+  {{
+    govukInput({
+      name: 'partialRefundAmount',
+      id: 'partial-refund-amount',
+      value: partialRefundAmount,
+      prefix: {
+        text: "£"
+      },
+      label: {
+        html: 'Refund amount <span class="govuk-visually-hidden">in &pound;</span>'
+      },
+      classes: 'govuk-input--width-10',
+      errorMessage: { text: errors.formErrors['partialRefundAmount'] } if errors.formErrors['partialRefundAmount'] else false
+    })
+  }}
+{% endset %}
+
+{% block serviceContent %}
+  <form method="post">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+
+    {{
+      govukRadios({
+        name: 'refundPayment',
+        idPrefix: 'refund-payment',
+        errorMessage: { text: errors.formErrors['refundPayment'] } if errors.formErrors['refundPayment'] else false,
+        fieldset: {
+          legend: {
+            text: 'Refund',
+            isPageHeading: true,
+            classes: 'govuk-fieldset__legend--l govuk-!-font-weight-bold'
+          }
+        },
+        items: [
+          {
+            text: 'Remaining amount' if transaction.isPartiallyRefunded() else 'Full amount',
+            value: 'full',
+            hint: {
+              text: 'Refund the ' + ('remaining' if transaction.isPartiallyRefunded() else 'full') + ' amount of ' + transaction.refundableAmountRemainingInPounds()
+            }
+          },
+          {
+            text: 'Partial refund',
+            value: 'partial',
+            hint: {
+              text: 'Refund a partial amount'
+            },
+            conditional: {
+              html: partialRefundHTML
+            },
+            checked: partialSelected
+          }
+        ]
+      })
+    }}
+
+    {{
+      govukButton({
+        text: "Confirm refund"
+      })
+    }}
+  </form>
+{% endblock %}

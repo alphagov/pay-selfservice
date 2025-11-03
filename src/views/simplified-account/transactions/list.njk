@@ -4,36 +4,53 @@
 
 {% if results.transactions.length %}
   <table id="transactions-list" class="govuk-table transactions-list-table" style="width:100%">
-    <thead class="govuk-table__head govuk-!-font-size-14">
+    <thead class="govuk-table__head govuk-!-font-size-16">
       <tr class="govuk-table__row">
         {% if isStripeAccount %}
-          <th class="govuk-table__header" scope="col" id="reference-header" style="width:17%">Reference number</th>
-          <th class="govuk-table__header" scope="col" id="email-header" style="width:13%">Email</th>
-          <th class="govuk-table__header" scope="col" id="amount-header" style="width:9%">Amount</th>
-          <th class="govuk-table__header" scope="col" id="amount-header" style="width:11%">Provider fee</th>
-          <th class="govuk-table__header" scope="col" id="amount-header" style="width:11%">Net</th>
-          <th class="govuk-table__header" scope="col" id="brand-header" style="width:11%">Card brand</th>
-          <th class="govuk-table__header" scope="col" id="state-header" style="width:14%">Payment Status</th>
-          <th
-            style="text-align: left; width:14%"
-            class="govuk-table__header govuk-table__header--numeric"
-            scope="col"
-            id="time-header"
+          <th class="govuk-table__header transactions-list__stripe-header--reference" scope="col" id="reference-header"
+            >Reference number</th
           >
+          <th class="govuk-table__header transactions-list__stripe-header--email" scope="col" id="email-header"
+            >Email</th
+          >
+          <th class="govuk-table__header transactions-list__stripe-header--amount" scope="col" id="amount-header"
+            >Amount</th
+          >
+          <th class="govuk-table__header transactions-list__stripe-header--amount" scope="col" id="amount-header"
+            >Provider fee</th
+          >
+          <th class="govuk-table__header transactions-list__stripe-header--amount" scope="col" id="amount-header"
+            >Net</th
+          >
+          <th class="govuk-table__header transactions-list__stripe-header--brand" scope="col" id="brand-header"
+            >Card brand</th
+          >
+          <th class="govuk-table__header transactions-list__stripe-header--state" scope="col" id="state-header"
+            >Payment Status</th
+          >
+          <th class="govuk-table__header transactions-list__stripe-header--date" scope="col" id="time-header">
             Date created
           </th>
         {% else %}
-          <th class="govuk-table__header" scope="col" id="reference-header" style="width:18.5%">Reference number</th>
-          <th class="govuk-table__header" scope="col" id="email-header" style="width:25%">Email</th>
-          <th class="govuk-table__header" scope="col" id="amount-header" style="width:12.5%">Amount</th>
-          <th class="govuk-table__header" scope="col" id="brand-header" style="width:12.5%">Card brand</th>
-          <th class="govuk-table__header" scope="col" id="state-header" style="width:14%">Payment Status</th>
           <th
-            style="text-align: left; width:17%"
-            class="govuk-table__header govuk-table__header--numeric"
+            class="govuk-table__header transactions-list__worldpay-header--reference"
             scope="col"
-            id="time-header"
+            id="reference-header"
+            >Reference number</th
           >
+          <th class="govuk-table__header transactions-list__worldpay-header--email" scope="col" id="email-header"
+            >Email</th
+          >
+          <th class="govuk-table__header transactions-list__worldpay-header--amount" scope="col" id="amount-header"
+            >Amount</th
+          >
+          <th class="govuk-table__header transactions-list__worldpay-header--brand" scope="col" id="brand-header"
+            >Card brand</th
+          >
+          <th class="govuk-table__header transactions-list__worldpay-header--state" scope="col" id="state-header"
+            >Payment Status</th
+          >
+          <th class="govuk-table__header transactions-list__worldpay-header--date" scope="col" id="time-header">
             Date created
           </th>
         {% endif %}

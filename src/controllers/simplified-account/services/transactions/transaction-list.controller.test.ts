@@ -5,6 +5,7 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const TRANSACTION_EXTERNAL_ID = 'transaction123abc'
 const GATEWAY_ACCOUNT_ID = 117
+const PAGE_SIZE = 20
 const mockResponse = sinon.stub()
 const mockLedgerService = {
   searchTransactions: sinon.stub().resolves({
@@ -18,11 +19,12 @@ const mockLedgerService = {
         externalId: TRANSACTION_EXTERNAL_ID,
         gatewayTransactionId: '11933338-20de-4792-bbee-8d19258dabc3',
         reference: 'REF 123',
+        transactionType: 'PAYMENT',
         state: {
           finished: true,
           code: 'P0010',
           message: 'Payment method rejected',
-          status: 'declined',
+          status: 'DECLINED',
         },
         amount: 145600,
         createdDate: '2025-09-12T11:47:32.980+01:00',
@@ -96,7 +98,7 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 2, 5)
+        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 2, PAGE_SIZE)
       })
 
       it('should default to page 1 for invalid page parameter', async () => {
@@ -106,7 +108,7 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, 5)
+        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, PAGE_SIZE)
       })
 
       it('should default to page 1 for negative page number', async () => {
@@ -116,7 +118,7 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, 5)
+        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, PAGE_SIZE)
       })
     })
   })

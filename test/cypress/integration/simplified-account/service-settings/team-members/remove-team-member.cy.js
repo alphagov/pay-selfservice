@@ -5,6 +5,7 @@ const inviteStubs = require('../../../../stubs/invite-stubs')
 
 const ADMIN_USER_ID = 'admin-user-id'
 const VIEW_ONLY_USER_ID = 'view-only-user-id'
+const VIEW_ONLY_USER_EMAIL = 'view-only-user@example.com'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const TEST_ACCOUNT_TYPE = 'test'
 const TEST_GATEWAY_ACCOUNT_ID = 10
@@ -19,7 +20,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
   )
   const viewOnlyUserStubOpts = userStubs.getUserWithServiceRoleStubOpts(
     VIEW_ONLY_USER_ID,
-    'view-only-user@example.com',
+    VIEW_ONLY_USER_EMAIL,
     SERVICE_EXTERNAL_ID,
     'view-only'
   )
@@ -32,7 +33,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
     userStubs.getUserSuccess({
       userExternalId: VIEW_ONLY_USER_ID,
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      email: 'view-only-user@example.com',
+      email: VIEW_ONLY_USER_EMAIL,
     }),
     userStubs.getUserSuccess({
       userExternalId: ADMIN_USER_ID,
@@ -67,7 +68,7 @@ describe('Team members settings', () => {
 
     it('should show the show the correct heading, title and form with correct elements', () => {
       cy.get('h1').should('contain', 'Are you sure you want to remove view-only-user@example.com?')
-      cy.title().should('eq', 'Remove team member - Settings - My cool service - GOV.UK Pay')
+      cy.title().should('eq', `Remove team member - ${VIEW_ONLY_USER_EMAIL} - Settings - My cool service - GOV.UK Pay`)
       cy.get('input[type="radio"][value="yes"]').should('not.be.checked')
       cy.get('input[type="radio"][value="no"]').should('not.be.checked')
       cy.get('button').should('contain.text', 'Save changes')

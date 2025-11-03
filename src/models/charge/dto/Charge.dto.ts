@@ -1,3 +1,7 @@
+import { RefundSummaryData } from '@models/common/refund-summary/dto/RefundSummary.dto'
+import { SettlementSummaryData } from '@models/common/settlement-summary/dto/SettlementSummary.dto'
+import { AuthorisationSummaryData } from '@models/common/authorisation-summary/dto/AuthorisationSummary.dto'
+
 export interface Link {
   rel: string
   method: string
@@ -6,24 +10,6 @@ export interface Link {
   params: {
     chargeTokenId: string
     [key: string]: string
-  }
-}
-
-export interface RefundSummaryData {
-  status: string
-  user_external_id: string | null
-  amount_available: number
-  amount_submitted: number
-}
-
-export interface SettlementSummaryData {
-  capture_submit_time: string | null
-  captured_date: string | null
-}
-
-export interface AuthorisationSummaryData {
-  three_d_secure: {
-    required: false
   }
 }
 

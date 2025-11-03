@@ -5,6 +5,7 @@ export interface LedgerTransactionParams {
   limitTotalSize?: number
   displaySize?: number
   page?: number
+  type?: string
 }
 
 export class LedgerTransactionParamsData {
@@ -14,6 +15,7 @@ export class LedgerTransactionParamsData {
   readonly limit_total_size: string
   readonly display_size?: string
   readonly page: string
+  readonly transaction_type?: string
 
   constructor(params: LedgerTransactionParams) {
     this.account_id = params.accountIds.join(',')
@@ -22,6 +24,7 @@ export class LedgerTransactionParamsData {
     this.limit_total_size = params.limitTotalSize?.toString() ?? '5001'
     this.display_size = params.displaySize?.toString() ?? undefined
     this.page = params.page?.toString() ?? '1'
+    this.transaction_type = params.type ?? undefined
   }
 
   asQueryString(): string {
