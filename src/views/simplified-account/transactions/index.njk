@@ -23,7 +23,7 @@
     {{
       breadcrumbs([
         { text: "My services", href: routes.services.index },
-        { html: pageTitleBreadcrumbWithTag  }
+        { html: pageTitleBreadcrumbWithTag }
       ])
     }}
   {% else %}
@@ -32,7 +32,7 @@
 {% endblock %}
 
 {% block serviceContent %}
-  <div class="govuk-grid-column-full">
+  <div class="govuk-grid-column-full" style="padding: 0">
     {% if (isInvalidDateRange) %}
       {{
         govukErrorSummary({
@@ -78,36 +78,42 @@
         {% endif %}
       {% endif %}
     {% endif %}
-    {% include "./filter.njk" %}
 
-    {{
-      govukAccordion({
-        id: "accordion-default",
-        classes: "disable-accordion-controls",
-        rememberExpanded: false,
-        items: [
-          {
-            heading: {
-            text: "Advanced search"
-          },
-            content: {
-            html: ''
-          }
-          }
-        ]
-      })
-    }}
+    <form method="GET" novalidate autocomplete="off">
+      {% include "./filter.njk" %}
 
-    <div class="govuk-button-group">
+
+      {% set advancedFilters %}
+        {% include "./advanced-filter.njk" %}
+      {% endset %}
+
       {{
-        govukButton({
-          text: "Search transactions",
-          href: ""
+        govukAccordion({
+          id: "accordion-default",
+          classes: "disable-accordion-controls",
+          items: [
+            {
+              heading: {
+                text: "Advanced search"
+              },
+              content: {
+                html: advancedFilters
+              }
+            }
+          ]
         })
       }}
 
-      <a class="govuk-link govuk-link--no-visited-state" href="">Clear filters</a>
-    </div>
+      <div class="govuk-button-group">
+        {{
+          govukButton({
+            text: "Search transactions"
+          })
+        }}
+
+        <a class="govuk-link govuk-link--no-visited-state" href="{{ clearRedirect }}">Clear filters</a>
+      </div>
+    </form>
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
     {{
