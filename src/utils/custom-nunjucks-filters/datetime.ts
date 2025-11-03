@@ -9,6 +9,15 @@ const shortTime = (dateString: string) => {
   return date.toFormat('dd LLL yy')
 }
 
+const europeanDate = (dateString: string) => {
+  const date = DateTime.fromISO(dateString)
+  if (!date.isValid) {
+    return ''
+  }
+
+  return date.toFormat('dd/LL/yyyy')
+}
+
 const zonedDate = (dateString: string) => {
   const date = DateTime.fromISO(dateString)
   if (!date.isValid) {
@@ -22,4 +31,5 @@ const zonedDate = (dateString: string) => {
 export = {
   shortTime,
   zonedDate,
+  europeanDate,
 }

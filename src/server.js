@@ -21,7 +21,7 @@ const Sentry = require('@utils/sentry.js').initialiseSentry()
 const formatPSPName = require('@utils/format-PSP-name')
 const smartCaps = require('@utils/custom-nunjucks-filters/smart-caps')
 const govukDate = require('@utils/custom-nunjucks-filters/govuk-date')
-const { datetime, shortTime, zonedDate } = require('@utils/custom-nunjucks-filters/datetime')
+const { datetime, shortTime, zonedDate, europeanDate } = require('@utils/custom-nunjucks-filters/datetime')
 const formatAccountPathsFor = require('@utils/format-account-paths-for')
 const formatServicePathsFor = require('@utils/format-service-paths-for')
 const healthcheckController = require('@controllers/healthcheck.controller')
@@ -121,6 +121,7 @@ function initialiseTemplateEngine(app) {
   nunjucksEnvironment.addFilter('datetime', datetime)
   nunjucksEnvironment.addFilter('shortTime', shortTime)
   nunjucksEnvironment.addFilter('zonedDate', zonedDate)
+  nunjucksEnvironment.addFilter('europeanDate', europeanDate)
   nunjucksEnvironment.addFilter('docsLink', (text, slug) => {
     return new nunjucks.runtime.SafeString(
       `<a class="govuk-link govuk-link--no-visited-state" href="https://docs.payments.service.gov.uk/${slug}">${text}</a>`
