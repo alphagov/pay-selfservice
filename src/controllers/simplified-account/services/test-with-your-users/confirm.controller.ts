@@ -6,7 +6,7 @@ import { response } from '@utils/response'
 import { SESSION_KEY } from './constants'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
-  const prototypeLink = lodash.get(req, SESSION_KEY, '')
+  const prototypeLink = lodash.get(req, SESSION_KEY, { href: '', name: '' })
 
   const context = {
     prototypeLink,

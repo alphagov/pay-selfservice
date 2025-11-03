@@ -79,6 +79,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     isWelsh,
     serviceMode: account.type,
     createJourney: true,
+    paymentLinkTitle: currentSession.paymentLinkTitle,
   })
 }
 

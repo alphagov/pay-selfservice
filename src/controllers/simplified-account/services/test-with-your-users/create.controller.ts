@@ -89,7 +89,10 @@ async function post(req: ServiceRequest<CreatePrototypeLinkData>, res: ServiceRe
       .withApiToken(token)
   )
 
-  lodash.set(req, SESSION_KEY, prototypeLink.links.pay.href)
+  lodash.set(req, SESSION_KEY, {
+    href: prototypeLink.links.pay.href,
+    name: req.body.description,
+  })
 
   return res.redirect(
     formatServiceAndAccountPathsFor(

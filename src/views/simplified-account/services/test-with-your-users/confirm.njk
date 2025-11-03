@@ -1,9 +1,9 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 
-{% set servicePageTitle = "Your prototype link" %}
+{% set servicePageTitle = "Your prototype link - " + prototypeLink.name  %}
 
 {% block serviceContent %}
-  <h1 class="govuk-heading-l page-title">{{ servicePageTitle }}</h1>
+  <h1 class="govuk-heading-l page-title"> Your prototype link </h1>
 
   <p class="govuk-body">
     This link will send the user to our payment pages. Use it in a “pay now” button, for example, to integrate it with
@@ -12,8 +12,8 @@
 
   {% set prototypeLink %}
     <p class="govuk-body govuk-!-font-weight-bold">
-      <a class="pay-protototype-link govuk-link" id="prototyping__links-link-create-payment" href="{{ prototypeLink }}"
-        >{{ prototypeLink }}</a
+      <a class="pay-protototype-link govuk-link" id="prototyping__links-link-create-payment" href="{{ prototypeLink.href }}"
+        >{{ prototypeLink.href }}</a
       >
     </p>
   {% endset %}

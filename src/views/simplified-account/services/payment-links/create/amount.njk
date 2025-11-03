@@ -5,9 +5,9 @@
 
 {% block pageTitle %}
   {% if isEditing %}
-  Edit your payment link amount - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+    Edit your payment link amount - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
   {% else %}
-  Is the payment for a fixed amount? - Create a payment link - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+    Is the payment for a fixed amount? - {{ paymentLinkTitle }} - {{ currentService.name }} - GOV.UK Pay
   {% endif %}
 {% endblock %}
 
