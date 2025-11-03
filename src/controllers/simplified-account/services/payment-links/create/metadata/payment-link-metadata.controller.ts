@@ -30,6 +30,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     isWelsh,
     serviceMode: req.account.type,
     createJourney: true,
+    paymentLinkTitle: currentSession.paymentLinkTitle,
   })
 }
 
