@@ -95,15 +95,19 @@ const closeMultiSelectOnEscapeKeypress = () => {
 
 function setDropdownHeight(openButton, scrollContainer, items) {
   const minVisibleItems = 3.5
+  const maxAllowedVisibleItems = 8.5
 
   const itemHeight = items.length > 0 ? items[0].offsetHeight : 0
   if (!itemHeight) return
 
   const availableSpace = window.innerHeight - openButton.getBoundingClientRect().top
-  const maxVisibleItems = Math.max(minVisibleItems, Math.floor(availableSpace / itemHeight) - 1.5)
+  const computedVisible = Math.max(minVisibleItems, Math.floor(availableSpace / itemHeight) - 1.5)
+  const visibleItems = Math.min(computedVisible, maxAllowedVisibleItems)
 
-  if (availableSpace - itemHeight * items.length < 0) {
-    scrollContainer.style.maxHeight = `${maxVisibleItems * itemHeight}px`
+  const totalItems = items.length
+
+  if (totalItems > visibleItems || availableSpace - itemHeight * totalItems < 0) {
+    scrollContainer.style.maxHeight = `${Math.min(visibleItems, totalItems) * itemHeight}px`
   } else {
     scrollContainer.style.maxHeight = ''
   }
