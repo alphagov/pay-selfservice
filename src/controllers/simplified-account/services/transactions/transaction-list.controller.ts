@@ -9,6 +9,16 @@ import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { PaymentStatusFriendlyNames } from '@models/ledger/types/status'
 import { ResourceType } from '@models/ledger/types/resource-type'
 
+const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
+
+const showCsvDownload = (total: number, filters: Record<string, unknown> = {}): boolean => {
+  if (total <= LEDGER_TRANSACTION_COUNT_LIMIT) {
+    return true
+  }
+
+  return Object.keys(filters).some((key) => key !== 'page' && key !== 'pageSize')
+}
+
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
     paths.simplifiedAccount.transactions.index,
@@ -25,13 +35,13 @@ const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: str
     return path
   }
 }
-
 async function get(req: ServiceRequest, res: ServiceResponse) {
+  const { service, account, query } = req
   const gatewayAccountId = req.account.id
   const PAGE_SIZE = 20
 
   let currentPage = 1
-  const pageQuery = req.query.page
+  const pageQuery = query.page
   if (pageQuery) {
     const pageNumber = Number(pageQuery)
     if (!isNaN(pageNumber) && pageNumber >= 1) {
@@ -46,9 +56,15 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     currentPage = totalPages
   }
 
-  const urlGenerator = getUrlGenerator(filters, req.service.externalId, req.account.type)
+  const urlGenerator = getUrlGenerator(filters, service.externalId, account.type)
 
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, urlGenerator)
+
+  const transactionsDownloadLink = formatServiceAndAccountPathsFor(
+    paths.simplifiedAccount.transactions.download,
+    service.externalId,
+    account.type
+  )
 
   return response(req, res, 'simplified-account/transactions/index', {
     results: {
@@ -63,16 +79,18 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         formattedState: PaymentStatusFriendlyNames[transaction.state.status],
         link: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.transactions.detail,
-          req.service.externalId,
-          req.account.type,
+          service.externalId,
+          account.type,
           transaction.externalId
         ),
       })),
     },
-
+    transactionsDownloadLink: transactionsDownloadLink,
     isBST: isBritishSummerTime(),
     pagination: pagination,
-    isStripeAccount: req.account.paymentProvider === 'stripe',
+    isStripeAccount: account.paymentProvider === 'stripe',
+    hasResults: results.total !== 0,
+    showCsvDownload: showCsvDownload(results.total, filters),
   })
 }
 
