@@ -1,6 +1,6 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 
-{% set servicePageTitle = "Your prototype link - " + prototypeLink.name  %}
+{% set servicePageTitle = "Your prototype link - " + prototypeLink.name %}
 
 {% block serviceContent %}
   <h1 class="govuk-heading-l page-title"> Your prototype link </h1>
@@ -12,7 +12,10 @@
 
   {% set prototypeLink %}
     <p class="govuk-body govuk-!-font-weight-bold">
-      <a class="pay-protototype-link govuk-link" id="prototyping__links-link-create-payment" href="{{ prototypeLink.href }}"
+      <a
+        class="pay-protototype-link govuk-link"
+        id="prototyping__links-link-create-payment"
+        href="{{ prototypeLink.href }}"
         >{{ prototypeLink.href }}</a
       >
     </p>
