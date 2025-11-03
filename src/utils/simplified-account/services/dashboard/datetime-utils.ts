@@ -6,7 +6,7 @@ export type Period =
   | 'previous-seven-days'
   | 'previous-thirty-days'
   | 'previous-month'
-  | 'previous-year'
+  | 'last-12-months'
 
 interface DateTimeRange {
   start: DateTime
@@ -57,11 +57,10 @@ export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
       }
     }
 
-    case 'previous-year': {
-      const lastYear = now.minus({ years: 1 })
+    case 'last-12-months': {
       return {
-        start: lastYear.startOf('year'),
-        end: lastYear.endOf('year'),
+        start: now.startOf('day').minus({ years: 1 }),
+        end: now
       }
     }
 
