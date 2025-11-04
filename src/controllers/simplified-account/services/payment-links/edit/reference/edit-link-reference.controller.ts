@@ -24,7 +24,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       referenceLabel: product.referenceLabel,
       referenceHint: product.referenceHint,
     },
-    productName: product.name
+    productName: product.name,
   })
 }
 
