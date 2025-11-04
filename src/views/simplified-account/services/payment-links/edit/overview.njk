@@ -1,13 +1,13 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 
 {% set servicePageTitle %}
-  Payment link details
+  Payment link details - {{ product.name}}
 {% endset %}
 
 {% block serviceContent %}
   <span class="govuk-caption-l">Edit {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
-  <h1 class="govuk-heading-l page-title">
-    {{ servicePageTitle }}
+  <h1 class="govuk-heading-l">
+    Payment link details
   </h1>
 
   {{ govukSummaryList({
