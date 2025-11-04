@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 
-import { ResourceType } from "./resource-type"
+import { ResourceType } from './resource-type'
 
 export const Status = {
   // used for payments only
@@ -76,11 +76,15 @@ export function getFriendlyStatus(statusType: ResourceType, status: Status): str
 }
 
 export function getUniqueFriendlyNames(...statusMaps: Partial<Record<Status, string>>[]): string[] {
-  const allValues = statusMaps.flatMap(map => Object.values(map));
-  const uniqueFriendlyNames = lodash.uniq(allValues);
+  const allValues = statusMaps.flatMap((map) => Object.values(map))
+  const uniqueFriendlyNames = lodash.uniq(allValues)
 
-  return uniqueFriendlyNames;
+  return uniqueFriendlyNames
 }
 
 export const statusFriendlyNames = getUniqueFriendlyNames(PaymentStatusFriendlyNames, RefundStatusFriendlyNames)
-export const statusFriendlyNamesWithDisputes = getUniqueFriendlyNames(PaymentStatusFriendlyNames, RefundStatusFriendlyNames, DisputeStatusFriendlyNames)
+export const statusFriendlyNamesWithDisputes = getUniqueFriendlyNames(
+  PaymentStatusFriendlyNames,
+  RefundStatusFriendlyNames,
+  DisputeStatusFriendlyNames
+)

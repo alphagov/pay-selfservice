@@ -2,9 +2,7 @@ import { PaymentStatusFriendlyNames, RefundStatusFriendlyNames, Status } from '@
 import { ConnectorStates } from '@models/ledger/types/status'
 
 export function displayStatesToConnectorStates(displayStates: string | string[]): ConnectorStates {
-  const selected = Array.isArray(displayStates)
-    ? displayStates
-    : [displayStates]
+  const selected = Array.isArray(displayStates) ? displayStates : [displayStates]
   return toConnectorStates(selected)
 }
 
@@ -12,7 +10,7 @@ function toConnectorStates(selectedStateStrings: string[]): ConnectorStates {
   const result: ConnectorStates = {
     paymentStates: [],
     refundStates: [],
-    disputeStates: []
+    disputeStates: [],
   }
 
   populatePaymentStates(selectedStateStrings, result)
@@ -22,8 +20,8 @@ function toConnectorStates(selectedStateStrings: string[]): ConnectorStates {
 }
 
 function populatePaymentStates(selectedStateStrings: string[], result: ConnectorStates) {
-  Object.keys(PaymentStatusFriendlyNames).forEach(status => {
-    selectedStateStrings.forEach(selectedStatus => {
+  Object.keys(PaymentStatusFriendlyNames).forEach((status) => {
+    selectedStateStrings.forEach((selectedStatus) => {
       if (PaymentStatusFriendlyNames[status as Status] === selectedStatus) {
         result.paymentStates.push(status.toLowerCase())
       }
@@ -32,12 +30,11 @@ function populatePaymentStates(selectedStateStrings: string[], result: Connector
 }
 
 function populateRefundStates(selectedStateStrings: string[], result: ConnectorStates) {
-  Object.keys(RefundStatusFriendlyNames).forEach(status => {
-    selectedStateStrings.forEach(selectedStatus => {
+  Object.keys(RefundStatusFriendlyNames).forEach((status) => {
+    selectedStateStrings.forEach((selectedStatus) => {
       if (RefundStatusFriendlyNames[status as Status] === selectedStatus) {
         result.refundStates.push(status.toLowerCase())
       }
     })
   })
 }
-

@@ -8,7 +8,12 @@ import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { getAllCardTypes } from '@services/card-types.service'
 import lodash from 'lodash'
-import { statusFriendlyNames, getFriendlyStatus, statusFriendlyNamesWithDisputes, ConnectorStates } from '@models/ledger/types/status'
+import {
+  statusFriendlyNames,
+  getFriendlyStatus,
+  statusFriendlyNamesWithDisputes,
+  ConnectorStates,
+} from '@models/ledger/types/status'
 import { getPeriodUKDateTimeRange, Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { displayStatesToConnectorStates } from '@utils/simplified-account/services/transactions/transaction-status-utils'
 
@@ -71,8 +76,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     ...(req.query.state && {
       state: req.query.state as string[],
       paymentStates: stateFilters.paymentStates,
-      refundStates: stateFilters.refundStates
-      // need function call here - it will return an object with 3 arrays
+      refundStates: stateFilters.refundStates,
     }),
   }
 
@@ -81,7 +85,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const includeDisputeStatuses = isStripeAccount
   const statusNames = includeDisputeStatuses ? statusFriendlyNamesWithDisputes : statusFriendlyNames
 
-  const eventStates = statusNames.map(state => {
+  const eventStates = statusNames.map((state) => {
     return {
       value: state,
       text: state,
@@ -127,13 +131,12 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         ),
       })),
     },
-
     isBST: isBritishSummerTime(),
-    pagination: pagination,
+    pagination,
+    filters,
     clearRedirect: transactionsUrl,
     isStripeAccount,
     cardBrands: [{ value: '', text: 'Any' }, ...cardBrands],
-    filters,
     statuses: [{ value: '', text: 'All' }, ...eventStates],
   })
 }

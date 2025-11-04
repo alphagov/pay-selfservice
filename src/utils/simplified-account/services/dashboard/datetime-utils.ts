@@ -21,13 +21,11 @@ export const DT_FULL = {
   minute: '2-digit',
   second: undefined,
   timeZoneName: 'short',
-  hour12: true
+  hour12: true,
 } as DateTimeFormatOptions
 
 export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
-  const now = DateTime.now()
-    .setLocale('en-GB')
-    .setZone('Europe/London')
+  const now = DateTime.now().setLocale('en-GB').setZone('Europe/London')
   const yesterday = now.minus({ days: 1 })
 
   switch (period) {
@@ -60,7 +58,7 @@ export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
     case 'last-12-months': {
       return {
         start: now.startOf('day').minus({ years: 1 }),
-        end: now
+        end: now,
       }
     }
 
