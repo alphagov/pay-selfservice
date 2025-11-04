@@ -114,51 +114,194 @@ describe('transaction refund controller', () => {
       })
     })
 
-    describe('with invalid input', () => {
-      beforeEach(() => {
-        getTransactionStub.resolves(transactionFixture.toTransaction())
+    describe('with invalid inputs', () => {
+      describe('partial refund amount is not a number', () => {
+        beforeEach(() => {
+          getTransactionStub.resolves(transactionFixture.toTransaction())
 
-        nextRequest({
-          body: {
-            refundPayment: 'partial',
-            partialRefundAmount: 'notanumber',
-          },
-        })
-      })
-
-      it('should call the response method', async () => {
-        const thisCall = await call('post')
-
-        mockResponse.should.have.been.calledOnce
-        mockResponse.should.have.been.calledWith(thisCall.req, res, 'simplified-account/services/transactions/refund')
-      })
-
-      it('should pass the context to the response method with the errors', async () => {
-        await call('post')
-
-        mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
-          transaction: transactionFixture.toTransaction(),
-          errors: {
-            summary: [
-              {
-                text: 'Enter an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”',
-                href: '#partial-refund-amount',
-              },
-            ],
-            formErrors: {
-              partialRefundAmount:
-                'Enter an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”',
+          nextRequest({
+            body: {
+              refundPayment: 'partial',
+              partialRefundAmount: 'notanumber',
             },
-          },
-          backLink: `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION_EXTERNAL_ID}`,
-          partialSelected: true,
-          partialRefundAmount: 'notanumber',
+          })
+        })
+
+        it('should call the response method', async () => {
+          const thisCall = await call('post')
+
+          mockResponse.should.have.been.calledOnce
+          mockResponse.should.have.been.calledWith(thisCall.req, res, 'simplified-account/services/transactions/refund')
+        })
+
+        it('should pass the context to the response method with the errors', async () => {
+          await call('post')
+
+          mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
+            transaction: transactionFixture.toTransaction(),
+            errors: {
+              summary: [
+                {
+                  text: 'Enter an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”',
+                  href: '#partial-refund-amount',
+                },
+              ],
+              formErrors: {
+                partialRefundAmount:
+                  'Enter an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”',
+              },
+            },
+            backLink: `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION_EXTERNAL_ID}`,
+            partialSelected: true,
+            partialRefundAmount: 'notanumber',
+          })
+        })
+
+        it('should not issue a refund', async () => {
+          await call('post')
+          submitRefundStub.should.not.have.been.called
         })
       })
 
-      it('should not issue a refund', async () => {
-        await call('post')
-        submitRefundStub.should.not.have.been.called
+      describe('partial refund amount is greater than amount available', () => {
+        beforeEach(() => {
+          getTransactionStub.resolves(transactionFixture.toTransaction())
+
+          nextRequest({
+            body: {
+              refundPayment: 'partial',
+              partialRefundAmount: '10.01',
+            },
+          })
+        })
+
+        it('should call the response method', async () => {
+          const thisCall = await call('post')
+
+          mockResponse.should.have.been.calledOnce
+          mockResponse.should.have.been.calledWith(thisCall.req, res, 'simplified-account/services/transactions/refund')
+        })
+
+        it('should pass the context to the response method with the errors', async () => {
+          await call('post')
+
+          mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
+            transaction: transactionFixture.toTransaction(),
+            errors: {
+              summary: [
+                {
+                  text: 'Enter a refund amount greater than £0.00 and less than £10.00',
+                  href: '#partial-refund-amount',
+                },
+              ],
+              formErrors: {
+                partialRefundAmount: 'Enter a refund amount greater than £0.00 and less than £10.00',
+              },
+            },
+            backLink: `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION_EXTERNAL_ID}`,
+            partialSelected: true,
+            partialRefundAmount: '10.01',
+          })
+        })
+
+        it('should not issue a refund', async () => {
+          await call('post')
+          submitRefundStub.should.not.have.been.called
+        })
+      })
+
+      describe('partial refund amount is zero', () => {
+        beforeEach(() => {
+          getTransactionStub.resolves(transactionFixture.toTransaction())
+
+          nextRequest({
+            body: {
+              refundPayment: 'partial',
+              partialRefundAmount: '0.00',
+            },
+          })
+        })
+
+        it('should call the response method', async () => {
+          const thisCall = await call('post')
+
+          mockResponse.should.have.been.calledOnce
+          mockResponse.should.have.been.calledWith(thisCall.req, res, 'simplified-account/services/transactions/refund')
+        })
+
+        it('should pass the context to the response method with the errors', async () => {
+          await call('post')
+
+          mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
+            transaction: transactionFixture.toTransaction(),
+            errors: {
+              summary: [
+                {
+                  text: 'Enter a refund amount greater than £0.00 and less than £10.00',
+                  href: '#partial-refund-amount',
+                },
+              ],
+              formErrors: {
+                partialRefundAmount: 'Enter a refund amount greater than £0.00 and less than £10.00',
+              },
+            },
+            backLink: `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION_EXTERNAL_ID}`,
+            partialSelected: true,
+            partialRefundAmount: '0.00',
+          })
+        })
+
+        it('should not issue a refund', async () => {
+          await call('post')
+          submitRefundStub.should.not.have.been.called
+        })
+      })
+
+      describe('partial refund amount is empty', () => {
+        beforeEach(() => {
+          getTransactionStub.resolves(transactionFixture.toTransaction())
+
+          nextRequest({
+            body: {
+              refundPayment: 'partial',
+              partialRefundAmount: '',
+            },
+          })
+        })
+
+        it('should call the response method', async () => {
+          const thisCall = await call('post')
+
+          mockResponse.should.have.been.calledOnce
+          mockResponse.should.have.been.calledWith(thisCall.req, res, 'simplified-account/services/transactions/refund')
+        })
+
+        it('should pass the context to the response method with the errors', async () => {
+          await call('post')
+
+          mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
+            transaction: transactionFixture.toTransaction(),
+            errors: {
+              summary: [
+                {
+                  text: 'Enter a refund amount',
+                  href: '#partial-refund-amount',
+                },
+              ],
+              formErrors: {
+                partialRefundAmount: 'Enter a refund amount',
+              },
+            },
+            backLink: `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION_EXTERNAL_ID}`,
+            partialSelected: true,
+            partialRefundAmount: '',
+          })
+        })
+
+        it('should not issue a refund', async () => {
+          await call('post')
+          submitRefundStub.should.not.have.been.called
+        })
       })
     })
 
