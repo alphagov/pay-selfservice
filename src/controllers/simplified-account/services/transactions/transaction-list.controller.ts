@@ -8,7 +8,7 @@ import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { getAllCardTypes } from '@services/card-types.service'
 import lodash from 'lodash'
-import { statusFriendlyNames, getFriendlyStatus, statusFriendlyNamesWithDisputes } from '@models/ledger/types/status'
+import { statusFriendlyNames, getFriendlyStatus, statusFriendlyNamesWithDisputes, ConnectorStates } from '@models/ledger/types/status'
 import { getPeriodUKDateTimeRange, Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { displayStatesToConnectorStates } from '@utils/simplified-account/services/transactions/transaction-status-utils'
 
@@ -49,9 +49,12 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   }
 
   const dateRange = getPeriodUKDateTimeRange(req.query.dateFilter as Period)
-  function convertStateFilter(stateFilters: string[]): string[] {
+
+  function convertStateFilter(stateFilters: string[]): ConnectorStates {
     return displayStatesToConnectorStates(stateFilters)
   }
+
+  const stateFilters = convertStateFilter(req.query.state as string[])
 
   const filters = {
     ...(req.query.cardholderName && { cardholderName: req.query.cardholderName as string }),
@@ -67,33 +70,22 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     }),
     ...(req.query.state && {
       state: req.query.state as string[],
-      paymentStates: convertStateFilter(req.query.state as string[]),
+      paymentStates: stateFilters.paymentStates,
+      refundStates: stateFilters.refundStates
       // need function call here - it will return an object with 3 arrays
     }),
   }
-
-
 
   const cardTypes = await getAllCardTypes()
 
   const includeDisputeStatuses = isStripeAccount
   const statusNames = includeDisputeStatuses ? statusFriendlyNamesWithDisputes : statusFriendlyNames
 
-  const states = statusNames.map((friendlyName) => {
+  const eventStates = statusNames.map(state => {
     return {
-      name: friendlyName,
-      key: `${friendlyName}`,
-      value: {
-        text: friendlyName
-      }
-    }
-  })
-
-  const eventStates = states.map(state => {
-    return {
-      value: state.key,
-      text: state.name,
-      selected: filters.state?.includes(state.name),
+      value: state,
+      text: state,
+      selected: filters.state?.includes(state),
     }
   })
 
@@ -105,7 +97,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     }
   })
 
-  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, filters)
+  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, filters as Record<string, string>)
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   if (totalPages > 0 && currentPage > totalPages) {

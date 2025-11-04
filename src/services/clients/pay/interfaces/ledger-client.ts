@@ -15,10 +15,8 @@ export interface LedgerTransactionParams {
   fromDate?: string
   toDate?: string
   paymentStates?: string[]
-
+  refundStates?: string[]
 }
-
-// we don't need state here - but 3 arrays
 
 export class LedgerTransactionParamsData {
   readonly account_id: string
@@ -37,6 +35,7 @@ export class LedgerTransactionParamsData {
   readonly from_date?: string
   readonly to_date?: string
   readonly payment_states?: string
+  readonly refund_states?: string
 
   constructor(params: LedgerTransactionParams) {
     this.account_id = params.accountIds.join(',')
@@ -55,6 +54,7 @@ export class LedgerTransactionParamsData {
     this.from_date = params.fromDate ?? undefined
     this.to_date = params.toDate ?? undefined
     this.payment_states = params.paymentStates?.join(',')
+    this.refund_states = params.refundStates?.join(',')
   }
 
   asQueryString(): string {

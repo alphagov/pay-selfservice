@@ -65,6 +65,12 @@ export const FriendlyNamesByType: Record<ResourceType, Partial<Record<Status, st
   REFUND: RefundStatusFriendlyNames,
 }
 
+export interface ConnectorStates {
+  paymentStates: string[]
+  refundStates: string[]
+  disputeStates: string[]
+}
+
 export function getFriendlyStatus(statusType: ResourceType, status: Status): string | undefined {
   return FriendlyNamesByType[statusType][status]
 }
