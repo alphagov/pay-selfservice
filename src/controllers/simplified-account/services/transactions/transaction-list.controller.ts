@@ -8,8 +8,9 @@ import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { getAllCardTypes } from '@services/card-types.service'
 import lodash from 'lodash'
-import { PaymentStatusFriendlyNames, getFriendlyStatus } from '@models/ledger/types/status'
+import { statusFriendlyNames, getFriendlyStatus, statusFriendlyNamesWithDisputes } from '@models/ledger/types/status'
 import { getPeriodUKDateTimeRange, Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import { displayStatesToConnectorStates } from '@utils/simplified-account/services/transactions/transaction-status-utils'
 
 const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: string, accountType: string) => {
   const transactionsUrl = formatServiceAndAccountPathsFor(
@@ -34,6 +35,7 @@ const getUrlGenerator = (filters: Record<string, string>, serviceExternalId: str
 }
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
+  const isStripeAccount = req.account.paymentProvider === 'stripe'
   const gatewayAccountId = req.account.id
   const PAGE_SIZE = 20
 
@@ -47,6 +49,9 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   }
 
   const dateRange = getPeriodUKDateTimeRange(req.query.dateFilter as Period)
+  function convertStateFilter(stateFilters: string[]): string[] {
+    return displayStatesToConnectorStates(stateFilters)
+  }
 
   const filters = {
     ...(req.query.cardholderName && { cardholderName: req.query.cardholderName as string }),
@@ -60,17 +65,36 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       fromDate: dateRange.start.toISO()!,
       toDate: dateRange.end.toISO()!,
     }),
+    ...(req.query.state && {
+      state: req.query.state as string[],
+      paymentStates: convertStateFilter(req.query.state as string[]),
+      // need function call here - it will return an object with 3 arrays
+    }),
   }
 
-  const cardTypes = await getAllCardTypes()
-  const statuses = Object.entries(PaymentStatusFriendlyNames).map(([statusKey, friendlyName]) => {
-    return {
-      value: statusKey,
-      text: friendlyName,
-      selected: false,
-    }
 
-    // TODO needs updating - this returns duplicates
+
+  const cardTypes = await getAllCardTypes()
+
+  const includeDisputeStatuses = isStripeAccount
+  const statusNames = includeDisputeStatuses ? statusFriendlyNamesWithDisputes : statusFriendlyNames
+
+  const states = statusNames.map((friendlyName) => {
+    return {
+      name: friendlyName,
+      key: `${friendlyName}`,
+      value: {
+        text: friendlyName
+      }
+    }
+  })
+
+  const eventStates = states.map(state => {
+    return {
+      value: state.key,
+      text: state.name,
+      selected: filters.state?.includes(state.name),
+    }
   })
 
   const cardBrands = lodash.uniqBy(cardTypes, 'brand').map((card) => {
@@ -115,10 +139,10 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     isBST: isBritishSummerTime(),
     pagination: pagination,
     clearRedirect: transactionsUrl,
-    isStripeAccount: req.account.paymentProvider === 'stripe',
+    isStripeAccount,
     cardBrands: [{ value: '', text: 'Any' }, ...cardBrands],
     filters,
-    statuses: [{ value: '', text: 'All' }, ...statuses],
+    statuses: [{ value: '', text: 'All' }, ...eventStates],
   })
 }
 
