@@ -27,7 +27,7 @@ const randomElementId = () => `el-${Math.floor(Math.random() * 100000 + 1)}`
 const updateDisplayedValue = (elem) => {
   const allItems = [...elem.querySelectorAll(SELECTORS.item)]
   const selectedItemNames = allItems.filter((item) => item.checked).map((item) => item.labels[0].innerHTML.trim())
-  elem.querySelector(SELECTORS.currentSelections).innerText = selectedItemNames.length
+  elem.querySelector(SELECTORS.currentSelections).textContent = selectedItemNames.length
     ? selectedItemNames.join(', ')
     : allItems[0].labels[0].innerHTML.trim()
 }
@@ -95,15 +95,19 @@ const closeMultiSelectOnEscapeKeypress = () => {
 
 function setDropdownHeight(openButton, scrollContainer, items) {
   const minVisibleItems = 3.5
+  const maxAllowedVisibleItems = 8.5
 
   const itemHeight = items.length > 0 ? items[0].offsetHeight : 0
   if (!itemHeight) return
 
   const availableSpace = window.innerHeight - openButton.getBoundingClientRect().top
-  const maxVisibleItems = Math.max(minVisibleItems, Math.floor(availableSpace / itemHeight) - 1.5)
+  const computedVisible = Math.max(minVisibleItems, Math.floor(availableSpace / itemHeight) - 1.5)
+  const visibleItems = Math.min(computedVisible, maxAllowedVisibleItems)
 
-  if (availableSpace - itemHeight * items.length < 0) {
-    scrollContainer.style.maxHeight = `${maxVisibleItems * itemHeight}px`
+  const totalItems = items.length
+
+  if (totalItems > visibleItems || availableSpace - itemHeight * totalItems < 0) {
+    scrollContainer.style.maxHeight = `${Math.min(visibleItems, totalItems) * itemHeight}px`
   } else {
     scrollContainer.style.maxHeight = ''
   }
@@ -126,7 +130,7 @@ const progressivelyEnhanceSelects = () => {
       id: select.id || randomElementId(),
       name: select.getAttribute('name'),
       items: [...select.querySelectorAll('option')].map((option) => ({
-        text: option.innerText,
+        text: option.textContent,
         value: option.value,
         id: option.id || randomElementId(),
         checked: option.hasAttribute('selected'),
