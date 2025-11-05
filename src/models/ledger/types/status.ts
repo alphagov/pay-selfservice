@@ -66,9 +66,9 @@ export const FriendlyNamesByType: Record<ResourceType, Partial<Record<Status, st
 }
 
 export interface ConnectorStates {
-  paymentStates: string[]
-  refundStates: string[]
-  disputeStates: string[]
+  paymentStates: string[] | undefined
+  refundStates: string[] | undefined
+  disputeStates: string[] | undefined
 }
 
 export function getFriendlyStatus(statusType: ResourceType, status: Status): string | undefined {

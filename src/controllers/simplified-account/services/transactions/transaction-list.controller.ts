@@ -61,6 +61,9 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   const stateFilters = convertStateFilter(req.query.state as string[])
 
+  const includeDisputeStatuses = isStripeAccount
+  const statusNames = includeDisputeStatuses ? statusFriendlyNamesWithDisputes : statusFriendlyNames
+
   const filters = {
     ...(req.query.cardholderName && { cardholderName: req.query.cardholderName as string }),
     ...(req.query.lastDigitsCardNumber && { lastDigitsCardNumber: req.query.lastDigitsCardNumber as string }),
@@ -77,13 +80,11 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       state: req.query.state as string[],
       paymentStates: stateFilters.paymentStates,
       refundStates: stateFilters.refundStates,
+      disputeStates: stateFilters.disputeStates,
     }),
   }
 
   const cardTypes = await getAllCardTypes()
-
-  const includeDisputeStatuses = isStripeAccount
-  const statusNames = includeDisputeStatuses ? statusFriendlyNamesWithDisputes : statusFriendlyNames
 
   const eventStates = statusNames.map((state) => {
     return {
@@ -108,7 +109,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     currentPage = totalPages
   }
 
-  const { transactionsUrl, path } = getUrlGenerator(filters, req.service.externalId, req.account.type)
+  const { transactionsUrl, path } = getUrlGenerator(filters as Record<string, string>, req.service.externalId, req.account.type)
 
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, path)
 
