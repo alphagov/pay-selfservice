@@ -23,6 +23,7 @@ const mockLedgerService = {
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         serviceExternalId: SERVICE_EXTERNAL_ID,
         externalId: TRANSACTION_EXTERNAL_ID,
+        transactionType: "PAYMENT",
         gatewayTransactionId: '11933338-20de-4792-bbee-8d19258dabc3',
         reference: REFERENCE,
         state: {
@@ -84,7 +85,7 @@ describe('controller: services/ledger', () => {
         const results = context.results as {
           count: number
           total: number
-          transactions: { link: string; [key: string]: unknown }[]
+          transactions: { link: string;[key: string]: unknown }[]
         }
         sinon.assert.match(results.count, 1)
         sinon.assert.match(results.total, 1)
