@@ -9,6 +9,9 @@ import { ResourceType } from './types/resource-type'
 import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFriendlyNames } from './types/status'
 import { State } from './State.class'
 import { parseReason, Reason, ReasonFriendlyNames } from './types/reason'
+import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
+
+const TITLE_FRIENDLY_DATESTAMP_FORMAT = 'dd LLLL yyyy HH:mm:ss'
 
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
@@ -70,6 +73,14 @@ class Transaction {
     return penceToPoundsWithCurrency(this.amount)
   }
 
+  refundableAmountRemainingInPounds(): string {
+    return penceToPoundsWithCurrency(this.getRefundableAmountRemaining())
+  }
+
+  getRefundableAmountRemaining() {
+    return this.refundSummary ? this.refundSummary.amountAvailable : this.amount
+  }
+
   get friendlyTransactionStatus(): string {
     switch (this.transactionType) {
       case ResourceType.PAYMENT:
@@ -83,10 +94,29 @@ class Transaction {
     }
   }
 
+  get titleFriendlyCreatedDate(): string {
+    return this.createdDate.toFormat(TITLE_FRIENDLY_DATESTAMP_FORMAT)
+  }
+
   get friendlyReason() {
     if (this.reason !== undefined) {
       return ReasonFriendlyNames[this.reason] ?? ReasonFriendlyNames.OTHER
     }
+  }
+
+  isPartiallyRefunded(): boolean {
+    return (this.refundSummary && this.refundSummary.amountAvailable !== this.amount) ?? false
+  }
+
+  isFullyRefunded() {
+    return (this.refundSummary && this.refundSummary.amountAvailable === 0) ?? false
+  }
+
+  isRefundable() {
+    return (
+      this.refundSummary?.status === RefundSummaryStatus.AVAILABLE ||
+      this.refundSummary?.status === RefundSummaryStatus.ERROR
+    )
   }
 }
 

@@ -1,14 +1,13 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 
+
 {% set servicePageTitle %}
-  Edit reporting column
+  Edit reporting column - {{ productName }}
 {% endset %}
 
 {% block serviceContent %}
   <span class="govuk-caption-l">Edit {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
-  <h1 class="govuk-heading-l page-title">
-    Reporting column
-  </h1>
+  <h1 class="govuk-heading-l page-title"> Reporting column </h1>
 
   {% include "simplified-account/services/payment-links/partials/forms/_payment-link-metadata.njk" %}
 {% endblock %}

@@ -211,8 +211,16 @@ describe('test-with-your-users/create controller tests', () => {
 
       it('should set the payment link URL on the session', async () => {
         const { req } = (await call('post')) as { req: ServiceRequest }
+        const prototypeSession = _.get(req, SESSION_KEY, {}) as { href?: string; name?: string }
 
-        _.get(req, SESSION_KEY, '').should.equal('https://payment.link.url.example.com/paymentlink')
+        prototypeSession.href!.should.equal('https://payment.link.url.example.com/paymentlink')
+      })
+
+      it('should set the payment link name on the session', async () => {
+        const { req } = (await call('post')) as { req: ServiceRequest }
+        const prototypeSession = _.get(req, SESSION_KEY, {}) as { href?: string; name?: string }
+
+        prototypeSession.name!.should.equal('This is a valid description')
       })
     })
   })

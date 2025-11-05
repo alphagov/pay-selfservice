@@ -15,6 +15,8 @@ import { CardTypeData } from '@models/card-type/dto/CardType.dto'
 import { CardType } from '@models/card-type/CardType.class'
 import { UpdateAcceptedCardTypesRequestData } from '@models/card-type/dto/UpdateAcceptedCardTypesRequest.dto'
 import { UpdateAcceptedCardTypesRequest } from '@models/card-type/UpdateAcceptedCardTypesRequest.class'
+import { ChargeRefundRequest } from '@models/charge/ChargeRefundRequest.class'
+import { ChargeRefundRequestData } from '@models/charge/dto/ChargeRefundRequest.dto'
 
 const SERVICE_NAME = 'connector'
 const SERVICE_BASE_URL = process.env.CONNECTOR_URL!
@@ -24,7 +26,6 @@ class ConnectorClient extends BaseClient {
   public gatewayAccounts
   public agreements
   public cardTypes
-
   constructor() {
     super(SERVICE_BASE_URL, SERVICE_NAME)
     this.charges = this.chargesClient
@@ -79,6 +80,20 @@ class ConnectorClient extends BaseClient {
           'create a charge'
         )
         return new Charge(response.data)
+      },
+
+      submitRefund: async (
+        serviceExternalId: string,
+        accountType: string,
+        chargeExternalId: string,
+        refundRequest: ChargeRefundRequest
+      ) => {
+        const path = '/v1/api/service/{serviceExternalId}/account/{accountType}/charges/{chargeExternalId}/refunds'
+          .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+          .replace('{accountType}', encodeURIComponent(accountType))
+          .replace('{chargeExternalId}', encodeURIComponent(chargeExternalId))
+
+        await this.post<ChargeRefundRequestData, void>(path, refundRequest.toJson(), 'submit refund')
       },
     }
   }

@@ -29,6 +29,7 @@ async function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction
         reportingColumn: req.params.metadataKey,
         cellContent: product.metadata[req.params.metadataKey],
       },
+      productName: product.name,
     })
   } catch (error) {
     next(error)
