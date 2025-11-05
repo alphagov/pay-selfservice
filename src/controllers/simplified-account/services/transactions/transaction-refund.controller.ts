@@ -81,14 +81,12 @@ async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResp
 
   const refundAmount =
     req.body.refundPayment === 'full'
-      ? transaction.refundSummary?.amountAvailable
+      ? transaction.refundSummary.amountAvailable
       : safeConvertPoundsStringToPence(req.body.partialRefundAmount)
   if (refundAmount === undefined || refundAmount === null) {
     throw new Error(`Attempting to issue ${req.body.refundPayment} refund with undefined or null value`)
   }
-  const refundAmountAvailable = transaction.refundSummary
-    ? transaction.refundSummary.amountAvailable
-    : transaction.amount
+  const refundAmountAvailable = transaction.refundSummary.amountAvailable
 
   await submitRefund(
     req.service.externalId,

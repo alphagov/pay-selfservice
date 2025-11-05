@@ -25,7 +25,7 @@ export interface TransactionData {
   card_details?: CardDetailsData
   delayed_capture: boolean
   gateway_transaction_id: string
-  refund_summary?: LedgerRefundSummaryData
+  refund_summary: LedgerRefundSummaryData
   settlement_summary?: SettlementSummaryData
   authorisation_summary?: AuthorisationSummaryData
   transaction_type: ResourceType
