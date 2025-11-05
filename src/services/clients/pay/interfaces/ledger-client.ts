@@ -1,3 +1,5 @@
+import { last12MonthsStartDate } from "@utils/simplified-account/services/dashboard/datetime-utils"
+
 export interface LedgerTransactionParams {
   accountIds: number[]
   agreementId?: string
@@ -53,7 +55,7 @@ export class LedgerTransactionParamsData {
     this.transaction_type = params.type ?? undefined
     this.reference = params.reference ?? undefined
     this.email = params.email ?? undefined
-    this.from_date = params.fromDate ?? undefined
+    this.from_date = params.fromDate ?? last12MonthsStartDate.toISO()!
     this.to_date = params.toDate ?? undefined
     this.payment_states = params.paymentStates?.join(',')
     this.refund_states = params.refundStates?.join(',')

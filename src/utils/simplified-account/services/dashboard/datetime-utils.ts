@@ -7,6 +7,7 @@ export type Period =
   | 'previous-thirty-days'
   | 'previous-month'
   | 'last-12-months'
+  | 'all-time'
 
 interface DateTimeRange {
   start: DateTime
@@ -62,6 +63,13 @@ export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
       }
     }
 
+    case 'all-time': {
+      return {
+        start: now.startOf('day').minus({ years: 7 }),
+        end: now,
+      }
+    }
+
     default:
       // today
       return {
@@ -70,3 +78,5 @@ export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
       }
   }
 }
+
+export const last12MonthsStartDate = DateTime.now().setLocale('en-GB').setZone('Europe/London').startOf('day').minus({ years: 1 })
