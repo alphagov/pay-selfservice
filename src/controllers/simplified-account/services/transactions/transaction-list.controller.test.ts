@@ -1,6 +1,7 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { DateTime } from 'luxon'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const TRANSACTION_EXTERNAL_ID = 'transaction123abc'
@@ -12,6 +13,7 @@ const LAST_DIGITS_CARD_NUMBER = '1234'
 const METADATA_VALUE = 'order-5678'
 const CARD_BRAND = 'visa'
 const REFERENCE = 'REF 123'
+const NOW_DATE_TIME = '2025-09-12T11:47:32.980+01:00'
 const mockResponse = sinon.stub()
 const mockLedgerService = {
   searchTransactions: sinon.stub().resolves({
@@ -47,6 +49,8 @@ const mockCardTypesService = {
   getAllCardTypes: sinon.stub().resolves([{ brand: 'visa', label: 'Visa' }]),
 }
 
+let nowStub: sinon.SinonFakeTimers
+
 const { nextRequest, call } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/transactions/transaction-list.controller'
 )
@@ -66,6 +70,15 @@ const { nextRequest, call } = new ControllerTestBuilder(
   .build()
 
 describe('controller: services/ledger', () => {
+  before(() => {
+    nowStub = sinon.useFakeTimers({
+      now: DateTime.fromISO(NOW_DATE_TIME).toMillis(),
+      shouldAdvanceTime: false,
+    })
+  })
+  after(() => {
+    nowStub.restore()
+  })
   describe('get', () => {
     describe('transactions exist for service, no filters', () => {
       beforeEach(async () => {
@@ -98,6 +111,87 @@ describe('controller: services/ledger', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         const pagination = context.pagination as Record<string, number | Record<string, unknown>>
         sinon.assert.match(pagination, sinon.match.object)
+      })
+    })
+
+    describe('with valid status filter', () => {
+      it('should pass status filter to searchTransactions service', async () => {
+        nextRequest({
+          query: { state: 'In progress' },
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockLedgerService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          1,
+          PAGE_SIZE,
+
+          {
+            state: 'In progress',
+            paymentStates: ['created', 'started', 'capturable', 'submitted'],
+            refundStates: undefined,
+            disputeStates: undefined
+          }
+        )
+      })
+
+      it('should include filters in context', async () => {
+        nextRequest({
+          query: { state: 'In progress' },
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.filters, {
+          state: 'In progress',
+          paymentStates: ['created', 'started', 'capturable', 'submitted'],
+          refundStates: undefined,
+          disputeStates: undefined
+        })
+      })
+    })
+
+    describe('with valid date filter', () => {
+
+
+      it('should pass date filter to searchTransactions service', async () => {
+        nextRequest({
+          query: { dateFilter: 'yesterday' },
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockLedgerService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          1,
+          PAGE_SIZE,
+
+          {
+            dateFilter: 'yesterday',
+            fromDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).startOf('day').toISO(),
+            toDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).endOf('day').toISO(),
+          }
+        )
+      })
+
+      it('should include filters in context', async () => {
+        nextRequest({
+          query: { dateFilter: 'yesterday' },
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.filters,
+          {
+            dateFilter: 'yesterday',
+            fromDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).startOf('day').toISO(),
+            toDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).endOf('day').toISO(),
+          })
       })
     })
 
