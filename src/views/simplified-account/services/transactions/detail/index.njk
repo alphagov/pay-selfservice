@@ -13,7 +13,7 @@
     {% if (loop.first == true) %}
       <h1 class="govuk-heading-l govuk-!-margin-top-6">{{ sectionKey }}</h1>
 
-      {% if not transaction.isFullyRefunded() %}
+      {% if not transaction.isFullyRefunded() and transaction.isRefundable() %}
         {{
           govukButton({
             text: "Refund payment",

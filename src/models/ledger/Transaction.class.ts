@@ -9,6 +9,7 @@ import { ResourceType } from './types/resource-type'
 import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFriendlyNames } from './types/status'
 import { State } from './State.class'
 import { parseReason, Reason, ReasonFriendlyNames } from './types/reason'
+import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 
 const TITLE_FRIENDLY_DATESTAMP_FORMAT = 'dd LLLL yyyy HH:mm:ss'
 
@@ -31,7 +32,7 @@ class Transaction {
   readonly email?: string
   readonly walletType?: string
   readonly disputed: boolean
-  readonly refundSummary: LedgerRefundSummary
+  readonly refundSummary?: LedgerRefundSummary
   readonly settlementSummary?: SettlementSummary
   readonly authorisationSummary?: AuthorisationSummary
   readonly cardDetails?: CardDetails
@@ -58,7 +59,7 @@ class Transaction {
     this.walletType = data.wallet_type
     this.email = data.email
     this.disputed = data.disputed
-    this.refundSummary = new LedgerRefundSummary(data.refund_summary)
+    this.refundSummary = data.refund_summary && new LedgerRefundSummary(data.refund_summary)
     this.settlementSummary = data.settlement_summary && new SettlementSummary(data.settlement_summary)
     this.authorisationSummary = data.authorisation_summary && new AuthorisationSummary(data.authorisation_summary)
     this.cardDetails = data.card_details && new CardDetails(data.card_details)
@@ -109,6 +110,13 @@ class Transaction {
 
   isFullyRefunded() {
     return (this.refundSummary && this.refundSummary.amountAvailable === 0) ?? false
+  }
+
+  isRefundable() {
+    return (
+      this.refundSummary?.status === RefundSummaryStatus.AVAILABLE ||
+      this.refundSummary?.status === RefundSummaryStatus.ERROR
+    )
   }
 }
 

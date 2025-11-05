@@ -1,7 +1,8 @@
 import { RefundSummaryData } from '@models/common/refund-summary/dto/RefundSummary.dto'
+import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 
 class RefundSummary {
-  readonly status: string
+  readonly status: RefundSummaryStatus
   readonly userExternalId: string | null
   readonly amountAvailable: number
   readonly amountSubmitted: number

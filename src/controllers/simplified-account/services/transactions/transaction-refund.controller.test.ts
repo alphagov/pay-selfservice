@@ -21,7 +21,7 @@ const refundedTransaction = new TransactionFixture({
     amountSubmitted: 1000,
     amountRefunded: 1000,
     amountAvailable: 0,
-    status: 'successful',
+    status: 'full',
   }),
 })
 const partiallyRefundedTransaction = new TransactionFixture({
@@ -30,7 +30,7 @@ const partiallyRefundedTransaction = new TransactionFixture({
     amountSubmitted: 700,
     amountRefunded: 700,
     amountAvailable: 300,
-    status: 'successful',
+    status: 'available',
   }),
 })
 
