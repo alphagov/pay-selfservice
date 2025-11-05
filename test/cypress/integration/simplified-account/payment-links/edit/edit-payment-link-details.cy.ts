@@ -125,7 +125,7 @@ describe('Edit payment link - view details', () => {
       })
 
       it('should display correct page title and heading', () => {
-        cy.title().should('eq', 'Payment link details - McDuck Enterprises - GOV.UK Pay')
+        cy.title().should('eq', `Payment link details - ${ENGLISH_PAYMENT_LINK.name} - ${SERVICE_NAME.en} - GOV.UK Pay`)
         cy.get('h1').should('contain.text', 'Payment link details')
       })
 

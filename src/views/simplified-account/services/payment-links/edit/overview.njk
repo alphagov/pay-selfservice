@@ -1,100 +1,99 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 
+
 {% set servicePageTitle %}
-  Payment link details
+  Payment link details - {{ product.name }}
 {% endset %}
 
 {% block serviceContent %}
   <span class="govuk-caption-l">Edit {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
-  <h1 class="govuk-heading-l page-title">
-    {{ servicePageTitle }}
-  </h1>
+  <h1 class="govuk-heading-l"> Payment link details </h1>
 
-  {{ govukSummaryList({
-    rows: [
-      {
-        key: {
-        text: "Title"
-      },
-        value: {
-        text: product.name
-      },
-        actions: {
-        items: [
-          {
-            href: editInformationLink,
-            text: "Change",
-            classes: "govuk-link--no-visited-state",
-            visuallyHiddenText: "title"
-          }
-        ]
-      }
-      },
-      {
-        key: {
-        text: "Web address"
-      },
-        value: {
-        html: '<a class="govuk-link govuk-link--no-visited-state" href="' + product.webAddress + '">' + product.webAddress + '</a>'
-      }
-      },
-      {
-        key: {
-        text: "Details"
-      },
-        value: {
-        text: product.details
-      },
-        actions: {
-        items: [
-          {
-            href: editInformationLink,
-            text: "Change",
-            classes: "govuk-link--no-visited-state",
-            visuallyHiddenText: "details"
-          }
-        ]
-      }
-      },
-      {
-        key: {
-        text: "Payment reference"
-      },
-        value: {
-        text: product.reference
-      },
-        actions: {
-        items: [
-          {
-            href: editReferenceLink,
-            text: "Change",
-            classes: "govuk-link--no-visited-state",
-            visuallyHiddenText: "reference"
-          }
-        ]
-      }
-      },
-      {
-        key: {
-        text: "Payment amount"
-      },
-        value: {
-        text: product.amount
-      },
-        actions: {
-        items: [
-          {
-            href: editAmountLink,
-            text: "Change",
-            classes: "govuk-link--no-visited-state",
-            visuallyHiddenText: "contact details"
-          }
-        ]
-      }
-      }
-    ]
-  }) }}
-  
-{% include "../../payment-links/partials/_manage-payment-link-metadata.njk" %}
-
+  {{
+    govukSummaryList({
+      rows: [
+        {
+          key: {
+          text: "Title"
+        },
+          value: {
+          text: product.name
+        },
+          actions: {
+          items: [
+            {
+              href: editInformationLink,
+              text: "Change",
+              classes: "govuk-link--no-visited-state",
+              visuallyHiddenText: "title"
+            }
+          ]
+        }
+        },
+        {
+          key: {
+          text: "Web address"
+        },
+          value: {
+          html: '<a class="govuk-link govuk-link--no-visited-state" href="' + product.webAddress + '">' + product.webAddress + '</a>'
+        }
+        },
+        {
+          key: {
+          text: "Details"
+        },
+          value: {
+          text: product.details
+        },
+          actions: {
+          items: [
+            {
+              href: editInformationLink,
+              text: "Change",
+              classes: "govuk-link--no-visited-state",
+              visuallyHiddenText: "details"
+            }
+          ]
+        }
+        },
+        {
+          key: {
+          text: "Payment reference"
+        },
+          value: {
+          text: product.reference
+        },
+          actions: {
+          items: [
+            {
+              href: editReferenceLink,
+              text: "Change",
+              classes: "govuk-link--no-visited-state",
+              visuallyHiddenText: "reference"
+            }
+          ]
+        }
+        },
+        {
+          key: {
+          text: "Payment amount"
+        },
+          value: {
+          text: product.amount
+        },
+          actions: {
+          items: [
+            {
+              href: editAmountLink,
+              text: "Change",
+              classes: "govuk-link--no-visited-state",
+              visuallyHiddenText: "contact details"
+            }
+          ]
+        }
+        }
+      ]
+    })
+  }}
+  {% include "../../payment-links/partials/_manage-payment-link-metadata.njk" %}
 {% endblock %}

@@ -25,6 +25,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       paymentAmount: product.price > 0 ? penceToPounds(product.price) : undefined,
       amountHint: product.amountHint,
     },
+    productName: product.name,
   })
 }
 
