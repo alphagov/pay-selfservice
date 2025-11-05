@@ -13,7 +13,7 @@ const LAST_DIGITS_CARD_NUMBER = '1234'
 const METADATA_VALUE = 'order-5678'
 const CARD_BRAND = 'visa'
 const REFERENCE = 'REF 123'
-const NOW_DATE_TIME = '2025-09-12T11:47:32.980+00:00'
+const NOW_DATE_TIME = '2025-09-12T11:47:32.980Z'
 const mockResponse = sinon.stub()
 const mockLedgerService = {
   searchTransactions: sinon.stub().resolves({
