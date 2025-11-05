@@ -8,7 +8,8 @@ const checkSettingsNavigation = require('@test/cypress/integration/simplified-ac
 const {
   STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
   WORLDPAY_CREDENTIAL_IN_ENTERED_STATE,
-  WORLDPAY_CREDENTIAL_IN_CREATED_STATE, WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE
+  WORLDPAY_CREDENTIAL_IN_CREATED_STATE,
+  WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE,
 } = require('@test/fixtures/credentials.fixtures')
 const CREDENTIAL_STATE = require('@models/constants/credential-state')
 const { VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY } = require('@utils/verify-psp-integration')
@@ -34,7 +35,7 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       serviceName: SERVICE_NAME,
       serviceExternalId: SERVICE_EXTERNAL_ID,
-      role: ROLES[opts.role || 'admin']
+      role: ROLES[opts.role || 'admin'],
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
@@ -42,25 +43,26 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       payment_provider: STRIPE,
       provider_switch_enabled: true,
       allow_moto: opts.moto || false,
-      gateway_account_credentials: [
-        STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
-        pendingCredential
-      ]
+      gateway_account_credentials: [STRIPE_CREDENTIAL_IN_ACTIVE_STATE, pendingCredential],
     }),
-    ...additionalStubs])
+    ...additionalStubs,
+  ])
 }
 
 describe('Make a live payment task', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID, {
-      [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID
+      [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID,
     })
   })
   describe('The settings nav', () => {
     beforeEach(() => {
-      setStubs({
-        moto: true
-      }, [])
+      setStubs(
+        {
+          moto: true,
+        },
+        []
+      )
       cy.visit(SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_SETTINGS_URL)
     })
     it('should show active "Switch to Worldpay" link', () => {
@@ -69,25 +71,30 @@ describe('Make a live payment task', () => {
   })
   describe('The page', () => {
     beforeEach(() => {
-      setStubs({
-        moto: true
-      }, [])
+      setStubs(
+        {
+          moto: true,
+        },
+        []
+      )
       cy.visit(SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_SETTINGS_URL)
     })
     it('should have the correct title and heading', () => {
       checkTitleAndHeading('Test the connection between Worldpay and GOV.UK Pay', SERVICE_NAME.en)
     })
     it('should show the expected content', () => {
-      cy.get('#make-a-payment button[type="submit"]')
-        .should('contain.text', 'Continue to live payment')
+      cy.get('#make-a-payment button[type="submit"]').should('contain.text', 'Continue to live payment')
     })
   })
   describe('For a non-admin', () => {
     beforeEach(() => {
-      setStubs({
-        role: 'view-and-refund',
-        moto: true
-      }, [])
+      setStubs(
+        {
+          role: 'view-and-refund',
+          moto: true,
+        },
+        []
+      )
       cy.visit(SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_SETTINGS_URL, { failOnStatusCode: false })
     })
     it('should show admin only error', () => {
@@ -101,15 +108,18 @@ describe('Make a live payment task', () => {
     describe('For a MOTO service', () => {
       describe('When task is attempted out of sequence', () => {
         beforeEach(() => {
-          setStubs({
-            moto: true,
-            pendingCredential: WORLDPAY_CREDENTIAL_IN_CREATED_STATE // no credentials entered so task cannot be started
-          }, [])
+          setStubs(
+            {
+              moto: true,
+              pendingCredential: WORLDPAY_CREDENTIAL_IN_CREATED_STATE, // no credentials entered so task cannot be started
+            },
+            []
+          )
         })
         it('should be redirected back to the tasks index', () => {
           cy.request({
             url: SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_SETTINGS_URL,
-            followRedirect: false
+            followRedirect: false,
           }).then((resp) => {
             expect(resp.status).to.eq(302)
           })
@@ -122,21 +132,24 @@ describe('Make a live payment task', () => {
       describe('When starting the task', () => {
         describe('Clicking the "Continue to live payment" button', () => {
           beforeEach(() => {
-            setStubs({
-              moto: true
-            }, [
-              connectorChargeStubs.postChargeRequestSuccessByServiceExternalIdAndAccountType({
-                serviceExternalId: SERVICE_EXTERNAL_ID,
-                accountType: LIVE_ACCOUNT_TYPE,
-                chargeExternalId: CHARGE_EXTERNAL_ID,
-                nextUrl: 'https://notfrontend.gov.uk'
-              })
-            ])
+            setStubs(
+              {
+                moto: true,
+              },
+              [
+                connectorChargeStubs.postChargeRequestSuccessByServiceExternalIdAndAccountType({
+                  serviceExternalId: SERVICE_EXTERNAL_ID,
+                  accountType: LIVE_ACCOUNT_TYPE,
+                  chargeExternalId: CHARGE_EXTERNAL_ID,
+                  nextUrl: 'https://notfrontend.gov.uk',
+                }),
+              ]
+            )
             cy.visit(SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_SETTINGS_URL)
           })
           it('should redirect the user to complete a payment', () => {
             cy.intercept('https://notfrontend.gov.uk', {
-              statusCode: 200
+              statusCode: 200,
             }).as('frontendCall')
 
             cy.get('#make-a-payment button[type="submit"]').click()
@@ -152,36 +165,40 @@ describe('Make a live payment task', () => {
       describe('When completing the task', () => {
         describe('The user completes the payment successfully', () => {
           beforeEach(() => {
-            setStubs({
-              moto: true,
-              pendingCredential: WORLDPAY_CREDENTIAL_IN_ENTERED_STATE
-            }, [
-              connectorChargeStubs.getChargeSuccessByServiceExternalIdAndAccountType({
-                serviceExternalId: SERVICE_EXTERNAL_ID,
-                accountType: LIVE_ACCOUNT_TYPE,
-                chargeExternalId: CHARGE_EXTERNAL_ID
-              }),
-              gatewayAccountStubs.patchUpdateCredentialsSuccessByServiceExternalIdAndType(
-                SERVICE_EXTERNAL_ID,
-                LIVE_ACCOUNT_TYPE,
-                SWITCHING_CREDENTIAL_EXTERNAL_ID,
-                {
-                  path: 'state',
-                  value: CREDENTIAL_STATE.VERIFIED,
-                  userExternalId: USER_EXTERNAL_ID
+            setStubs(
+              {
+                moto: true,
+                pendingCredential: WORLDPAY_CREDENTIAL_IN_ENTERED_STATE,
+              },
+              [
+                connectorChargeStubs.getChargeSuccessByServiceExternalIdAndAccountType({
+                  serviceExternalId: SERVICE_EXTERNAL_ID,
+                  accountType: LIVE_ACCOUNT_TYPE,
+                  chargeExternalId: CHARGE_EXTERNAL_ID,
                 }),
-              gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
-                gateway_account_id: GATEWAY_ACCOUNT_ID,
-                type: LIVE_ACCOUNT_TYPE,
-                payment_provider: STRIPE,
-                provider_switch_enabled: true,
-                allow_moto: true,
-                gateway_account_credentials: [
-                  STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
-                  WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE
-                ]
-              })
-            ])
+                gatewayAccountStubs.patchUpdateCredentialsSuccessByServiceExternalIdAndType(
+                  SERVICE_EXTERNAL_ID,
+                  LIVE_ACCOUNT_TYPE,
+                  SWITCHING_CREDENTIAL_EXTERNAL_ID,
+                  {
+                    path: 'state',
+                    value: CREDENTIAL_STATE.VERIFIED,
+                    userExternalId: USER_EXTERNAL_ID,
+                  }
+                ),
+                gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
+                  gateway_account_id: GATEWAY_ACCOUNT_ID,
+                  type: LIVE_ACCOUNT_TYPE,
+                  payment_provider: STRIPE,
+                  provider_switch_enabled: true,
+                  allow_moto: true,
+                  gateway_account_credentials: [
+                    STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
+                    WORLDPAY_CREDENTIAL_IN_VERIFIED_STATE,
+                  ],
+                }),
+              ]
+            )
             cy.visit(SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_RETURN_URL)
           })
           it('should be redirected back to the tasks index with a success message', () => {
@@ -190,28 +207,30 @@ describe('Make a live payment task', () => {
               .should('have.class', 'system-messages')
               .contains('Payment verified')
               .parent()
+              .parent()
               .contains('This service is ready to switch to Worldpay')
           })
           it('should show the option to complete the switch', () => {
-            cy.get('#switch-psp button[type="submit"]')
-              .should('exist')
-              .should('contain.text', 'Switch to Worldpay')
+            cy.get('#switch-psp button[type="submit"]').should('exist').should('contain.text', 'Switch to Worldpay')
           })
         })
 
         describe('The user does not complete the payment', () => {
           beforeEach(() => {
-            setStubs({
-              moto: true,
-              pendingCredential: WORLDPAY_CREDENTIAL_IN_ENTERED_STATE
-            }, [
-              connectorChargeStubs.getChargeSuccessByServiceExternalIdAndAccountType({
-                serviceExternalId: SERVICE_EXTERNAL_ID,
-                accountType: LIVE_ACCOUNT_TYPE,
-                chargeExternalId: CHARGE_EXTERNAL_ID,
-                status: 'cancelled'
-              })
-            ])
+            setStubs(
+              {
+                moto: true,
+                pendingCredential: WORLDPAY_CREDENTIAL_IN_ENTERED_STATE,
+              },
+              [
+                connectorChargeStubs.getChargeSuccessByServiceExternalIdAndAccountType({
+                  serviceExternalId: SERVICE_EXTERNAL_ID,
+                  accountType: LIVE_ACCOUNT_TYPE,
+                  chargeExternalId: CHARGE_EXTERNAL_ID,
+                  status: 'cancelled',
+                }),
+              ]
+            )
             cy.visit(SWITCH_TO_WORLDPAY_MAKE_A_PAYMENT_TASK_RETURN_URL)
           })
           it('should be redirected back to the tasks index with an error message', () => {
@@ -220,11 +239,13 @@ describe('Make a live payment task', () => {
               .should('have.class', 'system-messages')
               .contains('There is a problem')
               .parent()
-              .contains('The payment has failed, please try again. If you need help, contact govuk-pay-support@digital.cabinet-office.gov.uk')
+              .parent()
+              .contains(
+                'The payment has failed, please try again. If you need help, contact govuk-pay-support@digital.cabinet-office.gov.uk'
+              )
           })
           it('should not show the option to complete the switch', () => {
-            cy.get('#switch-psp button[type="submit"]')
-              .should('not.exist')
+            cy.get('#switch-psp button[type="submit"]').should('not.exist')
           })
         })
       })
