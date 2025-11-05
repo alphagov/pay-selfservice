@@ -1,9 +1,11 @@
 {% set titleHint %}
   {% if not createJourney %}
-    {{ govukInsetText({
-      text: "Editing the payment link title does not change the web address.",
-      classes: "service-settings-inset-text--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2"
-    }) }}
+    {{
+      govukInsetText({
+        text: "Editing the payment link title does not change the web address.",
+        classes: "service-settings-inset-text--grey govuk-!-margin-top-2 govuk-!-margin-bottom-2"
+      })
+    }}
   {% endif %}
   <p class="govuk-!-margin-bottom-0">The title of your payment link should:</p>
   <ul class="govuk-!-margin-top-0">
@@ -14,63 +16,83 @@
   </ul>
 
   {% if isWelsh %}
+    {% set lang = "cy" %}
     <p>For example “Talu am drwydded barcio”.</p>
   {% else %}
-    <p>For example<br/>
-      Bad: R1<br/>
-      Good: Pay for your registration on the Register of Overseas Entities (R1)</p>
+    {% set lang = "en" %}
+    <p
+      >For example<br />
+      Bad: R1<br />
+      Good: Pay for your registration on the Register of Overseas Entities (R1)</p
+    >
   {% endif %}
 {% endset %}
 
+
 {% set detailHint %}
-  Give your users more information{% if isWelsh %} in Welsh{% endif %}. For example, you could tell them how long it takes for their application to be processed.
+  Give your users more information{% if isWelsh %}in Welsh{% endif %}. For example, you could tell them how long it
+  takes for their application to be processed.
 {% endset %}
 
 <form method="post">
-  <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+  <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
-  {{ govukInput({
-    name: "name",
-    id: "name",
-    label: {
-      text: "Title",
-      classes: "govuk-label--m",
-      isPageHeading: false
-    },
-    hint: {
-      html: titleHint
-    },
-    value: formValues.name,
-    errorMessage: { text: errors.formErrors['name'] } if errors.formErrors['name'] else false,
-    attributes: {
-      "data-confirmation": true,
-      "data-confirmation-title": "Website address",
-      "data-confirmation-label": friendlyURL + "/" + serviceName | removeIndefiniteArticles | slugify + "/",
-      "data-confirmation-filter": "slugify",
-      "data-confirmation-display": "onload" if formValues.name else false
-    } if createJourney else {}
-  }) }}
+  {{
+    govukInput({
+      name: "name",
+      id: "name",
+      label: {
+        text: "Title",
+        classes: "govuk-label--m",
+        isPageHeading: false
+      },
+      hint: {
+        html: titleHint
+      },
+      value: formValues.name,
+      errorMessage: { text: errors.formErrors['name'] } if errors.formErrors['name'] else false,
+      attributes: {
+        lang: lang,
+        "data-confirmation": true,
+        "data-confirmation-title": "Website address",
+        "data-confirmation-label": friendlyURL + "/" + serviceName | removeIndefiniteArticles | slugify + "/",
+        "data-confirmation-filter": "slugify",
+        "data-confirmation-display": "onload" if formValues.name else false
+      } if createJourney else {}
+    })
+  }}
 
-  {{ govukTextarea({
-    name: "description",
-    id: "description",
-    label: {
-      text: "Details (optional)",
-      classes: "govuk-label--m",
-      isPageHeading: false
-    },
-    hint: {
-      text: detailHint
-    },
-    value: formValues.description
-  }) }}
+  {{
+    govukTextarea({
+      name: "description",
+      id: "description",
+      label: {
+        text: "Details (optional)",
+        classes: "govuk-label--m",
+        isPageHeading: false
+      },
+      hint: {
+        text: detailHint
+      },
+      value: formValues.description,
+      attributes: {
+        lang: lang
+      }
+    })
+  }}
 
-  {{ govukButton({
-    text: "Continue" if createJourney else "Save changes"
-  }) }}
+  {{
+    govukButton({
+      text: "Continue" if createJourney else "Save changes"
+    })
+  }}
 </form>
 
 {% if not isWelsh %}
   <h2 class="govuk-heading-s">Example of what users will see</h2>
-  <img class="govuk-!-margin-bottom-6" src="/assets/images/payment-links/start-page.svg" alt="Screenshot of payment link landing page">
+  <img
+    class="govuk-!-margin-bottom-6"
+    src="/assets/images/payment-links/start-page.svg"
+    alt="Screenshot of payment link landing page"
+  />
 {% endif %}
