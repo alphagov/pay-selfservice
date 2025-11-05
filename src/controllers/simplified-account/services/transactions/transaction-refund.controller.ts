@@ -13,7 +13,7 @@ import { Message } from '@utils/types/express/Message'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const transaction = await getTransaction(req.params.transactionExternalId, req.account.id)
-  if (transaction.isFullyRefunded()) {
+  if (transaction.isFullyRefunded() || !transaction.isRefundable()) {
     return res.redirect(
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.transactions.detail,
@@ -42,7 +42,7 @@ interface TransactionRefundBody {
 
 async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResponse) {
   const transaction = await getTransaction(req.params.transactionExternalId, req.account.id)
-  if (transaction.isFullyRefunded()) {
+  if (transaction.isFullyRefunded() || !transaction.isRefundable()) {
     return res.redirect(
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.transactions.detail,
@@ -81,12 +81,12 @@ async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResp
 
   const refundAmount =
     req.body.refundPayment === 'full'
-      ? transaction.refundSummary.amountAvailable
+      ? transaction.refundSummary!.amountAvailable
       : safeConvertPoundsStringToPence(req.body.partialRefundAmount)
   if (refundAmount === undefined || refundAmount === null) {
     throw new Error(`Attempting to issue ${req.body.refundPayment} refund with undefined or null value`)
   }
-  const refundAmountAvailable = transaction.refundSummary.amountAvailable
+  const refundAmountAvailable = transaction.refundSummary!.amountAvailable
 
   await submitRefund(
     req.service.externalId,
