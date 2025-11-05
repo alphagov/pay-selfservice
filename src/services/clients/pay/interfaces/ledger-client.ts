@@ -1,4 +1,4 @@
-import { last12MonthsStartDate } from "@utils/simplified-account/services/dashboard/datetime-utils"
+import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
 
 export interface LedgerTransactionParams {
   accountIds: number[]

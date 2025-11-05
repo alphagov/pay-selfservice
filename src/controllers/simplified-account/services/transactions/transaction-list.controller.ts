@@ -109,7 +109,11 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     currentPage = totalPages
   }
 
-  const { transactionsUrl, path } = getUrlGenerator(filters as Record<string, string>, req.service.externalId, req.account.type)
+  const { transactionsUrl, path } = getUrlGenerator(
+    filters as Record<string, string>,
+    req.service.externalId,
+    req.account.type
+  )
 
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, path)
 

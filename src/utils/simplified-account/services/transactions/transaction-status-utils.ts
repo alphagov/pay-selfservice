@@ -1,4 +1,9 @@
-import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFriendlyNames, Status } from '@models/ledger/types/status'
+import {
+  DisputeStatusFriendlyNames,
+  PaymentStatusFriendlyNames,
+  RefundStatusFriendlyNames,
+  Status,
+} from '@models/ledger/types/status'
 import { ConnectorStates } from '@models/ledger/types/status'
 import lodash from 'lodash'
 
@@ -6,7 +11,6 @@ export function displayStatesToConnectorStates(displayStates: string | string[])
   const selected = Array.isArray(displayStates) ? displayStates : [displayStates]
   return toConnectorStates(selected)
 }
-
 
 function toConnectorStates(selectedStateStrings: string[]): ConnectorStates {
   const payment = populatePaymentStates(selectedStateStrings, PaymentStatusFriendlyNames)
@@ -21,8 +25,10 @@ function toConnectorStates(selectedStateStrings: string[]): ConnectorStates {
   return result
 }
 
-
-function populatePaymentStates(selectedStateStrings: string[], friendlyNamesMap: Partial<Record<Status, string>>): string[] {
+function populatePaymentStates(
+  selectedStateStrings: string[],
+  friendlyNamesMap: Partial<Record<Status, string>>
+): string[] {
   const result: string[] = []
   Object.keys(friendlyNamesMap).forEach((status) => {
     selectedStateStrings.forEach((selectedStatus) => {
@@ -33,4 +39,3 @@ function populatePaymentStates(selectedStateStrings: string[], friendlyNamesMap:
   })
   return result
 }
-

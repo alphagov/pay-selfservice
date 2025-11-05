@@ -25,7 +25,7 @@ const mockLedgerService = {
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         serviceExternalId: SERVICE_EXTERNAL_ID,
         externalId: TRANSACTION_EXTERNAL_ID,
-        transactionType: "PAYMENT",
+        transactionType: 'PAYMENT',
         gatewayTransactionId: '11933338-20de-4792-bbee-8d19258dabc3',
         reference: REFERENCE,
         state: {
@@ -98,7 +98,7 @@ describe('controller: services/ledger', () => {
         const results = context.results as {
           count: number
           total: number
-          transactions: { link: string;[key: string]: unknown }[]
+          transactions: { link: string; [key: string]: unknown }[]
         }
         sinon.assert.match(results.count, 1)
         sinon.assert.match(results.total, 1)
@@ -132,7 +132,7 @@ describe('controller: services/ledger', () => {
             state: 'In progress',
             paymentStates: ['created', 'started', 'capturable', 'submitted'],
             refundStates: undefined,
-            disputeStates: undefined
+            disputeStates: undefined,
           }
         )
       })
@@ -149,14 +149,12 @@ describe('controller: services/ledger', () => {
           state: 'In progress',
           paymentStates: ['created', 'started', 'capturable', 'submitted'],
           refundStates: undefined,
-          disputeStates: undefined
+          disputeStates: undefined,
         })
       })
     })
 
     describe('with valid date filter', () => {
-
-
       it('should pass date filter to searchTransactions service', async () => {
         nextRequest({
           query: { dateFilter: 'yesterday' },
@@ -186,12 +184,11 @@ describe('controller: services/ledger', () => {
         await call('get')
 
         const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.filters,
-          {
-            dateFilter: 'yesterday',
-            fromDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).startOf('day').toISO(),
-            toDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).endOf('day').toISO(),
-          })
+        sinon.assert.match(context.filters, {
+          dateFilter: 'yesterday',
+          fromDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).startOf('day').toISO(),
+          toDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).endOf('day').toISO(),
+        })
       })
     })
 

@@ -79,4 +79,8 @@ export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
   }
 }
 
-export const last12MonthsStartDate = DateTime.now().setLocale('en-GB').setZone('Europe/London').startOf('day').minus({ years: 1 })
+export const last12MonthsStartDate = DateTime.now()
+  .setLocale('en-GB')
+  .setZone('Europe/London')
+  .startOf('day')
+  .minus({ years: 1 })
