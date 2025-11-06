@@ -13,7 +13,7 @@ const LAST_DIGITS_CARD_NUMBER = '1234'
 const METADATA_VALUE = 'order-5678'
 const CARD_BRAND = 'visa'
 const REFERENCE = 'REF 123'
-const NOW_DATE_TIME = '2025-09-12T11:47:32.980Z'
+const NOW_DATE_TIME = '2025-11-02T11:47:32.980Z'
 const mockResponse = sinon.stub()
 const mockLedgerService = {
   searchTransactions: sinon.stub().resolves({
@@ -170,8 +170,8 @@ describe('controller: services/ledger', () => {
 
           {
             dateFilter: 'yesterday',
-            fromDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).startOf('day').toISO(),
-            toDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).endOf('day').toISO(),
+            fromDate: '2025-11-01T00:00:00.000+00:00',
+            toDate: '2025-11-01T23:59:59.999+00:00'
           }
         )
       })
@@ -186,8 +186,8 @@ describe('controller: services/ledger', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.filters, {
           dateFilter: 'yesterday',
-          fromDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).startOf('day').toISO(),
-          toDate: DateTime.fromISO(NOW_DATE_TIME).minus({ days: 1 }).endOf('day').toISO(),
+          fromDate: '2025-11-01T00:00:00.000+00:00',
+          toDate: '2025-11-01T23:59:59.999+00:00'
         })
       })
     })
