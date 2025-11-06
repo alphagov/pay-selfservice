@@ -64,7 +64,9 @@
         classes: "govuk-label--m",
         isPageHeading: false
       },
-      hint: { html: detailHint | safe },
+      hint: {
+        text: detailHint
+      },
       value: formValues.description
     })
   }}
