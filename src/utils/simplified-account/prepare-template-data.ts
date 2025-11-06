@@ -196,6 +196,8 @@ const prepareTemplateData = (req: express.Request, controllerData: Record<string
     }
     _.assign(templateData, additionalContext)
   } else if ('service' in req && 'account' in req && 'user' in req && req.user instanceof User) {
+    // i'm not proud of this
+    // TODO kill it with fire
     try {
       const service = req.service instanceof Service ? req.service : new Service(req.service as ServiceData)
       const account =
