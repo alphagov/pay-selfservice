@@ -9,13 +9,11 @@ const router = require('../../src/routes.js')
 const { nunjucksFilters } = require('@govuk-pay/pay-js-commons')
 const formatPSPname = require('../../src/utils/format-PSP-name')
 const formatAccountPathsFor = require('../../src/utils/format-account-paths-for')
+const { Features } = require('@root/config/experimental-features')
 
-const environment = nunjucks.configure([
-  './node_modules/govuk-frontend/dist/',
-  './src/views'
-], {
+const environment = nunjucks.configure(['./node_modules/govuk-frontend/dist/', './src/views'], {
   trimBlocks: true, // automatically remove trailing newlines from a block/tag
-  lstripBlocks: true // automatically remove leading whitespace from a block/tag
+  lstripBlocks: true, // automatically remove leading whitespace from a block/tag
 })
 
 // Load custom Nunjucks filters
@@ -28,11 +26,12 @@ environment.addFilter('formatPSPname', formatPSPname)
 const render = (templateName, templateData) => {
   templateData.routes = router.paths
   templateData.formatAccountPathsFor = formatAccountPathsFor
+  templateData.EnvironmentFeatures = Features
   return environment.render(`${templateName}.njk`, templateData)
 }
 
 module.exports = {
-  render
+  render,
 }
 
 chai.use(function (_chai, utils) {
@@ -47,7 +46,8 @@ chai.use(function (_chai, utils) {
     utils.flag(this, 'rawHtml', this._obj)
     const $ = cheerio.load(this._obj)
     const result = $(selector)
-    this.assert(result.length > 0,
+    this.assert(
+      result.length > 0,
       "Expected #{this} to contain '" + selector + "'",
       "Did not expect #{this} to contain '" + selector + "'"
     )
@@ -59,7 +59,8 @@ chai.use(function (_chai, utils) {
     utils.flag(this, 'rawHtml', this._obj)
     const $ = cheerio.load(this._obj)
     const result = $(selector)
-    this.assert(result.length === 0,
+    this.assert(
+      result.length === 0,
       "Expected #{this} to not contain '" + selector + "'",
       "Expect #{this} to contain '" + selector + "'"
     )
@@ -69,7 +70,8 @@ chai.use(function (_chai, utils) {
     utils.flag(this, 'rawHtml', this._obj)
     const $ = cheerio.load(this._obj)
     const result = $(selector)
-    this.assert(result.text().indexOf(text) === -1,
+    this.assert(
+      result.text().indexOf(text) === -1,
       "Expected #{result} to not contain '" + text + "'",
       "Expect #{result} to contain '" + text + "'"
     )
@@ -77,7 +79,8 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('withText', function (msg) {
     const actual = this._obj.text().trim()
-    this.assert(actual.indexOf(msg) > -1,
+    this.assert(
+      actual.indexOf(msg) > -1,
       "Expected #{act} to contain '" + msg + "'.",
       "Did not expect #{act} to contain '" + msg + "'.",
       msg,
@@ -87,7 +90,8 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('withExactText', function (msg) {
     const actual = this._obj.text().trim()
-    this.assert(actual === msg,
+    this.assert(
+      actual === msg,
       "Expected #{act} to contain '" + msg + "'.",
       "Did not expect #{act} to contain '" + msg + "'.",
       msg,
@@ -96,8 +100,14 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withOnlyText', function (msg) {
-    const actual = this._obj.contents().filter(function () { return this.nodeType === 3 }).text()
-    this.assert(actual.trim() === msg,
+    const actual = this._obj
+      .contents()
+      .filter(function () {
+        return this.nodeType === 3
+      })
+      .text()
+    this.assert(
+      actual.trim() === msg,
       "Expected #{act} to contain '" + msg + "'.",
       "Did not expect #{act} to contain '" + msg + "'.",
       msg,
@@ -106,7 +116,8 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withAttribute', function (expectedAttr, expectedValue) {
-    this.assert(this._obj.attr(expectedAttr) !== undefined,
+    this.assert(
+      this._obj.attr(expectedAttr) !== undefined,
       "Expected #{act} to contain '" + expectedAttr + "'",
       "Did not expect #{act} to contain '" + expectedAttr + "'",
       expectedAttr,
@@ -114,7 +125,8 @@ chai.use(function (_chai, utils) {
     )
 
     if (arguments.length === 2) {
-      this.assert(this._obj.attr(expectedAttr) === expectedValue,
+      this.assert(
+        this._obj.attr(expectedAttr) === expectedValue,
         "Expected #{act} to contain '" + expectedAttr + "' with value '" + expectedValue + "'",
         "Did not expect #{act} to contain '" + expectedAttr + "' with value '" + expectedValue + "'",
         expectedAttr,
@@ -124,7 +136,8 @@ chai.use(function (_chai, utils) {
   })
 
   chai.Assertion.addMethod('withNoAttribute', function (expectedNoAttr) {
-    this.assert(this._obj.attr(expectedNoAttr) === undefined,
+    this.assert(
+      this._obj.attr(expectedNoAttr) === undefined,
       "Expected #{act} to no contain '" + expectedNoAttr + "'",
       "Did not expect #{act} to contain '" + expectedNoAttr + "'",
       expectedNoAttr,
@@ -134,7 +147,8 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('withAttributes', function (attributes) {
     for (const attr in attributes) {
-      if (attributes.hasOwnProperty(attr)) { // eslint-disable-line no-prototype-builtins
+      if (attributes.hasOwnProperty(attr)) {
+        // eslint-disable-line no-prototype-builtins
         this.withAttribute(attr, attributes[attr])
       }
     }
@@ -181,27 +195,45 @@ chai.use(function (_chai, utils) {
 
   chai.Assertion.addMethod('havingNumberOfRows', function (expectedNumberOfRows) {
     const rows = this._obj.find('tbody tr')
-    this.assert(rows.length === expectedNumberOfRows, "Expected number of rows to be '" + expectedNumberOfRows + "' but found '" + rows.length + "'")
+    this.assert(
+      rows.length === expectedNumberOfRows,
+      "Expected number of rows to be '" + expectedNumberOfRows + "' but found '" + rows.length + "'"
+    )
   })
 
   chai.Assertion.addMethod('havingNumberOfItems', function (expectedNumberOfItems) {
     const items = this._obj.find('li')
-    this.assert(items.length === expectedNumberOfItems, "Expected number of items to be '" + expectedNumberOfItems + "' but found '" + items.length + "'")
+    this.assert(
+      items.length === expectedNumberOfItems,
+      "Expected number of items to be '" + expectedNumberOfItems + "' but found '" + items.length + "'"
+    )
   })
 
   chai.Assertion.addMethod('withTableDataAt', function (colIndex, expectedValue) {
-    const actualValue = this._obj.find('tr > :nth-child(' + colIndex + ')').text().trim()
-    this.assert(actualValue === expectedValue.toString(),
+    const actualValue = this._obj
+      .find('tr > :nth-child(' + colIndex + ')')
+      .text()
+      .trim()
+    this.assert(
+      actualValue === expectedValue.toString(),
       "Expected '" + actualValue + "' to be '" + expectedValue + "'.",
-      expectedValue, actualValue
+      expectedValue,
+      actualValue
     )
   })
 
   chai.Assertion.addMethod('withTableDataTextAt', function (colIndex, expectedValue) {
-    const actualValue = this._obj.find('tr > :nth-child(' + colIndex + ')').text().replace(/\n/g, ' ').replace(/\s\s+/g, ' ').trim()
-    this.assert(actualValue.indexOf(expectedValue.toString()) > -1,
+    const actualValue = this._obj
+      .find('tr > :nth-child(' + colIndex + ')')
+      .text()
+      .replace(/\n/g, ' ')
+      .replace(/\s\s+/g, ' ')
+      .trim()
+    this.assert(
+      actualValue.indexOf(expectedValue.toString()) > -1,
       "Expected '" + actualValue + "' to be '" + expectedValue + "'.",
-      expectedValue, actualValue
+      expectedValue,
+      actualValue
     )
   })
 })
