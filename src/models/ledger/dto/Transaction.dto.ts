@@ -42,4 +42,3 @@ export interface TransactionData {
   reason?: string // dispute only
   payment_details?: PaymentDetailsData
 }
-

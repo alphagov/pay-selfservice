@@ -117,7 +117,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
         return {
           ...transaction,
-          amountInPounds: isRefund || isWonDispute ? toDisplayAmount(-transaction.amount) : toDisplayAmount(transaction.amount),
+          amountInPounds:
+            isRefund || isWonDispute ? toDisplayAmount(-transaction.amount) : toDisplayAmount(transaction.amount),
           fee: toDisplayAmount(transaction.fee),
           netAmount: toDisplayAmount(transaction.netAmount),
           totalAmount: toDisplayAmount(transaction.totalAmount),
