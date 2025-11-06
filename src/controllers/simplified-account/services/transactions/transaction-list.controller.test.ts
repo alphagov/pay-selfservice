@@ -98,7 +98,7 @@ describe('controller: services/ledger', () => {
         const results = context.results as {
           count: number
           total: number
-          transactions: { link: string;[key: string]: unknown }[]
+          transactions: { link: string; [key: string]: unknown }[]
         }
         sinon.assert.match(results.count, 1)
         sinon.assert.match(results.total, 1)
@@ -171,7 +171,7 @@ describe('controller: services/ledger', () => {
           {
             dateFilter: 'yesterday',
             fromDate: '2025-11-01T00:00:00.000+00:00',
-            toDate: '2025-11-01T23:59:59.999+00:00'
+            toDate: '2025-11-01T23:59:59.999+00:00',
           }
         )
       })
@@ -187,7 +187,7 @@ describe('controller: services/ledger', () => {
         sinon.assert.match(context.filters, {
           dateFilter: 'yesterday',
           fromDate: '2025-11-01T00:00:00.000+00:00',
-          toDate: '2025-11-01T23:59:59.999+00:00'
+          toDate: '2025-11-01T23:59:59.999+00:00',
         })
       })
     })
