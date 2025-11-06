@@ -16,10 +16,8 @@
   </ul>
 
   {% if isWelsh %}
-    {% set lang = 'cy' %}
     <p>For example “Talu am drwydded barcio”.</p>
   {% else %}
-    {% set lang = 'en' %}
     <p
       >For example<br />
       Bad: R1<br />
@@ -52,7 +50,6 @@
       value: formValues.name,
       errorMessage: { text: errors.formErrors['name'] } if errors.formErrors['name'] else false,
       attributes: {
-        "lang": lang,
         "data-confirmation": true,
         "data-confirmation-title": "Website address",
         "data-confirmation-label": friendlyURL + "/" + serviceName | removeIndefiniteArticles | slugify + "/",
@@ -74,10 +71,7 @@
       hint: {
         text: detailHint
       },
-      value: formValues.description,
-      attributes: {
-        "lang": lang,
-      }
+      value: formValues.description
     })
   }}
 
