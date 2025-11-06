@@ -8,11 +8,6 @@ const ERROR_VIEW = 'error'
 
 function response(req, res, template, data = {}) {
   const convertedData = Object.assign({}, displayConverter(req, data, template), prepareTemplateData(req, data))
-  // let convertedData = displayConverter(req, data, template)
-  //   convertedData = {
-  //     ...convertedData,
-  //     ...prepareTemplateData(req, data)
-  //   }
   render(req, res, template, convertedData)
 }
 
