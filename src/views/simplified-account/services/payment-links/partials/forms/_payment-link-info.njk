@@ -26,11 +26,7 @@
   {% endif %}
 {% endset %}
 
-
-{% set detailHint %}
-  Give your users more information{% if isWelsh %} in Welsh{% endif %}. For example, you could tell them how long it
-  takes for their application to be processed.
-{% endset %}
+{% set detailHint = "Give your users more information " + {{ " in Welsh" if isWelsh }} + ". For example, you could tell them how long it takes for their application to be processed." %}
 
 <form method="post">
   <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
