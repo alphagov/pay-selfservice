@@ -6,6 +6,10 @@ const SERVICE_EXTERNAL_ID = 'service123abc'
 const TRANSACTION_EXTERNAL_ID = 'transaction123abc'
 const GATEWAY_ACCOUNT_ID = 117
 const PAGE_SIZE = 20
+const CARDHOLDER_NAME = 'Sam Holder'
+const LAST_DIGITS_CARD_NUMBER = '1234'
+const METADATA_VALUE = 'order-5678'
+const CARD_BRAND = 'visa'
 const mockResponse = sinon.stub()
 const mockLedgerService = {
   searchTransactions: sinon.stub().resolves({
@@ -19,12 +23,11 @@ const mockLedgerService = {
         externalId: TRANSACTION_EXTERNAL_ID,
         gatewayTransactionId: '11933338-20de-4792-bbee-8d19258dabc3',
         reference: 'REF 123',
-        transactionType: 'PAYMENT',
         state: {
           finished: true,
           code: 'P0010',
           message: 'Payment method rejected',
-          status: 'DECLINED',
+          status: 'declined',
         },
         amount: 145600,
         createdDate: '2025-09-12T11:47:32.980+01:00',
@@ -37,12 +40,17 @@ const mockLedgerService = {
   }),
 }
 
+const mockCardTypesService = {
+  getAllCardTypes: sinon.stub().resolves([{ brand: 'visa', label: 'Visa' }]),
+}
+
 const { nextRequest, call } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/transactions/transaction-list.controller'
 )
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/ledger.service': mockLedgerService,
+    '@services/card-types.service': mockCardTypesService,
   })
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount({
@@ -87,6 +95,168 @@ describe('controller: services/ledger', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         const pagination = context.pagination as Record<string, number | Record<string, unknown>>
         sinon.assert.match(pagination, sinon.match.object)
+      })
+    })
+
+    describe('with valid brand filter', () => {
+      it('should pass brand filter to searchTransactions service', async () => {
+        nextRequest({
+          query: { brand: CARD_BRAND },
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockLedgerService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          1,
+          PAGE_SIZE,
+
+          { brand: CARD_BRAND }
+        )
+      })
+
+      it('should include filters in context', async () => {
+        nextRequest({
+          query: { brand: CARD_BRAND },
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.filters, { brand: CARD_BRAND })
+      })
+    })
+
+    describe('with valid name filter', () => {
+      it('should pass name filter to searchTransactions service', async () => {
+        nextRequest({
+          query: { cardholderName: CARDHOLDER_NAME },
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockLedgerService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          1,
+          PAGE_SIZE,
+
+          { cardholderName: CARDHOLDER_NAME }
+        )
+      })
+
+      it('should include filters in context', async () => {
+        nextRequest({
+          query: { cardholderName: CARDHOLDER_NAME },
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.filters, { cardholderName: CARDHOLDER_NAME })
+      })
+    })
+
+    describe('with last 4 digits filter', () => {
+      it('should pass last 4 digits filter to searchTransactions service', async () => {
+        nextRequest({
+          query: { lastDigitsCardNumber: LAST_DIGITS_CARD_NUMBER },
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockLedgerService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          1,
+          PAGE_SIZE,
+
+          { lastDigitsCardNumber: LAST_DIGITS_CARD_NUMBER }
+        )
+      })
+
+      it('should include filters in context', async () => {
+        nextRequest({
+          query: { lastDigitsCardNumber: LAST_DIGITS_CARD_NUMBER },
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.filters, { lastDigitsCardNumber: LAST_DIGITS_CARD_NUMBER })
+      })
+    })
+
+    describe('with valid metadata filter', () => {
+      it('should pass metadata filter to searchTransactions service', async () => {
+        nextRequest({
+          query: { metadataValue: METADATA_VALUE },
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockLedgerService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          1,
+          PAGE_SIZE,
+
+          { metadataValue: METADATA_VALUE }
+        )
+      })
+
+      it('should include filters in context', async () => {
+        nextRequest({
+          query: { metadataValue: METADATA_VALUE },
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.filters, { metadataValue: METADATA_VALUE })
+      })
+    })
+
+    describe('with combined filters', () => {
+      it('should pass multiple filters to searchAgreements service', async () => {
+        nextRequest({
+          query: {
+            cardholderName: CARDHOLDER_NAME,
+            brand: CARD_BRAND,
+          },
+        })
+
+        await call('get')
+
+        sinon.assert.calledWith(
+          mockLedgerService.searchTransactions,
+          GATEWAY_ACCOUNT_ID,
+          1,
+          PAGE_SIZE,
+
+          {
+            cardholderName: CARDHOLDER_NAME,
+            brand: CARD_BRAND,
+          }
+        )
+      })
+
+      it('should include both filters in context', async () => {
+        nextRequest({
+          query: {
+            cardholderName: CARDHOLDER_NAME,
+            brand: CARD_BRAND,
+          },
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.filters, {
+          cardholderName: CARDHOLDER_NAME,
+          brand: CARD_BRAND,
+        })
       })
     })
 

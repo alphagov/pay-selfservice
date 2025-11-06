@@ -13,7 +13,7 @@
     {% if (loop.first == true) %}
       <h1 class="govuk-heading-l govuk-!-margin-top-6">{{ sectionKey }}</h1>
 
-      {% if not transaction.isFullyRefunded() %}
+      {% if not transaction.isFullyRefunded() and transaction.isRefundable() %}
         {{
           govukButton({
             text: "Refund payment",
@@ -40,7 +40,7 @@
               classes: "transaction-details summary-list__row govuk-!-font-size-16"
             } if value.html else {
               text: value,
-              classes: "transaction-details summary-list__rowgovuk-!-font-size-16"
+              classes: "transaction-details summary-list__row govuk-!-font-size-16"
             }
           }), rows)
         %}
@@ -83,7 +83,8 @@
       caption: "Transaction events",
       captionClasses: "govuk-table__caption--m govuk-!-margin-top-8",
       firstCellIsHeader: false,
-      rows: eventsTableRows
+      rows: eventsTableRows,
+      classes: "govuk-!-font-size-16"
     })
   }}
 
