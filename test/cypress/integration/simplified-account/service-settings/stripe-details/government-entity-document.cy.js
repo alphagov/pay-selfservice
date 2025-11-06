@@ -5,9 +5,7 @@ const stripeAccountSetupStubs = require('@test/cypress/stubs/stripe-account-setu
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
 const stripePspStubs = require('@test/cypress/stubs/stripe-psp-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
-const {
-  STRIPE_CREDENTIAL_IN_ACTIVE_STATE,
-} = require('@test/fixtures/credentials.fixtures')
+const { STRIPE_CREDENTIAL_IN_ACTIVE_STATE } = require('@test/fixtures/credentials.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -274,6 +272,7 @@ describe('Stripe details settings', () => {
           cy.location('pathname').should('not.contain', '/government-entity-document')
           cy.get('.govuk-notification-banner')
             .contains('Information sent to Stripe')
+            .parent()
             .parent()
             .contains('Stripe is checking your information. We will contact you if there is a problem')
         })
