@@ -77,7 +77,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       disputeStates: stateFilters.disputeStates,
     }),
   }
-  // a comment to trigger build 
+
   const cardTypes = await getAllCardTypes()
 
   const eventStates = statusNames.map((state) => {
@@ -110,21 +110,29 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/transactions/index', {
     results: {
       ...results,
-      transactions: results.transactions.map((transaction) => ({
-        ...transaction,
-        amountInPounds: penceToPoundsWithCurrency(transaction.amount),
-        fee: transaction.fee ? penceToPoundsWithCurrency(transaction.fee) : undefined,
-        netAmount: transaction.netAmount ? penceToPoundsWithCurrency(transaction.netAmount) : undefined,
-        totalAmount: transaction.totalAmount ? penceToPoundsWithCurrency(transaction.totalAmount) : undefined,
-        corporateCardSurcharge: transaction.corporateCardSurcharge,
-        formattedStatus: getFriendlyStatus(transaction.transactionType, transaction.state.status),
-        link: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.transactions.detail,
-          req.service.externalId,
-          req.account.type,
-          transaction.externalId
-        ),
-      })),
+      transactions: results.transactions.map((transaction) => {
+        const isRefund = transaction.transactionType === 'REFUND'
+        const isWonDispute = transaction.transactionType === 'DISPUTE' && transaction.state.status === 'WON'
+        const toDisplayAmount = (value?: number) => (value == null ? undefined : penceToPoundsWithCurrency(value))
+
+        return {
+          ...transaction,
+          amountInPounds: isRefund || isWonDispute ? toDisplayAmount(-transaction.amount) : toDisplayAmount(transaction.amount),
+          fee: toDisplayAmount(transaction.fee),
+          netAmount: toDisplayAmount(transaction.netAmount),
+          totalAmount: toDisplayAmount(transaction.totalAmount),
+          corporateCardSurcharge: transaction.corporateCardSurcharge,
+          email: isRefund ? transaction.data.payment_details?.email : transaction.email,
+          reference: isRefund ? transaction.data.payment_details?.reference : transaction.reference,
+          formattedStatus: getFriendlyStatus(transaction.transactionType, transaction.state.status),
+          link: formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.transactions.detail,
+            req.service.externalId,
+            req.account.type,
+            transaction.externalId
+          ),
+        }
+      }),
     },
     isBST: isBritishSummerTime(),
     pagination,
