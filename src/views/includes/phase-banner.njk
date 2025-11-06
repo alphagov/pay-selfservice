@@ -8,6 +8,7 @@
     {% set normalisedPaymentProvider = paymentProvider.toLowerCase() %}
     {% set isLive = currentGatewayAccount.type === "live" %}
 
+
     {% set tagModifierClass %}
       {% if not isLive %}
         govuk-tag--grey
@@ -16,12 +17,14 @@
       {% endif %}
     {% endset %}
 
+
     {% set tagText %}
       {% if not isLive %}
         {% if normalisedPaymentProvider === 'sandbox' %}
           Test
         {% else %}
-          {{ normalisedPaymentProvider | capitalize }} test
+          {{ normalisedPaymentProvider | capitalize }}
+          test
         {% endif %}
       {% else %}
         Live
@@ -39,44 +42,51 @@
 
 {% set breadcrumbItems = [] %}
 
-{% if not NEW_GOVUK_HEADER %}
-  {% set breadcrumbItems = (breadcrumbItems.push({
-    text: "My services", href: routes.services.index
-  }), breadcrumbItems) %}
+{% if not EnvironmentFeatures.isEnabled('header') %}
+  {%
+    set breadcrumbItems = (breadcrumbItems.push({
+      text: "My services", href: routes.services.index
+    }), breadcrumbItems)
+  %}
 
   {% if not hideServiceHeader and currentService.name %}
-    {% set breadcrumbItems = (breadcrumbItems.push({
-      html: accountLabelWithTag
-    }), breadcrumbItems) %}
+    {%
+      set breadcrumbItems = (breadcrumbItems.push({
+        html: accountLabelWithTag
+      }), breadcrumbItems)
+    %}
   {% endif %}
 
   {% if breadcrumbItems | length > 0 %}
     {{ breadcrumbs(breadcrumbItems) }}
   {% endif %}
-
 {% endif %}
 
-{% if not hideServiceNav and not hideServiceHeader and not NEW_SERVICE_NAV %}
+{% if not hideServiceNav and not hideServiceHeader and not EnvironmentFeatures.isEnabled('sidebar_nav') %}
   {% set navItems = [] %}
   {% for item in serviceNavigationItems %}
     {% if item.permissions %}
-      {% set navItems = (navItems.push({
-        href: item.url,
-        text: item.name,
-        active: item.current,
-        attributes: {
-          id: item.id
-        }
-      }), navItems) %}
+      {%
+        set navItems = (navItems.push({
+          href: item.url,
+          text: item.name,
+          active: item.current,
+          attributes: {
+            id: item.id
+          }
+        }), navItems)
+      %}
     {% endif %}
   {% endfor %}
   {% if navItems | length > 0 %}
     <nav role="navigation" class="service-sub-nav" data-cy="account-sub-nav">
-      {{ govukServiceNavigation({
-        navigation: navItems,
-        navigationId: "service-nav",
-        menuButtonText: "Service menu"
-      }) }}
+      {{
+        govukServiceNavigation({
+          navigation: navItems,
+          navigationId: "service-nav",
+          menuButtonText: "Service menu"
+        })
+      }}
     </nav>
   {% endif %}
 {% endif %}

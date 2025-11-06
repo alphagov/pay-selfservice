@@ -9,5 +9,5 @@ module.exports.defaultViewDecider = require('./settings/default-view-decider.mid
 module.exports.defaultViewDecider = require('./settings/default-view-decider.middleware')
 module.exports.canStartPspPaymentVerificationTask = require('./settings/psp-switch-payment-verification.middleware')
 module.exports.pspSwitchRedirect = require('./settings/psp-switch-redirect.middleware')
-module.exports.experimentalFeature = require('./expermimental-feature.middleware')
+module.exports.experimentalFeature = require('./experimental-feature.middleware')
 module.exports.worldpayAccountIsActive = require('./settings/worldpay-account-is-active.middleware')

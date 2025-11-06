@@ -60,7 +60,7 @@
   govukHeader({
     homepageUrl: "/",
     productName: "Pay",
-    navigation: payHeaderNavigation if not NEW_GOVUK_HEADER,
+    navigation: payHeaderNavigation if not EnvironmentFeatures.isEnabled('header'),
     attributes : {
       'data-cy': 'header'
     }

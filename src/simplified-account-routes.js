@@ -27,6 +27,8 @@ const {
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 const testWithYourUsersController = require('src/controllers/simplified-account/services/test-with-your-users')
 
+import { Features } from '@root/config/experimental-features'
+
 const upload = multer({ storage: multer.memoryStorage() })
 const simplifiedAccount = new Router({ mergeParams: true })
 
@@ -66,102 +68,102 @@ simplifiedAccount.post(
 // payment links index
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.index,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   servicesController.paymentLinks.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.create,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.information.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.create,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.information.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.existingPaymentLink,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.existingPaymentLink.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.existingPaymentLink,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.existingPaymentLink.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.addWelshServiceName,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.addWelshServiceName.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.addWelshServiceName,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.addWelshServiceName.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.reference,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.reference.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.reference,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.reference.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.amount,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.amount.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.amount,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.amount.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.review,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.review.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.review,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.review.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.metadata.add,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.metadata.add.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.metadata.add,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.metadata.add.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.metadata.update,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.metadata.edit.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.metadata.update,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.create.metadata.edit.post
 )
@@ -169,7 +171,7 @@ simplifiedAccount.post(
 // payment links edit - index
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.index,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.edit.get
 )
@@ -177,83 +179,83 @@ simplifiedAccount.get(
 // payment links edit - details
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.information,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.edit.information.get
 )
 
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.edit.information,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.edit.information.post
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.reference,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.edit.reference.get
 )
 
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.edit.reference,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.edit.reference.post
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.amount,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.edit.amount.get
 )
 
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.edit.amount,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.edit.amount.post
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.metadata.update,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.edit.metadata.edit.get
 )
 
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.edit.metadata.update,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.edit.metadata.edit.post
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.metadata.add,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.edit.metadata.add.get
 )
 
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.edit.metadata.add,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.edit.metadata.add.post
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.delete,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.remove.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.delete,
-  experimentalFeature,
+  experimentalFeature(Features.PAYMENT_LINKS),
   permission('tokens:create'),
   servicesController.paymentLinks.remove.post
 )
@@ -300,25 +302,25 @@ simplifiedAccount.get(
 // transactions
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.index,
-  experimentalFeature,
+  experimentalFeature(Features.TRANSACTIONS),
   permission('transactions:read'),
   servicesController.transactions.list.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.detail,
-  experimentalFeature,
+  experimentalFeature(Features.TRANSACTIONS),
   permission('transactions-details:read'),
   servicesController.transactions.detail.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.refund,
-  experimentalFeature,
+  experimentalFeature(Features.TRANSACTIONS),
   permission('refunds:create'),
   servicesController.transactions.refund.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.transactions.refund,
-  experimentalFeature,
+  experimentalFeature(Features.TRANSACTIONS),
   permission('refunds:create'),
   servicesController.transactions.refund.post
 )

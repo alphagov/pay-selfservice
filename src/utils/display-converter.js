@@ -7,6 +7,7 @@ const serviceNavigation = require('./simplified-account/navigation/service-navig
 const serviceSettingsNavigation = require('./simplified-account/navigation/service-settings-navigation')
 const GatewayAccount = require('@models/gateway-account/GatewayAccount.class')
 const { getActiveCredential } = require('@utils/credentials')
+import { Features } from '@root/config/experimental-features'
 
 const hideServiceHeaderTemplates = [
   'services/add-service',
@@ -134,6 +135,7 @@ module.exports = function (req, data, template) {
   convertedData.isLive = req.isLive
   convertedData.humanReadableEnvironment = convertedData.isLive ? 'Live' : 'Test'
   convertedData.informationNeeded = informationNeeded(account)
+  // convertedData.EnvironmentFeatures = Features
   // TODO update this as url.parse is deprecated
   const currentPath = (relativeUrl && url.parse(relativeUrl).pathname.replace(/([a-z])\/$/g, '$1')) || '' // remove query params and trailing slash
   const currentUrl = req.baseUrl && req.path ? req.baseUrl + req.path : 'unavailable'
@@ -154,7 +156,6 @@ module.exports = function (req, data, template) {
       account
     )
     if (currentUrl.match(/service\/\w+\/account\/(test|live)\//)) {
-      convertedData.NEW_SERVICE_NAV = process.env.EXPERIMENTAL_FEATURES_FLAG === 'true'
       convertedData.serviceNavigation = serviceNavigation(account, service, currentUrl, permissions)
       convertedData.serviceSettings = serviceSettingsNavigation(account, service, currentUrl, permissions)
     }

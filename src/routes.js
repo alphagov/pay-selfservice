@@ -1,6 +1,4 @@
 // -- NOT PAYMENT LINKS RELATED
-const { EXPERIMENTAL_FEATURES_FLAG } = process.env
-const EXPERIMENTAL_FEATURES = EXPERIMENTAL_FEATURES_FLAG === 'true'
 // --
 
 const { Router } = require('express')
@@ -61,6 +59,7 @@ const simplifiedAccountRoutes = require('./simplified-account-routes')
 const { registrationSuccess } = require('@services/auth.service')
 const { account: routes } = require('@root/paths')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
+import { Features } from '@root/config/experimental-features'
 
 // Assignments
 const {
@@ -160,7 +159,7 @@ module.exports.bind = function (app) {
   // -------------------------
 
   // My services
-  if (EXPERIMENTAL_FEATURES) {
+  if (Features.isEnabled(Features.MY_SERVICES)) {
     app.get(services.index, userIsAuthorised, homeController.myServices.get)
   } else {
     app.get(services.index, userIsAuthorised, servicesController.myServices.get)

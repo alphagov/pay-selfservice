@@ -27,13 +27,13 @@ const formatServicePathsFor = require('@utils/format-service-paths-for')
 const healthcheckController = require('@controllers/healthcheck.controller')
 const { healthcheck } = require('@root/paths.js')
 const { boolToText, boolToOnOrOff } = require('@utils/on-or-off')
+const { Features } = require('@root/config/experimental-features')
 // Global constants
 const bindHost = process.env.BIND_HOST || '127.0.0.1'
 const port = process.env.PORT || 3000
 const unconfiguredApp = express()
-const { NODE_ENV, EXPERIMENTAL_FEATURES_FLAG } = process.env
+const { NODE_ENV } = process.env
 const ANALYTICS_TRACKING_ID = process.env.ANALYTICS_TRACKING_ID || ''
-const EXPERIMENTAL_FEATURES = EXPERIMENTAL_FEATURES_FLAG === 'true'
 function warnIfAnalyticsNotSet() {
   if (ANALYTICS_TRACKING_ID === '') {
     logger.warn('Google Analytics Tracking ID [ANALYTICS_TRACKING_ID] is not set')
@@ -61,10 +61,10 @@ function initialiseGlobalMiddleware(app) {
     res.locals.routes = router.paths
     res.locals.paths = router.paths
     res.locals.currentPath = req.path
-    res.locals.NEW_GOVUK_HEADER = EXPERIMENTAL_FEATURES
     res.locals.formatAccountPathsFor = formatAccountPathsFor
     res.locals.formatServicePathsFor = formatServicePathsFor
     res.locals.analyticsTrackingId = ANALYTICS_TRACKING_ID
+    res.locals.EnvironmentFeatures = Features
     noCache(res)
     next()
   })
