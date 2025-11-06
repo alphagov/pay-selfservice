@@ -40,6 +40,7 @@ function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
       formValues,
       serviceMode: req.account.type,
       isWelsh,
+      paymentLinkTitle: currentSession.paymentLinkTitle,
     })
   } catch (error) {
     next(error)

@@ -20,6 +20,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     serviceMode: req.account.type,
     isWelsh: product.language === 'cy',
     createJourney: true,
+    productName: product.name,
   })
 }
 

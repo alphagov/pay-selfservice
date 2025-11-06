@@ -1,9 +1,6 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 
-
-{% set servicePageTitle %}
-  Edit reporting column - {{ productName }}
-{% endset %}
+{% set servicePageTitle = ("Reporting column - " ~ productName) if createJourney else "Edit reporting column - " ~ productName %}
 
 {% block serviceContent %}
   <span class="govuk-caption-l">Edit {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
