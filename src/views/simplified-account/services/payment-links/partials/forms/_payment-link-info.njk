@@ -28,8 +28,8 @@
 
 
 {% set detailHint %}
-  Give your users more information{% if isWelsh %}&nbsp;in Welsh{% endif %}. For example, you could tell them how long
-  it takes for their application to be processed.
+  Give your users more information{% if isWelsh %} in Welsh{% endif %}. For example, you could tell them how long it
+  takes for their application to be processed.
 {% endset %}
 
 <form method="post">
@@ -68,9 +68,7 @@
         classes: "govuk-label--m",
         isPageHeading: false
       },
-      hint: {
-        text: detailHint
-      },
+      hint: { html: detailHint | safe },
       value: formValues.description
     })
   }}
