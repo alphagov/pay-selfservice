@@ -20,12 +20,13 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       req.service.externalId,
       req.account.type
     ),
-    createWelshPaymentLinkLinkWithEnglishServiceName: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.paymentLinks.create,
-      req.service.externalId,
-      req.account.type
-    ) + '?language=cy&useEnglishServiceName=true',
-    serviceMode: req.account.type
+    createWelshPaymentLinkLinkWithEnglishServiceName:
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.paymentLinks.create,
+        req.service.externalId,
+        req.account.type
+      ) + '?language=cy&useEnglishServiceName=true',
+    serviceMode: req.account.type,
   }
 
   Object.assign(context, { serviceName: req.service.serviceName.cy })
@@ -43,7 +44,7 @@ async function post(req: ServiceRequest<EditServiceNameBody>, res: ServiceRespon
       .isLength({ max: SERVICE_NAME_MAX_LENGTH })
       .withMessage(`Service name must be ${SERVICE_NAME_MAX_LENGTH} characters or fewer`)
       .notEmpty()
-      .withMessage('Enter a Welsh service name (Cymraeg)')
+      .withMessage('Enter a Welsh service name (Cymraeg)'),
   ]
 
   await Promise.all(validations.map((validation) => validation.run(req)))
@@ -66,26 +67,25 @@ async function post(req: ServiceRequest<EditServiceNameBody>, res: ServiceRespon
         req.service.externalId,
         req.account.type
       ),
-      createWelshPaymentLinkLinkWithEnglishServiceName: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.paymentLinks.create,
-        req.service.externalId,
-        req.account.type
-      ) + '?language=cy&useEnglishServiceName=true',
+      createWelshPaymentLinkLinkWithEnglishServiceName:
+        formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.paymentLinks.create,
+          req.service.externalId,
+          req.account.type
+        ) + '?language=cy&useEnglishServiceName=true',
     })
   }
 
   const newServiceName = req.body.serviceName.trim()
   await updateServiceName(req.service.externalId, req.service.serviceName.en, newServiceName)
 
-  res.redirect(formatServiceAndAccountPathsFor(
-    paths.simplifiedAccount.paymentLinks.create + "?language=cy",
-    req.service.externalId,
-    req.account.type
-  )
+  res.redirect(
+    formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.create + '?language=cy',
+      req.service.externalId,
+      req.account.type
+    )
   )
 }
 
-export {
-  get,
-  post,
-}
+export { get, post }
