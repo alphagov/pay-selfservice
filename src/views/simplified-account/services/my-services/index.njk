@@ -22,20 +22,20 @@
   </div>
   {% if services.length %}
     <div class="govuk-grid-column-two-thirds reports" data-cy="reports-section">
-      <p class="govuk-body">
+      <h2 class="govuk-body">
         <a href="{{ allServiceTransactionsPath }}"
            class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
           Transactions for all services
         </a>
-      </p>
+      </h2>
 
       {% if flags.hasAccountWithPayouts %}
-        <p class="govuk-body">
+        <h2 class="govuk-body">
           <a href="{{ payoutsPath }}"
              class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
             Payments to your bank account
           </a>
-        </p>
+        </h2>
       {% endif %}
     </div>
   {% endif %}
