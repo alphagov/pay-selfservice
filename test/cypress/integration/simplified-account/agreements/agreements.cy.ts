@@ -170,8 +170,8 @@ describe('Agreements', () => {
         filters: {
           agreement_id: 'a-valid-agreement-id',
           display_size: 5,
+          from_date: last12MonthsStartDate.toISO(),
         },
-        from_date: last12MonthsStartDate.toISO(),
       }),
     ])
 
@@ -289,6 +289,7 @@ describe('Agreements', () => {
         filters: {
           agreement_id: 'agreement123abc',
           display_size: 5,
+          from_date: last12MonthsStartDate.toISO(),
         },
       }),
       agreementStubs.postCancelAgreementByServiceExternalIdAndAccountType({
