@@ -6,7 +6,7 @@
       id: "payment-amount",
       name: "paymentAmount",
       label: {
-        text: "Enter the amount",
+        html: "Enter the amount <span class='govuk-visually-hidden'>in &pounds;</span>",
         classes: "govuk-label--s govuk-!-margin-top-3"
       },
       errorMessage: { text: errors.formErrors['paymentAmount'] } if errors.formErrors['paymentAmount'] else false,
