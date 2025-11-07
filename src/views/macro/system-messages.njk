@@ -10,16 +10,16 @@
       <div
         class="govuk-notification-banner govuk-notification-banner--{{ intent }} system-messages"
         role="{{ role }}"
-        aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        aria-labelledby="govuk-notification-banner-title"
+        data-module="govuk-notification-banner"
+      >
         <div class="govuk-notification-banner__content system-message__container">
           {% if message.icon %}
-            <div class="system-message__icon system-message__icon--{{ intent }}">
-              {{ message.icon | safe }}
-            </div>
+            <div class="system-message__icon system-message__icon--{{ intent }}"> {{ message.icon | safe }} </div>
           {% endif %}
           <div class="system-message__text">
             <p class="govuk-notification-banner__heading govuk-!-margin-bottom-0">
-              {{ message.heading | safe }}
+              <span id="govuk-notification-banner-title"> {{ message.heading | safe }} </span>
             </p>
             {% if message.body %}
               <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-1">{{ message.body | safe }}</p>

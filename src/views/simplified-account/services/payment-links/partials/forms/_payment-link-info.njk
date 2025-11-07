@@ -16,8 +16,10 @@
   </ul>
 
   {% if isWelsh %}
+    {% set lang = 'cy' %}
     <p>For example “Talu am drwydded barcio”.</p>
   {% else %}
+    {% set lang = 'en' %}
     <p
       >For example<br />
       Bad: R1<br />
@@ -26,11 +28,7 @@
   {% endif %}
 {% endset %}
 
-
-{% set detailHint %}
-  Give your users more information{% if isWelsh %}in Welsh{% endif %}. For example, you could tell them how long it
-  takes for their application to be processed.
-{% endset %}
+{% set detailHint = 'Give your users more information' + (' in Welsh' if isWelsh else '') + '. For example, you could tell them how long it takes for their application to be processed.' %}
 
 <form method="post">
   <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
@@ -50,6 +48,7 @@
       value: formValues.name,
       errorMessage: { text: errors.formErrors['name'] } if errors.formErrors['name'] else false,
       attributes: {
+        lang: lang,
         "data-confirmation": true,
         "data-confirmation-title": '<h2 class="govuk-heading-m">Website address</h2>',
         "data-confirmation-label": friendlyURL + "/" + serviceName | removeIndefiniteArticles | slugify + "/",
@@ -71,7 +70,10 @@
       hint: {
         text: detailHint
       },
-      value: formValues.description
+      value: formValues.description,
+      attributes: {
+        lang: lang
+      }
     })
   }}
 
