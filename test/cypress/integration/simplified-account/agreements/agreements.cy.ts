@@ -171,7 +171,7 @@ describe('Agreements', () => {
           agreement_id: 'a-valid-agreement-id',
           display_size: 5,
         },
-        from_date: last12MonthsStartDate.toISO()
+        from_date: last12MonthsStartDate.toISO(),
       }),
     ])
 
@@ -345,7 +345,9 @@ describe('Agreements', () => {
 
     cy.log('Select "Yes"')
 
-    cy.get('div.govuk-radios__item').filter(':contains("Yes")').first()
+    cy.get('div.govuk-radios__item')
+      .filter(':contains("Yes")')
+      .first()
       .within(() => {
         cy.get('input.govuk-radios__input').click()
       })
