@@ -13,38 +13,46 @@
           You have been added to {{ flags.recentlyInvitedServiceName }}
         </p>
       {% endset %}
-      {{ govukNotificationBanner({
-        html: html,
-        type: 'success'
-      }) }}
+      {{
+        govukNotificationBanner({
+          html: html,
+          type: 'success'
+        })
+      }}
     {% endif %}
     <h1 class="govuk-heading-l">My services</h1>
   </div>
   {% if services.length %}
     <div class="govuk-grid-column-two-thirds reports" data-cy="reports-section">
-      <p class="govuk-body">
-        <a href="{{ allServiceTransactionsPath }}"
-           class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
+      <h2 class="govuk-body">
+        <a
+          href="{{ allServiceTransactionsPath }}"
+          class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold"
+        >
           Transactions for all services
         </a>
-      </p>
+      </h2>
 
       {% if flags.hasAccountWithPayouts %}
-        <p class="govuk-body">
-          <a href="{{ payoutsPath }}"
-             class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold">
+        <h2 class="govuk-body">
+          <a
+            href="{{ payoutsPath }}"
+            class="govuk-link govuk-!-margin-right-3 govuk-link--no-visited-state govuk-!-font-weight-bold"
+          >
             Payments to your bank account
           </a>
-        </p>
+        </h2>
       {% endif %}
     </div>
   {% endif %}
   <div class="govuk-grid-column-two-thirds">
-    {{ govukButton({
-      classes: "govuk-button--secondary",
-      text: "Add a new service",
-      href: createServicePath
-    }) }}
+    {{
+      govukButton({
+        classes: "govuk-button--secondary",
+        text: "Add a new service",
+        href: createServicePath
+      })
+    }}
     {% if services.length %}
       {% if services.length > 7 %}
         <div class="govuk-grid-row service-filter" data-cy="service-filter">
@@ -65,8 +73,7 @@
     {% else %}
       <p class="govuk-body">
         You do not have any services set up at the moment. Either
-        <a href="{{ createServicePath }}" class="govuk-link govuk-link--no-visited-state">create a new
-          one</a>
+        <a href="{{ createServicePath }}" class="govuk-link govuk-link--no-visited-state">create a new one</a>
         or contact an administrator of an existing service to be added to it.
       </p>
     {% endif %}
