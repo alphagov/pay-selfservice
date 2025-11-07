@@ -7,6 +7,7 @@ import {
   checkServiceNavigation,
   checkTitleAndHeading,
 } from '@test/cypress/integration/simplified-account/common/assertions'
+import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
 
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@pay.gov.uk'
@@ -170,6 +171,7 @@ describe('Agreements', () => {
           agreement_id: 'a-valid-agreement-id',
           display_size: 5,
         },
+        from_date: last12MonthsStartDate.toISO()
       }),
     ])
 
