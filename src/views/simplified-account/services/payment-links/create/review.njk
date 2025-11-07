@@ -1,5 +1,11 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 
+{% if isWelsh %}
+  {% set langAttr = 'cy' %}
+{% else %}
+  {% set langAttr = 'en' %}
+{% endif %}
+
 {% set servicePageTitle = "Review your payment link details - " + paymentLinkTitle %}
 {% set continueButtonText %}
   Create {% if isWelsh %}Welsh{% endif %} payment link
@@ -11,7 +17,7 @@
     <h1 class="govuk-heading-l">{{ servicePageTitle }}</h1>
 
     {% set detailsHTML %}
-      <span id="create-payment-link-description">
+      <span id="create-payment-link-description" lang="{{ langAttr }}">
         {% if pageData.paymentLinkDescription %}
           {{ pageData.paymentLinkDescription | striptags(true) | escape | nl2br }}
         {% else %}
@@ -22,11 +28,11 @@
 
 
     {% set referenceHTML %}
-      <span id="create-payment-link-reference">
+      <span id="create-payment-link-reference" lang="{{ langAttr }}">
         {% if pageData.paymentReferenceType === 'custom' %}
           {{ pageData.paymentReferenceLabel }}
           {% if pageData.paymentReferenceHint %}
-            <span class="govuk-!-display-block pay-text-grey">
+            <span class="govuk-!-display-block pay-text-grey" lang="{{ langAttr }}">
               {{ pageData.paymentReferenceHint | striptags(true) | escape | nl2br }}
             </span>
           {% endif %}
@@ -44,7 +50,7 @@
         {% else %}
           <span>User can choose</span>
           {% if pageData.paymentAmountHint %}
-            <span class="govuk-!-display-block pay-text-grey">
+            <span class="govuk-!-display-block pay-text-grey" lang="{{ langAttr }}">
               {{ pageData.paymentAmountHint | striptags(true) | escape | nl2br }}
             </span>
           {% endif %}
@@ -63,7 +69,7 @@
               text: "Title"
             },
             value: {
-              html: '<span id="create-payment-link-title">' + pageData.paymentLinkTitle + '</span>'
+              html: '<span id="create-payment-link-title" lang="' + langAttr + '">' + pageData.paymentLinkTitle + '</span>'
             },
             actions: {
               items: [
