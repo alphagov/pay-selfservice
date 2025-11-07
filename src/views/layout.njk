@@ -39,6 +39,8 @@
   {% include "includes/header.njk" %}
   {% if EnvironmentFeatures.isEnabled('header') %}
     {% include "includes/service-navigation.njk" %}
+  {% endif %}
+  {% if EnvironmentFeatures.isEnabled('header') and serviceHeader %}
     {% include "includes/service-header.njk" %}
   {% endif %}
 {% endblock %}
