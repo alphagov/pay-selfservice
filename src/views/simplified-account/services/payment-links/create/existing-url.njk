@@ -19,31 +19,30 @@
       payment link title.
     </div>
 
-    <span
-      class="govuk-hint pay-text-black"
-      style="background-color: #f3f3f3; border: 1px solid #b1b4b6; padding: 5px; display: inline; word-break: keep-all;
-        line-height: 2; box-decoration-break: clone; -webkit-box-decoration-break: clone; margin-right: 10px;"
-    >
-      {{ friendlyURL }}/{{ currentService.name | removeIndefiniteArticles | slugify }}/
-    </span>
+    <div class="payment-link-existing-url">
+      <span class="govuk-hint payment-link-existing-url__url-first-part">
+        {{ friendlyURL }}/{{ currentService.name | removeIndefiniteArticles | slugify }}/
+      </span>
 
-    <div class="govuk-!-width-one-half" style="display: inline-block; margin-top: 5px;">
-      {{
-        govukInput({
-          id: "payment-link-path",
-          name: "paymentLinkPath",
-          value: formValues.paymentLinkPath,
-          errorMessage: { text: errors.formErrors['paymentLinkPath'] } if errors.formErrors['paymentLinkPath'] else false,
-          spellcheck: false,
-          type: "text",
-          attributes: {
-            "autocapitalize": "none",
-            "autofocus": "true",
-            "data-confirmation-filter": "slugify",
-            "aria-describedby": "payment-name-path-hint"
-          }
-        })
-      }}
+      <div class="govuk-!-width-one-half payment-link-existing-url__url-second-part">
+        <label class="govuk-visually-hidden" for="payment-link-path"> Payment link path </label>
+        {{
+          govukInput({
+            id: "payment-link-path",
+            name: "paymentLinkPath",
+            value: formValues.paymentLinkPath,
+            errorMessage: { text: errors.formErrors['paymentLinkPath'] } if errors.formErrors['paymentLinkPath'] else false,
+            spellcheck: false,
+            type: "text",
+            attributes: {
+              "autocapitalize": "none",
+              "autofocus": "true",
+              "data-confirmation-filter": "slugify",
+              "aria-describedby": "payment-name-path-hint"
+            }
+          })
+        }}
+      </div>
     </div>
 
     <div class="govuk-button-group">

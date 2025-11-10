@@ -1,0 +1,19 @@
+.payment-link-existing-url {
+  .payment-link-existing-url__url-first-part {
+    background-color: govuk-colour('light-grey');
+    color: $govuk-text-colour;
+    border: 1px solid $govuk-border-colour;
+    padding: 5px;
+    display: inline;
+    word-break: keep-all;
+    line-height: 2;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    margin-right: 10px;
+  }
+
+  .payment-link-existing-url__url-second-part {
+    display: inline-block;
+    margin-top: 5px;
+  }
+}
