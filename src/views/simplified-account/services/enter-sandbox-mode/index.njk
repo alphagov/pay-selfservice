@@ -1,0 +1,33 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+
+{% set servicePageTitle = "Enter sandbox mode" %}
+
+{% block serviceContent %}
+  <h1 class="govuk-heading-l page-title"> {{ servicePageTitle }} </h1>
+  <div class="govuk-body govuk-!-font-size-16">
+    <p> You can use sandbox mode to: </p>
+
+    <ul class="govuk-body govuk-!-font-size-16">
+      <li>make demo payments so you can see what it looks like for your paying users</li>
+      <li>see what transactions look like when you receive them</li>
+      <li>try out different settings and functionality</li>
+    </ul>
+
+    {{
+      govukInsetText({
+        text: "Any changes you make will not affect your live service",
+        classes: "service-settings-inset-text--grey govuk-body govuk-!-font-size-16"
+      })
+    }}
+
+    <p> Your users will still be able to make payments to the live version of your service. </p>
+    <p> You can leave sandbox mode whenever you want. </p>
+  </div>
+
+  {{
+    govukButton({
+      text: "Enter sandbox mode",
+      href: sandboxModeUrl
+    })
+  }}
+{% endblock %}

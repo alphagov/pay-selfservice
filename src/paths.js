@@ -140,6 +140,9 @@ module.exports = {
     dashboard: {
       index: '/dashboard',
     },
+    enterSandboxMode: {
+      index: '/enter-sandbox-mode',
+    },
     demoPayment: {
       index: '/demo-payment',
       edit: '/demo-payment/edit',

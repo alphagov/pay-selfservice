@@ -59,11 +59,18 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         net: `${formatAccountPathsFor(paths.account.transactions.index, req.account.externalId)}?state=Success&state=Refund+success&${transactionsPeriodQueryParams}`,
       },
       dashboardActions: {
-        switchMode: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.dashboard.index,
-          req.service.externalId,
-          req.account.type === GatewayAccountType.TEST ? GatewayAccountType.LIVE : GatewayAccountType.TEST
-        ),
+        switchMode:
+          req.account.type === GatewayAccountType.TEST
+            ? formatServiceAndAccountPathsFor(
+                paths.simplifiedAccount.dashboard.index,
+                req.service.externalId,
+                GatewayAccountType.LIVE
+              )
+            : formatServiceAndAccountPathsFor(
+                paths.simplifiedAccount.enterSandboxMode.index,
+                req.service.externalId,
+                GatewayAccountType.LIVE
+              ),
         demoPayment: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.demoPayment.index,
           req.service.externalId,
