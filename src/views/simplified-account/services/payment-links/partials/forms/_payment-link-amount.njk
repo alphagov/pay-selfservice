@@ -2,21 +2,23 @@
   <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
   {% set fixedAmountHTML %}
-    {{ govukInput({
-      id: "payment-amount",
-      name: "paymentAmount",
-      label: {
-        text: "Enter the amount",
-        classes: "govuk-label--s govuk-!-margin-top-3"
-      },
-      errorMessage: { text: errors.formErrors['paymentAmount'] } if errors.formErrors['paymentAmount'] else false,
-      prefix: {
-        text: "£"
-      },
-      classes: "govuk-input--width-10",
-      spellcheck: false,
-      value: formValues.paymentAmount
-    }) }}
+    {{
+      govukInput({
+        id: "payment-amount",
+        name: "paymentAmount",
+        label: {
+          html: "Enter the amount <span class='govuk-visually-hidden'>in pounds</span>",
+          classes: "govuk-label--s govuk-!-margin-top-3"
+        },
+        errorMessage: { text: errors.formErrors['paymentAmount'] } if errors.formErrors['paymentAmount'] else false,
+        prefix: {
+          text: "£"
+        },
+        classes: "govuk-input--width-10",
+        spellcheck: false,
+        value: formValues.paymentAmount
+      })
+    }}
   {% endset %}
 
   {% if isWelsh %}
@@ -27,75 +29,86 @@
     {% set lang = 'en' %}
   {% endif %}
 
+
   {% set userProvidedAmountHTML %}
-    {{ govukTextarea({
-      id: "amount-hint",
-      name: "amountHint",
-      value: formValues.amountHint,
-      spellcheck: true,
-      errorMessage: { text: errors.formErrors['amountHint'] } if errors.formErrors['amountHint'] else false,
-      maxlength: 255,
-      spellcheck: true,
-      label: {
-        text: "Hint text (optional)",
-        classes: "govuk-label--s govuk-!-margin-top-3"
-      },
-      hint: {
-        text: amountHintHint
-      },
-      attributes: {
-        "maxlength": "255",
-        "lang": lang
-      }
-    }) }}
+    {{
+      govukTextarea({
+        id: "amount-hint",
+        name: "amountHint",
+        value: formValues.amountHint,
+        spellcheck: true,
+        errorMessage: { text: errors.formErrors['amountHint'] } if errors.formErrors['amountHint'] else false,
+        maxlength: 255,
+        spellcheck: true,
+        label: {
+          text: "Hint text (optional)",
+          classes: "govuk-label--s govuk-!-margin-top-3"
+        },
+        hint: {
+          text: amountHintHint
+        },
+        attributes: {
+          "maxlength": "255",
+          "lang": lang
+        }
+      })
+    }}
   {% endset %}
 
-  {{ govukRadios({
-    idPrefix: "amount-type-group",
-    name: "amountTypeGroup",
-    fieldset: {
-      legend: {
-        text: "Is the payment for a fixed amount?",
-        isPageHeading: true,
-        classes: "govuk-fieldset__legend--l"
-      }
-    },
-    errorMessage: { text: errors.formErrors['amountTypeGroup'] } if errors.formErrors['amountTypeGroup'] else false,
-    items: [
-      {
-        value: "fixed",
-        text: "Yes",
-        id: "amount-type-fixed",
-        label: {
-          classes: "govuk-!-font-weight-bold"
-        },
-        checked: formValues.amountTypeGroup === "fixed",
-        conditional: {
-        html: fixedAmountHTML
-      }
+  {{
+    govukRadios({
+      idPrefix: "amount-type-group",
+      name: "amountTypeGroup",
+      fieldset: {
+        legend: {
+          text: "Is the payment for a fixed amount?",
+          isPageHeading: true,
+          classes: "govuk-fieldset__legend--l"
+        }
       },
-      {
-        value: "variable",
-        id: "amount-type-variable",
-        text: "No, the user can choose the amount",
-        label: {
-          classes: "govuk-!-font-weight-bold"
+      errorMessage: { text: errors.formErrors['amountTypeGroup'] } if errors.formErrors['amountTypeGroup'] else false,
+      items: [
+        {
+          value: "fixed",
+          text: "Yes",
+          id: "amount-type-fixed",
+          label: {
+            classes: "govuk-!-font-weight-bold"
+          },
+          checked: formValues.amountTypeGroup === "fixed",
+          conditional: {
+          html: fixedAmountHTML
+        }
         },
-        checked: formValues.amountTypeGroup === "variable",
-        conditional: {
-        html: userProvidedAmountHTML
-      }
-      }
-    ]
-  }) }}
+        {
+          value: "variable",
+          id: "amount-type-variable",
+          text: "No, the user can choose the amount",
+          label: {
+            classes: "govuk-!-font-weight-bold"
+          },
+          checked: formValues.amountTypeGroup === "variable",
+          conditional: {
+          html: userProvidedAmountHTML
+        }
+        }
+      ]
+    })
+  }}
 
-  {{ govukButton({
-    text: "Continue" if createJourney else "Save changes"
-  }) }}
+  {{
+    govukButton({
+      text: "Continue" if createJourney else "Save changes"
+    })
+  }}
 </form>
 
 {% if not isWelsh %}
   <h2 class="govuk-heading-s">Example of what users will see</h2>
-  <img class="govuk-!-margin-bottom-6" style="max-width: 100%;height: auto;" src="/assets/images/payment-links/amount-and-confirm-page.svg"
-       alt="Screenshot of payment link amount page">
+  <img
+    class="govuk-!-margin-bottom-6"
+    style="max-width: 100%;height: auto;"
+    src="/assets/images/payment-links/amount-and-confirm-page.svg"
+    alt="Screenshot of payment link amount page"
+  />
 {% endif %}
