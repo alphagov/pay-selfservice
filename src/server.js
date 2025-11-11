@@ -27,7 +27,10 @@ const formatServicePathsFor = require('@utils/format-service-paths-for')
 const healthcheckController = require('@controllers/healthcheck.controller')
 const { healthcheck } = require('@root/paths.js')
 const { boolToText, boolToOnOrOff } = require('@utils/on-or-off')
+
 const { Features } = require('@root/config/experimental-features')
+const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
+
 // Global constants
 const bindHost = process.env.BIND_HOST || '127.0.0.1'
 const port = process.env.PORT || 3000
@@ -131,6 +134,7 @@ function initialiseTemplateEngine(app) {
   nunjucksEnvironment.addFilter('addKey', (obj, key, value) => {
     return Object.assign({}, obj, { [key]: value })
   })
+  nunjucksEnvironment.addFilter('formatServiceAndAccountPathsFor', formatServiceAndAccountPathsFor)
 }
 
 function initialiseRoutes(app) {
