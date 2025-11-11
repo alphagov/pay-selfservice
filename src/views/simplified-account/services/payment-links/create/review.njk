@@ -28,10 +28,12 @@
 
 
     {% set referenceHTML %}
-      <span id="create-payment-link-reference" lang="{{ langAttr }}">
+      <span id="create-payment-link-reference">
         {% if pageData.paymentReferenceType === 'custom' %}
           {{ pageData.paymentReferenceLabel }}
-          {% if pageData.paymentReferenceHint %}
+          <span lang="{{ langAttr }}">
+            {% if pageData.paymentReferenceHint %}
+          </span>
             <span class="govuk-!-display-block pay-text-grey" lang="{{ langAttr }}">
               {{ pageData.paymentReferenceHint | striptags(true) | escape | nl2br }}
             </span>
