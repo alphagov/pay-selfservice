@@ -7,6 +7,8 @@
 {% endif %}
 
 {% set servicePageTitle = "Review your payment link details - " + paymentLinkTitle %}
+
+
 {% set continueButtonText %}
   Create {% if isWelsh %}Welsh{% endif %} payment link
 {% endset %}
@@ -14,7 +16,7 @@
 {% block serviceContent %}
   <section>
     <span class="govuk-caption-l">Create {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
-    <h1 class="govuk-heading-l">{{ servicePageTitle }}</h1>
+    <h1 class="govuk-heading-l">Review your payment link details</h1>
 
     {% set detailsHTML %}
       <span id="create-payment-link-description" lang="{{ langAttr }}">
