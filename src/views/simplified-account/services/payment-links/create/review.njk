@@ -17,13 +17,15 @@
     <h1 class="govuk-heading-l">{{ servicePageTitle }}</h1>
 
     {% set detailsHTML %}
-      <span id="create-payment-link-description" lang="{{ langAttr }}">
-        {% if pageData.paymentLinkDescription %}
+      {% if pageData.paymentLinkDescription %}
+        <span id="create-payment-link-description" lang="{{ langAttr }}">
           {{ pageData.paymentLinkDescription | striptags(true) | escape | nl2br }}
-        {% else %}
+        </span>
+      {% else %}
+        <span id="create-payment-link-description">
           <span>None given</span>
-        {% endif %}
-      </span>
+        </span>
+      {% endif %}
     {% endset %}
 
 
