@@ -41,17 +41,19 @@ const mockProduct = {
   name: 'Test Payment Link',
   description: 'Test Description',
   referenceLabel: 'Reference',
+  referenceHint: 'Reference hint text',
   price: 1000,
+  amountHint: 'Amount hint text',
   language: 'en',
   links: {
     friendly: {
-      href: 'https://test.example.com/pay/test-link'
-    }
+      href: 'https://test.example.com/pay/test-link',
+    },
   },
   metadata: {
-    'column1': 'value1',
-    'column2': 'value2'
-  }
+    column1: 'value1',
+    column2: 'value2',
+  },
 } as unknown as Product
 
 describe('controller: services/payment-links/edit/edit-payment-link', () => {
@@ -66,11 +68,7 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
       })
 
       it('should call getProductByGatewayAccountIdAndExternalId with correct parameters', () => {
-        sinon.assert.calledWith(
-          mockGetProductByGatewayAccountIdAndExternalId,
-          GATEWAY_ACCOUNT_ID,
-          PRODUCT_EXTERNAL_ID
-        )
+        sinon.assert.calledWith(mockGetProductByGatewayAccountIdAndExternalId, GATEWAY_ACCOUNT_ID, PRODUCT_EXTERNAL_ID)
       })
 
       it('should call the response method', () => {
@@ -92,7 +90,9 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
         sinon.assert.match(product.name, 'Test Payment Link')
         sinon.assert.match(product.details, 'Test Description')
         sinon.assert.match(product.reference, 'Reference')
+        sinon.assert.match(product.referenceHint, 'Reference hint text')
         sinon.assert.match(product.amount, '£10.00')
+        sinon.assert.match(product.amountHint, 'Amount hint text')
         sinon.assert.match(product.webAddress, 'https://test.example.com/pay/test-link')
       })
 
@@ -104,21 +104,27 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
         sinon.assert.match(metadata.column1.value, 'value1')
         sinon.assert.match(metadata.column2.value, 'value2')
 
-        sinon.assert.match(metadata.column1.link, formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.paymentLinks.edit.metadata.update,
-          SERVICE_EXTERNAL_ID,
-          GatewayAccountType.TEST,
-          PRODUCT_EXTERNAL_ID,
-          'column1'
-        ))
+        sinon.assert.match(
+          metadata.column1.link,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.edit.metadata.update,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST,
+            PRODUCT_EXTERNAL_ID,
+            'column1'
+          )
+        )
 
-        sinon.assert.match(metadata.column2.link, formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.paymentLinks.edit.metadata.update,
-          SERVICE_EXTERNAL_ID,
-          GatewayAccountType.TEST,
-          PRODUCT_EXTERNAL_ID,
-          'column2'
-        ))
+        sinon.assert.match(
+          metadata.column2.link,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.edit.metadata.update,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST,
+            PRODUCT_EXTERNAL_ID,
+            'column2'
+          )
+        )
       })
 
       it('should set service mode in context', () => {
@@ -129,33 +135,45 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
       it('should set edit links in context', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
 
-        sinon.assert.match(context.editInformationLink, formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.paymentLinks.edit.information,
-          SERVICE_EXTERNAL_ID,
-          GatewayAccountType.TEST,
-          PRODUCT_EXTERNAL_ID,
-        ))
+        sinon.assert.match(
+          context.editInformationLink,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.edit.information,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST,
+            PRODUCT_EXTERNAL_ID
+          )
+        )
 
-        sinon.assert.match(context.editReferenceLink, formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.paymentLinks.edit.reference,
-          SERVICE_EXTERNAL_ID,
-          GatewayAccountType.TEST,
-          PRODUCT_EXTERNAL_ID,
-        ))
+        sinon.assert.match(
+          context.editReferenceLink,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.edit.reference,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST,
+            PRODUCT_EXTERNAL_ID
+          )
+        )
 
-        sinon.assert.match(context.editAmountLink, formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.paymentLinks.edit.amount,
-          SERVICE_EXTERNAL_ID,
-          GatewayAccountType.TEST,
-          PRODUCT_EXTERNAL_ID,
-        ))
+        sinon.assert.match(
+          context.editAmountLink,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.edit.amount,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST,
+            PRODUCT_EXTERNAL_ID
+          )
+        )
 
-        sinon.assert.match(context.addReportingColumnLink, formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.paymentLinks.edit.metadata.add,
-          SERVICE_EXTERNAL_ID,
-          GatewayAccountType.TEST,
-          PRODUCT_EXTERNAL_ID,
-        ))
+        sinon.assert.match(
+          context.addReportingColumnLink,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.edit.metadata.add,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST,
+            PRODUCT_EXTERNAL_ID
+          )
+        )
       })
     })
 
@@ -163,7 +181,7 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
       beforeEach(async () => {
         const productWithoutDescription = {
           ...mockProduct,
-          description: undefined
+          description: undefined,
         }
         mockGetProductByGatewayAccountIdAndExternalId.resolves(productWithoutDescription)
         mockResponse.resetHistory()
@@ -185,7 +203,7 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
       beforeEach(async () => {
         const variableAmountProduct = {
           ...mockProduct,
-          price: 0
+          price: 0,
         }
         mockGetProductByGatewayAccountIdAndExternalId.resolves(variableAmountProduct)
         mockResponse.resetHistory()
@@ -207,7 +225,7 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
       beforeEach(async () => {
         const productWithoutReference = {
           ...mockProduct,
-          referenceLabel: undefined
+          referenceLabel: undefined,
         }
         mockGetProductByGatewayAccountIdAndExternalId.resolves(productWithoutReference)
         mockResponse.resetHistory()
@@ -229,7 +247,7 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
       beforeEach(async () => {
         const productWithoutMetadata = {
           ...mockProduct,
-          metadata: undefined
+          metadata: undefined,
         }
         mockGetProductByGatewayAccountIdAndExternalId.resolves(productWithoutMetadata)
         mockResponse.resetHistory()
@@ -251,7 +269,7 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
       beforeEach(async () => {
         const welshProduct = {
           ...mockProduct,
-          language: 'cy'
+          language: 'cy',
         }
         mockGetProductByGatewayAccountIdAndExternalId.resolves(welshProduct)
         mockResponse.resetHistory()
@@ -265,6 +283,29 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
       it('should set isWelsh to true for Welsh products', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.isWelsh, true)
+      })
+    })
+
+    describe('with product that has no reference and amount hint', () => {
+      beforeEach(async () => {
+        const productWithNoReferenceOrAmountHintText = { ...mockProduct }
+
+        delete productWithNoReferenceOrAmountHintText.referenceHint
+        delete productWithNoReferenceOrAmountHintText.amountHint
+
+        mockGetProductByGatewayAccountIdAndExternalId.resolves(productWithNoReferenceOrAmountHintText)
+        mockResponse.resetHistory()
+
+        nextRequest({
+          params: { productExternalId: PRODUCT_EXTERNAL_ID },
+        })
+        await call('get')
+      })
+
+      it('should not set the reference and amount hint text', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        sinon.assert.match(context.referenceHint, undefined)
+        sinon.assert.match(context.amountHint, undefined)
       })
     })
   })

@@ -24,7 +24,9 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       name: product.name,
       details: product.description ?? 'None given',
       reference: product.referenceLabel ?? 'Created by GOV.UK Pay',
+      referenceHint: product.referenceHint,
       amount: product.price ? penceToPoundsWithCurrency(product.price) : 'User can choose',
+      amountHint: product.amountHint,
       webAddress: product.links.friendly.href,
       ...(product.metadata && {
         metadata: Object.entries(product.metadata).reduce(
@@ -68,7 +70,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       req.service.externalId,
       req.account.type,
       product.externalId
-    )
+    ),
   })
 }
 
