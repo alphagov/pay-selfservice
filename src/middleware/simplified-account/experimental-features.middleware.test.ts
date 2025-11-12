@@ -1,22 +1,24 @@
 import sinon from 'sinon'
 import express, { RequestHandler } from 'express'
 import { NotFoundError } from '@root/errors'
+import proxyquire from 'proxyquire'
 
-process.env.EXPERIMENTAL_FEATURES_FLAG = 'feature_1,feature_2,feature_3'
 const nextStub = sinon.stub()
+const enabledStub = sinon.stub()
 
-let experimentalFeatureMiddleware: (featureNam: string) => RequestHandler
+let experimentalFeatureMiddleware: (featureName: string) => RequestHandler
 
 describe('experimental features middleware', () => {
-  describe('for an enabled feature', () => {
-    beforeEach(async () => {
-      // @ts-expect-error it complains it can't find the module, idk why it clearly exists and works at runtime
-      experimentalFeatureMiddleware = (await import('@middleware/simplified-account/experimental-feature.middleware'))
-        .default as (featureNam: string) => RequestHandler
-    })
+  beforeEach(() => {
+    experimentalFeatureMiddleware = proxyquire('@middleware/simplified-account/experimental-feature.middleware', {
+      '@root/config/experimental-features': { Features: { isEnabled: enabledStub } },
+    }) as (featureName: string) => RequestHandler
+  })
 
+  describe('for an enabled feature', () => {
     it('should call the next function with no arguments', async () => {
-      const middleware = experimentalFeatureMiddleware('feature_1')
+      enabledStub.returns(true)
+      const middleware = experimentalFeatureMiddleware('enabled_feature')
 
       await middleware({} as express.Request, {} as express.Response, nextStub)
 
@@ -27,7 +29,8 @@ describe('experimental features middleware', () => {
 
   describe('for a disabled feature', () => {
     it('should call the next function with an error', async () => {
-      const middleware = experimentalFeatureMiddleware('feature_4')
+      enabledStub.returns(false)
+      const middleware = experimentalFeatureMiddleware('disabled_feature')
 
       await middleware({} as express.Request, {} as express.Response, nextStub)
 
@@ -36,7 +39,7 @@ describe('experimental features middleware', () => {
         nextStub,
         sinon.match
           .instanceOf(NotFoundError)
-          .and(sinon.match.has('message', 'Feature [feature_4] is not enabled in this environment'))
+          .and(sinon.match.has('message', 'Feature [disabled_feature] is not enabled in this environment'))
       )
     })
   })
