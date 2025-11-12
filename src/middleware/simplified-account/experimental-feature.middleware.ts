@@ -7,7 +7,7 @@ const experimentalFeatureMiddleware = (featureName: string) => {
     return (req: express.Request, res: express.Response, next: express.NextFunction) => next()
   }
   return (req: express.Request, res: express.Response, next: express.NextFunction) =>
-    next(new NotFoundError(`Feature ${featureName} is not enabled in this environment`))
+    next(new NotFoundError(`Feature [${featureName}] is not enabled in this environment`))
 }
 
 export = experimentalFeatureMiddleware
