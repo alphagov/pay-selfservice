@@ -11,66 +11,71 @@
 
   <div class="govuk-grid-row">
     <form method="get" novalidate data-cy="filter-container">
-
       <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-desktop">
-        {{ govukSelect({
-          id: "status",
-          name: "status",
-          classes: "govuk-!-width-full",
-          label: {
-            text: "Status"
-          },
-          hint: {
-            text: "Select an option",
-            classes: "govuk-!-font-size-16"
-          },
-          items: [{
-            value: 'ALL',
-            text: 'All',
-            selected: not filters.status
-          },{
-            value: 'ACTIVE',
-            text: 'Active',
-            selected: filters.status === 'ACTIVE'
-          },{
-            value: 'CREATED',
-            text: 'Created',
-            selected: filters.status === 'CREATED'
-          },{
-            value: 'INACTIVE',
-            text: 'Inactive',
-            selected: filters.status ==='INACTIVE'
-          },{
-            value: 'CANCELLED',
-            text: 'Cancelled',
-            selected: filters.status ==='CANCELLED'
-          }]
-        }) }}
+        {{
+          govukSelect({
+            id: "status",
+            name: "status",
+            classes: "govuk-!-width-full",
+            label: {
+              text: "Status"
+            },
+            hint: {
+              text: "Select an option",
+              classes: "govuk-!-font-size-16"
+            },
+            items: [{
+              value: 'ALL',
+              text: 'All',
+              selected: not filters.status
+            },{
+              value: 'ACTIVE',
+              text: 'Active',
+              selected: filters.status === 'ACTIVE'
+            },{
+              value: 'CREATED',
+              text: 'Created',
+              selected: filters.status === 'CREATED'
+            },{
+              value: 'INACTIVE',
+              text: 'Inactive',
+              selected: filters.status ==='INACTIVE'
+            },{
+              value: 'CANCELLED',
+              text: 'Cancelled',
+              selected: filters.status ==='CANCELLED'
+            }]
+          })
+        }}
       </div>
       <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-desktop">
-        {{ govukInput({
-          id: 'reference',
-          name: 'reference',
-          classes: "govuk-!-width-full",
-          value: filters.reference,
-          errorMessage: { text: errors.formErrors['reference'] } if errors.formErrors['reference'] else false,
-          label: {
-            text: 'Reference number'
-          },
-          hint: {
-            text: 'Enter full or partial reference',
-            classes: "govuk-!-font-size-16"
-          }
-        }) }}
+        {{
+          govukInput({
+            id: 'reference',
+            name: 'reference',
+            classes: "govuk-!-width-full",
+            value: filters.reference,
+            errorMessage: { text: errors.formErrors['reference'] } if errors.formErrors['reference'] else false,
+            label: {
+              text: 'Reference number'
+            },
+            hint: {
+              text: 'Enter full or partial reference',
+              classes: "govuk-!-font-size-16"
+            }
+          })
+        }}
       </div>
       <div class="govuk-grid-column-full">
         <div class="govuk-button-group">
-          {{ govukButton({
-            text: 'Search agreements',
-            attributes: {
-              id: "filter"
-            }
-          }) }}
+          {{
+            govukButton({
+              text: 'Search agreements',
+              attributes: {
+                id: "filter"
+              }
+            })
+          }}
 
           {% if filters | length %}
             <a href="{{ clearRedirect }}" class="govuk-link govuk-link--no-visited-state">Clear filters</a>
@@ -80,69 +85,69 @@
     </form>
   </div>
 
-  <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible">
+  <hr class="govuk-section-break govuk-section-break--s govuk-section-break--visible" />
 
   {% if results.agreements and results.agreements.length %}
-
     <div class="pagination-with-count">
       <p data-cy="pagination-detail" class="govuk-body govuk-!-font-size-16">
-        {% if pagination.total > 0 %}Showing {{ pagination.startIndex }} to {{ pagination.endIndex }} of{% endif %} {{ pagination.total }}
-        agreements
+        {% if pagination.total > 0 %}Showing {{ pagination.startIndex }} to {{ pagination.endIndex }} of{% endif %}
+        {{ pagination.total }} agreements
       </p>
-      <div>
-        {{ govukPagination(pagination | addKey('landmarkLabel', 'Top of table pagination')) }}
-      </div>
+      <div> {{ govukPagination(pagination | addKey('landmarkLabel', 'Top of table pagination')) }} </div>
     </div>
 
     {% set agreementRows = [] %}
     {% for agreement in results.agreements %}
-      {% set agreementRow = [
-        { text: agreement.externalId, classes: 'break-all' },
-        { html: '<a class="govuk-link govuk-link--no-visited-state" href="'+agreement.detailUrl+'">'+agreement.reference+'</a>', classes: 'break-all' },
-        { html: agreementStatusTag(agreement.status) },
-        { html: (paymentInstrument(agreement.paymentInstrument) if agreement.paymentInstrument else 'Awaiting payment') },
-        { text: agreement.createdDate | govukDate({ preserveTime: true }) }
-      ] %}
+      {%
+        set agreementRow = [
+          { text: agreement.externalId, classes: 'break-all' },
+          { html: '<a class="govuk-link govuk-link--no-visited-state" href="'+agreement.detailUrl+'">'+agreement.reference+'</a>', classes: 'break-all' },
+          { html: agreementStatusTag(agreement.status) },
+          { html: (paymentInstrument(agreement.paymentInstrument) if agreement.paymentInstrument else 'Awaiting payment') },
+          { text: agreement.createdDate | govukDate({ preserveTime: true }) }
+        ]
+      %}
       {% set agreementRows = (agreementRows.push(agreementRow), agreementRows) %}
     {% endfor %}
 
-
-    {{ govukTable({
-      firstCellIsHeader: false,
-      attributes: {
-        id: 'agreements-list'
-      },
-      head: [
-        {
-          text: "ID"
+    {{
+      govukTable({
+        firstCellIsHeader: false,
+        attributes: {
+          id: 'agreements-list'
         },
-        {
-          text: "Reference number"
-        },
-        {
-          text: "Status"
-        },
-        {
-          text: "Payment instrument"
-        },
-        {
-          text: "Date created"
-        }
-      ],
-      classes: "govuk-!-font-size-16 break-all",
-      rows: agreementRows
-    }) }}
+        head: [
+          {
+            text: "ID"
+          },
+          {
+            text: "Reference number"
+          },
+          {
+            text: "Status"
+          },
+          {
+            text: "Payment instrument"
+          },
+          {
+            text: "Date created"
+          }
+        ],
+        classes: "govuk-!-font-size-16 break-all",
+        rows: agreementRows
+      })
+    }}
 
     <div class="pagination-with-count">
       <p data-cy="pagination-detail" class="govuk-body govuk-!-font-size-16">
-        {% if pagination.total > 0 %}Showing {{ pagination.startIndex }} to {{ pagination.endIndex }} of{% endif %} {{ pagination.total }}
-        agreements
+        {% if pagination.total > 0 %}Showing {{ pagination.startIndex }} to {{ pagination.endIndex }} of{% endif %}
+        {{ pagination.total }} agreements
       </p>
-      <div>
-        {{ govukPagination(pagination | addKey('landmarkLabel', 'Bottom of table pagination')) }}
-      </div>
+      <div> {{ govukPagination(pagination | addKey('landmarkLabel', 'Bottom of table pagination')) }} </div>
     </div>
   {% else %}
-    <p id="results-empty" class="govuk-body govuk-!-font-size-16 govuk-!-margin-top-2">There are no results for the filters you used.</p>
+    <p id="results-empty" class="govuk-body govuk-!-font-size-16 govuk-!-margin-top-2"
+      >There are no results for the filters you used.</p
+    >
   {% endif %}
 {% endblock %}
