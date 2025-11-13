@@ -39,6 +39,11 @@ describe('enter sandbox mode journey', () => {
   })
 
   describe('when in live mode', () => {
+    it('a11y check', () => {
+      cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/enter-sandbox-mode`)
+      cy.a11yCheck()
+    })
+
     it('should allow the user to enter sandbox mode', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/dashboard`)
 
