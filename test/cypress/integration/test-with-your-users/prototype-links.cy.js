@@ -187,7 +187,7 @@ describe('prototype links page', () => {
             cy.get('dl').eq(2).contains('Success page: https://www.gov.uk')
 
             cy.contains('a', 'Delete prototype link')
-            cy.contains('span', 'for Test prototype 1')
+            cy.contains('span', 'for product123abc')
 
               .should('have.attr', 'href', 'links/disable/product123abc')
           })
@@ -204,6 +204,7 @@ describe('prototype links page', () => {
             cy.get('dl').eq(2).contains('Success page: https://www.gov.uk')
 
             cy.contains('a', 'Delete prototype link').should('have.attr', 'href', 'links/disable/product456def')
+            cy.contains('span', 'for product456def')
           })
       })
     })
