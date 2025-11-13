@@ -1,5 +1,11 @@
 {% extends "simplified-account/services/service-layout.njk" %}
 
+{% if isWelsh %}
+  {% set langAttr = 'cy' %}
+{% else %}
+  {% set langAttr = 'en' %}
+{% endif %}
+
 
 {% set servicePageTitle %}
   Payment link details - {{ product.name }}
@@ -8,6 +14,18 @@
 {% block serviceContent %}
   <span class="govuk-caption-l">Edit {{ serviceMode }} payment link {% if isWelsh %}(Welsh){% endif %}</span>
   <h1 class="govuk-heading-l"> Payment link details </h1>
+
+  {% macro generateTextWithHintHtml(value, hint, cypressDataAttribute) %}
+    <p class="govuk-body" lang="{{ langAttr }}">{{ value }}</p>
+    {% if hint %}
+      <p class="govuk-hint govuk-!-margin-top-0" lang="{{ langAttr }}" data-cy="{{ cypressDataAttribute }}">
+        {{ hint | striptags(true) | escape | nl2br }}
+      </p>
+    {% endif %}
+  {% endmacro %}
+
+  {% set referenceHtml = generateTextWithHintHtml(product.reference, product.referenceHint, 'reference-hint') %}
+  {% set amountHtml = generateTextWithHintHtml(product.amount, product.amountHint, 'amount-hint') %}
 
   {{
     govukSummaryList({
@@ -61,7 +79,7 @@
           text: "Payment reference"
         },
           value: {
-          text: product.reference
+          html: referenceHtml
         },
           actions: {
           items: [
@@ -79,7 +97,7 @@
           text: "Payment amount"
         },
           value: {
-          text: product.amount
+          html: amountHtml
         },
           actions: {
           items: [

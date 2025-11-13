@@ -220,5 +220,30 @@ describe('Edit payment link - view details', () => {
         cy.get('#service-content').find('h1').should('contain.text', 'Live payment links')
       })
     })
+
+    describe('Page content with hint', () => {
+      beforeEach(() => {
+        const ENGLISH_PAYMENT_LINK_WITH_REFERENCE_AND_AMOUNT_HINT = buildPaymentLinkOptions({
+          name: 'Gold coin polishing',
+          href: 'pay.me/product/gold-coin-polishing',
+          description: 'blah',
+          referenceHint: 'Reference hint text',
+          amountHint: 'Amount hint text',
+        })
+
+        setupStubs(USER_ROLE, GatewayAccountType.LIVE, ENGLISH_PAYMENT_LINK_WITH_REFERENCE_AND_AMOUNT_HINT)
+        cy.visit(
+          PAYMENT_LINK_DETAILS_URL(GatewayAccountType.LIVE, ENGLISH_PAYMENT_LINK_WITH_REFERENCE_AND_AMOUNT_HINT),
+          { failOnStatusCode: false }
+        )
+      })
+
+      it('should display the reference and amount hint correctly', () => {
+        cy.get('[data-cy="reference-hint"]')
+          .should('contain.text', 'Reference hint text')
+          .should('have.attr', 'lang', 'en')
+        cy.get('[data-cy="amount-hint"]').should('contain.text', 'Amount hint text').should('have.attr', 'lang', 'en')
+      })
+    })
   })
 })
