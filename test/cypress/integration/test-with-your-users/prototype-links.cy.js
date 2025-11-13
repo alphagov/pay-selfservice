@@ -186,10 +186,8 @@ describe('prototype links page', () => {
             cy.get('dl').eq(1).contains('Payment amount: £10.00')
             cy.get('dl').eq(2).contains('Success page: https://www.gov.uk')
 
-            cy.contains('a', 'Delete prototype link')
-            cy.contains('span', 'for product123abc')
-
-              .should('have.attr', 'href', 'links/disable/product123abc')
+            cy.contains('a', 'Delete prototype link').should('have.attr', 'href', 'links/disable/product123abc')
+            cy.contains('span', 'for Test prototype 1')
           })
 
         cy.get('.key-list-item')
@@ -204,7 +202,7 @@ describe('prototype links page', () => {
             cy.get('dl').eq(2).contains('Success page: https://www.gov.uk')
 
             cy.contains('a', 'Delete prototype link').should('have.attr', 'href', 'links/disable/product456def')
-            cy.contains('span', 'for product456def')
+            cy.contains('span', 'for Test prototype 2')
           })
       })
     })
