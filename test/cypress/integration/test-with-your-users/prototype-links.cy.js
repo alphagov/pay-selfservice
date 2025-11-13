@@ -22,23 +22,27 @@ const setupStubs = (options = {}) => {
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
       paymentProvider: options.paymentProvider || 'sandbox',
-      type: options.type || 'test'
+      type: options.type || 'test',
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, options.type || 'test', {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       external_id: GATEWAY_ACCOUNT_EXTERNAL_ID,
       payment_provider: options.paymentProvider || 'sandbox',
-      type: options.type || 'test'
+      type: options.type || 'test',
     }),
     stripeAccountSetupStubs.getGatewayAccountStripeSetupSuccess({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       responsiblePerson: false,
       bankAccount: false,
       vatNumber: false,
-      companyNumber: false
+      companyNumber: false,
     }),
-    productsStubs.getProductsByGatewayAccountIdAndTypeStub(options.prototypeLinks || [], GATEWAY_ACCOUNT_ID, 'PROTOTYPE'),
-    productsStubs.disableProductStub(GATEWAY_ACCOUNT_ID, 'product123abc')
+    productsStubs.getProductsByGatewayAccountIdAndTypeStub(
+      options.prototypeLinks || [],
+      GATEWAY_ACCOUNT_ID,
+      'PROTOTYPE'
+    ),
+    productsStubs.disableProductStub(GATEWAY_ACCOUNT_ID, 'product123abc'),
   ])
 }
 
@@ -46,7 +50,6 @@ describe('prototype links page', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
-
 
   describe('page access constraints', () => {
     describe('for a non-admin user', () => {
@@ -82,7 +85,7 @@ describe('prototype links page', () => {
         setupStubs({
           role: 'admin',
           paymentProvider: 'stripe',
-          type: 'test'
+          type: 'test',
         })
       })
 
@@ -98,7 +101,7 @@ describe('prototype links page', () => {
         setupStubs({
           role: 'admin',
           paymentProvider: 'sandbox',
-          type: 'test'
+          type: 'test',
         })
       })
 
@@ -114,7 +117,7 @@ describe('prototype links page', () => {
         setupStubs({
           role: 'admin',
           paymentProvider: 'stripe',
-          type: 'live'
+          type: 'live',
         })
       })
 
@@ -131,7 +134,7 @@ describe('prototype links page', () => {
         setupStubs({
           role: 'admin',
           paymentProvider: 'worldpay',
-          type: 'test'
+          type: 'test',
         })
       })
 
@@ -142,60 +145,65 @@ describe('prototype links page', () => {
         }).then((response) => expect(response.status).to.eq(404))
       })
     })
-
   })
 
   describe('when there are existing prototype links', () => {
     beforeEach(() => {
       setupStubs({
-        prototypeLinks: [{
-          type: 'PROTOTYPE',
-          external_id: 'product123abc',
-          name: 'Test prototype 1',
-          price: 1000,
-          return_url: 'https://www.gov.uk'
-        }, {
-          type: 'PROTOTYPE',
-          external_id: 'product456def',
-          name: 'Test prototype 2',
-          price: 2000,
-          return_url: 'https://www.gov.uk'
-        }]
+        prototypeLinks: [
+          {
+            type: 'PROTOTYPE',
+            external_id: 'product123abc',
+            name: 'Test prototype 1',
+            price: 1000,
+            return_url: 'https://www.gov.uk',
+          },
+          {
+            type: 'PROTOTYPE',
+            external_id: 'product456def',
+            name: 'Test prototype 2',
+            price: 2000,
+            return_url: 'https://www.gov.uk',
+          },
+        ],
       })
     })
 
-    it('should show the list of prototype links', () => {
+    it('should show the list of prototype links with visually hidden text', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
 
       cy.get('#prototyping__links-header').should('contain.text', 'There are 2 prototype links')
 
       cy.get('.key-list').within(() => {
-        cy.get('.key-list-item').eq(0).within(() => {
-          cy.get('h3>a')
-            .should('contain.text', 'http://products-ui.url/pay/product123abc')
-            .should('have.attr', 'href', 'http://products-ui.url/pay/product123abc')
+        cy.get('.key-list-item')
+          .eq(0)
+          .within(() => {
+            cy.get('h3>a')
+              .should('contain.text', 'http://products-ui.url/pay/product123abc')
+              .should('have.attr', 'href', 'http://products-ui.url/pay/product123abc')
 
-          cy.get('dl').eq(0).contains('Payment description: Test prototype 1')
-          cy.get('dl').eq(1).contains('Payment amount: £10.00')
-          cy.get('dl').eq(2).contains('Success page: https://www.gov.uk')
+            cy.get('dl').eq(0).contains('Payment description: Test prototype 1')
+            cy.get('dl').eq(1).contains('Payment amount: £10.00')
+            cy.get('dl').eq(2).contains('Success page: https://www.gov.uk')
 
-          cy.contains('a', 'Delete prototype link')
-            .should('have.attr', 'href', 'links/disable/product123abc')
-        })
+            cy.contains('a', 'Delete prototype link').should('have.attr', 'href', 'links/disable/product123abc')
+            cy.contains('span', 'for Test prototype 1')
+          })
 
+        cy.get('.key-list-item')
+          .eq(1)
+          .within(() => {
+            cy.get('h3>a')
+              .should('contain.text', 'http://products-ui.url/pay/product456def')
+              .should('have.attr', 'href', 'http://products-ui.url/pay/product456def')
 
-        cy.get('.key-list-item').eq(1).within(() => {
-          cy.get('h3>a')
-            .should('contain.text', 'http://products-ui.url/pay/product456def')
-            .should('have.attr', 'href', 'http://products-ui.url/pay/product456def')
+            cy.get('dl').eq(0).contains('Payment description: Test prototype 2')
+            cy.get('dl').eq(1).contains('Payment amount: £20.00')
+            cy.get('dl').eq(2).contains('Success page: https://www.gov.uk')
 
-          cy.get('dl').eq(0).contains('Payment description: Test prototype 2')
-          cy.get('dl').eq(1).contains('Payment amount: £20.00')
-          cy.get('dl').eq(2).contains('Success page: https://www.gov.uk')
-
-          cy.contains('a', 'Delete prototype link')
-            .should('have.attr', 'href', 'links/disable/product456def')
-        })
+            cy.contains('a', 'Delete prototype link').should('have.attr', 'href', 'links/disable/product456def')
+            cy.contains('span', 'for Test prototype 2')
+          })
       })
     })
 
@@ -203,22 +211,23 @@ describe('prototype links page', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
 
       cy.get('.key-list').within(() => {
-        cy.get('.key-list-item').eq(0).within(() => {
-          cy.contains('a', 'Delete prototype link').click()
-        })
+        cy.get('.key-list-item')
+          .eq(0)
+          .within(() => {
+            cy.contains('a', 'Delete prototype link').click()
+          })
       })
 
       cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/test-with-your-users/links`)
 
-      cy.get('.govuk-notification-banner')
-        .should('contain.text', 'Prototype link deleted')
+      cy.get('.govuk-notification-banner').should('contain.text', 'Prototype link deleted')
     })
   })
 
   describe('when there are no existing prototype links', () => {
     beforeEach(() => {
       setupStubs({
-        prototypeLinks: []
+        prototypeLinks: [],
       })
     })
 
