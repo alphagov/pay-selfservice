@@ -18,17 +18,15 @@
 {% endblock %}
 
 {% block sideNavigation %}
-  {% if NEW_SERVICE_NAV %}
+  {% if EnvironmentFeatures.isEnabled('sidebar_nav') %}
     {% include "simplified-account/includes/_service-navigation.njk" %}
   {% endif %}
 {% endblock %}
 
-{% block serviceHeader %}
-  {% include "includes/service-header.njk" %}
-{% endblock %}
-
 {% block mainContent %}
-  <div class="{% if NEW_SERVICE_NAV %}govuk-grid-column-three-quarters{% else %}govuk-grid-column-full{% endif %}">
+  <div
+    class="{% if EnvironmentFeatures.isEnabled('sidebar_nav') %}govuk-grid-column-three-quarters{% else %}govuk-grid-column-full{% endif %}"
+  >
     <div class="service-pane {% if fullWidth %}service-pane--full-width{% endif %}">
       {% if backLink %}
         {{

@@ -16,7 +16,7 @@
 {% block header %}
   {% set isSignInActive = true %}
   {% include "includes/header.njk" %}
-  {% if NEW_GOVUK_HEADER %}
+  {% if EnvironmentFeatures.isEnabled('header') %}
     {% include "includes/service-navigation.njk" %}
   {% endif %}
 {% endblock %}

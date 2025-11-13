@@ -37,10 +37,11 @@
 
 {% block header %}
   {% include "includes/header.njk" %}
-  {% if NEW_GOVUK_HEADER %}
+  {% if EnvironmentFeatures.isEnabled('header') %}
     {% include "includes/service-navigation.njk" %}
-    {% block serviceHeader %}
-    {% endblock %}
+  {% endif %}
+  {% if EnvironmentFeatures.isEnabled('header') and serviceHeader %}
+    {% include "includes/service-header.njk" %}
   {% endif %}
 {% endblock %}
 

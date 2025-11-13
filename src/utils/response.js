@@ -1,5 +1,3 @@
-const { EXPERIMENTAL_FEATURES_FLAG } = process.env
-const EXPERIMENTAL_FEATURES = EXPERIMENTAL_FEATURES_FLAG === 'true'
 const _ = require('lodash')
 const logger = require('./logger')(__filename)
 const displayConverter = require('./display-converter')
@@ -8,18 +6,12 @@ const { prepareTemplateData } = require('@utils/simplified-account/prepare-templ
 const ERROR_MESSAGE = 'There is a problem with the payments platform'
 const ERROR_VIEW = 'error'
 
-function response (req, res, template, data = {}) {
-  let convertedData = displayConverter(req, data, template)
-  if (EXPERIMENTAL_FEATURES) {
-    convertedData = {
-      ...convertedData,
-      ...prepareTemplateData(req, data)
-    }
-  }
+function response(req, res, template, data = {}) {
+  const convertedData = Object.assign({}, displayConverter(req, data, template), prepareTemplateData(req, data))
   render(req, res, template, convertedData)
 }
 
-function errorResponse (req, res, msg = ERROR_MESSAGE, status = 500, additionalModel) {
+function errorResponse(req, res, msg = ERROR_MESSAGE, status = 500, additionalModel) {
   if (typeof msg !== 'string') {
     msg = 'Please try again or contact support team.'
   }
@@ -27,7 +19,7 @@ function errorResponse (req, res, msg = ERROR_MESSAGE, status = 500, additionalM
 
   const errorMeta = {
     status,
-    error_message: msg
+    error_message: msg,
   }
 
   logger.info('An error has occurred. Rendering error view', errorMeta)
@@ -37,7 +29,7 @@ function errorResponse (req, res, msg = ERROR_MESSAGE, status = 500, additionalM
   response(req, res, ERROR_VIEW, model)
 }
 
-function render (req, res, template, data) {
+function render(req, res, template, data) {
   if (process.env.NODE_ENV !== 'production' && _.get(req, 'headers.accept') === 'application/json') {
     res.setHeader('Content-Type', 'application/json')
 
@@ -47,7 +39,7 @@ function render (req, res, template, data) {
   }
 }
 
-function healthCheckResponse (accept, res, data) {
+function healthCheckResponse(accept, res, data) {
   res.setHeader('Content-Type', 'application/json')
   res.json(data)
 }
@@ -55,5 +47,5 @@ function healthCheckResponse (accept, res, data) {
 module.exports = {
   response,
   healthCheckResponse,
-  renderErrorView: errorResponse
+  renderErrorView: errorResponse,
 }

@@ -154,7 +154,6 @@ module.exports = function (req, data, template) {
       account
     )
     if (currentUrl.match(/service\/\w+\/account\/(test|live)\//)) {
-      convertedData.NEW_SERVICE_NAV = process.env.EXPERIMENTAL_FEATURES_FLAG === 'true'
       convertedData.serviceNavigation = serviceNavigation(account, service, currentUrl, permissions)
       convertedData.serviceSettings = serviceSettingsNavigation(account, service, currentUrl, permissions)
     }

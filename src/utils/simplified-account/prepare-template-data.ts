@@ -10,6 +10,9 @@ import paths from '@root/paths'
 import formatServicePathsFor from '@utils/format-service-paths-for'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import createLogger from '@utils/logger'
+import ServiceData from '@models/service/dto/Service.dto'
+import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
+import User from '@models/user/User.class'
 
 const logger = createLogger(__filename)
 
@@ -192,6 +195,26 @@ const prepareTemplateData = (req: express.Request, controllerData: Record<string
       },
     }
     _.assign(templateData, additionalContext)
+  } else if ('service' in req && 'account' in req && 'user' in req && req.user instanceof User) {
+    // i'm not proud of this
+    // TODO kill it with fire
+    try {
+      const service = req.service instanceof Service ? req.service : new Service(req.service as ServiceData)
+      const account =
+        req.account instanceof GatewayAccount ? req.account : new GatewayAccount(req.account as GatewayAccountData)
+
+      const additionalContext = {
+        serviceHeader: {
+          serviceName: service.serviceName,
+          serviceStatus: determineServiceStatus(service, account),
+          serviceUserIsAdmin: req.user.isAdminUserForService(service.externalId),
+        },
+      }
+      _.assign(templateData, additionalContext)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      /* intentionally empty */
+    }
   }
   return templateData
 }

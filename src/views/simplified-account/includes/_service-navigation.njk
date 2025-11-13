@@ -2,13 +2,25 @@
   {% if details.items and details.items.length > 0 %}
     {% if details.settings.collapsible %}
       <div class="collapsible-section">
-        <button class="nav__button sub-nav__button govuk-button govuk-button--inverse" type="button"
-                data-open {% if details.settings.defaultState == 'open' %} data-active{% endif %}>{{ key | smartCaps }}</button>
+        <button
+          class="nav__button sub-nav__button govuk-button govuk-button--inverse"
+          type="button"
+          data-open
+          {% if details.settings.defaultState == 'open' %}data-active{% endif %}
+          >{{ key | smartCaps }}</button
+        >
         <div class="sub-nav">
           {% for item in details.items %}
-            <a class="nav__button govuk-button govuk-button--inverse" id="settings-navigation-{{ item.id }}"
-               data-module="govuk-button" href="{{ item.url }}" {% if item.current %}aria-current="page"
-               data-current{% endif %}>{{ item.name | smartCaps }}</a>
+            <a
+              class="nav__button govuk-button govuk-button--inverse"
+              id="settings-navigation-{{ item.id }}"
+              data-module="govuk-button"
+              href="{{ item.url }}"
+              {% if item.current %}
+                aria-current="page" data-current
+              {% endif %}
+              >{{ item.name | smartCaps }}</a
+            >
           {% endfor %}
         </div>
       </div>
@@ -17,9 +29,16 @@
         <h3 class="nav__h3">{{ key | smartCaps }}</h3>
       {% endif %}
       {% for item in details.items %}
-        <a class="nav__button govuk-button govuk-button--inverse" id="settings-navigation-{{ item.id }}"
-           data-module="govuk-button" href="{{ item.url }}" {% if item.current %}aria-current="page"
-           data-current{% endif %}>{{ item.name | smartCaps }}</a>
+        <a
+          class="nav__button govuk-button govuk-button--inverse"
+          id="settings-navigation-{{ item.id }}"
+          data-module="govuk-button"
+          href="{{ item.url }}"
+          {% if item.current %}
+            aria-current="page" data-current
+          {% endif %}
+          >{{ item.name | smartCaps }}</a
+        >
       {% endfor %}
     {% endif %}
   {% endif %}
@@ -28,11 +47,11 @@
 <div class="govuk-grid-column-one-quarter service-nav">
   <nav role="navigation" aria-labelledby="service-nav-heading">
     <h2 class="govuk-visually-hidden" id="service-nav-heading">Service navigation</h2>
-    {% if NEW_SERVICE_NAV %}
+    {% if EnvironmentFeatures.isEnabled('sidebar_nav') %}
       {% for key, details in serviceNavigation %}
         {{ navigation(key, details) }}
       {% endfor %}
-      <hr class="nav__hr govuk-section-break govuk-section-break--visible">
+      <hr class="nav__hr govuk-section-break govuk-section-break--visible" />
       <h3 class="nav__h3">Settings</h3>
     {% endif %}
     {% for key, details in serviceSettings %}
@@ -51,7 +70,9 @@
     const expandedState = subNavButton.getAttribute('aria-expanded')
     subNav.style.display = expandedState === 'true' ? 'none' : 'block'
     subNavButton.setAttribute('aria-expanded', expandedState === 'true' ? 'false' : 'true')
-    subNavButton.hasAttribute('data-open') ? subNavButton.removeAttribute('data-open') : subNavButton.setAttribute('data-open', '')
+    subNavButton.hasAttribute('data-open')
+      ? subNavButton.removeAttribute('data-open')
+      : subNavButton.setAttribute('data-open', '')
   }
   const enhance = () => {
     document.querySelectorAll('.collapsible-section').forEach((section, index) => {
