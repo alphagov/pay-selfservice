@@ -70,6 +70,11 @@ module.exports = class ControllerTestBuilder {
     return this
   }
 
+  withServiceView(serviceView) {
+    this.req.serviceView = serviceView
+    return this
+  }
+
   nextRequest(params) {
     this.nextReq = _.merge({}, this.req, params)
     return this
