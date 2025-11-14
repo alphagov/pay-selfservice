@@ -7,6 +7,8 @@ import createLogger from '@utils/logger'
 
 const logger = createLogger(__filename)
 
+// TODO fully replace prepare-template-data.ts with this
+
 export const StatusTag: Record<string, StatusTag> = {
   LIVE: 'LIVE', // live account - service is live and able to take payments
   PSP_ONBOARDING: 'PSP_ONBOARDING', // live account - service is setting up their live account
@@ -124,10 +126,6 @@ const determineServiceView = (service: Service, account: GatewayAccount) => {
 
   if (isInLiveMode && hasActiveCredential) {
     return ServiceView.Live()
-  }
-
-  if (isInLiveMode && account.paymentProvider === PaymentProviders.WORLDPAY) {
-    return ServiceView.PspOnboarding()
   }
 
   if (isInLiveMode && ValidLivePaymentProviders.includes(account.paymentProvider)) {
