@@ -4,102 +4,113 @@
 
 {% block settingsContent %}
 
-  <h1 class="govuk-heading-l page-title">
-    {{ settingsPageTitle }}
-  </h1>
+  {% if serviceView.statusTag === 'PSP_ONBOARDING' %}
+    {% include "simplified-account/settings/api-keys/partials/_finish-onboarding-message.njk" %}
+  {% endif %}
 
-  {{ govukWarningText(
-    {
-      text: 'Do not use a test API key on your live account. It will not work properly.',
-      iconFallbackText: 'Warning'
-    } if accountType === 'test' else {
-      text: 'Do not use a live API key on your test account. It will not work properly.',
-      iconFallbackText: 'Warning'
-    }
-  ) }}
+  <h1 class="govuk-heading-l page-title"> {{ settingsPageTitle }} </h1>
 
-  <p class="govuk-body">Use these to connect your {% if accountType === 'test' %}test{% else %}live{% endif %} digital service to Pay and to access the reporting API.</p>
+  {{
+    govukWarningText(
+      {
+        text: 'Do not use a test API key on your live account. It will not work properly.',
+        iconFallbackText: 'Warning'
+      } if accountType === 'test' else {
+        text: 'Do not use a live API key on your test account. It will not work properly.',
+        iconFallbackText: 'Warning'
+      }
+    )
+  }}
+
+  <p class="govuk-body"
+    >Use these to connect your {% if accountType === 'test' %}test{% else %}live{% endif %} digital service to Pay and
+    to access the reporting API.</p
+  >
   <p class="govuk-body">
     You do not need API keys to use
     <a class="govuk-link" href="https://www.payments.service.gov.uk/govuk-payment-pages/">payment links</a>.
   </p>
 
-  {{ govukButton({
-    href: createKeyLink,
-    text: 'Create a new API key',
-    classes: 'govuk-!-margin-top-2',
-    attributes: {
-      id: "create-api-key"
-    }
-  }) }}
+  {% if serviceView.statusTag !== 'PSP_ONBOARDING' %}
+    {{
+      govukButton({
+        href: createKeyLink,
+        text: 'Create a new API key',
+        classes: 'govuk-!-margin-top-2',
+        attributes: {
+          id: "create-api-key"
+        }
+      })
+    }}
+  {% endif %}
 
   {% if activeKeys.length == 0 %}
-    <h2 class="govuk-heading-m govuk-!-margin-top-2">
-      There are no active {{ accountType }} API keys
-    </h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-2"> There are no active {{ accountType }} API keys </h2>
   {% else %}
-    <h2 class="govuk-heading-m govuk-!-margin-top-2">
-      Active {{ accountType }} API keys ({{ activeKeys.length }})
-    </h2>
+    <h2 class="govuk-heading-m govuk-!-margin-top-2"> Active {{ accountType }} API keys ({{ activeKeys.length }}) </h2>
     {% for key in activeKeys %}
-      {{ govukSummaryList({
-        card: {
-          title: {
-            text: key.description
+      {{
+        govukSummaryList({
+          card: {
+            title: {
+              text: key.description
+            },
+            actions: {
+              items: [
+                {
+                  href: key.changeNameLink,
+                  text: 'Change name',
+                  classes: 'govuk-link--no-visited-state'
+                },
+                {
+                  href: key.revokeKeyLink,
+                  text: 'Revoke',
+                  classes: 'govuk-link--no-visited-state'
+                }
+              ]
+            }
           },
-          actions: {
-            items: [
-              {
-                href: key.changeNameLink,
-                text: 'Change name',
-                classes: 'govuk-link--no-visited-state'
+          rows: [
+            {
+              key: {
+                text: 'Created by'
               },
-              {
-                href: key.revokeKeyLink,
-                text: 'Revoke',
-                classes: 'govuk-link--no-visited-state'
+              value: {
+                text: key.createdBy
               }
-            ]
-          }
-        },
-        rows: [
-          {
-            key: {
-              text: 'Created by'
             },
-            value: {
-              text: key.createdBy
-            }
-          },
-          {
-            key: {
-              text: 'Date created'
+            {
+              key: {
+                text: 'Date created'
+              },
+              value: {
+                text: key.issuedDate
+              }
             },
-            value: {
-              text: key.issuedDate
+            {
+              key: {
+                text: 'Last used'
+              },
+              value: {
+                text: key.lastUsed if key.lastUsed else 'Not used yet'
+              }
             }
-          },
-          {
-            key: {
-              text: 'Last used'
-            },
-            value: {
-              text: key.lastUsed if key.lastUsed else 'Not used yet'
-            }
-          }
-        ]
-      }) }}
+          ]
+        })
+      }}
     {% endfor %}
   {% endif %}
 
   {% if showRevokedKeysLink %}
-    {{ govukButton({
-      href: revokedKeysLink,
-      text: 'Show revoked API keys',
-      classes: 'govuk-!-margin-top-2 govuk-button--secondary',
-      attributes: {
-        id: "revoked-keys-link"
-      }
-    }) }}
+    {{
+      govukButton({
+        href: revokedKeysLink,
+        text: 'Show revoked API keys',
+        classes: 'govuk-!-margin-top-2 govuk-button--secondary',
+        attributes: {
+          id: "revoked-keys-link"
+        }
+      })
+    }}
   {% endif %}
 {% endblock %}

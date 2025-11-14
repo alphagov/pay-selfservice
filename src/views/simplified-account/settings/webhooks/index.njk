@@ -13,6 +13,10 @@
 {% endmacro %}
 
 {% block settingsContent %}
+  {% if serviceView.statusTag === 'PSP_ONBOARDING' %}
+    {% include "simplified-account/settings/webhooks/partials/_finish-onboarding-message.njk" %}
+  {% endif %}
+
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
   <p class="govuk-body">Use webhooks to send a message to your application when a payment is processed.</p>
   <p class="govuk-body">
@@ -23,13 +27,15 @@
     }}.
   </p>
 
-  {{
-    govukButton({
-      text: "Create a new webhook",
-      classes: "govuk-button",
-      href: createWebhookLink
-    })
-  }}
+  {% if serviceView.statusTag !== 'PSP_ONBOARDING' %}
+    {{
+      govukButton({
+        text: "Create a new webhook",
+        classes: "govuk-button",
+        href: createWebhookLink
+      })
+    }}
+  {% endif %}
 
   {% if (activeWebhooks.length + deactivatedWebhooks.length) == 0 %}
     <h2 class="govuk-heading-m">There are no configured webhooks</h2>
