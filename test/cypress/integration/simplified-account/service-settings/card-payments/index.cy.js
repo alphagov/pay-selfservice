@@ -213,7 +213,7 @@ describe('Card payments page', () => {
       })
     })
 
-    describe.only('for an admin user on a live account', () => {
+    describe('for an admin user on a live account', () => {
       describe('with PSP onboarding in progress', () => {
         beforeEach(() => {
           setupStubs({
@@ -224,7 +224,7 @@ describe('Card payments page', () => {
           })
         })
 
-        it.only('should prevent editing of card payments settings', () => {
+        it('should prevent editing of card payments settings', () => {
           cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/settings/card-payments`)
 
           cy.get('.govuk-inset-text')
