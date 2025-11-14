@@ -52,7 +52,7 @@ const THREE_DS_FLEX_VALIDATION = [
     .notEmpty()
     .withMessage('Enter your JWT MAC key')
     .bail()
-    .isUUID()
+    .isUUID('loose')
     .withMessage('Enter your JWT MAC key in the format you received it')
     .bail(),
 ]

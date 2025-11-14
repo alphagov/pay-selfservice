@@ -75,7 +75,7 @@
     "connect-flash": "0.1.1",
     "cookie-parser": "1.4.x",
     "express": "4.21.2",
-    "express-validator": "^7.2.0",
+    "express-validator": "^7.3.0",
     "google-libphonenumber": "3.2.33",
     "govuk-frontend": "^5.11.1",
     "http-proxy": "1.18.x",
@@ -100,7 +100,7 @@
     "throng": "5.0.x",
     "uk-postcode": "0.1.x",
     "url-join": "4.0.1",
-    "validator": "^13.11.0",
+    "validator": "^13.15.20",
     "winston": "3.10.0"
   },
   "devDependencies": {
