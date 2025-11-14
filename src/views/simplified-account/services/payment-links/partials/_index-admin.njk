@@ -129,6 +129,9 @@
           {
             key: { text: 'Payment reference' },
             value: { html: '<span' + refLangAttr + '>' + product.reference + '</span>' }
+          } if product.reference else {
+            key: { text: 'Payment reference' },
+            value: { text: 'Created by GOV.UK Pay' }
           },
           {
             key: { text: 'Payment amount' },
