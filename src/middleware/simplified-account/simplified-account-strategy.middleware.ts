@@ -10,6 +10,7 @@ import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import Service from '@models/service/Service.class'
 import { getGatewayAccountByServiceExternalIdAndType } from '@services/gateway-accounts.service'
+import { ServiceView } from '@models/service-status/ServiceView.class'
 const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, GATEWAY_ACCOUNT_EXTERNAL_ID } = keys
 
 const logger = createLogger(__filename)
@@ -51,15 +52,12 @@ async function getGatewayAccount(serviceExternalId: string, accountType: string)
       serviceExternalId,
       accountType,
     }
-    return await getGatewayAccountByServiceExternalIdAndType(
-      params.serviceExternalId,
-      params.accountType
-    )
+    return await getGatewayAccountByServiceExternalIdAndType(params.serviceExternalId, params.accountType)
   } catch (err) {
     // type assertion nastiness, js-commons is not yet ts-commons
     if (err instanceof RESTClientError) {
       const clientError = err as {
-        errorCode: number,
+        errorCode: number
         message: string
       }
       const logContext = {
@@ -82,6 +80,7 @@ interface AuthenticatedRequest extends Request {
   user: User
   account?: GatewayAccount
   service?: Service
+  serviceView?: ServiceView
 }
 
 async function getSimplifiedAccount(req: Request, _: Response, next: NextFunction) {
@@ -115,6 +114,8 @@ async function getSimplifiedAccount(req: Request, _: Response, next: NextFunctio
     } else {
       return next(new NotFoundError('Could not find role for user on service'))
     }
+
+    request.serviceView = ServiceView.determineFor(service, gatewayAccount)
     next()
   } catch (err) {
     next(err)

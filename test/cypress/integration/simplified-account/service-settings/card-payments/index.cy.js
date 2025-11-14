@@ -7,8 +7,10 @@ const {
 const { WORLDPAY } = require('@models/constants/payment-providers')
 const {
   WORLDPAY_CREDENTIAL_IN_CREATED_STATE,
+  WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE,
 } = require('@test/fixtures/credentials.fixtures')
 const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
+const PaymentProviders = require('@models/constants/payment-providers')
 
 const pageUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/card-payments`
 
@@ -61,10 +63,7 @@ describe('Card payments page', () => {
       it('should show active "Card payments" link in the setting navigation', () => {
         setupStubs()
         cy.visit(pageUrl)
-        checkSettingsNavigation(
-          'Card payments',
-          pageUrl
-        )
+        checkSettingsNavigation('Card payments', pageUrl)
       })
 
       it('should display the provided card payment details (version 1 - everything on)', () => {
@@ -167,10 +166,7 @@ describe('Card payments page', () => {
       it('should show active "Card payments" link in the setting navigation', () => {
         setupStubs()
         cy.visit(pageUrl)
-        checkSettingsNavigation(
-          'Card payments',
-          pageUrl
-        )
+        checkSettingsNavigation('Card payments', pageUrl)
       })
 
       it('should display the provided card payment details (version 1 - everything on)', () => {
@@ -213,6 +209,77 @@ describe('Card payments page', () => {
               cy.get('.govuk-summary-list__value').should('contain', param.offValue)
               cy.get('.govuk-summary-list__actions').should('not.exist')
             })
+        })
+      })
+    })
+
+    describe('for an admin user on a live account', () => {
+      describe('with PSP onboarding in progress', () => {
+        beforeEach(() => {
+          setupStubs({
+            gatewayAccountPaymentProvider: PaymentProviders.WORLDPAY,
+            accountType: 'live',
+            goLiveStage: 'LIVE',
+            gatewayAccountCredentials: [WORLDPAY_CREDENTIAL_IN_CREATED_STATE],
+          })
+        })
+
+        it('should prevent editing of card payments settings', () => {
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/settings/card-payments`)
+
+          cy.get('.govuk-inset-text')
+            .contains(
+              'Finish going live before you can change live settings or you can enter sandbox mode to try out different settings and functionality. '
+            )
+            .should('exist')
+            .within(() => {
+              cy.get('a')
+                .contains('Finish going live')
+                .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/live/settings/worldpay-details`)
+              cy.get('a')
+                .contains('enter sandbox mode')
+                .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/live/enter-sandbox-mode`)
+            })
+
+          cardPaymentParams.forEach((param) => {
+            cy.get(`.govuk-summary-list:eq(${param.listLocation[0]})`)
+              .find(`.govuk-summary-list__row:eq(${param.listLocation[1]})`)
+              .within(() => {
+                cy.get('.govuk-summary-list__key').should('contain', param.title)
+                cy.get('.govuk-summary-list__value').should('contain', param.onValue)
+                cy.get('.govuk-summary-list__actions').should('not.exist')
+              })
+          })
+        })
+      })
+
+      describe('with PSP onboarding complete', () => {
+        beforeEach(() => {
+          setupStubs({
+            gatewayAccountPaymentProvider: PaymentProviders.WORLDPAY,
+            accountType: 'live',
+            goLiveStage: 'LIVE',
+            gatewayAccountCredentials: [WORLDPAY_CREDENTIAL_IN_ACTIVE_STATE],
+          })
+        })
+
+        it('should allow editing of card payments settings', () => {
+          cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/settings/card-payments`)
+          cardPaymentParams.forEach((param) => {
+            cy.get(`.govuk-summary-list:eq(${param.listLocation[0]})`)
+              .find(`.govuk-summary-list__row:eq(${param.listLocation[1]})`)
+              .within(() => {
+                cy.get('.govuk-summary-list__key').should('contain', param.title)
+                cy.get('.govuk-summary-list__value').should('contain', param.onValue)
+                cy.get('.govuk-summary-list__actions a')
+                  .should(
+                    'have.attr',
+                    'href',
+                    `/service/${SERVICE_EXTERNAL_ID}/account/live/settings/card-payments${param.url}`
+                  )
+                  .should('contain', 'Change')
+              })
+          })
         })
       })
     })

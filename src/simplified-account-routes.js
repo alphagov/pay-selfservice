@@ -1,3 +1,5 @@
+import { requirePspOnboarding } from '@middleware/simplified-account/require-psp-onboarding.middleware'
+
 const multer = require('multer')
 const { Router } = require('express')
 const {
@@ -525,65 +527,77 @@ simplifiedAccount.get(
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.cardPayments.collectBillingAddress,
   permission('payment-types:update'),
+  requirePspOnboarding,
   serviceSettingsController.cardPayments.collectBillingAddress.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.cardPayments.collectBillingAddress,
   permission('payment-types:update'),
+  requirePspOnboarding,
   serviceSettingsController.cardPayments.collectBillingAddress.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.cardPayments.defaultBillingAddressCountry,
   permission('payment-types:update'),
+  requirePspOnboarding,
   serviceSettingsController.cardPayments.defaultBillingAddressCountry.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.cardPayments.defaultBillingAddressCountry,
   permission('payment-types:update'),
+  requirePspOnboarding,
   serviceSettingsController.cardPayments.defaultBillingAddressCountry.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.cardPayments.applePay,
   permission('payment-types:update'),
+  requirePspOnboarding,
   serviceSettingsController.cardPayments.applePay.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.cardPayments.applePay,
   permission('payment-types:update'),
+  requirePspOnboarding,
   serviceSettingsController.cardPayments.applePay.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.cardPayments.googlePay,
   permission('payment-types:update'),
+  requirePspOnboarding,
   worldpayAccountIsActive,
   serviceSettingsController.cardPayments.googlePay.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.cardPayments.googlePay,
   permission('payment-types:update'),
+  requirePspOnboarding,
   worldpayAccountIsActive,
   serviceSettingsController.cardPayments.googlePay.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardNumber,
+  requirePspOnboarding,
   enforceMotoAccountOnly,
   permission('payment-types:update'),
   serviceSettingsController.cardPayments.motoSecurity.hideCardNumber.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardNumber,
+  requirePspOnboarding,
   enforceMotoAccountOnly,
   permission('payment-types:update'),
   serviceSettingsController.cardPayments.motoSecurity.hideCardNumber.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardSecurityCode,
+  requirePspOnboarding,
   enforceMotoAccountOnly,
   permission('payment-types:update'),
   serviceSettingsController.cardPayments.motoSecurity.hideCardSecurityCode.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.cardPayments.motoSecurity.hideCardSecurityCode,
+  requirePspOnboarding,
   enforceMotoAccountOnly,
   permission('payment-types:update'),
   serviceSettingsController.cardPayments.motoSecurity.hideCardSecurityCode.post

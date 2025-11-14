@@ -17,7 +17,9 @@ const setupStubs = ({
   allowMoto,
   serviceName,
   gatewayAccountCredentials,
-  gatewayAccountPaymentProvider
+  gatewayAccountPaymentProvider,
+  accountType,
+  goLiveStage,
 } = {}) => {
   const credentials = gatewayAccountCredentials || [STRIPE_CREDENTIAL_IN_ACTIVE_STATE]
   cy.task('setupStubs', [
@@ -28,20 +30,22 @@ const setupStubs = ({
       serviceExternalId: SERVICE_EXTERNAL_ID,
       role: ROLES[role ?? 'admin'],
       collectBillingAddress: collectBillingAddress ?? true,
-      defaultBillingAddressCountry: getDefaultBillingAddressCountry(isDefaultBillingAddressCountryUK)
+      defaultBillingAddressCountry: getDefaultBillingAddressCountry(isDefaultBillingAddressCountryUK),
+      goLiveStage: goLiveStage,
     }),
-    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, accountType ?? ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       payment_provider: gatewayAccountPaymentProvider || 'sandbox',
       allow_apple_pay: allowApplePay ?? true,
       allow_google_pay: allowGooglePay ?? true,
       allow_moto: allowMoto ?? false,
-      gateway_account_credentials: credentials
-    })
+      gateway_account_credentials: credentials,
+      type: accountType ?? ACCOUNT_TYPE,
+    }),
   ])
 }
 
-function getDefaultBillingAddressCountry (isDefaultBillingAddressCountryUK) {
+function getDefaultBillingAddressCountry(isDefaultBillingAddressCountryUK) {
   if (isDefaultBillingAddressCountryUK === undefined) {
     return 'GB'
   }
@@ -56,5 +60,5 @@ module.exports = {
   USER_EXTERNAL_ID,
   SERVICE_EXTERNAL_ID,
   GATEWAY_ACCOUNT_ID,
-  ACCOUNT_TYPE
+  ACCOUNT_TYPE,
 }

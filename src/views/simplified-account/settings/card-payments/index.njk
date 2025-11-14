@@ -1,150 +1,161 @@
 {% extends "../settings-layout.njk" %}
 
 {% set settingsPageTitle = "Card payments" %}
+{% set viewOnly = serviceView.statusTag == 'PSP_ONBOARDING' or not userCanUpdatePaymentTypes %}
 
 {% block settingsContent %}
   {% if not userCanUpdatePaymentTypes %}
     {% include "simplified-account/settings/partials/read-only-message.njk" %}
+    {% elseif serviceView.statusTag == 'PSP_ONBOARDING' %}
+    {% include "simplified-account/settings/partials/_finish-onboarding-message.njk" %}
   {% endif %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
-  <p class="govuk-body">GOV.UK Pay uses 3D Secure for all card payments. 3D Secure (3DS) adds an extra layer of
-    authentication to user payments.</p>
+  <p class="govuk-body"
+    >GOV.UK Pay uses 3D Secure for all card payments. 3D Secure (3DS) adds an extra layer of authentication to user
+    payments.</p
+  >
 
   <h2 class="govuk-heading-m">Billing address</h2>
   <p class="govuk-body">Payment Service Providers (PSPs) use the billing address to carry out fraud checks.</p>
 
-  {{ govukSummaryList({
-    classes: "govuk-!-margin-bottom-9",
-    rows: [
-      {
-        key: {
-          text: "Ask users for their billing address"
+  {{
+    govukSummaryList({
+      classes: "govuk-!-margin-bottom-9",
+      rows: [
+        {
+          key: {
+            text: "Ask users for their billing address"
+          },
+          value: {
+            text: collectBillingAddressEnabled | boolToOnOrOff
+          },
+          actions: {
+            items: [
+              {
+                href: collectBillingAddressLink,
+                text: "Change",
+                classes: "govuk-link--no-visited-state",
+                visuallyHiddenText: "ask users for their billing address"
+              }
+            ]
+          } if not viewOnly
         },
-        value: {
-          text: collectBillingAddressEnabled | boolToOnOrOff
-        },
-        actions: {
-          items: [
-            {
-              href: collectBillingAddressLink,
-              text: "Change",
-              classes: "govuk-link--no-visited-state",
-              visuallyHiddenText: "ask users for their billing address"
-            }
-          ]
-        } if userCanUpdatePaymentTypes
-      },
-      {
-        key: {
-          text: "Default billing address country"
-        },
-        value: {
-          text: defaultBillingAddressCountry
-        },
-        actions: {
-          items: [
-            {
-              href: defaultBillingAddressCountryLink,
-              text: "Change",
-              classes: "govuk-link--no-visited-state",
-              visuallyHiddenText: "default billing address country"
-            }
-          ]
-        } if userCanUpdatePaymentTypes
-      }
-    ]
-  }) }}
+        {
+          key: {
+            text: "Default billing address country"
+          },
+          value: {
+            text: defaultBillingAddressCountry
+          },
+          actions: {
+            items: [
+              {
+                href: defaultBillingAddressCountryLink,
+                text: "Change",
+                classes: "govuk-link--no-visited-state",
+                visuallyHiddenText: "default billing address country"
+              }
+            ]
+          } if not viewOnly
+        }
+      ]
+    })
+  }}
 
   <h2 class="govuk-heading-m">Digital wallets</h2>
   <p class="govuk-body">Let users pay with Apple Pay and Google Pay.</p>
 
-  {{ govukSummaryList({
-    classes: "govuk-!-margin-bottom-9",
-    rows: [
-      {
-        key: {
-          text: "Apple Pay"
+  {{
+    govukSummaryList({
+      classes: "govuk-!-margin-bottom-9",
+      rows: [
+        {
+          key: {
+            text: "Apple Pay"
+          },
+          value: {
+            text: applePayEnabled | boolToOnOrOff
+          },
+          actions: {
+            items: [
+              {
+                href: applePayLink,
+                text: "Change",
+                classes: "govuk-link--no-visited-state",
+                visuallyHiddenText: "Apple Pay"
+              }
+            ]
+          } if not viewOnly
         },
-        value: {
-          text: applePayEnabled | boolToOnOrOff
-        },
-        actions: {
-          items: [
-            {
-              href: applePayLink,
-              text: "Change",
-              classes: "govuk-link--no-visited-state",
-              visuallyHiddenText: "Apple Pay"
-            }
-          ]
-        } if userCanUpdatePaymentTypes
-      },
-      {
-        key: {
-          text: "Google Pay"
-        },
-        value: {
-          text: "On" if googlePayEnabled else ("Off" if googlePayEditable else "Off (complete Worldpay details to switch on)")
-        },
-        actions: {
-          items: [
-            {
-              href: googlePayLink,
-              text: "Change",
-              classes: "govuk-link--no-visited-state",
-              visuallyHiddenText: "Google Pay"
-            }
-          ]
-        } if userCanUpdatePaymentTypes and googlePayEditable
-      }
-    ]
-  }) }}
+        {
+          key: {
+            text: "Google Pay"
+          },
+          value: {
+            text: "On" if googlePayEnabled else ("Off" if googlePayEditable else "Off (complete Worldpay details to switch on)")
+          },
+          actions: {
+            items: [
+              {
+                href: googlePayLink,
+                text: "Change",
+                classes: "govuk-link--no-visited-state",
+                visuallyHiddenText: "Google Pay"
+              }
+            ]
+          } if not viewOnly and googlePayEditable
+        }
+      ]
+    })
+  }}
 
   {% if isMoto %}
     <h2 class="govuk-heading-m">MOTO security</h2>
     <p class="govuk-body">Hide sensitive details being viewed on a call agent’s screen.</p>
 
-    {{ govukSummaryList({
-      classes: "govuk-!-margin-bottom-9",
-      rows: [
-        {
-          key: {
-            text: "Hide card number"
+    {{
+      govukSummaryList({
+        classes: "govuk-!-margin-bottom-9",
+        rows: [
+          {
+            key: {
+              text: "Hide card number"
+            },
+            value: {
+              text: "Hide" if hideCardNumberEnabled else "Show"
+            },
+            actions: {
+              items: [
+                {
+                  href: hideCardNumberLink,
+                  text: "Change",
+                  classes: "govuk-link--no-visited-state",
+                  visuallyHiddenText: "Hide card number"
+                }
+              ]
+            } if userCanUpdatePaymentTypes
           },
-          value: {
-            text: "Hide" if hideCardNumberEnabled else "Show"
-          },
-          actions: {
-            items: [
-              {
-                href: hideCardNumberLink,
-                text: "Change",
-                classes: "govuk-link--no-visited-state",
-                visuallyHiddenText: "Hide card number"
-              }
-            ]
-          } if userCanUpdatePaymentTypes
-        },
-        {
-          key: {
-            text: "Hide card security code"
-          },
-          value: {
-            text: "Hide" if hideCardSecurityCodeEnabled else "Show"
-          },
-          actions: {
-            items: [
-              {
-                href: hideCardSecurityCodeLink,
-                text: "Change",
-                classes: "govuk-link--no-visited-state",
-                visuallyHiddenText: "Hide card security code"
-              }
-            ]
-          } if userCanUpdatePaymentTypes
-        }
-      ]
-    }) }}
+          {
+            key: {
+              text: "Hide card security code"
+            },
+            value: {
+              text: "Hide" if hideCardSecurityCodeEnabled else "Show"
+            },
+            actions: {
+              items: [
+                {
+                  href: hideCardSecurityCodeLink,
+                  text: "Change",
+                  classes: "govuk-link--no-visited-state",
+                  visuallyHiddenText: "Hide card security code"
+                }
+              ]
+            } if userCanUpdatePaymentTypes
+          }
+        ]
+      })
+    }}
   {% endif %}
 {% endblock %}
