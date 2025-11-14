@@ -1,0 +1,13 @@
+{% if currentGatewayAccount.paymentProvider | lower == 'stripe' %}
+  {% set onboardingPath = paths.simplifiedAccount.settings.stripeDetails.index | formatServiceAndAccountPathsFor(currentService.externalId, currentGatewayAccount.type) %}
+  {% elseif currentGatewayAccount.paymentProvider | lower == 'worldpay' %}
+  {% set onboardingPath = paths.simplifiedAccount.settings.worldpayDetails.index | formatServiceAndAccountPathsFor(currentService.externalId, currentGatewayAccount.type) %}
+{% endif %}
+{% set sandboxModePath = paths.simplifiedAccount.enterSandboxMode.index | formatServiceAndAccountPathsFor(currentService.externalId, currentGatewayAccount.type) %}
+
+{{
+  govukInsetText({
+    html: "<a class='govuk-link govuk-link--no-visited-state' href='" + onboardingPath + "'>Finish going live</a> before you can create live API keys. <a class='govuk-link govuk-link--no-visited-state' href='" + sandboxModePath + "'>Enter sandbox mode</a> to use test API keys to connect your test digital service to GOV.UK Pay.",
+    classes: "service-settings-inset-text--grey"
+  })
+}}
