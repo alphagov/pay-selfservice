@@ -9,11 +9,19 @@ const GATEWAY_ACCOUNT_ID = 100
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'ga-123-external-id-abc'
 const SERVICE_EXTERNAL_ID = 'service-123-external-id-abc'
 
+const featureEnabledStub = sinon.stub()
+
 const { call, req, res, next, nextRequest } = new ControllerTestBuilder(
   '@controllers/simplified-account/services/enter-sandbox-mode/enter-sandbox-mode.controller'
 )
   .withStubs({
     '@utils/response': { response: mockResponse },
+    '@root/config/experimental-features': {
+      Features: {
+        isEnabled: featureEnabledStub,
+        MY_SERVICES: 'my_services',
+      },
+    },
   })
   .withAccount({
     id: GATEWAY_ACCOUNT_ID,
@@ -30,6 +38,7 @@ describe('enter sandbox mode controller tests', () => {
   describe('get', () => {
     describe('for a test account', () => {
       beforeEach(() => {
+        featureEnabledStub.returns(true)
         nextRequest({
           account: {
             type: GatewayAccountType.TEST,
@@ -56,6 +65,7 @@ describe('enter sandbox mode controller tests', () => {
 
     describe('for a live account', () => {
       beforeEach(() => {
+        featureEnabledStub.returns(true)
         nextRequest({
           account: {
             type: GatewayAccountType.LIVE,
@@ -78,6 +88,28 @@ describe('enter sandbox mode controller tests', () => {
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
           sandboxModeUrl: `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/dashboard`,
         })
+      })
+    })
+
+    describe('when the my_services feature is disabled', () => {
+      beforeEach(() => {
+        featureEnabledStub.returns(false)
+        nextRequest({
+          account: {
+            type: GatewayAccountType.LIVE,
+          },
+        })
+      })
+
+      it('should redirect straight to the test account dashboard', async () => {
+        await call('get')
+        featureEnabledStub.should.have.been.calledOnce
+        featureEnabledStub.should.have.been.calledWithExactly('my_services')
+
+        res.redirect.should.have.been.calledOnce
+        res.redirect.should.have.been.calledWithExactly(
+          `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/dashboard`
+        )
       })
     })
   })

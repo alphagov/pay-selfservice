@@ -5,8 +5,19 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 import { NotFoundError } from '@root/errors'
 import { NextFunction } from 'express'
+import { Features } from '@root/config/experimental-features'
 
 function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
+  if (!Features.isEnabled(Features.MY_SERVICES)) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.dashboard.index,
+        req.service.externalId,
+        GatewayAccountType.TEST
+      )
+    )
+  }
+
   if (req.account.type !== GatewayAccountType.LIVE) {
     return next(
       new NotFoundError(
