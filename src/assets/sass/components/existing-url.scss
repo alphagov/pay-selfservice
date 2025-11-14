@@ -5,7 +5,10 @@
     border: 1px solid $govuk-border-colour;
     padding: 5px;
     display: inline;
-    word-break: keep-all;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
     line-height: 2;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
