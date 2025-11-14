@@ -3,7 +3,7 @@
   {% elseif currentGatewayAccount.paymentProvider | lower == 'worldpay' %}
   {% set onboardingPath = paths.simplifiedAccount.settings.worldpayDetails.index | formatServiceAndAccountPathsFor(currentService.externalId, currentGatewayAccount.type) %}
 {% endif %}
-{% set sandboxModePath = paths.simplifiedAccount.dashboard.index | formatServiceAndAccountPathsFor(currentService.externalId, 'test') %}
+{% set sandboxModePath = paths.simplifiedAccount.enterSandboxMode.index | formatServiceAndAccountPathsFor(currentService.externalId, currentGatewayAccount.type) %}
 
 {{
   govukInsetText({
