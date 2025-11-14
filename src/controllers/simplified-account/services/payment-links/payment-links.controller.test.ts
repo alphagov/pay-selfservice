@@ -130,7 +130,7 @@ describe('controller: services/payment-links', () => {
                 language: 'en',
                 name: 'Designer monocles',
                 href: 'http://products-ui.url/redirect/mcduck-enterprises/designer-monocles',
-                reference: 'Created by GOV.UK Pay',
+                reference: undefined,
                 details: undefined,
                 amount: 'User can choose',
                 editLink: '/service/service123abc/account/live/payment-links/cf3hp2',
