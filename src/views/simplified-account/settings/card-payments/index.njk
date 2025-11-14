@@ -6,8 +6,7 @@
 {% block settingsContent %}
   {% if not userCanUpdatePaymentTypes %}
     {% include "simplified-account/settings/partials/read-only-message.njk" %}
-  {% endif %}
-  {% if serviceView.statusTag == 'PSP_ONBOARDING' %}
+    {% elseif serviceView.statusTag == 'PSP_ONBOARDING' %}
     {% include "simplified-account/settings/partials/_finish-onboarding-message.njk" %}
   {% endif %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
