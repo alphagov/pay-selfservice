@@ -4,7 +4,7 @@
   govukInput({
     id: 'fromDate',
     name: 'fromDate',
-    value: filters.fromDate,
+    value: filters.fromDate | europeanDate,
     classes: 'date-picker start govuk-!-font-size-16',
     label: {
       text: 'Start date',
@@ -20,9 +20,9 @@
 }}
 {{
   govukInput({
-    id: 'fromTime',
-    name: 'fromTime',
-    value: filters.fromTime,
+    id: 'toDate',
+    name: 'toDate',
+    value: filters.toDate | europeanDate,
     classes: 'date-picker end govuk-!-font-size-16',
     label: {
       text: 'End date',
