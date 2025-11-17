@@ -1,13 +1,14 @@
 {% extends "../settings-layout.njk" %}
 
 {% set settingsPageTitle = "Card types" %}
+{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
 
-{% set viewOnly = serviceView.statusTag === 'PSP_ONBOARDING' or not isAdminUser %}
+{% set viewOnly = isPspOnboarding or not isAdminUser %}
 
 {% block settingsContent %}
   {% if not isAdminUser %}
     {% include "simplified-account/settings/partials/read-only-message.njk" %}
-    {% elseif serviceView.statusTag == 'PSP_ONBOARDING' %}
+    {% elseif isPspOnboarding %}
     {% include "simplified-account/settings/partials/_finish-onboarding-message.njk" %}
   {% endif %}
 

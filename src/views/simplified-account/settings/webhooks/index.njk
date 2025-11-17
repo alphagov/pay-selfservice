@@ -2,6 +2,7 @@
 {% extends "../settings-layout.njk" %}
 
 {% set settingsPageTitle = "Webhooks" %}
+{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
 
 {% macro webhookSubscriptions(webhook) %}
   <ul class="govuk-list">
@@ -13,7 +14,7 @@
 {% endmacro %}
 
 {% block settingsContent %}
-  {% if serviceView.statusTag === 'PSP_ONBOARDING' %}
+  {% if isPspOnboarding %}
     {% include "simplified-account/settings/webhooks/partials/_finish-onboarding-message.njk" %}
   {% endif %}
 
@@ -27,7 +28,7 @@
     }}.
   </p>
 
-  {% if serviceView.statusTag !== 'PSP_ONBOARDING' %}
+  {% if not isPspOnboarding %}
     {{
       govukButton({
         text: "Create a new webhook",

@@ -1,10 +1,11 @@
 {% extends "simplified-account/settings/settings-layout.njk" %}
 
 {% set settingsPageTitle = ("Test" if accountType === 'test' else "Live") + " API keys" %}
+{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
 
 {% block settingsContent %}
 
-  {% if serviceView.statusTag === 'PSP_ONBOARDING' %}
+  {% if isPspOnboarding %}
     {% include "simplified-account/settings/api-keys/partials/_finish-onboarding-message.njk" %}
   {% endif %}
 
@@ -31,7 +32,7 @@
     <a class="govuk-link" href="https://www.payments.service.gov.uk/govuk-payment-pages/">payment links</a>.
   </p>
 
-  {% if serviceView.statusTag !== 'PSP_ONBOARDING' %}
+  {% if not isPspOnboarding %}
     {{
       govukButton({
         href: createKeyLink,

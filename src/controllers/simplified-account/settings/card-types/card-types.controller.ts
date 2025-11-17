@@ -13,6 +13,7 @@ import { getAllCardTypes, getAcceptedCardTypes, updateAcceptedCardTypes } from '
 import { cardTypesSchema, sanitiseToArray } from '@utils/simplified-account/validation/card-types.schema'
 import { UpdateAcceptedCardTypesRequest } from '@models/card-type/UpdateAcceptedCardTypesRequest.class'
 import { StatusTag } from '@models/service-status/ServiceView.class'
+import { Features } from '@root/config/experimental-features'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const isAdminUser = req.user.isAdminUserForService(req.service.externalId)
@@ -20,10 +21,11 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const allCards = await getAllCardTypes()
   const acceptedCards = await getAcceptedCardTypes(req.service.externalId, req.account.type)
   const currentAcceptedCardTypeIds = acceptedCards.map((card) => card.id)
-  const cardTypes =
-    isAdminUser && req.serviceView.statusTag !== StatusTag.PSP_ONBOARDING
-      ? formatCardTypesForAdminTemplate(allCards, acceptedCards, req.account)
-      : formatCardTypesForNonAdminTemplate(allCards, acceptedCards)
+  const viewOnly =
+    !isAdminUser || (req.serviceView.statusTag === StatusTag.PSP_ONBOARDING && Features.isEnabled(Features.MY_SERVICES))
+  const cardTypes = viewOnly
+    ? formatCardTypesForNonAdminTemplate(allCards, acceptedCards)
+    : formatCardTypesForAdminTemplate(allCards, acceptedCards, req.account)
 
   return response(req, res, 'simplified-account/settings/card-types/index', {
     messages,
