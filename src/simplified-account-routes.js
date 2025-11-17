@@ -515,6 +515,7 @@ simplifiedAccount.get(
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.cardTypes.index,
   permission('payment-types:update'),
+  requirePspOnboarding,
   serviceSettingsController.cardTypes.post
 )
 
@@ -674,41 +675,49 @@ simplifiedAccount.get(
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.apiKeys.create.index,
+  requirePspOnboarding,
   permission('tokens:create'),
   serviceSettingsController.apiKeys.create.createKey.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.apiKeys.create.index,
+  requirePspOnboarding,
   permission('tokens:create'),
   serviceSettingsController.apiKeys.create.createKey.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.apiKeys.create.newKeyDetails,
+  requirePspOnboarding,
   permission('tokens:create'),
   serviceSettingsController.apiKeys.create.newKeyDetails.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.apiKeys.edit.changeName,
+  requirePspOnboarding,
   permission('tokens:update'),
   serviceSettingsController.apiKeys.edit.changeName.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.apiKeys.edit.changeName,
+  requirePspOnboarding,
   permission('tokens:update'),
   serviceSettingsController.apiKeys.edit.changeName.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.apiKeys.revoke.index,
+  requirePspOnboarding,
   permission('tokens:delete'),
   serviceSettingsController.apiKeys.revoke.revokeKey.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.apiKeys.revoke.index,
+  requirePspOnboarding,
   permission('tokens:delete'),
   serviceSettingsController.apiKeys.revoke.revokeKey.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.apiKeys.revoke.revokedKeys,
+  requirePspOnboarding,
   permission('tokens-revoked:read'),
   serviceSettingsController.apiKeys.revoke.revokedKeys.get
 )
@@ -721,41 +730,50 @@ simplifiedAccount.get(
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.webhooks.create,
+  requirePspOnboarding,
   permission('webhooks:update'),
   serviceSettingsController.webhooks.create.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.webhooks.create,
+  requirePspOnboarding,
   permission('webhooks:update'),
   serviceSettingsController.webhooks.create.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.webhooks.detail,
+  requirePspOnboarding,
   permission('webhooks:read'),
   serviceSettingsController.webhooks.detail.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.webhooks.event,
+  requirePspOnboarding,
   permission('webhooks:read'),
   serviceSettingsController.webhooks.event.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.webhooks.update,
+  requirePspOnboarding,
   permission('webhooks:update'),
   serviceSettingsController.webhooks.update.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.webhooks.update,
+  requirePspOnboarding,
   permission('webhooks:update'),
   serviceSettingsController.webhooks.update.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.webhooks.toggle,
+  requirePspOnboarding,
   permission('webhooks:update'),
   serviceSettingsController.webhooks.toggle.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.settings.webhooks.toggle,
+  requirePspOnboarding,
+  requirePspOnboarding,
   permission('webhooks:update'),
   serviceSettingsController.webhooks.toggle.post
 )

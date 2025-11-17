@@ -1,12 +1,13 @@
 {% extends "../settings-layout.njk" %}
 
 {% set settingsPageTitle = "Card payments" %}
-{% set viewOnly = serviceView.statusTag == 'PSP_ONBOARDING' or not userCanUpdatePaymentTypes %}
+{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
+{% set viewOnly = isPspOnboarding or not userCanUpdatePaymentTypes %}
 
 {% block settingsContent %}
   {% if not userCanUpdatePaymentTypes %}
     {% include "simplified-account/settings/partials/read-only-message.njk" %}
-    {% elseif serviceView.statusTag == 'PSP_ONBOARDING' %}
+    {% elseif isPspOnboarding %}
     {% include "simplified-account/settings/partials/_finish-onboarding-message.njk" %}
   {% endif %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>

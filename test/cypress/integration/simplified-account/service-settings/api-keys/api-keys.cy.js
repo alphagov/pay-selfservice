@@ -4,6 +4,8 @@ const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const apiKeysStubs = require('@test/cypress/stubs/api-keys-stubs')
 const { Token } = require('@models/Token.class')
 const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
+const { WORLDPAY_CREDENTIAL_IN_CREATED_STATE } = require('@test/fixtures/credentials.fixtures')
+const { WORLDPAY } = require('@models/constants/payment-providers')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -12,7 +14,7 @@ const ACCOUNT_TYPE = 'test'
 const USER_EMAIL = 'potter@wand.com'
 const API_KEYS_SETTINGS_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/api-keys`
 
-const setupStubs = (role = 'admin', activeApiKeys = [], revokedApiKeys = []) => {
+const setupStubs = (role = 'admin', activeApiKeys = [], revokedApiKeys = [], opts = {}) => {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
       userExternalId: USER_EXTERNAL_ID,
@@ -21,9 +23,13 @@ const setupStubs = (role = 'admin', activeApiKeys = [], revokedApiKeys = []) => 
       serviceExternalId: SERVICE_EXTERNAL_ID,
       email: USER_EMAIL,
       role: ROLES[role],
+      goLiveStage: opts.goLiveStage,
     }),
-    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, {
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, opts.accountType ?? ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
+      gateway_account_credentials: opts.credentials,
+      type: opts.accountType ?? ACCOUNT_TYPE,
+      payment_provider: WORLDPAY,
     }),
     apiKeysStubs.getActiveApiKeysForGatewayAccount(GATEWAY_ACCOUNT_ID, activeApiKeys),
     apiKeysStubs.getRevokedApiKeysForGatewayAccount(GATEWAY_ACCOUNT_ID, revokedApiKeys),
@@ -230,6 +236,39 @@ describe('Settings - API keys', () => {
 
         verifySummaryCard(0, apiKeys[0])
         verifySummaryCard(1, apiKeys[1])
+      })
+    })
+
+    describe('when in the PSP onboarding stage', () => {
+      beforeEach(() => {
+        setupStubs('admin', [], [], {
+          goLiveStage: 'LIVE',
+          accountType: 'live',
+          credentials: [WORLDPAY_CREDENTIAL_IN_CREATED_STATE],
+        })
+      })
+
+      it('should show PSP onboarding inset text', () => {
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/settings/api-keys`)
+
+        cy.get('.govuk-inset-text')
+          .contains(
+            'Finish going live before you can create live API keys. Enter sandbox mode to use test API keys to connect your test digital service to GOV.UK Pay.'
+          )
+          .should('exist')
+          .within(() => {
+            cy.get('a')
+              .contains('Finish going live')
+              .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/live/settings/worldpay-details`)
+            cy.get('a')
+              .contains('Enter sandbox mode')
+              .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/live/enter-sandbox-mode`)
+          })
+      })
+
+      it('should not show the button to create an API key', () => {
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/settings/api-keys`)
+        cy.contains('a', 'Create a new API key').should('not.exist')
       })
     })
 

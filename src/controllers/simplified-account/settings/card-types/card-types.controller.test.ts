@@ -4,6 +4,7 @@ import paths from '@root/paths'
 import { expect } from 'chai'
 import User from '@models/user/User.class'
 import userFixtures from '@test/fixtures/user.fixtures'
+import { ServiceView } from '@models/service-status/ServiceView.class'
 
 const ACCOUNT_TYPE = 'live'
 const SERVICE_EXTERNAL_ID = 'service-id-123abc'
@@ -67,6 +68,7 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder(
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccountType(ACCOUNT_TYPE)
+  .withServiceView(ServiceView.Live())
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/card-types.service': {

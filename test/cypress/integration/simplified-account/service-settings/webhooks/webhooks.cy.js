@@ -3,6 +3,8 @@ const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const { getWebhooksListSuccess } = require('@test/cypress/stubs/webhooks-stubs')
+const { WORLDPAY } = require('@models/constants/payment-providers')
+const { WORLDPAY_CREDENTIAL_IN_CREATED_STATE } = require('@test/fixtures/credentials.fixtures')
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -46,11 +48,14 @@ const setStubs = (opts = {}, additionalStubs = []) => {
       serviceName: SERVICE_NAME,
       serviceExternalId: SERVICE_EXTERNAL_ID,
       role: ROLES[opts.role || 'admin'],
+      goLiveStage: opts.goLiveStage,
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       type: LIVE_ACCOUNT_TYPE,
       provider_switch_enabled: opts.providerSwitchEnabled || false,
+      gateway_account_credentials: opts.credentials,
+      payment_provider: WORLDPAY,
     }),
     ...additionalStubs,
   ])
@@ -151,5 +156,46 @@ describe('for a non-admin user', () => {
   it('should not show webhooks link in the navigation panel', () => {
     cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/`)
     cy.get('#webhooks').should('not.exist')
+  })
+})
+
+describe('for an admin in the PSP onboarding stage', () => {
+  beforeEach(() => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
+    setStubs(
+      {
+        goLiveStage: 'LIVE',
+        credentials: [WORLDPAY_CREDENTIAL_IN_CREATED_STATE],
+      },
+      [
+        getWebhooksListSuccess({
+          service_id: SERVICE_EXTERNAL_ID,
+          gateway_account_id: GATEWAY_ACCOUNT_ID,
+          live: true,
+          webhooks: [],
+        }),
+      ]
+    )
+  })
+
+  it('should show PSP onboarding inset text', () => {
+    cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/settings/webhooks`)
+
+    cy.get('.govuk-inset-text')
+      .contains('Finish going live before you can create live webhooks. Enter sandbox mode to use test webhooks.')
+      .should('exist')
+      .within(() => {
+        cy.get('a')
+          .contains('Finish going live')
+          .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/live/settings/worldpay-details`)
+        cy.get('a')
+          .contains('Enter sandbox mode')
+          .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/live/enter-sandbox-mode`)
+      })
+  })
+
+  it('should not show the button to create an API key', () => {
+    cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/settings/webhooks`)
+    cy.contains('a', 'Create a new webhook').should('not.exist')
   })
 })

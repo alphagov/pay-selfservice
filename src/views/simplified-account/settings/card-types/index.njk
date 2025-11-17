@@ -1,80 +1,87 @@
 {% extends "../settings-layout.njk" %}
 
 {% set settingsPageTitle = "Card types" %}
+{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
+
+{% set viewOnly = isPspOnboarding or not isAdminUser %}
 
 {% block settingsContent %}
   {% if not isAdminUser %}
     {% include "simplified-account/settings/partials/read-only-message.njk" %}
+    {% elseif isPspOnboarding %}
+    {% include "simplified-account/settings/partials/_finish-onboarding-message.njk" %}
   {% endif %}
 
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
-  {% if isAdminUser %}
+  {% if not viewOnly %}
     <p class="govuk-body">Choose which credit and debit cards you want to accept.</p>
     <form method="post" novalidate>
-      <input id="csrf" name="csrfToken" type="hidden" value="{{csrf}}"/>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
       <input type="hidden" name="currentAcceptedCardTypeIds" value="{{ currentAcceptedCardTypeIds }}" />
       {{
-      govukCheckboxes({
-        idPrefix: "debit",
-        name: "debit",
-        fieldset: {
-          legend: {
-            text: "Debit cards",
-            classes: "govuk-fieldset__legend--s"
-          }
-        },
-        classes: "card-types govuk-!-padding-top-2",
-        items: cardTypes.debitCards
-      })
+        govukCheckboxes({
+          idPrefix: "debit",
+          name: "debit",
+          fieldset: {
+            legend: {
+              text: "Debit cards",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          classes: "card-types govuk-!-padding-top-2",
+          items: cardTypes.debitCards
+        })
       }}
 
       {{
-      govukCheckboxes({
-        idPrefix: "credit",
-        name: "credit",
-        fieldset: {
-          legend: {
-            text: "Credit cards",
-            classes: "govuk-fieldset__legend--s"
-          }
-        },
-        classes: "card-types govuk-!-padding-top-2",
-        items: cardTypes.creditCards
-      })
+        govukCheckboxes({
+          idPrefix: "credit",
+          name: "credit",
+          fieldset: {
+            legend: {
+              text: "Credit cards",
+              classes: "govuk-fieldset__legend--s"
+            }
+          },
+          classes: "card-types govuk-!-padding-top-2",
+          items: cardTypes.creditCards
+        })
       }}
 
       {{
-      govukButton({
-        text: 'Save changes',
-        attributes: {
-          id: "save-card-types"
-        }
-      })
+        govukButton({
+          text: 'Save changes',
+          attributes: {
+            id: "save-card-types"
+          }
+        })
       }}
     </form>
   {% else %}
     {% for category, item in cardTypes %}
       {% if (item.cards.length > 0) %}
-        <h2 class="govuk-heading-s">
-          {{ item.heading }}
-        </h2>
+        <h2 class="govuk-heading-s"> {{ item.heading }} </h2>
         {% set cardList = [] %}
         {% for cardBrand in item.cards %}
-          {% set cardListItem = {
-            key: {
-              classes: "govuk-!-display-none"
-            },
-            value: {
-              text: cardBrand
+          {%
+            set cardListItem = {
+              key: {
+                classes: "govuk-!-display-none"
+              },
+              value: {
+                text: cardBrand
+              }
             }
-          } %}
+          %}
           {% set cardList = (cardList.push(cardListItem), cardList) %}
         {% endfor %}
-        {{ govukSummaryList({
-          rows: cardList,
-          classes: "card-types govuk-!-margin-bottom-4"
-        }) }}
+        {{
+          govukSummaryList({
+            rows: cardList,
+            classes: "card-types govuk-!-margin-bottom-4"
+          })
+        }}
       {% endif %}
     {% endfor %}
   {% endif %}
