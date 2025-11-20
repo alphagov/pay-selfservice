@@ -143,6 +143,9 @@ module.exports = {
     enterSandboxMode: {
       index: '/enter-sandbox-mode',
     },
+    exitSandboxMode: {
+      index: '/exit-sandbox-mode',
+    },
     demoPayment: {
       index: '/demo-payment',
       edit: '/demo-payment/edit',

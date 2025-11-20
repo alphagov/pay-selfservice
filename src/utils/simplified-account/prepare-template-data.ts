@@ -150,9 +150,9 @@ const determineServiceStatus = (service: Service, account: GatewayAccount) => {
   if (isInSandboxMode) {
     return ServiceStatus.SANDBOX_MODE(
       formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.dashboard.index,
+        paths.simplifiedAccount.exitSandboxMode.index,
         service.externalId,
-        GatewayAccountType.LIVE
+        GatewayAccountType.TEST
       )
     )
   }

@@ -39,11 +39,16 @@ simplifiedAccount.use(simplifiedAccountStrategy, userIsAuthorised)
 // dashboard
 simplifiedAccount.get(paths.simplifiedAccount.dashboard.index, servicesController.dashboard.get)
 
-// switch to sandbox mode
+// switch between live and sandbox mode
 simplifiedAccount.get(
   paths.simplifiedAccount.enterSandboxMode.index,
   experimentalFeature(Features.MY_SERVICES),
   servicesController.enterSandboxMode.get
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.exitSandboxMode.index,
+  experimentalFeature(Features.MY_SERVICES),
+  servicesController.exitSandboxMode.get
 )
 
 simplifiedAccount.get(

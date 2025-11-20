@@ -87,7 +87,11 @@ describe('Service Name Component', () => {
         )
         .find('a')
         .should('contain.text', 'Exit sandbox mode')
-        .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/dashboard`)
+        .should(
+          'have.attr',
+          'href',
+          `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/exit-sandbox-mode`
+        )
     })
   })
 
@@ -111,7 +115,11 @@ describe('Service Name Component', () => {
         )
         .find('a')
         .should('contain.text', 'Exit sandbox mode')
-        .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/dashboard`)
+        .should(
+          'have.attr',
+          'href',
+          `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/exit-sandbox-mode`
+        )
     })
   })
 
