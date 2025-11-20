@@ -1,13 +1,12 @@
 const _ = require('lodash')
 const logger = require('./logger')(__filename)
 const displayConverter = require('./display-converter')
-const { prepareTemplateData } = require('@utils/simplified-account/prepare-template-data')
 
 const ERROR_MESSAGE = 'There is a problem with the payments platform'
 const ERROR_VIEW = 'error'
 
 function response(req, res, template, data = {}) {
-  const convertedData = Object.assign({}, displayConverter(req, data, template), prepareTemplateData(req, data))
+  const convertedData = Object.assign({}, displayConverter(req, data, template))
   render(req, res, template, convertedData)
 }
 

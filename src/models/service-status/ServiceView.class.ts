@@ -12,6 +12,7 @@ const logger = createLogger(__filename)
 export const StatusTag: Record<string, StatusTag> = {
   LIVE: 'LIVE', // live account - service is live and able to take payments
   PSP_ONBOARDING: 'PSP_ONBOARDING', // live account - service is setting up their live account
+  STRIPE_PSP_ONBOARDING_COMPLETE: 'STRIPE_PSP_ONBOARDING_COMPLETE', // live account - service has completed Stripe onboarding steps
   GO_LIVE_REQUESTED: 'GO_LIVE_REQUESTED', // test account - service only has a test account, but has requested a live account
   GO_LIVE_IN_PROGRESS: 'GO_LIVE_IN_PROGRESS', // test account - service only has a test account, but has requested a live account
   WORLDPAY_TEST: 'WORLDPAY_TEST', // test account - service is for a worldpay test account. cannot be made live
@@ -24,6 +25,7 @@ export const StatusTag: Record<string, StatusTag> = {
 export type StatusTag =
   | 'LIVE'
   | 'PSP_ONBOARDING'
+  | 'STRIPE_PSP_ONBOARDING_COMPLETE'
   | 'GO_LIVE_REQUESTED'
   | 'GO_LIVE_IN_PROGRESS'
   | 'WORLDPAY_TEST'
@@ -70,6 +72,10 @@ export class ServiceView {
 
   static PspOnboarding() {
     return new ServiceView(StatusTag.PSP_ONBOARDING, DisplayTag.NOT_LIVE_YET)
+  }
+
+  static StripePspOnboardingComplete() {
+    return new ServiceView(StatusTag.STRIPE_PSP_ONBOARDING_COMPLETE, DisplayTag.NOT_LIVE_YET)
   }
 
   static TestAccountOnly() {

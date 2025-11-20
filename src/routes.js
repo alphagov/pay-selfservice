@@ -60,6 +60,7 @@ const { registrationSuccess } = require('@services/auth.service')
 const { account: routes } = require('@root/paths')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 import { Features } from '@root/config/experimental-features'
+import { serviceViewShim } from '@middleware/simplified-account/service-view-shim.middleware'
 
 // Assignments
 const {
@@ -282,10 +283,15 @@ module.exports.bind = function (app) {
   })
 
   // Transactions
-  account.get(transactions.index, permission('transactions:read'), transactionsListController)
+  account.get(transactions.index, permission('transactions:read'), serviceViewShim, transactionsListController)
   account.get(transactions.download, permission('transactions-download:read'), transactionsDownloadController)
-  account.get(transactions.detail, permission('transactions-details:read'), transactionDetailController)
-  account.post(transactions.refund, permission('refunds:create'), transactionRefundController)
+  account.get(
+    transactions.detail,
+    permission('transactions-details:read'),
+    serviceViewShim,
+    transactionDetailController
+  )
+  account.post(transactions.refund, permission('refunds:create'), serviceViewShim, transactionRefundController)
 
   // Settings
   app.use(paths.simplifiedAccount.root, simplifiedAccountRoutes)
