@@ -4,14 +4,29 @@
 
 {% set servicePageTitle = serviceMode | smartCaps + " payment links" %}
 
+
 {% set examplePaymentLink %}
   {% include "simplified-account/services/payment-links/partials/_example-payment-link.njk" %}
 {% endset %}
 
+{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
+{% set viewOnly = isPspOnboarding or not isAdmin %}
+
 {% block serviceContent %}
-  {% if isAdmin %}
+  {% if not isAdmin %}
+    {{
+      govukInsetText({
+        text: "You don't have permission to create or edit payment links. Contact your service admin if you would like to manage payment links",
+        classes: "service-settings-inset-text--grey"
+      })
+    }}
+    {% elseif isPspOnboarding %}
+    {% include "simplified-account/services/payment-links/partials/_finish-onboarding-message.njk" %}
+  {% endif %}
+
+  {% if not viewOnly %}
     {% include "simplified-account/services/payment-links/partials/_index-admin.njk" %}
   {% else %}
-    {% include "simplified-account/services/payment-links/partials/_index-non-admin.njk" %}
+    {% include "simplified-account/services/payment-links/partials/_index-view-only.njk" %}
   {% endif %}
 {% endblock %}

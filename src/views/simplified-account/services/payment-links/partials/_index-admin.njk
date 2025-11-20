@@ -8,29 +8,20 @@
     })
   }}
 {% endif %}
+{% include "simplified-account/services/payment-links/partials/_index-preamble.njk" %}
 
-{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
+<div class="govuk-button-group">
+  {{
+    govukButton({
+      text: "Create a " + serviceMode + " payment link",
+      href: createLink
+    })
+  }}
 
-{% if isPspOnboarding %}
-  {% include "simplified-account/services/payment-links/partials/_finish-onboarding-message.njk" %}
-{% endif %}
-
-{% if not isPspOnboarding %}
-  {% include "simplified-account/services/payment-links/partials/_index-preamble.njk" %}
-
-  <div class="govuk-button-group">
-    {{
-      govukButton({
-        text: "Create a " + serviceMode + " payment link",
-        href: createLink
-      })
-    }}
-
-    <a class="govuk-link govuk-link--no-visited-state" href="{{ createLink }}?language=cy"
-      >Create a {{ serviceMode }} payment link in Welsh</a
-    >
-  </div>
-{% endif %}
+  <a class="govuk-link govuk-link--no-visited-state" href="{{ createLink }}?language=cy"
+    >Create a {{ serviceMode }} payment link in Welsh</a
+  >
+</div>
 
 {% if products.length > 0 %}
   <h2 class="govuk-heading-m">{{ serviceMode | smartCaps }} payment links ({{ products.length }})</h2>
@@ -62,7 +53,7 @@
                 visuallyHiddenText: 'payment link',
                 classes: "govuk-link govuk-link--no-visited-state"
               }
-            ] if not isPspOnboarding else []
+            ]
           }
         },
         rows: [
