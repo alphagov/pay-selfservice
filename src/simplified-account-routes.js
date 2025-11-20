@@ -83,96 +83,112 @@ simplifiedAccount.get(
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.create,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.information.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.create,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.information.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.existingPaymentLink,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.existingPaymentLink.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.existingPaymentLink,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.existingPaymentLink.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.addWelshServiceName,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.addWelshServiceName.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.addWelshServiceName,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.addWelshServiceName.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.reference,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.reference.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.reference,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.reference.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.amount,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.amount.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.amount,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.amount.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.review,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.review.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.review,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.review.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.metadata.add,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.metadata.add.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.metadata.add,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.metadata.add.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.metadata.update,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.metadata.edit.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.metadata.update,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.create.metadata.edit.post
 )
@@ -181,6 +197,7 @@ simplifiedAccount.post(
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.index,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.get
 )
@@ -189,6 +206,7 @@ simplifiedAccount.get(
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.information,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.information.get
 )
@@ -196,6 +214,7 @@ simplifiedAccount.get(
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.edit.information,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.information.post
 )
@@ -203,6 +222,7 @@ simplifiedAccount.post(
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.reference,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.reference.get
 )
@@ -210,6 +230,7 @@ simplifiedAccount.get(
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.edit.reference,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.reference.post
 )
@@ -217,6 +238,7 @@ simplifiedAccount.post(
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.amount,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.amount.get
 )
@@ -224,6 +246,7 @@ simplifiedAccount.get(
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.edit.amount,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.amount.post
 )
@@ -231,6 +254,7 @@ simplifiedAccount.post(
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.metadata.update,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.metadata.edit.get
 )
@@ -238,6 +262,7 @@ simplifiedAccount.get(
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.edit.metadata.update,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.metadata.edit.post
 )
@@ -245,6 +270,7 @@ simplifiedAccount.post(
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.edit.metadata.add,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.metadata.add.get
 )
@@ -252,6 +278,7 @@ simplifiedAccount.get(
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.edit.metadata.add,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.edit.metadata.add.post
 )
@@ -259,12 +286,14 @@ simplifiedAccount.post(
 simplifiedAccount.get(
   paths.simplifiedAccount.paymentLinks.delete,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.remove.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.paymentLinks.delete,
   experimentalFeature(Features.PAYMENT_LINKS),
+  requirePspOnboarding,
   permission('tokens:create'),
   servicesController.paymentLinks.remove.post
 )

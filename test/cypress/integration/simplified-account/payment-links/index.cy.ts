@@ -1,7 +1,7 @@
 import userStubs from '@test/cypress/stubs/user-stubs'
 import ROLES from '@test/fixtures/roles.fixtures'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
-import { SANDBOX } from '@models/constants/payment-providers'
+import { WORLDPAY } from '@models/constants/payment-providers'
 import { beforeEach } from 'mocha'
 import productStubs from '@test/cypress/stubs/products-stubs'
 import { buildPaymentLinkOptions } from '@test/cypress/integration/simplified-account/payment-links/helpers/product-builder'
@@ -9,6 +9,7 @@ import {
   checkServiceNavigation,
   checkTitleAndHeading,
 } from '@test/cypress/integration/simplified-account/common/assertions'
+import { WORLDPAY_CREDENTIAL_IN_CREATED_STATE } from '@test/fixtures/credentials.fixtures'
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -31,7 +32,12 @@ const PAYMENT_LINK_2 = buildPaymentLinkOptions({
 const PAYMENT_LINKS_URL = (serviceMode = 'test') =>
   `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links`
 
-const setupStubs = (role = 'admin', gatewayAccountType = 'test', products: object[] = []) => {
+interface StubOptions {
+  goLiveStage?: string
+  credentials?: unknown[]
+}
+
+const setupStubs = (role = 'admin', gatewayAccountType = 'test', products: object[] = [], opts: StubOptions = {}) => {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
       userExternalId: USER_EXTERNAL_ID,
@@ -39,11 +45,13 @@ const setupStubs = (role = 'admin', gatewayAccountType = 'test', products: objec
       serviceName: SERVICE_NAME,
       serviceExternalId: SERVICE_EXTERNAL_ID,
       role: (ROLES as Record<string, object>)[role],
+      goLiveStage: opts.goLiveStage,
     }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, gatewayAccountType, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       type: gatewayAccountType,
-      payment_provider: SANDBOX,
+      payment_provider: WORLDPAY,
+      gateway_account_credentials: opts.credentials,
     }),
     productStubs.getProductsByGatewayAccountIdAndTypeStub(products, GATEWAY_ACCOUNT_ID, 'ADHOC'),
     productStubs.getProductByExternalIdAndGatewayAccountIdStub(PAYMENT_LINK_1, GATEWAY_ACCOUNT_ID),
@@ -479,6 +487,39 @@ describe('PaymentLinks dashboard', () => {
             cy.get('.govuk-summary-card').should('not.exist')
           })
         })
+      })
+    })
+
+    describe('during psp onboarding', () => {
+      beforeEach(() => {
+        setupStubs('admin', 'live', [], {
+          goLiveStage: 'LIVE',
+          credentials: [WORLDPAY_CREDENTIAL_IN_CREATED_STATE],
+        })
+      })
+
+      it('should show PSP onboarding inset text', () => {
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/payment-links`)
+
+        cy.get('.govuk-inset-text')
+          .contains(
+            'Finish going live before you can create live payment links. Enter sandbox mode to view and create test payment links. '
+          )
+          .should('exist')
+          .within(() => {
+            cy.get('a')
+              .contains('Finish going live')
+              .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/live/settings/worldpay-details`)
+            cy.get('a')
+              .contains('Enter sandbox mode')
+              .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/live/enter-sandbox-mode`)
+          })
+      })
+
+      it('should not show the button to create a payment link', () => {
+        cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/live/payment-links`)
+        cy.contains('a', 'Create a live payment link').should('not.exist')
+        cy.contains('a', 'Create a test payment link').should('not.exist')
       })
     })
   })
