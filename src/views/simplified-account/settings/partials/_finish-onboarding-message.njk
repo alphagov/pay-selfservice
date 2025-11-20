@@ -1,6 +1,6 @@
 {% if currentGatewayAccount.paymentProvider | lower == 'stripe' %}
   {% set onboardingPath = paths.simplifiedAccount.settings.stripeDetails.index | formatServiceAndAccountPathsFor(currentService.externalId, currentGatewayAccount.type) %}
-  {% elseif currentGatewayAccount.paymentProvider | lower == 'worldpay' %}
+{% elif currentGatewayAccount.paymentProvider | lower == 'worldpay' %}
   {% set onboardingPath = paths.simplifiedAccount.settings.worldpayDetails.index | formatServiceAndAccountPathsFor(currentService.externalId, currentGatewayAccount.type) %}
 {% endif %}
 {% set sandboxModePath = paths.simplifiedAccount.enterSandboxMode.index | formatServiceAndAccountPathsFor(currentService.externalId, currentGatewayAccount.type) %}

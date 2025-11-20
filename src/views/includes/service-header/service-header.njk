@@ -9,7 +9,7 @@
             {% include 'includes/service-header/_status-tag.njk' %}
           {% endif %}
         </p>
-        {% if serviceView.statusTag !== 'UNKNOWN' or serviceView.statusTag !== 'LIVE' or serviceView.statusTag !== 'WORLDPAY_TEST' %}
+        {% if (serviceView.statusTag !== 'UNKNOWN') and (serviceView.statusTag !== 'LIVE') and (serviceView.statusTag !== 'WORLDPAY_TEST') %}
           {% include 'includes/service-header/_header-text.njk' %}
         {% endif %}
         <hr class="govuk-section-break govuk-section-break--visible" />

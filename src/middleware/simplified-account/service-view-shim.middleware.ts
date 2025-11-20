@@ -28,12 +28,12 @@ function serviceViewShim(
       req.account instanceof GatewayAccount ? req.account : new GatewayAccount(req.account as GatewayAccountData)
 
     req.serviceView = ServiceView.determineFor(service, account)
-    return next()
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     logger.warn('Service view shim used on incompatible route')
   }
+  return next()
 }
 
 export { serviceViewShim }
