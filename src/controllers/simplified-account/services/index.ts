@@ -1,5 +1,6 @@
 import * as dashboard from './dashboard/dashboard.controller'
 import * as enterSandboxMode from './enter-sandbox-mode/enter-sandbox-mode.controller'
+import * as exitSandboxMode from './exit-sandbox-mode/exit-sandbox-mode.controller'
 import * as myServices from './my-services.controller'
 import * as demoPayment from './make-a-demo-payment/make-a-demo-payment.controller'
 import * as paymentLinks from './payment-links/payment-links.controller'
@@ -10,6 +11,7 @@ export = {
   myServices,
   dashboard,
   enterSandboxMode,
+  exitSandboxMode,
   demoPayment,
   paymentLinks,
   agreements,
