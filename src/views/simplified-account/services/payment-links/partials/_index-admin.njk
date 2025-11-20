@@ -9,67 +9,28 @@
   }}
 {% endif %}
 
-{% if serviceMode === 'test' %}
-  <p class="govuk-body">
-    You can create test payment links to see how your service will work. You can use
-    {{ "mock card numbers" | docsLink("testing_govuk_pay/#mock-card-numbers-and-email-addresses") | safe }} to test
-    payment links.
-  </p>
-  <h2 class="govuk-heading-m">Prefill payment link fields</h2>
-  <p class="govuk-body">
-    You can test prefilling the amount, reference or both for users. Learn
-    {{ "how to create prefilled links" | docsLink("prefill_payment_links") | safe }}.
-  </p>
+{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
 
-  <h2 class="govuk-heading-m">Add metadata for reconciliation and reporting</h2>
-  <p class="govuk-body">
-    You can test adding metadata like cost centre codes or business area to your test payment links.
-  </p>
-{% else %}
-  <p class="govuk-body">
-    You can create payment links and send them to your users so they can pay you. The same payment link can be used by
-    all users of your service. You can create payment links without any technical knowledge.
-  </p>
-  <h2 class="govuk-heading-m">Prefill payment link fields</h2>
-  <p class="govuk-body">
-    You can prefill the amount, reference or both for users. Learn
-    {{ "how to create prefilled links" | docsLink("prefill_payment_links") | safe }}.
-  </p>
-
-  <h2 class="govuk-heading-m">Add metadata for reconciliation and reporting</h2>
-  <p class="govuk-body">You can add metadata like cost centre codes or business area to your payment links.</p>
+{% if isPspOnboarding %}
+  {% include "simplified-account/services/payment-links/partials/_finish-onboarding-message.njk" %}
 {% endif %}
 
-{{
-  govukAccordion({
-    id: "accordion-default",
-    classes: "disable-accordion-controls",
-    rememberExpanded: false,
-    items: [
-      {
-        heading: {
-        text: "See an example payment link"
-      },
-        content: {
-        html: examplePaymentLink
-      }
-      }
-    ]
-  })
-}}
+{% if not isPspOnboarding %}
+  {% include "simplified-account/services/payment-links/partials/_index-preamble.njk" %}
 
-<div class="govuk-button-group">
-  {{
-    govukButton({
-      text: "Create a " + serviceMode + " payment link",
-      href: createLink
-    })
-  }}
+  <div class="govuk-button-group">
+    {{
+      govukButton({
+        text: "Create a " + serviceMode + " payment link",
+        href: createLink
+      })
+    }}
 
-  <a class="govuk-link govuk-link--no-visited-state" href="{{ createLink }}?language=cy"
-    >Create a {{ serviceMode }} payment link in Welsh</a
-  >
-</div>
+    <a class="govuk-link govuk-link--no-visited-state" href="{{ createLink }}?language=cy"
+      >Create a {{ serviceMode }} payment link in Welsh</a
+    >
+  </div>
+{% endif %}
 
 {% if products.length > 0 %}
   <h2 class="govuk-heading-m">{{ serviceMode | smartCaps }} payment links ({{ products.length }})</h2>
@@ -101,7 +62,7 @@
                 visuallyHiddenText: 'payment link',
                 classes: "govuk-link govuk-link--no-visited-state"
               }
-            ]
+            ] if not isPspOnboarding else []
           }
         },
         rows: [
