@@ -1,6 +1,13 @@
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 
-export type Period = 'today' | 'yesterday' | 'previous-seven-days' | 'previous-thirty-days'
+export type Period =
+  | 'today'
+  | 'yesterday'
+  | 'previous-seven-days'
+  | 'previous-thirty-days'
+  | 'previous-month'
+  | 'last-12-months'
+  | 'all-time'
 
 interface DateTimeRange {
   start: DateTime
@@ -15,13 +22,11 @@ export const DT_FULL = {
   minute: '2-digit',
   second: undefined,
   timeZoneName: 'short',
-  hour12: true
+  hour12: true,
 } as DateTimeFormatOptions
 
 export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
-  const now = DateTime.now()
-    .setLocale('en-GB')
-    .setZone('Europe/London')
+  const now = DateTime.now().setLocale('en-GB').setZone('Europe/London')
   const yesterday = now.minus({ days: 1 })
 
   switch (period) {
@@ -43,6 +48,28 @@ export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
         end: yesterday.endOf('day'),
       }
 
+    case 'previous-month': {
+      const lastMonth = now.minus({ months: 1 })
+      return {
+        start: lastMonth.startOf('month'),
+        end: lastMonth.endOf('month'),
+      }
+    }
+
+    case 'last-12-months': {
+      return {
+        start: now.startOf('day').minus({ years: 1 }),
+        end: now,
+      }
+    }
+
+    case 'all-time': {
+      return {
+        start: now.startOf('day').minus({ years: 7 }),
+        end: now,
+      }
+    }
+
     default:
       // today
       return {
@@ -51,3 +78,9 @@ export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
       }
   }
 }
+
+export const last12MonthsStartDate = DateTime.now()
+  .setLocale('en-GB')
+  .setZone('Europe/London')
+  .startOf('day')
+  .minus({ years: 1 })

@@ -1,3 +1,7 @@
+import lodash from 'lodash'
+
+import { ResourceType } from './resource-type'
+
 export const Status = {
   // used for payments only
   UNDEFINED: 'UNDEFINED',
@@ -54,3 +58,33 @@ export const PaymentStatusFriendlyNames: Partial<Record<Status, string>> = {
   SUCCESS: 'Successful',
   ERROR: 'Error',
 }
+
+export const FriendlyNamesByType: Record<ResourceType, Partial<Record<Status, string>>> = {
+  PAYMENT: PaymentStatusFriendlyNames,
+  DISPUTE: DisputeStatusFriendlyNames,
+  REFUND: RefundStatusFriendlyNames,
+}
+
+export interface ConnectorStates {
+  paymentStates: string[] | undefined
+  refundStates: string[] | undefined
+  disputeStates: string[] | undefined
+}
+
+export function getFriendlyStatus(statusType: ResourceType, status: Status): string | undefined {
+  return FriendlyNamesByType[statusType][status]
+}
+
+export function getUniqueFriendlyNames(...statusMaps: Partial<Record<Status, string>>[]): string[] {
+  const allValues = statusMaps.flatMap((map) => Object.values(map))
+  const uniqueFriendlyNames = lodash.uniq(allValues)
+
+  return uniqueFriendlyNames
+}
+
+export const statusFriendlyNames = getUniqueFriendlyNames(PaymentStatusFriendlyNames, RefundStatusFriendlyNames)
+export const statusFriendlyNamesWithDisputes = getUniqueFriendlyNames(
+  PaymentStatusFriendlyNames,
+  RefundStatusFriendlyNames,
+  DisputeStatusFriendlyNames
+)
