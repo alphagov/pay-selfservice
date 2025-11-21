@@ -21,14 +21,6 @@
     {% endif %}
   {% elif serviceView.statusTag === 'GO_LIVE_REQUESTED' %}
     Your service is not live. You've requested a live account from the GOV.UK Pay team.
-  {% elif serviceView.statusTag === 'STRIPE_PSP_ONBOARDING_COMPLETE' %}
-    Your service is not live. You've requested a live account from the GOV.UK Pay Team. To test how GOV.UK Pay works
-    <a
-      class="govuk-link govuk-link--no-visited-state"
-      href="{{ paths.simplifiedAccount.enterSandboxMode.index | formatServiceAndAccountPathsFor(currentService.externalId, 'live') }}"
-    >
-      enter sandbox mode </a
-    >.
   {% elif serviceView.statusTag === 'PSP_ONBOARDING' %}
     {% if isAdminUser %}
       {% if currentGatewayAccount.paymentProvider | lower == 'stripe' %}
