@@ -29,7 +29,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         language: product.language,
         name: product.name,
         href: product.links.friendly.href,
-        reference: product.referenceLabel ?? 'Created by GOV.UK Pay',
+        reference: product.referenceLabel,
         details: product.description,
         amount: product.price ? penceToPoundsWithCurrency(product.price) : 'User can choose',
         editLink: formatServiceAndAccountPathsFor(
