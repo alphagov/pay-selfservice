@@ -1,0 +1,23 @@
+{% if serviceView.statusTag === 'LIVE' %}
+  {% set tagText = 'Live' %}
+  {% set tagColour = 'govuk-tag--green' %}
+{% elif serviceView.statusTag === 'GO_LIVE_REQUESTED' or serviceView.statusTag === 'GO_LIVE_IN_PROGRESS' or serviceView.statusTag === 'PSP_ONBOARDING' or serviceView.statusTag === 'STRIPE_PSP_ONBOARDING_COMPLETE' or serviceView.statusTag === 'TEST_ACCOUNT_ONLY' %}
+  {% set tagText = 'Not live yet' %}
+  {% set tagColour = 'govuk-tag--blue' %}
+{% elif serviceView.statusTag === 'SANDBOX_MODE' %}
+  {% set tagText = 'Sandbox mode' %}
+  {% set tagColour = 'govuk-tag--blue' %}
+{% elif serviceView.statusTag === 'WORLDPAY_TEST' %}
+  {% set tagText = 'Worldpay test' %}
+  {% set tagColour = 'govuk-tag--blue' %}
+{% elif serviceView.statusTag === 'RESTRICTED' %}
+  {% set tagText = 'Not taking payments' %}
+  {% set tagColour = 'govuk-tag--red' %}
+{% endif %}
+
+{{
+  govukTag({
+    text: tagText,
+    classes: tagColour
+  })
+}}

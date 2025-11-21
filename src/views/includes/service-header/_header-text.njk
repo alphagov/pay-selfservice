@@ -1,0 +1,63 @@
+<p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">
+  {% if serviceView.statusTag === 'TEST_ACCOUNT_ONLY' %}
+    Your service is not live. You can test how GOV.UK Pay works but you cannot take real payments yet.
+    {% if isAdminUser %}
+      <a
+        class="govuk-link govuk-link--no-visited-state"
+        href="{{ paths.service.requestToGoLive.index | formatServicePathsFor(currentService.externalId) }}"
+      >
+        Ask to go live
+      </a>
+    {% endif %}
+  {% elif serviceView.statusTag === 'GO_LIVE_IN_PROGRESS' %}
+    Your service is not live. You can test how GOV.UK Pay works but you cannot take real payments yet.
+    {% if isAdminUser %}
+      <a
+        class="govuk-link govuk-link--no-visited-state"
+        href="{{ paths.service.requestToGoLive.index | formatServicePathsFor(currentService.externalId) }}"
+      >
+        Continue your request to go live
+      </a>
+    {% endif %}
+  {% elif serviceView.statusTag === 'GO_LIVE_REQUESTED' %}
+    Your service is not live. You've requested a live account from the GOV.UK Pay team.
+  {% elif serviceView.statusTag === 'PSP_ONBOARDING' %}
+    {% if isAdminUser %}
+      {% if currentGatewayAccount.paymentProvider | lower == 'stripe' %}
+        {% set onboardingPath = paths.simplifiedAccount.settings.stripeDetails.index | formatServiceAndAccountPathsFor(currentService.externalId, currentGatewayAccount.type) %}
+      {% elif currentGatewayAccount.paymentProvider | lower == 'worldpay' %}
+        {% set onboardingPath = paths.simplifiedAccount.settings.worldpayDetails.index | formatServiceAndAccountPathsFor(currentService.externalId, currentGatewayAccount.type) %}
+      {% endif %}
+      Your service is not live. You cannot take real payments until you
+      <a class="govuk-link govuk-link--no-visited-state" href="{{ onboardingPath }}"> finish going live</a>. To test how
+      GOV.UK Pay works
+      <a
+        class="govuk-link govuk-link--no-visited-state"
+        href="{{ paths.simplifiedAccount.enterSandboxMode.index | formatServiceAndAccountPathsFor(currentService.externalId, 'live') }}"
+      >
+        enter sandbox mode</a
+      >.
+    {% else %}
+      Your service is not live. You cannot take real payments until you finish going live. To test how GOV.UK Pay works
+      <a
+        class="govuk-link govuk-link--no-visited-state"
+        href="{{ paths.simplifiedAccount.enterSandboxMode.index | formatServiceAndAccountPathsFor(currentService.externalId, 'live') }}"
+      >
+        enter sandbox mode </a
+      >.
+    {% endif %}
+  {% elif serviceView.statusTag === 'SANDBOX_MODE' %}
+    You're in sandbox mode. Some settings are not available. Only test payment data is shown.
+    <a
+      class="govuk-link govuk-link--no-visited-state"
+      href="{{ paths.simplifiedAccount.exitSandboxMode.index | formatServiceAndAccountPathsFor(currentService.externalId, 'test') }}"
+    >
+      Exit sandbox mode </a
+    >.
+  {% elif serviceView.statusTag === 'RESTRICTED' %}
+    You're not taking payments at the moment and you cannot make refunds. To start taking payments, email
+    <a class="govuk-link govuk-link--no-visited-state" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk">
+      govuk-pay-support@digital.cabinet-office.gov.uk </a
+    >.
+  {% endif %}
+</p>

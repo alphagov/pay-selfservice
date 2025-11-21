@@ -137,17 +137,25 @@ describe('Service Name Component', () => {
       cy.get('#service-name')
         .find('p')
         .eq(1)
-        .should(
-          'contain.text',
-          'Your service is not live. You can test how GOV.UK Pay works but you cannot take real payments yet.'
+        .contains(
+          'Your service is not live. You cannot take real payments until you finish going live. To test how GOV.UK Pay works enter sandbox mode.'
         )
-        .find('a')
-        .should('contain.text', 'Complete go live')
-        .should(
-          'have.attr',
-          'href',
-          `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/settings/worldpay-details`
-        )
+        .within(() => {
+          cy.get('a')
+            .contains('finish going live')
+            .should(
+              'have.attr',
+              'href',
+              `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/settings/worldpay-details`
+            )
+          cy.get('a')
+            .contains('enter sandbox mode')
+            .should(
+              'have.attr',
+              'href',
+              `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/enter-sandbox-mode`
+            )
+        })
     })
   })
 
@@ -165,17 +173,25 @@ describe('Service Name Component', () => {
       cy.get('#service-name')
         .find('p')
         .eq(1)
-        .should(
-          'contain.text',
-          'Your service is not live. You can test how GOV.UK Pay works but you cannot take real payments yet.'
+        .contains(
+          'Your service is not live. You cannot take real payments until you finish going live. To test how GOV.UK Pay works enter sandbox mode.'
         )
-        .find('a')
-        .should('contain.text', 'Complete go live')
-        .should(
-          'have.attr',
-          'href',
-          `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/settings/stripe-details`
-        )
+        .within(() => {
+          cy.get('a')
+            .contains('finish going live')
+            .should(
+              'have.attr',
+              'href',
+              `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/settings/stripe-details`
+            )
+          cy.get('a')
+            .contains('enter sandbox mode')
+            .should(
+              'have.attr',
+              'href',
+              `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.LIVE}/enter-sandbox-mode`
+            )
+        })
     })
   })
 
@@ -266,7 +282,7 @@ describe('Service Name Component', () => {
       cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/dashboard`)
       cy.get('#service-name').find('.govuk-body').should('contain.text', SERVICE_NAME.en)
       cy.get('#service-name').find('.govuk-tag').should('contain.text', 'Worldpay test')
-      cy.get('#service-name').find('.govuk-tag').should('have.class', 'govuk-tag--grey')
+      cy.get('#service-name').find('.govuk-tag').should('have.class', 'govuk-tag--blue')
       cy.get('#service-name').find('p').should('have.length', 1)
     })
   })

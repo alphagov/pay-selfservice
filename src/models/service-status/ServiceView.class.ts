@@ -7,8 +7,6 @@ import createLogger from '@utils/logger'
 
 const logger = createLogger(__filename)
 
-// TODO fully replace prepare-template-data.ts with this
-
 export const StatusTag: Record<string, StatusTag> = {
   LIVE: 'LIVE', // live account - service is live and able to take payments
   PSP_ONBOARDING: 'PSP_ONBOARDING', // live account - service is setting up their live account
@@ -24,6 +22,7 @@ export const StatusTag: Record<string, StatusTag> = {
 export type StatusTag =
   | 'LIVE'
   | 'PSP_ONBOARDING'
+  | 'STRIPE_PSP_ONBOARDING_COMPLETE'
   | 'GO_LIVE_REQUESTED'
   | 'GO_LIVE_IN_PROGRESS'
   | 'WORLDPAY_TEST'

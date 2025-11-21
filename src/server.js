@@ -134,6 +134,7 @@ function initialiseTemplateEngine(app) {
   nunjucksEnvironment.addFilter('addKey', (obj, key, value) => {
     return Object.assign({}, obj, { [key]: value })
   })
+  nunjucksEnvironment.addFilter('formatServicePathsFor', formatServicePathsFor)
   nunjucksEnvironment.addFilter('formatServiceAndAccountPathsFor', formatServiceAndAccountPathsFor)
 }
 

@@ -40,8 +40,8 @@
   {% if EnvironmentFeatures.isEnabled('header') %}
     {% include "includes/service-navigation.njk" %}
   {% endif %}
-  {% if EnvironmentFeatures.isEnabled('header') and serviceHeader %}
-    {% include "includes/service-header.njk" %}
+  {% if EnvironmentFeatures.isEnabled('header') and serviceView %}
+    {% include "includes/service-header/service-header.njk" %}
   {% endif %}
 {% endblock %}
 
