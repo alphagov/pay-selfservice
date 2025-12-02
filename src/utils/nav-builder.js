@@ -54,11 +54,7 @@ const serviceNavigationItems = (currentPath, permissions, type, currentUrl, serv
     navigationItems.push({
       id: 'navigation-menu-payment-links',
       name: 'Payment links',
-      url: Features.isEnabled(Features.PAYMENT_LINKS)
-        ? formatSimplifiedAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, serviceExternalId, account.type)
-        : (permissions.token_create &&
-            formatAccountPathsFor(paths.account.paymentLinks.start, gatewayAccountExternalId)) ||
-          formatAccountPathsFor(paths.account.paymentLinks.manage.index, gatewayAccountExternalId),
+      url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, serviceExternalId, account.type),
       current:
         currentPath !== '/' &&
         flattenNestedValues(paths.account.paymentLinks)

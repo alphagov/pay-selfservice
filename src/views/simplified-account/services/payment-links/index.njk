@@ -9,7 +9,7 @@
   {% include "simplified-account/services/payment-links/partials/_example-payment-link.njk" %}
 {% endset %}
 
-{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
+{% set isPspOnboarding = serviceView.statusTag === 'PSP_ONBOARDING' %}
 {% set viewOnly = isPspOnboarding or not isAdmin %}
 
 {% block serviceContent %}
@@ -20,7 +20,7 @@
         classes: "service-settings-inset-text--grey"
       })
     }}
-    {% elseif isPspOnboarding %}
+  {% elif isPspOnboarding %}
     {% include "simplified-account/services/payment-links/partials/_finish-onboarding-message.njk" %}
   {% endif %}
 

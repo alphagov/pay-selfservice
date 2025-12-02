@@ -18,7 +18,6 @@ import createLogger from '@utils/logger'
 import type { DateTime } from 'luxon'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
-import { Features } from '@root/config/experimental-features'
 
 const logger = createLogger(__filename)
 
@@ -60,8 +59,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         net: `${formatAccountPathsFor(paths.account.transactions.index, req.account.externalId)}?state=Success&state=Refund+success&${transactionsPeriodQueryParams}`,
       },
       dashboardActions: {
-        switchMode: Features.isEnabled(Features.MY_SERVICES)
-          ? req.account.type === GatewayAccountType.LIVE
+        switchMode:
+          req.account.type === GatewayAccountType.LIVE
             ? formatServiceAndAccountPathsFor(
                 paths.simplifiedAccount.enterSandboxMode.index,
                 req.service.externalId,
@@ -71,12 +70,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
                 paths.simplifiedAccount.exitSandboxMode.index,
                 req.service.externalId,
                 GatewayAccountType.TEST
-              )
-          : formatServiceAndAccountPathsFor(
-              paths.simplifiedAccount.dashboard.index,
-              req.service.externalId,
-              req.account.type === GatewayAccountType.LIVE ? GatewayAccountType.TEST : GatewayAccountType.LIVE
-            ),
+              ),
         demoPayment: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.demoPayment.index,
           req.service.externalId,

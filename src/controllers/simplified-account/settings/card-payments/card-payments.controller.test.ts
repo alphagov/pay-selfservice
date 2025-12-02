@@ -79,7 +79,7 @@ describe('Controller: settings/card-payments', () => {
         })
 
         it('should pass req, res and template path to the response method', () => {
-          expect(mockResponse.args[0][0].user).to.deep.equal(adminUser) // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+          expect(mockResponse.args[0][0].user).to.deep.equal(adminUser)  
           expect(mockResponse.args[0][1]).to.deep.equal(res)
           expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/card-payments/index')
         })
@@ -222,7 +222,7 @@ describe('Controller: settings/card-payments', () => {
         })
 
         it('should pass req, res and template path to the response method', () => {
-          expect(mockResponse.args[0][0].user).to.deep.equal(viewOnlyUser) // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+          expect(mockResponse.args[0][0].user).to.deep.equal(viewOnlyUser)  
           expect(mockResponse.args[0][1]).to.deep.equal(res)
           expect(mockResponse.args[0][2]).to.equal('simplified-account/settings/card-payments/index')
         })

@@ -9,12 +9,8 @@ const Features = {
   isEnabled: (featureName: string) => {
     return EXPERIMENTAL_FEATURES_FLAG && (FEATURE_SET.has('all') || FEATURE_SET.has(featureName))
   },
-  PAYMENT_LINKS: 'payment_links',
-  MY_SERVICES: 'my_services',
   TRANSACTIONS: 'transactions',
   SIDEBAR_NAV: 'sidebar_nav',
-  DASHBOARD: 'dashboard',
-  HEADER: 'header',
 }
 
 export { Features }

@@ -1,7 +1,7 @@
 {% extends "simplified-account/settings/settings-layout.njk" %}
 
 {% set settingsPageTitle = ("Test" if accountType === 'test' else "Live") + " API keys" %}
-{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
+{% set isPspOnboarding = serviceView.statusTag === 'PSP_ONBOARDING' %}
 
 {% block settingsContent %}
 
