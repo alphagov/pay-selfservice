@@ -24,7 +24,9 @@
 </div>
 
 {% if products.length > 0 %}
-  <h2 class="govuk-heading-m">{{ serviceMode | smartCaps }} payment links ({{ products.length }})</h2>
+  <h2 class="govuk-heading-m payment-links-list--header"
+    >{{ serviceMode | smartCaps }} payment links ({{ products.length }})</h2
+  >
   {% for product in products %}
     {% set productTitle %}
       {{ product.name }}
