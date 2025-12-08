@@ -28,7 +28,9 @@
 {% endif %}
 
 {% if products.length > 0 %}
-  <h2 class="govuk-heading-m">{{ serviceMode | smartCaps }} payment links ({{ products.length }})</h2>
+  <h2 class="govuk-heading-m payment-links-list--header"
+    >{{ serviceMode | smartCaps }} payment links ({{ products.length }})</h2
+  >
   {% for product in products %}
     {% set productTitle %}
       {{ product.name }}
@@ -85,5 +87,5 @@
     }}
   {% endfor %}
 {% else %}
-  <p class="govuk-body">There are no payment links.</p>
+  <p class="govuk-body payment-links-list--header">There are no payment links.</p>
 {% endif %}
