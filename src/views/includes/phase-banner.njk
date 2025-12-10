@@ -42,26 +42,6 @@
 
 {% set breadcrumbItems = [] %}
 
-{% if not EnvironmentFeatures.isEnabled('header') %}
-  {%
-    set breadcrumbItems = (breadcrumbItems.push({
-      text: "My services", href: routes.services.index
-    }), breadcrumbItems)
-  %}
-
-  {% if not hideServiceHeader and currentService.name %}
-    {%
-      set breadcrumbItems = (breadcrumbItems.push({
-        html: accountLabelWithTag
-      }), breadcrumbItems)
-    %}
-  {% endif %}
-
-  {% if breadcrumbItems | length > 0 %}
-    {{ breadcrumbs(breadcrumbItems) }}
-  {% endif %}
-{% endif %}
-
 {% if not hideServiceNav and not hideServiceHeader and not EnvironmentFeatures.isEnabled('sidebar_nav') %}
   {% set navItems = [] %}
   {% for item in serviceNavigationItems %}

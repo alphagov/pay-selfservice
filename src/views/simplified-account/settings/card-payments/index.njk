@@ -1,7 +1,7 @@
 {% extends "../settings-layout.njk" %}
 
 {% set settingsPageTitle = "Card payments" %}
-{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
+{% set isPspOnboarding = serviceView.statusTag === 'PSP_ONBOARDING' %}
 {% set viewOnly = isPspOnboarding or not userCanUpdatePaymentTypes %}
 
 {% block settingsContent %}

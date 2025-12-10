@@ -16,9 +16,7 @@
 {% block header %}
   {% set isSignInActive = true %}
   {% include "includes/header.njk" %}
-  {% if EnvironmentFeatures.isEnabled('header') %}
-    {% include "includes/service-navigation.njk" %}
-  {% endif %}
+  {% include "includes/service-navigation.njk" %}
 {% endblock %}
 
 {% block bodyStart %}

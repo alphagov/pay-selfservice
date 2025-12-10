@@ -5,7 +5,6 @@ import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
 import { ServiceView } from '@models/service-status/ServiceView.class'
 import createLogger from '@utils/logger'
-import { Features } from '@root/config/experimental-features'
 
 const logger = createLogger(__filename)
 
@@ -18,10 +17,6 @@ function serviceViewShim(
   res: Response,
   next: NextFunction
 ) {
-  if (!Features.isEnabled(Features.HEADER)) {
-    return next()
-  }
-
   try {
     const service = req.service instanceof Service ? req.service : new Service(req.service as ServiceData)
     const account =

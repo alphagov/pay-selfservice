@@ -59,7 +59,6 @@ const simplifiedAccountRoutes = require('./simplified-account-routes')
 const { registrationSuccess } = require('@services/auth.service')
 const { account: routes } = require('@root/paths')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
-import { Features } from '@root/config/experimental-features'
 import { serviceViewShim } from '@middleware/simplified-account/service-view-shim.middleware'
 
 // Assignments
@@ -160,12 +159,7 @@ module.exports.bind = function (app) {
   // -------------------------
 
   // My services
-  if (Features.isEnabled(Features.MY_SERVICES)) {
-    app.get(services.index, userIsAuthorised, homeController.myServices.get)
-  } else {
-    app.get(services.index, userIsAuthorised, servicesController.myServices.get)
-  }
-  app.get(services.index, userIsAuthorised, servicesController.myServices.get)
+  app.get(services.index, userIsAuthorised, homeController.myServices.get)
   app.get(services.create.index, userIsAuthorised, createServiceController.get)
   app.post(services.create.index, userIsAuthorised, createServiceController.post)
   app.post(services.create.selectOrgType, userIsAuthorised, selectOrgTypeController.post)

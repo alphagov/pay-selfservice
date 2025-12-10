@@ -2,7 +2,7 @@
 {% extends "../settings-layout.njk" %}
 
 {% set settingsPageTitle = "Webhooks" %}
-{% set isPspOnboarding = EnvironmentFeatures.isEnabled(EnvironmentFeatures.MY_SERVICES) and serviceView.statusTag === 'PSP_ONBOARDING' %}
+{% set isPspOnboarding = serviceView.statusTag === 'PSP_ONBOARDING' %}
 
 {% macro webhookSubscriptions(webhook) %}
   <ul class="govuk-list">
