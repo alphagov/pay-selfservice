@@ -1,7 +1,9 @@
 # pay-selfservice
+
 GOV.UK Pay Self Service admin tool (Node.js)
 
 ## Prerequisites
+
 * [Pay CLI](https://www.npmjs.com/package/@govuk-pay/cli)
 * You have [set up your local development environment](https://manual.payments.service.gov.uk/manual/development-processes/setup-local-dev-environment.html)
 
@@ -40,8 +42,9 @@ npm i
 npm run dev
  ```
 
-Open the application in browser: 
-- http://127.0.0.1:3000
+Open the application in browser:
+
+* <http://127.0.0.1:3000>
 
 #### Watching for changes
 
@@ -54,15 +57,17 @@ Any changes to the server code will restart the app; changes to client side asse
 ```bash
 pay local up --cluster admin --mount-local-node-apps --local selfservice
 ```
+
 This command will watch changes in your workspace and rebuild them in a Pay CLI managed `selfservice` task
 
 ## Running tests
 
-#### To run tests
+### To run tests
 
 ```bash
 npm run test
 ```
+
 This command will run all [mocha](https://mochajs.org/) test suites matching the glob patterns `*.test.js` or `*.test.ts`
 
 To run Cypress tests start the server in a separate terminal
@@ -70,7 +75,7 @@ To run Cypress tests start the server in a separate terminal
 ```bash
 npm run cypress:server
 ```
-    
+
 _This runs both the Cypress server and @govuk-pay/run-amock which is the mock server used for stubbing out external API calls._
 
 You can run Cypress tests headless or in a locally installed browser
@@ -82,7 +87,7 @@ npm run cypress:test-headed # in a browser
 
 #### Debugging Cypress tests
 
-You can start the Cypress server with in-line source maps and auto reload enabled by running `npm run cypress:dev-server`. 
+You can start the Cypress server with in-line source maps and auto reload enabled by running `npm run cypress:dev-server`.
 This will allow you to set breakpoints and step through the source when running a spec.
 
 ## Key environment variables
