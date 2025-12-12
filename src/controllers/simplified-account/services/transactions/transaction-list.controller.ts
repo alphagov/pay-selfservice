@@ -16,6 +16,7 @@ import {
 } from '@models/ledger/types/status'
 import { getPeriodUKDateTimeRange, Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { displayStatesToConnectorStates } from '@utils/simplified-account/services/transactions/transaction-status-utils'
+import { TransactionSearchParams } from '@models/ledger/TransactionSearchParams.class'
 
 const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
   const getPath = (pageNumber: number) => {
@@ -80,11 +81,19 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   const cardTypes = await getAllCardTypes()
 
+  const transactionSearchParams = TransactionSearchParams.fromSearchQuery(
+    gatewayAccountId,
+    currentPage,
+    PAGE_SIZE,
+    req.query
+  )
+  const results = await searchTransactions(transactionSearchParams)
+
   const eventStates = statusNames.map((state) => {
     return {
       value: state,
       text: state,
-      selected: filters.state?.includes(state),
+      selected: transactionSearchParams.state?.includes(state),
     }
   })
 
@@ -92,11 +101,11 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     return {
       value: card.brand,
       text: card.label === 'Jcb' ? card.label.toUpperCase() : card.label,
-      selected: filters.brand === card.brand,
+      selected: transactionSearchParams.brand === card.brand,
     }
   })
 
-  const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, filters as Record<string, string>)
+  // const results = await searchTransactions(gatewayAccountId, currentPage, PAGE_SIZE, filters as Record<string, string>)
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   if (totalPages > 0 && currentPage > totalPages) {

@@ -9,6 +9,7 @@ import { TransactionData } from '@models/ledger/dto/Transaction.dto'
 import { Transaction } from '@models/ledger/Transaction.class'
 import { Event } from '@models/ledger/Event.class'
 import { EventsData } from '@models/ledger/dto/Event.dto'
+import { TransactionSearchParams } from '@models/ledger/TransactionSearchParams.class'
 
 const SERVICE_NAME = 'ledger'
 const SERVICE_BASE_URL = process.env.LEDGER_URL!
@@ -42,8 +43,9 @@ class LedgerClient extends BaseClient {
 
   private get transactionsClient() {
     return {
-      search: async (params: LedgerTransactionParamsData) => {
-        const queryString = params.asQueryString()
+      search: async (params: TransactionSearchParams) => {
+        const queryString = params.toLedgerSearchParams().asQueryString()
+
         const path = `/v1/transaction?${queryString}`
         const response = await this.get<SearchData<TransactionData>>(path, 'get transactions')
         return {
