@@ -1,27 +1,7 @@
 import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import { TransactionSearchParams } from "@models/transaction/TransactionSearchParams.class";
 
-export interface LedgerTransactionParams {
-  accountIds: number[]
-  agreementId?: string
-  limitTotal?: boolean
-  limitTotalSize?: number
-  displaySize?: number
-  page?: number
-  cardholderName?: string
-  lastDigitsCardNumber?: string
-  metadataValue?: string
-  brand?: string
-  type?: string
-  reference?: string
-  email?: string
-  fromDate?: string
-  toDate?: string
-  paymentStates?: string[]
-  refundStates?: string[]
-  disputeStates?: string[]
-}
-
-export class LedgerTransactionParamsData {
+export class TransactionSearchParamsData {
   readonly account_id: string
   readonly agreement_id?: string
   readonly limit_total: string
@@ -41,7 +21,7 @@ export class LedgerTransactionParamsData {
   readonly refund_states?: string
   readonly dispute_states?: string
 
-  constructor(params: LedgerTransactionParams) {
+  constructor(params: TransactionSearchParams) {
     this.account_id = params.accountIds.join(',')
     this.agreement_id = params.agreementId?.toString() ?? undefined
     this.limit_total = params.limitTotal ? params.limitTotal.toString() : 'true'

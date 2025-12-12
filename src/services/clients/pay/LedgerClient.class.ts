@@ -3,12 +3,12 @@ import { TransactionSummary } from '@models/transaction/TransactionSummary.class
 import { TransactionSummaryData } from '@models/transaction/dto/TransactionSummary.dto'
 import { Agreement } from '@models/agreements/Agreement.class'
 import { AgreementData } from '@models/agreements/dto/Agreement.dto'
-import { LedgerTransactionParamsData } from '@models/transaction/dto/TransactionSearchParams.dto'
 import { SearchData } from '@models/common/SearchData.dto'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { Transaction } from '@models/transaction/Transaction.class'
 import { Event } from '@models/transaction/Event.class'
 import { EventsData } from '@models/transaction/dto/Event.dto'
+import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
 
 const SERVICE_NAME = 'ledger'
 const SERVICE_BASE_URL = process.env.LEDGER_URL!
@@ -42,10 +42,11 @@ class LedgerClient extends BaseClient {
 
   private get transactionsClient() {
     return {
-      search: async (params: LedgerTransactionParamsData) => {
-        const queryString = params.asQueryString()
-        const path = `/v1/transaction?${queryString}`
-        const response = await this.get<SearchData<TransactionData>>(path, 'get transactions')
+      search: async (params: TransactionSearchParams) => {
+        const path = `/v1/transaction`
+        const response = await this.get<SearchData<TransactionData>>(path, 'get transactions', {
+          params: params.toJson(),
+        })
         return {
           total: response.data.total,
           count: response.data.count,

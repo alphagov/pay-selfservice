@@ -6,12 +6,28 @@ import { LedgerRefundSummary } from '@models/common/refund-summary/LedgerRefundS
 import { SettlementSummary } from '@models/common/settlement-summary/SettlementSummary.class'
 import { CardDetails } from '@models/common/card-details/CardDetails.class'
 import { ResourceType } from './types/resource-type'
-import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFriendlyNames } from './types/status'
+import {
+  DisputeStatusFriendlyNames,
+  getFriendlyStatus,
+  PaymentStatusFriendlyNames,
+  RefundStatusFriendlyNames,
+} from './types/status'
 import { State } from './State.class'
 import { parseReason, Reason, ReasonFriendlyNames } from './types/reason'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
+import { TransactionLinksGenerator } from '@models/transaction/TransactionLinksGenerator.class'
 
 const TITLE_FRIENDLY_DATESTAMP_FORMAT = 'dd LLLL yyyy HH:mm:ss'
+
+interface DisplayValues {
+  fee: string
+  amountInPounds: string
+  totalAmount: string
+  netAmount: string
+  email: string | undefined
+  reference: string
+  status: string | undefined
+}
 
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
@@ -40,6 +56,9 @@ class Transaction {
   readonly reason?: Reason
   readonly evidenceDueDate?: DateTime
   readonly data: TransactionData
+  readonly paymentDetails?: Transaction
+  readonly displayValues: DisplayValues
+  readonly _links: TransactionLinksGenerator
 
   constructor(data: TransactionData) {
     this.gatewayAccountId = data.gateway_account_id
@@ -67,10 +86,23 @@ class Transaction {
     this.reason = data.reason ? parseReason(data.reason) : undefined
     this.evidenceDueDate = data.evidence_due_date ? DateTime.fromISO(data.evidence_due_date) : undefined
     this.data = data
-  }
+    this.paymentDetails = data.payment_details && new Transaction(data.payment_details)
 
-  amountInPounds(): string {
-    return penceToPoundsWithCurrency(this.amount)
+    const isRefund = this.transactionType === 'REFUND'
+    const isWonDispute = this.transactionType === 'DISPUTE' && this.state.status === 'WON'
+
+    this.displayValues = {
+      fee: this.fee ? penceToPoundsWithCurrency(this.fee) : '',
+      amountInPounds:
+        isRefund || isWonDispute ? penceToPoundsWithCurrency(-this.amount) : penceToPoundsWithCurrency(-this.amount),
+      netAmount: this.netAmount ? penceToPoundsWithCurrency(this.netAmount) : '',
+      totalAmount: this.totalAmount ? penceToPoundsWithCurrency(this.totalAmount) : '',
+      email: isRefund ? this.paymentDetails!.email : this.email,
+      reference: isRefund ? this.paymentDetails!.reference : this.reference,
+      status: getFriendlyStatus(this.transactionType, this.state.status),
+    }
+
+    this._links = new TransactionLinksGenerator(this.externalId)
   }
 
   refundableAmountRemainingInPounds(): string {
