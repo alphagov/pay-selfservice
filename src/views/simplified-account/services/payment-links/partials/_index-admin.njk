@@ -28,10 +28,23 @@
     >{{ serviceMode | smartCaps }} payment links ({{ products.length }})</h2
   >
   {% for product in products %}
-    {% set productTitle %}
-      {{ product.name }}
-      {% if product.language === 'cy' %}<br /><span class="govuk-!-font-weight-regular">(Welsh)</span>{% endif %}
-    {% endset %}
+    {% set isWelsh = product.language == 'cy' %}
+    {% set langAttr = '' %}
+    {% set refLangAttr = '' %}
+    {% if isWelsh %}
+      {% set langAttr = ' lang="cy"' %}
+      {% if product.reference != 'Created by GOV.UK Pay' %}
+        {% set refLangAttr = ' lang="cy"' %}
+      {% endif %}
+    {% endif %}
+
+
+{% set productTitle %}
+  <span{{ langAttr | safe }}>{{ product.name }}</span>
+  {% if isWelsh %}
+    <br /><span class="govuk-!-font-weight-regular">(Welsh)</span>
+  {% endif %}
+{% endset %}
 
     {{
       govukSummaryList({
@@ -60,36 +73,23 @@
         },
         rows: [
           {
-            key: {
-            text: 'Web address'
-          },
-            value: {
-            html: '<a href="' + product.href + '" class="govuk-link govuk-link--no-visited-state">' + product.href + '</a>'
-          }
+            key: { text: 'Web address' },
+            value: { html: '<a href="' + product.href + '" class="govuk-link govuk-link--no-visited-state">' + product.href + '</a>' }
           },
           {
-            key: {
-            text: 'Details'
-          },
-            value: {
-            html: product.details
-          }
+            key: { text: 'Details' },
+            value: { html: '<span' + langAttr + '>' + product.details + '</span>' }
           } if product.details,
           {
-            key: {
-            text: 'Payment reference'
-          },
-            value: {
-            text: product.reference
-          }
+            key: { text: 'Payment reference' },
+            value: { html: '<span' + refLangAttr + '>' + product.reference + '</span>' }
+          } if product.reference else {
+            key: { text: 'Payment reference' },
+            value: { text: 'Created by GOV.UK Pay' }
           },
           {
-            key: {
-            text: 'Payment amount'
-          },
-            value: {
-            text: product.amount
-          }
+            key: { text: 'Payment amount' },
+            value: { text: product.amount }
           }
         ]
       })
