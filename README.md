@@ -101,14 +101,12 @@ This will allow you to set breakpoints and step through the source when running 
 | Variable               | required |  default value  | Description                                                                                                                                           |
 |------------------------|:--------:|:---------------:|-------------------------------------------------------------------------------------------------------------------------------------------------------|
 | BIND_HOST              |          |    127.0.0.1    | The IP address for the application to bind to                                                                                                         |
-| PORT                   |    X     |      9200       | The port number for the express server to be bound at runtime                                                                                         |
-| SESSION_ENCRYPTION_KEY |    X     |                 | Key to be used by the cookie encryption algorithm. Should be a large unguessable string ([More Info](https://www.npmjs.com/package/client-sessions)). |
-| PUBLIC_AUTH_URL        |    X     |                 | The publicauth endpoint to use when API Tokens.                                                                                                       |
-| PUBLIC_AUTH_URL        |    X     |                 | The endpoint to connector base URL.                                                                                                                   |
+| PORT                   |    ✅     |      3000       | The port number for the express server to be bound at runtime                                                                                         |
+| SESSION_ENCRYPTION_KEY |    ✅     |                 | Key to be used by the cookie encryption algorithm. Should be a large unguessable string ([More Info](https://www.npmjs.com/package/client-sessions)). |
+| PUBLIC_AUTH_URL        |    ✅     |                 | The publicauth endpoint to use when API Tokens.                                                                                                       |
+| CONNECTOR_URL        |    ✅     |                 | The endpoint to connector base URL.                                                                                                                   |
 | DISABLE_INTERNAL_HTTPS |          | false/undefined | To switch off generating secure cookies. Set this to `true` only if you are running self service in a `non HTTPS` environment.                        |
-| HTTP_PROXY_ENABLED     |          | false/undefined | To enable proxying outbound traffic of HTTP(S) requests. If set to `true` make sure to set the following 3 variables                                  |
-| HTTP_PROXY             |          |                 | HTTP proxy url                                                                                                                                        |
-| HTTPS_PROXY            |          |                 | HTTPS proxy url                                                                                                                                       |
+| HTTP_PROXY             |          |                 | HTTP proxy url                                                                              
 | NO_PROXY               |          |                 | host:port(s) that need to be by passed by the proxy. Supports comma separated list                                                                    |
 
 ## Licence
