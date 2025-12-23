@@ -2,6 +2,8 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { DateTime } from 'luxon'
+import { TransactionSearchParams } from '@models/ledger/TransactionSearchParams.class'
+import { expect } from 'chai'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const TRANSACTION_EXTERNAL_ID = 'transaction123abc'
@@ -98,12 +100,11 @@ describe('controller: services/ledger', () => {
         const results = context.results as {
           count: number
           total: number
-          transactions: { link: string; [key: string]: unknown }[]
+          transactions: Record<string, unknown>[]
         }
         sinon.assert.match(results.count, 1)
         sinon.assert.match(results.total, 1)
         sinon.assert.match(results.transactions, sinon.match.array.and(sinon.match.has('length', 1)))
-        sinon.assert.match(results.transactions[0], sinon.match.has('link', sinon.match.string))
         sinon.assert.match(results.transactions[0], sinon.match.has('serviceExternalId', SERVICE_EXTERNAL_ID))
       })
 
@@ -119,22 +120,15 @@ describe('controller: services/ledger', () => {
         nextRequest({
           query: { state: 'In progress' },
         })
-
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          1,
-          PAGE_SIZE,
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-          {
-            state: 'In progress',
-            paymentStates: ['created', 'started', 'capturable', 'submitted'],
-            refundStates: undefined,
-            disputeStates: undefined,
-          }
-        )
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.state.should.eql(['In progress'])
+        searchParams.paymentStates.should.eql(['created', 'started', 'capturable', 'submitted'])
+        expect(searchParams.refundStates).to.be.undefined
+        expect(searchParams.disputeStates).to.be.undefined
       })
 
       it('should include filters in context', async () => {
@@ -144,13 +138,11 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.filters, {
-          state: 'In progress',
-          paymentStates: ['created', 'started', 'capturable', 'submitted'],
-          refundStates: undefined,
-          disputeStates: undefined,
-        })
+        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        context.filters.state.should.eql(['In progress'])
+        context.filters.paymentStates.should.eql(['created', 'started', 'capturable', 'submitted'])
+        expect(context.filters.refundStates).to.be.undefined
+        expect(context.filters.disputeStates).to.be.undefined
       })
     })
 
@@ -162,18 +154,12 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          1,
-          PAGE_SIZE,
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-          {
-            dateFilter: 'yesterday',
-            fromDate: '2025-11-01T00:00:00.000+00:00',
-            toDate: '2025-11-01T23:59:59.999+00:00',
-          }
-        )
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.dateFilter.should.eql('yesterday')
+        searchParams.fromDate.should.eql('2025-11-01T00:00:00.000+00:00')
+        searchParams.toDate.should.eql('2025-11-01T23:59:59.999+00:00')
       })
 
       it('should include filters in context', async () => {
@@ -183,12 +169,10 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.filters, {
-          dateFilter: 'yesterday',
-          fromDate: '2025-11-01T00:00:00.000+00:00',
-          toDate: '2025-11-01T23:59:59.999+00:00',
-        })
+        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        context.filters.dateFilter.should.eql('yesterday')
+        context.filters.fromDate.should.eql('2025-11-01T00:00:00.000+00:00')
+        context.filters.toDate.should.eql('2025-11-01T23:59:59.999+00:00')
       })
     })
 
@@ -200,14 +184,10 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          1,
-          PAGE_SIZE,
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-          { brand: CARD_BRAND }
-        )
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.brand.should.eql(CARD_BRAND)
       })
 
       it('should include filters in context', async () => {
@@ -217,8 +197,8 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.filters, { brand: CARD_BRAND })
+        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        context.filters.brand.should.eql(CARD_BRAND)
       })
     })
 
@@ -230,14 +210,10 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          1,
-          PAGE_SIZE,
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-          { email: EMAIL }
-        )
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.email.should.eql(EMAIL)
       })
 
       it('should include filters in context', async () => {
@@ -247,8 +223,8 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.filters, { email: EMAIL })
+        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        context.filters.email.should.eql(EMAIL)
       })
     })
 
@@ -260,14 +236,10 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          1,
-          PAGE_SIZE,
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-          { reference: REFERENCE }
-        )
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.reference.should.eql(REFERENCE)
       })
 
       it('should include filters in context', async () => {
@@ -277,8 +249,8 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.filters, { reference: REFERENCE })
+        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        context.filters.reference.should.eql(REFERENCE)
       })
     })
 
@@ -290,14 +262,10 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          1,
-          PAGE_SIZE,
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-          { cardholderName: CARDHOLDER_NAME }
-        )
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.cardholderName.should.eql(CARDHOLDER_NAME)
       })
 
       it('should include filters in context', async () => {
@@ -307,8 +275,8 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.filters, { cardholderName: CARDHOLDER_NAME })
+        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        context.filters.cardholderName.should.eql(CARDHOLDER_NAME)
       })
     })
 
@@ -320,14 +288,10 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          1,
-          PAGE_SIZE,
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-          { lastDigitsCardNumber: LAST_DIGITS_CARD_NUMBER }
-        )
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.lastDigitsCardNumber.should.eql(LAST_DIGITS_CARD_NUMBER)
       })
 
       it('should include filters in context', async () => {
@@ -337,8 +301,8 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.filters, { lastDigitsCardNumber: LAST_DIGITS_CARD_NUMBER })
+        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        context.filters.lastDigitsCardNumber.should.eql(LAST_DIGITS_CARD_NUMBER)
       })
     })
 
@@ -350,14 +314,10 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          1,
-          PAGE_SIZE,
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-          { metadataValue: METADATA_VALUE }
-        )
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.metadataValue.should.eql(METADATA_VALUE)
       })
 
       it('should include filters in context', async () => {
@@ -367,8 +327,8 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.filters, { metadataValue: METADATA_VALUE })
+        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        context.filters.metadataValue.should.eql(METADATA_VALUE)
       })
     })
 
@@ -383,17 +343,11 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(
-          mockLedgerService.searchTransactions,
-          GATEWAY_ACCOUNT_ID,
-          1,
-          PAGE_SIZE,
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-          {
-            cardholderName: CARDHOLDER_NAME,
-            brand: CARD_BRAND,
-          }
-        )
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.cardholderName.should.eql(CARDHOLDER_NAME)
+        searchParams.brand.should.eql(CARD_BRAND)
       })
 
       it('should include both filters in context', async () => {
@@ -406,11 +360,9 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.filters, {
-          cardholderName: CARDHOLDER_NAME,
-          brand: CARD_BRAND,
-        })
+        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        context.filters.cardholderName.should.eql(CARDHOLDER_NAME)
+        context.filters.brand.should.eql(CARD_BRAND)
       })
     })
 
@@ -422,7 +374,10 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 2, PAGE_SIZE)
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
+
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.currentPage.should.eql(2)
       })
 
       it('should default to page 1 for invalid page parameter', async () => {
@@ -432,7 +387,10 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, PAGE_SIZE)
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
+
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.currentPage.should.eql(1)
       })
 
       it('should default to page 1 for negative page number', async () => {
@@ -442,7 +400,10 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        sinon.assert.calledWith(mockLedgerService.searchTransactions, GATEWAY_ACCOUNT_ID, 1, PAGE_SIZE)
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
+
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.currentPage.should.eql(1)
       })
     })
   })

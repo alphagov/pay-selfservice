@@ -11,7 +11,8 @@ interface TransactionSearchQuery {
   reference?: string
   email?: string
   dateFilter?: string
-  state?: string[]
+  state?: string | string[]
+  page?: string | number
 }
 
 export class TransactionSearchParams {
@@ -37,6 +38,7 @@ export class TransactionSearchParams {
   paymentStates?: string[]
   refundStates?: string[]
   disputeStates?: string[]
+  baseQuery?: TransactionSearchQuery
 
   constructor(gatewayAccountId: number, currentPage: number, pageSize: number) {
     this.accountIds = [gatewayAccountId]
@@ -48,20 +50,24 @@ export class TransactionSearchParams {
     return new LedgerTransactionParamsData(this)
   }
 
-  static fromSearchQuery(
-    gatewayAccountId: number,
-    currentPage: number,
-    pageSize: number,
-    queryParams: TransactionSearchQuery
-  ) {
-    const searchParams = new TransactionSearchParams(gatewayAccountId, currentPage, pageSize)
+  getQueryParams() {
+    return new URLSearchParams(this.baseQuery as Record<string, string>)
+  }
 
-    searchParams.cardholderName = queryParams.cardholderName
-    searchParams.lastDigitsCardNumber = queryParams.lastDigitsCardNumber
-    searchParams.metadataValue = queryParams.metadataValue
-    searchParams.brand = queryParams.brand
-    searchParams.reference = queryParams.reference
-    searchParams.email = queryParams.email
+  static fromSearchQuery(gatewayAccountId: number, pageSize: number, queryParams: TransactionSearchQuery) {
+    const currentPageNumber = parsePageNumber(
+      typeof queryParams.page === 'string' ? queryParams.page : `${queryParams.page}`
+    )
+
+    const searchParams = new TransactionSearchParams(gatewayAccountId, currentPageNumber, pageSize)
+    searchParams.baseQuery = queryParams
+
+    searchParams.cardholderName = nonEmpty(queryParams.cardholderName)
+    searchParams.lastDigitsCardNumber = nonEmpty(queryParams.lastDigitsCardNumber)
+    searchParams.metadataValue = nonEmpty(queryParams.metadataValue)
+    searchParams.brand = nonEmpty(queryParams.brand)
+    searchParams.reference = nonEmpty(queryParams.reference)
+    searchParams.email = nonEmpty(queryParams.email)
 
     if (queryParams.dateFilter) {
       const dateRange = getPeriodUKDateTimeRange(queryParams.dateFilter as Period)
@@ -74,7 +80,7 @@ export class TransactionSearchParams {
     if (queryParams.state) {
       const stateFilters = convertStateFilter(queryParams.state)
 
-      searchParams.state = queryParams.state
+      searchParams.state = Array.isArray(queryParams.state) ? queryParams.state : [queryParams.state]
       searchParams.paymentStates = stateFilters.paymentStates
       searchParams.refundStates = stateFilters.refundStates
       searchParams.disputeStates = stateFilters.disputeStates
@@ -84,6 +90,23 @@ export class TransactionSearchParams {
   }
 }
 
-function convertStateFilter(stateFilters: string[]): ConnectorStates {
+function convertStateFilter(stateFilters: string | string[]): ConnectorStates {
   return displayStatesToConnectorStates(stateFilters)
+}
+
+function parsePageNumber(pageNumber?: string) {
+  if (!pageNumber) {
+    return 1
+  }
+
+  const parsedPageNumber = Number(pageNumber)
+  if (isNaN(parsedPageNumber) || parsedPageNumber < 1) {
+    return 1
+  }
+
+  return parsedPageNumber
+}
+
+const nonEmpty = (value: string | undefined) => {
+  return value === '' ? undefined : value
 }
