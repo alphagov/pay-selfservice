@@ -1,4 +1,4 @@
-FROM node:22.21.1-alpine3.22@sha256:b2358485e3e33bc3a33114d2b1bdb18cdbe4df01bd2b257198eb51beb1f026c5 AS base
+FROM node:22.22.0-alpine3.22@sha256:0c49915657c1c77c64c8af4d91d2f13fe96853bbd957993ed00dd592cbecc284 AS base
 
 WORKDIR /app
 RUN apk upgrade --no-cache \
