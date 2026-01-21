@@ -4,7 +4,6 @@ import { CardDetailsData } from '@models/common/card-details/dto/CardDetails.dto
 import { LedgerRefundSummaryData } from '@models/common/refund-summary/dto/LedgerRefundSummary.dto'
 import { ResourceType } from '../types/resource-type'
 import { StateData } from './State.dto'
-import { PaymentDetailsData } from './PaymentDetails.dto'
 
 export interface TransactionData {
   gateway_account_id: string
@@ -40,5 +39,5 @@ export interface TransactionData {
   transaction_id: string
   evidence_due_date?: string // dispute only
   reason?: string // dispute only
-  payment_details?: PaymentDetailsData
+  payment_details?: TransactionData
 }
