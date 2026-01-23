@@ -109,6 +109,8 @@
     "@govuk-pay/run-amock": "0.0.9",
     "@pact-foundation/pact": "^12.1.1",
     "@pact-foundation/pact-core": "^14.0.5",
+    "@percy/cli": "^1.31.8",
+    "@percy/cypress": "^3.1.7",
     "@types/chai": "^5.2.2",
     "@types/client-sessions": "^0.8.6",
     "@types/express": "^5.0.1",
