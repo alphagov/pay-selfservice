@@ -8,6 +8,7 @@ describe('Cookie banner', () => {
 
   describe('Visiting application for first time', () => {
     it('Should show cookie banner on page load', () => {
+      cy.percySnapshot()
       cy.get('#pay-cookie-banner').should('have.css', 'display', 'block')
     })
 
