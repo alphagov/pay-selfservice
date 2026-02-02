@@ -3,6 +3,8 @@ import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-accoun
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 import { DateTime } from 'luxon'
+import { ResourceType } from '@models/ledger/types/resource-type'
+import { AuthorisationSummary } from '@models/common/authorisation-summary/AuthorisationSummary.class'
 
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
@@ -14,11 +16,20 @@ const SERVICE_NAME = {
 }
 
 const CREATED_TIMESTAMP = DateTime.fromISO('2026-02-02T10:06:17.152Z')
+const FORMATTED_CREATED_TIMESTAMP = CREATED_TIMESTAMP.toFormat('dd MMM yyyy HH:mm:ss')
 
 const TRANSACTION = {
   transaction_id: '9q0fkobhsiu7jgfcrfuhrt52co',
-  reference: 'ref188888',
+  reference: 'REF1888888',
   created_date: CREATED_TIMESTAMP,
+  description: 'new passport',
+  state: { finished: true, status: 'success' },
+  transactionType: ResourceType.PAYMENT,
+  authorisation_summary: {
+    three_d_secure: {
+      required: true
+    }
+  },
   events: [{
     amount: 1250,
     state: {
@@ -31,8 +42,6 @@ const TRANSACTION = {
     data: {}
   }]
 }
-
-
 
 
 const TRANSACTION_URL = (serviceMode: string) =>
@@ -75,11 +84,51 @@ describe('Transaction details page', () => {
   })
 
   it('should display correct page title and heading', () => {
-    cy.title().should('eq', `Transaction details - ${CREATED_TIMESTAMP.toFormat('dd MMM yyyy HH:mm:ss')} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`)
+    cy.title().should('eq', `Transaction details - ${FORMATTED_CREATED_TIMESTAMP} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`)
     cy.get('h1').should('contain.text', 'Transaction Details')
   })
 
   it('should display transaction details correctly', () => {
+    cy.get('.govuk-summary-list__row')
+      .eq(0)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Reference number')
+        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.reference)
+      })
 
+    cy.get('.govuk-summary-list__row')
+      .eq(1)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Service name')
+        cy.get('.govuk-summary-list__value').should('contain.text', SERVICE_NAME.en)
+      })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(2)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Description')
+        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.description)
+      })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(3)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Date created')
+        cy.get('.govuk-summary-list__value').should('contain.text', CREATED_TIMESTAMP.toFormat('dd LLL yyyy — HH:mm:ss'))
+      })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(4)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Payment status')
+        cy.get('.govuk-summary-list__value').should('contain.text', 'Successful')
+      })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(5)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', '3D Secure (3DS)')
+        cy.get('.govuk-summary-list__value').should('contain.text', 'Required')
+      })
   })
 })
