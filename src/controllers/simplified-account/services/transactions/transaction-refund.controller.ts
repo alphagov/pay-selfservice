@@ -1,5 +1,5 @@
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
-import { getTransaction } from '@services/ledger.service'
+import { getTransaction } from '@services/transactions.service'
 import { response } from '@utils/response'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'

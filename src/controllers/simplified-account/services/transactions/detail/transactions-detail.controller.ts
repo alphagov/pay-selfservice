@@ -1,5 +1,5 @@
 import paths from '@root/paths'
-import { getTransaction, getEvents, getDisputes } from '@services/ledger.service'
+import { getTransaction, getEvents, getDisputes } from '@services/transactions.service'
 import formatAccountPathsFor from '@utils/format-account-paths-for'
 import { response } from '@utils/response'
 import {

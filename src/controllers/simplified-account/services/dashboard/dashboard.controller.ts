@@ -1,6 +1,6 @@
 import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
-import { dashboardTransactionSummary } from '@services/ledger.service'
+import { dashboardTransactionSummary } from '@services/transactions.service'
 import { DT_FULL, getPeriodUKDateTimeRange, Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import formatAccountPathsFor from '@utils/format-account-paths-for'
 import paths from '@root/paths'

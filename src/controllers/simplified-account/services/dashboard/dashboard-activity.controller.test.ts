@@ -142,7 +142,7 @@ const { nextRequest, call } = new ControllerTestBuilder(
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@utils/simplified-account/services/dashboard/actions-utils': actionsUtilsProxy, // this messes with breakpoints
-    '@services/ledger.service': mockLedgerService,
+    '@services/transactions.service': mockLedgerService,
   })
   .build()
 

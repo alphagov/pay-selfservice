@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
-import { ResourceType } from '@models/ledger/types/resource-type'
-import { Reason } from '@models/ledger/types/reason'
+import { ResourceType } from '@models/transaction/types/resource-type'
+import { Reason } from '@models/transaction/types/reason'
 import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
-import { Transaction } from '@models/ledger/Transaction.class'
+import { Transaction } from '@models/transaction/Transaction.class'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 

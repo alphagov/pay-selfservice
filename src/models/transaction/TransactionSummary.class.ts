@@ -1,4 +1,4 @@
-import { TransactionSummaryData } from '@models/ledger/dto/TransactionSummary.dto'
+import { TransactionSummaryData } from '@models/transaction/dto/TransactionSummary.dto'
 
 interface SummaryDetail {
   count: number
@@ -18,7 +18,7 @@ export class TransactionSummary {
     this.netIncome = data?.net_income ?? 0
   }
 
-  private createSummaryDetail(detail?: { count?: number, gross_amount?: number }) {
+  private createSummaryDetail(detail?: { count?: number; gross_amount?: number }) {
     return {
       count: detail?.count ?? 0,
       grossAmount: detail?.gross_amount ?? 0,

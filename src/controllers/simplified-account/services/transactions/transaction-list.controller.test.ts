@@ -56,7 +56,7 @@ const { nextRequest, call } = new ControllerTestBuilder(
 )
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/ledger.service': mockLedgerService,
+    '@services/transactions.service': mockLedgerService,
     '@services/card-types.service': mockCardTypesService,
   })
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
