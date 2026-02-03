@@ -20,7 +20,11 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     ...(transaction.disputed && { dispute: (await getDisputes(req.params.transactionExternalId, req.account.id))[0] }),
   }
   return response(req, res, 'simplified-account/services/transactions/detail/index', {
-    backLink: formatAccountPathsFor(paths.account.transactions.index, req.account.externalId) as string,
+    backLink: formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.transactions.index,
+      req.service.externalId,
+      req.account.type
+    ),
     refundLink: formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.transactions.refund,
       req.service.externalId,
