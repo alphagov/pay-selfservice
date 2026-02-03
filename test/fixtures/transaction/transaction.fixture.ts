@@ -5,6 +5,7 @@ import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-
 import { Transaction } from '@models/transaction/Transaction.class'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
+import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 
 export class TransactionFixture {
   gatewayAccountId: string
@@ -70,8 +71,8 @@ export class TransactionFixture {
     }
   }
 
-  toTransaction() {
-    return new Transaction({
+  toTransactionData(): TransactionData {
+    return {
       gateway_account_id: this.gatewayAccountId,
       service_id: this.serviceExternalId,
       credential_external_id: this.credentialExternalId,
@@ -103,6 +104,10 @@ export class TransactionFixture {
       evidence_due_date: this.evidenceDueDate ? this.evidenceDueDate.toISODate()! : undefined,
       reason: this.reason,
       refund_summary: this.refundSummary?.toLedgerRefundSummaryData(),
-    })
+    }
+  }
+
+  toTransaction() {
+    return new Transaction(this.toTransactionData())
   }
 }
