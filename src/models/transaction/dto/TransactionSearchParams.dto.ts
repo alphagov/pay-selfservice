@@ -1,5 +1,5 @@
 import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
-import { TransactionSearchParams } from "@models/transaction/TransactionSearchParams.class";
+import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
 
 export class TransactionSearchParamsData {
   readonly account_id: string
