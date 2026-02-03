@@ -3,8 +3,8 @@ import {
   PaymentStatusFriendlyNames,
   RefundStatusFriendlyNames,
   Status,
-} from '@models/ledger/types/status'
-import { ConnectorStates } from '@models/ledger/types/status'
+} from '@models/transaction/types/status'
+import { ConnectorStates } from '@models/transaction/types/status'
 import lodash from 'lodash'
 
 export function displayStatesToConnectorStates(displayStates: string | string[]): ConnectorStates {

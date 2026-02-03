@@ -1,6 +1,6 @@
-import { Status } from '@models/ledger/types/status'
-import { State } from '@models/ledger/State.class'
-import { StateData } from '@models/ledger/dto/State.dto'
+import { Status } from '@models/transaction/types/status'
+import { State } from '@models/transaction/State.class'
+import { StateData } from '@models/transaction/dto/State.dto'
 
 export class TransactionStateFixture {
   readonly status: Status

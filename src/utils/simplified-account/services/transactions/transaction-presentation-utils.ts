@@ -1,11 +1,11 @@
-import { Transaction } from '@models/ledger/Transaction.class'
-import { Event } from '@models/ledger/Event.class'
+import { Transaction } from '@models/transaction/Transaction.class'
+import { Event } from '@models/transaction/Event.class'
 import Service from '@models/service/Service.class'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import _ from 'lodash'
 import changeCase from 'change-case'
-import { EventType } from '@models/ledger/types/event-type'
-import { Status } from '@models/ledger/types/status'
+import { EventType } from '@models/transaction/types/event-type'
+import { Status } from '@models/transaction/types/status'
 
 const DATESTAMP_FORMAT = 'dd LLL yyyy — HH:mm:ss'
 
