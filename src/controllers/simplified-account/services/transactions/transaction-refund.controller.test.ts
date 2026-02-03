@@ -43,7 +43,7 @@ const { req, res, nextRequest, call } = new ControllerTestBuilder(
 )
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/ledger.service': { getTransaction: getTransactionStub },
+    '@services/transactions.service': { getTransaction: getTransactionStub },
     '@services/charge.service': { submitRefund: submitRefundStub },
   })
   .withServiceExternalId(SERVICE_EXTERNAL_ID)

@@ -1,5 +1,5 @@
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
-import { searchTransactions } from '@services/ledger.service'
+import { searchTransactions } from '@services/transactions.service'
 import { response } from '@utils/response'
 import { isBritishSummerTime } from '@utils/dates'
 import getPagination from '@utils/simplified-account/pagination'
@@ -13,7 +13,7 @@ import {
   getFriendlyStatus,
   statusFriendlyNamesWithDisputes,
   ConnectorStates,
-} from '@models/ledger/types/status'
+} from '@models/transaction/types/status'
 import { getPeriodUKDateTimeRange, Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { displayStatesToConnectorStates } from '@utils/simplified-account/services/transactions/transaction-status-utils'
 

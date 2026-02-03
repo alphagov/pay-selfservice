@@ -1,4 +1,4 @@
-import { TransactionData } from '@models/ledger/dto/Transaction.dto'
+import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { DateTime } from 'luxon'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { AuthorisationSummary } from '@models/common/authorisation-summary/AuthorisationSummary.class'
