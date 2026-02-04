@@ -303,4 +303,37 @@ describe('Transaction details page', () => {
         cy.get('.govuk-summary-list__value').should('contain.text', 'Apple Pay')
       })
   })
+
+  it('should display fees when present', () => {
+    const transactionAmounts = { corporateCardSurcharge: 25, fee: 15, totalAmount: 1075 }
+    const transactionWithFees = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      transactionStubs.getLedgerTransactionSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionDetails: transactionWithFees,
+      }),
+      transactionStubs.getLedgerEventsSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionId: transactionWithFees.transaction_id,
+        events: TRANSACTION_EVENTS
+      })
+    ])
+    cy.visit(TRANSACTION_URL(TEST))
+
+    cy.get('.govuk-summary-list__row')
+      .eq(5)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Payment amount')
+        cy.get('.govuk-summary-list__value').should('contain.text',
+          `${penceToPoundsWithCurrency(transactionAmounts.totalAmount)} (including card fee of ${penceToPoundsWithCurrency(transactionAmounts.corporateCardSurcharge)})`)
+      })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(6)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Provider fee')
+        cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(15))
+      })
+  })
 })
