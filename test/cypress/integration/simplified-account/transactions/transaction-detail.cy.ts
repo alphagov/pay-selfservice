@@ -7,49 +7,33 @@ import { ResourceType } from '@models/transaction/types/resource-type'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { SANDBOX } from '@models/constants/payment-providers'
 import changeCase from 'change-case'
+import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
+import { AuthorisationSummaryFixture } from '@test/fixtures/transaction/authorisation-summary.fixture'
 
+const TRANSACTION = new TransactionFixture().toTransactionData()
+const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO(TRANSACTION.created_date)
+
+const TRANSACTION_EVENTS = [{
+  amount: 1250,
+  state: {
+    finished: false,
+    status: 'created'
+  },
+  resource_type: 'PAYMENT',
+  event_type: 'PAYMENT_CREATED',
+  timestamp: TRANSACTION_CREATED_TIMESTAMP,
+  data: {}
+}]
+
+const FORMATTED_CREATED_TIMESTAMP = DateTime.fromISO(TRANSACTION.created_date).toFormat('dd MMM yyyy HH:mm:ss')
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
-const GATEWAY_ACCOUNT_ID = 117
-const SERVICE_EXTERNAL_ID = 'service123abc'
+const GATEWAY_ACCOUNT_ID = TRANSACTION.gateway_account_id
+const SERVICE_EXTERNAL_ID = TRANSACTION.service_id
 const SERVICE_NAME = {
   en: 'McDuck Enterprises',
   cy: 'Mentrau McDuck',
 }
-
-const CREATED_TIMESTAMP = DateTime.fromISO('2026-02-02T10:06:17.152Z')
-const FORMATTED_CREATED_TIMESTAMP = CREATED_TIMESTAMP.toFormat('dd MMM yyyy HH:mm:ss')
-
-const createTransaction = (includeAuthSummary: boolean, includeCardDetails: boolean, threeDSecureRequired?: boolean, walletType?: string) => ({
-  amount: 15049,
-  transaction_id: '9q0fkobhsiu7jgfcrfuhrt52co',
-  reference: 'REF1888888',
-  created_date: CREATED_TIMESTAMP,
-  description: 'new passport',
-  state: { finished: true, status: 'success' },
-  wallet_type: walletType,
-  transactionType: ResourceType.PAYMENT,
-  ...(includeAuthSummary && {
-    authorisation_summary: {
-      three_d_secure: {
-        required: threeDSecureRequired
-      }
-    }
-  }),
-  events: [{
-    amount: 1250,
-    state: {
-      finished: false,
-      status: 'created'
-    },
-    resource_type: 'PAYMENT',
-    event_type: 'PAYMENT_CREATED',
-    timestamp: CREATED_TIMESTAMP,
-    data: {}
-  }]
-})
-
-const TRANSACTION = createTransaction(true, true, true)
 
 const TRANSACTION_URL = (serviceMode: string) =>
   `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/transactions/${TRANSACTION.transaction_id}`
@@ -83,7 +67,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION.events
+        events: TRANSACTION_EVENTS
       })
     ])
     cy.visit(TRANSACTION_URL(TEST))
@@ -100,7 +84,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION.events
+        events: TRANSACTION_EVENTS
       })
     ])
 
@@ -123,7 +107,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION.events
+        events: TRANSACTION_EVENTS
       })
     ])
 
@@ -154,7 +138,8 @@ describe('Transaction details page', () => {
       .eq(3)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Date created')
-        cy.get('.govuk-summary-list__value').should('contain.text', CREATED_TIMESTAMP.toFormat('dd LLL yyyy — HH:mm:ss'))
+        cy.get('.govuk-summary-list__value').should('contain.text',
+          DateTime.fromISO(TRANSACTION.created_date).toFormat('dd LLL yyyy — HH:mm:ss'))
       })
 
     cy.get('.govuk-summary-list__row')
@@ -167,64 +152,64 @@ describe('Transaction details page', () => {
     cy.get('.govuk-summary-list__row')
       .eq(5)
       .within(() => {
-        cy.get('.govuk-summary-list__key').should('contain.text', '3D Secure (3DS)')
-        cy.get('.govuk-summary-list__value').should('contain.text', 'Required')
-      })
-
-    cy.get('.govuk-summary-list__row')
-      .eq(6)
-      .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Payment amount')
         cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(TRANSACTION.amount))
       })
 
     cy.get('.govuk-summary-list__row')
-      .eq(7)
+      .eq(6)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Payment type')
         cy.get('.govuk-summary-list__value').should('contain.text', 'Card')
       })
 
     cy.get('.govuk-summary-list__row')
-      .eq(8)
+      .eq(7)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Card brand')
         cy.get('.govuk-summary-list__value').should('contain.text', 'Visa')
       })
 
     cy.get('.govuk-summary-list__row')
-      .eq(9)
+      .eq(8)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Name on card')
         cy.get('.govuk-summary-list__value').should('contain.text', 'Test User')
       })
 
     cy.get('.govuk-summary-list__row')
-      .eq(10)
+      .eq(9)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Card number')
         cy.get('.govuk-summary-list__value').should('contain.text', '0002')
       })
 
     cy.get('.govuk-summary-list__row')
-      .eq(11)
+      .eq(10)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Card expiry date')
         cy.get('.govuk-summary-list__value').should('contain.text', '08/23')
       })
 
     cy.get('.govuk-summary-list__row')
-      .eq(12)
+      .eq(11)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Email')
         cy.get('.govuk-summary-list__value').should('contain.text', 'test2@example.org')
       })
 
     cy.get('.govuk-summary-list__row')
-      .eq(13)
+      .eq(12)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Provider')
         cy.get('.govuk-summary-list__value').should('contain.text', changeCase.upperCaseFirst(SANDBOX))
+      })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(13)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Provider ID')
+        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.gateway_transaction_id)
       })
 
     cy.get('.govuk-summary-list__row')
@@ -233,38 +218,56 @@ describe('Transaction details page', () => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'GOV.UK Pay ID')
         cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.transaction_id)
       })
-  })
 
-  it('should not display 3D Secure when authorisation summary does not exist', () => {
-    const transactionWithNoAuthSummary = createTransaction(false, true)
-    cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: transactionWithNoAuthSummary,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: transactionWithNoAuthSummary.transaction_id,
-        events: transactionWithNoAuthSummary.events
-      })
-    ])
-    cy.visit(TRANSACTION_URL(TEST))
     cy.get('.govuk-summary-list__key').contains('3D Secure (3DS)').should('not.exist')
   })
 
-  it('should display 3D Secure as not required', () => {
-    const transactionWith3DSNotRequired = createTransaction(true, false)
+  it('should display 3D Secure required when authorisation summary exists', () => {
+    const transactionWith3DSRequired = new TransactionFixture({
+      authorisationSummary: new AuthorisationSummaryFixture({
+        threeDSecure: {
+          required: true
+        }
+      })
+    }).toTransactionData()
+
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       transactionStubs.getLedgerTransactionSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: transactionWith3DSNotRequired,
+        transactionDetails: transactionWith3DSRequired
+      }),
+      transactionStubs.getLedgerEventsSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionId: transactionWith3DSRequired.transaction_id,
+        events: TRANSACTION_EVENTS
+      })
+    ])
+    cy.visit(TRANSACTION_URL(TEST))
+
+    cy.get('.govuk-summary-list__row')
+      .eq(5)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', '3D Secure (3DS)')
+        cy.get('.govuk-summary-list__value').should('contain.text', 'Required')
+      })
+  })
+
+  it('should display 3D Secure as not required when authorisation summary exists', () => {
+    const transactionWith3DSNotRequired = new TransactionFixture({
+      authorisationSummary: new AuthorisationSummaryFixture()
+    }).toTransactionData()
+
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      transactionStubs.getLedgerTransactionSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionDetails: transactionWith3DSNotRequired
       }),
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWith3DSNotRequired.transaction_id,
-        events: transactionWith3DSNotRequired.events
+        events: TRANSACTION_EVENTS
       })
     ])
     cy.visit(TRANSACTION_URL(TEST))
@@ -278,7 +281,7 @@ describe('Transaction details page', () => {
   })
 
   it('should display wallet type when present', () => {
-    const transactionWithWalletType = createTransaction(true, true, undefined, 'APPLE_PAY')
+    const transactionWithWalletType = new TransactionFixture({ walletType: 'APPLE_PAY' }).toTransactionData()
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       transactionStubs.getLedgerTransactionSuccess({
@@ -288,13 +291,13 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWithWalletType.transaction_id,
-        events: transactionWithWalletType.events
+        events: TRANSACTION_EVENTS
       })
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
     cy.get('.govuk-summary-list__row')
-      .eq(7)
+      .eq(6)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Payment type')
         cy.get('.govuk-summary-list__value').should('contain.text', 'Apple Pay')
