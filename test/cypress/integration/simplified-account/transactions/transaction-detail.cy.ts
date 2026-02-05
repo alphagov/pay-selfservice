@@ -8,9 +8,16 @@ import { SANDBOX } from '@models/constants/payment-providers'
 import changeCase from 'change-case'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { AuthorisationSummaryFixture } from '@test/fixtures/transaction/authorisation-summary.fixture'
+import { Status } from '@models/transaction/types/status'
+import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
+import { Reason, ReasonFriendlyNames } from '@models/transaction/types/reason'
+import { ResourceType } from '@models/transaction/types/resource-type'
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO(TRANSACTION.created_date)
+const CARD_DETAILS = TRANSACTION.card_details!
+const PAGE_HEADING_DATE_FORMAT = 'dd MMM yyyy HH:mm:ss'
+const PAGE_CONTENT_DATE_FORMAT = 'dd LLL yyyy — HH:mm:ss'
 
 const TRANSACTION_EVENTS = [{
   amount: 1250,
@@ -24,7 +31,6 @@ const TRANSACTION_EVENTS = [{
   data: {}
 }]
 
-const FORMATTED_CREATED_TIMESTAMP = DateTime.fromISO(TRANSACTION.created_date).toFormat('dd MMM yyyy HH:mm:ss')
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
 const GATEWAY_ACCOUNT_ID = TRANSACTION.gateway_account_id
@@ -89,7 +95,7 @@ describe('Transaction details page', () => {
 
     cy.visit(TRANSACTION_URL(TEST))
 
-    cy.title().should('eq', `Transaction details - ${FORMATTED_CREATED_TIMESTAMP} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`)
+    cy.title().should('eq', `Transaction details - ${DateTime.fromISO(TRANSACTION.created_date).toFormat(PAGE_HEADING_DATE_FORMAT)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`)
     cy.get('h1').should('contain.text', 'Transaction Details')
     cy.get('h2').should('contain.text', 'Amount')
     cy.get('h2').should('contain.text', 'Payment method')
@@ -138,7 +144,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Date created')
         cy.get('.govuk-summary-list__value').should('contain.text',
-          DateTime.fromISO(TRANSACTION.created_date).toFormat('dd LLL yyyy — HH:mm:ss'))
+          DateTime.fromISO(TRANSACTION.created_date).toFormat(PAGE_CONTENT_DATE_FORMAT))
       })
 
     cy.get('.govuk-summary-list__row')
@@ -166,28 +172,28 @@ describe('Transaction details page', () => {
       .eq(7)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Card brand')
-        cy.get('.govuk-summary-list__value').should('contain.text', 'Visa')
+        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.card_brand)
       })
 
     cy.get('.govuk-summary-list__row')
       .eq(8)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Name on card')
-        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.card_details?.cardholder_name)
+        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.cardholder_name)
       })
 
     cy.get('.govuk-summary-list__row')
       .eq(9)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Card number')
-        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.card_details?.last_digits_card_number)
+        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.last_digits_card_number)
       })
 
     cy.get('.govuk-summary-list__row')
       .eq(10)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Card expiry date')
-        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.card_details?.expiry_date)
+        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.expiry_date)
       })
 
     cy.get('.govuk-summary-list__row')
@@ -363,4 +369,96 @@ describe('Transaction details page', () => {
         cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(15))
       })
   })
+
+  it('should display dispute information', () => {
+    const parentTransactionOfDispute = new TransactionFixture({ disputed: true, }).toTransactionData()
+    const disputeCreatedDate = TRANSACTION_CREATED_TIMESTAMP.plus({ day: 1 })
+
+    const disputeTransaction = new TransactionFixture({
+      amount: 1000,
+      fee: 100,
+      netAmount: 900,
+      createdDate: TRANSACTION_CREATED_TIMESTAMP.plus({ day: 1 }),
+      state: new TransactionStateFixture({ status: Status.NEEDS_RESPONSE }),
+      evidenceDueDate: TRANSACTION_CREATED_TIMESTAMP.plus({ days: 7 }),
+      reason: Reason.FRAUDULENT,
+      transactionType: ResourceType.DISPUTE
+    }).toTransactionData()
+
+    cy.log(JSON.stringify(disputeTransaction))
+
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      transactionStubs.getLedgerTransactionSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionDetails: parentTransactionOfDispute,
+      }),
+      transactionStubs.getLedgerEventsSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionId: disputeTransaction.transaction_id,
+        events: []
+
+      }),
+      transactionStubs.getLedgerDisputeTransactionsSuccess({
+        disputeTransactionsDetails: {
+          parent_transaction_id: parentTransactionOfDispute.transaction_id,
+          gateway_account_id: GATEWAY_ACCOUNT_ID,
+          transactions: [disputeTransaction]
+        }
+      })
+    ])
+    cy.visit(TRANSACTION_URL(TEST))
+
+    cy.get('h2').should('contain.text', 'Dispute details')
+
+    // cy.get('.govuk-summary-list__row')
+    //   .eq(15)
+    //   .within(() => {
+    //     cy.get('.govuk-summary-list__key').should('contain.text', 'Status')
+    //     cy.get('.govuk-summary-list__value').should('contain.text', Status.NEEDS_RESPONSE)
+    //   })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(16)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Date disputed')
+        cy.get('.govuk-summary-list__value').should('contain.text', disputeCreatedDate.toFormat(PAGE_CONTENT_DATE_FORMAT))
+      })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(17)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Disputed amount')
+        cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(disputeTransaction.amount))
+      })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(18)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Provider dispute fee')
+        cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(disputeTransaction.fee!))
+      })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(19)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Dispute net amount')
+        cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(disputeTransaction.net_amount!))
+      })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(20)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Reason')
+        cy.get('.govuk-summary-list__value').should('contain.text', ReasonFriendlyNames.FRAUDULENT)
+      })
+
+    cy.get('.govuk-summary-list__row')
+      .eq(21)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Evidence due by')
+        cy.get('.govuk-summary-list__value').should('contain.text', DateTime.fromISO(disputeTransaction.evidence_due_date!).toFormat(PAGE_CONTENT_DATE_FORMAT))
+      })
+  })
 })
+
