@@ -3,7 +3,6 @@ import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-accoun
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 import { DateTime } from 'luxon'
-import { ResourceType } from '@models/transaction/types/resource-type'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { SANDBOX } from '@models/constants/payment-providers'
 import changeCase from 'change-case'
@@ -174,21 +173,21 @@ describe('Transaction details page', () => {
       .eq(8)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Name on card')
-        cy.get('.govuk-summary-list__value').should('contain.text', 'Test User')
+        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.card_details?.cardholder_name)
       })
 
     cy.get('.govuk-summary-list__row')
       .eq(9)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Card number')
-        cy.get('.govuk-summary-list__value').should('contain.text', '0002')
+        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.card_details?.last_digits_card_number)
       })
 
     cy.get('.govuk-summary-list__row')
       .eq(10)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Card expiry date')
-        cy.get('.govuk-summary-list__value').should('contain.text', '08/23')
+        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.card_details?.expiry_date)
       })
 
     cy.get('.govuk-summary-list__row')
@@ -220,6 +219,34 @@ describe('Transaction details page', () => {
       })
 
     cy.get('.govuk-summary-list__key').contains('3D Secure (3DS)').should('not.exist')
+  })
+
+  it('should not display card details type when not present', () => {
+    const transactionWithoutCardDetails = new TransactionFixture({ cardDetails: undefined }).toTransactionData()
+
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      transactionStubs.getLedgerTransactionSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionDetails: transactionWithoutCardDetails,
+        includeCardDetails: false,
+        includeAddress: false
+      }),
+      transactionStubs.getLedgerEventsSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionId: transactionWithoutCardDetails.transaction_id,
+        events: TRANSACTION_EVENTS
+      })
+    ])
+    cy.visit(TRANSACTION_URL(TEST))
+
+    cy.get('.govuk-summary-list__key').contains('Payment type').should('not.exist')
+    cy.get('.govuk-summary-list__key').contains('Card brand').should('not.exist')
+    cy.get('.govuk-summary-list__key').contains('Name on card').should('not.exist')
+    cy.get('.govuk-summary-list__key').contains('Card number').should('not.exist')
+    cy.get('.govuk-summary-list__key').contains('Card expiry date').should('not.exist')
+
+    cy.get('.govuk-summary-list__key').contains('Email').should('exist')
   })
 
   it('should display 3D Secure required when authorisation summary exists', () => {

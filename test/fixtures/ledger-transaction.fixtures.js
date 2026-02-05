@@ -87,7 +87,9 @@ const buildTransactionDetails = (opts = {}) => {
     data.gateway_account_id = opts.gateway_account_id
   }
 
-  if (opts.includeCardDetails) {
+  if (opts.card_details) {
+    data.card_details = opts.card_details
+  } else if (opts.includeCardDetails) {
     data.card_details = {
       last_digits_card_number: opts.last_digits_card_number || '0002',
       cardholder_name: opts.cardholder_name || 'Test User',
@@ -96,7 +98,7 @@ const buildTransactionDetails = (opts = {}) => {
     }
   }
 
-  if (opts.includeAddress) {
+  if (opts.includeAddress && opts.includeCardDetails) {
     data.card_details.billing_address = {
       line1: opts.billing_address_line1 || 'address line 1',
       line2: opts.billing_address_line2 || 'address line 2',
@@ -205,7 +207,7 @@ const buildDisputeDetails = (opts = {}) => {
   return result
 }
 
-function getPaymentDetails (opts) {
+function getPaymentDetails(opts) {
   const paymentDetails = {
     description: opts.description || 'ref1',
     reference: opts.reference || 'ref188888',
@@ -223,7 +225,7 @@ function getPaymentDetails (opts) {
 
 module.exports = {
   validTransactionDetailsResponse: (opts = {}) => {
-    opts.includeCardDetails = true
+    opts.includeCardDetails
     opts.includeRefundSummary = true
     opts.includeSettlementSummary = true
     opts.includeAddress = opts.includeAddress || true
