@@ -33,10 +33,10 @@ const cancelAgreement = async (
   await connectorClient.agreements.cancel(serviceExternalId, accountType, agreementExternalId, cancelRequest)
 }
 
-const getTransactionsForAgreement = async (gatewayAccountId: number, agreementExternalId: string) => {
+const getLatestTransactionsForAgreement = async (gatewayAccountId: number, agreementExternalId: string) => {
   return await ledgerClient.transactions.search(
-    TransactionSearchParams.forAgreement(gatewayAccountId, agreementExternalId)
+    TransactionSearchParams.forAgreement(gatewayAccountId, agreementExternalId, 1, 5)
   )
 }
 
-export { searchAgreements, getAgreement, getTransactionsForAgreement, cancelAgreement }
+export { searchAgreements, getAgreement, getLatestTransactionsForAgreement, cancelAgreement }

@@ -1,5 +1,5 @@
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
-import { getAgreement, getTransactionsForAgreement } from '@services/agreements.service'
+import { getAgreement, getLatestTransactionsForAgreement } from '@services/agreements.service'
 import { response } from '@utils/response'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
@@ -8,7 +8,7 @@ import formatAccountPathsFor from '@utils/format-account-paths-for'
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const agreementsFilter = req.session.agreementsFilter as string
   const agreement = await getAgreement(req.params.agreementExternalId, req.service.externalId)
-  const agreementTxs = await getTransactionsForAgreement(req.account.id, agreement.externalId)
+  const agreementTxs = await getLatestTransactionsForAgreement(req.account.id, agreement.externalId)
   return response(req, res, 'simplified-account/services/agreements/detail', {
     backLink: `${formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.agreements.index,

@@ -53,8 +53,8 @@ export class TransactionSearchParams {
     return new URLSearchParams(this.baseQuery as Record<string, string>)
   }
 
-  static forAgreement(gatewayAccountId: number, agreementExternalId: string) {
-    const searchParams = new TransactionSearchParams(gatewayAccountId, 1, 5)
+  static forAgreement(gatewayAccountId: number, agreementExternalId: string, currentPage: number, displaySize: number) {
+    const searchParams = new TransactionSearchParams(gatewayAccountId, currentPage, displaySize)
     searchParams.agreementId = agreementExternalId
     return searchParams
   }
