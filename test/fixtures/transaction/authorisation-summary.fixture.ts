@@ -7,7 +7,7 @@ export class AuthorisationSummaryFixture {
 
   constructor(options?: Partial<AuthorisationSummaryFixture>) {
     this.threeDSecure = {
-      required: false
+      required: false,
     }
 
     if (options) {
@@ -16,7 +16,7 @@ export class AuthorisationSummaryFixture {
   }
   toAuthorisationSummaryData(): AuthorisationSummaryData {
     return {
-      three_d_secure: this.threeDSecure
+      three_d_secure: this.threeDSecure,
     }
   }
 }

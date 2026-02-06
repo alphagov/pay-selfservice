@@ -19,17 +19,19 @@ const CARD_DETAILS = TRANSACTION.card_details!
 const PAGE_HEADING_DATE_FORMAT = 'dd MMM yyyy HH:mm:ss'
 const PAGE_CONTENT_DATE_FORMAT = 'dd LLL yyyy — HH:mm:ss'
 
-const TRANSACTION_EVENTS = [{
-  amount: 1250,
-  state: {
-    finished: false,
-    status: 'created'
+const TRANSACTION_EVENTS = [
+  {
+    amount: 1250,
+    state: {
+      finished: false,
+      status: 'created',
+    },
+    resource_type: 'PAYMENT',
+    event_type: 'PAYMENT_CREATED',
+    timestamp: TRANSACTION_CREATED_TIMESTAMP,
+    data: {},
   },
-  resource_type: 'PAYMENT',
-  event_type: 'PAYMENT_CREATED',
-  timestamp: TRANSACTION_CREATED_TIMESTAMP,
-  data: {}
-}]
+]
 
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
@@ -72,8 +74,8 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS
-      })
+        events: TRANSACTION_EVENTS,
+      }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
     cy.a11yCheck()
@@ -89,13 +91,16 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS
-      })
+        events: TRANSACTION_EVENTS,
+      }),
     ])
 
     cy.visit(TRANSACTION_URL(TEST))
 
-    cy.title().should('eq', `Transaction details - ${DateTime.fromISO(TRANSACTION.created_date).toFormat(PAGE_HEADING_DATE_FORMAT)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`)
+    cy.title().should(
+      'eq',
+      `Transaction details - ${DateTime.fromISO(TRANSACTION.created_date).toFormat(PAGE_HEADING_DATE_FORMAT)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
+    )
     cy.get('h1').should('contain.text', 'Transaction Details')
     cy.get('h2').should('contain.text', 'Amount')
     cy.get('h2').should('contain.text', 'Payment method')
@@ -112,8 +117,8 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS
-      })
+        events: TRANSACTION_EVENTS,
+      }),
     ])
 
     cy.visit(TRANSACTION_URL(TEST))
@@ -134,8 +139,8 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS
-      })
+        events: TRANSACTION_EVENTS,
+      }),
     ])
 
     cy.visit(TRANSACTION_URL(TEST))
@@ -165,8 +170,10 @@ describe('Transaction details page', () => {
       .eq(3)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Date created')
-        cy.get('.govuk-summary-list__value').should('contain.text',
-          DateTime.fromISO(TRANSACTION.created_date).toFormat(PAGE_CONTENT_DATE_FORMAT))
+        cy.get('.govuk-summary-list__value').should(
+          'contain.text',
+          DateTime.fromISO(TRANSACTION.created_date).toFormat(PAGE_CONTENT_DATE_FORMAT)
+        )
       })
 
     cy.get('.govuk-summary-list__row')
@@ -258,13 +265,13 @@ describe('Transaction details page', () => {
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionDetails: transactionWithoutCardDetails,
         includeCardDetails: false,
-        includeAddress: false
+        includeAddress: false,
       }),
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWithoutCardDetails.transaction_id,
-        events: TRANSACTION_EVENTS
-      })
+        events: TRANSACTION_EVENTS,
+      }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
@@ -281,22 +288,22 @@ describe('Transaction details page', () => {
     const transactionWith3DSRequired = new TransactionFixture({
       authorisationSummary: new AuthorisationSummaryFixture({
         threeDSecure: {
-          required: true
-        }
-      })
+          required: true,
+        },
+      }),
     }).toTransactionData()
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       transactionStubs.getLedgerTransactionSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: transactionWith3DSRequired
+        transactionDetails: transactionWith3DSRequired,
       }),
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWith3DSRequired.transaction_id,
-        events: TRANSACTION_EVENTS
-      })
+        events: TRANSACTION_EVENTS,
+      }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
@@ -310,20 +317,20 @@ describe('Transaction details page', () => {
 
   it('should display 3D Secure as not required when authorisation summary exists', () => {
     const transactionWith3DSNotRequired = new TransactionFixture({
-      authorisationSummary: new AuthorisationSummaryFixture()
+      authorisationSummary: new AuthorisationSummaryFixture(),
     }).toTransactionData()
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       transactionStubs.getLedgerTransactionSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: transactionWith3DSNotRequired
+        transactionDetails: transactionWith3DSNotRequired,
       }),
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWith3DSNotRequired.transaction_id,
-        events: TRANSACTION_EVENTS
-      })
+        events: TRANSACTION_EVENTS,
+      }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
@@ -346,8 +353,8 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWithWalletType.transaction_id,
-        events: TRANSACTION_EVENTS
-      })
+        events: TRANSACTION_EVENTS,
+      }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
@@ -371,8 +378,8 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWithFees.transaction_id,
-        events: TRANSACTION_EVENTS
-      })
+        events: TRANSACTION_EVENTS,
+      }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
@@ -380,20 +387,22 @@ describe('Transaction details page', () => {
       .eq(5)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Payment amount')
-        cy.get('.govuk-summary-list__value').should('contain.text',
-          `${penceToPoundsWithCurrency(transactionAmounts.totalAmount)} (including card fee of ${penceToPoundsWithCurrency(transactionAmounts.corporateCardSurcharge)})`)
+        cy.get('.govuk-summary-list__value').should(
+          'contain.text',
+          `${penceToPoundsWithCurrency(transactionAmounts.totalAmount)} (including card fee of ${penceToPoundsWithCurrency(transactionAmounts.corporateCardSurcharge)})`
+        )
       })
 
     cy.get('.govuk-summary-list__row')
       .eq(6)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Provider fee')
-        cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(15))
+        cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(transactionAmounts.fee))
       })
   })
 
   it('should display dispute information', () => {
-    const parentTransactionOfDispute = new TransactionFixture({ disputed: true, }).toTransactionData()
+    const parentTransactionOfDispute = new TransactionFixture({ disputed: true }).toTransactionData()
     const disputeCreatedDate = TRANSACTION_CREATED_TIMESTAMP.plus({ day: 1 })
 
     const disputeTransaction = new TransactionFixture({
@@ -404,7 +413,7 @@ describe('Transaction details page', () => {
       state: new TransactionStateFixture({ status: Status.NEEDS_RESPONSE }),
       evidenceDueDate: TRANSACTION_CREATED_TIMESTAMP.plus({ days: 7 }),
       reason: Reason.FRAUDULENT,
-      transactionType: ResourceType.DISPUTE
+      transactionType: ResourceType.DISPUTE,
     }).toTransactionData()
 
     cy.log(JSON.stringify(disputeTransaction))
@@ -418,20 +427,21 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: disputeTransaction.transaction_id,
-        events: []
-
+        events: [],
       }),
       transactionStubs.getLedgerDisputeTransactionsSuccess({
         disputeTransactionsDetails: {
           parent_transaction_id: parentTransactionOfDispute.transaction_id,
           gateway_account_id: GATEWAY_ACCOUNT_ID,
-          transactions: [disputeTransaction]
-        }
-      })
+          transactions: [disputeTransaction],
+        },
+      }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
     cy.get('h2').should('contain.text', 'Dispute details')
+
+    // this fails as status displays 'STARTED' - I think due to stubbing
 
     // cy.get('.govuk-summary-list__row')
     //   .eq(15)
@@ -444,14 +454,20 @@ describe('Transaction details page', () => {
       .eq(16)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Date disputed')
-        cy.get('.govuk-summary-list__value').should('contain.text', disputeCreatedDate.toFormat(PAGE_CONTENT_DATE_FORMAT))
+        cy.get('.govuk-summary-list__value').should(
+          'contain.text',
+          disputeCreatedDate.toFormat(PAGE_CONTENT_DATE_FORMAT)
+        )
       })
 
     cy.get('.govuk-summary-list__row')
       .eq(17)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Disputed amount')
-        cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(disputeTransaction.amount))
+        cy.get('.govuk-summary-list__value').should(
+          'contain.text',
+          penceToPoundsWithCurrency(disputeTransaction.amount)
+        )
       })
 
     cy.get('.govuk-summary-list__row')
@@ -465,7 +481,10 @@ describe('Transaction details page', () => {
       .eq(19)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Dispute net amount')
-        cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(disputeTransaction.net_amount!))
+        cy.get('.govuk-summary-list__value').should(
+          'contain.text',
+          penceToPoundsWithCurrency(disputeTransaction.net_amount!)
+        )
       })
 
     cy.get('.govuk-summary-list__row')
@@ -479,7 +498,10 @@ describe('Transaction details page', () => {
       .eq(21)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Evidence due by')
-        cy.get('.govuk-summary-list__value').should('contain.text', DateTime.fromISO(disputeTransaction.evidence_due_date!).toFormat(PAGE_CONTENT_DATE_FORMAT))
+        cy.get('.govuk-summary-list__value').should(
+          'contain.text',
+          DateTime.fromISO(disputeTransaction.evidence_due_date!).toFormat(PAGE_CONTENT_DATE_FORMAT)
+        )
       })
   })
 })
