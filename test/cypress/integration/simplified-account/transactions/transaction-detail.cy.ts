@@ -102,6 +102,28 @@ describe('Transaction details page', () => {
     cy.get('h2').should('contain.text', 'Payment provider')
   })
 
+  it('should navigate to transactions list page when back link is clicked', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      transactionStubs.getLedgerTransactionSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionDetails: TRANSACTION,
+      }),
+      transactionStubs.getLedgerEventsSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionId: TRANSACTION.transaction_id,
+        events: TRANSACTION_EVENTS
+      })
+    ])
+
+    cy.visit(TRANSACTION_URL(TEST))
+    cy.get('.govuk-back-link').click()
+
+    const transactionsListUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
+
+    cy.url().should('include', transactionsListUrl)
+  })
+
   it('should display transaction details correctly', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
@@ -461,4 +483,3 @@ describe('Transaction details page', () => {
       })
   })
 })
-
