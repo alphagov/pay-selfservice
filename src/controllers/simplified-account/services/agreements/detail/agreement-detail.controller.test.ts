@@ -21,7 +21,7 @@ const mockAgreement = {
     expiryDate: '01/30',
   },
   description: 'Test agreement',
-  userIdentifier: 'user456def'
+  userIdentifier: 'user456def',
 }
 
 const mockTransactions = {
@@ -37,7 +37,7 @@ const mockTransactions = {
 
 const mockAgreementsService = {
   getAgreement: sinon.stub().resolves(mockAgreement),
-  getTransactionsForAgreement: sinon.stub().resolves(mockTransactions),
+  getLatestTransactionsForAgreement: sinon.stub().resolves(mockTransactions),
 }
 
 const { nextRequest, call } = new ControllerTestBuilder(
@@ -54,7 +54,7 @@ const { nextRequest, call } = new ControllerTestBuilder(
     type: GatewayAccountType.TEST,
   })
   .withUser({
-    hasPermission: sinon.stub().returns(true)
+    hasPermission: sinon.stub().returns(true),
   })
   .build()
 
@@ -88,7 +88,7 @@ describe('controller: services/agreements/detail', () => {
 
       it('should call getTransactionsForAgreement with correct parameters', () => {
         sinon.assert.calledWith(
-          mockAgreementsService.getTransactionsForAgreement,
+          mockAgreementsService.getLatestTransactionsForAgreement,
           GATEWAY_ACCOUNT_ID,
           AGREEMENT_EXTERNAL_ID
         )
@@ -173,8 +173,8 @@ describe('controller: services/agreements/detail', () => {
             params: { agreementExternalId: AGREEMENT_EXTERNAL_ID },
             session: {},
             user: {
-              hasPermission: sinon.stub().returns(false)
-            }
+              hasPermission: sinon.stub().returns(false),
+            },
           })
           await call('get')
         })
@@ -190,15 +190,15 @@ describe('controller: services/agreements/detail', () => {
           mockResponse.resetHistory()
           const inactiveAgreement = {
             ...mockAgreement,
-            status: AgreementStatus.CANCELLED
+            status: AgreementStatus.CANCELLED,
           }
           mockAgreementsService.getAgreement.resolves(inactiveAgreement)
           nextRequest({
             params: { agreementExternalId: AGREEMENT_EXTERNAL_ID },
             session: {},
             user: {
-              hasPermission: sinon.stub().returns(true)
-            }
+              hasPermission: sinon.stub().returns(true),
+            },
           })
           await call('get')
         })
@@ -218,15 +218,15 @@ describe('controller: services/agreements/detail', () => {
           mockResponse.resetHistory()
           const inactiveAgreement = {
             ...mockAgreement,
-            status: AgreementStatus.CANCELLED
+            status: AgreementStatus.CANCELLED,
           }
           mockAgreementsService.getAgreement.resolves(inactiveAgreement)
           nextRequest({
             params: { agreementExternalId: AGREEMENT_EXTERNAL_ID },
             session: {},
             user: {
-              hasPermission: sinon.stub().returns(false)
-            }
+              hasPermission: sinon.stub().returns(false),
+            },
           })
           await call('get')
         })

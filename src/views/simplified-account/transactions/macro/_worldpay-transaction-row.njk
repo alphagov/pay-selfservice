@@ -3,31 +3,33 @@
     <th
       scope="row"
       class="govuk-table__header vertical-align-middle"
-      data-gateway-transaction-id="{{ transaction.gateway_transaction_id }}"
+      data-gateway-transaction-id="{{ transaction.gatewayTransactionId }}"
     >
       <a
         class="govuk-link govuk-!-font-weight-regular govuk-!-font-size-16 reference govuk-!-display-block"
-        id="charge-id-{{ transaction.charge_id }}"
-        data-charge-id="{{ transaction.charge_id }}"
-        href="{{ transaction.link }}"
+        id="charge-id-{{ transaction.externalId }}"
+        data-charge-id="{{ transaction.externalId }}"
+        href="{{ transaction._links.detail(currentService.externalId, currentGatewayAccount.type) }}"
       >
         {{ transaction.reference }}
       </a>
     </th>
-    <td class="govuk-table__cell govuk-!-font-size-16 email vertical-align-middle">{{ transaction.email }}</td>
+    <td class="govuk-table__cell govuk-!-font-size-16 email vertical-align-middle"
+      >{{ transaction.displayValues.email }}</td
+    >
     <td class="govuk-table__cell amount govuk-!-font-size-16 vertical-align-middle" id="amount">
       {%- if transaction.totalAmount and transaction.corporateCardSurcharge -%}
-        {{ transaction.totalAmount }}
+        {{ transaction.displayValues.totalAmount }}
         <span class="govuk-!-display-block govuk-!-font-size-16">(with card fee)</span>
       {%- else -%}
-        <span style="white-space: pre">{{ transaction.amountInPounds }}</span>
+        <span style="white-space: pre">{{ transaction.displayValues.amountInPounds }}</span>
       {%- endif -%}
     </td>
     <td class="govuk-table__cell govuk-!-font-size-16 brand vertical-align-middle">
       {{ transaction.cardDetails.cardBrand }}
     </td>
     <td class="govuk-table__cell govuk-!-font-size-16 state vertical-align-middle">
-      {{ transaction.formattedStatus }}
+      {{ transaction.displayValues.status }}
     </td>
     <td
       style="text-align: left"
