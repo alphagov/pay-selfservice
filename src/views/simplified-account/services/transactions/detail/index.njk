@@ -83,6 +83,19 @@
       caption: "Transaction events",
       captionClasses: "govuk-table__caption--m govuk-!-margin-top-8",
       firstCellIsHeader: false,
+      head: [
+        {
+          text: "Event"
+        },
+        {
+          text: "Amount",
+          format: "numeric"
+        },
+        {
+          text: "Date and time",
+          format: "numeric"
+        }
+      ],
       rows: eventsTableRows,
       classes: "govuk-!-font-size-16"
     })
