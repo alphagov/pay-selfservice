@@ -3,10 +3,13 @@ import sinon from 'sinon'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { DateTime } from 'luxon'
 import { expect } from 'chai'
+import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
+import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
+import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const TRANSACTION_EXTERNAL_ID = 'transaction123abc'
-const GATEWAY_ACCOUNT_ID = 117
+const GATEWAY_ACCOUNT_ID = '117'
 const CARDHOLDER_NAME = 'Sam Holder'
 const EMAIL = 'sam_holder@example.com'
 const LAST_DIGITS_CARD_NUMBER = '1234'
@@ -14,34 +17,35 @@ const METADATA_VALUE = 'order-5678'
 const CARD_BRAND = 'visa'
 const REFERENCE = 'REF 123'
 const NOW_DATE_TIME = '2025-11-02T11:47:32.980Z'
+
+const transaction = new TransactionFixture({
+  gatewayAccountId: GATEWAY_ACCOUNT_ID,
+  serviceExternalId: SERVICE_EXTERNAL_ID,
+  externalId: TRANSACTION_EXTERNAL_ID,
+  transactionType: 'PAYMENT',
+  gatewayTransactionId: '11933338-20de-4792-bbee-8d19258dabc3',
+  reference: REFERENCE,
+  state: new TransactionStateFixture({
+    finished: true,
+    code: 'P0010',
+    message: 'Payment method rejected',
+    status: 'DECLINED',
+  }),
+  amount: 145600,
+  createdDate: DateTime.fromISO('2025-09-12T11:47:32.980+01:00'),
+  email: EMAIL,
+  cardDetails: new CardDetailsFixture({
+    cardBrand: 'Visa',
+  }),
+})
+
 const mockResponse = sinon.stub()
 const mockLedgerService = {
   searchTransactions: sinon.stub().resolves({
     total: 1,
     count: 1,
     page: 1,
-    transactions: [
-      {
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        serviceExternalId: SERVICE_EXTERNAL_ID,
-        externalId: TRANSACTION_EXTERNAL_ID,
-        transactionType: 'PAYMENT',
-        gatewayTransactionId: '11933338-20de-4792-bbee-8d19258dabc3',
-        reference: REFERENCE,
-        state: {
-          finished: true,
-          code: 'P0010',
-          message: 'Payment method rejected',
-          status: 'declined',
-        },
-        amount: 145600,
-        createdDate: '2025-09-12T11:47:32.980+01:00',
-        email: EMAIL,
-        cardDetails: {
-          cardBrand: 'Visa',
-        },
-      },
-    ],
+    transactions: [transaction.toTransaction()],
   }),
 }
 
