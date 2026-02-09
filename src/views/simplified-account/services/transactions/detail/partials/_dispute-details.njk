@@ -8,7 +8,7 @@
     </summary>
     <div class="govuk-details__text">
       If you lose a payment dispute, Stripe will deduct the disputed amount and an additional
-      {{ transaction.dispute.displayValues.fee }} dispute fee from your account.
+      {{ dispute._locals.formatted.fee }} dispute fee from your account.
     </div>
   </details>
 {% endmacro %}
@@ -17,36 +17,36 @@
   set disputeDetailsRows =  [
     {
       key: { text: 'Status' },
-      value: { text: transaction.dispute.displayValues.status }
+      value: { text: dispute._locals.formatted.status }
     },
     {
       key: { text: 'Date disputed' },
-      value: { text: transaction.dispute.displayValues.createdDate }
+      value: { text: dispute._locals.formatted.createdDate }
     },
     {
       key: { text: 'Disputed amount' },
-      value: { text: transaction.dispute.displayValues.amount }
+      value: { text: dispute._locals.formatted.amount }
     }
   ]
 %}
 
-{% if transaction.dispute.fee %}
+{% if dispute.fee %}
   {%
     set disputeDetailsRows = disputeDetailsRows.concat([
       {
         key: { text: 'Provider dispute fee' },
-        value: { html: feeInfo(transaction.dispute._locals.formatted.fee) }
+        value: { html: feeInfo(dispute._locals.formatted.fee) }
       }
     ])
   %}
 {% endif %}
 
-{% if transaction.dispute.netAmount %}
+{% if dispute.netAmount %}
   {%
     set disputeDetailsRows = disputeDetailsRows.concat([
       {
         key: { text: 'Dispute net amount' },
-        value: { text: transaction.dispute._locals.formatted.netAmount }
+        value: { text: dispute._locals.formatted.netAmount }
       }
     ])
   %}
@@ -56,17 +56,17 @@
   set disputeDetailsRows = disputeDetailsRows.concat([
     {
       key: { text: 'Reason' },
-      value: { text: transaction.dispute._locals.formatted.disputeReason }
+      value: { text: dispute._locals.formatted.disputeReason }
     }
   ])
 %}
 
-{% if transaction.dispute.evidenceDueDate %}
+{% if dispute.evidenceDueDate %}
   {%
     set disputeDetailsRows = disputeDetailsRows.concat([
       {
         key: { text: 'Evidence due by' },
-        value: { text: transaction.dispute._locals.formatted.evidenceDueDate }
+        value: { text: dispute._locals.formatted.evidenceDueDate }
       }
     ])
   %}

@@ -12,6 +12,7 @@ import { parseReason, Reason, ReasonFriendlyNames } from './types/reason'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 import { TransactionLinksGenerator } from '@models/transaction/TransactionLinksGenerator.class'
 import { TransactionDisplayValues } from '@models/transaction/TransactionDisplayValues.class'
+import { PaymentDetails } from '@models/transaction/PaymentDetails.class'
 
 const TITLE_FRIENDLY_DATESTAMP_FORMAT = 'dd LLLL yyyy HH:mm:ss'
 
@@ -42,7 +43,7 @@ class Transaction {
   readonly reason?: Reason
   readonly evidenceDueDate?: DateTime
   readonly data: TransactionData
-  readonly paymentDetails?: Transaction
+  readonly paymentDetails?: PaymentDetails
 
   readonly _locals: {
     links: TransactionLinksGenerator
@@ -75,7 +76,7 @@ class Transaction {
     this.reason = data.reason ? parseReason(data.reason) : undefined
     this.evidenceDueDate = data.evidence_due_date ? DateTime.fromISO(data.evidence_due_date) : undefined
     this.data = data
-    this.paymentDetails = data.payment_details && new Transaction(data.payment_details)
+    this.paymentDetails = data.payment_details && new PaymentDetails(data.payment_details)
 
     this._locals = {
       links: new TransactionLinksGenerator(this.externalId),
