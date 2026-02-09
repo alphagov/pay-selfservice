@@ -2,7 +2,7 @@
 
 const lodash = require('lodash')
 
-const logger = require('../../../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const goLiveStage = require('@models/constants/go-live-stage')
 const { updateCurrentGoLiveStage } = require('../../../services/service.service')
 const { addGovUkAgreementEmailAddress, addStripeAgreementIpAddress } = require('../../../services/service.service')
@@ -15,23 +15,24 @@ const { response } = require('../../../utils/response')
 const stages = {
   CHOSEN_PSP_STRIPE: goLiveStage.TERMS_AGREED_STRIPE,
   CHOSEN_PSP_GOV_BANKING_WORLDPAY: goLiveStage.TERMS_AGREED_GOV_BANKING_WORLDPAY,
-  GOV_BANKING_MOTO_OPTION_COMPLETED: goLiveStage.TERMS_AGREED_GOV_BANKING_WORLDPAY
+  GOV_BANKING_MOTO_OPTION_COMPLETED: goLiveStage.TERMS_AGREED_GOV_BANKING_WORLDPAY,
 }
 
-const getUserIpAddress = req => {
-  const xHeaderIpAddress = (req.headers['x-forwarded-for'])
+const getUserIpAddress = (req) => {
+  const xHeaderIpAddress = req.headers['x-forwarded-for']
   let ipAddress
   if (xHeaderIpAddress !== undefined) {
     ipAddress = xHeaderIpAddress.split(',')[0]
   } else {
-    ipAddress = (req.connection && req.connection.remoteAddress) ||
+    ipAddress =
+      (req.connection && req.connection.remoteAddress) ||
       (req.socket && req.socket.remoteAddress) ||
       (req.connection.socket && req.connection.socket.remoteAddress)
   }
   return ipAddress.toString().trim()
 }
 
-async function postUserIpAddress (req) {
+async function postUserIpAddress(req) {
   if (req.service.currentGoLiveStage === 'CHOSEN_PSP_STRIPE') {
     const ipAddress = getUserIpAddress(req)
     if (!isIPv4(ipAddress) && !isIPv6(ipAddress)) {
@@ -43,7 +44,8 @@ async function postUserIpAddress (req) {
   }
 }
 
-const createZendeskMessage = opts => ` Service name: ${opts.serviceName}
+const createZendeskMessage = (opts) =>
+  ` Service name: ${opts.serviceName}
  Organisation name: ${opts.merchantDetails}
  Service ID: ${opts.serviceExternalId}
  PSP: ${opts.psp}
@@ -69,7 +71,7 @@ module.exports = async (req, res, next) => {
         email: req.user.email,
         timestamp: agreement.agreement_time,
         serviceCreated: req.service.createdDate || '(service was created before we captured this date)',
-        takesPaymentsOverPhone: req.service.takesPaymentsOverPhone
+        takesPaymentsOverPhone: req.service.takesPaymentsOverPhone,
       }
 
       const zendeskOpts = {
@@ -78,12 +80,16 @@ module.exports = async (req, res, next) => {
         type: 'task',
         subject: `Service (${req.service.name}) has finished go live request`,
         tags: ['govuk_pay_support'],
-        message: createZendeskMessage(messageOpts)
+        message: createZendeskMessage(messageOpts),
       }
       await zendeskClient.createTicket(zendeskOpts)
-      const updatedService = await updateCurrentGoLiveStage(req.service.externalId, stages[req.service.currentGoLiveStage])
+      const updatedService = await updateCurrentGoLiveStage(
+        req.service.externalId,
+        stages[req.service.currentGoLiveStage]
+      )
 
-      return res.redirect(303,
+      return res.redirect(
+        303,
         formatServicePathsFor(goLiveStageToNextPagePath[updatedService.currentGoLiveStage], req.service.externalId)
       )
     } catch (err) {
@@ -91,10 +97,10 @@ module.exports = async (req, res, next) => {
     }
   } else {
     return response(req, res, 'request-to-go-live/agreement', {
-      displayStripeAgreement: (lodash.get(req, 'service.currentGoLiveStage', '') === goLiveStage.CHOSEN_PSP_STRIPE),
+      displayStripeAgreement: lodash.get(req, 'service.currentGoLiveStage', '') === goLiveStage.CHOSEN_PSP_STRIPE,
       errors: {
-        agreement: 'You need to accept our legal terms to continue'
-      }
+        agreement: 'You need to accept our legal terms to continue',
+      },
     })
   }
 }

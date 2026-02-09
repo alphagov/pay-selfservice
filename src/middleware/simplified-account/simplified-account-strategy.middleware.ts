@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express'
 import { NotFoundError, NotAuthenticatedError } from '@root/errors'
 import { keys } from '@root/paths'
-import createLogger from '@utils/logger'
+import createLogger from '@utils/logger/logger'
 import User from '@models/user/User.class'
 import { addField } from '@services/clients/base/request-context'
 import _ from 'lodash'
