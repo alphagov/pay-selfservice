@@ -6,12 +6,7 @@ import { LedgerRefundSummary } from '@models/common/refund-summary/LedgerRefundS
 import { SettlementSummary } from '@models/common/settlement-summary/SettlementSummary.class'
 import { CardDetails } from '@models/common/card-details/CardDetails.class'
 import { ResourceType } from './types/resource-type'
-import {
-  DisputeStatusFriendlyNames,
-  getFriendlyStatus,
-  PaymentStatusFriendlyNames,
-  RefundStatusFriendlyNames,
-} from './types/status'
+import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFriendlyNames } from './types/status'
 import { State } from './State.class'
 import { parseReason, Reason, ReasonFriendlyNames } from './types/reason'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
