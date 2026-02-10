@@ -18,21 +18,6 @@ const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO(TRANSACTION.created_date)
 const CARD_DETAILS = TRANSACTION.card_details!
 const PAGE_HEADING_DATE_FORMAT = 'dd MMM yyyy HH:mm:ss'
 const PAGE_CONTENT_DATE_FORMAT = 'dd LLL yyyy — HH:mm:ss'
-
-const TRANSACTION_EVENTS = [
-  {
-    amount: 1250,
-    state: {
-      finished: false,
-      status: 'created',
-    },
-    resource_type: 'PAYMENT',
-    event_type: 'PAYMENT_CREATED',
-    timestamp: TRANSACTION_CREATED_TIMESTAMP,
-    data: {},
-  },
-]
-
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
 const GATEWAY_ACCOUNT_ID = TRANSACTION.gateway_account_id
@@ -74,7 +59,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS,
+        events: [],
       }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
@@ -91,7 +76,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS,
+        events: [],
       }),
     ])
 
@@ -117,7 +102,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS,
+        events: [],
       }),
     ])
 
@@ -129,7 +114,7 @@ describe('Transaction details page', () => {
     cy.url().should('include', transactionsListUrl)
   })
 
-  it('should display transaction details correctly', () => {
+  it('should display transaction details correctly for a payment', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       transactionStubs.getLedgerTransactionSuccess({
@@ -139,7 +124,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS,
+        events: [],
       }),
     ])
 
@@ -270,7 +255,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWithoutCardDetails.transaction_id,
-        events: TRANSACTION_EVENTS,
+        events: [],
       }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
@@ -302,7 +287,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWith3DSRequired.transaction_id,
-        events: TRANSACTION_EVENTS,
+        events: [],
       }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
@@ -329,7 +314,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWith3DSNotRequired.transaction_id,
-        events: TRANSACTION_EVENTS,
+        events: [],
       }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
@@ -353,7 +338,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWithWalletType.transaction_id,
-        events: TRANSACTION_EVENTS,
+        events: [],
       }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
@@ -378,7 +363,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactionId: transactionWithFees.transaction_id,
-        events: TRANSACTION_EVENTS,
+        events: [],
       }),
     ])
     cy.visit(TRANSACTION_URL(TEST))
@@ -416,7 +401,7 @@ describe('Transaction details page', () => {
       transactionType: ResourceType.DISPUTE,
     }).toTransactionData()
 
-    cy.log(JSON.stringify(disputeTransaction))
+    // cy.log(JSON.stringify(disputeTransaction))
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
@@ -502,6 +487,96 @@ describe('Transaction details page', () => {
           'contain.text',
           DateTime.fromISO(disputeTransaction.evidence_due_date!).toFormat(PAGE_CONTENT_DATE_FORMAT)
         )
+      })
+  })
+
+  it('should display events', () => {
+    const state = new TransactionStateFixture({ status: Status.DECLINED })
+    const transactionAmount = 12345
+    const formattedAmount = penceToPoundsWithCurrency(transactionAmount)
+    const declinedTransaction = new TransactionFixture({ state, amount: transactionAmount }).toTransactionData()
+    const transactionDeclinedTimestamp = TRANSACTION_CREATED_TIMESTAMP.plus({ minute: 1 })
+
+    const events = [
+      {
+        amount: transactionAmount,
+        state: {
+          finished: false,
+          status: 'created'
+        },
+        resource_type: 'PAYMENT',
+        event_type: 'PAYMENT_CREATED',
+        timestamp: TRANSACTION_CREATED_TIMESTAMP,
+        data: {
+        }
+      },
+      {
+        amount: transactionAmount,
+        state: {
+          finished: false,
+          status: 'started'
+        },
+        resource_type: 'PAYMENT',
+        event_type: 'PAYMENT_STARTED',
+        timestamp: TRANSACTION_CREATED_TIMESTAMP,
+        data: {}
+      },
+      {
+        amount: transactionAmount,
+        state: {
+          finished: true,
+          code: 'P0010',
+          message: 'Payment method rejected',
+          status: 'declined'
+        },
+        resource_type: 'PAYMENT',
+        event_type: 'AUTHORISATION_REJECTED',
+        timestamp: transactionDeclinedTimestamp,
+        data: {}
+      }
+    ]
+
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      transactionStubs.getLedgerTransactionSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionDetails: declinedTransaction,
+      }),
+      transactionStubs.getLedgerEventsSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactionId: TRANSACTION.transaction_id,
+        events
+      }),
+    ])
+    cy.visit(TRANSACTION_URL(TEST))
+
+    cy.get('.govuk-table__caption').should('contain', 'Transaction events')
+    cy.get('.govuk-table__header:eq(0)').should('contain', 'Event')
+    cy.get('.govuk-table__header:eq(1)').should('contain', 'Amount')
+    cy.get('.govuk-table__header:eq(2)').should('contain', 'Date and time')
+
+    cy.get('.govuk-table__row')
+      .eq(1)
+      .within(() => {
+        cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Declined')
+        cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', transactionDeclinedTimestamp.toFormat(PAGE_CONTENT_DATE_FORMAT))
+      })
+
+    cy.get('.govuk-table__row')
+      .eq(2)
+      .within(() => {
+        cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Started')
+        cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', TRANSACTION_CREATED_TIMESTAMP.toFormat(PAGE_CONTENT_DATE_FORMAT))
+      })
+
+    cy.get('.govuk-table__row')
+      .eq(3)
+      .within(() => {
+        cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Created')
+        cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', TRANSACTION_CREATED_TIMESTAMP.toFormat(PAGE_CONTENT_DATE_FORMAT))
       })
   })
 })
