@@ -8,7 +8,7 @@
 
   {{ govukInput({
     label: {
-      html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+      html: 'Address line 1 <span class="govuk-visually-hidden">line 1 of 2</span>'
     },
     hint: {
       text: "Cannot be a PO Box"
@@ -23,7 +23,7 @@
 
   {{ govukInput({
     label: {
-      html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+      html: 'Address line 2<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
     },
     classes: "govuk-!-width-three-quarters",
     id: "address-line2",
@@ -51,7 +51,7 @@
     name: "addressCountry",
     errorMessage: { text: errors.formErrors['addressCountry'] } if errors.formErrors['addressCountry'] else false,
     label: {
-      text: "Country"
+      text: "Country or territory"
     },
     items: countries
   }) }}
