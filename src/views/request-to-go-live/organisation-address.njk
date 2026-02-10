@@ -9,151 +9,172 @@
 {% endblock %}
 
 {% block mainContent %}
-<div class="govuk-grid-column-two-thirds">
-  {{ errorSummary ({
-    errors: errors,
-    hrefs: {
-      'merchant-name': '#merchant-name',
-      'address-line1': '#address-line1',
-      'address-line2': '#address-line2',
-      'address-city': '#address-city',
-      'address-country': '#address-country',
-      'address-postcode': '#address-postcode',
-      'telephone-number': '#telephone-number',
-      'url': '#url'
-    }
-  }) }}
+  <div class="govuk-grid-column-two-thirds">
+    {{
+      errorSummary ({
+        errors: errors,
+        hrefs: {
+          'merchant-name': '#merchant-name',
+          'address-line1': '#address-line1',
+          'address-line2': '#address-line2',
+          'address-city': '#address-city',
+          'address-country': '#address-country',
+          'address-postcode': '#address-postcode',
+          'telephone-number': '#telephone-number',
+          'url': '#url'
+        }
+      })
+    }}
 
-  <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 1 of 3</span>
-  <h1 class="govuk-heading-l">Enter your organisation’s contact details</h1>
-  <p class="govuk-body govuk-!-margin-bottom-6">Your payment pages will automatically display this information. You can change the details later if needed.</p>
+    <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 1 of 3</span>
+    <h1 class="govuk-heading-l">Enter your organisation’s contact details</h1>
+    <p class="govuk-body govuk-!-margin-bottom-6"
+      >Your payment pages will automatically display this information. You can change the details later if needed.</p
+    >
 
-  <form id="request-to-go-live-organisation-address-form" method="post" data-cy="form" novalidate>
-    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    <form id="request-to-go-live-organisation-address-form" method="post" data-cy="form" novalidate>
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
-    {% call govukFieldset({
-    legend: {
-    text: "Organisation address",
-    classes: "govuk-fieldset__legend--m",
-    isPageHeading: false
-    }
-    }) %}
+      {%
+        call govukFieldset({
+        legend: {
+        text: "Organisation address",
+        classes: "govuk-fieldset__legend--m",
+        isPageHeading: false
+        }
+        })
+      %}
 
-    {{ govukInput({
-      label: {
-        html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>',
-        attributes: { 'data-cy': 'label-address-line-1' }
-      },
-      hint: {
-        text: "Cannot be a PO Box"
-      },
-      classes: "govuk-!-width-two-thirds",
-      id: "address-line1",
-      name: "address-line1",
-      errorMessage: { text: errors['address-line1'] } if errors['address-line1'] else false,
-      value: addressLine1,
-      attributes: { 'data-cy': 'input-address-line-1' }
-    }) }}
+        {{
+          govukInput({
+            label: {
+              html: 'Address line 1 <span class="govuk-visually-hidden">line 1 of 2</span>',
+              attributes: { 'data-cy': 'label-address-line-1' }
+            },
+            hint: {
+              text: "Cannot be a PO Box"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "address-line1",
+            name: "address-line1",
+            errorMessage: { text: errors['address-line1'] } if errors['address-line1'] else false,
+            value: addressLine1,
+            attributes: { 'data-cy': 'input-address-line-1' }
+          })
+        }}
 
-    {{ govukInput({
-      label: {
-        html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>',
-        attributes: { 'data-cy': 'label-address-line-2' }
-      },
-      classes: "govuk-!-width-two-thirds",
-      id: "address-line2",
-      name: "address-line2",
-      errorMessage: { text: errors['address-line2'] } if errors['address-line2'] else false,
-      value: addressLine2,
-      attributes: { 'data-cy': 'input-address-line-2' }
-    }) }}
+        {{
+          govukInput({
+            label: {
+              html: 'Address line 2<span class="govuk-visually-hidden">Building and street line 2 of 2</span>',
+              attributes: { 'data-cy': 'label-address-line-2' }
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "address-line2",
+            name: "address-line2",
+            errorMessage: { text: errors['address-line2'] } if errors['address-line2'] else false,
+            value: addressLine2,
+            attributes: { 'data-cy': 'input-address-line-2' }
+          })
+        }}
 
-    {{ govukInput({
-      label: {
-        text: "Town or city",
-        attributes: { 'data-cy': 'label-address-city' }
-      },
-      classes: "govuk-!-width-one-half",
-      id: "address-city",
-      name: "address-city",
-      errorMessage: { text: errors['address-city'] } if errors['address-city'] else false,
-      value: addressCity,
-      attributes: { 'data-cy': 'input-address-city' }
-    }) }}
+        {{
+          govukInput({
+            label: {
+              text: "Town or city",
+              attributes: { 'data-cy': 'label-address-city' }
+            },
+            classes: "govuk-!-width-one-half",
+            id: "address-city",
+            name: "address-city",
+            errorMessage: { text: errors['address-city'] } if errors['address-city'] else false,
+            value: addressCity,
+            attributes: { 'data-cy': 'input-address-city' }
+          })
+        }}
 
-    {{ govukSelect({
-      id: "address-country",
-      classes: "govuk-!-width-one-half",
-      name: "address-country",
-      errorMessage: { text: errors['address-country'] } if errors['address-country'] else false,
-      label: {
-        text: "Country",
-         attributes: { 'data-cy': 'label-address-country' }
-      },
-      items: countries,
-      attributes: { 'data-cy': 'input-address-country' }
-    }) }}
+        {{
+          govukSelect({
+            id: "address-country",
+            classes: "govuk-!-width-one-half",
+            name: "address-country",
+            errorMessage: { text: errors['address-country'] } if errors['address-country'] else false,
+            label: {
+              text: "Country or territory",
+               attributes: { 'data-cy': 'label-address-country' }
+            },
+            items: countries,
+            attributes: { 'data-cy': 'input-address-country' }
+          })
+        }}
 
-    {{ govukInput({
-      label: {
-        text: "Postcode",
-         attributes: { 'data-cy': 'label-address-postcode' }
-      },
-      classes: "govuk-input--width-10",
-      id: "address-postcode",
-      name: "address-postcode",
-      errorMessage: { text: errors['address-postcode'] } if errors['address-postcode'] else false,
-      value: addressPostcode,
-      attributes: { 'data-cy': 'input-address-postcode' }
-    }) }}
+        {{
+          govukInput({
+            label: {
+              text: "Postcode",
+               attributes: { 'data-cy': 'label-address-postcode' }
+            },
+            classes: "govuk-input--width-10",
+            id: "address-postcode",
+            name: "address-postcode",
+            errorMessage: { text: errors['address-postcode'] } if errors['address-postcode'] else false,
+            value: addressPostcode,
+            attributes: { 'data-cy': 'input-address-postcode' }
+          })
+        }}
+      {% endcall %}
 
-    {% endcall %}
+      {{
+        govukInput({
+          value: telephoneNumber,
+          label: {
+            text: "Telephone number",
+            classes: "govuk-label--m",
+            attributes: { 'data-cy': 'label-telephone-number' }
+          },
+          hint: {
+            text: "Include the country code for international numbers",
+            attributes: { 'data-cy': 'hint-telephone-number' }
+          },
+          errorMessage: { text: errors['telephone-number'] } if errors['telephone-number'] else false,
+          id: "telephone-number",
+          name: "telephone-number",
+          classes: "govuk-!-width-two-thirds",
+          type: "tel",
+          autocomplete: "work tel",
+          attributes: { 'data-cy': 'input-telephone-number' }
+        })
+      }}
 
-    {{ govukInput({
-      value: telephoneNumber,
-      label: {
-        text: "Telephone number",
-        classes: "govuk-label--m",
-        attributes: { 'data-cy': 'label-telephone-number' }
-      },
-      hint: {
-        text: "Include the country code for international numbers",
-        attributes: { 'data-cy': 'hint-telephone-number' }
-      },
-      errorMessage: { text: errors['telephone-number'] } if errors['telephone-number'] else false,
-      id: "telephone-number",
-      name: "telephone-number",
-      classes: "govuk-!-width-two-thirds",
-      type: "tel",
-      autocomplete: "work tel",
-      attributes: { 'data-cy': 'input-telephone-number' }
-    }) }}
+      {{
+        govukInput({
+          value: url,
+          label: {
+            text: "Organisation website address",
+            classes: "govuk-label--m",
+            attributes: { 'data-cy': 'label-url' }
+          },
+          hint: {
+            text: "Enter the address in full like https://www.example.com",
+            attributes: { 'data-cy': 'hint-url' }
+          },
+          errorMessage: { text: errors.url } if errors.url else false,
+          id: "url",
+          name: "url",
+          classes: "govuk-!-width-two-thirds",
+          type: "url",
+          autocomplete: "url",
+          spellcheck: false,
+          attributes: { 'data-cy': 'input-url' }
+        })
+      }}
 
-    {{ govukInput({
-      value: url,
-      label: {
-        text: "Organisation website address",
-        classes: "govuk-label--m",
-        attributes: { 'data-cy': 'label-url' }
-      },
-      hint: {
-        text: "Enter the address in full like https://www.example.com",
-        attributes: { 'data-cy': 'hint-url' }
-      },
-      errorMessage: { text: errors.url } if errors.url else false,
-      id: "url",
-      name: "url",
-      classes: "govuk-!-width-two-thirds",
-      type: "url",
-      autocomplete: "url",
-      spellcheck: false,
-      attributes: { 'data-cy': 'input-url' }
-    }) }}
-
-    {{ govukButton({
-      text: "Continue",
-      attributes: { 'data-cy': 'continue-button' }
-    }) }}
-  </form>
-</div>
+      {{
+        govukButton({
+          text: "Continue",
+          attributes: { 'data-cy': 'continue-button' }
+        })
+      }}
+    </form>
+  </div>
 {% endblock %}
