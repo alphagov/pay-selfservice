@@ -20,6 +20,7 @@ export class TransactionDisplayValues {
   readonly cardNumber: string
   readonly paymentProvider: string
   readonly evidenceDueDate: string
+  readonly disputeReason?: string
 
   private readonly transaction: Transaction
 
@@ -54,11 +55,9 @@ export class TransactionDisplayValues {
     this.evidenceDueDate = transaction.evidenceDueDate
       ? transaction.evidenceDueDate.toFormat('dd LLL yyyy HH:mm:ss')
       : ''
-  }
 
-  get disputeReason() {
     if (this.transaction.reason !== undefined) {
-      return ReasonFriendlyNames[this.transaction.reason] ?? ReasonFriendlyNames.OTHER
+      this.disputeReason = ReasonFriendlyNames[this.transaction.reason] ?? ReasonFriendlyNames.OTHER
     }
   }
 }

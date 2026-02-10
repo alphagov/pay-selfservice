@@ -59,9 +59,9 @@
     <tbody class="govuk-table__body">
       {% for transaction in results.transactions %}
         {% if isStripeAccount %}
-          {{ stripeTransactionRow(transaction, currentService, currentGatewayAccount) }}
+          {{ stripeTransactionRow(transaction) }}
         {% else %}
-          {{ worldpayTransactionRow(transaction, currentService, currentGatewayAccount) }}
+          {{ worldpayTransactionRow(transaction) }}
         {% endif %}
       {% endfor %}
     </tbody>

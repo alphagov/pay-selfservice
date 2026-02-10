@@ -5,20 +5,9 @@ import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 
 export class EventDisplayValues {
   private readonly event: Event
-  readonly metadata?: string
 
   constructor(event: Event) {
     this.event = event
-
-    if (event.eventType === EventType.REFUND_CREATED_BY_USER) {
-      this.metadata = `Submitted by: ${event.metadata?.user_email as string}`
-    } else if (
-      event.state.status === Status.CANCELLED ||
-      event.state.status === Status.DECLINED ||
-      event.state.status === Status.ERROR
-    ) {
-      this.metadata = `${event.state.code}: ${event.state.message}`
-    }
   }
 
   get eventType(): string {
@@ -35,5 +24,17 @@ export class EventDisplayValues {
 
   get timestamp(): string {
     return this.event.timestamp.toFormat('dd LLL yyyy HH:mm:ss')
+  }
+
+  get metadata(): string | undefined {
+    if (this.event.eventType === EventType.REFUND_CREATED_BY_USER) {
+      return `Submitted by: ${this.event.metadata?.user_email as string}`
+    } else if (
+      this.event.state.status === Status.CANCELLED ||
+      this.event.state.status === Status.DECLINED ||
+      this.event.state.status === Status.ERROR
+    ) {
+      return `${this.event.state.code}: ${this.event.state.message}`
+    }
   }
 }
