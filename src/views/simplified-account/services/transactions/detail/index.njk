@@ -8,98 +8,25 @@
 {% endset %}
 
 {% block serviceContent %}
-  {% for sectionKey, sectionData in transactionViewHelper %}
+  <h1 class="govuk-heading-l govuk-!-margin-top-6">Transaction details</h1>
 
-    {% if (loop.first == true) %}
-      <h1 class="govuk-heading-l govuk-!-margin-top-6">{{ sectionKey }}</h1>
-
-      {% if not transaction.isFullyRefunded() and transaction.isRefundable() and permissions['refunds_create'] %}
-        {{
-          govukButton({
-            text: "Refund payment",
-            classes: "govuk-button--secondary",
-            href: refundLink
-          })
-        }}
-      {% endif %}
-    {% else %}
-      <h2 class="govuk-heading-m govuk-!-margin-top-8">{{ sectionKey }}</h2>
-    {% endif %}
-
-    {% set rows = [] %}
-    {% for key, value in sectionData %}
-      {% if value %}
-        {%
-          set rows = (rows.push({
-            key: {
-              text: key,
-              classes: "transaction-details summary-list__key govuk-!-font-size-16"
-            },
-            value: {
-              html: value.html,
-              classes: "transaction-details summary-list__row govuk-!-font-size-16"
-            } if value.html else {
-              text: value,
-              classes: "transaction-details summary-list__row govuk-!-font-size-16"
-            }
-          }), rows)
-        %}
-      {% endif %}
-    {% endfor %}
-
-    {{ govukSummaryList({ rows: rows }) }}
-  {% endfor %}
-
-  {% set eventsTableRows = [] %}
-  {% for eventKey, eventData in events %}
-
-
-    {% set eventDescription %}
-      <p class="govuk-!-margin-0"><strong>{{ eventData.description }}</strong></p>
-      {% if eventData.metadata %}
-        <p class="govuk-!-margin-0" style="max-width: 280px; overflow-wrap: anywhere;">{{ eventData.metadata }}</p>
-      {% endif %}
-    {% endset %}
-
-    {%
-      set eventsTableRows = (eventsTableRows.push([
-        {
-          html: eventDescription
-        },
-        {
-          text: eventData.formattedAmount,
-          format: "numeric"
-        },
-        {
-          text: eventData.timestamp,
-          format: "numeric"
-        }
-      ]), eventsTableRows)
-    %}
-  {% endfor %}
-
-  {{
-    govukTable({
-      caption: "Transaction events",
-      captionClasses: "govuk-table__caption--m govuk-!-margin-top-8",
-      firstCellIsHeader: false,
-      head: [
-        {
-          text: "Event"
-        },
-        {
-          text: "Amount",
-          format: "numeric"
-        },
-        {
-          text: "Date and time",
-          format: "numeric"
-        }
-      ],
-      rows: eventsTableRows,
-      classes: "govuk-!-font-size-16"
-    })
-  }}
+  {% if not transaction.isFullyRefunded() and transaction.isRefundable() and permissions['refunds_create'] %}
+    {{
+      govukButton({
+        text: "Refund payment",
+        classes: "govuk-button--secondary",
+        href: transaction._locals.links.refund
+      })
+    }}
+  {% endif %}
+  {% include './partials/_details.njk' %}
+  {% include './partials/_amount.njk' %}
+  {% include './partials/_payment-method.njk' %}
+  {% include './partials/_payment-provider.njk' %}
+  {% if transaction.isDispute() or transaction.disputed %}
+    {% include './partials/_dispute-details.njk' %}
+  {% endif %}
+  {% include './partials/_transaction-events.njk' %}
 
   <a class="govuk-button govuk-button--secondary" href="{{ oldView }}">GOTO old view</a>
   <!-- TODO: PP-14639 remove before going live -->

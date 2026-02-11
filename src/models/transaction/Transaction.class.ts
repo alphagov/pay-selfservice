@@ -8,10 +8,11 @@ import { CardDetails } from '@models/common/card-details/CardDetails.class'
 import { ResourceType } from './types/resource-type'
 import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFriendlyNames } from './types/status'
 import { State } from './State.class'
-import { parseReason, Reason, ReasonFriendlyNames } from './types/reason'
+import { parseReason, Reason } from './types/reason'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
-
-const TITLE_FRIENDLY_DATESTAMP_FORMAT = 'dd LLLL yyyy HH:mm:ss'
+import { TransactionLinksGenerator } from '@models/transaction/TransactionLinksGenerator.class'
+import { TransactionDisplayValues } from '@models/transaction/TransactionDisplayValues.class'
+import { PaymentDetails } from '@models/transaction/PaymentDetails.class'
 
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
@@ -40,6 +41,12 @@ class Transaction {
   readonly reason?: Reason
   readonly evidenceDueDate?: DateTime
   readonly data: TransactionData
+  readonly paymentDetails?: PaymentDetails
+
+  readonly _locals: {
+    links: TransactionLinksGenerator
+    formatted: TransactionDisplayValues
+  }
 
   constructor(data: TransactionData) {
     this.gatewayAccountId = data.gateway_account_id
@@ -67,10 +74,12 @@ class Transaction {
     this.reason = data.reason ? parseReason(data.reason) : undefined
     this.evidenceDueDate = data.evidence_due_date ? DateTime.fromISO(data.evidence_due_date) : undefined
     this.data = data
-  }
+    this.paymentDetails = data.payment_details && new PaymentDetails(data.payment_details)
 
-  amountInPounds(): string {
-    return penceToPoundsWithCurrency(this.amount)
+    this._locals = {
+      links: new TransactionLinksGenerator(this.externalId),
+      formatted: new TransactionDisplayValues(this),
+    }
   }
 
   refundableAmountRemainingInPounds(): string {
@@ -94,14 +103,12 @@ class Transaction {
     }
   }
 
-  get titleFriendlyCreatedDate(): string {
-    return this.createdDate.toFormat(TITLE_FRIENDLY_DATESTAMP_FORMAT)
+  isDispute(): boolean {
+    return this.transactionType === ResourceType.DISPUTE
   }
 
-  get friendlyReason() {
-    if (this.reason !== undefined) {
-      return ReasonFriendlyNames[this.reason] ?? ReasonFriendlyNames.OTHER
-    }
+  hasRefund(): boolean {
+    return (this.refundSummary && this.refundSummary.amountRefunded > 0) ?? false
   }
 
   isPartiallyRefunded(): boolean {

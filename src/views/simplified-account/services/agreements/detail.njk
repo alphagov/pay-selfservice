@@ -2,6 +2,7 @@
 {% from "./macro/status.njk" import agreementStatusTag %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
+
 {% set servicePageTitle %}
   Agreement details {{ agreement.externalId }}
 {% endset %}
@@ -10,44 +11,50 @@
   <h1 class="govuk-heading-l">Agreement detail</h1>
 
   {% if agreement.cancelledDate %}
-    {% set cancelledDate = {
-      key: { text: "Cancelled date" },
-      value: { html: agreement.cancelledDate | govukDate({ preserveTime: true }) }
-    } %}
+    {%
+      set cancelledDate = {
+        key: { text: "Cancelled date" },
+        value: { html: agreement.cancelledDate | govukDate({ preserveTime: true }) }
+      }
+    %}
   {% endif %}
 
   {% if agreement.cancelledByUserEmail %}
-    {% set cancelledBy = {
-      key: { text: "Cancelled by" },
-      value: { text: agreement.cancelledByUserEmail }
-    } %}
+    {%
+      set cancelledBy = {
+        key: { text: "Cancelled by" },
+        value: { text: agreement.cancelledByUserEmail }
+      }
+    %}
   {% endif %}
 
-  {{ govukSummaryList({
-    attributes: { 'data-cy': 'agreement-detail' },
-    rows: [{
-      key: { text: "ID" },
-      value: { text: agreement.externalId }
-    },{
-      key: { text: "Reference" },
-      value: { text: agreement.reference }
-    },{
-      key: { text: "Status" },
-      value: { html: agreementStatusTag(agreement.status) }
-    },{
-      key: { text: "Description" },
-      value: { text: agreement.description },
-      attributes: {
-        id: "data-description"
-      }
-    },{
-      key: { text: "Date created" },
-      value: { html: agreement.createdDate | govukDate({ preserveTime: true }) }
-    },
-      cancelledDate,
-      cancelledBy
-    ]
-  }) }}
+  {{
+    govukSummaryList({
+      attributes: { 'data-cy': 'agreement-detail' },
+      rows: [{
+        key: { text: "ID" },
+        value: { text: agreement.externalId }
+      },{
+        key: { text: "Reference" },
+        value: { text: agreement.reference }
+      },{
+        key: { text: "Status" },
+        value: { html: agreementStatusTag(agreement.status) }
+      },{
+        key: { text: "Description" },
+        value: { text: agreement.description },
+        attributes: {
+          id: "data-description"
+        }
+      },{
+        key: { text: "Date created" },
+        value: { html: agreement.createdDate | govukDate({ preserveTime: true }) }
+      },
+        cancelledDate,
+        cancelledBy
+      ]
+    })
+  }}
 
   <h2 class="govuk-heading-m govuk-!-margin-top-9" data-cy="payment-instrument-title">Payment instrument</h2>
   {% set paymentInstrument = agreement.paymentInstrument %}
@@ -55,94 +62,106 @@
   {% if paymentInstrument %}
     {% set cardDetails = paymentInstrument.cardDetails %}
 
-    {% set cardMap = {
-      'visa': '/assets/images/card_visa.png',
-      'master-card': '/assets/images/card_mastercard.png',
-      'american-express': '/assets/images/card_amex.png',
-      'unknown': '/assets/images/card_unknown.png'
-    } %}
+    {%
+      set cardMap = {
+        'visa': '/assets/images/card_visa.png',
+        'master-card': '/assets/images/card_mastercard.png',
+        'american-express': '/assets/images/card_amex.png',
+        'unknown': '/assets/images/card_unknown.png'
+      }
+    %}
     {% set imageUrl = cardMap[cardDetails.cardBrand | lower] or cardMap.unknown %}
     {% set image %}
-      <img src="{{ imageUrl }}" alt="Card brand {{ cardDetails.cardBrand }}" height="22"
-           style="vertical-align: middle"></img>
+      <img
+        src="{{ imageUrl }}"
+        alt="Card brand {{ cardDetails.cardBrand }}"
+        height="22"
+        style="vertical-align: middle"
+      />
     {% endset %}
-    {{ govukSummaryList({
-      rows: [{
-        key: { text: "Type" },
-        value: { text: paymentInstrument.type | capitalize }
-      },{
-        key: { text: "Card brand" },
-        value: { html: image }
-      },{
-        key: { text: "Name on card" },
-        value: { text: cardDetails.cardholderName }
-      },{
-        key: { text: "Card number" },
-        value: { text: "••••" + cardDetails.lastDigitsCardNumber }
-      },{
-        key: { text: "Card expiry date" },
-        value: { text: cardDetails.expiryDate }
-      }, {
-        key: { text: "Card type" },
-        value: { text: cardDetails.cardType | capitalize }
-      }],
-      attributes: {
-        id: "payment-instrument-list"
-      }
-    }) }}
-
+    {{
+      govukSummaryList({
+        rows: [{
+          key: { text: "Type" },
+          value: { text: paymentInstrument.type | capitalize }
+        },{
+          key: { text: "Card brand" },
+          value: { html: image }
+        },{
+          key: { text: "Name on card" },
+          value: { text: cardDetails.cardholderName }
+        },{
+          key: { text: "Card number" },
+          value: { text: "••••" + cardDetails.lastDigitsCardNumber }
+        },{
+          key: { text: "Card expiry date" },
+          value: { text: cardDetails.expiryDate }
+        }, {
+          key: { text: "Card type" },
+          value: { text: cardDetails.cardType | capitalize }
+        }],
+        attributes: {
+          id: "payment-instrument-list"
+        }
+      })
+    }}
   {% else %}
     <p id="empty-payment-instrument" class="govuk-body">No payment instrument set for this agreement.</p>
   {% endif %}
 
   {% set transactionRows = [] %}
   {% for transaction in transactions %}
-    {% set transactionRow = [
-      { text: transaction.reference, classes: 'break-all' },
-      { text: transaction.state.status | smartCaps },
-      { text: transaction.amountInPounds() },
-      { text: transaction.createdDate | govukDate({preserveTime: true}) }
-    ] %}
+    {%
+      set transactionRow = [
+        { text: transaction.reference, classes: 'break-all' },
+        { text: transaction._locals.formatted.status | smartCaps },
+        { text: transaction._locals.formatted.amount },
+        { text: transaction.createdDate | govukDate({preserveTime: true}) }
+      ]
+    %}
     {% set transactionRows = (transactionRows.push(transactionRow), transactionRows) %}
   {% endfor %}
 
   <h2 class="govuk-heading-m govuk-!-margin-top-9" data-cy="transaction-list-title">Transactions</h2>
-  {{ govukTable({
-    firstCellIsHeader: false,
-    attributes: {
-      id: 'transactions-list'
-    },
-    head: [
-      {
-        text: "Reference"
+  {{
+    govukTable({
+      firstCellIsHeader: false,
+      attributes: {
+        id: 'transactions-list'
       },
-      {
-        text: "State"
-      },
-      {
-        text: "Amount"
-      },
-      {
-        text: "Date created"
-      }
-    ],
-    rows: transactionRows
-  }) }}
+      head: [
+        {
+          text: "Reference"
+        },
+        {
+          text: "State"
+        },
+        {
+          text: "Amount"
+        },
+        {
+          text: "Date created"
+        }
+      ],
+      rows: transactionRows
+    })
+  }}
 
   <p class="govuk-body" data-cy="all-payment-link">
-    <a class="govuk-link govuk-link--no-visited-state"
-       href="{{ allAgreementTransactionsLink }}">Show
-      all transactions for this agreement</a>
+    <a class="govuk-link govuk-link--no-visited-state" href="{{ allAgreementTransactionsLink }}"
+      >Show all transactions for this agreement</a
+    >
   </p>
 
   {% if showCancelAgreementFunctionality %}
-    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-    {{ govukButton({
-      text: "Cancel this agreement",
-      classes: "govuk-button--secondary",
-      href: cancelAgreementLink,
-      attributes: { 'data-cy': 'cancel-agreement-button' }
-    }) }}
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+    {{
+      govukButton({
+        text: "Cancel this agreement",
+        classes: "govuk-button--secondary",
+        href: cancelAgreementLink,
+        attributes: { 'data-cy': 'cancel-agreement-button' }
+      })
+    }}
   {% endif %}
-
 {% endblock %}

@@ -3,37 +3,33 @@
     <th
       scope="row"
       class="govuk-table__header vertical-align-middle"
-      data-gateway-transaction-id="{{ transaction.gateway_transaction_id }}"
+      data-gateway-transaction-id="{{ transaction.gatewayTransactionId }}"
     >
       <a
         class="govuk-link govuk-!-font-weight-regular govuk-!-font-size-16 reference govuk-!-display-block"
-        id="charge-id-{{ transaction.charge_id }}"
-        data-charge-id="{{ transaction.charge_id }}"
-        href="{{ transaction.link }}"
+        id="charge-id-{{ transaction.externalId }}"
+        data-charge-id="{{ transaction.externalId }}"
+        href="{{ transaction._locals.links.detail }}"
       >
-        {{ transaction.reference }}
+        {{ transaction._locals.formatted.paymentReference }}
       </a>
     </th>
-    <td class="govuk-table__cell govuk-!-font-size-16 email vertical-align-middle">{{ transaction.email }}</td>
+    <td class="govuk-table__cell govuk-!-font-size-16 email vertical-align-middle"
+      >{{ transaction._locals.formatted.email }}</td
+    >
     <td class="govuk-table__cell amount govuk-!-font-size-16 vertical-align-middle" id="amount">
       {%- if transaction.totalAmount and transaction.corporateCardSurcharge -%}
-        {{ transaction.totalAmount }}
+        {{ transaction._locals.formatted.totalAmount }}
         <span class="govuk-!-display-block govuk-!-font-size-16">(with card fee)</span>
       {%- else -%}
-        <span style="white-space: pre">{{ transaction.amountInPounds }}</span>
+        <span style="white-space: pre">{{ transaction._locals.formatted.signedAmount }}</span>
       {%- endif -%}
     </td>
     <td data-cell-type="fee" class="govuk-table__cell govuk-!-font-size-16 state vertical-align-middle">
-      {{ transaction.fee }}
+      {{ transaction._locals.formatted.fee }}
     </td>
     <td data-cell-type="net" class="govuk-table__cell govuk-!-font-size-16 state vertical-align-middle">
-      <span style="white-space: pre">
-        {%- if transaction.transaction_type === 'DISPUTE' -%}
-          {{ transaction.netAmount }}
-        {%- else -%}
-          {{ transaction.netAmount or transaction.total_amount or transaction.amount }}
-        {%- endif -%}
-      </span>
+      <span style="white-space: pre"> {{ transaction._locals.formatted.netAmount }} </span>
     </td>
     <td class="govuk-table__cell govuk-!-font-size-16 brand vertical-align-middle">
       {{ transaction.cardDetails.cardBrand }}

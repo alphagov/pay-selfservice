@@ -1,8 +1,5 @@
 import LedgerClient from '@services/clients/pay/LedgerClient.class'
-import {
-  LedgerTransactionParams,
-  LedgerTransactionParamsData,
-} from '@models/transaction/dto/TransactionSearchParams.dto'
+import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
 
 const ledgerClient = new LedgerClient()
 
@@ -26,19 +23,8 @@ const dashboardTransactionSummary = async (gatewayAccountId: number, fromDateTim
 const getTransaction = async (transactionExternalId: string, gatewayAccountId: number) =>
   await ledgerClient.transactions.get(transactionExternalId, gatewayAccountId)
 
-const searchTransactions = async (
-  gatewayAccountId: number,
-  currentPage: number,
-  pageSize: number,
-  filters?: Record<string, string>
-) => {
-  const queryParams: LedgerTransactionParams = {
-    accountIds: [gatewayAccountId],
-    displaySize: pageSize,
-    page: currentPage,
-    ...filters,
-  }
-  return await ledgerClient.transactions.search(new LedgerTransactionParamsData(queryParams))
+const searchTransactions = async (transactionSearchParams: TransactionSearchParams) => {
+  return ledgerClient.transactions.search(transactionSearchParams)
 }
 
 const getEvents = async (transactionExternalId: string, gatewayAccountId: number) =>

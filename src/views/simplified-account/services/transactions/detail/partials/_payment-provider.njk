@@ -1,0 +1,18 @@
+<h2 class="govuk-heading-m govuk-!-margin-top-8">Payment provider</h2>
+
+{{
+  govukSummaryList({ rows: [
+    {
+      key: { text: 'Provider' },
+      value: { text: transaction.paymentProvider }
+    },
+    {
+      key: { text: 'Provider ID' },
+      value: { text: transaction.gatewayTransactionId }
+    },
+    {
+      key: { text: 'GOV.UK Pay ID' },
+      value: { text: transaction.externalId }
+    }
+  ] })
+}}
