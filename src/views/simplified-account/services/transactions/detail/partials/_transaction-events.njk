@@ -1,0 +1,48 @@
+{% macro eventDescription(eventType, eventMetadata) %}
+  <p class="govuk-!-margin-0"><strong>{{ eventType }}</strong></p>
+  {% if eventMetadata %}
+    <p class="govuk-!-margin-0" style="max-width: 280px; overflow-wrap: anywhere;">{{ eventMetadata }}</p>
+  {% endif %}
+{% endmacro %}
+
+{% set eventsTableRows = [] %}
+{% for event in events %}
+  {%
+    set eventsTableRows = eventsTableRows.concat([[
+      {
+        html: eventDescription(event._locals.formatted.eventType, event._locals.formatted.metadata)
+      },
+      {
+        text: event._locals.formatted.amount,
+        format: "numeric"
+      },
+      {
+        text: event._locals.formatted.timestamp,
+        format: "numeric"
+      }
+    ]])
+  %}
+{% endfor %}
+
+{{
+  govukTable({
+    caption: "Transaction events",
+    captionClasses: "govuk-table__caption--m govuk-!-margin-top-8",
+    firstCellIsHeader: false,
+    head: [
+      {
+        text: "Event"
+      },
+      {
+        text: "Amount",
+        format: "numeric"
+      },
+      {
+        text: "Date and time",
+        format: "numeric"
+      }
+    ],
+    rows: eventsTableRows,
+    classes: "govuk-!-font-size-16"
+  })
+}}
