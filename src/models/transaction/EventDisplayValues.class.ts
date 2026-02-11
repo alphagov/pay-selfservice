@@ -2,6 +2,7 @@ import { Event } from '@models/transaction/Event.class'
 import { Status } from '@models/transaction/types/status'
 import { EventType, EventTypeFriendlyNames } from '@models/transaction/types/event-type'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
+import { ZONED_DATE_TIME } from '@models/constants/time-formats'
 
 export class EventDisplayValues {
   private readonly event: Event
@@ -23,7 +24,7 @@ export class EventDisplayValues {
   }
 
   get timestamp(): string {
-    return this.event.timestamp.toFormat('dd LLL yyyy HH:mm:ss')
+    return this.event.timestamp.toFormat(ZONED_DATE_TIME)
   }
 
   get metadata(): string | undefined {
