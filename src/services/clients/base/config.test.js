@@ -11,16 +11,16 @@ const app = 'an-app'
 
 const logInfoSpy = sinon.spy()
 
-function getConfigWithMocks (correlationId) {
+function getConfigWithMocks(correlationId) {
   const config = proxyquire('./config.js', {
     '@services/clients/base/request-context': {
-      getRequestCorrelationIDField: () => correlationId
+      getRequestCorrelationIDField: () => correlationId,
     },
     './request-logger': proxyquire('./request-logger', {
-      '@utils/logger': () => ({
-        info: logInfoSpy
-      })
-    })
+      '@utils/logger/logger': () => ({
+        info: logInfoSpy,
+      }),
+    }),
   })
   return config
 }
@@ -37,9 +37,7 @@ describe('Client config', () => {
 
       config.configureClient(client, baseUrl)
 
-      nock(baseUrl)
-        .get('/')
-        .reply(200)
+      nock(baseUrl).get('/').reply(200)
 
       const response = await client.get('/', 'foo')
 
@@ -52,9 +50,7 @@ describe('Client config', () => {
       const config = getConfigWithMocks()
       config.configureClient(client, baseUrl)
 
-      nock(baseUrl)
-        .get('/')
-        .reply(200)
+      nock(baseUrl).get('/').reply(200)
 
       const response = await client.get('/', 'foo')
       expect(response.status).to.equal(200)
@@ -68,12 +64,10 @@ describe('Client config', () => {
       const config = getConfigWithMocks('abc123')
       config.configureClient(client, baseUrl)
 
-      nock(baseUrl)
-        .get('/')
-        .reply(200)
+      nock(baseUrl).get('/').reply(200)
 
       const response = await client.get('/', 'do something', {
-        additionalLoggingFields: { foo: 'bar' }
+        additionalLoggingFields: { foo: 'bar' },
       })
 
       expect(response.status).to.equal(200)
@@ -83,7 +77,7 @@ describe('Client config', () => {
         method: 'get',
         url: '/',
         description: 'do something',
-        foo: 'bar'
+        foo: 'bar',
       })
     })
   })
@@ -94,15 +88,13 @@ describe('Client config', () => {
       const config = getConfigWithMocks('abc123')
       const baseUrl = 'http://localhost:8000'
 
-      nock(baseUrl)
-        .get('/x?y=z%20z')
-        .reply(200)
+      nock(baseUrl).get('/x?y=z%20z').reply(200)
 
       const url = `${baseUrl}/x?y=z z`
       config.configureClient(client, url)
 
       const response = await client.get(url, 'do something', {
-        additionalLoggingFields: { foo: 'bar' }
+        additionalLoggingFields: { foo: 'bar' },
       })
 
       expect(response.status).to.equal(200)
@@ -113,7 +105,7 @@ describe('Client config', () => {
         method: 'get',
         url: 'http://localhost:8000/x?y=z z',
         description: 'do something',
-        foo: 'bar'
+        foo: 'bar',
       })
     })
   })
