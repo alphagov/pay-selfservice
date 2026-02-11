@@ -8,13 +8,11 @@ import { CardDetails } from '@models/common/card-details/CardDetails.class'
 import { ResourceType } from './types/resource-type'
 import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFriendlyNames } from './types/status'
 import { State } from './State.class'
-import { parseReason, Reason, ReasonFriendlyNames } from './types/reason'
+import { parseReason, Reason } from './types/reason'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 import { TransactionLinksGenerator } from '@models/transaction/TransactionLinksGenerator.class'
 import { TransactionDisplayValues } from '@models/transaction/TransactionDisplayValues.class'
 import { PaymentDetails } from '@models/transaction/PaymentDetails.class'
-
-const TITLE_FRIENDLY_DATESTAMP_FORMAT = 'dd LLLL yyyy HH:mm:ss'
 
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
@@ -105,21 +103,11 @@ class Transaction {
     }
   }
 
-  get titleFriendlyCreatedDate(): string {
-    return this.createdDate.toFormat(TITLE_FRIENDLY_DATESTAMP_FORMAT)
-  }
-
-  get friendlyReason() {
-    if (this.reason !== undefined) {
-      return ReasonFriendlyNames[this.reason] ?? ReasonFriendlyNames.OTHER
-    }
-  }
-
   isDispute(): boolean {
     return this.transactionType === ResourceType.DISPUTE
   }
 
-  isAtLeastPartiallyRefunded(): boolean {
+  hasRefund(): boolean {
     return (this.refundSummary && this.refundSummary.amountRefunded > 0) ?? false
   }
 

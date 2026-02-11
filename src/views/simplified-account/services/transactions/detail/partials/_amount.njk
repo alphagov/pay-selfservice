@@ -31,6 +31,6 @@
       value: {
         text: transaction._locals.formatted.refundedAmount
       }
-    } if transaction.isAtLeastPartiallyRefunded()
+    } if transaction.hasRefund()
   ] })
 }}

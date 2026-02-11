@@ -5,6 +5,7 @@ import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { Transaction } from '@models/transaction/Transaction.class'
+import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const [transaction, events] = await Promise.all([
@@ -16,7 +17,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   let disputes: Transaction[] = []
   if (transaction.disputed) {
     disputes = await getDisputes(req.params.transactionExternalId, req.account.id)
-    disputes.forEach((tx) => tx._locals.links.bind(req.service.externalId, req.account.type))
+    disputes.forEach((dispute) => dispute._locals.links.bind(req.service.externalId, req.account.type))
   }
 
   // sort by most recent first
@@ -31,7 +32,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     events,
     transaction,
     dispute: disputes.length > 0 && disputes[0],
-    pageID: `${transaction._locals.formatted.createdDate} - ${transaction.reference}`,
+    pageID: `${transaction.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${transaction.reference}`,
     oldView: formatAccountPathsFor(
       paths.account.transactions.detail,
       req.account.externalId,

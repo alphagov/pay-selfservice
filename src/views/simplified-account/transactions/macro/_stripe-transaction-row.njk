@@ -11,7 +11,7 @@
         data-charge-id="{{ transaction.externalId }}"
         href="{{ transaction._locals.links.detail }}"
       >
-        {{ transaction._locals.formatted.reference }}
+        {{ transaction._locals.formatted.paymentReference }}
       </a>
     </th>
     <td class="govuk-table__cell govuk-!-font-size-16 email vertical-align-middle"
@@ -22,24 +22,14 @@
         {{ transaction._locals.formatted.totalAmount }}
         <span class="govuk-!-display-block govuk-!-font-size-16">(with card fee)</span>
       {%- else -%}
-        <span style="white-space: pre">{{ transaction._locals.formatted.amountInPounds }}</span>
+        <span style="white-space: pre">{{ transaction._locals.formatted.signedAmount }}</span>
       {%- endif -%}
     </td>
     <td data-cell-type="fee" class="govuk-table__cell govuk-!-font-size-16 state vertical-align-middle">
       {{ transaction._locals.formatted.fee }}
     </td>
     <td data-cell-type="net" class="govuk-table__cell govuk-!-font-size-16 state vertical-align-middle">
-      <span style="white-space: pre">
-        {%- if transaction.transactionType === 'DISPUTE' -%}
-          {{ transaction._locals.formatted.netAmount }}
-        {% elif transaction.netAmount %}
-          {{ transaction._locals.formatted.netAmount }}
-        {% elif transaction.totalAmount %}
-          {{ transaction._locals.formatted.totalAmount }}
-        {%- else -%}
-          {{ transaction._locals.formatted.amountInPounds }}
-        {%- endif -%}
-      </span>
+      <span style="white-space: pre"> {{ transaction._locals.formatted.netAmount }} </span>
     </td>
     <td class="govuk-table__cell govuk-!-font-size-16 brand vertical-align-middle">
       {{ transaction.cardDetails.cardBrand }}

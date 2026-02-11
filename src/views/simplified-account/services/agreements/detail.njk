@@ -115,7 +115,7 @@
       set transactionRow = [
         { text: transaction.reference, classes: 'break-all' },
         { text: transaction._locals.formatted.status | smartCaps },
-        { text: transaction._locals.formatted.amountInPounds },
+        { text: transaction._locals.formatted.amount },
         { text: transaction.createdDate | govukDate({preserveTime: true}) }
       ]
     %}

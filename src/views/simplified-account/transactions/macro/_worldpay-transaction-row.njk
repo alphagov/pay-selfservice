@@ -11,7 +11,7 @@
         data-charge-id="{{ transaction.externalId }}"
         href="{{ transaction._locals.links.detail }}"
       >
-        {{ transaction.reference }}
+        {{ transaction._locals.formatted.paymentReference }}
       </a>
     </th>
     <td class="govuk-table__cell govuk-!-font-size-16 email vertical-align-middle"
@@ -19,10 +19,10 @@
     >
     <td class="govuk-table__cell amount govuk-!-font-size-16 vertical-align-middle" id="amount">
       {%- if transaction.totalAmount and transaction.corporateCardSurcharge -%}
-        {{ transaction._locals.formatted.totalAmount }}
+        {{ transaction._locals.formatted.signedAmount }}
         <span class="govuk-!-display-block govuk-!-font-size-16">(with card fee)</span>
       {%- else -%}
-        <span style="white-space: pre">{{ transaction._locals.formatted.amountInPounds }}</span>
+        <span style="white-space: pre">{{ transaction._locals.formatted.amount }}</span>
       {%- endif -%}
     </td>
     <td class="govuk-table__cell govuk-!-font-size-16 brand vertical-align-middle">
