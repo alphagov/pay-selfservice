@@ -1,71 +1,81 @@
-{% call govukFieldset({
-  legend: {
-    text: "Organisation address",
-    classes: "govuk-fieldset__legend--m",
-    isPageHeading: false
-  }
-}) %}
+{%
+  call govukFieldset({
+    legend: {
+      text: "Organisation address",
+      classes: "govuk-fieldset__legend--m",
+      isPageHeading: false
+    }
+  })
+%}
+  {{
+    govukInput({
+      label: {
+        html: 'Address line 1 <span class="govuk-visually-hidden">line 1 of 2</span>'
+      },
+      hint: {
+        text: "Cannot be a PO Box"
+      },
+      classes: "govuk-!-width-three-quarters",
+      id: "address-line1",
+      name: "addressLine1",
+      autocomplete: "address-line1",
+      errorMessage: { text: errors.formErrors['addressLine1'] } if errors.formErrors['addressLine1'] else false,
+      value: organisationDetails.addressLine1
+    })
+  }}
 
-  {{ govukInput({
-    label: {
-      html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
-    },
-    hint: {
-      text: "Cannot be a PO Box"
-    },
-    classes: "govuk-!-width-three-quarters",
-    id: "address-line1",
-    name: "addressLine1",
-    autocomplete: "address-line1",
-    errorMessage: { text: errors.formErrors['addressLine1'] } if errors.formErrors['addressLine1'] else false,
-    value: organisationDetails.addressLine1
-  }) }}
+  {{
+    govukInput({
+      label: {
+        html: 'Address line 2<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+      },
+      classes: "govuk-!-width-three-quarters",
+      id: "address-line2",
+      name: "addressLine2",
+      autocomplete: "address-line2",
+      errorMessage: { text: errors.formErrors['addressLine2'] } if errors.formErrors['addressLine2'] else false,
+      value: organisationDetails.addressLine2
+    })
+  }}
 
-  {{ govukInput({
-    label: {
-      html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
-    },
-    classes: "govuk-!-width-three-quarters",
-    id: "address-line2",
-    name: "addressLine2",
-    autocomplete: "address-line2",
-    errorMessage: { text: errors.formErrors['addressLine2'] } if errors.formErrors['addressLine2'] else false,
-    value: organisationDetails.addressLine2
-  }) }}
+  {{
+    govukInput({
+      label: {
+        text: "Town or city"
+      },
+      classes: "govuk-!-width-two-thirds",
+      id: "address-city",
+      name: "addressCity",
+      autocomplete: "address-level2",
+      errorMessage: { text: errors.formErrors['addressCity'] } if errors.formErrors['addressCity'] else false,
+      value: organisationDetails.addressCity
+    })
+  }}
 
-  {{ govukInput({
-    label: {
-      text: "Town or city"
-    },
-    classes: "govuk-!-width-two-thirds",
-    id: "address-city",
-    name: "addressCity",
-    autocomplete: "address-level2",
-    errorMessage: { text: errors.formErrors['addressCity'] } if errors.formErrors['addressCity'] else false,
-    value: organisationDetails.addressCity
-  }) }}
+  {{
+    govukSelect({
+      id: "address-country",
+      classes: "govuk-!-width-two-thirds",
+      name: "addressCountry",
+      errorMessage: { text: errors.formErrors['addressCountry'] } if errors.formErrors['addressCountry'] else false,
+      label: {
+        text: "Country or territory"
+      },
+      items: countries
+    })
+  }}
 
-  {{ govukSelect({
-    id: "address-country",
-    classes: "govuk-!-width-two-thirds",
-    name: "addressCountry",
-    errorMessage: { text: errors.formErrors['addressCountry'] } if errors.formErrors['addressCountry'] else false,
-    label: {
-      text: "Country"
-    },
-    items: countries
-  }) }}
-
-  {{ govukInput({
-    label: {
-      text: "Postcode"
-    },
-    classes: "govuk-!-width-one-quarter",
-    id: "address-postcode",
-    name: "addressPostcode",
-    autocomplete: "postal-code",
-    errorMessage: { text: errors.formErrors['addressPostcode'] } if errors.formErrors['addressPostcode'] else false,
-    value: organisationDetails.addressPostcode
-  }) }}
-
+  {{
+    govukInput({
+      label: {
+        text: "Postcode"
+      },
+      classes: "govuk-!-width-one-quarter",
+      id: "address-postcode",
+      name: "addressPostcode",
+      autocomplete: "postal-code",
+      errorMessage: { text: errors.formErrors['addressPostcode'] } if errors.formErrors['addressPostcode'] else false,
+      value: organisationDetails.addressPostcode
+    })
+  }}
 {% endcall %}
