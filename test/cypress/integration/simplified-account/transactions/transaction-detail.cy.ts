@@ -12,38 +12,43 @@ import { Status } from '@models/transaction/types/status'
 import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
 import { Reason, ReasonFriendlyNames } from '@models/transaction/types/reason'
 import { ResourceType } from '@models/transaction/types/resource-type'
+import {
+  getTransactionEvents,
+  getTransactionForGatewayAccount,
+} from '@test/cypress/stubs/simplified-account/transaction-stubs'
+import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 
-const TRANSACTION = new TransactionFixture().toTransactionData()
-const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO(TRANSACTION.created_date)
-const CARD_DETAILS = TRANSACTION.card_details!
+const TRANSACTION = new TransactionFixture()
+const TRANSACTION_CREATED_TIMESTAMP = TRANSACTION.createdDate
+const CARD_DETAILS = TRANSACTION.cardDetails!
+
 const PAGE_HEADING_DATE_FORMAT = 'dd MMM yyyy HH:mm:ss'
 const PAGE_CONTENT_DATE_FORMAT = 'dd LLL yyyy — HH:mm:ss'
 
 const TRANSACTION_EVENTS = [
-  {
+  new TransactionEventFixture({
     amount: 1250,
     state: {
       finished: false,
-      status: 'created',
+      status: 'CREATED',
     },
-    resource_type: 'PAYMENT',
-    event_type: 'PAYMENT_CREATED',
+    resourceType: 'PAYMENT',
+    eventType: 'PAYMENT_CREATED',
     timestamp: TRANSACTION_CREATED_TIMESTAMP,
-    data: {},
-  },
+  }),
 ]
 
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
-const GATEWAY_ACCOUNT_ID = TRANSACTION.gateway_account_id
-const SERVICE_EXTERNAL_ID = TRANSACTION.service_id
+const GATEWAY_ACCOUNT_ID = TRANSACTION.gatewayAccountId
+const SERVICE_EXTERNAL_ID = TRANSACTION.serviceExternalId
 const SERVICE_NAME = {
   en: 'McDuck Enterprises',
   cy: 'Mentrau McDuck',
 }
 
 const TRANSACTION_URL = (serviceMode: string) =>
-  `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/transactions/${TRANSACTION.transaction_id}`
+  `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/transactions/${TRANSACTION.externalId}`
 
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({
@@ -67,15 +72,8 @@ describe('Transaction details page', () => {
   it('accessibility check', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: TRANSACTION,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS,
-      }),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
     cy.visit(TRANSACTION_URL(TEST))
     cy.a11yCheck()
@@ -84,22 +82,15 @@ describe('Transaction details page', () => {
   it('should display correct page title and headings', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: TRANSACTION,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS,
-      }),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
 
     cy.visit(TRANSACTION_URL(TEST))
 
     cy.title().should(
       'eq',
-      `Transaction details - ${DateTime.fromISO(TRANSACTION.created_date).toFormat(PAGE_HEADING_DATE_FORMAT)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
+      `Transaction details - ${TRANSACTION.createdDate.toFormat(PAGE_HEADING_DATE_FORMAT)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
     )
     cy.get('h1').should('contain.text', 'Transaction Details')
     cy.get('h2').should('contain.text', 'Amount')
@@ -110,15 +101,8 @@ describe('Transaction details page', () => {
   it('should navigate to transactions list page when back link is clicked', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: TRANSACTION,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS,
-      }),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
 
     cy.visit(TRANSACTION_URL(TEST))
@@ -132,15 +116,8 @@ describe('Transaction details page', () => {
   it('should display transaction details correctly', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: TRANSACTION,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: TRANSACTION.transaction_id,
-        events: TRANSACTION_EVENTS,
-      }),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
 
     cy.visit(TRANSACTION_URL(TEST))
@@ -172,7 +149,7 @@ describe('Transaction details page', () => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Date created')
         cy.get('.govuk-summary-list__value').should(
           'contain.text',
-          DateTime.fromISO(TRANSACTION.created_date).toFormat(PAGE_CONTENT_DATE_FORMAT)
+          TRANSACTION.createdDate.toFormat(PAGE_CONTENT_DATE_FORMAT)
         )
       })
 
@@ -201,28 +178,28 @@ describe('Transaction details page', () => {
       .eq(7)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Card brand')
-        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.card_brand)
+        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.cardBrand)
       })
 
     cy.get('.govuk-summary-list__row')
       .eq(8)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Name on card')
-        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.cardholder_name)
+        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.cardholderName)
       })
 
     cy.get('.govuk-summary-list__row')
       .eq(9)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Card number')
-        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.last_digits_card_number)
+        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.lastDigitsCardNumber)
       })
 
     cy.get('.govuk-summary-list__row')
       .eq(10)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Card expiry date')
-        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.expiry_date)
+        cy.get('.govuk-summary-list__value').should('contain.text', CARD_DETAILS.expiryDate)
       })
 
     cy.get('.govuk-summary-list__row')
@@ -243,14 +220,14 @@ describe('Transaction details page', () => {
       .eq(13)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Provider ID')
-        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.gateway_transaction_id)
+        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.gatewayTransactionId)
       })
 
     cy.get('.govuk-summary-list__row')
       .eq(14)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'GOV.UK Pay ID')
-        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.transaction_id)
+        cy.get('.govuk-summary-list__value').should('contain.text', TRANSACTION.externalId)
       })
 
     cy.get('.govuk-summary-list__key').contains('3D Secure (3DS)').should('not.exist')

@@ -57,6 +57,7 @@ export class TransactionFixture {
     this.createdDate = DateTime.fromISO('2025-07-22T03:14:15.926Z')
     this.description = 'a test transaction'
     this.paymentProvider = 'sandbox'
+    this.email = 'test2@example.org'
     this.disputed = false
     this.cardDetails = new CardDetailsFixture()
     this.transactionType = ResourceType.PAYMENT
@@ -89,7 +90,7 @@ export class TransactionFixture {
       return_url: this.returnUrl,
       email: this.email,
       payment_provider: this.paymentProvider,
-      created_date: this.createdDate.toISODate()!,
+      created_date: this.createdDate.toISO()!,
       card_details: this.cardDetails?.toCardDetailsData(),
       delayed_capture: this.delayedCapture,
       gateway_transaction_id: this.gatewayTransactionId,
