@@ -1,4 +1,4 @@
 'use strict'
 
-const logger = require('../../src/utils/logger')(__filename)
-logger.transports.forEach(t => (t.silent = true))
+const logger = require('@utils/logger/logger')(__filename)
+logger.transports.forEach((t) => (t.silent = true))

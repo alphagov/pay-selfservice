@@ -1,4 +1,4 @@
-import createLogger from '@utils/logger'
+import createLogger from '@utils/logger/logger'
 import LoggingContext from './config'
 const logger = createLogger(__filename)
 
@@ -9,7 +9,7 @@ export = {
       method: context.method,
       url: context.url,
       description: context.description,
-      ...context.additionalLoggingFields
+      ...context.additionalLoggingFields,
     })
   },
 
@@ -22,7 +22,7 @@ export = {
       description: context.description,
       response_time: responseTime,
       status: context.status,
-      ...context.additionalLoggingFields
+      ...context.additionalLoggingFields,
     })
   },
 
@@ -38,7 +38,7 @@ export = {
       url: context.url,
       description: context.description,
       status: context.status,
-      ...context.additionalLoggingFields
+      ...context.additionalLoggingFields,
     })
   },
 
@@ -49,7 +49,7 @@ export = {
       url: context.url,
       description: context.description,
       error,
-      ...context.additionalLoggingFields
+      ...context.additionalLoggingFields,
     })
-  }
+  },
 }

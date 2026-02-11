@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const logger = require('./logger')(__filename)
+const logger = require('./logger/logger')(__filename)
 const displayConverter = require('./display-converter')
 
 const ERROR_MESSAGE = 'There is a problem with the payments platform'

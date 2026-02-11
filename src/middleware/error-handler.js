@@ -5,7 +5,7 @@ const { AxiosError } = require('axios')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const { CsrfError } = require('@govuk-pay/pay-js-commons/lib/utils/middleware/csrf.middleware')
 
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const {
   NotAuthenticatedError,
   UserAccountDisabledError,
@@ -20,13 +20,13 @@ const {
   GatewayTimeoutError,
   GatewayTimeoutForAllServicesSearchError,
   TaskAlreadyCompletedError,
-  TaskAccessedOutOfSequenceError
+  TaskAccessedOutOfSequenceError,
 } = require('../errors')
 const paths = require('../paths')
 const { renderErrorView, response } = require('../utils/response')
 const formatSimplifiedAccountPathsFor = require('../utils/simplified-account/format/format-simplified-account-paths-for')
 
-module.exports = function errorHandler (err, req, res, next) {
+module.exports = function errorHandler(err, req, res, next) {
   if (res.headersSent) {
     return next(err)
   }
@@ -40,7 +40,9 @@ module.exports = function errorHandler (err, req, res, next) {
     if (req.session) {
       req.session.last_url = req.originalUrl
     }
-    logger.info(`NotAuthenticatedError handled: ${err.message}. Redirecting attempt to access ${req.originalUrl} to ${paths.user.logIn}`)
+    logger.info(
+      `NotAuthenticatedError handled: ${err.message}. Redirecting attempt to access ${req.originalUrl} to ${paths.user.logIn}`
+    )
     return res.redirect(paths.user.logIn)
   }
 
@@ -73,12 +75,22 @@ module.exports = function errorHandler (err, req, res, next) {
 
   if (err instanceof RegistrationSessionMissingError || err instanceof InvalidRegistrationStateError) {
     logger.info('RegistrationSessionMissingError handled. Rendering error page')
-    return renderErrorView(req, res, 'There has been a problem proceeding with this registration. Please try again.', 400)
+    return renderErrorView(
+      req,
+      res,
+      'There has been a problem proceeding with this registration. Please try again.',
+      400
+    )
   }
 
   if (err instanceof InvalidConfigurationError) {
     logger.info(`InvalidConfigurationError handled: ${err.message}. Rendering error page`)
-    return renderErrorView(req, res, 'This account is not configured to perform this action. Please contact the support team.', 400)
+    return renderErrorView(
+      req,
+      res,
+      'This account is not configured to perform this action. Please contact the support team.',
+      400
+    )
   }
 
   if (err instanceof ExpiredInviteError) {
@@ -91,7 +103,7 @@ module.exports = function errorHandler (err, req, res, next) {
     if (err.redirect) {
       return res.redirect(err.redirect)
     }
-    return renderErrorView(req, res, 'You can\'t start this task yet, go back and try again.', 428)
+    return renderErrorView(req, res, "You can't start this task yet, go back and try again.", 428)
   }
 
   if (err instanceof TaskAlreadyCompletedError) {
@@ -99,20 +111,29 @@ module.exports = function errorHandler (err, req, res, next) {
     res.status(302)
     return response(req, res, 'error-with-link', {
       error: {
-        title: 'You\'ve already completed this task',
-        message: 'Contact GOV.UK Pay support if you need to change your answers.'
+        title: "You've already completed this task",
+        message: 'Contact GOV.UK Pay support if you need to change your answers.',
       },
       enable_link: true,
       link: {
         text: 'Click here to return to settings',
-        link: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, req.service.externalId, req.account.type)
-      }
+        link: formatSimplifiedAccountPathsFor(
+          paths.simplifiedAccount.settings.stripeDetails.index,
+          req.service.externalId,
+          req.account.type
+        ),
+      },
     })
   }
 
   if (err && err.code === 'EBADCSRFTOKEN') {
     logger.warn('CSRF secret provided is invalid')
-    return renderErrorView(req, res, 'There is a problem with the payments platform. Please contact the support team', 400)
+    return renderErrorView(
+      req,
+      res,
+      'There is a problem with the payments platform. Please contact the support team',
+      400
+    )
   }
 
   if (err instanceof GatewayTimeoutError) {
@@ -123,7 +144,10 @@ module.exports = function errorHandler (err, req, res, next) {
   if (err instanceof GatewayTimeoutForAllServicesSearchError) {
     logger.info('Gateway Time out Error occurred on Transactions for All Services Search Page. Rendering error page')
     let allServiceTransactionsNoSearchPath = req.session.allServicesTransactionsStatusFilter
-      ? paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilterWithoutSearch, req.session.allServicesTransactionsStatusFilter)
+      ? paths.formattedPathFor(
+          paths.allServiceTransactions.indexStatusFilterWithoutSearch,
+          req.session.allServicesTransactionsStatusFilter
+        )
       : paths.formattedPathFor(paths.allServiceTransactions.indexStatusFilterWithoutSearch, 'live')
     const queryString = req.originalUrl.split('?')[1]
     if (queryString) {
@@ -132,23 +156,23 @@ module.exports = function errorHandler (err, req, res, next) {
 
     return renderErrorView(req, res, err.message, 504, {
       allServicesTimeout: true,
-      allServiceTransactionsNoSearchPath
+      allServiceTransactionsNoSearchPath,
     })
   }
 
   if (err instanceof RESTClientError) {
     logger.info(`Unhandled REST client error caught: ${err.message}`, {
       service: err.service,
-      status: err.statusCode
+      status: err.statusCode,
     })
   } else if (err instanceof AxiosError) {
     logger.info(`Unhandled AxiosError caught: ${err.message}`, {
       status: err.response && err.response.status,
-      response_data: err.response && err.response.data
+      response_data: err.response && err.response.data,
     })
   } else {
     logger.info(`Unhandled error caught: ${err.message}`, {
-      stack: err.stack
+      stack: err.stack,
     })
   }
   Sentry.captureException(err)

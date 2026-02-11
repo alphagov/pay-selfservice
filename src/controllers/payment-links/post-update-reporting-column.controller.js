@@ -1,18 +1,18 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const MetadataForm = require('./metadata/metadata-form')
 const { getPaymentLinksContext, metadata } = require('../../utils/payment-links')
 
 const { response } = require('../../utils/response.js')
 
-function addMetadata (req, res, next) {
+function addMetadata(req, res, next) {
   try {
     const paymentLinksContext = getPaymentLinksContext(req)
     const pageData = {
       self: paymentLinksContext.addMetadataPageUrl,
       cancelRoute: paymentLinksContext.listMetadataPageUrl,
-      createLink: paymentLinksContext.isCreatingPaymentLink
+      createLink: paymentLinksContext.isCreatingPaymentLink,
     }
     const form = new MetadataForm(req.body, paymentLinksContext.sessionData && paymentLinksContext.sessionData.metadata)
     const validated = form.validate()
@@ -32,7 +32,7 @@ function addMetadata (req, res, next) {
 
     logger.info('Reporting column added', {
       reporting_column_key: form.values[form.fields.metadataKey.id],
-      product_external_id: req.params && req.params.productExternalId
+      product_external_id: req.params && req.params.productExternalId,
     })
 
     res.redirect(paymentLinksContext.listMetadataPageUrl)
@@ -41,7 +41,7 @@ function addMetadata (req, res, next) {
   }
 }
 
-function editMetadata (req, res, next) {
+function editMetadata(req, res, next) {
   try {
     const paymentLinksContext = getPaymentLinksContext(req)
     const key = req.params.metadataKey
@@ -55,7 +55,7 @@ function editMetadata (req, res, next) {
       cancelRoute: paymentLinksContext.listMetadataPageUrl,
       isEditing: true,
       canEditKey: true,
-      createLink: paymentLinksContext.isCreatingPaymentLink
+      createLink: paymentLinksContext.isCreatingPaymentLink,
     }
     const validated = form.validate()
 
@@ -75,7 +75,7 @@ function editMetadata (req, res, next) {
     logger.info('Reporting column updated', {
       original_reporting_column_key: key,
       reporting_column_key: form.values[form.fields.metadataKey.id],
-      product_external_id: req.params && req.params.productExternalId
+      product_external_id: req.params && req.params.productExternalId,
     })
 
     res.redirect(paymentLinksContext.listMetadataPageUrl)
@@ -84,7 +84,7 @@ function editMetadata (req, res, next) {
   }
 }
 
-function deleteMetadata (req, res, next) {
+function deleteMetadata(req, res, next) {
   try {
     const paymentLinksContext = getPaymentLinksContext(req)
     const key = req.params.metadataKey
@@ -93,7 +93,7 @@ function deleteMetadata (req, res, next) {
 
     logger.info('Reporting column deleted', {
       reporting_column_key: key,
-      product_external_id: req.params && req.params.productExternalId
+      product_external_id: req.params && req.params.productExternalId,
     })
 
     res.redirect(paymentLinksContext.listMetadataPageUrl)
@@ -105,5 +105,5 @@ function deleteMetadata (req, res, next) {
 module.exports = {
   addMetadata,
   editMetadata,
-  deleteMetadata
+  deleteMetadata,
 }

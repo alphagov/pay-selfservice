@@ -3,12 +3,12 @@
 const lodash = require('lodash')
 const qrcode = require('qrcode')
 
-const logger = require('../../../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const { response } = require('../../../utils/response.js')
 const paths = require('../../../paths')
 const secondFactorMethod = require('@models/constants/second-factor-method')
 
-module.exports = async function showConfigureSecondFactorMethod (req, res) {
+module.exports = async function showConfigureSecondFactorMethod(req, res) {
   const method = lodash.get(req, 'session.pageData.twoFactorAuthMethod', secondFactorMethod.APP)
   const recovered = lodash.get(req, 'session.pageData.configureTwoFactorAuthMethodRecovered', {})
   lodash.unset(req, 'session.pageData.configureTwoFactorAuthMethodRecovered')
@@ -23,7 +23,7 @@ module.exports = async function showConfigureSecondFactorMethod (req, res) {
       prettyPrintedSecret,
       qrCodeDataUrl,
       errors: recovered.errors,
-      secondFactorMethod
+      secondFactorMethod,
     }
     return response(req, res, 'two-factor-auth/configure', pageData)
   } catch (err) {

@@ -1,4 +1,4 @@
-import createLogger from '@utils/logger'
+import createLogger from '@utils/logger/logger'
 import paths from '@root/paths'
 import { disableProduct } from '@services/products.service'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'

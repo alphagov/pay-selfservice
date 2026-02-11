@@ -14,7 +14,7 @@ import {
   getConfigurePSPAccountLink,
   getAccountStatus,
 } from '@utils/simplified-account/services/dashboard/actions-utils'
-import createLogger from '@utils/logger'
+import createLogger from '@utils/logger/logger'
 import type { DateTime } from 'luxon'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'

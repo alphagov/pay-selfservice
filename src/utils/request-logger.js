@@ -1,13 +1,13 @@
-const logger = require('./logger')(__filename)
+const logger = require('./logger/logger')(__filename)
 
 module.exports = {
-  logRequestStart: context => {
+  logRequestStart: (context) => {
     logger.info(`Calling ${context.service} to ${context.description}`, {
       service: context.service,
       method: context.method,
       url: context.url,
       description: context.description,
-      ...context.additionalLoggingFields
+      ...context.additionalLoggingFields,
     })
   },
 
@@ -20,7 +20,7 @@ module.exports = {
       description: context.description,
       response_time: duration,
       status: response && response.statusCode,
-      ...context.additionalLoggingFields
+      ...context.additionalLoggingFields,
     })
   },
 
@@ -31,7 +31,7 @@ module.exports = {
       url: context.url,
       description: context.description,
       status: response.statusCode,
-      ...context.additionalLoggingFields
+      ...context.additionalLoggingFields,
     })
   },
 
@@ -42,7 +42,7 @@ module.exports = {
       url: context.url,
       description: context.description,
       error,
-      ...context.additionalLoggingFields
+      ...context.additionalLoggingFields,
     })
-  }
+  },
 }
