@@ -1,9 +1,8 @@
 import { ResourceType } from '@models/transaction/types/resource-type'
-import { EventType, EventTypeFriendlyNames } from '@models/transaction/types/event-type'
+import { EventType } from '@models/transaction/types/event-type'
 import { DateTime } from 'luxon'
 import { State } from '@models/transaction/State.class'
 import { EventData } from '@models/transaction/dto/Event.dto'
-import { Status } from '@models/transaction/types/status'
 import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
 import { Event } from '@models/transaction/Event.class'
 

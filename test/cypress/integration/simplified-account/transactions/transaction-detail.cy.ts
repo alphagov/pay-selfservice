@@ -2,7 +2,6 @@ import userStubs from '@test/cypress/stubs/user-stubs'
 import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-account-type'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
-import { DateTime } from 'luxon'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { SANDBOX } from '@models/constants/payment-providers'
 import changeCase from 'change-case'
@@ -238,10 +237,11 @@ describe('Transaction details page', () => {
   it('should not display card details type when not present', () => {
     const transactionWithoutCardDetails = new TransactionFixture({ cardDetails: undefined })
 
-
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithoutCardDetails),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
+        transactionWithoutCardDetails
+      ),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
     cy.visit(TRANSACTION_URL(TEST))
@@ -286,7 +286,9 @@ describe('Transaction details page', () => {
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWith3DSNotRequired),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
+        transactionWith3DSNotRequired
+      ),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
     cy.visit(TRANSACTION_URL(TEST))
@@ -459,24 +461,22 @@ describe('Transaction details page', () => {
         amount: transactionAmount,
         state: {
           finished: false,
-          status: 'CREATED'
+          status: 'CREATED',
         },
         resourceType: 'PAYMENT',
         eventType: 'PAYMENT_CREATED',
         timestamp: TRANSACTION_CREATED_TIMESTAMP,
-
       }),
 
       new TransactionEventFixture({
         amount: transactionAmount,
         state: {
           finished: false,
-          status: 'STARTED'
+          status: 'STARTED',
         },
         resourceType: 'PAYMENT',
         eventType: 'PAYMENT_STARTED',
         timestamp: transactionStartedTimestamp,
-
       }),
       new TransactionEventFixture({
         amount: transactionAmount,
@@ -484,12 +484,12 @@ describe('Transaction details page', () => {
           finished: true,
           code: 'P0010',
           message: 'Payment method rejected',
-          status: 'DECLINED'
+          status: 'DECLINED',
         },
         resourceType: 'PAYMENT',
         eventType: 'AUTHORISATION_REJECTED',
         timestamp: transactionDeclinedTimestamp,
-      })
+      }),
     ]
 
     cy.task('setupStubs', [
@@ -549,7 +549,9 @@ describe('Transaction details page', () => {
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithRefundUnavailable),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
+        transactionWithRefundUnavailable
+      ),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
     cy.visit(TRANSACTION_URL(TEST))
