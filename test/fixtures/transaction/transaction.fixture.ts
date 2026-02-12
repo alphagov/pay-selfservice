@@ -5,6 +5,7 @@ import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-
 import { Transaction } from '@models/transaction/Transaction.class'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
+import { AuthorisationSummaryFixture } from '@test/fixtures/transaction/authorisation-summary.fixture'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 
 export class TransactionFixture {
@@ -30,7 +31,7 @@ export class TransactionFixture {
   disputed: boolean
   refundSummary: LedgerRefundSummaryFixture
   settlementSummary?: unknown
-  authorisationSummary?: unknown
+  authorisationSummary?: AuthorisationSummaryFixture
   cardDetails?: CardDetailsFixture
   transactionType: ResourceType
   reason?: Reason
@@ -56,6 +57,7 @@ export class TransactionFixture {
     this.createdDate = DateTime.fromISO('2025-07-22T03:14:15.926Z')
     this.description = 'a test transaction'
     this.paymentProvider = 'sandbox'
+    this.email = 'test2@example.org'
     this.disputed = false
     this.cardDetails = new CardDetailsFixture()
     this.transactionType = ResourceType.PAYMENT
@@ -88,7 +90,7 @@ export class TransactionFixture {
       return_url: this.returnUrl,
       email: this.email,
       payment_provider: this.paymentProvider,
-      created_date: this.createdDate.toISODate()!,
+      created_date: this.createdDate.toISO()!,
       card_details: this.cardDetails?.toCardDetailsData(),
       delayed_capture: this.delayedCapture,
       gateway_transaction_id: this.gatewayTransactionId,
@@ -104,6 +106,9 @@ export class TransactionFixture {
       evidence_due_date: this.evidenceDueDate ? this.evidenceDueDate.toISODate()! : undefined,
       reason: this.reason,
       refund_summary: this.refundSummary?.toLedgerRefundSummaryData(),
+      authorisation_summary: this.authorisationSummary
+        ? this.authorisationSummary.toAuthorisationSummaryData()
+        : undefined,
     }
   }
 
