@@ -3,16 +3,32 @@ import paths from '@root/paths'
 
 export class TransactionLinksGenerator {
   readonly transactionId: string
+  serviceExternalId?: string
+  accountType?: string
 
   constructor(transactionId: string) {
     this.transactionId = transactionId
   }
 
-  detail(serviceExternalId: string, accountType: string) {
+  bind(serviceExternalId: string, accountType: string) {
+    this.serviceExternalId = serviceExternalId
+    this.accountType = accountType
+  }
+
+  get detail() {
     return formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.transactions.detail,
-      serviceExternalId,
-      accountType,
+      this.serviceExternalId!,
+      this.accountType!,
+      this.transactionId
+    )
+  }
+
+  get refund() {
+    return formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.transactions.refund,
+      this.serviceExternalId!,
+      this.accountType!,
       this.transactionId
     )
   }

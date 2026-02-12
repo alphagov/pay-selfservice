@@ -1,0 +1,47 @@
+{{
+  govukSummaryList({ rows: [
+    {
+      key: {
+        text: 'Reference number'
+      },
+      value: {
+        text: transaction.reference
+      }
+    }, {
+      key: {
+        text: 'Service name'
+      },
+      value: {
+        text: currentService.serviceName.en
+      }
+    }, {
+      key: {
+        text: 'Description'
+      },
+      value: {
+        text: transaction.description
+      }
+    }, {
+      key: {
+        text: 'Date created'
+      },
+      value: {
+        text: transaction._locals.formatted.createdDate
+      }
+    }, {
+      key: {
+        text: 'Payment status'
+      },
+      value: {
+        text: transaction._locals.formatted.status
+      }
+    }, {
+      key: {
+        text: '3D Secure (3DS)'
+      },
+      value: {
+        text: 'Required' if transaction.authorisationSummary.threeDSecure.required else 'Not required'
+      }
+    } if transaction.authorisationSummary else null
+  ] })
+}}

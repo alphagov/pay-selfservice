@@ -4,6 +4,7 @@ import { ResourceType } from './types/resource-type'
 import { EventType, EventTypeFriendlyNames } from './types/event-type'
 import { Status } from './types/status'
 import { State } from './State.class'
+import { EventDisplayValues } from '@models/transaction/EventDisplayValues.class'
 
 class Event {
   readonly amount: number
@@ -12,6 +13,8 @@ class Event {
   readonly timestamp: DateTime
   readonly state: State
   readonly metadata?: Record<string, unknown>
+  readonly _locals: { formatted: EventDisplayValues }
+
   constructor(data: EventData) {
     this.amount = data.amount
     this.resourceType = data.resource_type
@@ -19,6 +22,8 @@ class Event {
     this.timestamp = DateTime.fromISO(data.timestamp)
     this.state = new State(data.state)
     this.metadata = data.data
+
+    this._locals = { formatted: new EventDisplayValues(this) }
   }
 
   get friendlyEventType(): string {
