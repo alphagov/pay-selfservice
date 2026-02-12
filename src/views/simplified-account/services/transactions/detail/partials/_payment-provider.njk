@@ -4,7 +4,7 @@
   govukSummaryList({ rows: [
     {
       key: { text: 'Provider' },
-      value: { text: transaction.paymentProvider }
+      value: { text: transaction.paymentProvider | capitalize }
     },
     {
       key: { text: 'Provider ID' },
