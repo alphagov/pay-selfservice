@@ -17,6 +17,8 @@ import {
   getTransactionForGatewayAccount,
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
+import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
+import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 
 const TRANSACTION = new TransactionFixture()
 const TRANSACTION_CREATED_TIMESTAMP = TRANSACTION.createdDate
@@ -92,7 +94,7 @@ describe('Transaction details page', () => {
       'eq',
       `Transaction details - ${TRANSACTION.createdDate.toFormat(PAGE_HEADING_DATE_FORMAT)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
     )
-    cy.get('h1').should('contain.text', 'Transaction Details')
+    cy.get('h1').should('contain.text', 'Transaction details')
     cy.get('h2').should('contain.text', 'Amount')
     cy.get('h2').should('contain.text', 'Payment method')
     cy.get('h2').should('contain.text', 'Payment provider')
@@ -234,21 +236,13 @@ describe('Transaction details page', () => {
   })
 
   it('should not display card details type when not present', () => {
-    const transactionWithoutCardDetails = new TransactionFixture({ cardDetails: undefined }).toTransactionData()
+    const transactionWithoutCardDetails = new TransactionFixture({ cardDetails: undefined })
+
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: transactionWithoutCardDetails,
-        includeCardDetails: false,
-        includeAddress: false,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: transactionWithoutCardDetails.transaction_id,
-        events: [],
-      }),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithoutCardDetails),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
@@ -268,19 +262,12 @@ describe('Transaction details page', () => {
           required: true,
         },
       }),
-    }).toTransactionData()
+    })
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: transactionWith3DSRequired,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: transactionWith3DSRequired.transaction_id,
-        events: [],
-      }),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWith3DSRequired),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
@@ -295,19 +282,12 @@ describe('Transaction details page', () => {
   it('should display 3D Secure as not required when authorisation summary exists', () => {
     const transactionWith3DSNotRequired = new TransactionFixture({
       authorisationSummary: new AuthorisationSummaryFixture(),
-    }).toTransactionData()
+    })
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: transactionWith3DSNotRequired,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: transactionWith3DSNotRequired.transaction_id,
-        events: [],
-      }),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWith3DSNotRequired),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
@@ -320,18 +300,11 @@ describe('Transaction details page', () => {
   })
 
   it('should display wallet type when present', () => {
-    const transactionWithWalletType = new TransactionFixture({ walletType: 'APPLE_PAY' }).toTransactionData()
+    const transactionWithWalletType = new TransactionFixture({ walletType: 'APPLE_PAY' })
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: transactionWithWalletType,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: transactionWithWalletType.transaction_id,
-        events: [],
-      }),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithWalletType),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
@@ -345,18 +318,11 @@ describe('Transaction details page', () => {
 
   it('should display fees when present', () => {
     const transactionAmounts = { corporateCardSurcharge: 25, fee: 15, totalAmount: 1075 }
-    const transactionWithFees = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
+    const transactionWithFees = new TransactionFixture({ ...transactionAmounts })
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: transactionWithFees,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: transactionWithFees.transaction_id,
-        events: [],
-      }),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithFees),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
@@ -392,8 +358,6 @@ describe('Transaction details page', () => {
       reason: Reason.FRAUDULENT,
       transactionType: ResourceType.DISPUTE,
     }).toTransactionData()
-
-    // cy.log(JSON.stringify(disputeTransaction))
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
@@ -486,59 +450,51 @@ describe('Transaction details page', () => {
     const state = new TransactionStateFixture({ status: Status.DECLINED })
     const transactionAmount = 12345
     const formattedAmount = penceToPoundsWithCurrency(transactionAmount)
-    const declinedTransaction = new TransactionFixture({ state, amount: transactionAmount }).toTransactionData()
+    const declinedTransaction = new TransactionFixture({ state, amount: transactionAmount })
     const transactionDeclinedTimestamp = TRANSACTION_CREATED_TIMESTAMP.plus({ minute: 1 })
 
     const events = [
-      {
+      new TransactionEventFixture({
         amount: transactionAmount,
         state: {
           finished: false,
-          status: 'created'
+          status: 'CREATED'
         },
-        resource_type: 'PAYMENT',
-        event_type: 'PAYMENT_CREATED',
+        resourceType: 'PAYMENT',
+        eventType: 'PAYMENT_CREATED',
         timestamp: TRANSACTION_CREATED_TIMESTAMP,
-        data: {
-        }
-      },
-      {
+
+      }),
+
+      new TransactionEventFixture({
         amount: transactionAmount,
         state: {
           finished: false,
-          status: 'started'
+          status: 'STARTED'
         },
-        resource_type: 'PAYMENT',
-        event_type: 'PAYMENT_STARTED',
+        resourceType: 'PAYMENT',
+        eventType: 'PAYMENT_STARTED',
         timestamp: TRANSACTION_CREATED_TIMESTAMP,
-        data: {}
-      },
-      {
+
+      }),
+      new TransactionEventFixture({
         amount: transactionAmount,
         state: {
           finished: true,
           code: 'P0010',
           message: 'Payment method rejected',
-          status: 'declined'
+          status: 'DECLINED'
         },
-        resource_type: 'PAYMENT',
-        event_type: 'AUTHORISATION_REJECTED',
+        resourceType: 'PAYMENT',
+        eventType: 'AUTHORISATION_REJECTED',
         timestamp: transactionDeclinedTimestamp,
-        data: {}
-      }
+      })
     ]
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: declinedTransaction,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: TRANSACTION.externalId,
-        events
-      }),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(declinedTransaction),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(events),
     ])
     cy.visit(TRANSACTION_URL(TEST))
 
@@ -570,5 +526,32 @@ describe('Transaction details page', () => {
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
         cy.get('.govuk-table__cell:eq(2)').should('contain.text', TRANSACTION_CREATED_TIMESTAMP.toFormat(PAGE_CONTENT_DATE_FORMAT))
       })
+  })
+
+  it('should navigate to refund page', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+    ])
+    cy.visit(TRANSACTION_URL(TEST))
+    cy.contains('a.govuk-button', 'Refund payment').should('be.visible').click()
+
+    const refundUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}/refund`
+
+    cy.url().should('include', refundUrl)
+  })
+
+  it('should not display refund button if thr transaction is not eligible', () => {
+    const refundUnavailableState = new LedgerRefundSummaryFixture({ status: RefundSummaryStatus.UNAVAILABLE })
+    const transactionWithRefundUnavailable = new TransactionFixture({ refundSummary: refundUnavailableState })
+
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithRefundUnavailable),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+    ])
+    cy.visit(TRANSACTION_URL(TEST))
+    cy.contains('a.govuk-button', 'Refund payment').should('not.exist')
   })
 })
