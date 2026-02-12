@@ -2,10 +2,9 @@ import userStubs from '@test/cypress/stubs/user-stubs'
 import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-account-type'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
-
 import { getTransactionForGatewayAccount } from '@test/cypress/stubs/simplified-account/transaction-stubs'
+import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 
-const PAGE_HEADING_DATE_FORMAT = 'dd LLLL yyyy HH:mm:ss'
 const TRANSACTION = new TransactionFixture()
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
@@ -47,7 +46,7 @@ describe('Refund page', () => {
 
     cy.title().should(
       'eq',
-      `Refund - ${TRANSACTION.createdDate.toFormat(PAGE_HEADING_DATE_FORMAT)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
+      `Refund - ${TRANSACTION.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
     )
 
     cy.get('h1').should('contain.text', 'Refund')
@@ -67,6 +66,7 @@ describe('Refund page', () => {
     cy.visit(TRANSACTION_REFUND_URL(TEST))
 
     cy.get('#refund-payment').check()
+
 
     // TODO add assertions 
 
