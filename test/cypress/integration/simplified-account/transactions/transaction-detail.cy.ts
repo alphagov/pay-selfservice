@@ -509,7 +509,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Declined')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        // cy.get('.govuk-table__cell:eq(2)').should('contain.text', transactionDeclinedTimestamp.toFormat(PAGE_CONTENT_DATE_FORMAT))
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `${transactionDeclinedTimestamp.toFormat(PAGE_CONTENT_DATE_FORMAT)} (BST)`)
       })
 
     cy.get('.govuk-table__row')

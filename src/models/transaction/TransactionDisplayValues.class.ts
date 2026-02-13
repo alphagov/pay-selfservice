@@ -66,6 +66,10 @@ export class TransactionDisplayValues {
     return this.transaction.createdDate.toFormat(DATE_TIME)
   }
 
+  get createdDateWithOffset(): string {
+    return this.zonedCreatedDate.replace('(+0000)', '(GMT)').replace('(+0100)', '(BST)')
+  }
+
   get zonedCreatedDate(): string {
     return this.transaction.createdDate.toFormat(ZONED_DATE_TIME)
   }

@@ -24,7 +24,7 @@ export class EventDisplayValues {
   }
 
   get timestamp(): string {
-    return this.event.timestamp.toFormat(ZONED_DATE_TIME)
+    return this.event.timestamp.toFormat(ZONED_DATE_TIME).replace('(+0000)', '(GMT)').replace('(+0100)', '(BST)')
   }
 
   get metadata(): string | undefined {
