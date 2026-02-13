@@ -127,7 +127,7 @@ class Transaction {
   }
 
   hasCorporateCardSurcharge() {
-    return (this.corporateCardSurcharge) ?? false
+    return this.corporateCardSurcharge ?? false
   }
 }
 
