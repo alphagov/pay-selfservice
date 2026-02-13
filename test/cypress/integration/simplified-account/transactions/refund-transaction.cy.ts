@@ -5,6 +5,7 @@ import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixtu
 import { getTransactionEvents, getTransactionForGatewayAccount, postRefund } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
+import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 
 const TRANSACTION = new TransactionFixture()
 const USER_EXTERNAL_ID = 'user456def'
@@ -38,7 +39,6 @@ describe('Refund page', () => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
     ])
   })
 
@@ -54,18 +54,25 @@ describe('Refund page', () => {
   // })
 
   it('should display correct page title and headings', () => {
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+    ])
+
     cy.visit(TRANSACTION_REFUND_URL)
 
     cy.title().should(
       'eq',
       `Refund - ${TRANSACTION.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
     )
-
     cy.get('h1').should('contain.text', 'Refund')
   })
 
 
   it('should navigate to transaction detail page when back link is clicked', () => {
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+    ])
+
     cy.visit(TRANSACTION_REFUND_URL)
     cy.get('.govuk-back-link').click()
 
@@ -76,6 +83,7 @@ describe('Refund page', () => {
     const refundAmount = TRANSACTION.amount
 
     cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
       postRefund(SERVICE_EXTERNAL_ID, TRANSACTION.externalId).success(refundAmount, TRANSACTION, USER_EXTERNAL_ID, USER_EMAIL),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success([]),
     ])
@@ -91,10 +99,39 @@ describe('Refund page', () => {
     cy.url().should('include', TRANSACTION_DETAIL_URL)
   })
 
+  it('should display corporate surcharge in radio hint', () => {
+    const transactionAmounts = { corporateCardSurcharge: 25, fee: 15, totalAmount: 1075 }
+    const transactionWithFees = new TransactionFixture({ ...transactionAmounts })
+
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithFees),
+    ])
+
+    cy.visit(TRANSACTION_REFUND_URL)
+
+    cy.get('#refund-payment').check()
+    cy.get('.govuk-radios__hint').first().should('contain', `Refund the remaining amount of ${penceToPoundsWithCurrency(transactionWithFees.refundSummary.amountAvailable)}`)
+  })
+
+  it('should display remaining amount in radio hint', () => {
+    const refundSummary = new LedgerRefundSummaryFixture({ amountAvailable: 900, status: 'available', amountRefunded: 100, amountSubmitted: 0, userExternalId: USER_EXTERNAL_ID })
+    const transactionWithPartialRefund = new TransactionFixture({ refundSummary })
+
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithPartialRefund),
+    ])
+
+    cy.visit(TRANSACTION_REFUND_URL)
+
+    cy.get('#refund-payment').check()
+    cy.get('.govuk-radios__hint').first().should('contain', `Refund the remaining amount of ${penceToPoundsWithCurrency(transactionWithPartialRefund.refundSummary.amountAvailable)}`)
+  })
+
   it('should make partial refund successfully', () => {
     const partialRefundAmount = 100
 
     cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
       postRefund(SERVICE_EXTERNAL_ID, TRANSACTION.externalId).success(partialRefundAmount, TRANSACTION, USER_EXTERNAL_ID, USER_EMAIL),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success([]),
     ])
@@ -115,6 +152,10 @@ describe('Refund page', () => {
   })
 
   it('should display error when no amount is entered for partial refund', () => {
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+    ])
+
     const errorMessage = 'Enter a refund amount'
 
     cy.visit(TRANSACTION_REFUND_URL)
@@ -132,6 +173,10 @@ describe('Refund page', () => {
   })
 
   it('should display error when amount entered is too high for partial refund', () => {
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+    ])
+
     const errorMessage = `Enter a refund amount greater than ${penceToPoundsWithCurrency(0)} and less than ${penceToPoundsWithCurrency(TRANSACTION.amount)}`
 
     cy.visit(TRANSACTION_REFUND_URL)
