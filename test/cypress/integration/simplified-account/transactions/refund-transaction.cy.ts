@@ -126,8 +126,7 @@ describe('Refund page', () => {
       .first()
       .should(
         'contain',
-        `Refund the remaining amount of ${penceToPoundsWithCurrency(transactionWithFees.refundSummary.amountAvailable)}`
-      )
+        `Refund the full amount of ${penceToPoundsWithCurrency(transactionWithFees.refundSummary.amountAvailable)} (including card fee of ${penceToPoundsWithCurrency(transactionAmounts.corporateCardSurcharge)})`)
   })
 
   it('should display remaining amount in radio hint', () => {

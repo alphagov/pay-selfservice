@@ -125,6 +125,10 @@ class Transaction {
       this.refundSummary?.status === RefundSummaryStatus.ERROR
     )
   }
+
+  hasCorporateCardSurcharge() {
+    return (this.corporateCardSurcharge) ?? false
+  }
 }
 
 export { Transaction }
