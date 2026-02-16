@@ -28,8 +28,9 @@
 
 
 {% set hintWithCorporateCardSurcharge %}
-  {% if transaction.hasCorporateCardSurcharge() %} (including card fee of
-  {{ transaction._locals.formatted.corporateCardSurcharge }}){% endif %}
+  {% if transaction.hasCorporateCardSurcharge() %}
+    (including card fee of {{ transaction._locals.formatted.corporateCardSurcharge }})
+  {% endif %}
 {% endset %}
 
 {% block serviceContent %}
