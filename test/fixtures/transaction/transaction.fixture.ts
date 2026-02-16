@@ -54,7 +54,7 @@ export class TransactionFixture {
     this.reference = 'transaction-reference'
     this.state = new TransactionStateFixture()
     this.amount = 1000
-    this.createdDate = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
+    this.createdDate = DateTime.fromISO('2025-07-22T03:14:15.926Z')
     this.description = 'a test transaction'
     this.paymentProvider = 'sandbox'
     this.email = 'test2@example.org'
