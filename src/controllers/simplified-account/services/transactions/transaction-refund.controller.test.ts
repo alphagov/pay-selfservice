@@ -92,7 +92,7 @@ describe('transaction refund controller', () => {
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
           transaction: transactionFixture.toTransaction(),
           backLink: `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION_EXTERNAL_ID}`,
-          pageID: `${transactionFixture.toTransaction().createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${transactionFixture.toTransaction().reference}`
+          pageID: `${transactionFixture.toTransaction().createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${transactionFixture.toTransaction().reference}`,
         })
       })
     })
