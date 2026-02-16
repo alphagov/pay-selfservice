@@ -24,7 +24,8 @@ export class EventDisplayValues {
   }
 
   get timestamp(): string {
-    return this.event.timestamp.toFormat(ZONED_DATE_TIME).replace('(+0000)', '(GMT)').replace('(+0100)', '(BST)')
+    const offset = this.event.timestamp.setZone('Europe/London').isInDST ? ' (BST)' : ' (GMT)'
+    return this.event.timestamp.toFormat(ZONED_DATE_TIME) + offset
   }
 
   get metadata(): string | undefined {

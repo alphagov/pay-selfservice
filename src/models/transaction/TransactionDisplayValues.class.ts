@@ -99,13 +99,6 @@ export class TransactionDisplayValues {
   get evidenceDueDate(): string {
     const offset = this.transaction.evidenceDueDate?.setZone('Europe/London').isInDST ? ' (BST)' : ' (GMT)'
     return this.transaction.evidenceDueDate ? this.transaction.evidenceDueDate.toFormat(DATE_TIME) + offset : ''
-
-    // return this.transaction.evidenceDueDate
-    //   ? this.transaction.evidenceDueDate
-    //     .toFormat(ZONED_DATE_TIME)
-    //     .replace('(+0000)', '(GMT)')
-    //     .replace('(+0100)', '(BST)')
-    //   : ''
   }
 
   get disputeReason(): string {
