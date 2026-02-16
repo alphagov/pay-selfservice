@@ -67,7 +67,7 @@ export class TransactionDisplayValues {
   }
 
   get createdDateWithOffset(): string {
-    const offset = this.transaction.createdDate.setLocale('en-GB').isInDST ? ' (BST)' : ' (GMT)'
+    const offset = this.transaction.createdDate.setZone('Europe/London').isInDST ? ' (BST)' : ' (GMT)'
     return this.createdDate + offset
   }
 
@@ -97,7 +97,7 @@ export class TransactionDisplayValues {
   }
 
   get evidenceDueDate(): string {
-    const offset = this.transaction.evidenceDueDate?.setLocale('en-GB').isInDST ? ' (BST)' : ' (GMT)'
+    const offset = this.transaction.evidenceDueDate?.setZone('Europe/London').isInDST ? ' (BST)' : ' (GMT)'
     return this.transaction.evidenceDueDate ? this.transaction.evidenceDueDate.toFormat(DATE_TIME) + offset : ''
 
     // return this.transaction.evidenceDueDate
