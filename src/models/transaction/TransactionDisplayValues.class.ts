@@ -96,7 +96,12 @@ export class TransactionDisplayValues {
   }
 
   get evidenceDueDate(): string {
-    return this.transaction.evidenceDueDate ? this.transaction.evidenceDueDate.toFormat(ZONED_DATE_TIME).replace('(+0000)', '(GMT)').replace('(+0100)', '(BST)') : ''
+    return this.transaction.evidenceDueDate
+      ? this.transaction.evidenceDueDate
+          .toFormat(ZONED_DATE_TIME)
+          .replace('(+0000)', '(GMT)')
+          .replace('(+0100)', '(BST)')
+      : ''
   }
 
   get disputeReason(): string {

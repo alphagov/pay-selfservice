@@ -146,7 +146,8 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Date created')
         cy.get('.govuk-summary-list__value').should(
-          'contain.text', `${TRANSACTION.createdDate.toFormat(DATE_TIME)} (BST)`
+          'contain.text',
+          `${TRANSACTION.createdDate.toFormat(DATE_TIME)} (BST)`
         )
       })
 
@@ -358,7 +359,7 @@ describe('Transaction details page', () => {
       evidence_due_date: TRANSACTION_CREATED_TIMESTAMP.plus({ month: 5 }),
       reason: Reason.FRAUDULENT,
       transaction_id: parentTransactionOfDispute.gateway_transaction_id + '1a',
-      parent_transaction_id: parentTransactionOfDispute
+      parent_transaction_id: parentTransactionOfDispute,
     }
 
     const transactionFee = penceToPoundsWithCurrency(disputeTransaction.fee)
@@ -419,7 +420,9 @@ describe('Transaction details page', () => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Provider dispute fee')
         cy.get('.govuk-summary-list__value').should('contain.text', transactionFee)
         cy.get('.govuk-details__summary-text').should('contain.text', 'What is this fee?')
-        cy.get('.govuk-details__text').contains(`If you lose a payment dispute, Stripe will deduct the disputed amount and an additional ${transactionFee} dispute fee from your account.`)
+        cy.get('.govuk-details__text').contains(
+          `If you lose a payment dispute, Stripe will deduct the disputed amount and an additional ${transactionFee} dispute fee from your account.`
+        )
       })
 
     cy.get('.govuk-summary-list__row')
@@ -445,7 +448,7 @@ describe('Transaction details page', () => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Evidence due by')
         cy.get('.govuk-summary-list__value').should(
           'contain.text',
-          (disputeTransaction.evidence_due_date).toFormat(DATE_TIME)
+          disputeTransaction.evidence_due_date.toFormat(DATE_TIME)
         )
       })
   })
@@ -511,7 +514,10 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Declined')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `${transactionDeclinedTimestamp.toFormat(DATE_TIME)} (GMT)`)
+        cy.get('.govuk-table__cell:eq(2)').should(
+          'contain.text',
+          `${transactionDeclinedTimestamp.toFormat(DATE_TIME)} (GMT)`
+        )
       })
 
     cy.get('.govuk-table__row')
@@ -519,7 +525,10 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Started')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `${transactionStartedTimestamp.toFormat(DATE_TIME)} (BST)`)
+        cy.get('.govuk-table__cell:eq(2)').should(
+          'contain.text',
+          `${transactionStartedTimestamp.toFormat(DATE_TIME)} (BST)`
+        )
       })
 
     cy.get('.govuk-table__row')
@@ -527,7 +536,10 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Created')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `${TRANSACTION_CREATED_TIMESTAMP.toFormat(DATE_TIME)} (BST)`)
+        cy.get('.govuk-table__cell:eq(2)').should(
+          'contain.text',
+          `${TRANSACTION_CREATED_TIMESTAMP.toFormat(DATE_TIME)} (BST)`
+        )
       })
   })
 
@@ -545,7 +557,7 @@ describe('Transaction details page', () => {
     cy.url().should('include', refundUrl)
   })
 
-  it('should not display refund button if thr transaction is not eligible', () => {
+  it('should not display refund button if the transaction is not eligible', () => {
     const refundUnavailableState = new LedgerRefundSummaryFixture({ status: RefundSummaryStatus.UNAVAILABLE })
     const transactionWithRefundUnavailable = new TransactionFixture({ refundSummary: refundUnavailableState })
 
