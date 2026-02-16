@@ -44,16 +44,14 @@ describe('Refund page', () => {
     cy.task('setupStubs', [...userAndGatewayAccountStubs])
   })
 
-  // fails because partial refund includes aria-expanded attr. Need to check
-
-  // it('accessibility check', () => {
-  //   cy.task('setupStubs', [
-  //     ...userAndGatewayAccountStubs,
-  //     getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
-  //   ])
-  //   cy.visit(TRANSACTION_REFUND_URL(TEST))
-  //   cy.a11yCheck()
-  // })
+  it('accessibility check', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+    ])
+    cy.visit(TRANSACTION_REFUND_URL)
+    cy.a11yCheck({ exclude: ['.govuk-skip-link', '.govuk-radios__input'] }) // https://accessibility.blog.gov.uk/2021/09/21/an-update-on-the-accessibility-of-conditionally-revealed-questions/
+  })
 
   it('should display correct page title and headings', () => {
     cy.task('setupStubs', [
@@ -124,8 +122,7 @@ describe('Refund page', () => {
     cy.get('#refund-payment').check()
     cy.get('.govuk-radios__hint')
       .first()
-      .should(
-        'contain',
+      .contains(
         `Refund the full amount of ${penceToPoundsWithCurrency(transactionWithFees.refundSummary.amountAvailable)} (including card fee of ${penceToPoundsWithCurrency(transactionAmounts.corporateCardSurcharge)})`
       )
   })

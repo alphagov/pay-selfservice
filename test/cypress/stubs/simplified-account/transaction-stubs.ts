@@ -1,5 +1,3 @@
-import { RefundSummaryData } from '@models/common/refund-summary/dto/RefundSummary.dto'
-import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { stubBuilder } from '@test/cypress/stubs/stub-builder'
 import ledgerTransactionFixtures from '@test/fixtures/ledger-transaction.fixtures'
 import refundFixtures from '@test/fixtures/refund.fixtures'
