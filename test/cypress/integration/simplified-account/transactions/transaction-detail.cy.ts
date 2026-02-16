@@ -231,6 +231,26 @@ describe('Transaction details page', () => {
     cy.get('.govuk-summary-list__key').contains('3D Secure (3DS)').should('not.exist')
   })
 
+  it('should display partial refund amount', () => {
+    const refundSummary = new LedgerRefundSummaryFixture({ amountRefunded: 100, status: RefundSummaryStatus.AVAILABLE, userExternalId: USER_EXTERNAL_ID, amountAvailable: 900, amountSubmitted: 0 })
+    const transactionWithRefund = new TransactionFixture({ refundSummary })
+
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, transactionWithRefund.externalId).success(transactionWithRefund),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, transactionWithRefund.externalId).success(TRANSACTION_EVENTS),
+    ])
+
+    cy.visit(TRANSACTION_URL)
+
+    cy.get('.govuk-summary-list__row')
+      .eq(6)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Refunded amount')
+        cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(refundSummary.amountRefunded))
+      })
+  })
+
   it('should not display card details type when not present', () => {
     const transactionWithoutCardDetails = new TransactionFixture({ cardDetails: undefined })
 
