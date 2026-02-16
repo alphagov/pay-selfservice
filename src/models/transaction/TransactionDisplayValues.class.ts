@@ -67,7 +67,8 @@ export class TransactionDisplayValues {
   }
 
   get createdDateWithOffset(): string {
-    return this.zonedCreatedDate.replace('(+0000)', '(GMT)').replace('(+0100)', '(BST)')
+    const offset = this.transaction.createdDate.setLocale('en-GB').isInDST ? ' (BST)' : ' (GMT)'
+    return this.createdDate + offset
   }
 
   get zonedCreatedDate(): string {
@@ -96,12 +97,15 @@ export class TransactionDisplayValues {
   }
 
   get evidenceDueDate(): string {
-    return this.transaction.evidenceDueDate
-      ? this.transaction.evidenceDueDate
-          .toFormat(ZONED_DATE_TIME)
-          .replace('(+0000)', '(GMT)')
-          .replace('(+0100)', '(BST)')
-      : ''
+    const offset = this.transaction.evidenceDueDate?.setLocale('en-GB').isInDST ? ' (BST)' : ' (GMT)'
+    return this.transaction.evidenceDueDate ? this.transaction.evidenceDueDate.toFormat(DATE_TIME) + offset : ''
+
+    // return this.transaction.evidenceDueDate
+    //   ? this.transaction.evidenceDueDate
+    //     .toFormat(ZONED_DATE_TIME)
+    //     .replace('(+0000)', '(GMT)')
+    //     .replace('(+0100)', '(BST)')
+    //   : ''
   }
 
   get disputeReason(): string {

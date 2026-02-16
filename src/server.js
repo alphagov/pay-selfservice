@@ -30,7 +30,6 @@ const { boolToText, boolToOnOrOff } = require('@utils/on-or-off')
 
 const { Features } = require('@root/config/experimental-features')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
-const { Settings } = require('luxon')
 
 // Global constants
 const bindHost = process.env.BIND_HOST || '127.0.0.1'
@@ -43,7 +42,6 @@ function warnIfAnalyticsNotSet() {
     logger.warn('Google Analytics Tracking ID [ANALYTICS_TRACKING_ID] is not set')
   }
 }
-Settings.defaultLocale = 'GB'
 
 function addCsrfMiddleware(app) {
   const csrfMiddleware = configureCsrfMiddleware(logger, 'session', 'csrfSecret', 'csrfToken')
