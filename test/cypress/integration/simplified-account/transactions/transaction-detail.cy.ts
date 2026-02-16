@@ -7,7 +7,7 @@ import { SANDBOX } from '@models/constants/payment-providers'
 import changeCase from 'change-case'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { AuthorisationSummaryFixture } from '@test/fixtures/transaction/authorisation-summary.fixture'
-import { Status } from '@models/transaction/types/status'
+import { DisputeStatusFriendlyNames, Status } from '@models/transaction/types/status'
 import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
 import { Reason, ReasonFriendlyNames } from '@models/transaction/types/reason'
 import { ResourceType } from '@models/transaction/types/resource-type'
@@ -18,13 +18,11 @@ import {
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
+import { DATE_TIME, TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 
 const TRANSACTION = new TransactionFixture()
 const TRANSACTION_CREATED_TIMESTAMP = TRANSACTION.createdDate
 const CARD_DETAILS = TRANSACTION.cardDetails!
-
-const PAGE_HEADING_DATE_FORMAT = 'dd MMM yyyy HH:mm:ss'
-const PAGE_CONTENT_DATE_FORMAT = 'dd LLL yyyy — HH:mm:ss'
 
 const TRANSACTION_EVENTS = [
   new TransactionEventFixture({
@@ -48,8 +46,7 @@ const SERVICE_NAME = {
   cy: 'Mentrau McDuck',
 }
 
-const TRANSACTION_URL = (serviceMode: string) =>
-  `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/transactions/${TRANSACTION.externalId}`
+const TRANSACTION_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}`
 
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({
@@ -76,7 +73,7 @@ describe('Transaction details page', () => {
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
     cy.a11yCheck()
   })
 
@@ -87,11 +84,11 @@ describe('Transaction details page', () => {
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
 
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
 
     cy.title().should(
       'eq',
-      `Transaction details - ${TRANSACTION.createdDate.toFormat(PAGE_HEADING_DATE_FORMAT)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
+      `Transaction details - ${TRANSACTION.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
     )
     cy.get('h1').should('contain.text', 'Transaction details')
     cy.get('h2').should('contain.text', 'Amount')
@@ -106,7 +103,7 @@ describe('Transaction details page', () => {
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
 
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
     cy.get('.govuk-back-link').click()
 
     const transactionsListUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
@@ -121,7 +118,7 @@ describe('Transaction details page', () => {
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
 
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
 
     cy.get('.govuk-summary-list__row')
       .eq(0)
@@ -149,8 +146,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Date created')
         cy.get('.govuk-summary-list__value').should(
-          'contain.text',
-          TRANSACTION.createdDate.toFormat(PAGE_CONTENT_DATE_FORMAT)
+          'contain.text', `${TRANSACTION.createdDate.toFormat(DATE_TIME)} (BST)`
         )
       })
 
@@ -244,7 +240,7 @@ describe('Transaction details page', () => {
       ),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
 
     cy.get('.govuk-summary-list__key').contains('Payment type').should('not.exist')
     cy.get('.govuk-summary-list__key').contains('Card brand').should('not.exist')
@@ -269,7 +265,7 @@ describe('Transaction details page', () => {
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWith3DSRequired),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
 
     cy.get('.govuk-summary-list__row')
       .eq(5)
@@ -291,7 +287,7 @@ describe('Transaction details page', () => {
       ),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
 
     cy.get('.govuk-summary-list__row')
       .eq(5)
@@ -308,7 +304,7 @@ describe('Transaction details page', () => {
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithWalletType),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
 
     cy.get('.govuk-summary-list__row')
       .eq(6)
@@ -326,7 +322,7 @@ describe('Transaction details page', () => {
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithFees),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
 
     cy.get('.govuk-summary-list__row')
       .eq(5)
@@ -348,18 +344,24 @@ describe('Transaction details page', () => {
 
   it('should display dispute information', () => {
     const parentTransactionOfDispute = new TransactionFixture({ disputed: true }).toTransactionData()
-    const disputeCreatedDate = TRANSACTION_CREATED_TIMESTAMP.plus({ day: 1 })
 
-    const disputeTransaction = new TransactionFixture({
+    const disputeTransaction = {
+      gateway_account_id: GATEWAY_ACCOUNT_ID,
       amount: 1000,
       fee: 100,
-      netAmount: 900,
-      createdDate: TRANSACTION_CREATED_TIMESTAMP.plus({ day: 1 }),
-      state: new TransactionStateFixture({ status: Status.NEEDS_RESPONSE }),
-      evidenceDueDate: TRANSACTION_CREATED_TIMESTAMP.plus({ days: 7 }),
+      net_amount: 900,
+      finished: true,
+      status: Status.NEEDS_RESPONSE,
+      created_date: TRANSACTION_CREATED_TIMESTAMP.plus({ month: 4 }),
+      type: ResourceType.DISPUTE,
+      includePaymentDetails: true,
+      evidence_due_date: TRANSACTION_CREATED_TIMESTAMP.plus({ month: 5 }),
       reason: Reason.FRAUDULENT,
-      transactionType: ResourceType.DISPUTE,
-    }).toTransactionData()
+      transaction_id: parentTransactionOfDispute.gateway_transaction_id + '1a',
+      parent_transaction_id: parentTransactionOfDispute
+    }
+
+    const transactionFee = penceToPoundsWithCurrency(disputeTransaction.fee)
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
@@ -369,7 +371,7 @@ describe('Transaction details page', () => {
       }),
       transactionStubs.getLedgerEventsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: disputeTransaction.transaction_id,
+        transactionId: parentTransactionOfDispute.transaction_id,
         events: [],
       }),
       transactionStubs.getLedgerDisputeTransactionsSuccess({
@@ -380,18 +382,16 @@ describe('Transaction details page', () => {
         },
       }),
     ])
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
 
     cy.get('h2').should('contain.text', 'Dispute details')
 
-    // this fails as status displays 'STARTED' - I think due to stubbing
-
-    // cy.get('.govuk-summary-list__row')
-    //   .eq(15)
-    //   .within(() => {
-    //     cy.get('.govuk-summary-list__key').should('contain.text', 'Status')
-    //     cy.get('.govuk-summary-list__value').should('contain.text', Status.NEEDS_RESPONSE)
-    //   })
+    cy.get('.govuk-summary-list__row')
+      .eq(15)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Status')
+        cy.get('.govuk-summary-list__value').should('contain.text', DisputeStatusFriendlyNames[Status.NEEDS_RESPONSE])
+      })
 
     cy.get('.govuk-summary-list__row')
       .eq(16)
@@ -399,7 +399,7 @@ describe('Transaction details page', () => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Date disputed')
         cy.get('.govuk-summary-list__value').should(
           'contain.text',
-          disputeCreatedDate.toFormat(PAGE_CONTENT_DATE_FORMAT)
+          `${disputeTransaction.created_date.toFormat(DATE_TIME)} (GMT)`
         )
       })
 
@@ -417,7 +417,9 @@ describe('Transaction details page', () => {
       .eq(18)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Provider dispute fee')
-        cy.get('.govuk-summary-list__value').should('contain.text', penceToPoundsWithCurrency(disputeTransaction.fee!))
+        cy.get('.govuk-summary-list__value').should('contain.text', transactionFee)
+        cy.get('.govuk-details__summary-text').should('contain.text', 'What is this fee?')
+        cy.get('.govuk-details__text').contains(`If you lose a payment dispute, Stripe will deduct the disputed amount and an additional ${transactionFee} dispute fee from your account.`)
       })
 
     cy.get('.govuk-summary-list__row')
@@ -426,7 +428,7 @@ describe('Transaction details page', () => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Dispute net amount')
         cy.get('.govuk-summary-list__value').should(
           'contain.text',
-          penceToPoundsWithCurrency(disputeTransaction.net_amount!)
+          penceToPoundsWithCurrency(disputeTransaction.net_amount)
         )
       })
 
@@ -437,15 +439,15 @@ describe('Transaction details page', () => {
         cy.get('.govuk-summary-list__value').should('contain.text', ReasonFriendlyNames.FRAUDULENT)
       })
 
-    // cy.get('.govuk-summary-list__row')
-    //   .eq(21)
-    //   .within(() => {
-    //     cy.get('.govuk-summary-list__key').should('contain.text', 'Evidence due by')
-    //     cy.get('.govuk-summary-list__value').should(
-    //       'contain.text',
-    //       DateTime.fromISO(disputeTransaction.evidence_due_date!).toFormat(PAGE_CONTENT_DATE_FORMAT)
-    //     )
-    //   })
+    cy.get('.govuk-summary-list__row')
+      .eq(21)
+      .within(() => {
+        cy.get('.govuk-summary-list__key').should('contain.text', 'Evidence due by')
+        cy.get('.govuk-summary-list__value').should(
+          'contain.text',
+          (disputeTransaction.evidence_due_date).toFormat(DATE_TIME)
+        )
+      })
   })
 
   it('should display events', () => {
@@ -454,7 +456,7 @@ describe('Transaction details page', () => {
     const formattedAmount = penceToPoundsWithCurrency(transactionAmount)
     const declinedTransaction = new TransactionFixture({ state, amount: transactionAmount })
     const transactionStartedTimestamp = TRANSACTION_CREATED_TIMESTAMP.plus({ minute: 1 })
-    const transactionDeclinedTimestamp = TRANSACTION_CREATED_TIMESTAMP.plus({ minute: 2 })
+    const transactionDeclinedTimestamp = TRANSACTION_CREATED_TIMESTAMP.plus({ month: 4 })
 
     const events = [
       new TransactionEventFixture({
@@ -497,7 +499,7 @@ describe('Transaction details page', () => {
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(declinedTransaction),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(events),
     ])
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
 
     cy.get('.govuk-table__caption').should('contain', 'Transaction events')
     cy.get('.govuk-table__header:eq(0)').should('contain', 'Event')
@@ -509,7 +511,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Declined')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `${transactionDeclinedTimestamp.toFormat(PAGE_CONTENT_DATE_FORMAT)} (BST)`)
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `${transactionDeclinedTimestamp.toFormat(DATE_TIME)} (GMT)`)
       })
 
     cy.get('.govuk-table__row')
@@ -517,7 +519,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Started')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        // cy.get('.govuk-table__cell:eq(2)').should('contain.text', TRANSACTION_CREATED_TIMESTAMP.toFormat(PAGE_CONTENT_DATE_FORMAT))
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `${transactionStartedTimestamp.toFormat(DATE_TIME)} (BST)`)
       })
 
     cy.get('.govuk-table__row')
@@ -525,7 +527,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Created')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        // cy.get('.govuk-table__cell:eq(2)').should('contain.text', TRANSACTION_CREATED_TIMESTAMP.toFormat(PAGE_CONTENT_DATE_FORMAT))
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `${TRANSACTION_CREATED_TIMESTAMP.toFormat(DATE_TIME)} (BST)`)
       })
   })
 
@@ -535,7 +537,7 @@ describe('Transaction details page', () => {
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
     cy.contains('a.govuk-button', 'Refund payment').should('be.visible').click()
 
     const refundUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}/refund`
@@ -554,7 +556,7 @@ describe('Transaction details page', () => {
       ),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
-    cy.visit(TRANSACTION_URL(TEST))
+    cy.visit(TRANSACTION_URL)
     cy.contains('a.govuk-button', 'Refund payment').should('not.exist')
   })
 })
