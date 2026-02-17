@@ -2,7 +2,7 @@ import { Event } from '@models/transaction/Event.class'
 import { Status } from '@models/transaction/types/status'
 import { EventType, EventTypeFriendlyNames } from '@models/transaction/types/event-type'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
-import { DATE_TIME } from '@models/constants/time-formats'
+import { dateTimeWithOffset } from '@models/constants/time-formats'
 
 export class EventDisplayValues {
   private readonly event: Event
@@ -24,8 +24,7 @@ export class EventDisplayValues {
   }
 
   get timestamp(): string {
-    const offset = this.event.timestamp.setZone('Europe/London').isInDST ? ' (BST)' : ' (GMT)'
-    return this.event.timestamp.toFormat(DATE_TIME) + offset
+    return dateTimeWithOffset(this.event.timestamp)
   }
 
   get metadata(): string | undefined {
