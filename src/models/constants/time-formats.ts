@@ -1,4 +1,4 @@
-import { DateTime } from "luxon"
+import { DateTime } from 'luxon'
 
 export const ZONED_DATE_TIME = 'dd LLL yy - HH:mm:ss (ZZZ)'
 export const DATE_TIME = 'dd LLL yy - HH:mm:ss'
