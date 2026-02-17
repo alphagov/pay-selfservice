@@ -4,7 +4,7 @@ import ServiceData from '@models/service/dto/Service.dto'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
 import { ServiceView } from '@models/service-status/ServiceView.class'
-import createLogger from '@utils/logger'
+import createLogger from '@utils/logger/logger'
 
 const logger = createLogger(__filename)
 

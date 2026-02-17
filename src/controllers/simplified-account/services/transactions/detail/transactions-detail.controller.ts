@@ -22,7 +22,6 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   // sort by most recent first
   events.sort((eventA, eventB) => (eventA.timestamp > eventB.timestamp ? -1 : 1))
-
   return response(req, res, 'simplified-account/services/transactions/detail/index', {
     backLink: formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.transactions.index,

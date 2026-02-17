@@ -1,12 +1,12 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const { response } = require('../../utils/response')
 
 const supportedPolicyDocuments = require('./supported-policy-documents')
 const policyBucket = require('./aws-s3-policy-bucket')
 
-async function viewPage (req, res, next) {
+async function viewPage(req, res, next) {
   const key = req.params.key
   try {
     const documentConfig = await supportedPolicyDocuments.lookup(key)

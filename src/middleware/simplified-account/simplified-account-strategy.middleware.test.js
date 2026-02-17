@@ -69,12 +69,12 @@ const setupSimplifiedAccountStrategyTest = function (options) {
   })
 
   const mockGatewayAccountsService = {
-    getGatewayAccountByServiceExternalIdAndType: getGatewayAccountMock
+    getGatewayAccountByServiceExternalIdAndType: getGatewayAccountMock,
   }
 
   const simplifiedAccountStrategy = proxyquire(path.join(__dirname, './simplified-account-strategy.middleware'), {
     '@services/gateway-accounts.service': mockGatewayAccountsService,
-    '@utils/logger': loggerStub,
+    '@utils/logger/logger': loggerStub,
   })
 
   return {

@@ -103,11 +103,15 @@ class Transaction {
     }
   }
 
+  hasRefund(): boolean {
+    return (this.refundSummary && this.refundSummary.amountRefunded > 0) ?? false
+  }
+
   isDispute(): boolean {
     return this.transactionType === ResourceType.DISPUTE
   }
 
-  hasRefund(): boolean {
+  isAtLeastPartiallyRefunded(): boolean {
     return (this.refundSummary && this.refundSummary.amountRefunded > 0) ?? false
   }
 

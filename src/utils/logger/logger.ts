@@ -3,8 +3,9 @@ import { createLogger, format, Logform, transports } from 'winston'
 import { logging } from '@govuk-pay/pay-js-commons'
 import { addSentryToErrorLevel } from '@utils/sentry.js'
 import { getLoggingFields } from '@services/clients/base/request-context'
+import { debugLoggingFormat, localLogger, simpleLoggingFormat } from '@utils/logger/local-logger'
 
-const { json, splat, prettyPrint, combine, timestamp, printf, colorize } = format
+const { json, splat, prettyPrint } = format
 
 interface PayJsCommonsLogging {
   govUkPayLoggingFormat: (options: { container: string; environment?: string }) => Logform.Format
@@ -30,38 +31,21 @@ const logger = createLogger({
   transports: [new transports.Console()],
 })
 
-const simpleLoggingFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp as string} [${level}]: ${message as string}`
-})
-
-const simpleLogger = createLogger({
-  format: combine(
-    colorize({
-      colors: {
-        error: 'red',
-        warn: 'yellow',
-        info: 'green',
-        debug: 'blue',
-      },
-    }),
-    timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss',
-    }),
-    simpleLoggingFormat
-  ),
-  transports: [
-    new transports.Console({
-      level: 'debug',
-    }),
-  ],
-})
-
 export = (loggerName: string) => {
-  if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true') {
-    return simpleLogger
+  if (process.env.NODE_ENV !== 'production') {
+    // only allow custom loggers outside of production environment
+    if (process.env.GOV_UK_PAY__LOGGING_FORMAT === 'debug') {
+      return localLogger(debugLoggingFormat)
+    }
+
+    if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true') {
+      return localLogger(simpleLoggingFormat)
+    }
+
+    if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'console') {
+      return console // sometimes you just want console because it shows stack traces.
+    }
   }
-  if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'console') {
-    return console // sometimes you just want console because it shows stack traces.
-  }
+
   return addSentryToErrorLevel(logger.child({ logger_name: loggerName }))
 }

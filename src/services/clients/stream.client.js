@@ -2,23 +2,23 @@ const http = require('http')
 const https = require('https')
 const url = require('url')
 
-const logger = require('../../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 
 class Stream {
-  constructor (dataCallback, successCallback, errorCallback, headers) {
+  constructor(dataCallback, successCallback, errorCallback, headers) {
     this.dataCallback = dataCallback
     this.successCallback = successCallback
     this.errorCallback = errorCallback
     this.headers = headers || { Accept: 'text/csv', 'Content-Type': 'application/json' }
   }
 
-  request (targetUrl) {
+  request(targetUrl) {
     const parsed = url.parse(targetUrl) // TODO update this as url.parse is deprecated
     const options = {
       path: `${parsed.pathname}${parsed.search}`,
       host: parsed.hostname,
       port: parsed.port,
-      headers: this.headers
+      headers: this.headers,
     }
 
     const request = this._getClient(parsed.protocol).request(options, (response) => {
@@ -28,12 +28,12 @@ class Stream {
     request.on('error', this.errorCallback)
 
     logger.info(`Stream client request to ${targetUrl}`, {
-      ...options
+      ...options,
     })
     request.end()
   }
 
-  _getClient (protocol) {
+  _getClient(protocol) {
     return protocol && protocol.includes('https') ? https : http
   }
 }

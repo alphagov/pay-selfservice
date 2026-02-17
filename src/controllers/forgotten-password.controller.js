@@ -2,7 +2,7 @@
 
 const paths = require('../paths.js')
 const userService = require('../services/user.service')
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const { validateEmail, validatePassword } = require('../utils/validation/server-side-form-validations')
 
 const emailGet = function emailGet(req, res) {

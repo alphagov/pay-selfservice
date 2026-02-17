@@ -1,6 +1,6 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const userService = require('../../services/user.service')
 const router = require('../../routes')
 

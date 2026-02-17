@@ -1,7 +1,7 @@
 'use strict'
 
 const GatewayAccountUpdateRequest = require('@models/gateway-account/GatewayAccountUpdateRequest.class')
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const ConnectorClient = require('./clients/connector.client.js').ConnectorClient
 
 const connectorClient = new ConnectorClient(process.env.CONNECTOR_URL)

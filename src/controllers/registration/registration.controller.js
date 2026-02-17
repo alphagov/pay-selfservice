@@ -3,7 +3,7 @@
 const qrcode = require('qrcode')
 const lodash = require('lodash')
 
-const logger = require('../../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const { ExpiredInviteError } = require('../../errors')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const adminusersClient = require('../../services/clients/adminusers.client')()
@@ -12,7 +12,7 @@ const {
   validateEmail,
   validatePassword,
   validateOtp,
-  validatePhoneNumber
+  validatePhoneNumber,
 } = require('../../utils/validation/server-side-form-validations')
 const { isEmpty } = require('../../utils/validation/field-validation-checks')
 const { sanitiseSecurityCode } = require('../../utils/security-code-utils')
@@ -27,11 +27,11 @@ const REPEAT_PASSWORD_INPUT_FIELD_NAME = 'repeat-password'
 const PHONE_NUMBER_INPUT_FIELD_NAME = 'phone'
 const OTP_CODE_FIELD_NAME = 'code'
 
-async function showEmailPage (req, res, next) {
+async function showEmailPage(req, res, next) {
   res.render('registration/email')
 }
 
-async function submitEmailPage (req, res, next) {
+async function submitEmailPage(req, res, next) {
   const email = req.body[EMAIL_INPUT_FIELD_NAME]
 
   const errors = {}
@@ -49,7 +49,7 @@ async function submitEmailPage (req, res, next) {
     await adminusersClient.createSelfSignupInvite(email)
 
     lodash.set(req, 'session.pageData.submitRegistration', {
-      email
+      email,
     })
 
     res.redirect(paths.register.checkEmail)
@@ -60,7 +60,7 @@ async function submitEmailPage (req, res, next) {
         return res.render('registration/email', { errors, email })
       } else if (err.errorCode === 409) {
         lodash.set(req, 'session.pageData.submitRegistration', {
-          email
+          email,
         })
 
         return res.redirect(paths.register.checkEmail)
@@ -70,15 +70,15 @@ async function submitEmailPage (req, res, next) {
   }
 }
 
-function showCheckEmailPage (req, res) {
+function showCheckEmailPage(req, res) {
   const requesterEmail = lodash.get(req, 'session.pageData.submitRegistration.email', '')
   lodash.unset(req, 'session.pageData.submitRegistration')
   res.render('registration/check-email', {
-    requesterEmail
+    requesterEmail,
   })
 }
 
-async function showPasswordPage (req, res, next) {
+async function showPasswordPage(req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
 
   try {
@@ -93,7 +93,7 @@ async function showPasswordPage (req, res, next) {
   }
 }
 
-async function submitPasswordPage (req, res, next) {
+async function submitPasswordPage(req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   const password = req.body[PASSWORD_INPUT_FIELD_NAME]
   const repeatPassword = req.body[REPEAT_PASSWORD_INPUT_FIELD_NAME]
@@ -122,17 +122,17 @@ async function submitPasswordPage (req, res, next) {
   }
 }
 
-function showChooseSignInMethodPage (req, res) {
+function showChooseSignInMethodPage(req, res) {
   res.render('registration/get-security-codes')
 }
 
-function submitChooseSignInMethodPage (req, res) {
+function submitChooseSignInMethodPage(req, res) {
   const signInMethod = req.body['sign-in-method']
   if (!signInMethod) {
     return res.render('registration/get-security-codes', {
       errors: {
-        'sign-in-method': 'You need to select an option'
-      }
+        'sign-in-method': 'You need to select an option',
+      },
     })
   }
 
@@ -143,7 +143,7 @@ function submitChooseSignInMethodPage (req, res) {
   }
 }
 
-async function showAuthenticatorAppPage (req, res, next) {
+async function showAuthenticatorAppPage(req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
 
   try {
@@ -163,14 +163,14 @@ async function showAuthenticatorAppPage (req, res, next) {
     res.render('registration/authenticator-app', {
       prettyPrintedSecret,
       qrCodeDataUrl,
-      errors: recovered.errors
+      errors: recovered.errors,
     })
   } catch (err) {
     next(err)
   }
 }
 
-async function submitAuthenticatorAppPage (req, res, next) {
+async function submitAuthenticatorAppPage(req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   const otpCode = sanitiseSecurityCode(req.body[OTP_CODE_FIELD_NAME])
   const validationResult = validateOtp(otpCode)
@@ -203,11 +203,11 @@ async function submitAuthenticatorAppPage (req, res, next) {
   }
 }
 
-function showPhoneNumberPage (req, res, next) {
+function showPhoneNumberPage(req, res, next) {
   res.render('registration/phone-number')
 }
 
-async function submitPhoneNumberPage (req, res, next) {
+async function submitPhoneNumberPage(req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   const phoneNumber = req.body[PHONE_NUMBER_INPUT_FIELD_NAME]
 
@@ -233,7 +233,7 @@ async function submitPhoneNumberPage (req, res, next) {
   }
 }
 
-async function showSmsSecurityCodePage (req, res, next) {
+async function showSmsSecurityCodePage(req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
 
   try {
@@ -245,14 +245,14 @@ async function showSmsSecurityCodePage (req, res, next) {
 
     res.render('registration/sms-code', {
       redactedPhoneNumber,
-      errors: recovered.errors
+      errors: recovered.errors,
     })
   } catch (err) {
     next(err)
   }
 }
 
-async function submitSmsSecurityCodePage (req, res, next) {
+async function submitSmsSecurityCodePage(req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   const otpCode = sanitiseSecurityCode(req.body[OTP_CODE_FIELD_NAME])
   const validationResult = validateOtp(otpCode)
@@ -285,20 +285,20 @@ async function submitSmsSecurityCodePage (req, res, next) {
   }
 }
 
-async function showResendSecurityCodePage (req, res, next) {
+async function showResendSecurityCodePage(req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
 
   try {
     const invite = await adminusersClient.getValidatedInvite(sessionData.code)
     res.render('registration/resend-code', {
-      phoneNumber: invite.telephone_number
+      phoneNumber: invite.telephone_number,
     })
   } catch (err) {
     next(err)
   }
 }
 
-async function submitResendSecurityCodePage (req, res, next) {
+async function submitResendSecurityCodePage(req, res, next) {
   const sessionData = req[INVITE_SESSION_COOKIE_NAME]
   const phoneNumber = req.body[PHONE_NUMBER_INPUT_FIELD_NAME]
 
@@ -319,18 +319,18 @@ async function submitResendSecurityCodePage (req, res, next) {
   }
 }
 
-function showSuccessPage (req, res) {
+function showSuccessPage(req, res) {
   res.render('registration/success', { loggedIn: true })
 }
 
-function logRegistrationCompleted (secondFactorMethod, userExternalId) {
+function logRegistrationCompleted(secondFactorMethod, userExternalId) {
   logger.info('User completed registration', {
     second_factor_method: secondFactorMethod,
-    [USER_EXTERNAL_ID]: userExternalId
+    [USER_EXTERNAL_ID]: userExternalId,
   })
 }
 
-async function reprovisionOtpKeyIfRequired (inviteSessionData, newSecondFactorMethod) {
+async function reprovisionOtpKeyIfRequired(inviteSessionData, newSecondFactorMethod) {
   let invite
   if (!inviteSessionData.secondFactorMethod || inviteSessionData.secondFactorMethod !== newSecondFactorMethod) {
     invite = await adminusersClient.reprovisionOtp(inviteSessionData.code)
@@ -355,5 +355,5 @@ module.exports = {
   submitSmsSecurityCodePage,
   showResendSecurityCodePage,
   submitResendSecurityCodePage,
-  showSuccessPage
+  showSuccessPage,
 }

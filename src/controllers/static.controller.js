@@ -1,4 +1,4 @@
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 
 module.exports.naxsiError = function (req, res) {
   res.status(400)

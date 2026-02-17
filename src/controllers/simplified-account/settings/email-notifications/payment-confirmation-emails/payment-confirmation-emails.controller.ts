@@ -6,7 +6,7 @@ import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { emailNotificationsSchema } from '@utils/simplified-account/validation/email-notifications.schema'
 import { setConfirmationEnabledByServiceIdAndAccountType } from '@services/email.service'
-import logger from '@utils/logger'
+import logger from '@utils/logger/logger'
 const LOGGER = logger(__filename)
 
 function get(req: ServiceRequest, res: ServiceResponse) {
