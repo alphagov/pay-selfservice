@@ -121,7 +121,7 @@ describe('Middleware: getSimplifiedAccount', () => {
     sinon.assert.calledOnce(next)
     sinon.assert.calledWith(next, expectedError)
   })
-  it('should error gateway if account type cannot be resolved from request parameters', async () => {
+  it('should error if gateway account type cannot be resolved from request parameters', async () => {
     const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
       gatewayAccountId: '1',
       gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
