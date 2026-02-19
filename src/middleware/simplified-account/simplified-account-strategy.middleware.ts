@@ -123,7 +123,7 @@ async function getSimplifiedAccount(req: Request, _: Response, next: NextFunctio
   }
 
   function invalidParams(serviceExternalId: string, accountType: string) {
-    return !serviceExternalId || !accountType || !Object.values(GatewayAccountType).includes(accountType)
+    return !serviceExternalId || !accountType || !Object.values(GatewayAccountType).includes(accountType.toLowerCase())
   }
 }
 
