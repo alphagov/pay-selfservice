@@ -10,6 +10,7 @@ import {
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
+import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 
 const TRANSACTION = new TransactionFixture()
 const USER_EXTERNAL_ID = 'user456def'
@@ -20,6 +21,19 @@ const SERVICE_NAME = {
   en: 'McDuck Enterprises',
   cy: 'Mentrau McDuck',
 }
+
+const TRANSACTION_EVENTS = [
+  new TransactionEventFixture({
+    amount: 1250,
+    state: {
+      finished: false,
+      status: 'CREATED',
+    },
+    resourceType: 'PAYMENT',
+    eventType: 'PAYMENT_CREATED',
+    timestamp: TRANSACTION.createdDate,
+  }),
+]
 
 const TRANSACTION_DETAIL_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}`
 const TRANSACTION_REFUND_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}/refund`
@@ -70,6 +84,7 @@ describe('Refund page', () => {
   it('should navigate to transaction detail page when back link is clicked', () => {
     cy.task('setupStubs', [
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
 
     cy.visit(TRANSACTION_REFUND_URL)
