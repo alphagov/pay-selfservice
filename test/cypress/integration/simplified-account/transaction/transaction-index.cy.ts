@@ -36,12 +36,13 @@ const setupStubs = (gatewayAccountType = 'test', transactions: TransactionFixtur
     }),
     gatewayAccountStubs.getCardTypesSuccess(),
 
-    getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID, transactions).success()
-    // transactionStubs.getLedgerTransactionsSuccess({
-    //   gatewayAccountId: GATEWAY_ACCOUNT_ID,
-    //   transactions,
-    //   filters: {}
-    // })
+    transactionStubs.getLedgerTransactionsSuccess({
+      gatewayAccountId: GATEWAY_ACCOUNT_ID,
+      transactions,
+      filters: { from_date: last12MonthsStartDate },
+      displaySize: 20,
+      transactionLength: 1
+    })
   ])
 }
 
