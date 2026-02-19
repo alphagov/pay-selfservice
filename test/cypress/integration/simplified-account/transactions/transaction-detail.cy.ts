@@ -1,6 +1,6 @@
 import userStubs from '@test/cypress/stubs/user-stubs'
 import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-account-type'
-import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
+import gatewayAccountStubs, { getCardTypesSuccess } from '@test/cypress/stubs/gateway-account-stubs'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { SANDBOX } from '@models/constants/payment-providers'
@@ -19,6 +19,7 @@ import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 import { DATE_TIME, TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
+import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
 
 const TRANSACTION = new TransactionFixture()
 const TRANSACTION_CREATED_TIMESTAMP = TRANSACTION.createdDate
@@ -101,6 +102,14 @@ describe('Transaction details page', () => {
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+      getCardTypesSuccess(),
+      transactionStubs.getLedgerTransactionsSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactions: [TRANSACTION],
+        filters: { from_date: last12MonthsStartDate },
+        displaySize: 20,
+        transactionLength: 1
+      })
     ])
 
     cy.visit(TRANSACTION_URL)
