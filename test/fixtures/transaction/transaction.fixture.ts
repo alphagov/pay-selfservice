@@ -106,7 +106,7 @@ export class TransactionFixture {
       evidence_due_date: this.evidenceDueDate ? this.evidenceDueDate.toISODate()! : undefined,
       reason: this.reason,
       refund_summary: this.refundSummary?.toLedgerRefundSummaryData(),
-      authorisation_summary: this.authorisationSummary?.toAuthorisationSummaryData()
+      authorisation_summary: this.authorisationSummary?.toAuthorisationSummaryData(),
     }
   }
 

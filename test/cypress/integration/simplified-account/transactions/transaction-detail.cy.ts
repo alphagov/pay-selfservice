@@ -108,8 +108,8 @@ describe('Transaction details page', () => {
         transactions: [TRANSACTION],
         filters: { from_date: last12MonthsStartDate },
         displaySize: 20,
-        transactionLength: 1
-      })
+        transactionLength: 1,
+      }),
     ])
 
     cy.visit(TRANSACTION_URL)
