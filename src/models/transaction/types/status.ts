@@ -53,7 +53,7 @@ export const PaymentStatusFriendlyNames: Partial<Record<Status, string>> = {
   DECLINED: 'Declined',
   CANCELLED: 'Cancelled',
   SUBMITTED: 'In progress',
-  SUCCESS: 'Successful',
+  SUCCESS: 'Success',
   ERROR: 'Error',
 }
 

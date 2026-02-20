@@ -23,9 +23,9 @@ const PaymentStatusFilters: StatusFilter[] = [
     statuses: [Status.CREATED, Status.STARTED, Status.CAPTURABLE, Status.SUBMITTED],
   },
   {
-    id: 'timed_out',
-    friendly: 'Timed out',
-    statuses: [Status.TIMEDOUT],
+    id: 'success',
+    friendly: 'Success',
+    statuses: [Status.SUCCESS],
   },
   {
     id: 'declined',
@@ -33,14 +33,14 @@ const PaymentStatusFilters: StatusFilter[] = [
     statuses: [Status.DECLINED],
   },
   {
+    id: 'timed_out',
+    friendly: 'Timed out',
+    statuses: [Status.TIMEDOUT],
+  },
+  {
     id: 'cancelled',
     friendly: 'Cancelled',
     statuses: [Status.CANCELLED],
-  },
-  {
-    id: 'success',
-    friendly: 'Successful',
-    statuses: [Status.SUCCESS],
   },
   {
     id: 'error',
@@ -79,11 +79,6 @@ const DisputeStatusFilters: StatusFilter[] = [
     statuses: [Status.NEEDS_RESPONSE],
   },
   {
-    id: 'dispute_lost',
-    friendly: 'Dispute lost to customer',
-    statuses: [Status.LOST],
-  },
-  {
     id: 'dispute_under_review',
     friendly: 'Dispute under review',
     statuses: [Status.UNDER_REVIEW],
@@ -92,6 +87,11 @@ const DisputeStatusFilters: StatusFilter[] = [
     id: 'dispute_won',
     friendly: 'Dispute won in your favour',
     statuses: [Status.WON],
+  },
+  {
+    id: 'dispute_lost',
+    friendly: 'Dispute lost to customer',
+    statuses: [Status.LOST],
   },
 ]
 
