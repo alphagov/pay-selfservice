@@ -1,7 +1,11 @@
 import { ConnectorStates } from '@models/transaction/types/status'
-import { displayStatesToConnectorStates } from '@utils/simplified-account/services/transactions/transaction-status-utils'
 import { getPeriodUKDateTimeRange, Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { TransactionSearchParamsData } from '@models/transaction/dto/TransactionSearchParams.dto'
+import {
+  DisputeStatusFilterMapping,
+  PaymentStatusFilterMapping,
+  RefundStatusFilterMapping,
+} from '@utils/simplified-account/services/transactions/status-filters'
 
 interface TransactionSearchQuery {
   cardholderName?: string
@@ -96,7 +100,22 @@ export class TransactionSearchParams {
 }
 
 function convertStateFilter(stateFilters: string | string[]): ConnectorStates {
-  return displayStatesToConnectorStates(stateFilters)
+  const selected = Array.isArray(stateFilters) ? stateFilters : [stateFilters]
+  const paymentStates = selected
+    .filter((filterId) => PaymentStatusFilterMapping.has(filterId))
+    .flatMap((filerId) => PaymentStatusFilterMapping.get(filerId)!)
+  const refundStates = selected
+    .filter((filterId) => RefundStatusFilterMapping.has(filterId))
+    .flatMap((filerId) => RefundStatusFilterMapping.get(filerId)!)
+  const disputeStates = selected
+    .filter((filterId) => DisputeStatusFilterMapping.has(filterId))
+    .flatMap((filerId) => DisputeStatusFilterMapping.get(filerId)!)
+
+  return {
+    paymentStates: paymentStates.length !== 0 ? paymentStates : undefined,
+    refundStates: refundStates.length !== 0 ? refundStates : undefined,
+    disputeStates: disputeStates.length !== 0 ? disputeStates : undefined,
+  }
 }
 
 function parsePageNumber(pageNumber?: string) {
