@@ -81,9 +81,9 @@ export class TransactionSearchParams {
     searchParams.reference = nonEmpty(queryParams.reference)
     searchParams.email = nonEmpty(queryParams.email)
 
-    if (queryParams.fromDate !== '' || queryParams.toDate !== '') {
+    if (queryParams.fromDate || queryParams.toDate) {
       searchParams.fromDate = DateTime.fromFormat(queryParams.fromDate!, 'dd/LL/yyyy').toISO()!
-      searchParams.toDate = DateTime.fromFormat(queryParams.toDate!, 'dd/LL/yyyy').toISO()!
+      searchParams.toDate = DateTime.fromFormat(queryParams.toDate!, 'dd/LL/yyyy').endOf('day').toISO()!
       searchParams.dateFilter = queryParams.dateFilter
     } else if (queryParams.dateFilter) {
       const dateRange = getPeriodUKDateTimeRange(queryParams.dateFilter as Period)
