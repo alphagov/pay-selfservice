@@ -6,6 +6,7 @@ import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixtu
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { ChargeRefundRequest } from '@models/charge/ChargeRefundRequest.class'
 import { Message } from '@utils/types/express/Message'
+import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 
 const GATEWAY_ACCOUNT_ID = 100
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'ga-123-external-id-abc'
@@ -91,6 +92,7 @@ describe('transaction refund controller', () => {
         mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
           transaction: transactionFixture.toTransaction(),
           backLink: `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION_EXTERNAL_ID}`,
+          pageID: `${transactionFixture.toTransaction().createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${transactionFixture.toTransaction().reference}`,
         })
       })
     })

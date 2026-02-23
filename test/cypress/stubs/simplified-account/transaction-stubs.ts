@@ -1,7 +1,8 @@
 import { stubBuilder } from '@test/cypress/stubs/stub-builder'
 import ledgerTransactionFixtures from '@test/fixtures/ledger-transaction.fixtures'
-import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
+import refundFixtures from '@test/fixtures/refund.fixtures'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
+import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 
 function getTransaction(transactionExternalId: string) {
   const path = `/v1/transaction/${transactionExternalId}`
@@ -51,4 +52,26 @@ function getTransactionEvents(gatewayAccountId: string, transactionExternalId: s
   }
 }
 
-export { getTransaction, getTransactionForGatewayAccount, getTransactionEvents }
+function postRefund(serviceExternalId: string, transactionExternalId: string) {
+  const path = `/v1/api/service/${serviceExternalId}/account/test/charges/${transactionExternalId}/refunds`
+
+  return {
+    success: function (
+      refundAmount: number,
+      transaction: TransactionFixture,
+      userExternalId: string,
+      userEmail: string
+    ) {
+      return stubBuilder('POST', path, 200, {
+        request: refundFixtures.validTransactionRefundRequest({
+          amount: refundAmount,
+          refund_amount_available: transaction.amount,
+          user_external_id: userExternalId,
+          user_email: userEmail,
+        }),
+      })
+    },
+  }
+}
+
+export { getTransaction, getTransactionForGatewayAccount, getTransactionEvents, postRefund }

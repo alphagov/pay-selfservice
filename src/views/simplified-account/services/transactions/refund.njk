@@ -4,7 +4,7 @@
 
 
 {% set servicePageTitle %}
-  Refund - {{ transaction.titleFriendlyCreatedDate }} - {{ transaction.reference }} {{ pageID }}
+  Refund - {{ pageID }}
 {% endset %}
 
 
@@ -24,6 +24,13 @@
       errorMessage: { text: errors.formErrors['partialRefundAmount'] } if errors.formErrors['partialRefundAmount'] else false
     })
   }}
+{% endset %}
+
+
+{% set hintWithCorporateCardSurcharge %}
+  {% if transaction.hasCorporateCardSurcharge() %}
+    (including card fee of {{ transaction._locals.formatted.corporateCardSurcharge }})
+  {% endif %}
 {% endset %}
 
 {% block serviceContent %}
@@ -47,7 +54,7 @@
             text: 'Remaining amount' if transaction.isPartiallyRefunded() else 'Full amount',
             value: 'full',
             hint: {
-              text: 'Refund the ' + ('remaining' if transaction.isPartiallyRefunded() else 'full') + ' amount of ' + transaction.refundableAmountRemainingInPounds()
+              text: ('Refund the ' + ('remaining' if transaction.isPartiallyRefunded() else 'full') + ' amount of ' + transaction.refundableAmountRemainingInPounds()) + hintWithCorporateCardSurcharge
             }
           },
           {

@@ -5,8 +5,8 @@ import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-
 import { Transaction } from '@models/transaction/Transaction.class'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
-import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { AuthorisationSummaryFixture } from '@test/fixtures/transaction/authorisation-summary.fixture'
+import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 
 export class TransactionFixture {
   gatewayAccountId: string

@@ -167,7 +167,7 @@ describe('Transaction details page', () => {
       .eq(4)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Payment status')
-        cy.get('.govuk-summary-list__value').should('contain.text', 'Successful')
+        cy.get('.govuk-summary-list__value').should('contain.text', 'Success')
       })
 
     cy.get('.govuk-summary-list__row')
