@@ -2,7 +2,7 @@ import userStubs from '@test/cypress/stubs/user-stubs'
 import { WORLDPAY } from '@models/constants/payment-providers'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
-import { checkServiceNavigation } from '../common/assertions'
+import { checkServiceNavigation, checkTitleAndHeading } from '../common/assertions'
 import { TEST } from '@models/gateway-account/gateway-account-type'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
@@ -12,11 +12,11 @@ import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
 
-const TRANSACTION = new TransactionFixture()
+const TRANSACTION = new TransactionFixture().toTransactionData()
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
-const GATEWAY_ACCOUNT_ID = TRANSACTION.gatewayAccountId
+const GATEWAY_ACCOUNT_ID = 1
 const SERVICE_NAME = {
   en: 'McDuck Enterprises',
   cy: 'Mentrau McDuck',
@@ -83,6 +83,7 @@ describe('Transactions index', () => {
 
     it('should show the transactions item in the side bar in an active state', () => {
       checkServiceNavigation('Transactions', TRANSACTIONS_LIST_URL)
+      checkTitleAndHeading('Transactions', SERVICE_NAME.en)
     })
 
     it('accessibility check', () => {
@@ -111,13 +112,11 @@ describe('Transactions index', () => {
     })
 
     it('should display unfiltered results', () => {
-
       const transactions = []
 
-      for (let i = 0; i < 3; i++) {
-        transactions.push(new TransactionFixture({ reference: `ref${i}`, externalId: `transaction${i}` }))
+      for (let i = 1; i <= 3; i++) {
+        transactions.push(new TransactionFixture({ amount: i * 1111, reference: `reference${i}`, externalId: `transaction${i}` }).toTransactionData())
       }
-
 
       cy.task('setupStubs', [
         transactionStubs.getLedgerTransactionsSuccess({
@@ -125,19 +124,20 @@ describe('Transactions index', () => {
           transactions,
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
-          transactionLength: transactions.length
+          transactionLength: transactions.length,
         })
       ])
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
 
-      // url incorrect
-      // card details not pulling through
-      assertTransactionRow(0, transactions[0].reference, TRANSACTION_URL(':transactionExternalId'),
-        'test2@example.org', penceToPoundsWithCurrency(transactions[0].amount), '', 'Successful')
+      assertTransactionRow(0, transactions[0].reference, TRANSACTION_URL(transactions[0].transaction_id),
+        transactions[0].email!, penceToPoundsWithCurrency(transactions[0].amount), transactions[0].card_details?.card_brand!, 'Success')
 
-      cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', transactions[0].reference)
-      cy.get('#transactions-list tbody').find('tr').eq(1).find('th').should('contain', transactions[1].reference)
-      cy.get('#transactions-list tbody').find('tr').eq(2).find('th').should('contain', transactions[2].reference)
+      assertTransactionRow(1, transactions[1].reference, TRANSACTION_URL(transactions[1].transaction_id),
+        transactions[1].email!, penceToPoundsWithCurrency(transactions[1].amount), transactions[1].card_details?.card_brand!, 'Success')
+
+      assertTransactionRow(2, transactions[2].reference, TRANSACTION_URL(transactions[2].transaction_id),
+        transactions[2].email!, penceToPoundsWithCurrency(transactions[2].amount), transactions[2].card_details?.card_brand!, 'Success')
+
       cy.get('#transactions-list tbody').find('tr').should('have.length', transactions.length)
       cy.get('[data-cy=pagination-detail]').contains(`Showing 1 to ${transactions.length} of ${transactions.length} transactions`)
     })
