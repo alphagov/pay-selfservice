@@ -69,7 +69,7 @@ const setupSimplifiedAccountStrategyTest = function (options) {
   })
 
   const mockGatewayAccountsService = {
-    getGatewayAccountByServiceExternalIdAndType: getGatewayAccountMock
+    getGatewayAccountByServiceExternalIdAndType: getGatewayAccountMock,
   }
 
   const simplifiedAccountStrategy = proxyquire(path.join(__dirname, './simplified-account-strategy.middleware'), {
@@ -110,6 +110,27 @@ describe('Middleware: getSimplifiedAccount', () => {
     })
     req.params.serviceExternalId = undefined
     req.params.accountType = undefined
+
+    await simplifiedAccountStrategy(req, res, next)
+
+    const expectedError = sinon.match
+      .instanceOf(NotFoundError)
+      .and(
+        sinon.match.has('message', 'Could not resolve service external ID or gateway account type from request params')
+      )
+    sinon.assert.calledOnce(next)
+    sinon.assert.calledWith(next, expectedError)
+  })
+  it('should error if gateway account type cannot be resolved from request parameters', async () => {
+    const { simplifiedAccountStrategy } = setupSimplifiedAccountStrategyTest({
+      gatewayAccountId: '1',
+      gatewayAccountExternalId: A_GATEWAY_EXTERNAL_ID,
+      paymentProvider: 'worldpay',
+      serviceExternalId: A_SERVICE_EXTERNAL_ID,
+      accountType: 'test',
+    })
+    req.params.serviceExternalId = A_SERVICE_EXTERNAL_ID
+    req.params.accountType = 'unknown-account-type'
 
     await simplifiedAccountStrategy(req, res, next)
 
