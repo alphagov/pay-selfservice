@@ -5,7 +5,8 @@
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": "^22.22.0"
+    "node": "^22.22.0",
+    "npm": "^11.10.0"
   },
   "_moduleAliases": {
     "@root": "src",

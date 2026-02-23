@@ -6,7 +6,7 @@
         text: 'Payment amount'
       },
       value: {
-        text: (transaction._locals.formatted.totalAmount + '(including card fee of ' + transaction._locals.formatted.corporateCardSurcharge + ')')
+        text: (transaction._locals.formatted.totalAmount + ' (including card fee of ' + transaction._locals.formatted.corporateCardSurcharge + ')')
           if (transaction.totalAmount and transaction.corporateCardSurcharge)
           else transaction._locals.formatted.amount
       }
