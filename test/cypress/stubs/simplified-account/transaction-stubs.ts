@@ -3,6 +3,7 @@ import ledgerTransactionFixtures from '@test/fixtures/ledger-transaction.fixture
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import response from '@utils/response'
+import refundFixtures from '@test/fixtures/refund.fixtures'
 
 function getTransaction(transactionExternalId: string) {
   const path = `/v1/transaction/${transactionExternalId}`
@@ -36,7 +37,6 @@ function getTransactionForGatewayAccount(gatewayAccountId: string, transactionEx
 
 function getTransactionsForGatewayAccount(gatewayAccountId: string, transactions: TransactionFixture[]) {
   const path = `/v1/transaction`
-
 
   return {
     success: function () {
@@ -83,4 +83,26 @@ function getTransactionEvents(gatewayAccountId: string, transactionExternalId: s
   }
 }
 
-export { getTransaction, getTransactionForGatewayAccount, getTransactionEvents, getTransactionsForGatewayAccount }
+function postRefund(serviceExternalId: string, transactionExternalId: string) {
+  const path = `/v1/api/service/${serviceExternalId}/account/test/charges/${transactionExternalId}/refunds`
+
+  return {
+    success: function (
+      refundAmount: number,
+      transaction: TransactionFixture,
+      userExternalId: string,
+      userEmail: string
+    ) {
+      return stubBuilder('POST', path, 200, {
+        request: refundFixtures.validTransactionRefundRequest({
+          amount: refundAmount,
+          refund_amount_available: transaction.amount,
+          user_external_id: userExternalId,
+          user_email: userEmail,
+        }),
+      })
+    },
+  }
+}
+
+export { getTransaction, getTransactionForGatewayAccount, getTransactionEvents, postRefund }

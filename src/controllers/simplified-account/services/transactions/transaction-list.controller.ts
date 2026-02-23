@@ -7,8 +7,11 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 import { getAllCardTypes } from '@services/card-types.service'
 import lodash from 'lodash'
-import { statusFriendlyNames, statusFriendlyNamesWithDisputes } from '@models/transaction/types/status'
 import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
+import {
+  StripeStatusFilters,
+  WorldpayStatusFilters,
+} from '@utils/simplified-account/services/transactions/status-filters'
 
 const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
   const getPath = (pageNumber: number) => {
@@ -31,19 +34,17 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     req.service.externalId,
     req.account.type
   )
-
-  const statusNames = isStripeAccount ? statusFriendlyNamesWithDisputes : statusFriendlyNames
-
   const [cardTypes, results] = await Promise.all([getAllCardTypes(), searchTransactions(transactionSearchParams)])
   results.transactions.forEach((transaction) =>
     transaction._locals.links.bind(req.service.externalId, req.account.type)
   )
 
-  const eventStates = statusNames.map((state) => {
+  const statusFilters = isStripeAccount ? StripeStatusFilters : WorldpayStatusFilters
+  const eventStates = statusFilters.map((filter) => {
     return {
-      value: state,
-      text: state,
-      selected: transactionSearchParams.state?.includes(state),
+      value: filter.id,
+      text: filter.friendly,
+      selected: transactionSearchParams.state?.includes(filter.id),
     }
   })
 
@@ -69,7 +70,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     clearRedirect: transactionsUrl,
     isStripeAccount,
     cardBrands: [{ value: '', text: 'Any' }, ...cardBrands],
-    statuses: [{ value: '', text: 'All' }, ...eventStates],
+    statuses: eventStates,
   })
 }
 

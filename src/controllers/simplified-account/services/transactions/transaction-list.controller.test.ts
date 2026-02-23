@@ -120,29 +120,29 @@ describe('controller: services/ledger', () => {
     describe('with valid status filter', () => {
       it('should pass status filter to searchTransactions service', async () => {
         nextRequest({
-          query: { state: 'In progress' },
+          query: { state: 'in_progress' },
         })
         await call('get')
 
         mockLedgerService.searchTransactions.should.have.been.calledOnce
 
         const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
-        searchParams.state.should.eql(['In progress'])
-        searchParams.paymentStates.should.eql(['created', 'started', 'capturable', 'submitted'])
+        searchParams.state.should.eql(['in_progress'])
+        searchParams.paymentStates.should.eql(['CREATED', 'STARTED', 'CAPTURABLE', 'SUBMITTED'])
         expect(searchParams.refundStates).to.be.undefined
         expect(searchParams.disputeStates).to.be.undefined
       })
 
       it('should include filters in context', async () => {
         nextRequest({
-          query: { state: 'In progress' },
+          query: { state: 'in_progress' },
         })
 
         await call('get')
 
         const context = mockResponse.args[0][3] as { filters: Record<string, object> }
-        context.filters.state.should.eql(['In progress'])
-        context.filters.paymentStates.should.eql(['created', 'started', 'capturable', 'submitted'])
+        context.filters.state.should.eql(['in_progress'])
+        context.filters.paymentStates.should.eql(['CREATED', 'STARTED', 'CAPTURABLE', 'SUBMITTED'])
         expect(context.filters.refundStates).to.be.undefined
         expect(context.filters.disputeStates).to.be.undefined
       })

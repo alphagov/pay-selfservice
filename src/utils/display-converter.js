@@ -154,7 +154,7 @@ module.exports = function (req, data, template) {
       paymentProvider,
       account
     )
-    if (currentUrl.match(/service\/\w+\/account\/(test|live)\//)) {
+    if (currentUrl.match(/service\/[\w-]+\/account\/(test|live)\//)) {
       convertedData.serviceNavigation = serviceNavigation(account, service, currentUrl, permissions)
       convertedData.serviceSettings = serviceSettingsNavigation(account, service, currentUrl, permissions)
     }

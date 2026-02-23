@@ -4,7 +4,7 @@ import { getFriendlyStatus, Status } from '@models/transaction/types/status'
 import changeCase from 'change-case'
 import { ReasonFriendlyNames } from '@models/transaction/types/reason'
 import { ResourceType } from '@models/transaction/types/resource-type'
-import { DATE_TIME, ZONED_DATE_TIME } from '@models/constants/time-formats'
+import { DATE_TIME, dateTimeWithOffset, ZONED_DATE_TIME } from '@models/constants/time-formats'
 
 export class TransactionDisplayValues {
   private readonly transaction: Transaction
@@ -66,6 +66,10 @@ export class TransactionDisplayValues {
     return this.transaction.createdDate.toFormat(DATE_TIME)
   }
 
+  get createdDateWithOffset(): string {
+    return dateTimeWithOffset(this.transaction.createdDate)
+  }
+
   get zonedCreatedDate(): string {
     return this.transaction.createdDate.toFormat(ZONED_DATE_TIME)
   }
@@ -92,7 +96,7 @@ export class TransactionDisplayValues {
   }
 
   get evidenceDueDate(): string {
-    return this.transaction.evidenceDueDate ? this.transaction.evidenceDueDate.toFormat('dd LLL yyyy HH:mm:ss') : ''
+    return this.transaction.evidenceDueDate ? dateTimeWithOffset(this.transaction.evidenceDueDate) : ''
   }
 
   get disputeReason(): string {

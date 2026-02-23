@@ -10,6 +10,7 @@ import { submitRefund } from '@services/charge.service'
 import { ChargeRefundRequest } from '@models/charge/ChargeRefundRequest.class'
 import { safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 import { Message } from '@utils/types/express/Message'
+import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const transaction = await getTransaction(req.params.transactionExternalId, req.account.id)
@@ -26,6 +27,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   return response(req, res, 'simplified-account/services/transactions/refund', {
     transaction,
+    pageID: `${transaction.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${transaction.reference}`,
     backLink: formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.transactions.detail,
       req.service.externalId,

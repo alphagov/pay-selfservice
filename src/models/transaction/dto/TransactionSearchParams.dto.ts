@@ -1,5 +1,6 @@
 import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
+import { toLower } from 'lodash'
 
 export class TransactionSearchParamsData {
   readonly account_id: string
@@ -37,9 +38,9 @@ export class TransactionSearchParamsData {
     this.email = params.email ?? undefined
     this.from_date = params.fromDate ?? last12MonthsStartDate.toISO()!
     this.to_date = params.toDate ?? undefined
-    this.payment_states = params.paymentStates?.join(',')
-    this.refund_states = params.refundStates?.join(',')
-    this.dispute_states = params.disputeStates?.join(',')
+    this.payment_states = params.paymentStates?.map(toLower).join(',')
+    this.refund_states = params.refundStates?.map(toLower).join(',')
+    this.dispute_states = params.disputeStates?.map(toLower).join(',')
   }
 
   asQueryString(): string {
