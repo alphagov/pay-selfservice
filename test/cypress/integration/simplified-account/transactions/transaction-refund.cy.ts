@@ -11,6 +11,8 @@ import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
+import { checkServiceNavigation } from '../common/assertions'
+import ROLES from '@test/fixtures/roles.fixtures'
 
 const TRANSACTION = new TransactionFixture()
 const USER_EXTERNAL_ID = 'user456def'
@@ -45,6 +47,7 @@ const userAndGatewayAccountStubs = [
     serviceExternalId: SERVICE_EXTERNAL_ID,
     gatewayAccountId: GATEWAY_ACCOUNT_ID,
     serviceName: SERVICE_NAME,
+    role: ROLES['view-and-refund'],
   }),
   gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, GatewayAccountType.TEST, {
     gateway_account_id: GATEWAY_ACCOUNT_ID,
@@ -74,6 +77,9 @@ describe('Refund page', () => {
 
     cy.visit(TRANSACTION_REFUND_URL)
 
+    const transactionListUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
+
+    checkServiceNavigation('Transactions', transactionListUrl)
     cy.title().should(
       'eq',
       `Refund - ${TRANSACTION.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
