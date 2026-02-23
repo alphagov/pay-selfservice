@@ -20,6 +20,8 @@ import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-re
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 import { DATE_TIME, TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import { checkServiceNavigation } from '../common/assertions'
+import ROLES from '@test/fixtures/roles.fixtures'
 
 const TRANSACTION = new TransactionFixture()
 const TRANSACTION_CREATED_TIMESTAMP = TRANSACTION.createdDate
@@ -48,6 +50,7 @@ const SERVICE_NAME = {
 }
 
 const TRANSACTION_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}`
+const TRANSACTIONS_LIST_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
 
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({
@@ -56,6 +59,7 @@ const userAndGatewayAccountStubs = [
     serviceExternalId: SERVICE_EXTERNAL_ID,
     gatewayAccountId: GATEWAY_ACCOUNT_ID,
     serviceName: SERVICE_NAME,
+    role: ROLES['view-and-refund'],
   }),
   gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, GatewayAccountType.TEST, {
     gateway_account_id: GATEWAY_ACCOUNT_ID,
@@ -86,6 +90,7 @@ describe('Transaction details page', () => {
     ])
 
     cy.visit(TRANSACTION_URL)
+    checkServiceNavigation('Transactions', TRANSACTIONS_LIST_URL)
 
     cy.title().should(
       'eq',
@@ -115,9 +120,7 @@ describe('Transaction details page', () => {
     cy.visit(TRANSACTION_URL)
     cy.get('.govuk-back-link').click()
 
-    const transactionsListUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
-
-    cy.url().should('include', transactionsListUrl)
+    cy.url().should('include', TRANSACTIONS_LIST_URL)
   })
 
   it('should display transaction details correctly for a payment', () => {
