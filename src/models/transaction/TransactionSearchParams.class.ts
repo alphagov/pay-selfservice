@@ -6,6 +6,7 @@ import {
   PaymentStatusFilterMapping,
   RefundStatusFilterMapping,
 } from '@utils/simplified-account/services/transactions/status-filters'
+import { DateTime } from 'luxon'
 
 interface TransactionSearchQuery {
   cardholderName?: string
@@ -17,6 +18,8 @@ interface TransactionSearchQuery {
   dateFilter?: string
   state?: string | string[]
   page?: string | number
+  fromDate?: string
+  toDate?: string
 }
 
 export class TransactionSearchParams {
@@ -78,7 +81,11 @@ export class TransactionSearchParams {
     searchParams.reference = nonEmpty(queryParams.reference)
     searchParams.email = nonEmpty(queryParams.email)
 
-    if (queryParams.dateFilter) {
+    if (queryParams.fromDate !== '' || queryParams.toDate !== '') {
+      searchParams.fromDate = DateTime.fromFormat(queryParams.fromDate!, 'dd/LL/yyyy').toISO()!
+      searchParams.toDate = DateTime.fromFormat(queryParams.toDate!, 'dd/LL/yyyy').toISO()!
+      searchParams.dateFilter = queryParams.dateFilter
+    } else if (queryParams.dateFilter) {
       const dateRange = getPeriodUKDateTimeRange(queryParams.dateFilter as Period)
 
       searchParams.dateFilter = queryParams.dateFilter
