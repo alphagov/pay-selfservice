@@ -131,16 +131,39 @@ describe('Transactions index', () => {
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
 
       assertTransactionRow(0, transactions[0].reference, TRANSACTION_URL(transactions[0].transaction_id),
-        transactions[0].email, penceToPoundsWithCurrency(transactions[0].amount), transactions[0].card_details?.card_brand, 'Success')
+        transactions[0].email!, penceToPoundsWithCurrency(transactions[0].amount), transactions[0].card_details!.card_brand!, 'Success')
 
       assertTransactionRow(1, transactions[1].reference, TRANSACTION_URL(transactions[1].transaction_id),
-        transactions[1].email, penceToPoundsWithCurrency(transactions[1].amount), transactions[1].card_details?.card_brand, 'Success')
+        transactions[1].email!, penceToPoundsWithCurrency(transactions[1].amount), transactions[1].card_details!.card_brand!, 'Success')
 
       assertTransactionRow(2, transactions[2].reference, TRANSACTION_URL(transactions[2].transaction_id),
-        transactions[2].email, penceToPoundsWithCurrency(transactions[2].amount), transactions[2].card_details?.card_brand, 'Success')
+        transactions[2].email!, penceToPoundsWithCurrency(transactions[2].amount), transactions[2].card_details!.card_brand!, 'Success')
 
       cy.get('#transactions-list tbody').find('tr').should('have.length', transactions.length)
       cy.get('[data-cy=pagination-detail]').contains(`Showing 1 to ${transactions.length} of ${transactions.length} transactions`)
+    })
+  })
+
+  describe('Transaction display', () => {
+    const transactionAmounts = { corporateCardSurcharge: 25, fee: 15, totalAmount: 1075 }
+    const transactionWithFees = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
+
+    beforeEach(() => {
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [transactionWithFees],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 1
+        })
+      ])
+      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+    })
+
+    it('should display card fee with corporate card surcharge transaction', () => {
+      cy.get('#transactions-list tbody').find('tr').should('have.length', [transactionWithFees].length)
+      cy.get('#transactions-list tbody').find('tr').should('contain', penceToPoundsWithCurrency(transactionWithFees.total_amount!)).and('contain', '(with card fee)')
     })
   })
 })
