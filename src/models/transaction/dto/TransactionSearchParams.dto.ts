@@ -28,7 +28,7 @@ export class TransactionSearchParamsData {
     this.limit_total = params.limitTotal ? params.limitTotal.toString() : 'true'
     this.limit_total_size = params.limitTotalSize?.toString() ?? '5001'
     this.display_size = params.displaySize?.toString() ?? undefined
-    this.page = params.page?.toString() ?? '1'
+    this.page = params.currentPage?.toString() ?? '1'
     this.cardholder_name = params.cardholderName?.toString() ?? undefined
     this.last_digits_card_number = params.lastDigitsCardNumber?.toString() ?? undefined
     this.metadata_value = params.metadataValue?.toString() ?? undefined
