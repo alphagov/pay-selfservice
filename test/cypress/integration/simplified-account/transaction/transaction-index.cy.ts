@@ -11,6 +11,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
+import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
 
@@ -64,20 +65,20 @@ function assertTransactionRow(row: number, reference: string, transactionLink: s
 describe('Transactions index', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
+    sharedStubs('test')
   })
 
   describe('Common page content', () => {
     beforeEach(() => {
-      sharedStubs('test'),
-        cy.task('setupStubs', [
-          transactionStubs.getLedgerTransactionsSuccess({
-            gatewayAccountId: GATEWAY_ACCOUNT_ID,
-            transactions: [TRANSACTION],
-            filters: { from_date: last12MonthsStartDate },
-            displaySize: 20,
-            transactionLength: 1
-          })
-        ])
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [TRANSACTION],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 1
+        })
+      ])
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
     })
 
@@ -112,7 +113,7 @@ describe('Transactions index', () => {
     })
 
     it('should display unfiltered results', () => {
-      const transactions = []
+      const transactions: TransactionData[] = []
 
       for (let i = 1; i <= 3; i++) {
         transactions.push(new TransactionFixture({ amount: i * 1111, reference: `reference${i}`, externalId: `transaction${i}` }).toTransactionData())
@@ -130,13 +131,13 @@ describe('Transactions index', () => {
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
 
       assertTransactionRow(0, transactions[0].reference, TRANSACTION_URL(transactions[0].transaction_id),
-        transactions[0].email!, penceToPoundsWithCurrency(transactions[0].amount), transactions[0].card_details?.card_brand!, 'Success')
+        transactions[0].email, penceToPoundsWithCurrency(transactions[0].amount), transactions[0].card_details?.card_brand, 'Success')
 
       assertTransactionRow(1, transactions[1].reference, TRANSACTION_URL(transactions[1].transaction_id),
-        transactions[1].email!, penceToPoundsWithCurrency(transactions[1].amount), transactions[1].card_details?.card_brand!, 'Success')
+        transactions[1].email, penceToPoundsWithCurrency(transactions[1].amount), transactions[1].card_details?.card_brand, 'Success')
 
       assertTransactionRow(2, transactions[2].reference, TRANSACTION_URL(transactions[2].transaction_id),
-        transactions[2].email!, penceToPoundsWithCurrency(transactions[2].amount), transactions[2].card_details?.card_brand!, 'Success')
+        transactions[2].email, penceToPoundsWithCurrency(transactions[2].amount), transactions[2].card_details?.card_brand, 'Success')
 
       cy.get('#transactions-list tbody').find('tr').should('have.length', transactions.length)
       cy.get('[data-cy=pagination-detail]').contains(`Showing 1 to ${transactions.length} of ${transactions.length} transactions`)
