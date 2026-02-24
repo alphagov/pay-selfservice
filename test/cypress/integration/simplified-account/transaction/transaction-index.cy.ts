@@ -26,7 +26,7 @@ const SERVICE_NAME = {
 const TRANSACTIONS_LIST_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
 const TRANSACTION_URL = (transactionId: string) => `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${transactionId}`
 
-const sharedStubs = (gatewayAccountType = 'test') => {
+const sharedStubs = (gatewayAccountType = 'test', paymentProvider = 'worldpay') => {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
       userExternalId: USER_EXTERNAL_ID,
@@ -37,7 +37,7 @@ const sharedStubs = (gatewayAccountType = 'test') => {
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, gatewayAccountType, {
       gateway_account_id: GATEWAY_ACCOUNT_ID,
       type: gatewayAccountType,
-      payment_provider: WORLDPAY,
+      payment_provider: paymentProvider,
     }),
     gatewayAccountStubs.getCardTypesSuccess(),
   ])
@@ -65,11 +65,12 @@ function assertTransactionRow(row: number, reference: string, transactionLink: s
 describe('Transactions index', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
-    sharedStubs('test')
+
   })
 
   describe('Common page content', () => {
     beforeEach(() => {
+      sharedStubs()
       cy.task('setupStubs', [
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
@@ -94,7 +95,7 @@ describe('Transactions index', () => {
 
   describe('Filtering', () => {
     beforeEach(() => {
-      sharedStubs('test')
+      sharedStubs()
     })
 
     it('should display correctly when there are no results', () => {
@@ -145,10 +146,11 @@ describe('Transactions index', () => {
   })
 
   describe('Transaction display', () => {
-    const transactionAmounts = { corporateCardSurcharge: 25, fee: 15, totalAmount: 1075 }
-    const transactionWithFees = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
+    it('should display card fee with corporate card surcharge transaction', () => {
+      sharedStubs('test')
+      const transactionAmounts = { corporateCardSurcharge: 25, fee: 15, totalAmount: 1075 }
+      const transactionWithFees = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
 
-    beforeEach(() => {
       cy.task('setupStubs', [
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
@@ -159,11 +161,30 @@ describe('Transactions index', () => {
         })
       ])
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
-    })
 
-    it('should display card fee with corporate card surcharge transaction', () => {
       cy.get('#transactions-list tbody').find('tr').should('have.length', [transactionWithFees].length)
       cy.get('#transactions-list tbody').find('tr').should('contain', penceToPoundsWithCurrency(transactionWithFees.total_amount!)).and('contain', '(with card fee)')
+    })
+
+    it('should display the fee and total columns for Stripe provider service', () => {
+      sharedStubs('test', 'stripe')
+
+      const transactionAmounts = { netAmount: 1000, fee: 30, amount: 1030 }
+      const stripeTransaction = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
+
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [stripeTransaction],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 1
+        })
+      ])
+      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+
+      cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="fee"]').first().should('contain', penceToPoundsWithCurrency(stripeTransaction.fee!))
+      cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').first().find('span').should('contain', penceToPoundsWithCurrency(stripeTransaction.net_amount!))
     })
   })
 })
