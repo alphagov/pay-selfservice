@@ -12,6 +12,9 @@ import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
+import { Status } from '@models/transaction/types/status'
+import { Reason } from '@models/transaction/types/reason'
+import { ResourceType } from '@models/transaction/types/resource-type'
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
 
@@ -185,6 +188,54 @@ describe('Transactions index', () => {
 
       cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="fee"]').first().should('contain', penceToPoundsWithCurrency(stripeTransaction.fee!))
       cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').first().find('span').should('contain', penceToPoundsWithCurrency(stripeTransaction.net_amount!))
+    })
+
+    it('should display dispute statuses in the dropdown and dispute transactions correctly - when enabled', () => {
+      sharedStubs('test', 'stripe')
+
+      const parentTransactionOfDispute = new TransactionFixture({ disputed: true }).toTransactionData()
+      const createdDate = new TransactionFixture().createdDate
+
+      const disputeTransaction = {
+        gateway_account_id: GATEWAY_ACCOUNT_ID,
+        amount: 1000,
+        fee: 100,
+        net_amount: 900,
+        finished: true,
+        status: Status.NEEDS_RESPONSE,
+        created_date: createdDate.plus({ month: 4 }),
+        type: ResourceType.DISPUTE,
+        includePaymentDetails: true,
+        evidence_due_date: createdDate.plus({ month: 5 }),
+        reason: Reason.FRAUDULENT,
+        transaction_id: parentTransactionOfDispute.gateway_transaction_id + '1a',
+        parent_transaction_id: parentTransactionOfDispute,
+      }
+
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [disputeTransaction, parentTransactionOfDispute],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 1
+        })
+      ])
+      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+
+      // cy.get('#state').invoke('text').should('contain', 'Dispute awaiting evidence')
+      // cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute under review')
+      // cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute won in your favour')
+      // cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute lost to customer')
+
+      // cy.get('#state').click()
+      // cy.get('#error').check()
+      // cy.get('#state .govuk-checkboxes__input[value=\'Dispute under review\']').trigger('mouseover').click()
+
+      // cy.get('#filter').click()
+      // cy.get('.transactions-list--row').should('have.length', 2)
+      // cy.get('#charge-id-parent-transaction-id-1').should('exist')
+      // cy.get('#charge-id-parent-transaction-id-2').should('exist')
     })
   })
 })
