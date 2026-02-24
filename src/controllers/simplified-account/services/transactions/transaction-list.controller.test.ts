@@ -178,6 +178,36 @@ describe('controller: services/ledger', () => {
       })
     })
 
+    describe('with a valid date range', () => {
+      it('should correctly parse the date range and pass to searchTransactions', async () => {
+        nextRequest({
+          query: { dateFilter: 'custom-range', fromDate: '01/11/2025', toDate: '30/11/2025' },
+        })
+
+        await call('get')
+
+        mockLedgerService.searchTransactions.should.have.been.calledOnce
+
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        searchParams.dateFilter.should.eql('custom-range')
+        searchParams.fromDate.should.eql('2025-11-01T00:00:00.000+00:00')
+        searchParams.toDate.should.eql('2025-11-30T23:59:59.999+00:00')
+      })
+
+      it('should include the filters in the context', async () => {
+        nextRequest({
+          query: { dateFilter: 'custom-range', fromDate: '01/11/2025', toDate: '30/11/2025' },
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        context.filters.dateFilter.should.eql('custom-range')
+        context.filters.fromDate.should.eql('2025-11-01T00:00:00.000+00:00')
+        context.filters.toDate.should.eql('2025-11-30T23:59:59.999+00:00')
+      })
+    })
+
     describe('with valid brand filter', () => {
       it('should pass brand filter to searchTransactions service', async () => {
         nextRequest({
