@@ -42,7 +42,7 @@
       }}
     </div>
   </div>
-  <div class="govuk-grid-row" id="time-picker" {{ 'hidden' if (not filters.includeTime) }}>
+  <div class="govuk-grid-row" id="time-picker">
     <div class="govuk-grid-column-one-third">
       <br class="transactions-list__br" />
     </div>
@@ -56,3 +56,9 @@
     {% set detailsElementOpenHtml = 'open="true"' %}
   {% endif %}
 </div>
+
+<script>
+  if (!document.getElementById('include-time-checkbox').checked) {
+    document.getElementById('time-picker').hidden = true
+  }
+</script>
