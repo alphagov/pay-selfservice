@@ -13,7 +13,7 @@ export class MerchantDetailsFixture {
 
   constructor(overrides?: Partial<MerchantDetailsFixture>) {
     this.name = 'Compu-Global-Hyper-Meganet'
-    this.telephoneNumber = ''
+    this.telephoneNumber = '+15559393226'
     this.addressLine1 = '742 Evergreen Terrace'
     this.addressLine2 = ''
     this.addressCity = 'Springfield'

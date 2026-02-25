@@ -21,14 +21,14 @@ export class UserFixture {
     this.email = 'homer.simpson@example.com'
     this.serviceRoles = [new ServiceRoleFixture()]
     this.otpKey = 'OTPKEY'
-    this.telephoneNumber = ''
+    this.telephoneNumber = '+15559393226'
     this.disabled = false
     this.sessionVersion = 1
     this.features = []
     this.secondFactor = 'APP'
     this.provisionalOtpKey = ''
     this.internalUser = false
-    this.numberOfLiveServices = 1
+    this.numberOfLiveServices = 0
 
     if (overrides) {
       Object.assign(this, overrides)
