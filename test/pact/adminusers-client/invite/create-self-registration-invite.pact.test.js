@@ -5,7 +5,7 @@ const chaiAsPromised = require('chai-as-promised')
 const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const inviteFixtures = require('../../../fixtures/invite.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 chai.use(chaiAsPromised)
 
@@ -20,7 +20,7 @@ describe('adminusers client - create self-registration invite', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -34,23 +34,28 @@ describe('adminusers client - create self-registration invite', function () {
     const response = inviteFixtures.validInviteResponse({ ...validCreateInviteRequest })
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${INVITES_PATH}`)
-          .withUponReceiving('a valid create self-registration invite request')
-          .withMethod('POST')
-          .withRequestBody(validCreateInviteRequest)
-          .withStatusCode(201)
-          .withResponseBody(pactify(response))
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${INVITES_PATH}`)
+            .withUponReceiving('a valid create self-registration invite request')
+            .withMethod('POST')
+            .withRequestBody(validCreateInviteRequest)
+            .withStatusCode(201)
+            .withResponseBody(pactify(response))
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('should create a invite successfully', function (done) {
-      adminUsersClient.createSelfSignupInvite(validCreateInviteRequest.email).should.be.fulfilled.then(function (inviteResponse) {
-        expect(inviteResponse.email).to.be.equal(validCreateInviteRequest.email)
-      }).should.notify(done)
+      adminUsersClient
+        .createSelfSignupInvite(validCreateInviteRequest.email)
+        .should.be.fulfilled.then(function (inviteResponse) {
+          expect(inviteResponse.email).to.be.equal(validCreateInviteRequest.email)
+        })
+        .should.notify(done)
     })
   })
 })

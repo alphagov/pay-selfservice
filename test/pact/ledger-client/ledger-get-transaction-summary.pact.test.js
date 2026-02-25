@@ -9,7 +9,7 @@ const ledgerClient = require('../../../src/services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../fixtures/ledger-transaction.fixtures')
 const legacyConnectorParityTransformer = require('../../../src/services/clients/utils/ledger-legacy-connector-parity')
 const pactTestProvider = require('./ledger-pact-test-provider')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 // Constants
 const TRANSACTION_SUMMARY_RESOURCE = '/v1/report/transactions-summary'
@@ -38,7 +38,7 @@ describe('ledger client transaction summary', function () {
       paymentCount: 2,
       paymentTotal: 3500,
       refundCount: 1,
-      refundTotal: 1000
+      refundTotal: 1000,
     }
     const validTransactionSummaryResponse = transactionDetailsFixtures.validTransactionSummaryDetails(params)
 
@@ -60,8 +60,11 @@ describe('ledger client transaction summary', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should get transaction summary successfully', function () {
-      const getTransactionSummaryDetails = legacyConnectorParityTransformer.legacyConnectorTransactionSummaryParity(validTransactionSummaryResponse)
-      return ledgerClient.transactionSummary(params.account_id, params.from_date, params.to_date, { baseUrl: ledgerUrl })
+      const getTransactionSummaryDetails = legacyConnectorParityTransformer.legacyConnectorTransactionSummaryParity(
+        validTransactionSummaryResponse
+      )
+      return ledgerClient
+        .transactionSummary(params.account_id, params.from_date, params.to_date, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionSummaryDetails)
         })

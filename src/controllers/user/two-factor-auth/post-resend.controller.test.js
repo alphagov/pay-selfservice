@@ -18,11 +18,11 @@ describe('The POST resend code for updating 2FA to SMS controller', () => {
     req = {
       user: new User(userFixtures.validUserResponse({ external_id: userExternalId })),
       body: {},
-      flash: sinon.spy()
+      flash: sinon.spy(),
     }
     res = {
       redirect: sinon.spy(),
-      render: sinon.spy()
+      render: sinon.spy(),
     }
     next = sinon.spy()
     updatePhoneNumberSpy.resetHistory()
@@ -69,8 +69,8 @@ describe('The POST resend code for updating 2FA to SMS controller', () => {
       sinon.assert.calledWithMatch(res.render, 'two-factor-auth/resend-sms-code', {
         phone: req.body.phone,
         errors: {
-          phone: validationErrors.invalidTelephoneNumber
-        }
+          phone: validationErrors.invalidTelephoneNumber,
+        },
       })
 
       sinon.assert.notCalled(updatePhoneNumberSpy)
@@ -79,11 +79,11 @@ describe('The POST resend code for updating 2FA to SMS controller', () => {
   })
 })
 
-function getController (updatePhoneNumberSpy, sendProvisionalOTPSpy) {
+function getController(updatePhoneNumberSpy, sendProvisionalOTPSpy) {
   return proxyquire('./post-resend.controller', {
     '../../../services/user.service': {
       updatePhoneNumber: updatePhoneNumberSpy,
-      sendProvisionalOTP: sendProvisionalOTPSpy
-    }
+      sendProvisionalOTP: sendProvisionalOTPSpy,
+    },
   })
 }

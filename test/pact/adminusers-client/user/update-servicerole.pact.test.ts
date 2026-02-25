@@ -1,17 +1,18 @@
-const { Pact } = require('@pact-foundation/pact')
-const path = require('path')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
-const userFixtures = require('../../../fixtures/user.fixtures')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
-const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
-
-chai.use(chaiAsPromised)
+import { Pact } from '@pact-foundation/pact'
+import path from 'path'
+import chai from 'chai'
+import userFixtures from '@test/fixtures/user.fixtures'
+import Builder from '@test/test-helpers/pact/pact-interaction-builder'
+import AdminUsersClient from '@services/clients/pay/AdminUsersClient.class'
+import pactify from '@test/test-helpers/pact/pact-base'
+import { UpdateServiceRoleRequestFixture } from '@test/fixtures/user/update-service-role-request.fixture'
+import User from '@models/user/User.class'
+import { AnyJson } from '@pact-foundation/pact/src/common/jsonTypes'
+const { PactInteractionBuilder } = Builder
 
 const expect = chai.expect
 const USER_PATH = '/v1/api/users'
-let adminUsersClient
+let adminUsersClient: AdminUsersClient
 
 const existingUserExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
 const existingServiceExternalId = 'cp5wa'
@@ -34,7 +35,7 @@ describe('adminusers client - update user service role', function () {
 
   describe('update user service role API - success', () => {
     const role = 'view-and-refund'
-    const request = userFixtures.validUpdateServiceRoleRequest(role)
+    const request = new UpdateServiceRoleRequestFixture(role).toRequest()
     const userFixture = userFixtures.validUserResponse({
       external_id: existingUserExternalId,
       service_roles: [
@@ -45,19 +46,17 @@ describe('adminusers client - update user service role', function () {
       ],
     })
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services/${existingServiceExternalId}`)
-            .withState(`a service exists with external id ${existingServiceExternalId} with multiple admin users`)
-            .withUponReceiving('a valid update service role request')
-            .withMethod('PUT')
-            .withRequestBody(request)
-            .withStatusCode(200)
-            .withResponseBody(userResponsePactifier.pactify(userFixture))
-            .build()
-        )
-        .then(() => done())
+    before(async () => {
+      await provider.addInteraction(
+        new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services/${existingServiceExternalId}`)
+          .withState(`a service exists with external id ${existingServiceExternalId} with multiple admin users`)
+          .withUponReceiving('a valid update service role request')
+          .withMethod('PUT')
+          .withRequestBody(request as unknown as AnyJson)
+          .withStatusCode(200)
+          .withResponseBody(pactify(userFixture))
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
@@ -65,11 +64,11 @@ describe('adminusers client - update user service role', function () {
     it('should update service role of a user successfully', function (done) {
       adminUsersClient.users
         .updateServiceRole(existingUserExternalId, existingServiceExternalId, request.role_name)
-        .should.be.fulfilled.then(function (updatedUser) {
+        .should.be.fulfilled.then(function (updatedUser: User) {
           const updatedServiceRole = updatedUser.serviceRoles.find(
             (serviceRole) => serviceRole.service.externalId === existingServiceExternalId
           )
-          expect(updatedServiceRole.role.name).to.be.equal(role)
+          expect(updatedServiceRole!.role.name).to.be.equal(role)
         })
         .should.notify(done)
     })
@@ -77,21 +76,19 @@ describe('adminusers client - update user service role', function () {
 
   describe('update user service role API - user not found', () => {
     const role = 'view-and-refund'
-    const request = userFixtures.validUpdateServiceRoleRequest(role)
+    const request = new UpdateServiceRoleRequestFixture(role).toRequest()
     const externalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' // non existent external id
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${externalId}/services/${existingServiceExternalId}`)
-            .withUponReceiving('an update service role request for non-existent user')
-            .withMethod('PUT')
-            .withRequestBody(request)
-            .withStatusCode(404)
-            .withResponseHeaders({})
-            .build()
-        )
-        .then(() => done())
+    before(async () => {
+      await provider.addInteraction(
+        new PactInteractionBuilder(`${USER_PATH}/${externalId}/services/${existingServiceExternalId}`)
+          .withUponReceiving('an update service role request for non-existent user')
+          .withMethod('PUT')
+          .withRequestBody(request as unknown as AnyJson)
+          .withStatusCode(404)
+          .withResponseHeaders({})
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
@@ -108,22 +105,20 @@ describe('adminusers client - update user service role', function () {
 
   describe('update user service role API - user does not belong to service', () => {
     const role = 'admin'
-    const request = userFixtures.validUpdateServiceRoleRequest(role)
+    const request = new UpdateServiceRoleRequestFixture(role).toRequest()
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services/${existingServiceExternalId}`)
-            .withState(
-              `a user exists external id ${existingUserExternalId} and a service exists with external id ${existingServiceExternalId}`
-            )
-            .withUponReceiving('an update service role request for user that does not belong to service')
-            .withMethod('PUT')
-            .withRequestBody(request)
-            .withStatusCode(409)
-            .build()
-        )
-        .then(() => done())
+    before(async () => {
+      await provider.addInteraction(
+        new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services/${existingServiceExternalId}`)
+          .withState(
+            `a user exists external id ${existingUserExternalId} and a service exists with external id ${existingServiceExternalId}`
+          )
+          .withUponReceiving('an update service role request for user that does not belong to service')
+          .withMethod('PUT')
+          .withRequestBody(request as unknown as AnyJson)
+          .withStatusCode(409)
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
@@ -140,22 +135,20 @@ describe('adminusers client - update user service role', function () {
 
   describe('update user service role API - minimum no of admin limit reached', () => {
     const role = 'view-and-refund'
-    const request = userFixtures.validUpdateServiceRoleRequest(role)
+    const request = new UpdateServiceRoleRequestFixture(role).toRequest()
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services/${existingServiceExternalId}`)
-            .withState(
-              `a user exists with external id ${existingUserExternalId} with admin role for service with id ${existingServiceExternalId}`
-            )
-            .withUponReceiving('an update service role request with minimum number of admins reached')
-            .withMethod('PUT')
-            .withRequestBody(request)
-            .withStatusCode(412)
-            .build()
-        )
-        .then(() => done())
+    before(async () => {
+      await provider.addInteraction(
+        new PactInteractionBuilder(`${USER_PATH}/${existingUserExternalId}/services/${existingServiceExternalId}`)
+          .withState(
+            `a user exists with external id ${existingUserExternalId} with admin role for service with id ${existingServiceExternalId}`
+          )
+          .withUponReceiving('an update service role request with minimum number of admins reached')
+          .withMethod('PUT')
+          .withRequestBody(request as unknown as AnyJson)
+          .withStatusCode(412)
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())

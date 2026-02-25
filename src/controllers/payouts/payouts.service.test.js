@@ -13,7 +13,7 @@ describe('payout service data transforms', () => {
         { paidOutDate: '2019-01-26T08:00:00.000000Z' },
         { paidOutDate: '2019-01-28T08:00:00.000000Z' },
         { paidOutDate: '2019-01-28T08:00:00.000000Z' },
-        { paidOutDate: '2019-01-21T08:00:00.000000Z' }
+        { paidOutDate: '2019-01-21T08:00:00.000000Z' },
       ]
       const payouts = payoutFixtures.validPayoutSearchResponse(opts)
 
@@ -29,11 +29,12 @@ describe('payout service data transforms', () => {
     })
 
     it('will correctly assign service names if a user is provided', () => {
-      const payouts = payoutFixtures
-        .validPayoutSearchResponse([{
+      const payouts = payoutFixtures.validPayoutSearchResponse([
+        {
           paidOutDate: '2019-01-21T08:00:00.000000Z',
-          gatewayAccountId: '300'
-        }])
+          gatewayAccountId: '300',
+        },
+      ])
 
       const user = new User(userFixtures.validUser({ gateway_account_ids: ['300'] }))
 
@@ -54,7 +55,7 @@ describe('payout service data transforms', () => {
         { paidOutDate: '2019-01-05T08:00:00.000000Z' },
         { paidOutDate: '2019-04-03T08:00:00.000000Z' },
         { paidOutDate: '2019-01-12T08:00:00.000000Z' },
-        { paidOutDate: '2019-01-02T08:00:00.000000Z' }
+        { paidOutDate: '2019-01-02T08:00:00.000000Z' },
       ]
       const payouts = payoutFixtures.validPayoutSearchResponse(opts)
 

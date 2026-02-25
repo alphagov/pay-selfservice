@@ -7,7 +7,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../src/services/clients/connector.client').ConnectorClient
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 const existingGatewayAccountId = 444
 const existingGatewayAccountCredentialsId = 555
@@ -21,7 +21,7 @@ describe('connector client - patch gateway account credentials.gateway_merchant_
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -34,21 +34,25 @@ describe('connector client - patch gateway account credentials.gateway_merchant_
     const userExternalId = 'a-user-external-id'
     const googlePayGatewayMerchantId = 'abcdef123abcdef'
     const credentialsInResponse = {
-      gateway_merchant_id: googlePayGatewayMerchantId
+      gateway_merchant_id: googlePayGatewayMerchantId,
     }
     const request = gatewayAccountFixtures.validPatchWorldpayGooglePayMerchantIdRequest({
       googlePayMerchantId: googlePayGatewayMerchantId,
-      userExternalId
+      userExternalId,
     })
     const response = gatewayAccountFixtures.validPatchGatewayCredentialsResponse({
       credentials: credentialsInResponse,
-      lastUpdatedByUserExternalId: userExternalId
+      lastUpdatedByUserExternalId: userExternalId,
     })
 
     before(() => {
       return provider.addInteraction(
-        new PactInteractionBuilder(`/v1/api/accounts/${existingGatewayAccountId}/credentials/${existingGatewayAccountCredentialsId}`)
-          .withState(`a Worldpay gateway account with id ${existingGatewayAccountId} with gateway account credentials with id ${existingGatewayAccountCredentialsId} and valid credentials`)
+        new PactInteractionBuilder(
+          `/v1/api/accounts/${existingGatewayAccountId}/credentials/${existingGatewayAccountCredentialsId}`
+        )
+          .withState(
+            `a Worldpay gateway account with id ${existingGatewayAccountId} with gateway account credentials with id ${existingGatewayAccountCredentialsId} and valid credentials`
+          )
           .withUponReceiving('a request to update google pay gateway merchant id for a gateway account credentials')
           .withMethod('PATCH')
           .withRequestHeaders({ 'Content-Type': 'application/json' })
@@ -56,13 +60,19 @@ describe('connector client - patch gateway account credentials.gateway_merchant_
           .withStatusCode(200)
           .withResponseHeaders({ 'Content-Type': 'application/json' })
           .withResponseBody(pactify(response))
-          .build())
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
 
     it('should patch gateway merchant id credentials', async () => {
-      const connectorResponse = await connectorClient.patchGooglePayGatewayMerchantId(existingGatewayAccountId, existingGatewayAccountCredentialsId, googlePayGatewayMerchantId, userExternalId)
+      const connectorResponse = await connectorClient.patchGooglePayGatewayMerchantId(
+        existingGatewayAccountId,
+        existingGatewayAccountCredentialsId,
+        googlePayGatewayMerchantId,
+        userExternalId
+      )
       expect(connectorResponse.credentials).to.deep.equal(credentialsInResponse)
     })
   })

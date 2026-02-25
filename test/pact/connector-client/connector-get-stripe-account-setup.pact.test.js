@@ -8,7 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../src/services/clients/connector.client').ConnectorClient
 const stripeAccountSetupFixtures = require('../../fixtures/stripe-account-setup.fixtures')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 // Constants
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
@@ -28,7 +28,7 @@ describe('connector client - get stripe account setup', () => {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -42,35 +42,37 @@ describe('connector client - get stripe account setup', () => {
       bank_account: true,
       responsible_person: true,
       vat_number: false,
-      company_number: false
+      company_number: false,
     }
     const response = stripeAccountSetupFixtures.buildGetStripeAccountSetupResponse(stripeSetupOpts)
 
-    before(done => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
-          .withUponReceiving('a valid get stripe account bank account flag request')
-          .withState(defaultState)
-          .withMethod('GET')
-          .withStatusCode(200)
-          .withResponseBody(pactify(response))
-          .build()
-      )
+    before((done) => {
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-setup`)
+            .withUponReceiving('a valid get stripe account bank account flag request')
+            .withState(defaultState)
+            .withMethod('GET')
+            .withStatusCode(200)
+            .withResponseBody(pactify(response))
+            .build()
+        )
         .then(() => done())
         .catch(done)
     })
 
     afterEach(() => provider.verify())
 
-    it('should update successfully', done => {
-      connectorClient.getStripeAccountSetup(existingGatewayAccountId)
-        .should.be.fulfilled
-        .then(stripeAccountSetup => {
+    it('should update successfully', (done) => {
+      connectorClient
+        .getStripeAccountSetup(existingGatewayAccountId)
+        .should.be.fulfilled.then((stripeAccountSetup) => {
           expect(stripeAccountSetup.bankAccount).to.equal(stripeSetupOpts.bank_account)
           expect(stripeAccountSetup.vatNumber).to.equal(stripeSetupOpts.vat_number)
           expect(stripeAccountSetup.companyNumber).to.equal(stripeSetupOpts.company_number)
           expect(stripeAccountSetup.responsiblePerson).to.equal(stripeSetupOpts.responsible_person)
-        }).should.notify(done)
+        })
+        .should.notify(done)
     })
   })
 })

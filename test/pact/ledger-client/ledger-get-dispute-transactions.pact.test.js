@@ -7,7 +7,7 @@ const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction
 const ledgerClient = require('../../../src/services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../fixtures/ledger-transaction.fixtures')
 const pactTestProvider = require('./ledger-pact-test-provider')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 // Constants
 const TRANSACTION_RESOURCE = '/v1/transaction'
@@ -20,7 +20,7 @@ const paymentTransactionId = 'adb123def456'
 const disputeTransactionId = 'vldb123def456'
 const existingGatewayAccountId = '123456'
 
-function defaultDisputeDetails () {
+function defaultDisputeDetails() {
   return {
     parent_transaction_id: paymentTransactionId,
     gateway_account_id: existingGatewayAccountId,
@@ -38,9 +38,9 @@ function defaultDisputeDetails () {
         evidence_due_date: '2022-08-04T13:59:59.000Z',
         reason: 'product_not_received',
         transaction_id: disputeTransactionId,
-        parent_transaction_id: paymentTransactionId
-      }
-    ]
+        parent_transaction_id: paymentTransactionId,
+      },
+    ],
   }
 }
 
@@ -56,10 +56,11 @@ describe('ledger client', function () {
   describe('get dispute transactions', () => {
     const params = {
       account_id: existingGatewayAccountId,
-      transaction_id: paymentTransactionId
+      transaction_id: paymentTransactionId,
     }
     const disputeTransactionsDetails = defaultDisputeDetails()
-    const validDisputeTransactionsResponse = transactionDetailsFixtures.validDisputeTransactionsResponse(disputeTransactionsDetails)
+    const validDisputeTransactionsResponse =
+      transactionDetailsFixtures.validDisputeTransactionsResponse(disputeTransactionsDetails)
 
     before(() => {
       return pactTestProvider.addInteraction(
@@ -78,9 +79,10 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should get transaction details successfully', function () {
-      return ledgerClient.getDisputesForTransaction(params.transaction_id, params.account_id, {
-        baseUrl: ledgerUrl
-      })
+      return ledgerClient
+        .getDisputesForTransaction(params.transaction_id, params.account_id, {
+          baseUrl: ledgerUrl,
+        })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(validDisputeTransactionsResponse)
         })

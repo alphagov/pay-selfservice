@@ -9,7 +9,7 @@ const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 let adminUsersClient
 
-const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 chai.use(chaiAsPromised)
 
@@ -50,7 +50,7 @@ describe('adminusers client - get users', function () {
     })
 
     const expectedUsers = userFixtures.validUsersResponse(params)
-    const usersPactified = userResponsePactifier.pactifySimpleArray(expectedUsers)
+    const usersPactified = pactify(expectedUsers)
 
     before((done) => {
       provider

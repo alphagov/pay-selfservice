@@ -12,25 +12,35 @@ const serviceFixtures = require('../../test/fixtures/service.fixtures')
 const serviceExternalId = 'a-service-external-id'
 const sessionVersion = 1
 const loggedInSession = { version: sessionVersion, secondFactor: 'totp' }
-const authorisedUser = new User(userFixtures.validUserResponse({
-  session_version: sessionVersion,
-  service_roles: [{
-    service: {
-      external_id: serviceExternalId
-    }
-  }]
-}))
+const authorisedUser = new User(
+  userFixtures.validUserResponse({
+    session_version: sessionVersion,
+    service_roles: [
+      {
+        service: {
+          external_id: serviceExternalId,
+        },
+      },
+    ],
+  })
+)
 
-const userWithoutServiceRole = new User(userFixtures.validUserResponse({
-  session_version: sessionVersion,
-  service_roles: [{
-    service: { external_id: 'some-other-service-id' }
-  }]
-}))
+const userWithoutServiceRole = new User(
+  userFixtures.validUserResponse({
+    session_version: sessionVersion,
+    service_roles: [
+      {
+        service: { external_id: 'some-other-service-id' },
+      },
+    ],
+  })
+)
 
-const service = new Service(serviceFixtures.validServiceResponse({
-  external_id: serviceExternalId
-}))
+const service = new Service(
+  serviceFixtures.validServiceResponse({
+    external_id: serviceExternalId,
+  })
+)
 
 const res = {}
 let next
@@ -45,12 +55,13 @@ describe('User is authorised middleware', () => {
       it('should call next with error', () => {
         const req = {
           session: {},
-          params: {}
+          params: {},
         }
 
         userIsAuthorised(req, res, next)
 
-        const expectedError = sinon.match.instanceOf(NotAuthenticatedError)
+        const expectedError = sinon.match
+          .instanceOf(NotAuthenticatedError)
           .and(sinon.match.has('message', 'User not found on request'))
         sinon.assert.calledWith(next, expectedError)
       })
@@ -60,12 +71,13 @@ describe('User is authorised middleware', () => {
       it('should call next with error', () => {
         const req = {
           user: {},
-          params: {}
+          params: {},
         }
 
         userIsAuthorised(req, res, next)
 
-        const expectedError = sinon.match.instanceOf(NotAuthenticatedError)
+        const expectedError = sinon.match
+          .instanceOf(NotAuthenticatedError)
           .and(sinon.match.has('message', 'Session not found on request'))
         sinon.assert.calledWith(next, expectedError)
       })
@@ -76,12 +88,13 @@ describe('User is authorised middleware', () => {
         const req = {
           session: { version: 1 },
           user: new User(userFixtures.validUserResponse({ session_version: 2 })),
-          params: {}
+          params: {},
         }
 
         userIsAuthorised(req, res, next)
 
-        const expectedError = sinon.match.instanceOf(NotAuthenticatedError)
+        const expectedError = sinon.match
+          .instanceOf(NotAuthenticatedError)
           .and(sinon.match.has('message', 'Invalid session version - session version is 1, user session version is 2'))
         sinon.assert.calledWith(next, expectedError)
       })
@@ -92,12 +105,13 @@ describe('User is authorised middleware', () => {
         const req = {
           session: { version: sessionVersion },
           user: authorisedUser,
-          params: {}
+          params: {},
         }
 
         userIsAuthorised(req, res, next)
 
-        const expectedError = sinon.match.instanceOf(NotAuthenticatedError)
+        const expectedError = sinon.match
+          .instanceOf(NotAuthenticatedError)
           .and(sinon.match.has('message', 'Not completed second factor authentication'))
         sinon.assert.calledWith(next, expectedError)
       })
@@ -107,12 +121,12 @@ describe('User is authorised middleware', () => {
       it('should call next with error', () => {
         const userOpts = {
           session_version: sessionVersion,
-          disabled: true
+          disabled: true,
         }
         const req = {
           session: loggedInSession,
           user: new User(userFixtures.validUserResponse(userOpts)),
-          params: {}
+          params: {},
         }
 
         userIsAuthorised(req, res, next)
@@ -128,7 +142,7 @@ describe('User is authorised middleware', () => {
       const req = {
         session: loggedInSession,
         user: authorisedUser,
-        params: {}
+        params: {},
       }
 
       userIsAuthorised(req, res, next)
@@ -143,12 +157,13 @@ describe('User is authorised middleware', () => {
       const req = {
         session: loggedInSession,
         user: authorisedUser,
-        params: { gatewayAccountExternalId: 'a-gateway-account-id' }
+        params: { gatewayAccountExternalId: 'a-gateway-account-id' },
       }
 
       userIsAuthorised(req, res, next)
 
-      const expectedError = sinon.match.instanceOf(NotAuthorisedError)
+      const expectedError = sinon.match
+        .instanceOf(NotAuthorisedError)
         .and(sinon.match.has('message', 'Service not found on request'))
       sinon.assert.calledWith(next, expectedError)
     })
@@ -159,12 +174,13 @@ describe('User is authorised middleware', () => {
       const req = {
         session: loggedInSession,
         user: authorisedUser,
-        params: { serviceExternalId }
+        params: { serviceExternalId },
       }
 
       userIsAuthorised(req, res, next)
 
-      const expectedError = sinon.match.instanceOf(NotAuthorisedError)
+      const expectedError = sinon.match
+        .instanceOf(NotAuthorisedError)
         .and(sinon.match.has('message', 'Service not found on request'))
       sinon.assert.calledWith(next, expectedError)
     })
@@ -176,12 +192,13 @@ describe('User is authorised middleware', () => {
         session: loggedInSession,
         user: userWithoutServiceRole,
         params: { serviceExternalId },
-        service
+        service,
       }
 
       userIsAuthorised(req, res, next)
 
-      const expectedError = sinon.match.instanceOf(NotAuthorisedError)
+      const expectedError = sinon.match
+        .instanceOf(NotAuthorisedError)
         .and(sinon.match.has('message', 'User does not have service role for service'))
       sinon.assert.calledWith(next, expectedError)
     })
@@ -193,7 +210,7 @@ describe('User is authorised middleware', () => {
         session: loggedInSession,
         user: authorisedUser,
         params: { serviceExternalId },
-        service
+        service,
       }
 
       userIsAuthorised(req, res, next)

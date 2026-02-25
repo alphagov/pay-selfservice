@@ -7,7 +7,7 @@ const chaiAsPromised = require('chai-as-promised')
 const inviteFixtures = require('../../../fixtures/invite.fixtures')
 const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 chai.use(chaiAsPromised)
 
@@ -23,7 +23,7 @@ describe('adminusers client - get an invite', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -36,29 +36,34 @@ describe('adminusers client - get an invite', function () {
     const inviteCode = 'an-invite-code'
 
     const getInviteResponse = inviteFixtures.validInviteResponse({
-      telephone_number: '0123456789'
+      telephone_number: '0123456789',
     })
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${INVITES_PATH}/${inviteCode}`)
-          .withState('a valid invite to add a user to a service exists with invite code an-invite-code')
-          .withUponReceiving('a valid get invite request')
-          .withStatusCode(200)
-          .withResponseBody(pactify(getInviteResponse))
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${INVITES_PATH}/${inviteCode}`)
+            .withState('a valid invite to add a user to a service exists with invite code an-invite-code')
+            .withUponReceiving('a valid get invite request')
+            .withStatusCode(200)
+            .withResponseBody(pactify(getInviteResponse))
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
 
     it('should find an invite successfully', function (done) {
-      adminUsersClient.getValidatedInvite(inviteCode).should.be.fulfilled.then(function (invite) {
-        expect(invite.email).to.be.equal(getInviteResponse.email)
-        expect(invite.telephone_number).to.be.equal(getInviteResponse.telephone_number)
-        expect(invite.is_invite_to_join_service).to.be.equal(getInviteResponse.is_invite_to_join_service)
-        expect(invite.password_set).to.be.equal(getInviteResponse.password_set)
-      }).should.notify(done)
+      adminUsersClient
+        .getValidatedInvite(inviteCode)
+        .should.be.fulfilled.then(function (invite) {
+          expect(invite.email).to.be.equal(getInviteResponse.email)
+          expect(invite.telephone_number).to.be.equal(getInviteResponse.telephone_number)
+          expect(invite.is_invite_to_join_service).to.be.equal(getInviteResponse.is_invite_to_join_service)
+          expect(invite.password_set).to.be.equal(getInviteResponse.password_set)
+        })
+        .should.notify(done)
     })
   })
 })

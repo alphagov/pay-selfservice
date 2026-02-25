@@ -11,7 +11,7 @@ chai.use(chaiAsPromised)
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const worldpayCredentialsFixtures = require('../../fixtures/worldpay-credentials.fixtures')
 const Connector = require('../../../src/services/clients/connector.client').ConnectorClient
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 let connectorClient
 const EXISTING_GATEWAY_ACCOUNT_ID = 333
@@ -23,7 +23,7 @@ describe('connector client - check Worldpay 3DS Flex credentials', () => {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -40,7 +40,9 @@ describe('connector client - check Worldpay 3DS Flex credentials', () => {
       before(() => {
         return provider.addInteraction(
           new PactInteractionBuilder(`/v1/api/accounts/${EXISTING_GATEWAY_ACCOUNT_ID}/worldpay/check-credentials`)
-            .withState(`a Worldpay gateway account with id ${EXISTING_GATEWAY_ACCOUNT_ID} exists and stub for validating credentials is set up`)
+            .withState(
+              `a Worldpay gateway account with id ${EXISTING_GATEWAY_ACCOUNT_ID} exists and stub for validating credentials is set up`
+            )
             .withUponReceiving('a request to check Worldpay credentials')
             .withMethod('POST')
             .withRequestHeaders({ 'Content-Type': 'application/json' })
@@ -53,7 +55,8 @@ describe('connector client - check Worldpay 3DS Flex credentials', () => {
       })
 
       it('should return valid', () => {
-        return connectorClient.postCheckWorldpayCredentials(checkValidWorldpayCredentialsRequest)
+        return connectorClient
+          .postCheckWorldpayCredentials(checkValidWorldpayCredentialsRequest)
           .should.be.fulfilled.then((response) => {
             expect(response).to.deep.equal(checkValidWorldpayCredentialsResponse)
           })

@@ -7,7 +7,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../src/services/clients/connector.client').ConnectorClient
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 const existingGatewayAccountId = 444
 const existingGatewayAccountCredentialsId = 555
@@ -21,7 +21,7 @@ describe('connector client - patch gateway account credentials.state', () => {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -37,20 +37,24 @@ describe('connector client - patch gateway account credentials.state', () => {
       gatewayAccountId: '444',
       gatewayAccountCredentialsId: '555',
       state,
-      userExternalId
+      userExternalId,
     }
     const request = gatewayAccountFixtures.validPatchAccountGatewayAccountCredentialsStateRequest(requestPayload)
     const response = gatewayAccountFixtures.validPatchGatewayCredentialsResponse({
       gatewayAccountId: existingGatewayAccountId,
       gatewayAccountCredentialId: existingGatewayAccountCredentialsId,
       state,
-      lastUpdatedByUserExternalId: userExternalId
+      lastUpdatedByUserExternalId: userExternalId,
     })
 
     before(() => {
       return provider.addInteraction(
-        new PactInteractionBuilder(`/v1/api/accounts/${existingGatewayAccountId}/credentials/${existingGatewayAccountCredentialsId}`)
-          .withState(`a Worldpay gateway account with id ${existingGatewayAccountId} with gateway account credentials with id ${existingGatewayAccountCredentialsId} and valid credentials`)
+        new PactInteractionBuilder(
+          `/v1/api/accounts/${existingGatewayAccountId}/credentials/${existingGatewayAccountCredentialsId}`
+        )
+          .withState(
+            `a Worldpay gateway account with id ${existingGatewayAccountId} with gateway account credentials with id ${existingGatewayAccountCredentialsId} and valid credentials`
+          )
           .withUponReceiving('a request to update state for a gateway account credentials')
           .withMethod('PATCH')
           .withRequestHeaders({ 'Content-Type': 'application/json' })
@@ -58,7 +62,8 @@ describe('connector client - patch gateway account credentials.state', () => {
           .withStatusCode(200)
           .withResponseHeaders({ 'Content-Type': 'application/json' })
           .withResponseBody(pactify(response))
-          .build())
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())

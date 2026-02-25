@@ -7,7 +7,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../src/services/clients/connector.client').ConnectorClient
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 const { worldpayMerchantDetailOperations } = require('../../../src/utils/credentials')
 
 const existingGatewayAccountId = 333
@@ -22,7 +22,7 @@ describe('connector client - patch gateway account credentials for one off trans
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -35,29 +35,33 @@ describe('connector client - patch gateway account credentials for one off trans
     const credentialsInRequest = {
       username: 'a-username',
       password: 'a-password', // pragma: allowlist secret
-      merchant_code: 'a-merchant-code'
+      merchant_code: 'a-merchant-code',
     }
     const credentialsInResponse = {
       one_off_customer_initiated: {
         username: 'a-username',
-        merchant_code: 'a-merchant-code'
-      }
+        merchant_code: 'a-merchant-code',
+      },
     }
     const userExternalId = 'a-user-external-id'
     const request = gatewayAccountFixtures.validUpdateGatewayAccountCredentialsRequest({
       credentials: credentialsInRequest,
       path: worldpayMerchantDetailOperations.ONE_OFF_CUSTOMER_INITIATED.patch,
-      userExternalId
+      userExternalId,
     })
     const response = gatewayAccountFixtures.validGatewayAccountCredentialsResponse({
       credentials: credentialsInResponse,
-      lastUpdatedByUserExternalId: userExternalId
+      lastUpdatedByUserExternalId: userExternalId,
     })
 
     before(() => {
       return provider.addInteraction(
-        new PactInteractionBuilder(`/v1/api/accounts/${existingGatewayAccountId}/credentials/${existingGatewayAccountCredentialsId}`)
-          .withState(`a Worldpay gateway account with id ${existingGatewayAccountId} with gateway account credentials with id ${existingGatewayAccountCredentialsId}`)
+        new PactInteractionBuilder(
+          `/v1/api/accounts/${existingGatewayAccountId}/credentials/${existingGatewayAccountCredentialsId}`
+        )
+          .withState(
+            `a Worldpay gateway account with id ${existingGatewayAccountId} with gateway account credentials with id ${existingGatewayAccountCredentialsId}`
+          )
           .withUponReceiving('a request to update credentials map for one off credentials')
           .withMethod('PATCH')
           .withRequestHeaders({ 'Content-Type': 'application/json' })
@@ -65,7 +69,8 @@ describe('connector client - patch gateway account credentials for one off trans
           .withStatusCode(200)
           .withResponseHeaders({ 'Content-Type': 'application/json' })
           .withResponseBody(pactify(response))
-          .build())
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
@@ -76,7 +81,7 @@ describe('connector client - patch gateway account credentials for one off trans
         gatewayAccountCredentialsId: existingGatewayAccountCredentialsId,
         credentials: credentialsInRequest,
         path: worldpayMerchantDetailOperations.ONE_OFF_CUSTOMER_INITIATED.patch,
-        userExternalId
+        userExternalId,
       })
       expect(connectorResponse.credentials).to.deep.equal(credentialsInResponse)
     })

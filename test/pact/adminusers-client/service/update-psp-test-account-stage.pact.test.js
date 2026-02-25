@@ -8,7 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
 const serviceFixtures = require('../../../fixtures/service.fixtures')
-const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -26,7 +26,7 @@ describe('adminusers client - patch psp test account stage', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -40,20 +40,21 @@ describe('adminusers client - patch psp test account stage', function () {
     const validUpdatePspTestAccountStage = serviceFixtures.validUpdatePspTestAccountStage(value)
     const validUpdatePspTestAccountStageResponse = serviceFixtures.validServiceResponse({
       external_id: serviceExternalId,
-      current_psp_test_account_stage: 'REQUEST_SUBMITTED'
+      current_psp_test_account_stage: 'REQUEST_SUBMITTED',
     })
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
-          .withUponReceiving('a valid patch current psp test account stage')
-          .withState(`a service exists with external id ${serviceExternalId}`)
-          .withMethod('PATCH')
-          .withRequestBody(validUpdatePspTestAccountStage)
-          .withStatusCode(200)
-          .withResponseBody(pactify(validUpdatePspTestAccountStageResponse))
-          .build()
-      )
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
+            .withUponReceiving('a valid patch current psp test account stage')
+            .withState(`a service exists with external id ${serviceExternalId}`)
+            .withMethod('PATCH')
+            .withRequestBody(validUpdatePspTestAccountStage)
+            .withStatusCode(200)
+            .withResponseBody(pactify(validUpdatePspTestAccountStageResponse))
+            .build()
+        )
         .then(() => done())
         .catch(done)
     })
@@ -61,11 +62,13 @@ describe('adminusers client - patch psp test account stage', function () {
     afterEach(() => provider.verify())
 
     it('should update successfully', function (done) {
-      adminUsersClient.updatePspTestAccountStage(serviceExternalId, 'REQUEST_SUBMITTED')
-        .should.be.fulfilled.then(service => {
+      adminUsersClient
+        .updatePspTestAccountStage(serviceExternalId, 'REQUEST_SUBMITTED')
+        .should.be.fulfilled.then((service) => {
           expect(service.externalId).to.equal(serviceExternalId)
           expect(service.currentPspTestAccountStage).to.equal('REQUEST_SUBMITTED')
-        }).should.notify(done)
+        })
+        .should.notify(done)
     })
   })
 })

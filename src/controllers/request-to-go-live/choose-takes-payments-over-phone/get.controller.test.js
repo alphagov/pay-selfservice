@@ -3,9 +3,16 @@
 const sinon = require('sinon')
 const getController = require('./get.controller')
 const {
-  NOT_STARTED, ENTERED_ORGANISATION_NAME, ENTERED_ORGANISATION_ADDRESS, CHOSEN_PSP_STRIPE,
-  CHOSEN_PSP_GOV_BANKING_WORLDPAY, TERMS_AGREED_STRIPE, TERMS_AGREED_GOV_BANKING_WORLDPAY, LIVE,
-  DENIED, GOV_BANKING_MOTO_OPTION_COMPLETED
+  NOT_STARTED,
+  ENTERED_ORGANISATION_NAME,
+  ENTERED_ORGANISATION_ADDRESS,
+  CHOSEN_PSP_STRIPE,
+  CHOSEN_PSP_GOV_BANKING_WORLDPAY,
+  TERMS_AGREED_STRIPE,
+  TERMS_AGREED_GOV_BANKING_WORLDPAY,
+  LIVE,
+  DENIED,
+  GOV_BANKING_MOTO_OPTION_COMPLETED,
 } = require('@models/constants/go-live-stage')
 
 const User = require('@models/user/User.class')
@@ -20,13 +27,13 @@ describe('Request to go live - choose takes payments over phone - GET controller
   beforeEach(() => {
     req = {
       user,
-      service
+      service,
     }
     res = {
       setHeader: sinon.stub(),
       status: sinon.spy(),
       redirect: sinon.spy(),
-      render: sinon.spy()
+      render: sinon.spy(),
     }
     next = sinon.spy()
   })
@@ -40,10 +47,10 @@ describe('Request to go live - choose takes payments over phone - GET controller
     TERMS_AGREED_STRIPE,
     TERMS_AGREED_GOV_BANKING_WORLDPAY,
     LIVE,
-    DENIED
+    DENIED,
   ]
 
-  goLiveStagesNotApplicableForGetController.forEach(goLiveStage => {
+  goLiveStagesNotApplicableForGetController.forEach((goLiveStage) => {
     it(`should redirect to 'request to go live' index page if current go live stage is ${goLiveStage}`, async () => {
       req.service.currentGoLiveStage = goLiveStage
 
@@ -53,7 +60,7 @@ describe('Request to go live - choose takes payments over phone - GET controller
     })
   })
 
-  it('should redirect to \'choose takes payments over phone\' page if current go live stage is CHOSEN_PSP_GOV_BANKING_WORLDPAY', async () => {
+  it("should redirect to 'choose takes payments over phone' page if current go live stage is CHOSEN_PSP_GOV_BANKING_WORLDPAY", async () => {
     req.service.currentGoLiveStage = CHOSEN_PSP_GOV_BANKING_WORLDPAY
 
     await getController(req, res, next)

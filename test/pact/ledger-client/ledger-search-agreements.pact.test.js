@@ -6,7 +6,7 @@ const chaiAsPromised = require('chai-as-promised')
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const ledgerClient = require('../../../src/services/clients/ledger.client')
 const pactTestProvider = require('./ledger-pact-test-provider')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 const agreementFixtures = require('../../fixtures/agreement.fixtures')
 const { validAgreementsNotFoundResponse } = require('../../fixtures/agreement.fixtures')
@@ -33,7 +33,7 @@ describe('ledger client', function () {
     const validSearchAgreementResponse = agreementFixtures.validAgreementSearchResponse([
       { reference: 'a-reference', status: 'CREATED', payment_instrument: false },
       { reference: 'a-reference', status: 'CREATED', payment_instrument: false },
-      { reference: 'a-reference', status: 'ACTIVE', payment_instrument: false }
+      { reference: 'a-reference', status: 'ACTIVE', payment_instrument: false },
     ])
 
     before(() => {
@@ -56,7 +56,8 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should search agreement by reference successfully', function () {
-      return ledgerClient.agreements(existingServiceId, false, '3456', 1, { baseUrl: ledgerUrl, filters: { reference: 'a-reference' } })
+      return ledgerClient
+        .agreements(existingServiceId, false, '3456', 1, { baseUrl: ledgerUrl, filters: { reference: 'a-reference' } })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(validSearchAgreementResponse)
         })
@@ -64,7 +65,9 @@ describe('ledger client', function () {
   })
 
   describe('search agreement by status', () => {
-    const validSearchAgreementResponse = agreementFixtures.validAgreementSearchResponse([{ external_id: 'agreement-3', payment_instrument: false }])
+    const validSearchAgreementResponse = agreementFixtures.validAgreementSearchResponse([
+      { external_id: 'agreement-3', payment_instrument: false },
+    ])
 
     before(() => {
       return pactTestProvider.addInteraction(
@@ -86,7 +89,8 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should search agreement by status successfully', function () {
-      return ledgerClient.agreements(existingServiceId, false, '3456', 1, { baseUrl: ledgerUrl, filters: { status: 'active' } })
+      return ledgerClient
+        .agreements(existingServiceId, false, '3456', 1, { baseUrl: ledgerUrl, filters: { status: 'active' } })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(validSearchAgreementResponse)
         })
@@ -116,7 +120,11 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should search agreement and return none successfully', function () {
-      return ledgerClient.agreements(existingServiceId, false, '3456', 1, { baseUrl: ledgerUrl, filters: { reference: 'invalid-reference' } })
+      return ledgerClient
+        .agreements(existingServiceId, false, '3456', 1, {
+          baseUrl: ledgerUrl,
+          filters: { reference: 'invalid-reference' },
+        })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(validAgreementsNotFoundResponse())
         })

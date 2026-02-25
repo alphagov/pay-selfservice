@@ -20,16 +20,13 @@ const requestId = 'unique-request-id'
 const headers = { 'x-request-id': requestId }
 
 describe('The /transactions endpoint', () => {
-  const transactionSearchResponse = ledgerTransactionFixture.validTransactionSearchResponse(
-    { transactions: [] })
-  const account = validGatewayAccountResponse(
-    {
-      external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
-      gateway_account_id: gatewayAccountId,
-      payment_provider: 'sandbox',
-      credentials: { username: 'a-username' }
-    }
-  )
+  const transactionSearchResponse = ledgerTransactionFixture.validTransactionSearchResponse({ transactions: [] })
+  const account = validGatewayAccountResponse({
+    external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
+    gateway_account_id: gatewayAccountId,
+    payment_provider: 'sandbox',
+    credentials: { username: 'a-username' },
+  })
   const service = new Service(serviceFixtures.validServiceResponse({}))
   const user = new User(userFixtures.validUserResponse())
 
@@ -37,7 +34,7 @@ describe('The /transactions endpoint', () => {
     account,
     headers,
     session: {},
-    url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID)
+    url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID),
   }
   const res = {}
   let next
@@ -51,7 +48,8 @@ describe('The /transactions endpoint', () => {
       // No mocking defined on purpose to mock a network failure,
       // This integration test will cover server errors outside the 500 and 504 defined in the Cypress test
       await transactionListController(req, res, next)
-      const expectedError = sinon.match.instanceOf(Error)
+      const expectedError = sinon.match
+        .instanceOf(Error)
         .and(sinon.match.has('message', 'Unable to retrieve list of transactions or card types.'))
       sinon.assert.calledWith(next, expectedError)
     })
@@ -66,23 +64,27 @@ describe('The /transactions endpoint', () => {
         fromDate: '03/5/2018',
         fromTime: '01:00:00',
         toDate: '01/5/2018',
-        toTime: '01:00:00'
+        toTime: '01:00:00',
       },
       url: 'http://selfservice/servce-transactions',
-      session: {}
+      session: {},
     }
     const response = {
-      render: sinon.spy()
+      render: sinon.spy(),
     }
     it('should return the response with the date-range failing validation with empty transaction results indicator', async () => {
       await getController()(request, response, next)
 
-      sinon.assert.calledWith(response.render, 'transactions/index', sinon.match({
-        isInvalidDateRange: true,
-        hasResults: false,
-        fromDateParam: '03/5/2018',
-        toDateParam: '01/5/2018'
-      }))
+      sinon.assert.calledWith(
+        response.render,
+        'transactions/index',
+        sinon.match({
+          isInvalidDateRange: true,
+          hasResults: false,
+          fromDateParam: '03/5/2018',
+          toDateParam: '01/5/2018',
+        })
+      )
     })
   })
 
@@ -91,14 +93,13 @@ describe('The /transactions endpoint', () => {
       const reqWithInvalidPage = {
         ...req,
         query: {
-          page: '-1'
+          page: '-1',
         },
-        url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?page=-1'
+        url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?page=-1',
       }
 
       await transactionListController(reqWithInvalidPage, res, next)
-      const expectedError = sinon.match.instanceOf(Error)
-        .and(sinon.match.has('message', 'Invalid search'))
+      const expectedError = sinon.match.instanceOf(Error).and(sinon.match.has('message', 'Invalid search'))
       sinon.assert.calledWith(next, expectedError)
     })
 
@@ -106,14 +107,13 @@ describe('The /transactions endpoint', () => {
       const reqWithInvalidPageSize = {
         ...req,
         query: {
-          pageSize: '600'
+          pageSize: '600',
         },
-        url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?pageSize=600'
+        url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?pageSize=600',
       }
 
       await transactionListController(reqWithInvalidPageSize, res, next)
-      const expectedError = sinon.match.instanceOf(Error)
-        .and(sinon.match.has('message', 'Invalid search'))
+      const expectedError = sinon.match.instanceOf(Error).and(sinon.match.has('message', 'Invalid search'))
       sinon.assert.calledWith(next, expectedError)
     })
 
@@ -121,26 +121,29 @@ describe('The /transactions endpoint', () => {
       const reqWithInvalidPageSize = {
         ...req,
         query: {
-          pageSize: '0'
+          pageSize: '0',
         },
-        url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?pageSize=0'
+        url: formatAccountPathsFor(paths.account.transactions.index, EXTERNAL_GATEWAY_ACCOUNT_ID) + '?pageSize=0',
       }
 
       await transactionListController(reqWithInvalidPageSize, res, next)
-      const expectedError = sinon.match.instanceOf(Error)
-        .and(sinon.match.has('message', 'Invalid search'))
+      const expectedError = sinon.match.instanceOf(Error).and(sinon.match.has('message', 'Invalid search'))
       sinon.assert.calledWith(next, expectedError)
     })
   })
 
-  function getController () {
+  function getController() {
     return proxyquire('./transaction-list.controller', {
       '../../services/transaction.service': {
-        search: sinon.spy(() => Promise.resolve(transactionSearchResponse))
+        search: sinon.spy(() => Promise.resolve(transactionSearchResponse)),
       },
       '../../services/clients/connector.client.js': {
-        ConnectorClient: class {async getAllCardTypes () { return {} }}
-      }
+        ConnectorClient: class {
+          async getAllCardTypes() {
+            return {}
+          }
+        },
+      },
     })
   }
 })

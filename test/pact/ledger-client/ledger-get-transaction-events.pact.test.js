@@ -8,7 +8,7 @@ const ledgerClient = require('../../../src/services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../fixtures/ledger-transaction.fixtures')
 const legacyConnectorParityTransformer = require('../../../src/services/clients/utils/ledger-legacy-connector-parity')
 const pactTestProvider = require('./ledger-pact-test-provider')
-const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
+const pactify = require('@test/test-helpers/pact/pact-base')
 
 // Constants
 const TRANSACTION_RESOURCE = '/v1/transaction'
@@ -33,7 +33,7 @@ describe('ledger client', function () {
   describe('get transaction events details', () => {
     const params = {
       account_id: existingGatewayAccountId,
-      transaction_id: defaultTransactionId
+      transaction_id: defaultTransactionId,
     }
     const validTransactionEventsResponse = transactionDetailsFixtures.validTransactionEventsResponse({
       transaction_id: params.transaction_id,
@@ -42,15 +42,15 @@ describe('ledger client', function () {
           status: 'created',
           timestamp: '2019-08-06T10:34:43.487123Z',
           event_type: 'PAYMENT_CREATED',
-          amount: 21170
+          amount: 21170,
         },
         {
           status: 'declined',
           timestamp: '2019-08-06T10:34:48.123456Z',
           event_type: 'AUTHORISATION_REJECTED',
-          amount: 21170
-        }
-      ]
+          amount: 21170,
+        },
+      ],
     })
     before(() => {
       return pactTestProvider.addInteraction(
@@ -68,8 +68,10 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should get transaction events successfully', function () {
-      const getTransactionEventsDetails = legacyConnectorParityTransformer.legacyConnectorEventsParity(validTransactionEventsResponse)
-      return ledgerClient.events(params.transaction_id, params.account_id, { baseUrl: ledgerUrl })
+      const getTransactionEventsDetails =
+        legacyConnectorParityTransformer.legacyConnectorEventsParity(validTransactionEventsResponse)
+      return ledgerClient
+        .events(params.transaction_id, params.account_id, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionEventsDetails)
         })

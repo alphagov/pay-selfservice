@@ -4,7 +4,7 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
+const pactify = require('@test/test-helpers/pact/pact-base')
 const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 
 chai.use(chaiAsPromised)
@@ -66,7 +66,7 @@ describe('adminusers client - assign service role to user', function () {
             .withMethod('POST')
             .withRequestBody(request)
             .withStatusCode(200)
-            .withResponseBody(userResponsePactifier.pactify(userFixture))
+            .withResponseBody(pactify(userFixture))
             .build()
         )
         .then(() => done())
