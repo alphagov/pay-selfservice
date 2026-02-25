@@ -3,7 +3,7 @@ interface ServiceNameData {
   cy?: string
 }
 
-interface MerchantDetailsData {
+export interface MerchantDetailsData {
   name: string
   telephone_number: string
   address_line1: string
@@ -15,7 +15,7 @@ interface MerchantDetailsData {
   email: string
 }
 
-interface ServiceData {
+export interface ServiceData {
   id: number
   external_id: string
   name: string
@@ -31,5 +31,3 @@ interface ServiceData {
   default_billing_address_country?: string
   takes_payments_over_phone: boolean
 }
-
-export = ServiceData
