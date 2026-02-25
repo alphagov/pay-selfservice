@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import Service from '@models/service/Service.class'
-import ServiceData from '@models/service/dto/Service.dto'
+import { ServiceData } from '@models/service/dto/Service.dto'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
 import { ServiceView } from '@models/service-status/ServiceView.class'
