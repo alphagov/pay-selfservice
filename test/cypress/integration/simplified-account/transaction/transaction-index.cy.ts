@@ -147,6 +147,39 @@ describe('Transactions index', () => {
       cy.get('#transactions-list tbody').find('tr').should('have.length', transactions.length)
       cy.get('[data-cy=pagination-detail]').contains(`Showing 1 to ${transactions.length} of ${transactions.length} transactions`)
     })
+
+    it('should check if the user has entered a potential PAN into the reference field', () => {
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [TRANSACTION],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 1,
+        })
+      ])
+      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+
+      cy.get('[data-cy=reference-filter]').type('4242424242424242')
+      cy.get('[data-cy=email-filter]').click()
+
+      cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
+      cy.get('[data-cy=pan-error]').should('exist')
+
+      cy.get('[data-cy=reference-filter]').clear()
+      cy.get('[data-cy=reference-filter]').type('a reference')
+      cy.get('[data-cy=email-filter]').click()
+
+      cy.get('[data-cy=reference-filter]').parent().should('not.have.class', 'govuk-form-group--error')
+      cy.get('[data-cy=pan-error]').should('not.exist')
+
+      cy.get('[data-cy=reference-filter]').clear()
+      cy.get('[data-cy=reference-filter]').type('4444333322221111')
+      cy.get('[data-cy=email-filter]').click()
+
+      cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
+      cy.get('[data-cy=pan-error]').should('exist')
+    })
   })
 
   describe('Transaction display', () => {
