@@ -3,6 +3,7 @@
 export const EventType = {
   PAYMENT_CREATED: 'PAYMENT_CREATED',
   PAYMENT_STARTED: 'PAYMENT_STARTED',
+  PAYMENT_EXPIRED: 'PAYMENT_EXPIRED',
   AUTHORISATION_SUCCEEDED: 'AUTHORISATION_SUCCEEDED',
   USER_APPROVED_FOR_CAPTURE: 'USER_APPROVED_FOR_CAPTURE',
   REFUND_CREATED_BY_USER: 'REFUND_CREATED_BY_USER',
@@ -21,6 +22,7 @@ export type EventType = (typeof EventType)[keyof typeof EventType]
 export const EventTypeFriendlyNames: Record<EventType, string> = {
   PAYMENT_CREATED: 'Created',
   PAYMENT_STARTED: 'Started',
+  PAYMENT_EXPIRED: 'Expired',
   AUTHORISATION_SUCCEEDED: 'Submitted',
   USER_APPROVED_FOR_CAPTURE: 'Successful',
   REFUND_CREATED_BY_USER: 'Refund created',

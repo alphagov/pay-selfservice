@@ -6,6 +6,7 @@ import {
   PaymentStatusFilterMapping,
   RefundStatusFilterMapping,
 } from '@utils/simplified-account/services/transactions/status-filters'
+import { DateTime } from 'luxon'
 
 interface TransactionSearchQuery {
   cardholderName?: string
@@ -17,6 +18,11 @@ interface TransactionSearchQuery {
   dateFilter?: string
   state?: string | string[]
   page?: string | number
+  fromDate?: string
+  toDate?: string
+  fromTime?: string
+  toTime?: string
+  includeTime?: string
 }
 
 export class TransactionSearchParams {
@@ -42,6 +48,7 @@ export class TransactionSearchParams {
   refundStates?: string[]
   disputeStates?: string[]
   baseQuery?: TransactionSearchQuery
+  includeTime?: boolean
 
   constructor(gatewayAccountId: number, currentPage: number, displaySize: number) {
     this.accountIds = [gatewayAccountId]
@@ -78,12 +85,26 @@ export class TransactionSearchParams {
     searchParams.reference = nonEmpty(queryParams.reference)
     searchParams.email = nonEmpty(queryParams.email)
 
-    if (queryParams.dateFilter) {
+    if (queryParams.fromDate || queryParams.toDate) {
+      searchParams.fromDate = parseDateTime(
+        queryParams.fromDate!,
+        queryParams.fromTime!,
+        queryParams.includeTime === 'include'
+      ).toISO()!
+
+      // parse end date/time, clamp to end of day if not including time
+      const toDate = parseDateTime(queryParams.toDate!, queryParams.toTime!, queryParams.includeTime === 'include')
+      searchParams.toDate = queryParams.includeTime === 'include' ? toDate.toISO()! : toDate.endOf('day').toISO()!
+
+      searchParams.dateFilter = queryParams.dateFilter
+      searchParams.includeTime = queryParams.includeTime === 'include'
+    } else if (queryParams.dateFilter) {
       const dateRange = getPeriodUKDateTimeRange(queryParams.dateFilter as Period)
 
       searchParams.dateFilter = queryParams.dateFilter
       searchParams.fromDate = dateRange.start.toISO()!
       searchParams.toDate = dateRange.end.toISO()!
+      searchParams.includeTime = false
     }
 
     if (queryParams.state) {
@@ -97,6 +118,14 @@ export class TransactionSearchParams {
 
     return searchParams
   }
+}
+
+function parseDateTime(date: string, time: string, includeTime: boolean): DateTime {
+  if (includeTime && time !== '') {
+    const dateTime = `${date} ${time}`
+    return DateTime.fromFormat(dateTime, 'dd/LL/yyyy H:mm:ss')
+  }
+  return DateTime.fromFormat(date, 'dd/LL/yyyy')
 }
 
 function convertStateFilter(stateFilters: string | string[]): ConnectorStates {

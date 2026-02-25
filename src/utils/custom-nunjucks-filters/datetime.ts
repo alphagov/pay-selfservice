@@ -1,12 +1,21 @@
 import { DateTime } from 'luxon'
 
-const shortTime = (dateString: string) => {
+const shortDate = (dateString: string) => {
   const date = DateTime.fromISO(dateString)
   if (!date.isValid) {
     return ''
   }
 
   return date.toFormat('dd LLL yy')
+}
+
+const shortTime = (dateString: string) => {
+  const date = DateTime.fromISO(dateString)
+  if (!date.isValid) {
+    return ''
+  }
+
+  return date.toFormat('H:mm:ss')
 }
 
 const europeanDate = (dateString: string) => {
@@ -18,7 +27,7 @@ const europeanDate = (dateString: string) => {
   return date.toFormat('dd/LL/yyyy')
 }
 
-const zonedDate = (dateString: string) => {
+const zonedTime = (dateString: string) => {
   const date = DateTime.fromISO(dateString)
   if (!date.isValid) {
     return ''
@@ -29,7 +38,8 @@ const zonedDate = (dateString: string) => {
 }
 
 export = {
+  shortDate,
   shortTime,
-  zonedDate,
+  zonedTime,
   europeanDate,
 }

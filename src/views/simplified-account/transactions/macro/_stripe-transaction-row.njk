@@ -41,7 +41,7 @@
       style="text-align: left"
       class="govuk-table__cell govuk-!-font-size-16 govuk-table__cell--numeric time vertical-align-middle"
     >
-      {{ transaction.createdDate | shortTime }} - <wbr />{{ transaction.createdDate | zonedDate }}
+      {{ transaction.createdDate | shortDate }} - <wbr />{{ transaction.createdDate | zonedTime }}
     </td>
   </tr>
 {% endmacro %}

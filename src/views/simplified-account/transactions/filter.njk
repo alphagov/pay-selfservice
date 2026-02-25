@@ -18,7 +18,7 @@
       <br class="transactions-list__br govuk-!-margin-bottom-2" />
       {{
         govukCheckboxes({
-          name: "time",
+          name: "includeTime",
           classes: "govuk-checkboxes--small transactions-list-time__checkbox",
           fieldset: {
             legend: {
@@ -29,19 +29,36 @@
           },
           items: [
             {
-              value: "time",
+              value: "include",
+              id: "include-time-checkbox",
               text: "Include time",
               label: {
                 classes: " transactions-list-time__checkbox-label"
-              }
+              },
+              checked: filters.includeTime
             }
           ]
         })
       }}
     </div>
   </div>
+  <div class="govuk-grid-row" id="time-picker">
+    <div class="govuk-grid-column-one-third">
+      <br class="transactions-list__br" />
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <fieldset class="govuk-fieldset">{% include "./partials/_time-picker.njk" %}</fieldset>
+    </div>
+    <div class="govuk-grid-column-one-third"> <br class="transactions-list__br" /></div>
+  </div>
 
   {% if filters.metadataValue or filters.agreementId %}
     {% set detailsElementOpenHtml = 'open="true"' %}
   {% endif %}
 </div>
+
+<script>
+  if (!document.getElementById('include-time-checkbox').checked) {
+    document.getElementById('time-picker').hidden = true
+  }
+</script>
