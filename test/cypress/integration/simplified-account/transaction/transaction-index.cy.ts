@@ -15,6 +15,7 @@ import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { Status } from '@models/transaction/types/status'
 import { Reason } from '@models/transaction/types/reason'
 import { ResourceType } from '@models/transaction/types/resource-type'
+import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
 
@@ -215,24 +216,33 @@ describe('Transactions index', () => {
       cy.task('setupStubs', [
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [disputeTransaction, parentTransactionOfDispute],
-          filters: { from_date: last12MonthsStartDate },
+          transactions: [parentTransactionOfDispute],
+          filters: {
+            from_date: last12MonthsStartDate,
+          },
           displaySize: 20,
           transactionLength: 1
-        })
+        }),
+        transactionStubs.getLedgerDisputeTransactionsSuccess({
+          disputeTransactionsDetails: {
+            parent_transaction_id: parentTransactionOfDispute.transaction_id,
+            gateway_account_id: GATEWAY_ACCOUNT_ID,
+            transactions: [disputeTransaction],
+          },
+        }),
       ])
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
 
-      // cy.get('#state').invoke('text').should('contain', 'Dispute awaiting evidence')
-      // cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute under review')
-      // cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute won in your favour')
-      // cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute lost to customer')
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute awaiting evidence')
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute under review')
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute won in your favour')
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute lost to customer')
 
-      // cy.get('#state').click()
-      // cy.get('#error').check()
-      // cy.get('#state .govuk-checkboxes__input[value=\'Dispute under review\']').trigger('mouseover').click()
+      cy.get('#state').click()
+      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'dispute_awaiting_evidence\']').trigger('mouseover').click()
 
-      // cy.get('#filter').click()
+      cy.contains('Search transactions').click()
+
       // cy.get('.transactions-list--row').should('have.length', 2)
       // cy.get('#charge-id-parent-transaction-id-1').should('exist')
       // cy.get('#charge-id-parent-transaction-id-2').should('exist')
