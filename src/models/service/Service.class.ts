@@ -1,10 +1,10 @@
-import { ServiceData } from '@models/service/dto/Service.dto'
+import ServiceData from '@models/service/dto/Service.dto'
 
 class Service {
   readonly id: number
   readonly externalId: string
   readonly name: string
-  readonly serviceName: { en: string; cy?: string }
+  readonly serviceName: { en: string, cy?: string }
   readonly gatewayAccountIds: string[]
   readonly merchantDetails?: {
     name: string
@@ -14,7 +14,7 @@ class Service {
     addressCity: string
     addressPostcode: string
     addressCountry: string
-    url: string
+    url: string,
     email: string
   }
   readonly collectBillingAddress: boolean

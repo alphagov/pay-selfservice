@@ -13,49 +13,41 @@ const serviceFixtures = require('../../test/fixtures/service.fixtures')
 const serviceExternalId = 'a-service-external-id'
 const permission = 'do-cool-things'
 
-const service = new Service(
-  serviceFixtures.validServiceResponse({
-    external_id: serviceExternalId,
-  })
-)
+const service = new Service(serviceFixtures.validServiceResponse({
+  external_id: serviceExternalId
+}))
 
-const userWithPermissionForService = new User(
-  userFixtures.validUserResponse({
-    service_roles: [
-      {
-        service: {
-          external_id: serviceExternalId,
-        },
-        role: {
-          permissions: [{ name: permission }],
-        },
-      },
-    ],
-  })
-)
+const userWithPermissionForService = new User(userFixtures.validUserResponse({
+  service_roles: [{
+    service: {
+      external_id: serviceExternalId
+    },
+    role: {
+      permissions: [{ name: permission }]
+    }
+  }]
+}))
 
-const userWithPermissionForDifferentService = new User(
-  userFixtures.validUserResponse({
-    service_roles: [
-      {
-        service: {
-          external_id: serviceExternalId,
-        },
-        role: {
-          permissions: [{ name: 'a-different-permission' }],
-        },
+const userWithPermissionForDifferentService = new User(userFixtures.validUserResponse({
+  service_roles: [
+    {
+      service: {
+        external_id: serviceExternalId
       },
-      {
-        service: {
-          external_id: 'a-different-service-id',
-        },
-        role: {
-          permissions: [{ name: permission }],
-        },
+      role: {
+        permissions: [{ name: 'a-different-permission' }]
+      }
+    },
+    {
+      service: {
+        external_id: 'a-different-service-id'
       },
-    ],
-  })
-)
+      role: {
+        permissions: [{ name: permission }]
+      }
+    }
+  ]
+}))
 
 const res = {}
 let next
@@ -72,13 +64,12 @@ describe('Permission check middleware', () => {
       it('should throw an error', () => {
         const req = {
           user: userWithPermissionForDifferentService,
-          service,
+          service
         }
 
         middleware(req, res, next)
 
-        const expectedError = sinon.match
-          .instanceOf(PermissionDeniedError)
+        const expectedError = sinon.match.instanceOf(PermissionDeniedError)
           .and(sinon.match.has('message', `User does not have permission ${permission} for service`))
         sinon.assert.calledWith(next, expectedError)
       })
@@ -88,7 +79,7 @@ describe('Permission check middleware', () => {
       it('should call next without arguments', () => {
         const req = {
           user: userWithPermissionForService,
-          service,
+          service
         }
 
         middleware(req, res, next)
@@ -104,7 +95,7 @@ describe('Permission check middleware', () => {
     it('should call next without arguments', () => {
       const req = {
         user: userWithPermissionForDifferentService,
-        service,
+        service
       }
 
       middleware(req, res, next)

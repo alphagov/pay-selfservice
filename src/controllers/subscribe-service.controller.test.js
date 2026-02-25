@@ -17,13 +17,9 @@ describe('Subscribe service controller', () => {
   const otpCode = '123 456'
 
   const verifyOtpSuccessStub = sinon.spy(() => Promise.resolve())
-  const completeInviteSuccessStub = sinon.spy(() =>
-    Promise.resolve(
-      inviteFixtures.validInviteCompleteResponse({
-        service_external_id: serviceExternalId,
-      })
-    )
-  )
+  const completeInviteSuccessStub = sinon.spy(() => Promise.resolve(inviteFixtures.validInviteCompleteResponse({
+    service_external_id: serviceExternalId
+  })))
   const flashSpy = sinon.spy()
 
   let req, res, next
@@ -33,15 +29,15 @@ describe('Subscribe service controller', () => {
       register_invite: { code: inviteCode, email },
       user: new User(userFixtures.validUserResponse({ email })),
       body: {
-        'verify-code': otpCode,
+        'verify-code': otpCode
       },
-      flash: flashSpy,
+      flash: flashSpy
     }
     res = {
       redirect: sinon.spy(),
       render: sinon.spy(),
       setHeader: sinon.spy(),
-      status: sinon.spy(),
+      status: sinon.spy()
     }
     next = sinon.spy()
     verifyOtpSuccessStub.resetHistory()
@@ -50,11 +46,11 @@ describe('Subscribe service controller', () => {
   })
 
   describe('Subscribe service', () => {
-    function getController(mockCompleteInvite) {
+    function getController (mockCompleteInvite) {
       return proxyquire('./subscribe-service.controller', {
         '../services/clients/adminusers.client': () => ({
-          completeInvite: mockCompleteInvite,
-        }),
+          completeInvite: mockCompleteInvite
+        })
       })
     }
 

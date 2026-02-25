@@ -13,20 +13,16 @@ describe('The POST set phone number for updating 2FA method controller', () => {
   const updatePhoneNumberSpy = sinon.spy(() => Promise.resolve())
   const provisionNewOtpKeySpy = sinon.spy(() => Promise.resolve())
   const sendProvisionalOTPSpy = sinon.spy(() => Promise.resolve())
-  const controllerWithAdminusersSuccess = getController(
-    updatePhoneNumberSpy,
-    provisionNewOtpKeySpy,
-    sendProvisionalOTPSpy
-  )
+  const controllerWithAdminusersSuccess = getController(updatePhoneNumberSpy, provisionNewOtpKeySpy, sendProvisionalOTPSpy)
 
   beforeEach(() => {
     req = {
       user: new User(userFixtures.validUserResponse({ external_id: userExternalId })),
-      body: {},
+      body: {}
     }
     res = {
       redirect: sinon.spy(),
-      render: sinon.spy(),
+      render: sinon.spy()
     }
     next = sinon.spy()
     updatePhoneNumberSpy.resetHistory()
@@ -55,11 +51,7 @@ describe('The POST set phone number for updating 2FA method controller', () => {
         const error = new Error('An error')
         const updatePhoneNumberErrorSpy = sinon.spy(() => Promise.reject(error))
 
-        const controllerWithAdminusersError = getController(
-          updatePhoneNumberErrorSpy,
-          provisionNewOtpKeySpy,
-          sendProvisionalOTPSpy
-        )
+        const controllerWithAdminusersError = getController(updatePhoneNumberErrorSpy, provisionNewOtpKeySpy, sendProvisionalOTPSpy)
         await controllerWithAdminusersError(req, res, next)
 
         sinon.assert.calledWith(updatePhoneNumberErrorSpy, userExternalId, req.body.phone)
@@ -79,8 +71,8 @@ describe('The POST set phone number for updating 2FA method controller', () => {
       sinon.assert.calledWithMatch(res.render, 'two-factor-auth/phone-number', {
         phone: req.body.phone,
         errors: {
-          phone: validationErrors.invalidTelephoneNumber,
-        },
+          phone: validationErrors.invalidTelephoneNumber
+        }
       })
 
       sinon.assert.notCalled(updatePhoneNumberSpy)
@@ -90,12 +82,12 @@ describe('The POST set phone number for updating 2FA method controller', () => {
   })
 })
 
-function getController(updatePhoneNumberSpy, provisionNewOtpKeySpy, sendProvisionalOTPSpy) {
+function getController (updatePhoneNumberSpy, provisionNewOtpKeySpy, sendProvisionalOTPSpy) {
   return proxyquire('./post-phone-number.controller', {
     '../../../services/user.service': {
       updatePhoneNumber: updatePhoneNumberSpy,
       provisionNewOtpKey: provisionNewOtpKeySpy,
-      sendProvisionalOTP: sendProvisionalOTPSpy,
-    },
+      sendProvisionalOTP: sendProvisionalOTPSpy
+    }
   })
 }

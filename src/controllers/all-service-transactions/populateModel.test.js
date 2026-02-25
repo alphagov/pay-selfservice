@@ -19,7 +19,7 @@ describe('Populate Model', () => {
     headers: { shouldGetStripeHeaders: true, shouldGetMotoHeaders: true },
     hasLiveAccounts: false,
     hasStripeAccount: true,
-    hasTestStripeAccount: false,
+    hasTestStripeAccount: false
   }
 
   beforeEach(() => {
@@ -32,10 +32,10 @@ describe('Populate Model', () => {
       url: 'http://selfservice/all-service-transactions',
       session: {},
       headers: {
-        'x-request-id': 'correlation-id',
-      },
+        'x-request-id': 'correlation-id'
+      }
     }
-    allDisplayStateSelectorObjectsMock = sinon.spy(() => [{}])
+    allDisplayStateSelectorObjectsMock = sinon.spy(() => ([{}]))
   })
 
   describe('Stripe account', () => {
@@ -44,14 +44,7 @@ describe('Populate Model', () => {
       const searchResultOutput = { results: [] }
       const downloadRoute = 'download_route'
       const filterLiveAccounts = true
-      await populateModel()(
-        req,
-        searchResultOutput,
-        filters,
-        downloadRoute,
-        filterLiveAccounts,
-        userPermittedAccountsSummary
-      )
+      await populateModel()(req, searchResultOutput, filters, downloadRoute, filterLiveAccounts, userPermittedAccountsSummary)
 
       sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, true)
     })
@@ -65,14 +58,7 @@ describe('Populate Model', () => {
       const downloadRoute = 'download_route'
       const filterLiveAccounts = true
       userPermittedAccountsSummary.hasStripeAccount = false
-      await populateModel()(
-        req,
-        searchResultOutput,
-        filters,
-        downloadRoute,
-        filterLiveAccounts,
-        userPermittedAccountsSummary
-      )
+      await populateModel()(req, searchResultOutput, filters, downloadRoute, filterLiveAccounts, userPermittedAccountsSummary)
       sinon.assert.calledWith(allDisplayStateSelectorObjectsMock, false)
     })
   })
@@ -87,10 +73,10 @@ describe('Populate Model', () => {
         fromDate: '03/5/2018',
         fromTime: '01:00:00',
         toDate: '01/5/2018',
-        toTime: '01:00:00',
+        toTime: '01:00:00'
       },
       url: 'http://selfservice/all-service-transactions',
-      session: {},
+      session: {}
     }
 
     const filters = getFilters(invalidDatesReq)
@@ -100,35 +86,24 @@ describe('Populate Model', () => {
     userPermittedAccountsSummary.hasStripeAccount = true
 
     it('should return a model including invalid date range', async () => {
-      const model = await populateModel()(
-        req,
-        searchResultOutput,
-        filters,
-        downloadRoute,
-        filterLiveAccounts,
-        userPermittedAccountsSummary
-      )
+      const model = await populateModel()(req, searchResultOutput, filters, downloadRoute, filterLiveAccounts, userPermittedAccountsSummary)
       expect(model).to.deep.include({
         isInvalidDateRange: true,
         hasResults: false,
         fromDateParam: '03/5/2018',
-        toDateParam: '01/5/2018',
+        toDateParam: '01/5/2018'
       })
     })
   })
 
-  function populateModel() {
+  function populateModel () {
     return proxyquire('./populateModel', {
       '../../services/clients/connector.client.js': {
-        ConnectorClient: class {
-          async getAllCardTypes() {
-            return {}
-          }
-        },
+        ConnectorClient: class {async getAllCardTypes () { return {} }}
       },
       '../../utils/states': {
-        allDisplayStateSelectorObjects: allDisplayStateSelectorObjectsMock,
-      },
+        allDisplayStateSelectorObjects: allDisplayStateSelectorObjectsMock
+      }
     }).populateModel
   }
 })

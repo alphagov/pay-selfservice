@@ -12,7 +12,8 @@ describe('List transactions - GET', () => {
   let allDisplayStateSelectorObjectsMock
   const user = new User(userFixtures.validUserResponse())
   const service = new Service(serviceFixtures.validServiceResponse({}))
-  const transactionSearchResponse = ledgerTransactionFixture.validTransactionSearchResponse({ transactions: [] })
+  const transactionSearchResponse = ledgerTransactionFixture.validTransactionSearchResponse(
+    { transactions: [] })
 
   beforeEach(() => {
     req = {
@@ -23,14 +24,14 @@ describe('List transactions - GET', () => {
       url: 'http://selfservice/account/accountId/transactions',
       session: {},
       headers: {
-        'x-request-id': 'correlation-id',
-      },
+        'x-request-id': 'correlation-id'
+      }
     }
     res = {
-      render: sinon.spy(),
+      render: sinon.spy()
     }
     next = sinon.spy()
-    allDisplayStateSelectorObjectsMock = sinon.spy(() => [{}])
+    allDisplayStateSelectorObjectsMock = sinon.spy(() => ([{}]))
   })
 
   describe('Stripe account', () => {
@@ -55,21 +56,17 @@ describe('List transactions - GET', () => {
     })
   })
 
-  function getController() {
+  function getController () {
     return proxyquire('./transaction-list.controller', {
       '../../services/transaction.service': {
-        search: sinon.spy(() => Promise.resolve(transactionSearchResponse)),
+        search: sinon.spy(() => Promise.resolve(transactionSearchResponse))
       },
       '../../services/clients/connector.client.js': {
-        ConnectorClient: class {
-          async getAllCardTypes() {
-            return {}
-          }
-        },
+        ConnectorClient: class {async getAllCardTypes () { return {} }}
       },
       '../../utils/states': {
-        allDisplayStateSelectorObjects: allDisplayStateSelectorObjectsMock,
-      },
+        allDisplayStateSelectorObjects: allDisplayStateSelectorObjectsMock
+      }
     })
   }
 })

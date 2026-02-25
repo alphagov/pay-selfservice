@@ -11,17 +11,18 @@ describe('All service transactions - GET', () => {
   let req, res, next
   const user = new User(userFixtures.validUserResponse())
   const service = new Service(serviceFixtures.validServiceResponse({}))
-  const transactionSearchResponse = ledgerTransactionFixture.validTransactionSearchResponse({ transactions: [] })
+  const transactionSearchResponse = ledgerTransactionFixture.validTransactionSearchResponse(
+    { transactions: [] })
   const userPermittedAccountsSummary = {
     gatewayAccountIds: [31],
     headers: { shouldGetStripeHeaders: true, shouldGetMotoHeaders: true },
     hasLiveAccounts: false,
     hasStripeAccount: true,
-    hasTestStripeAccount: false,
+    hasTestStripeAccount: false
   }
   const modelMock = sinon.spy(() => ({
     isStripeAccount: true,
-    filterLiveAccounts: true,
+    filterLiveAccounts: true
   }))
   const responseMock = sinon.spy(() => null)
   const filterMock = sinon.spy(() => ['a-filter'])
@@ -36,11 +37,11 @@ describe('All service transactions - GET', () => {
       url: 'http://selfservice/all-servce-transactions',
       session: {},
       headers: {
-        'x-request-id': 'correlation-id',
-      },
+        'x-request-id': 'correlation-id'
+      }
     }
     res = {
-      render: sinon.spy(),
+      render: sinon.spy()
     }
     next = sinon.spy()
   })
@@ -50,44 +51,36 @@ describe('All service transactions - GET', () => {
       await getController()(req, res, next)
 
       sinon.assert.calledWith(filterMock, req)
-      sinon.assert.calledWith(
-        modelMock,
-        req,
-        transactionSearchResponse,
-        ['a-filter'],
-        'download-path',
-        true,
-        userPermittedAccountsSummary
-      )
+      sinon.assert.calledWith(modelMock, req, transactionSearchResponse, ['a-filter'], 'download-path', true, userPermittedAccountsSummary)
 
       sinon.assert.calledWith(responseMock, req, res, 'transactions/index', {
         isStripeAccount: true,
-        filterLiveAccounts: true,
+        filterLiveAccounts: true
       })
     })
   })
 
-  function getController() {
+  function getController () {
     return proxyquire('./get.controller', {
       '../../utils/permissions': {
-        getGatewayAccountsFor: sinon.spy(() => Promise.resolve(userPermittedAccountsSummary)),
+        getGatewayAccountsFor: sinon.spy(() => Promise.resolve(userPermittedAccountsSummary))
       },
       '../../services/transaction.service': {
-        search: sinon.spy(() => Promise.resolve(transactionSearchResponse)),
+        search: sinon.spy(() => Promise.resolve(transactionSearchResponse))
       },
       './populateModel': {
-        populateModel: modelMock,
+        populateModel: modelMock
       },
       '../../utils/response': {
-        response: responseMock,
+        response: responseMock
       },
       '../../paths': {
         allServiceTransactions: { download: 'download-path' },
-        formattedPathFor: () => 'formatted-path',
+        formattedPathFor: () => 'formatted-path'
       },
       '../../utils/filters.js': {
-        getFilters: filterMock,
-      },
+        getFilters: filterMock
+      }
     })
   }
 })
