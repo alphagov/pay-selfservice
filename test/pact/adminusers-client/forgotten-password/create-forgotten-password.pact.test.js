@@ -4,7 +4,7 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 
 let adminUsersClient
@@ -59,16 +59,18 @@ describe('adminusers client - create forgotten password', function () {
 
     const badForgottenPasswordResponse = userFixtures.badForgottenPasswordResponse()
 
-    before(async () => {
-      await provider.addInteraction(
-        new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
-          .withUponReceiving('an invalid forgotten password request')
-          .withMethod('POST')
-          .withRequestBody(request)
-          .withStatusCode(400)
-          .withResponseBody(pactify(badForgottenPasswordResponse))
-          .build()
-      )
+    before((done) => {
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
+            .withUponReceiving('an invalid forgotten password request')
+            .withMethod('POST')
+            .withRequestBody(request)
+            .withStatusCode(400)
+            .withResponseBody(pactify(badForgottenPasswordResponse))
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())
@@ -87,17 +89,19 @@ describe('adminusers client - create forgotten password', function () {
   describe('not found', () => {
     const request = userFixtures.validForgottenPasswordCreateRequest('nonexisting')
 
-    before(async () => {
-      await provider.addInteraction(
-        new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
-          .withState('a user does not exist')
-          .withUponReceiving('a forgotten password request for non existent user')
-          .withMethod('POST')
-          .withRequestBody(request)
-          .withStatusCode(404)
-          .withResponseHeaders({})
-          .build()
-      )
+    before((done) => {
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(FORGOTTEN_PASSWORD_PATH)
+            .withState('a user does not exist')
+            .withUponReceiving('a forgotten password request for non existent user')
+            .withMethod('POST')
+            .withRequestBody(request)
+            .withStatusCode(404)
+            .withResponseHeaders({})
+            .build()
+        )
+        .then(() => done())
     })
 
     afterEach(() => provider.verify())

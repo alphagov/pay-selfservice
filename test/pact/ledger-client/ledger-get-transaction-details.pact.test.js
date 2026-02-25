@@ -8,7 +8,7 @@ const ledgerClient = require('../../../src/services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../fixtures/ledger-transaction.fixtures')
 const legacyConnectorParityTransformer = require('../../../src/services/clients/utils/ledger-legacy-connector-parity')
 const pactTestProvider = require('./ledger-pact-test-provider')
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const TRANSACTION_RESOURCE = '/v1/transaction'
@@ -32,7 +32,7 @@ describe('ledger client', function () {
   describe('get transaction details', () => {
     const params = {
       account_id: existingGatewayAccountId,
-      transaction_id: defaultTransactionId,
+      transaction_id: defaultTransactionId
     }
     const validCreatedTransactionDetailsResponse = transactionDetailsFixtures.validTransactionCreatedDetailsResponse({
       transaction_id: params.transaction_id,
@@ -40,7 +40,7 @@ describe('ledger client', function () {
       amount: 100,
       fee: 5,
       net_amount: 95,
-      refund_summary_available: 100,
+      refund_summary_available: 100
     })
     before(() => {
       return pactTestProvider.addInteraction(
@@ -59,14 +59,11 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should get transaction details successfully', function () {
-      const getCreatedTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(
-        validCreatedTransactionDetailsResponse
-      )
-      return ledgerClient
-        .transaction(params.transaction_id, params.account_id, {
-          baseUrl: ledgerUrl,
-          transaction_type: 'PAYMENT',
-        })
+      const getCreatedTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validCreatedTransactionDetailsResponse)
+      return ledgerClient.transaction(params.transaction_id, params.account_id, {
+        baseUrl: ledgerUrl,
+        transaction_type: 'PAYMENT'
+      })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getCreatedTransactionDetails)
         })
@@ -76,7 +73,7 @@ describe('ledger client', function () {
   describe('get transaction details with corporate card surcharge', () => {
     const params = {
       account_id: existingGatewayAccountId,
-      transaction_id: defaultTransactionId,
+      transaction_id: defaultTransactionId
     }
     const validTransactionDetailsResponse = transactionDetailsFixtures.validTransactionCreatedDetailsResponse({
       transaction_id: params.transaction_id,
@@ -86,7 +83,7 @@ describe('ledger client', function () {
       corporate_card_surcharge: 250,
       total_amount: 1250,
       capture_submit_time: '2018-05-01T13:27:00.057Z',
-      captured_date: '2018-05-01T13:27:00.057Z',
+      captured_date: '2018-05-01T13:27:00.057Z'
     })
 
     before(() => {
@@ -106,14 +103,11 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should get transaction with corporate card surcharge details successfully', function () {
-      const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(
-        validTransactionDetailsResponse
-      )
-      return ledgerClient
-        .transaction(params.transaction_id, params.account_id, {
-          baseUrl: ledgerUrl,
-          transaction_type: 'PAYMENT',
-        })
+      const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validTransactionDetailsResponse)
+      return ledgerClient.transaction(params.transaction_id, params.account_id, {
+        baseUrl: ledgerUrl,
+        transaction_type: 'PAYMENT'
+      })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionDetails)
         })
@@ -123,7 +117,7 @@ describe('ledger client', function () {
   describe('get transaction details with metadata', () => {
     const params = {
       account_id: existingGatewayAccountId,
-      transaction_id: defaultTransactionId,
+      transaction_id: defaultTransactionId
     }
     const validTransactionDetailsResponse = transactionDetailsFixtures.validTransactionCreatedDetailsResponse({
       transaction_id: params.transaction_id,
@@ -131,8 +125,8 @@ describe('ledger client', function () {
       refund_summary_available: 1000,
       type: 'payment',
       metadata: {
-        external_metadata: 'metadata',
-      },
+        external_metadata: 'metadata'
+      }
     })
 
     before(() => {
@@ -152,14 +146,11 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should get transaction with metadata details successfully', function () {
-      const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(
-        validTransactionDetailsResponse
-      )
-      return ledgerClient
-        .transaction(params.transaction_id, params.account_id, {
-          baseUrl: ledgerUrl,
-          transaction_type: 'PAYMENT',
-        })
+      const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validTransactionDetailsResponse)
+      return ledgerClient.transaction(params.transaction_id, params.account_id, {
+        baseUrl: ledgerUrl,
+        transaction_type: 'PAYMENT'
+      })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionDetails)
         })
@@ -169,7 +160,7 @@ describe('ledger client', function () {
   describe('get transaction details with honoured corporate exemption', () => {
     const params = {
       account_id: existingGatewayAccountId,
-      transaction_id: defaultTransactionId,
+      transaction_id: defaultTransactionId
     }
     const validTransactionDetailsResponse = transactionDetailsFixtures.validTransactionCreatedDetailsResponse({
       transaction_id: params.transaction_id,
@@ -180,9 +171,9 @@ describe('ledger client', function () {
         requested: true,
         type: 'corporate',
         outcome: {
-          result: 'honoured',
-        },
-      },
+          result: 'honoured'
+        }
+      }
     })
 
     before(() => {
@@ -202,14 +193,11 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should get transaction with honoured corporate exemption', function () {
-      const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(
-        validTransactionDetailsResponse
-      )
-      return ledgerClient
-        .transaction(params.transaction_id, params.account_id, {
-          baseUrl: ledgerUrl,
-          transaction_type: 'PAYMENT',
-        })
+      const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validTransactionDetailsResponse)
+      return ledgerClient.transaction(params.transaction_id, params.account_id, {
+        baseUrl: ledgerUrl,
+        transaction_type: 'PAYMENT'
+      })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionDetails)
         })
@@ -219,7 +207,7 @@ describe('ledger client', function () {
   describe('get transaction details with honoured corporate exemption', () => {
     const params = {
       account_id: existingGatewayAccountId,
-      transaction_id: defaultTransactionId,
+      transaction_id: defaultTransactionId
     }
     const validTransactionDetailsResponse = transactionDetailsFixtures.validTransactionCreatedDetailsResponse({
       transaction_id: params.transaction_id,
@@ -229,9 +217,9 @@ describe('ledger client', function () {
       authorisation_summary: {
         three_d_secure: {
           required: true,
-          version: '2.1.0',
-        },
-      },
+          version: '2.1.0'
+        }
+      }
     })
 
     before(() => {
@@ -251,14 +239,11 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should get transaction with 3ds version', function () {
-      const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(
-        validTransactionDetailsResponse
-      )
-      return ledgerClient
-        .transaction(params.transaction_id, params.account_id, {
-          baseUrl: ledgerUrl,
-          transaction_type: 'PAYMENT',
-        })
+      const getTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionParity(validTransactionDetailsResponse)
+      return ledgerClient.transaction(params.transaction_id, params.account_id, {
+        baseUrl: ledgerUrl,
+        transaction_type: 'PAYMENT'
+      })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(getTransactionDetails)
         })

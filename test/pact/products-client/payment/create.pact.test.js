@@ -7,17 +7,17 @@ const proxyquire = require('proxyquire')
 const path = require('path')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const productFixtures = require('../../../fixtures/product.fixtures')
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const PRODUCTS_RESOURCE = '/v1/api/products'
 let result, productsClient
 
-function getProductsClient(baseUrl) {
+function getProductsClient (baseUrl) {
   return proxyquire('@services/clients/products.client', {
     '@root/config': {
-      PRODUCTS_URL: baseUrl,
-    },
+      PRODUCTS_URL: baseUrl
+    }
   })
 }
 
@@ -28,7 +28,7 @@ describe('products client - creating a new payment', () => {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -42,17 +42,16 @@ describe('products client - creating a new payment', () => {
     const response = productFixtures.validCreatePaymentResponse({ product_external_id: productExternalId })
 
     before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${PRODUCTS_RESOURCE}/${productExternalId}/payments`)
-            .withUponReceiving('a valid create charge create request')
-            .withMethod('POST')
-            .withStatusCode(201)
-            .withResponseBody(pactify(response))
-            .build()
-        )
+      provider.addInteraction(
+        new PactInteractionBuilder(`${PRODUCTS_RESOURCE}/${productExternalId}/payments`)
+          .withUponReceiving('a valid create charge create request')
+          .withMethod('POST')
+          .withStatusCode(201)
+          .withResponseBody(pactify(response))
+          .build()
+      )
         .then(() => productsClient.payment.create(productExternalId))
-        .then((res) => {
+        .then(res => {
           result = res
           done()
         })
@@ -68,33 +67,24 @@ describe('products client - creating a new payment', () => {
       expect(result).to.have.property('links')
       expect(Object.keys(result.links).length).to.equal(2)
       expect(result.links).to.have.property('self')
-      expect(result.links.self)
-        .to.have.property('method')
-        .to.equal(response._links.find((link) => link.rel === 'self').method)
-      expect(result.links.self)
-        .to.have.property('href')
-        .to.equal(response._links.find((link) => link.rel === 'self').href)
+      expect(result.links.self).to.have.property('method').to.equal(response._links.find(link => link.rel === 'self').method)
+      expect(result.links.self).to.have.property('href').to.equal(response._links.find(link => link.rel === 'self').href)
       expect(result.links).to.have.property('next')
-      expect(result.links.next)
-        .to.have.property('method')
-        .to.equal(response._links.find((link) => link.rel === 'next').method)
-      expect(result.links.next)
-        .to.have.property('href')
-        .to.equal(response._links.find((link) => link.rel === 'next').href)
+      expect(result.links.next).to.have.property('method').to.equal(response._links.find(link => link.rel === 'next').method)
+      expect(result.links.next).to.have.property('href').to.equal(response._links.find(link => link.rel === 'next').href)
     })
   })
 
   describe('when creating a charge using a malformed request', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       const productExternalId = 'invalid-id'
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${PRODUCTS_RESOURCE}/${productExternalId}/payments`)
-            .withUponReceiving('an invalid create charge request')
-            .withMethod('POST')
-            .withStatusCode(400)
-            .build()
-        )
+      provider.addInteraction(
+        new PactInteractionBuilder(`${PRODUCTS_RESOURCE}/${productExternalId}/payments`)
+          .withUponReceiving('an invalid create charge request')
+          .withMethod('POST')
+          .withStatusCode(400)
+          .build()
+      )
         .then(() => productsClient.payment.create(productExternalId), done)
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {

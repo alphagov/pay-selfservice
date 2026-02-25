@@ -8,7 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../src/services/clients/connector.client').ConnectorClient
 const gatewayAccountFixtures = require('../../fixtures/gateway-account.fixtures')
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const ACCOUNTS_RESOURCE = '/v1/api/accounts'
@@ -27,7 +27,7 @@ describe('connector client - get gateway account', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -38,20 +38,19 @@ describe('connector client - get gateway account', function () {
 
   describe('get single gateway account - success', () => {
     const validGetGatewayAccountResponse = gatewayAccountFixtures.validGatewayAccountResponse({
-      gateway_account_id: existingGatewayAccountId,
+      gateway_account_id: existingGatewayAccountId
     })
 
     before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}`)
-            .withUponReceiving('a valid get gateway account request')
-            .withState(`User ${existingGatewayAccountId} exists in the database`)
-            .withMethod('GET')
-            .withResponseBody(pactify(validGetGatewayAccountResponse))
-            .withStatusCode(200)
-            .build()
-        )
+      provider.addInteraction(
+        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}`)
+          .withUponReceiving('a valid get gateway account request')
+          .withState(`User ${existingGatewayAccountId} exists in the database`)
+          .withMethod('GET')
+          .withResponseBody(pactify(validGetGatewayAccountResponse))
+          .withStatusCode(200)
+          .build()
+      )
         .then(() => done())
         .catch(done)
     })
@@ -60,14 +59,12 @@ describe('connector client - get gateway account', function () {
 
     it('should get gateway account successfully', function (done) {
       const params = {
-        gatewayAccountId: existingGatewayAccountId,
+        gatewayAccountId: existingGatewayAccountId
       }
-      connectorClient
-        .getAccount(params)
+      connectorClient.getAccount(params)
         .should.be.fulfilled.then((response) => {
           expect(response).to.deep.equal(validGetGatewayAccountResponse)
-        })
-        .should.notify(done)
+        }).should.notify(done)
     })
   })
 })

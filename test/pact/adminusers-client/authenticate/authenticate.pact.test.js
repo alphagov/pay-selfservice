@@ -8,7 +8,7 @@ const chaiAsPromised = require('chai-as-promised')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const User = require('@models/user/User.class')
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
 const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 
 // Constants
@@ -53,7 +53,7 @@ describe('adminusers client - authenticate', () => {
             .withState(`a user exists with email ${existingUserEmail} and password ${validPassword}`)
             .withMethod('POST')
             .withRequestBody(request)
-            .withResponseBody(pactify(validPasswordResponse))
+            .withResponseBody(userResponsePactifier.pactify(validPasswordResponse))
             .withStatusCode(200)
             .build()
         )
@@ -86,7 +86,7 @@ describe('adminusers client - authenticate', () => {
             .withState(`a user exists with email ${existingUserEmail} and password ${validPassword}`)
             .withMethod('POST')
             .withRequestBody(request)
-            .withResponseBody(pactify(invalidPasswordResponse))
+            .withResponseBody(userResponsePactifier.pactify(invalidPasswordResponse))
             .withStatusCode(401)
             .build()
         )

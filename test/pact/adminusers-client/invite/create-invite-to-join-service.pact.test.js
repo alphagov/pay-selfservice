@@ -4,7 +4,7 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const inviteFixtures = require('../../../fixtures/invite.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 const { CreateInviteRequest } = require('@models/service/CreateInviteRequest.class')
 

@@ -4,7 +4,7 @@ const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
 const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 
 chai.use(chaiAsPromised)
@@ -91,7 +91,7 @@ describe('adminusers client', function () {
             .withState('a user exists')
             .withUponReceiving('a valid authenticate second factor token request')
             .withRequestBody(request)
-            .withResponseBody(pactify(response))
+            .withResponseBody(userResponsePactifier.pactify(response))
             .withMethod('POST')
             .build()
         )

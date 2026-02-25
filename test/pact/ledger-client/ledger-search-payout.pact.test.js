@@ -7,7 +7,7 @@ const payoutFixture = require('../../fixtures/payout.fixtures')
 const ledgerClient = require('../../../src/services/clients/ledger.client')
 
 const pactTestProvider = require('./ledger-pact-test-provider')
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
 
 const { expect } = chai
 
@@ -23,22 +23,19 @@ describe('ledger client', () => {
   after(() => pactTestProvider.finalize())
 
   describe('search payouts', () => {
-    const payoutOpts = [
-      {
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        gatewayPayoutId: 'payout-id-2',
-        createdDate: '2020-05-22T12:22:16.067Z',
-        paidoutDate: '2020-05-23T14:22:16.067Z',
-        amount: 2345,
-      },
-      {
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        gatewayPayoutId: 'payout-id-1',
-        createdDate: '2020-05-21T12:22:16.067Z',
-        paidoutDate: '2020-05-22T14:22:16.067Z',
-        amount: 1250,
-      },
-    ]
+    const payoutOpts = [{
+      gatewayAccountId: GATEWAY_ACCOUNT_ID,
+      gatewayPayoutId: 'payout-id-2',
+      createdDate: '2020-05-22T12:22:16.067Z',
+      paidoutDate: '2020-05-23T14:22:16.067Z',
+      amount: 2345
+    }, {
+      gatewayAccountId: GATEWAY_ACCOUNT_ID,
+      gatewayPayoutId: 'payout-id-1',
+      createdDate: '2020-05-21T12:22:16.067Z',
+      paidoutDate: '2020-05-22T14:22:16.067Z',
+      amount: 1250
+    }]
     const response = payoutFixture.validPayoutSearchResponse(payoutOpts)
 
     before(() => {

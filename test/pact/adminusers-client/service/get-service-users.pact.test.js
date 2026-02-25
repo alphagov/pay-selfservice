@@ -7,7 +7,7 @@ const chaiAsPromised = require('chai-as-promised')
 
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactifyNestedArray } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 
 // Global setup
@@ -55,7 +55,7 @@ describe('adminusers client - service users', () => {
           new PactInteractionBuilder(`${SERVICES_PATH}/${existingServiceExternalId}/users`)
             .withUponReceiving('a valid get service users request')
             .withState(`a user exists with role for service with id ${existingServiceExternalId}`)
-            .withResponseBody(pactify(getServiceUsersResponse))
+            .withResponseBody(pactifyNestedArray(getServiceUsersResponse))
             .withStatusCode(200)
             .build()
         )

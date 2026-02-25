@@ -8,7 +8,7 @@ const chaiAsPromised = require('chai-as-promised')
 
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
 const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
 
 // constants
@@ -43,7 +43,7 @@ describe('adminusers client - get user', () => {
           new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}`)
             .withState(`a user exists with the given external id ${existingExternalId}`)
             .withUponReceiving('a valid get user request')
-            .withResponseBody(pactify(getUserResponse))
+            .withResponseBody(userResponsePactifier.pactify(getUserResponse))
             .build()
         )
         .then(() => {

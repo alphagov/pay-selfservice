@@ -11,7 +11,7 @@ const serviceFixtures = require('@test/fixtures/service.fixtures')
 const { ServiceUpdateRequest } = require('@models/service/ServiceUpdateRequest.class')
 const goLiveStage = require('@models/constants/go-live-stage')
 const pspTestAccountStage = require('@models/constants/psp-test-account-stage')
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactify } = require('@test/test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -30,7 +30,7 @@ describe('adminusers client - patch request to update service', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -42,15 +42,14 @@ describe('adminusers client - patch request to update service', function () {
   describe('a valid update service patch request to update single field', () => {
     const merchantDetailsName = 'updated-name'
     const validUpdateServiceRequest = new ServiceUpdateRequest()
-      .replace()
-      .merchantDetails.name(merchantDetailsName)
+      .replace().merchantDetails.name(merchantDetailsName)
       .formatPayload()
 
     const validUpdateServiceResponse = serviceFixtures.validServiceResponse({
       external_id: existingServiceExternalId,
       merchant_details: {
-        name: merchantDetailsName,
-      },
+        name: merchantDetailsName
+      }
     })
 
     before(() => {
@@ -62,8 +61,7 @@ describe('adminusers client - patch request to update service', function () {
           .withRequestBody(validUpdateServiceRequest)
           .withStatusCode(200)
           .withResponseBody(pactify(validUpdateServiceResponse))
-          .build()
-      )
+          .build())
     })
 
     afterEach(() => provider.verify())
@@ -86,37 +84,25 @@ describe('adminusers client - patch request to update service', function () {
       address_country: 'GB',
       telephone_number: '07700 900 982',
       email: 'foo@example.com',
-      url: 'https://www.example.com',
+      url: 'https://www.example.com'
     }
     const currentGoLiveStage = goLiveStage.ENTERED_ORGANISATION_NAME
     const currentPspTestAccountStage = pspTestAccountStage.REQUEST_SUBMITTED
     const takesPaymentsOverPhone = true
 
     const validUpdateServiceRequest = new ServiceUpdateRequest()
-      .replace()
-      .merchantDetails.name(merchantDetails.name)
-      .replace()
-      .merchantDetails.addressLine1(merchantDetails.address_line1)
-      .replace()
-      .merchantDetails.addressLine2(merchantDetails.address_line2)
-      .replace()
-      .merchantDetails.addressCity(merchantDetails.address_city)
-      .replace()
-      .merchantDetails.addressPostcode(merchantDetails.address_postcode)
-      .replace()
-      .merchantDetails.addressCountry(merchantDetails.address_country)
-      .replace()
-      .merchantDetails.telephoneNumber(merchantDetails.telephone_number)
-      .replace()
-      .merchantDetails.email(merchantDetails.email)
-      .replace()
-      .merchantDetails.url(merchantDetails.url)
-      .replace()
-      .currentGoLiveStage(currentGoLiveStage)
-      .replace()
-      .currentPspTestAccountStage(currentPspTestAccountStage)
-      .replace()
-      .takesPaymentsOverPhone(takesPaymentsOverPhone)
+      .replace().merchantDetails.name(merchantDetails.name)
+      .replace().merchantDetails.addressLine1(merchantDetails.address_line1)
+      .replace().merchantDetails.addressLine2(merchantDetails.address_line2)
+      .replace().merchantDetails.addressCity(merchantDetails.address_city)
+      .replace().merchantDetails.addressPostcode(merchantDetails.address_postcode)
+      .replace().merchantDetails.addressCountry(merchantDetails.address_country)
+      .replace().merchantDetails.telephoneNumber(merchantDetails.telephone_number)
+      .replace().merchantDetails.email(merchantDetails.email)
+      .replace().merchantDetails.url(merchantDetails.url)
+      .replace().currentGoLiveStage(currentGoLiveStage)
+      .replace().currentPspTestAccountStage(currentPspTestAccountStage)
+      .replace().takesPaymentsOverPhone(takesPaymentsOverPhone)
       .formatPayload()
 
     const validUpdateServiceResponse = serviceFixtures.validServiceResponse({
@@ -124,7 +110,7 @@ describe('adminusers client - patch request to update service', function () {
       merchant_details: merchantDetails,
       current_go_live_stage: currentGoLiveStage,
       current_psp_test_account_stage: currentPspTestAccountStage,
-      takes_payments_over_phone: takesPaymentsOverPhone,
+      takes_payments_over_phone: takesPaymentsOverPhone
     })
 
     before(() => {
@@ -136,8 +122,7 @@ describe('adminusers client - patch request to update service', function () {
           .withRequestBody(validUpdateServiceRequest)
           .withStatusCode(200)
           .withResponseBody(pactify(validUpdateServiceResponse))
-          .build()
-      )
+          .build())
     })
 
     afterEach(() => provider.verify())
@@ -161,13 +146,11 @@ describe('adminusers client - patch request to update service', function () {
   })
 
   describe('an invalid update service patch request', () => {
-    const invalidRequest = [
-      {
-        op: 'replace',
-        'non-existent-path': 'foo',
-        value: 'bar',
-      },
-    ]
+    const invalidRequest = [{
+      op: 'replace',
+      'non-existent-path': 'foo',
+      value: 'bar'
+    }]
 
     before(() => {
       return provider.addInteraction(
@@ -177,8 +160,7 @@ describe('adminusers client - patch request to update service', function () {
           .withMethod('PATCH')
           .withRequestBody(invalidRequest)
           .withStatusCode(400)
-          .build()
-      )
+          .build())
     })
 
     afterEach(() => provider.verify())

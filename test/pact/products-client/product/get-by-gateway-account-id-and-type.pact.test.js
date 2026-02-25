@@ -7,17 +7,17 @@ const proxyquire = require('proxyquire')
 const path = require('path')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const productFixtures = require('../../../fixtures/product.fixtures')
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactifySimpleArray } = require('../../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const API_RESOURCE = '/v1/api'
 let result, productsClient
 
-function getProductsClient(baseUrl) {
+function getProductsClient (baseUrl) {
   return proxyquire('@services/clients/products.client', {
     '@root/config': {
-      PRODUCTS_URL: baseUrl,
-    },
+      PRODUCTS_URL: baseUrl
+    }
   })
 }
 
@@ -28,7 +28,7 @@ describe('products client - find products associated with a particular gateway a
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -43,22 +43,21 @@ describe('products client - find products associated with a particular gateway a
     const response = [
       productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 1000, type: productType }),
       productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 2000, type: productType }),
-      productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 3000, type: productType }),
+      productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 3000, type: productType })
     ]
 
-    before((done) => {
+    before(done => {
       const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
         .withQuery('type', productType)
         .withUponReceiving('a valid get product by gateway account id request')
         .withMethod('GET')
         .withState('three products with gateway account id 42 and type ADHOC exist')
         .withStatusCode(200)
-        .withResponseBody(pactify(response))
+        .withResponseBody(pactifySimpleArray(response))
         .build()
-      provider
-        .addInteraction(interaction)
+      provider.addInteraction(interaction)
         .then(() => productsClient.product.getByGatewayAccountIdAndType(gatewayAccountId, productType))
-        .then((res) => {
+        .then(res => {
           result = res
           done()
         })
@@ -78,25 +77,17 @@ describe('products client - find products associated with a particular gateway a
         expect(product).to.have.property('links')
         expect(Object.keys(product.links).length).to.equal(2)
         expect(product.links).to.have.property('self')
-        expect(product.links.self)
-          .to.have.property('method')
-          .to.equal(response[index]._links.find((link) => link.rel === 'self').method)
-        expect(product.links.self)
-          .to.have.property('href')
-          .to.equal(response[index]._links.find((link) => link.rel === 'self').href)
+        expect(product.links.self).to.have.property('method').to.equal(response[index]._links.find(link => link.rel === 'self').method)
+        expect(product.links.self).to.have.property('href').to.equal(response[index]._links.find(link => link.rel === 'self').href)
         expect(product.links).to.have.property('pay')
-        expect(product.links.pay)
-          .to.have.property('method')
-          .to.equal(response[index]._links.find((link) => link.rel === 'pay').method)
-        expect(product.links.pay)
-          .to.have.property('href')
-          .to.equal(response[index]._links.find((link) => link.rel === 'pay').href)
+        expect(product.links.pay).to.have.property('method').to.equal(response[index]._links.find(link => link.rel === 'pay').method)
+        expect(product.links.pay).to.have.property('href').to.equal(response[index]._links.find(link => link.rel === 'pay').href)
       })
     })
   })
 
   describe('when no products are found', () => {
-    before((done) => {
+    before(done => {
       const gatewayAccountId = 98765
       const productType = 'PROTOTYPE'
       const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
@@ -106,14 +97,13 @@ describe('products client - find products associated with a particular gateway a
         .withStatusCode(200)
         .withResponseBody([])
         .build()
-      provider
-        .addInteraction(interaction)
+      provider.addInteraction(interaction)
         .then(() => productsClient.product.getByGatewayAccountIdAndType(gatewayAccountId, productType), done)
-        .then((res) => {
+        .then(res => {
           result = res
           done()
         })
-        .catch((e) => done(e))
+        .catch(e => done(e))
     })
 
     after(() => provider.verify())

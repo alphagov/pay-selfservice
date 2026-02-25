@@ -8,7 +8,7 @@ const ledgerClient = require('../../../src/services/clients/ledger.client')
 const transactionDetailsFixtures = require('../../fixtures/ledger-transaction.fixtures')
 const legacyConnectorParityTransformer = require('../../../src/services/clients/utils/ledger-legacy-connector-parity')
 const pactTestProvider = require('./ledger-pact-test-provider')
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const TRANSACTION_RESOURCE = '/v1/transaction'
@@ -30,7 +30,7 @@ describe('ledger client', function () {
 
   describe('search transactions with no filters', () => {
     const params = {
-      account_id: existingGatewayAccountId,
+      account_id: existingGatewayAccountId
     }
     const validTransactionSearchResponse = transactionDetailsFixtures.validTransactionSearchResponse({
       gateway_account_id: existingGatewayAccountId,
@@ -39,7 +39,7 @@ describe('ledger client', function () {
           amount: 2000,
           state: {
             status: 'success',
-            finished: true,
+            finished: true
           },
           transaction_id: '222222',
           created_date: '2018-09-22T10:14:15.067Z',
@@ -47,31 +47,31 @@ describe('ledger client', function () {
           refund_summary_available: 1850,
           amount_submitted: 150,
           type: 'payment',
-          card_brand: 'visa',
+          card_brand: 'visa'
         },
         {
           amount: 1000,
           state: {
             status: 'started',
-            finished: false,
+            finished: false
           },
           transaction_id: '111111',
           created_date: '2018-09-21T10:14:16.067Z',
           refund_summary_status: 'available',
           refund_summary_available: 1000,
-          type: 'payment',
+          type: 'payment'
         },
         {
           amount: 150,
           state: {
             status: 'success',
-            finished: true,
+            finished: true
           },
           created_date: '2018-09-26T10:14:16.067Z',
           parent_transaction_id: '222222',
-          type: 'refund',
-        },
-      ],
+          type: 'refund'
+        }
+      ]
     })
     before(() => {
       return pactTestProvider.addInteraction(
@@ -93,21 +93,21 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should search transaction successfully', function () {
-      const searchTransactionDetails =
-        legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
-      return ledgerClient.transactions(params.account_id, {}, { baseUrl: ledgerUrl }).then((ledgerResponse) => {
-        expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
-      })
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
+      return ledgerClient.transactions(params.account_id, {}, { baseUrl: ledgerUrl })
+        .then((ledgerResponse) => {
+          expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
+        })
     })
   })
 
-  describe("filter transactions with multiple values for 'card_brand' and a value for 'email'", () => {
+  describe('filter transactions with multiple values for \'card_brand\' and a value for \'email\'', () => {
     const params = {
       account_id: existingGatewayAccountId,
       filters: {
         brand: ['visa', 'mastercard'],
-        email: 'doe',
-      },
+        email: 'doe'
+      }
     }
     const validFilterTransactionResponse = transactionDetailsFixtures.validTransactionSearchResponse({
       gateway_account_id: existingGatewayAccountId,
@@ -116,7 +116,7 @@ describe('ledger client', function () {
           amount: 2000,
           state: {
             status: 'success',
-            finished: true,
+            finished: true
           },
           transaction_id: '222222',
           created_date: '2018-09-22T10:14:15.067Z',
@@ -127,9 +127,9 @@ describe('ledger client', function () {
           card_brand: 'visa',
           email: 'j.doe@example.org',
           capture_submit_time: '2018-09-22T10:15:15.067Z',
-          captured_date: '2018-09-22',
-        },
-      ],
+          captured_date: '2018-09-22'
+        }
+      ]
     })
     before(() => {
       return pactTestProvider.addInteraction(
@@ -153,17 +153,15 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should search transaction successfully', function () {
-      const searchTransactionDetails =
-        legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse)
-      return ledgerClient
-        .transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })
     })
   })
 
-  describe("get filtered transactions with multiple values for 'payment_states', a partial value for 'reference' and a to/from date defined", () => {
+  describe('get filtered transactions with multiple values for \'payment_states\', a partial value for \'reference\' and a to/from date defined', () => {
     const params = {
       account_id: existingGatewayAccountId,
       filters: {
@@ -172,8 +170,8 @@ describe('ledger client', function () {
         fromDate: '01/5/2019',
         fromTime: '01:00:00',
         toDate: '05/10/2019',
-        toTime: '01:00:00',
-      },
+        toTime: '01:00:00'
+      }
     }
 
     const fromDateTime = '2019-05-01T00:00:00.000Z'
@@ -186,7 +184,7 @@ describe('ledger client', function () {
           amount: 2000,
           state: {
             status: 'success',
-            finished: true,
+            finished: true
           },
           reference: 'payment1',
           transaction_id: '222222',
@@ -198,9 +196,9 @@ describe('ledger client', function () {
           card_brand: 'visa',
           email: 'j.doe@example.org',
           capture_submit_time: '2018-09-22T10:15:15.067Z',
-          captured_date: '2018-09-22',
-        },
-      ],
+          captured_date: '2018-09-22'
+        }
+      ]
     })
     before(() => {
       return pactTestProvider.addInteraction(
@@ -226,23 +224,21 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should search transaction successfully', function () {
-      const searchTransactionDetails =
-        legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse)
-      return ledgerClient
-        .transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })
     })
   })
 
-  describe("search transactions with 'from_date'", () => {
+  describe('search transactions with \'from_date\'', () => {
     const params = {
       account_id: existingGatewayAccountId,
       filters: {
         fromDate: '21/9/2019',
-        fromTime: '01:00:00',
-      },
+        fromTime: '01:00:00'
+      }
     }
 
     const fromDateTime = '2019-09-21T00:00:00.000Z'
@@ -254,20 +250,20 @@ describe('ledger client', function () {
           amount: 1850,
           state: {
             status: 'success',
-            finished: true,
+            finished: true
           },
           created_date: '2019-09-22T10:14:16.067Z',
           parent_transaction_id: '222222',
           type: 'refund',
           capture_submit_time: '2019-09-21T13:14:16.067Z',
           captured_date: '2019-09-21',
-          includePaymentDetails: true,
+          includePaymentDetails: true
         },
         {
           amount: 2000,
           state: {
             status: 'success',
-            finished: true,
+            finished: true
           },
           transaction_id: '222222',
           created_date: '2019-09-21T13:14:16.067Z',
@@ -279,9 +275,9 @@ describe('ledger client', function () {
           card_brand: 'visa',
           email: 'j.doe@example.org',
           capture_submit_time: '2019-09-21T13:14:16.067Z',
-          captured_date: '2019-09-21',
-        },
-      ],
+          captured_date: '2019-09-21'
+        }
+      ]
     })
     before(() => {
       return pactTestProvider.addInteraction(
@@ -304,23 +300,21 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should filter transaction successfully', function () {
-      const searchTransactionDetails =
-        legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
-      return ledgerClient
-        .transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })
     })
   })
 
-  describe("search transactions with 'to_date' with specific time", () => {
+  describe('search transactions with \'to_date\' with specific time', () => {
     const params = {
       account_id: existingGatewayAccountId,
       filters: {
         toDate: '21/9/2019',
-        toTime: '15:00:00',
-      },
+        toTime: '15:00:00'
+      }
     }
 
     const toDateTime = '2019-09-21T14:00:01.000Z'
@@ -332,7 +326,7 @@ describe('ledger client', function () {
           amount: 2000,
           state: {
             status: 'success',
-            finished: true,
+            finished: true
           },
           transaction_id: '222222',
           created_date: '2019-09-21T13:14:16.067Z',
@@ -344,9 +338,9 @@ describe('ledger client', function () {
           card_brand: 'visa',
           email: 'j.doe@example.org',
           capture_submit_time: '2019-09-21T13:14:16.067Z',
-          captured_date: '2019-09-21',
-        },
-      ],
+          captured_date: '2019-09-21'
+        }
+      ]
     })
     before(() => {
       return pactTestProvider.addInteraction(
@@ -369,10 +363,8 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should filter transaction successfully', function () {
-      const searchTransactionDetails =
-        legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
-      return ledgerClient
-        .transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })
@@ -384,8 +376,8 @@ describe('ledger client', function () {
       account_id: existingGatewayAccountId,
       metadataValue: 'metadata',
       filters: {
-        metadataValue: 'metadata',
-      },
+        metadataValue: 'metadata'
+      }
     }
 
     const validTransactionSearchResponse = transactionDetailsFixtures.validTransactionSearchResponse({
@@ -396,10 +388,10 @@ describe('ledger client', function () {
           transaction_id: 'ch_123abc456xyz',
           type: 'payment',
           metadata: {
-            external_metadata: 'metadata',
-          },
-        },
-      ],
+            external_metadata: 'metadata'
+          }
+        }
+      ]
     })
 
     before(() => {
@@ -423,10 +415,8 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should filter transaction successfully', function () {
-      const searchTransactionDetails =
-        legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
-      return ledgerClient
-        .transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validTransactionSearchResponse)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })
@@ -437,8 +427,8 @@ describe('ledger client', function () {
     const params = {
       account_id: existingGatewayAccountId,
       filters: {
-        dispute_states: ['lost', 'under_review'],
-      },
+        dispute_states: ['lost', 'under_review']
+      }
     }
 
     const validFilterTransactionResponse = transactionDetailsFixtures.validTransactionSearchResponse({
@@ -450,27 +440,27 @@ describe('ledger client', function () {
           net_amount: -3500,
           state: {
             status: 'lost',
-            finished: true,
+            finished: true
           },
           created_date: '2022-07-25T11:24:32.000Z',
           transaction_id: 'duslqp12kpdfskopek230',
           parent_transaction_id: 'q5qo9mt6ajfcn2oqgaktkm2ksk',
           type: 'dispute',
-          includePaymentDetails: true,
+          includePaymentDetails: true
         },
         {
           amount: 1000,
           state: {
             status: 'under_review',
-            finished: false,
+            finished: false
           },
           created_date: '2022-07-26T11:24:32.000Z',
           transaction_id: 'du2slqp12kpdfskopek230',
           parent_transaction_id: 'dklpej3vlkn2oqgaktkm2ksk',
           type: 'dispute',
-          includePaymentDetails: true,
-        },
-      ],
+          includePaymentDetails: true
+        }
+      ]
     })
     before(() => {
       return pactTestProvider.addInteraction(
@@ -493,10 +483,8 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should search for dispute transactions successfully', function () {
-      const searchTransactionDetails =
-        legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse)
-      return ledgerClient
-        .transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
+      const searchTransactionDetails = legacyConnectorParityTransformer.legacyConnectorTransactionsParity(validFilterTransactionResponse)
+      return ledgerClient.transactions(params.account_id, params.filters, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(searchTransactionDetails)
         })

@@ -5,7 +5,7 @@ const chaiAsPromised = require('chai-as-promised')
 const userFixtures = require('../../../fixtures/user.fixtures')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { userResponsePactifier } = require('@test/test-helpers/pact/pactifier')
 
 chai.use(chaiAsPromised)
 
@@ -42,7 +42,7 @@ describe('adminusers client - session', function () {
             .withUponReceiving('a valid increment session version update request')
             .withMethod('PATCH')
             .withRequestBody(request)
-            .withResponseBody(pactify(userResponse))
+            .withResponseBody(userResponsePactifier.pactify(userResponse))
             .build()
         )
         .then(() => done())

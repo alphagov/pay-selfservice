@@ -41,4 +41,4 @@ const pactify = (object: unknown): Pactified => {
   return pactified
 }
 
-export = pactify
+export { pactify, pactifyArray }

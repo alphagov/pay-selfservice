@@ -6,7 +6,7 @@ const chaiAsPromised = require('chai-as-promised')
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const ledgerClient = require('../../../src/services/clients/ledger.client')
 const pactTestProvider = require('./ledger-pact-test-provider')
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
 
 const agreementFixtures = require('../../fixtures/agreement.fixtures')
 
@@ -32,7 +32,7 @@ describe('ledger client', function () {
   describe('get one agreement', () => {
     const params = {
       service_id: existingServiceId,
-      external_id: existingAgreementId,
+      external_id: existingAgreementId
     }
     const validGetOneAgreementResponse = agreementFixtures.validAgreementResponse(params)
 
@@ -52,8 +52,7 @@ describe('ledger client', function () {
     afterEach(() => pactTestProvider.verify())
 
     it('should get one agreement successfully', function () {
-      return ledgerClient
-        .agreement(existingAgreementId, existingServiceId, { baseUrl: ledgerUrl })
+      return ledgerClient.agreement(existingAgreementId, existingServiceId, { baseUrl: ledgerUrl })
         .then((ledgerResponse) => {
           expect(ledgerResponse).to.deep.equal(validGetOneAgreementResponse)
         })
@@ -63,29 +62,28 @@ describe('ledger client', function () {
   describe('not found', () => {
     const nonExistentAgreementExternalId = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
-    before((done) => {
-      pactTestProvider
-        .addInteraction(
-          new PactInteractionBuilder(`${AGREEMENT_RESOURCE}/${nonExistentAgreementExternalId}`)
-            .withQuery('service_id', existingServiceId)
-            .withUponReceiving('a valid get agreement request with non-existing agreement id')
-            .withState('an agreement with payment instrument exists')
-            .withStatusCode(404)
-            .withResponseBody(pactify(agreementFixtures.validAgreementNotFoundResponse()))
-            .build()
-        )
-        .then(() => done())
+    before(done => {
+      pactTestProvider.addInteraction(
+        new PactInteractionBuilder(`${AGREEMENT_RESOURCE}/${nonExistentAgreementExternalId}`)
+          .withQuery('service_id', existingServiceId)
+          .withUponReceiving('a valid get agreement request with non-existing agreement id')
+          .withState('an agreement with payment instrument exists')
+          .withStatusCode(404)
+          .withResponseBody(pactify(agreementFixtures.validAgreementNotFoundResponse()))
+          .build()
+      ).then(() => done())
     })
 
     afterEach(() => pactTestProvider.verify())
 
     it('should return not found if agreement not exist', function (done) {
-      ledgerClient
-        .agreement(nonExistentAgreementExternalId, existingServiceId, { baseUrl: ledgerUrl })
-        .should.be.rejected.then((err) => {
-          expect(err.errorCode).to.equal(404)
-        })
-        .should.notify(done)
+      ledgerClient.agreement(nonExistentAgreementExternalId, existingServiceId, { baseUrl: ledgerUrl })
+        .should.be.rejected
+        .then(
+          err => {
+            expect(err.errorCode).to.equal(404)
+          }
+        ).should.notify(done)
     })
   })
 })

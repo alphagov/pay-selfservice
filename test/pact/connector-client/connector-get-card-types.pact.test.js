@@ -8,7 +8,7 @@ const path = require('path')
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../src/services/clients/connector.client').ConnectorClient
 const cardFixtures = require('../../fixtures/card.fixtures')
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
 
 // Constants
 const CARD_TYPES_RESOURCE = '/v1/api/card-types'
@@ -25,7 +25,7 @@ describe('connector client', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -38,17 +38,15 @@ describe('connector client', function () {
     const validCardTypesResponse = cardFixtures.validCardTypesResponse()
 
     before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${CARD_TYPES_RESOURCE}`)
-            .withUponReceiving('a valid card types request')
-            .withState('Card types exist in the database')
-            .withMethod('GET')
-            .withStatusCode(200)
-            .withResponseBody(pactify(validCardTypesResponse))
-            .build()
-        )
-        .then(() => done())
+      provider.addInteraction(
+        new PactInteractionBuilder(`${CARD_TYPES_RESOURCE}`)
+          .withUponReceiving('a valid card types request')
+          .withState('Card types exist in the database')
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactify(validCardTypesResponse))
+          .build()
+      ).then(() => done())
         .catch(done)
     })
 
@@ -56,7 +54,7 @@ describe('connector client', function () {
 
     it('should get card types successfully', function (done) {
       const getCardTypes = validCardTypesResponse
-      connectorClient.getAllCardTypes().then((response) => {
+      connectorClient.getAllCardTypes().then(response => {
         expect(response).to.deep.equal(getCardTypes)
         done()
       })

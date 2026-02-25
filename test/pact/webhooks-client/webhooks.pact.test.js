@@ -6,7 +6,7 @@ const chaiAsPromised = require('chai-as-promised')
 const { Pact } = require('@pact-foundation/pact')
 
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const pactify = require('@test/test-helpers/pact/pact-base')
+const { pactify } = require('../../test-helpers/pact/pactifier').defaultPactifier
 const webhookFixtures = require('../../fixtures/webhooks.fixtures')
 const webhooksClient = require('../../../src/services/clients/webhooks.client')
 
@@ -20,7 +20,7 @@ const provider = new Pact({
   log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
   dir: path.resolve(process.cwd(), 'pacts'),
   spec: 2,
-  pactfileWriteMode: 'merge',
+  pactfileWriteMode: 'merge'
 })
 
 const serviceId = 'an-external-service-id'
@@ -58,10 +58,11 @@ describe('webhooks client', function () {
     afterEach(() => provider.verify())
 
     it('should get list of webhooks for a given service', () => {
-      return webhooksClient.webhooks(serviceId, gatewayAccountId, isLive, { baseUrl: webhooksUrl }).then((response) => {
-        // asserts that the client has correctly formatted the request to match the stubbed fixture provider
-        expect(response[0].externalId).to.equal(webhookId)
-      })
+      return webhooksClient.webhooks(serviceId, gatewayAccountId, isLive, { baseUrl: webhooksUrl })
+        .then((response) => {
+          // asserts that the client has correctly formatted the request to match the stubbed fixture provider
+          expect(response[0].externalId).to.equal(webhookId)
+        })
     })
   })
 
@@ -78,7 +79,7 @@ describe('webhooks client', function () {
             callback_url: callbackUrl,
             live: isLive,
             description,
-            subscriptions,
+            subscriptions
           })
           .withUponReceiving('a valid request for a new webhooks')
           .withState('service and environment provided')
@@ -92,13 +93,7 @@ describe('webhooks client', function () {
     afterEach(() => provider.verify())
 
     it('should submit details to create a webhook', () => {
-      return webhooksClient
-        .createWebhook(serviceId, gatewayAccountId, isLive, {
-          callback_url: callbackUrl,
-          description,
-          subscriptions,
-          baseUrl: webhooksUrl,
-        })
+      return webhooksClient.createWebhook(serviceId, gatewayAccountId, isLive, { callback_url: callbackUrl, description, subscriptions, baseUrl: webhooksUrl })
         .then((response) => {
           expect(response.external_id).to.equal(webhookId)
         })
@@ -123,10 +118,11 @@ describe('webhooks client', function () {
     afterEach(() => provider.verify())
 
     it('should get list of messages for webhook for a given service', () => {
-      return webhooksClient.messages(serviceId, { baseUrl: webhooksUrl, page, status }).then((response) => {
-        // asserts that the client has correctly formatted the request to match the stubbed fixture provider
-        expect(response[0].external_id).to.equal(webhookId)
-      })
+      return webhooksClient.messages(serviceId, { baseUrl: webhooksUrl, page, status })
+        .then((response) => {
+          // asserts that the client has correctly formatted the request to match the stubbed fixture provider
+          expect(response[0].external_id).to.equal(webhookId)
+        })
     })
   })
 })
