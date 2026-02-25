@@ -44,34 +44,7 @@
       }}
     {% endif %}
 
-    <h1 class="govuk-heading-l">
-      {% if allServiceTransactions %}
-        Transactions for all services
-        <strong class="govuk-tag govuk-tag--grey">{{ "Live" if filterLiveAccounts else "Test" }}</strong>
-      {% else %}
-        Transactions
-      {% endif %}
-    </h1>
-
-    {% if allServiceTransactions %}
-      {% if filterLiveAccounts %}
-        <p>
-          <a
-            class="govuk-link govuk-link--no-visited-state"
-            href="{{ routes.formattedPathFor(routes.allServiceTransactions.indexStatusFilter, 'test') }}"
-            >Switch to test accounts</a
-          >
-        </p>
-      {% else %}
-        {% if hasLiveAccounts %}
-          <p>
-            <a class="govuk-link govuk-link--no-visited-state" href="{{ routes.allServiceTransactions.index }}"
-              >Switch to live accounts</a
-            >
-          </p>
-        {% endif %}
-      {% endif %}
-    {% endif %}
+    <h1 class="govuk-heading-l"> Transactions </h1>
 
     <form method="GET" novalidate autocomplete="off">
       {% include "./filter.njk" %}

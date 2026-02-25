@@ -1,0 +1,38 @@
+<legend class="govuk-visually-hidden">Time range</legend>
+{{
+  govukInput({
+    id: 'fromTime',
+    name: 'fromTime',
+    value: filters.fromDate | shortTime,
+    classes: 'time-picker start govuk-!-font-size-16',
+    label: {
+      text: 'Start time',
+      classes: 'govuk-!-font-size-16 govuk-!-margin-bottom-2'
+    },
+    attributes: {
+      autocomplete: 'off'
+    },
+    formGroup: {
+      classes: 'datetime-filter__input-container datetime-filter__input-container--time-input'
+    }
+  })
+}}
+{{
+  govukInput({
+    id: 'toTime',
+    name: 'toTime',
+    value: filters.toDate | shortTime,
+    classes: 'time-picker end govuk-!-font-size-16',
+    label: {
+      text: 'End time',
+      classes: 'govuk-!-font-size-16 govuk-!-margin-bottom-2'
+    },
+    attributes: {
+      autocomplete: 'off'
+    },
+    formGroup: {
+      classes: 'datetime-filter__input-container datetime-filter__input-container--time-input'
+    }
+  })
+}}
+{#</fieldset>#}

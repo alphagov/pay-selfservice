@@ -15,6 +15,26 @@ function register() {
     setFromDate(dates.start)
     setEndDate(dates.end)
   })
+
+  document.getElementById('include-time-checkbox')?.addEventListener('change', (event) => {
+    if (!(event.target instanceof HTMLInputElement)) {
+      return
+    }
+
+    if (event.target.checked) {
+      showTimePicker()
+    } else {
+      hideTimePicker()
+    }
+  })
+}
+
+function showTimePicker() {
+  document.getElementById('time-picker')!.hidden = false
+}
+
+function hideTimePicker() {
+  document.getElementById('time-picker')!.hidden = true
 }
 
 function clearDates() {
