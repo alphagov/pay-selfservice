@@ -182,7 +182,7 @@ describe('Transactions index', () => {
     })
   })
 
-  describe('Transaction display', () => {
+  describe('Display', () => {
     it('should display card fee with corporate card surcharge transaction', () => {
       sharedStubs('test')
       const transactionAmounts = { corporateCardSurcharge: 25, fee: 15, totalAmount: 1075 }
@@ -279,6 +279,85 @@ describe('Transactions index', () => {
       // cy.get('.transactions-list--row').should('have.length', 2)
       // cy.get('#charge-id-parent-transaction-id-1').should('exist')
       // cy.get('#charge-id-parent-transaction-id-2').should('exist')
+    })
+  })
+
+  describe('Errors', () => {
+    beforeEach(() => {
+      sharedStubs()
+    })
+
+    it('should show error message on a bad request while retrieving the list of transactions', () => {
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [TRANSACTION],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 1
+        })
+      ])
+
+      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+      cy.task('clearStubs')
+
+      sharedStubs()
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsFailure(
+          {
+            gatewayAccountId: GATEWAY_ACCOUNT_ID,
+            transactions: [TRANSACTION],
+            filters: {
+              from_date: last12MonthsStartDate,
+            },
+            displaySize: 20,
+            transactionLength: 1
+          },
+          400)
+      ])
+
+      cy.contains('Search transactions').click()
+
+      cy.get('#transactions-list tbody').should('not.exist')
+      cy.get('h1').contains('An error occurred')
+      cy.get('#errorMsg').contains('There is a problem with the payments platform. Please contact the support team.')
+    })
+
+    it('should display the generic error page, if an internal server error occurs while retrieving the list of transactions', () => {
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [TRANSACTION],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 1
+        })
+      ])
+
+      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+      cy.task('clearStubs')
+
+      sharedStubs()
+      cy.task('setupStubs', [
+
+        transactionStubs.getLedgerTransactionsFailure(
+          {
+            gatewayAccountId: GATEWAY_ACCOUNT_ID,
+            transactions: [TRANSACTION],
+            filters: {
+              from_date: last12MonthsStartDate,
+            },
+            displaySize: 20,
+            transactionLength: 1
+          },
+          500)
+      ])
+
+      cy.contains('Search transactions').click()
+
+      cy.get('#transactions-list tbody').should('not.exist')
+      cy.get('h1').contains('An error occurred')
+      cy.get('#errorMsg').contains('There is a problem with the payments platform. Please contact the support team.')
     })
   })
 })
