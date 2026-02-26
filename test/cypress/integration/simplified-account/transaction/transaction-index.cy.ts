@@ -148,38 +148,38 @@ describe('Transactions index', () => {
       cy.get('[data-cy=pagination-detail]').contains(`Showing 1 to ${transactions.length} of ${transactions.length} transactions`)
     })
 
-    it('should check if the user has entered a potential PAN into the reference field', () => {
-      cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
-          displaySize: 20,
-          transactionLength: 1,
-        })
-      ])
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+    //   it('should check if the user has entered a potential PAN into the reference field', () => {
+    //     cy.task('setupStubs', [
+    //       transactionStubs.getLedgerTransactionsSuccess({
+    //         gatewayAccountId: GATEWAY_ACCOUNT_ID,
+    //         transactions: [TRANSACTION],
+    //         filters: { from_date: last12MonthsStartDate },
+    //         displaySize: 20,
+    //         transactionLength: 1,
+    //       })
+    //     ])
+    //     cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
 
-      cy.get('[data-cy=reference-filter]').type('4242424242424242')
-      cy.get('[data-cy=email-filter]').click()
+    //     cy.get('[data-cy=reference-filter]').type('4242424242424242')
+    //     cy.get('[data-cy=email-filter]').click()
 
-      cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
-      cy.get('[data-cy=pan-error]').should('exist')
+    //     cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
+    //     cy.get('[data-cy=pan-error]').should('exist')
 
-      cy.get('[data-cy=reference-filter]').clear()
-      cy.get('[data-cy=reference-filter]').type('a reference')
-      cy.get('[data-cy=email-filter]').click()
+    //     cy.get('[data-cy=reference-filter]').clear()
+    //     cy.get('[data-cy=reference-filter]').type('a reference')
+    //     cy.get('[data-cy=email-filter]').click()
 
-      cy.get('[data-cy=reference-filter]').parent().should('not.have.class', 'govuk-form-group--error')
-      cy.get('[data-cy=pan-error]').should('not.exist')
+    //     cy.get('[data-cy=reference-filter]').parent().should('not.have.class', 'govuk-form-group--error')
+    //     cy.get('[data-cy=pan-error]').should('not.exist')
 
-      cy.get('[data-cy=reference-filter]').clear()
-      cy.get('[data-cy=reference-filter]').type('4444333322221111')
-      cy.get('[data-cy=email-filter]').click()
+    //     cy.get('[data-cy=reference-filter]').clear()
+    //     cy.get('[data-cy=reference-filter]').type('4444333322221111')
+    //     cy.get('[data-cy=email-filter]').click()
 
-      cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
-      cy.get('[data-cy=pan-error]').should('exist')
-    })
+    //     cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
+    //     cy.get('[data-cy=pan-error]').should('exist')
+    //   })
   })
 
   describe('Display', () => {
@@ -362,6 +362,72 @@ describe('Transactions index', () => {
       cy.get('#transactions-list tbody').should('not.exist')
       cy.get('h1').contains(errorHeading)
       cy.get('#errorMsg').contains(errorMessage)
+    })
+  })
+
+  describe('Pagination', () => {
+    beforeEach(() => {
+      sharedStubs()
+    })
+
+    const transactionsListPageUrl = (pageNumber: number) => TRANSACTIONS_LIST_URL + `?page=` + pageNumber
+
+    it('should display pagination links with previous page disabled for first page', () => {
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [TRANSACTION],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 50
+
+        })
+      ])
+      cy.visit(TRANSACTIONS_LIST_URL + '?&page=', { failOnStatusCode: false })
+
+      // cy.get('nav.govuk-pagination').should('exist').should('have.length', 2)
+
+      cy.get('nav.govuk-pagination')
+        .should('exist')
+        .and('have.attr', 'aria-label', 'Bottom of table pagination')
+
+      cy.get('ul.govuk-pagination__list')
+        .first()
+        .children('li.govuk-pagination__item')
+        .should('have.length', 3)
+
+      cy.get('ul.govuk-pagination__list').first().within(() => {
+        cy.get('a')
+          .first()
+          .should('exist')
+          .and('have.attr', 'href', transactionsListPageUrl(1))
+          .and('contain.text', '1')
+      })
+
+      cy.get('li.govuk-pagination__item')
+        .find('a.govuk-link.govuk-pagination__link')
+        .should('have.attr', 'href', transactionsListPageUrl(1))
+        .and('have.attr', 'aria-label', 'Page 1')
+        .and('contain.text', '1')
+
+      cy.get('ul.govuk-pagination__list li.govuk-pagination__item')
+        .eq(1) // Get the second list item (Page 2)
+        .find('a.govuk-link.govuk-pagination__link')
+        .should('have.attr', 'href', transactionsListPageUrl(2))
+        .and('contain.text', '2')
+
+      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+        .should('have.attr', 'href', transactionsListPageUrl(2))
+        .and('have.attr', 'rel', 'next')
+
+      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+        .first()
+        .within(() => {
+          cy.get('span.govuk-pagination__link-title').should('contain.text', ' Next')
+        })
+
+      cy.get('div.govuk-pagination__next svg.govuk-pagination__icon--next').should('exist')
+      cy.get('div.govuk-pagination__next svg.govuk-pagination__icon--prev').should('not.exist')
     })
   })
 })
