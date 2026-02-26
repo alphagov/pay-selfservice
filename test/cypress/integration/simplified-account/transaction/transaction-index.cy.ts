@@ -287,6 +287,9 @@ describe('Transactions index', () => {
       sharedStubs()
     })
 
+    const errorMessage = 'There is a problem with the payments platform. Please contact the support team.'
+    const errorHeading = 'An error occurred'
+
     it('should show error message on a bad request while retrieving the list of transactions', () => {
       cy.task('setupStubs', [
         transactionStubs.getLedgerTransactionsSuccess({
@@ -319,8 +322,9 @@ describe('Transactions index', () => {
       cy.contains('Search transactions').click()
 
       cy.get('#transactions-list tbody').should('not.exist')
-      cy.get('h1').contains('An error occurred')
-      cy.get('#errorMsg').contains('There is a problem with the payments platform. Please contact the support team.')
+      cy.get('h1').contains(errorHeading)
+
+      cy.get('#errorMsg').contains(errorMessage)
     })
 
     it('should display the generic error page, if an internal server error occurs while retrieving the list of transactions', () => {
@@ -356,8 +360,8 @@ describe('Transactions index', () => {
       cy.contains('Search transactions').click()
 
       cy.get('#transactions-list tbody').should('not.exist')
-      cy.get('h1').contains('An error occurred')
-      cy.get('#errorMsg').contains('There is a problem with the payments platform. Please contact the support team.')
+      cy.get('h1').contains(errorHeading)
+      cy.get('#errorMsg').contains(errorMessage)
     })
   })
 })
