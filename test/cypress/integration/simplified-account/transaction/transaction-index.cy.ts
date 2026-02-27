@@ -1,20 +1,16 @@
 import userStubs from '@test/cypress/stubs/user-stubs'
-
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { checkServiceNavigation, checkTitleAndHeading } from '../common/assertions'
 import { TEST } from '@models/gateway-account/gateway-account-type'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
-
-
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
-
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { Status } from '@models/transaction/types/status'
 import { Reason } from '@models/transaction/types/reason'
 import { ResourceType } from '@models/transaction/types/resource-type'
-
+import { DateTime } from 'luxon'
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
 
@@ -27,7 +23,8 @@ const SERVICE_NAME = {
 }
 
 const TRANSACTIONS_LIST_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
-const TRANSACTION_URL = (transactionId: string) => `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${transactionId}`
+const TRANSACTION_URL = (transactionId: string) =>
+  `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${transactionId}`
 
 const sharedStubs = (gatewayAccountType = 'test', paymentProvider = 'worldpay') => {
   cy.task('setupStubs', [
@@ -46,9 +43,22 @@ const sharedStubs = (gatewayAccountType = 'test', paymentProvider = 'worldpay') 
   ])
 }
 
-function assertTransactionRow(row: number, reference: string, transactionLink: string, email: string, amount: string, cardBrand: string, state: string, fee?: string, netAmount?: string) {
+function assertTransactionRow(
+  row: number,
+  reference: string,
+  transactionLink: string,
+  email: string,
+  amount: string,
+  cardBrand: string,
+  state: string,
+  fee?: string,
+  netAmount?: string
+) {
   cy.get('#transactions-list tbody').find('tr').eq(row).find('th').should('contain', reference)
-  cy.get('#transactions-list tbody').find('tr > th').eq(row).find('.reference')
+  cy.get('#transactions-list tbody')
+    .find('tr > th')
+    .eq(row)
+    .find('.reference')
     .should('have.attr', 'href', transactionLink)
   cy.get('#transactions-list tbody').find('tr').eq(row).find('.email').should('contain', email)
   cy.get('#transactions-list tbody').find('tr').eq(row).find('.amount').should('contain', amount)
@@ -56,7 +66,13 @@ function assertTransactionRow(row: number, reference: string, transactionLink: s
   cy.get('#transactions-list tbody').find('tr').eq(row).find('.state').should('contain', state)
 
   if (netAmount) {
-    cy.get('#transactions-list tbody').find('tr').eq(row).get('[data-cell-type="net"]').eq(row).find('span').should('have.text', netAmount)
+    cy.get('#transactions-list tbody')
+      .find('tr')
+      .eq(row)
+      .get('[data-cell-type="net"]')
+      .eq(row)
+      .find('span')
+      .should('have.text', netAmount)
   }
 
   if (fee) {
@@ -64,11 +80,24 @@ function assertTransactionRow(row: number, reference: string, transactionLink: s
   }
 }
 
+function generateTransactions(amount: number) {
+  const transactions: TransactionData[] = []
+
+  for (let i = 1; i <= amount; i++) {
+    transactions.push(
+      new TransactionFixture({
+        amount: i * 1111,
+        reference: `reference${i}`,
+        externalId: `transaction${i}`,
+      }).toTransactionData()
+    )
+  }
+  return transactions
+}
 
 describe('Transactions index', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
-
   })
 
   describe('Common page content', () => {
@@ -80,8 +109,8 @@ describe('Transactions index', () => {
           transactions: [TRANSACTION],
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
-          transactionLength: 1
-        })
+          transactionLength: 1,
+        }),
       ])
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
     })
@@ -108,8 +137,8 @@ describe('Transactions index', () => {
           transactions: [],
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
-          transactionLength: 1
-        })
+          transactionLength: 1,
+        }),
       ])
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
 
@@ -117,11 +146,7 @@ describe('Transactions index', () => {
     })
 
     it('should display unfiltered results', () => {
-      const transactions: TransactionData[] = []
-
-      for (let i = 1; i <= 3; i++) {
-        transactions.push(new TransactionFixture({ amount: i * 1111, reference: `reference${i}`, externalId: `transaction${i}` }).toTransactionData())
-      }
+      const transactions: TransactionData[] = generateTransactions(3)
 
       cy.task('setupStubs', [
         transactionStubs.getLedgerTransactionsSuccess({
@@ -130,55 +155,130 @@ describe('Transactions index', () => {
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
           transactionLength: transactions.length,
-        })
+        }),
+      ])
+      cy.visit(TRANSACTIONS_LIST_URL)
+
+      assertTransactionRow(
+        0,
+        transactions[0].reference,
+        TRANSACTION_URL(transactions[0].transaction_id),
+        transactions[0].email!,
+        penceToPoundsWithCurrency(transactions[0].amount),
+        transactions[0].card_details!.card_brand,
+        'Success'
+      )
+
+      assertTransactionRow(
+        1,
+        transactions[1].reference,
+        TRANSACTION_URL(transactions[1].transaction_id),
+        transactions[1].email!,
+        penceToPoundsWithCurrency(transactions[1].amount),
+        transactions[1].card_details!.card_brand,
+        'Success'
+      )
+
+      assertTransactionRow(
+        2,
+        transactions[2].reference,
+        TRANSACTION_URL(transactions[2].transaction_id),
+        transactions[2].email!,
+        penceToPoundsWithCurrency(transactions[2].amount),
+        transactions[2].card_details!.card_brand,
+        'Success'
+      )
+
+      cy.get('#transactions-list tbody').find('tr').should('have.length', transactions.length)
+      cy.get('[data-cy=pagination-detail]').contains(
+        `Showing 1 to ${transactions.length} of ${transactions.length} transactions`
+      )
+    })
+
+    it('should be able to filter using date-time pickers', () => {
+      const transactionsResponse = {
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        displaySize: 20,
+      }
+
+      const unfilteredTransactions = generateTransactions(2)
+
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          ...transactionsResponse,
+          filters: { from_date: last12MonthsStartDate },
+          transactions: unfilteredTransactions,
+          transactionLength: unfilteredTransactions.length,
+        }),
+        transactionStubs.getLedgerTransactionsSuccess({
+          ...transactionsResponse,
+          filters: { from_date: DateTime.local(2025), to_date: DateTime.local(2026) },
+          transactions: [TRANSACTION],
+          transactionLength: 1,
+        }),
+      ])
+
+      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+
+      cy.get('.datepicker').should('not.exist')
+
+      cy.get('#fromDate').type(last12MonthsStartDate.toFormat('01/01/25'))
+      cy.get('.datepicker').should('be.visible')
+
+      cy.get('#toDate').type('01/01/26')
+      cy.get('.datepicker').should('be.visible')
+
+      cy.contains('Search transactions').click()
+
+      cy.get('#transactions-list tbody')
+        .find('tr')
+        .first()
+        .find('th')
+        .should('contain', unfilteredTransactions[0].reference)
+      cy.get('#transactions-list tbody')
+        .find('tr')
+        .eq(1)
+        .find('th')
+        .should('contain', unfilteredTransactions[1].reference)
+
+      cy.get('a').contains('Clear filter').click()
+
+      cy.get('#fromDate').should('be.empty')
+      cy.get('#toDate').should('be.empty')
+    })
+
+    it('should check if the user has entered a potential PAN into the reference field', () => {
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [TRANSACTION],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 1,
+        }),
       ])
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
 
-      assertTransactionRow(0, transactions[0].reference, TRANSACTION_URL(transactions[0].transaction_id),
-        transactions[0].email!, penceToPoundsWithCurrency(transactions[0].amount), transactions[0].card_details!.card_brand, 'Success')
+      cy.get('[data-cy=reference-filter]').type('4242424242424242')
+      cy.get('[data-cy=email-filter]').click()
 
-      assertTransactionRow(1, transactions[1].reference, TRANSACTION_URL(transactions[1].transaction_id),
-        transactions[1].email!, penceToPoundsWithCurrency(transactions[1].amount), transactions[1].card_details!.card_brand, 'Success')
+      cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
+      cy.get('[data-cy=pan-error]').should('exist')
 
-      assertTransactionRow(2, transactions[2].reference, TRANSACTION_URL(transactions[2].transaction_id),
-        transactions[2].email!, penceToPoundsWithCurrency(transactions[2].amount), transactions[2].card_details!.card_brand, 'Success')
+      cy.get('[data-cy=reference-filter]').clear()
+      cy.get('[data-cy=reference-filter]').type('a reference')
+      cy.get('[data-cy=email-filter]').click()
 
-      cy.get('#transactions-list tbody').find('tr').should('have.length', transactions.length)
-      cy.get('[data-cy=pagination-detail]').contains(`Showing 1 to ${transactions.length} of ${transactions.length} transactions`)
+      cy.get('[data-cy=reference-filter]').parent().should('not.have.class', 'govuk-form-group--error')
+      cy.get('[data-cy=pan-error]').should('not.exist')
+
+      cy.get('[data-cy=reference-filter]').clear()
+      cy.get('[data-cy=reference-filter]').type('4444333322221111')
+      cy.get('[data-cy=email-filter]').click()
+
+      cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
+      cy.get('[data-cy=pan-error]').should('exist')
     })
-
-    //   it('should check if the user has entered a potential PAN into the reference field', () => {
-    //     cy.task('setupStubs', [
-    //       transactionStubs.getLedgerTransactionsSuccess({
-    //         gatewayAccountId: GATEWAY_ACCOUNT_ID,
-    //         transactions: [TRANSACTION],
-    //         filters: { from_date: last12MonthsStartDate },
-    //         displaySize: 20,
-    //         transactionLength: 1,
-    //       })
-    //     ])
-    //     cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
-
-    //     cy.get('[data-cy=reference-filter]').type('4242424242424242')
-    //     cy.get('[data-cy=email-filter]').click()
-
-    //     cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
-    //     cy.get('[data-cy=pan-error]').should('exist')
-
-    //     cy.get('[data-cy=reference-filter]').clear()
-    //     cy.get('[data-cy=reference-filter]').type('a reference')
-    //     cy.get('[data-cy=email-filter]').click()
-
-    //     cy.get('[data-cy=reference-filter]').parent().should('not.have.class', 'govuk-form-group--error')
-    //     cy.get('[data-cy=pan-error]').should('not.exist')
-
-    //     cy.get('[data-cy=reference-filter]').clear()
-    //     cy.get('[data-cy=reference-filter]').type('4444333322221111')
-    //     cy.get('[data-cy=email-filter]').click()
-
-    //     cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
-    //     cy.get('[data-cy=pan-error]').should('exist')
-    //   })
   })
 
   describe('Display', () => {
@@ -193,13 +293,16 @@ describe('Transactions index', () => {
           transactions: [transactionWithFees],
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
-          transactionLength: 1
-        })
+          transactionLength: 1,
+        }),
       ])
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL)
 
       cy.get('#transactions-list tbody').find('tr').should('have.length', [transactionWithFees].length)
-      cy.get('#transactions-list tbody').find('tr').should('contain', penceToPoundsWithCurrency(transactionWithFees.total_amount!)).and('contain', '(with card fee)')
+      cy.get('#transactions-list tbody')
+        .find('tr')
+        .should('contain', penceToPoundsWithCurrency(transactionWithFees.total_amount!))
+        .and('contain', '(with card fee)')
     })
 
     it('should display the fee and total columns for Stripe provider service', () => {
@@ -214,13 +317,24 @@ describe('Transactions index', () => {
           transactions: [stripeTransaction],
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
-          transactionLength: 1
-        })
+          transactionLength: 1,
+        }),
       ])
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL)
 
-      cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="fee"]').first().should('contain', penceToPoundsWithCurrency(stripeTransaction.fee!))
-      cy.get('#transactions-list tbody').find('tr').first().get('[data-cell-type="net"]').first().find('span').should('contain', penceToPoundsWithCurrency(stripeTransaction.net_amount!))
+      cy.get('#transactions-list tbody')
+        .find('tr')
+        .first()
+        .get('[data-cell-type="fee"]')
+        .first()
+        .should('contain', penceToPoundsWithCurrency(stripeTransaction.fee!))
+      cy.get('#transactions-list tbody')
+        .find('tr')
+        .first()
+        .get('[data-cell-type="net"]')
+        .first()
+        .find('span')
+        .should('contain', penceToPoundsWithCurrency(stripeTransaction.net_amount!))
     })
 
     it('should display dispute statuses in the dropdown and dispute transactions correctly - when enabled', () => {
@@ -253,7 +367,7 @@ describe('Transactions index', () => {
             from_date: last12MonthsStartDate,
           },
           displaySize: 20,
-          transactionLength: 1
+          transactionLength: 1,
         }),
         transactionStubs.getLedgerDisputeTransactionsSuccess({
           disputeTransactionsDetails: {
@@ -271,7 +385,9 @@ describe('Transactions index', () => {
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute lost to customer')
 
       cy.get('#state').click()
-      cy.get('#list-of-sectors-state .govuk-checkboxes__input[value=\'dispute_awaiting_evidence\']').trigger('mouseover').click()
+      cy.get("#list-of-sectors-state .govuk-checkboxes__input[value='dispute_awaiting_evidence']")
+        .trigger('mouseover')
+        .click()
 
       cy.contains('Search transactions').click()
 
@@ -296,11 +412,11 @@ describe('Transactions index', () => {
           transactions: [TRANSACTION],
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
-          transactionLength: 1
-        })
+          transactionLength: 1,
+        }),
       ])
 
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL)
       cy.task('clearStubs')
 
       sharedStubs()
@@ -313,9 +429,10 @@ describe('Transactions index', () => {
               from_date: last12MonthsStartDate,
             },
             displaySize: 20,
-            transactionLength: 1
+            transactionLength: 1,
           },
-          400)
+          400
+        ),
       ])
 
       cy.contains('Search transactions').click()
@@ -333,16 +450,15 @@ describe('Transactions index', () => {
           transactions: [TRANSACTION],
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
-          transactionLength: 1
-        })
+          transactionLength: 1,
+        }),
       ])
 
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL)
       cy.task('clearStubs')
 
       sharedStubs()
       cy.task('setupStubs', [
-
         transactionStubs.getLedgerTransactionsFailure(
           {
             gatewayAccountId: GATEWAY_ACCOUNT_ID,
@@ -351,9 +467,10 @@ describe('Transactions index', () => {
               from_date: last12MonthsStartDate,
             },
             displaySize: 20,
-            transactionLength: 1
+            transactionLength: 1,
           },
-          500)
+          500
+        ),
       ])
 
       cy.contains('Search transactions').click()
@@ -378,30 +495,23 @@ describe('Transactions index', () => {
           transactions: [TRANSACTION],
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
-          transactionLength: 50
-
-        })
+          transactionLength: 50,
+        }),
       ])
       cy.visit(TRANSACTIONS_LIST_URL + '?&page=', { failOnStatusCode: false })
 
-      // cy.get('nav.govuk-pagination').should('exist').should('have.length', 2)
-
-      cy.get('nav.govuk-pagination')
-        .should('exist')
-        .and('have.attr', 'aria-label', 'Bottom of table pagination')
+      cy.get('nav.govuk-pagination').should('exist').and('have.attr', 'aria-label', 'Bottom of table pagination')
+      cy.get('ul.govuk-pagination__list').first().children('li.govuk-pagination__item').should('have.length', 3)
 
       cy.get('ul.govuk-pagination__list')
         .first()
-        .children('li.govuk-pagination__item')
-        .should('have.length', 3)
-
-      cy.get('ul.govuk-pagination__list').first().within(() => {
-        cy.get('a')
-          .first()
-          .should('exist')
-          .and('have.attr', 'href', transactionsListPageUrl(1))
-          .and('contain.text', '1')
-      })
+        .within(() => {
+          cy.get('a')
+            .first()
+            .should('exist')
+            .and('have.attr', 'href', transactionsListPageUrl(1))
+            .and('contain.text', '1')
+        })
 
       cy.get('li.govuk-pagination__item')
         .find('a.govuk-link.govuk-pagination__link')
@@ -437,11 +547,10 @@ describe('Transactions index', () => {
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
           transactionLength: 100,
-          page: 3
-
-        })
+          page: 3,
+        }),
       ])
-      cy.visit(TRANSACTIONS_LIST_URL + '?&page=3', { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL + '?&page=3')
 
       cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
         .should('have.attr', 'href', transactionsListPageUrl(4))
@@ -451,13 +560,15 @@ describe('Transactions index', () => {
         .should('have.attr', 'href', transactionsListPageUrl(2))
         .and('have.attr', 'rel', 'prev')
 
-      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link').should('have.length', 1)
+      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+        .should('have.length', 1)
         .first()
         .within(() => {
           cy.get('span.govuk-pagination__link-title').should('contain.text', ' Next')
         })
 
-      cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link').should('have.length', 1)
+      cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
+        .should('have.length', 1)
         .first()
         .within(() => {
           cy.get('span.govuk-pagination__link-title').should('contain.text', ' Previous')
@@ -475,9 +586,8 @@ describe('Transactions index', () => {
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
           transactionLength: 100,
-          page: 5
-
-        })
+          page: 5,
+        }),
       ])
       cy.visit(TRANSACTIONS_LIST_URL + '?&page=5', { failOnStatusCode: false })
 
@@ -485,14 +595,14 @@ describe('Transactions index', () => {
         .should('have.attr', 'href', transactionsListPageUrl(4))
         .and('have.attr', 'rel', 'prev')
 
-      cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link').should('have.length', 1)
+      cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
+        .should('have.length', 1)
         .first()
         .within(() => {
           cy.get('span.govuk-pagination__link-title').should('contain.text', ' Previous')
         })
 
-      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
-        .should('not.exist')
+      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link').should('not.exist')
 
       cy.get('svg.govuk-pagination__icon--next').should('not.exist')
       cy.get('svg.govuk-pagination__icon--prev').should('exist')
@@ -506,17 +616,13 @@ describe('Transactions index', () => {
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
           transactionLength: 10,
-          page: 1
-
-        })
+          page: 1,
+        }),
       ])
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
 
-      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
-        .should('not.exist')
-
-      cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
-        .should('not.exist')
+      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link').should('not.exist')
+      cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link').should('not.exist')
 
       cy.get('svg.govuk-pagination__icon--next').should('not.exist')
       cy.get('svg.govuk-pagination__icon--prev').should('not.exist')
@@ -534,7 +640,15 @@ describe('Transactions index', () => {
       const transactionsResponse = {
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactions: [TRANSACTION],
-        filters: { from_date: last12MonthsStartDate, reference, email, cardholder_name: cardholderNameSearchParam, payment_states: transactionState, last_digits_card_number: lastFourDigits, card_brands: cardBrands },
+        filters: {
+          from_date: last12MonthsStartDate,
+          reference,
+          email,
+          cardholder_name: cardholderNameSearchParam,
+          payment_states: transactionState,
+          last_digits_card_number: lastFourDigits,
+          card_brands: cardBrands,
+        },
         displaySize: 20,
         transactionLength: 30,
       }
@@ -542,18 +656,18 @@ describe('Transactions index', () => {
       cy.task('setupStubs', [
         transactionStubs.getLedgerTransactionsSuccess({
           ...transactionsResponse,
-          page: 1
-        })
-      ])
-
-      cy.task('setupStubs', [
+          page: 1,
+        }),
         transactionStubs.getLedgerTransactionsSuccess({
           ...transactionsResponse,
-          page: 2
-        })
+          page: 2,
+        }),
       ])
 
-      cy.visit(TRANSACTIONS_LIST_URL + `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`)
+      cy.visit(
+        TRANSACTIONS_LIST_URL +
+          `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
+      )
 
       cy.get('.govuk-pagination__next').first().click()
       cy.get('#reference').invoke('val').should('contain', reference)
