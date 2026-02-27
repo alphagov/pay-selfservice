@@ -1,21 +1,20 @@
 import userStubs from '@test/cypress/stubs/user-stubs'
-import { WORLDPAY } from '@models/constants/payment-providers'
+
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { checkServiceNavigation, checkTitleAndHeading } from '../common/assertions'
 import { TEST } from '@models/gateway-account/gateway-account-type'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
-import { reference } from '@controllers/simplified-account/services/payment-links/create'
-import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import paths from '@root/paths'
+
+
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
-import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
+
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { Status } from '@models/transaction/types/status'
 import { Reason } from '@models/transaction/types/reason'
 import { ResourceType } from '@models/transaction/types/resource-type'
-import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
+
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
 
@@ -136,13 +135,13 @@ describe('Transactions index', () => {
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
 
       assertTransactionRow(0, transactions[0].reference, TRANSACTION_URL(transactions[0].transaction_id),
-        transactions[0].email!, penceToPoundsWithCurrency(transactions[0].amount), transactions[0].card_details!.card_brand!, 'Success')
+        transactions[0].email!, penceToPoundsWithCurrency(transactions[0].amount), transactions[0].card_details!.card_brand, 'Success')
 
       assertTransactionRow(1, transactions[1].reference, TRANSACTION_URL(transactions[1].transaction_id),
-        transactions[1].email!, penceToPoundsWithCurrency(transactions[1].amount), transactions[1].card_details!.card_brand!, 'Success')
+        transactions[1].email!, penceToPoundsWithCurrency(transactions[1].amount), transactions[1].card_details!.card_brand, 'Success')
 
       assertTransactionRow(2, transactions[2].reference, TRANSACTION_URL(transactions[2].transaction_id),
-        transactions[2].email!, penceToPoundsWithCurrency(transactions[2].amount), transactions[2].card_details!.card_brand!, 'Success')
+        transactions[2].email!, penceToPoundsWithCurrency(transactions[2].amount), transactions[2].card_details!.card_brand, 'Success')
 
       cy.get('#transactions-list tbody').find('tr').should('have.length', transactions.length)
       cy.get('[data-cy=pagination-detail]').contains(`Showing 1 to ${transactions.length} of ${transactions.length} transactions`)
@@ -497,6 +496,72 @@ describe('Transactions index', () => {
 
       cy.get('svg.govuk-pagination__icon--next').should('not.exist')
       cy.get('svg.govuk-pagination__icon--prev').should('exist')
+    })
+
+    it('should not display pagination links', () => {
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [TRANSACTION],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 10,
+          page: 1
+
+        })
+      ])
+      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+
+      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+        .should('not.exist')
+
+      cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
+        .should('not.exist')
+
+      cy.get('svg.govuk-pagination__icon--next').should('not.exist')
+      cy.get('svg.govuk-pagination__icon--prev').should('not.exist')
+    })
+
+    it('should navigate to next page correctly with all filters intact', () => {
+      const reference = TRANSACTION.reference
+      const email = TRANSACTION.email
+      const cardholderName = TRANSACTION.card_details?.cardholder_name
+      const cardholderNameSearchParam = cardholderName!.split(' ').join('+')
+      const transactionState = TRANSACTION.state?.status.toLowerCase()
+      const lastFourDigits = TRANSACTION.card_details?.last_digits_card_number
+      const cardBrands = 'visa'
+
+      const transactionsResponse = {
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactions: [TRANSACTION],
+        filters: { from_date: last12MonthsStartDate, reference, email, cardholder_name: cardholderNameSearchParam, payment_states: transactionState, last_digits_card_number: lastFourDigits, card_brands: cardBrands },
+        displaySize: 20,
+        transactionLength: 30,
+      }
+
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          ...transactionsResponse,
+          page: 1
+        })
+      ])
+
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          ...transactionsResponse,
+          page: 2
+        })
+      ])
+
+      cy.visit(TRANSACTIONS_LIST_URL + `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`)
+
+      cy.get('.govuk-pagination__next').first().click()
+      cy.get('#reference').invoke('val').should('contain', reference)
+      cy.get('#email').invoke('val').should('contain', email)
+      cy.get('#cardholderName').invoke('val').should('contain', cardholderName)
+      cy.get('#lastDigitsCardNumber').invoke('val').should('contain', lastFourDigits)
+      cy.get('#state').invoke('text').should('contain', 'Success')
+      cy.get('#card-brand').invoke('text').should('contain', 'Visa')
     })
   })
 })
