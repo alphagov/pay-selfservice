@@ -429,5 +429,74 @@ describe('Transactions index', () => {
       cy.get('div.govuk-pagination__next svg.govuk-pagination__icon--next').should('exist')
       cy.get('div.govuk-pagination__next svg.govuk-pagination__icon--prev').should('not.exist')
     })
+
+    it('should have both next and previous pagination links enabled', () => {
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [TRANSACTION],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 100,
+          page: 3
+
+        })
+      ])
+      cy.visit(TRANSACTIONS_LIST_URL + '?&page=3', { failOnStatusCode: false })
+
+      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+        .should('have.attr', 'href', transactionsListPageUrl(4))
+        .and('have.attr', 'rel', 'next')
+
+      cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
+        .should('have.attr', 'href', transactionsListPageUrl(2))
+        .and('have.attr', 'rel', 'prev')
+
+      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link').should('have.length', 1)
+        .first()
+        .within(() => {
+          cy.get('span.govuk-pagination__link-title').should('contain.text', ' Next')
+        })
+
+      cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link').should('have.length', 1)
+        .first()
+        .within(() => {
+          cy.get('span.govuk-pagination__link-title').should('contain.text', ' Previous')
+        })
+
+      cy.get('svg.govuk-pagination__icon--next').should('exist')
+      cy.get('svg.govuk-pagination__icon--prev').should('exist')
+    })
+
+    it('should display the next page as disabled for last page', () => {
+      cy.task('setupStubs', [
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactions: [TRANSACTION],
+          filters: { from_date: last12MonthsStartDate },
+          displaySize: 20,
+          transactionLength: 100,
+          page: 5
+
+        })
+      ])
+      cy.visit(TRANSACTIONS_LIST_URL + '?&page=5', { failOnStatusCode: false })
+
+      cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
+        .should('have.attr', 'href', transactionsListPageUrl(4))
+        .and('have.attr', 'rel', 'prev')
+
+      cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link').should('have.length', 1)
+        .first()
+        .within(() => {
+          cy.get('span.govuk-pagination__link-title').should('contain.text', ' Previous')
+        })
+
+      cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+        .should('not.exist')
+
+      cy.get('svg.govuk-pagination__icon--next').should('not.exist')
+      cy.get('svg.govuk-pagination__icon--prev').should('exist')
+    })
   })
 })
