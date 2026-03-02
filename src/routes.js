@@ -4,7 +4,7 @@
 const { Router } = require('express')
 const passport = require('passport')
 
-const logger = require('./utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const response = require('./utils/response.js').response
 const generateRoute = require('./utils/generate-route')
 const paths = require('./paths')

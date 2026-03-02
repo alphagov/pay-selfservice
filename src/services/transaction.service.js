@@ -3,7 +3,7 @@
 const qs = require('qs')
 const lodash = require('lodash')
 
-const logger = require('../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const { keys } = require('@govuk-pay/pay-js-commons').logging
 const Ledger = require('./clients/ledger.client')
 const { ConnectorClient } = require('./clients/connector.client')
@@ -18,16 +18,18 @@ const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 const connectorRefundFailureReasons = {
   ALREADY_FULLY_REFUNDED: 'full',
   AMOUNT_NOT_AVAILABLE: 'amount_not_available',
-  AMOUNT_BELOW_MINIMUM: 'amount_min_validation'
+  AMOUNT_BELOW_MINIMUM: 'amount_min_validation',
 }
 
-const searchLedger = async function searchLedger (gatewayAccountIds = [], filters, allServices = false) {
+const searchLedger = async function searchLedger(gatewayAccountIds = [], filters, allServices = false) {
   try {
     return await Ledger.transactions(gatewayAccountIds, filters)
   } catch (error) {
     if (error.errorCode === 504) {
       if (allServices) {
-        throw new GatewayTimeoutForAllServicesSearchError('The search has timed out. Try searching for a specific date range or applying other filters.')
+        throw new GatewayTimeoutForAllServicesSearchError(
+          'The search has timed out. Try searching for a specific date range or applying other filters.'
+        )
       } else {
         throw new GatewayTimeoutError('Your request has timed out. Please apply more filters and try again.')
       }
@@ -37,10 +39,10 @@ const searchLedger = async function searchLedger (gatewayAccountIds = [], filter
   }
 }
 
-const csvSearchUrl = function csvSearchParams (filters, gatewayAccountIds = []) {
+const csvSearchUrl = function csvSearchParams(filters, gatewayAccountIds = []) {
   const formatOptions = { arrayFormat: 'comma' }
   const params = {
-    account_id: gatewayAccountIds
+    account_id: gatewayAccountIds,
   }
 
   const formattedParams = qs.stringify(params, formatOptions)
@@ -48,8 +50,14 @@ const csvSearchUrl = function csvSearchParams (filters, gatewayAccountIds = []) 
   return `${process.env.LEDGER_URL}/v1/transaction?${formattedParams}&${formattedFilterParams}`
 }
 
-const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStreamStart, filters, gatewayAccountIds, user,
-  allServiceTransactions, liveAccounts) {
+const logCsvFileStreamComplete = function logCsvFileStreamComplete(
+  timestampStreamStart,
+  filters,
+  gatewayAccountIds,
+  user,
+  allServiceTransactions,
+  liveAccounts
+) {
   const timestampStreamEnd = Date.now()
   logger.info('Completed file stream', {
     time_taken: timestampStreamEnd - timestampStreamStart,
@@ -65,11 +73,11 @@ const logCsvFileStreamComplete = function logCsvFileStreamComplete (timestampStr
     all_service_transactions: allServiceTransactions,
     user_number_of_live_services: user.numberOfLiveServices,
     is_live: liveAccounts,
-    filters: Object.keys(filters).sort().join(', ')
+    filters: Object.keys(filters).sort().join(', '),
   })
 }
 
-const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, chargeId, isCorporateExemptionsEnabled) {
+const ledgerFindWithEvents = async function ledgerFindWithEvents(accountId, chargeId, isCorporateExemptionsEnabled) {
   try {
     const charge = await Ledger.transaction(chargeId, accountId)
     const transactionEvents = await Ledger.events(chargeId, accountId)
@@ -81,33 +89,51 @@ const ledgerFindWithEvents = async function ledgerFindWithEvents (accountId, cha
 
     const userIds = lodash
       .chain(transactionEvents.events)
-      .filter(event => event.data && event.data.refunded_by)
-      .map(event => event.data.refunded_by)
+      .filter((event) => event.data && event.data.refunded_by)
+      .map((event) => event.data.refunded_by)
       .uniq()
       .value()
 
     if (userIds.length !== 0) {
       const users = await userService.findMultipleByExternalIds(userIds)
-      return transactionView.buildPaymentView(charge, transactionEvents, disputeTransaction, isCorporateExemptionsEnabled, users)
+      return transactionView.buildPaymentView(
+        charge,
+        transactionEvents,
+        disputeTransaction,
+        isCorporateExemptionsEnabled,
+        users
+      )
     } else {
-      return transactionView.buildPaymentView(charge, transactionEvents, disputeTransaction, isCorporateExemptionsEnabled)
+      return transactionView.buildPaymentView(
+        charge,
+        transactionEvents,
+        disputeTransaction,
+        isCorporateExemptionsEnabled
+      )
     }
   } catch (error) {
     throw getStatusCodeForError(error)
   }
 }
 
-async function getDisputeTransaction (chargeId, accountId) {
+async function getDisputeTransaction(chargeId, accountId) {
   const disputeTransactions = await Ledger.getDisputesForTransaction(chargeId, accountId)
   if (disputeTransactions && disputeTransactions.transactions && disputeTransactions.transactions.length > 0) {
     return disputeTransactions.transactions[0]
   }
 }
 
-const refund = async function refundTransaction (gatewayAccountId, chargeId, amount, refundAmountAvailable, userExternalId, userEmail) {
+const refund = async function refundTransaction(
+  gatewayAccountId,
+  chargeId,
+  amount,
+  refundAmountAvailable,
+  userExternalId,
+  userEmail
+) {
   const logContext = {
     refund_amount_available: refundAmountAvailable,
-    amount
+    amount,
   }
   logContext[keys.PAYMENT_EXTERNAL_ID] = chargeId
   logger.log('info', 'Submitting a refund for a charge', logContext)
@@ -116,7 +142,7 @@ const refund = async function refundTransaction (gatewayAccountId, chargeId, amo
     amount,
     refund_amount_available: refundAmountAvailable,
     user_external_id: userExternalId,
-    user_email: userEmail
+    user_email: userEmail,
   }
 
   try {
@@ -127,13 +153,14 @@ const refund = async function refundTransaction (gatewayAccountId, chargeId, amo
         throw new Error('This refund request has already been submitted.')
       }
 
-      if (err.errorIdentifier === errorIdentifier.REFUND_NOT_AVAILABLE &&
-        err.reason) {
+      if (err.errorIdentifier === errorIdentifier.REFUND_NOT_AVAILABLE && err.reason) {
         if (err.reason === connectorRefundFailureReasons.ALREADY_FULLY_REFUNDED) {
           throw new Error('This refund request has already been submitted.')
         }
         if (err.reason === connectorRefundFailureReasons.AMOUNT_NOT_AVAILABLE) {
-          throw new Error('The amount you tried to refund is greater than the amount available to be refunded. Please try again.')
+          throw new Error(
+            'The amount you tried to refund is greater than the amount available to be refunded. Please try again.'
+          )
         }
         if (err.reason === connectorRefundFailureReasons.AMOUNT_BELOW_MINIMUM) {
           throw new Error('The amount you tried to refund is too low. Please try again.')
@@ -148,7 +175,7 @@ const refund = async function refundTransaction (gatewayAccountId, chargeId, amo
   }
 }
 
-function getStatusCodeForError (err, response) {
+function getStatusCodeForError(err, response) {
   let status = 'CLIENT_UNAVAILABLE'
   const code = (response || {}).statusCode || (err || {}).errorCode
   if (code > 200) status = 'GET_FAILED'
@@ -161,5 +188,5 @@ module.exports = {
   csvSearchUrl,
   logCsvFileStreamComplete,
   ledgerFindWithEvents,
-  refund
+  refund,
 }

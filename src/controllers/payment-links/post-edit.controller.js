@@ -5,9 +5,9 @@ const lodash = require('lodash')
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const productsClient = require('../../services/clients/products.client.js')
-const logger = require('../../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 
-module.exports = async function updatePaymentLink (req, res, next) {
+module.exports = async function updatePaymentLink(req, res, next) {
   const { productExternalId } = req.params
   const gatewayAccountId = req.account.gateway_account_id
 
@@ -15,7 +15,9 @@ module.exports = async function updatePaymentLink (req, res, next) {
   if (!editPaymentLinkData || editPaymentLinkData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
 
-    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id))
+    return res.redirect(
+      formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id)
+    )
   }
 
   try {
@@ -25,12 +27,14 @@ module.exports = async function updatePaymentLink (req, res, next) {
     logger.info('Updated payment link', {
       product_external_id: req.params && req.params.productExternalId,
       has_metadata: !!numberOfMetadataKeys,
-      number_of_metadata_keys: numberOfMetadataKeys
+      number_of_metadata_keys: numberOfMetadataKeys,
     })
 
     lodash.unset(req, 'session.editPaymentLinkData')
     req.flash('generic', 'Your payment link has been updated')
-    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id))
+    return res.redirect(
+      formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id)
+    )
   } catch (err) {
     return next(new Error(`Update of payment link failed. Error: ${err.message}`))
   }

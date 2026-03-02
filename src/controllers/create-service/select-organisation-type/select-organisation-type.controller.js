@@ -4,11 +4,11 @@ const { response } = require('../../../utils/response')
 const {
   validateMandatoryField,
   SERVICE_NAME_MAX_LENGTH,
-  validateOptionalField
+  validateOptionalField,
 } = require('../../../utils/validation/server-side-form-validations')
-const logger = require('../../../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 
-function get (req, res) {
+function get(req, res) {
   const createServiceState = _.get(req, 'session.pageData.createService', {})
   if (!createServiceState.current_name) {
     logger.info('Page accessed out of sequence, redirecting to my-services/create')
@@ -17,17 +17,17 @@ function get (req, res) {
   const context = {
     ...createServiceState,
     back_link: paths.services.create.index,
-    submit_link: paths.services.create.index
+    submit_link: paths.services.create.index,
   }
   _.unset(req, 'session.pageData.createService.errors')
   return response(req, res, 'services/select-org-type', context)
 }
 
-function post (req, res) {
+function post(req, res) {
   _.set(req, 'session.pageData.createService', {
     current_name: req.body['service-name'],
     service_selected_cy: req.body['welsh-service-name-bool'],
-    current_name_cy: req.body['service-name-cy']
+    current_name_cy: req.body['service-name-cy'],
   })
   const errors = validateServiceName(req.body['service-name'], req.body['service-name-cy'])
   if (!_.isEmpty(errors)) {
@@ -36,14 +36,14 @@ function post (req, res) {
   }
   const context = {
     back_link: paths.services.create.index,
-    submit_link: paths.services.create.index
+    submit_link: paths.services.create.index,
   }
   return response(req, res, 'services/select-org-type', context)
 }
 
 // --- PRIVATE
 
-function validateServiceName (serviceName, serviceNameCy) {
+function validateServiceName(serviceName, serviceNameCy) {
   const errors = {}
   const nameValidationResult = validateMandatoryField(serviceName, SERVICE_NAME_MAX_LENGTH, 'service name')
   if (!nameValidationResult.valid) {
@@ -58,5 +58,5 @@ function validateServiceName (serviceName, serviceNameCy) {
 
 module.exports = {
   post,
-  get
+  get,
 }

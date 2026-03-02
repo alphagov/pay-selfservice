@@ -1,6 +1,6 @@
 'use strict'
 
-const logger = require('../../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const { setSessionVersion } = require('../../services/auth.service')
 
 module.exports = (req, res) => {

@@ -2,7 +2,7 @@
 
 const _ = require('lodash')
 
-const logger = require('../../utils/logger')(__filename)
+const logger = require('@utils/logger/logger')(__filename)
 const paths = require('../../paths')
 
 /**

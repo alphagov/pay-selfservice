@@ -1,4 +1,4 @@
-{% macro stripeTransactionRow(transaction) %}
+{% macro stripeTransactionRow(transaction, service, account) %}
   <tr class="transactions-list--row govuk-table__row vertical-align-top">
     <th
       scope="row"
@@ -11,7 +11,9 @@
         data-charge-id="{{ transaction.externalId }}"
         href="{{ transaction._locals.links.detail }}"
       >
-        {{ transaction._locals.formatted.paymentReference }}
+        <<<<<<< HEAD {{ transaction._locals.formatted.paymentReference }} =======
+        {{ transaction._locals.formatted.reference }} >>>>>>> a2d62973f (PP-15001 Refactor Transction detail page to
+        declarative nunjucks)
       </a>
     </th>
     <td class="govuk-table__cell govuk-!-font-size-16 email vertical-align-middle"
