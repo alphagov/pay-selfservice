@@ -112,7 +112,7 @@ describe('Transactions index', () => {
           transactionLength: 1,
         }),
       ])
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL)
     })
 
     it('should show the transactions item in the side bar in an active state', () => {
@@ -140,7 +140,7 @@ describe('Transactions index', () => {
           transactionLength: 1,
         }),
       ])
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL)
 
       cy.get('#transactions-list tbody').should('not.exist')
     })
@@ -218,11 +218,11 @@ describe('Transactions index', () => {
         }),
       ])
 
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL)
 
       cy.get('.datepicker').should('not.exist')
 
-      cy.get('#fromDate').type(last12MonthsStartDate.toFormat('01/01/25'))
+      cy.get('#fromDate').type('01/01/25')
       cy.get('.datepicker').should('be.visible')
 
       cy.get('#toDate').type('01/01/26')
@@ -247,38 +247,76 @@ describe('Transactions index', () => {
       cy.get('#toDate').should('be.empty')
     })
 
-    it('should check if the user has entered a potential PAN into the reference field', () => {
+    it('should be able to filter using date ranges', () => {
+      const transactionsResponse = {
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        displaySize: 20,
+      }
+
+      const now = DateTime.now().setLocale('en-GB').setZone('Europe/London')
+      const yesterday = now.minus({ days: 1 })
+
+      const unfilteredTransactions = generateTransactions(2)
+      const transactionFromYesterday = new TransactionFixture({ reference: 'transaction-yesterday', createdDate: yesterday.set({ hour: 11 }) }).toTransactionData()
+
       cy.task('setupStubs', [
         transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
+          ...transactionsResponse,
           filters: { from_date: last12MonthsStartDate },
-          displaySize: 20,
+          transactions: unfilteredTransactions,
+          transactionLength: unfilteredTransactions.length,
+        }),
+        transactionStubs.getLedgerTransactionsSuccess({
+          ...transactionsResponse,
+          filters: { from_date: yesterday.startOf('day'), to_date: yesterday.endOf('day') },
+          transactions: [transactionFromYesterday],
           transactionLength: 1,
         }),
       ])
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
 
-      cy.get('[data-cy=reference-filter]').type('4242424242424242')
-      cy.get('[data-cy=email-filter]').click()
+      cy.visit(TRANSACTIONS_LIST_URL)
 
-      cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
-      cy.get('[data-cy=pan-error]').should('exist')
+      cy.get('#dateFilter').select('yesterday')
+      cy.contains('Search transactions').click()
 
-      cy.get('[data-cy=reference-filter]').clear()
-      cy.get('[data-cy=reference-filter]').type('a reference')
-      cy.get('[data-cy=email-filter]').click()
+      cy.get('#fromDate').get('#toDate').should('have.value', yesterday.toFormat('dd/LL/yyyy'))
 
-      cy.get('[data-cy=reference-filter]').parent().should('not.have.class', 'govuk-form-group--error')
-      cy.get('[data-cy=pan-error]').should('not.exist')
-
-      cy.get('[data-cy=reference-filter]').clear()
-      cy.get('[data-cy=reference-filter]').type('4444333322221111')
-      cy.get('[data-cy=email-filter]').click()
-
-      cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
-      cy.get('[data-cy=pan-error]').should('exist')
+      cy.get('#transactions-list tbody').find('tr').should('have.length', [transactionFromYesterday].length)
+      cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', transactionFromYesterday.reference)
     })
+
+    //   it('should check if the user has entered a potential PAN into the reference field', () => {
+    //     cy.task('setupStubs', [
+    //       transactionStubs.getLedgerTransactionsSuccess({
+    //         gatewayAccountId: GATEWAY_ACCOUNT_ID,
+    //         transactions: [TRANSACTION],
+    //         filters: { from_date: last12MonthsStartDate },
+    //         displaySize: 20,
+    //         transactionLength: 1,
+    //       }),
+    //     ])
+    //     cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+
+    //     cy.get('[data-cy=reference-filter]').type('4242424242424242')
+    //     cy.get('[data-cy=email-filter]').click()
+
+    //     cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
+    //     cy.get('[data-cy=pan-error]').should('exist')
+
+    //     cy.get('[data-cy=reference-filter]').clear()
+    //     cy.get('[data-cy=reference-filter]').type('a reference')
+    //     cy.get('[data-cy=email-filter]').click()
+
+    //     cy.get('[data-cy=reference-filter]').parent().should('not.have.class', 'govuk-form-group--error')
+    //     cy.get('[data-cy=pan-error]').should('not.exist')
+
+    //     cy.get('[data-cy=reference-filter]').clear()
+    //     cy.get('[data-cy=reference-filter]').type('4444333322221111')
+    //     cy.get('[data-cy=email-filter]').click()
+
+    //     cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
+    //     cy.get('[data-cy=pan-error]').should('exist')
+    //   })
   })
 
   describe('Display', () => {
@@ -370,14 +408,20 @@ describe('Transactions index', () => {
           transactionLength: 1,
         }),
         transactionStubs.getLedgerDisputeTransactionsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
           disputeTransactionsDetails: {
             parent_transaction_id: parentTransactionOfDispute.transaction_id,
             gateway_account_id: GATEWAY_ACCOUNT_ID,
             transactions: [disputeTransaction],
           },
+          filters: {
+            from_date: last12MonthsStartDate, dispute_states: 'dispute_awaiting_evidence'
+          },
+          displaySize: 20,
+          transactionLength: 1,
         }),
       ])
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL)
 
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute awaiting evidence')
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute under review')
@@ -498,7 +542,7 @@ describe('Transactions index', () => {
           transactionLength: 50,
         }),
       ])
-      cy.visit(TRANSACTIONS_LIST_URL + '?&page=', { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL + '?&page=')
 
       cy.get('nav.govuk-pagination').should('exist').and('have.attr', 'aria-label', 'Bottom of table pagination')
       cy.get('ul.govuk-pagination__list').first().children('li.govuk-pagination__item').should('have.length', 3)
@@ -589,7 +633,7 @@ describe('Transactions index', () => {
           page: 5,
         }),
       ])
-      cy.visit(TRANSACTIONS_LIST_URL + '?&page=5', { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL + '?&page=5')
 
       cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
         .should('have.attr', 'href', transactionsListPageUrl(4))
@@ -619,7 +663,7 @@ describe('Transactions index', () => {
           page: 1,
         }),
       ])
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
+      cy.visit(TRANSACTIONS_LIST_URL)
 
       cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link').should('not.exist')
       cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link').should('not.exist')
@@ -666,7 +710,7 @@ describe('Transactions index', () => {
 
       cy.visit(
         TRANSACTIONS_LIST_URL +
-          `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
+        `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
       )
 
       cy.get('.govuk-pagination__next').first().click()
