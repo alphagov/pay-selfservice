@@ -4,6 +4,8 @@ import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixtu
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import response from '@utils/response'
 import refundFixtures from '@test/fixtures/refund.fixtures'
+import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 
 function getTransaction(transactionExternalId: string) {
   const path = `/v1/transaction/${transactionExternalId}`
@@ -35,30 +37,26 @@ function getTransactionForGatewayAccount(gatewayAccountId: string, transactionEx
   }
 }
 
-function getTransactionsForGatewayAccount(gatewayAccountId: string, transactions: TransactionFixture[]) {
+function getTransactionsForGatewayAccount(gatewayAccountId: string) {
   const path = `/v1/transaction`
 
   return {
-    success: function () {
+    success: function (transactions: TransactionFixture[]) {
       return stubBuilder('GET', path, 200, {
-        response: transactions,
-
-        // response: ledgerTransactionFixtures.validTransactionSearchResponse({
-        //   // page: 1,
-        //   // display_size: 100,
-        //   // transaction_length: 1000,
-        //   // transaction_count: 3,
-        //   // gateway_account_id: gatewayAccountId,
-        //   transactions,
-        // }),
+        response: {
+          total: transactions.length,
+          count: transactions.length,
+          page: 1,
+          results: transactions,
+          isStripeAccount: true
+        },
         query: {
           account_id: [gatewayAccountId],
-          // page: 1,
-          // display_size: 20,
-          // limit_total: true,
-          // limit_total_size: 5001,
-          // // from_date: '2015-02-19T00:00:00.000 +00:00',
-          // deepMatchRequest: false
+          page: 1,
+          display_size: 20,
+          limit_total: true,
+          limit_total_size: 5001,
+          from_date: last12MonthsStartDate,
         },
       })
     },
@@ -105,4 +103,4 @@ function postRefund(serviceExternalId: string, transactionExternalId: string) {
   }
 }
 
-export { getTransaction, getTransactionForGatewayAccount, getTransactionEvents, postRefund }
+export { getTransaction, getTransactionForGatewayAccount, getTransactionsForGatewayAccount, getTransactionEvents, postRefund }
