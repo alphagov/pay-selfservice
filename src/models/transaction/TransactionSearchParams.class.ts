@@ -12,7 +12,7 @@ interface TransactionSearchQuery {
   cardholderName?: string
   lastDigitsCardNumber?: string
   metadataValue?: string
-  brand?: string
+  brand?: string | string[]
   reference?: string
   email?: string
   dateFilter?: string
@@ -23,12 +23,13 @@ interface TransactionSearchQuery {
   fromTime?: string
   toTime?: string
   includeTime?: string
+  gatewayPayoutId?: string
 }
 
 export class TransactionSearchParams {
   accountIds: [number]
   agreementId?: string
-  currentPage: number
+  currentPage?: number
   displaySize?: number
   page?: number
   limitTotal?: boolean
@@ -36,7 +37,7 @@ export class TransactionSearchParams {
   cardholderName?: string
   lastDigitsCardNumber?: string
   metadataValue?: string
-  brand?: string
+  brand?: string[]
   reference?: string
   email?: string
   type?: string
@@ -47,13 +48,16 @@ export class TransactionSearchParams {
   paymentStates?: string[]
   refundStates?: string[]
   disputeStates?: string[]
+  gatewayPayoutId?: string
+  motoHeader?: boolean
+  feeHeaders?: boolean
   baseQuery?: TransactionSearchQuery
   includeTime?: boolean
+  withPagination: boolean
 
-  constructor(gatewayAccountId: number, currentPage: number, displaySize: number) {
+  constructor(gatewayAccountId: number, withPagintion: boolean) {
     this.accountIds = [gatewayAccountId]
-    this.currentPage = currentPage
-    this.displaySize = displaySize
+    this.withPagination = withPagintion
   }
 
   toJson() {
@@ -61,29 +65,62 @@ export class TransactionSearchParams {
   }
 
   getQueryParams() {
-    return new URLSearchParams(this.baseQuery as Record<string, string>)
+    const urlParams = new URLSearchParams()
+
+    Object.entries(this.baseQuery as Record<string, string>).forEach(([key, value]: [string, string]) => {
+      if (value !== undefined && value !== null) {
+        urlParams.set(key, value)
+      }
+    })
+
+    return urlParams
+  }
+
+  getFilterKeys(): string[] {
+    return Object.entries(this)
+      .filter(([_key, value]) => value !== undefined)
+      .map(([key, _value]) => key)
+      .sort()
   }
 
   static forAgreement(gatewayAccountId: number, agreementExternalId: string, currentPage: number, displaySize: number) {
-    const searchParams = new TransactionSearchParams(gatewayAccountId, currentPage, displaySize)
+    const searchParams = new TransactionSearchParams(gatewayAccountId, true)
+    searchParams.currentPage = currentPage
+    searchParams.displaySize = displaySize
     searchParams.agreementId = agreementExternalId
     return searchParams
   }
 
-  static fromSearchQuery(gatewayAccountId: number, pageSize: number, queryParams: TransactionSearchQuery) {
-    const currentPageNumber = parsePageNumber(
-      typeof queryParams.page === 'string' ? queryParams.page : `${queryParams.page}`
-    )
+  static fromSearchQuery(
+    gatewayAccountId: number,
+    queryParams: TransactionSearchQuery,
+    withPagination: boolean,
+    pageSize?: number
+  ) {
+    const searchParams = new TransactionSearchParams(gatewayAccountId, withPagination)
 
-    const searchParams = new TransactionSearchParams(gatewayAccountId, currentPageNumber, pageSize)
+    if (withPagination) {
+      searchParams.currentPage = parsePageNumber(
+        typeof queryParams.page === 'string' ? queryParams.page : `${queryParams.page}`
+      )
+      searchParams.displaySize = pageSize
+    }
+
     searchParams.baseQuery = queryParams
 
     searchParams.cardholderName = nonEmpty(queryParams.cardholderName)
     searchParams.lastDigitsCardNumber = nonEmpty(queryParams.lastDigitsCardNumber)
     searchParams.metadataValue = nonEmpty(queryParams.metadataValue)
-    searchParams.brand = nonEmpty(queryParams.brand)
     searchParams.reference = nonEmpty(queryParams.reference)
     searchParams.email = nonEmpty(queryParams.email)
+
+    if (queryParams.brand === undefined || queryParams.brand === '') {
+      searchParams.brand = undefined
+    } else if (Array.isArray(queryParams.brand)) {
+      searchParams.brand = queryParams.brand
+    } else {
+      searchParams.brand = queryParams.brand.split(',')
+    }
 
     if (queryParams.fromDate || queryParams.toDate) {
       searchParams.fromDate = parseDateTime(
@@ -114,6 +151,10 @@ export class TransactionSearchParams {
       searchParams.paymentStates = stateFilters.paymentStates
       searchParams.refundStates = stateFilters.refundStates
       searchParams.disputeStates = stateFilters.disputeStates
+    }
+
+    if (queryParams.gatewayPayoutId) {
+      searchParams.gatewayPayoutId = queryParams.gatewayPayoutId
     }
 
     return searchParams

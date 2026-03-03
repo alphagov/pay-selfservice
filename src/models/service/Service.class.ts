@@ -1,4 +1,5 @@
 import { ServiceData } from '@models/service/dto/Service.dto'
+import { ServiceLinksGenerator } from '@models/service/ServiceLinksGenerator.class'
 
 class Service {
   readonly id: number
@@ -25,6 +26,10 @@ class Service {
   readonly agentInitiatedMotoEnabled: boolean
   readonly defaultBillingAddressCountry?: string
   readonly takesPaymentsOverPhone: boolean
+
+  readonly _locals: {
+    links: ServiceLinksGenerator
+  }
 
   constructor(serviceData: ServiceData) {
     this.id = serviceData.id
@@ -56,6 +61,10 @@ class Service {
     this.agentInitiatedMotoEnabled = serviceData.agent_initiated_moto_enabled
     this.defaultBillingAddressCountry = serviceData.default_billing_address_country
     this.takesPaymentsOverPhone = serviceData.takes_payments_over_phone
+
+    this._locals = {
+      links: new ServiceLinksGenerator(this.externalId),
+    }
   }
 }
 

@@ -27,7 +27,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const isStripeAccount = req.account.paymentProvider === 'stripe'
   const gatewayAccountId = req.account.id
   const PAGE_SIZE = 20
-  const transactionSearchParams = TransactionSearchParams.fromSearchQuery(gatewayAccountId, PAGE_SIZE, req.query)
+  const transactionSearchParams = TransactionSearchParams.fromSearchQuery(gatewayAccountId, req.query, true, PAGE_SIZE)
 
   const transactionsUrl = formatServiceAndAccountPathsFor(
     paths.simplifiedAccount.transactions.index,
@@ -52,15 +52,23 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     return {
       value: card.brand,
       text: card.label === 'Jcb' ? card.label.toUpperCase() : card.label,
-      selected: transactionSearchParams.brand === card.brand,
+      selected: transactionSearchParams.brand?.includes(card.brand),
     }
   })
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
-  const currentPage = Math.min(transactionSearchParams.currentPage, totalPages)
+  const currentPage = Math.min(transactionSearchParams.currentPage!, totalPages)
 
   const { path } = getUrlGenerator(req.query as Record<string, string>, transactionsUrl)
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, path)
+
+  const downloadUrl = formatServiceAndAccountPathsFor(
+    paths.simplifiedAccount.transactions.downloadCsv,
+    req.service.externalId,
+    req.account.type
+  )
+  const downloadQueryString = transactionSearchParams.getQueryParams().toString()
+  const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
 
   return response(req, res, 'simplified-account/transactions/index', {
     results,
@@ -71,6 +79,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     isStripeAccount,
     cardBrands: [{ value: '', text: 'Any' }, ...cardBrands],
     statuses: eventStates,
+    downloadLink,
   })
 }
 

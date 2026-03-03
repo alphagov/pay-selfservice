@@ -43,10 +43,8 @@ class LedgerClient extends BaseClient {
   private get transactionsClient() {
     return {
       search: async (params: TransactionSearchParams) => {
-        const path = `/v1/transaction`
-        const response = await this.get<SearchData<TransactionData>>(path, 'get transactions', {
-          params: params.toJson(),
-        })
+        const path = `/v1/transaction?${params.toJson().asQueryString()}`
+        const response = await this.get<SearchData<TransactionData>>(path, 'get transactions')
         return {
           total: response.data.total,
           count: response.data.count,
