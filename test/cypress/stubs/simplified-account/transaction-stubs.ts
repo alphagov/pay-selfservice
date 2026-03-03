@@ -41,14 +41,13 @@ function getTransactionsForGatewayAccount(gatewayAccountId: string) {
   const path = `/v1/transaction`
 
   return {
-    success: function (transactions: TransactionFixture[]) {
+    success: function (transactions: TransactionData[]) {
       return stubBuilder('GET', path, 200, {
         response: {
           total: transactions.length,
           count: transactions.length,
           page: 1,
           results: transactions,
-          isStripeAccount: true
         },
         query: {
           account_id: [gatewayAccountId],
@@ -103,4 +102,10 @@ function postRefund(serviceExternalId: string, transactionExternalId: string) {
   }
 }
 
-export { getTransaction, getTransactionForGatewayAccount, getTransactionsForGatewayAccount, getTransactionEvents, postRefund }
+export {
+  getTransaction,
+  getTransactionForGatewayAccount,
+  getTransactionsForGatewayAccount,
+  getTransactionEvents,
+  postRefund,
+}

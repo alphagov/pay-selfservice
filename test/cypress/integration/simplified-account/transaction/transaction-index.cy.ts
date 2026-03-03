@@ -8,9 +8,11 @@ import { last12MonthsStartDate } from '@utils/simplified-account/services/dashbo
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { Status } from '@models/transaction/types/status'
-import { Reason } from '@models/transaction/types/reason'
 import { ResourceType } from '@models/transaction/types/resource-type'
 import { DateTime } from 'luxon'
+import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
+import { getTransactionsForGatewayAccount } from '@test/cypress/stubs/simplified-account/transaction-stubs'
+import { PaymentDetailsFixture } from '@test/fixtures/transaction/payment-details.fixture'
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
 
@@ -257,7 +259,10 @@ describe('Transactions index', () => {
       const yesterday = now.minus({ days: 1 })
 
       const unfilteredTransactions = generateTransactions(2)
-      const transactionFromYesterday = new TransactionFixture({ reference: 'transaction-yesterday', createdDate: yesterday.set({ hour: 11 }) }).toTransactionData()
+      const transactionFromYesterday = new TransactionFixture({
+        reference: 'transaction-yesterday',
+        createdDate: yesterday.set({ hour: 11 }),
+      }).toTransactionData()
 
       cy.task('setupStubs', [
         transactionStubs.getLedgerTransactionsSuccess({
@@ -282,7 +287,11 @@ describe('Transactions index', () => {
       cy.get('#fromDate').get('#toDate').should('have.value', yesterday.toFormat('dd/LL/yyyy'))
 
       cy.get('#transactions-list tbody').find('tr').should('have.length', [transactionFromYesterday].length)
-      cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', transactionFromYesterday.reference)
+      cy.get('#transactions-list tbody')
+        .find('tr')
+        .first()
+        .find('th')
+        .should('contain', transactionFromYesterday.reference)
     })
 
     //   it('should check if the user has entered a potential PAN into the reference field', () => {
@@ -375,69 +384,61 @@ describe('Transactions index', () => {
         .should('contain', penceToPoundsWithCurrency(stripeTransaction.net_amount!))
     })
 
-    it('should display dispute statuses in the dropdown and dispute transactions correctly - when enabled', () => {
+    it('should display dispute statuses in the dropdown', () => {
       sharedStubs('test', 'stripe')
+      cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success([TRANSACTION])])
 
-      const parentTransactionOfDispute = new TransactionFixture({ disputed: true }).toTransactionData()
-      const createdDate = new TransactionFixture().createdDate
-
-      const disputeTransaction = {
-        gateway_account_id: GATEWAY_ACCOUNT_ID,
-        amount: 1000,
-        fee: 100,
-        net_amount: 900,
-        finished: true,
-        status: Status.NEEDS_RESPONSE,
-        created_date: createdDate.plus({ month: 4 }),
-        type: ResourceType.DISPUTE,
-        includePaymentDetails: true,
-        evidence_due_date: createdDate.plus({ month: 5 }),
-        reason: Reason.FRAUDULENT,
-        transaction_id: parentTransactionOfDispute.gateway_transaction_id + '1a',
-        parent_transaction_id: parentTransactionOfDispute,
-      }
-
-      cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [parentTransactionOfDispute],
-          filters: {
-            from_date: last12MonthsStartDate,
-          },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
-        transactionStubs.getLedgerDisputeTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          disputeTransactionsDetails: {
-            parent_transaction_id: parentTransactionOfDispute.transaction_id,
-            gateway_account_id: GATEWAY_ACCOUNT_ID,
-            transactions: [disputeTransaction],
-          },
-          filters: {
-            from_date: last12MonthsStartDate, dispute_states: 'dispute_awaiting_evidence'
-          },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
-      ])
       cy.visit(TRANSACTIONS_LIST_URL)
 
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute awaiting evidence')
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute under review')
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute won in your favour')
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute lost to customer')
+    })
 
-      cy.get('#state').click()
-      cy.get("#list-of-sectors-state .govuk-checkboxes__input[value='dispute_awaiting_evidence']")
-        .trigger('mouseover')
-        .click()
+    it('should display refund transactions correctly', () => {
+      sharedStubs()
 
-      cy.contains('Search transactions').click()
+      const parentTransactionOfRefund = new TransactionFixture().toTransactionData()
+      const state = new TransactionStateFixture({ status: Status.SUCCESS })
+      const paymentDetails = new PaymentDetailsFixture()
+      const refundTransaction = new TransactionFixture({
+        paymentDetails,
+        transactionType: ResourceType.REFUND,
+        state,
+        disputed: true,
+      }).toTransactionData()
 
-      // cy.get('.transactions-list--row').should('have.length', 2)
-      // cy.get('#charge-id-parent-transaction-id-1').should('exist')
-      // cy.get('#charge-id-parent-transaction-id-2').should('exist')
+      cy.task('setupStubs', [
+        getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success([
+          parentTransactionOfRefund,
+          refundTransaction,
+        ]),
+      ])
+
+      cy.visit(TRANSACTIONS_LIST_URL)
+
+      cy.get('.transactions-list--row').should('have.length', 2)
+
+      assertTransactionRow(
+        0,
+        parentTransactionOfRefund.reference,
+        TRANSACTION_URL(parentTransactionOfRefund.transaction_id),
+        parentTransactionOfRefund.email!,
+        penceToPoundsWithCurrency(parentTransactionOfRefund.amount),
+        parentTransactionOfRefund.card_details!.card_brand,
+        'Success'
+      )
+
+      assertTransactionRow(
+        1,
+        refundTransaction.reference,
+        TRANSACTION_URL(refundTransaction.transaction_id),
+        refundTransaction.email!,
+        penceToPoundsWithCurrency(refundTransaction.amount),
+        refundTransaction.card_details!.card_brand,
+        'Refund successful'
+      )
     })
   })
 
@@ -710,7 +711,7 @@ describe('Transactions index', () => {
 
       cy.visit(
         TRANSACTIONS_LIST_URL +
-        `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
+          `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
       )
 
       cy.get('.govuk-pagination__next').first().click()
