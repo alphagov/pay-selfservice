@@ -540,6 +540,52 @@ describe('Transactions index', () => {
           penceToPoundsWithCurrency(-disputeTransaction.net_amount!)
         )
       })
+
+      it('should display amounts correctly for dispute won in our favour', () => {
+        sharedStubs('test', 'stripe')
+
+        const transactionAmounts = { netAmount: 1900, fee: 100, amount: 2000 }
+        const disputeTransactionAmounts = { netAmount: 4000, fee: 2000, amount: 2000 }
+        const transactionWithFees = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
+
+        const state = new TransactionStateFixture({ status: Status.WON })
+        const paymentDetails = new PaymentDetailsFixture()
+        const disputeTransaction = new TransactionFixture({
+          paymentDetails,
+          transactionType: ResourceType.DISPUTE,
+          state,
+        }).toTransactionData()
+
+        cy.task('setupStubs', [
+          getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success([TRANSACTION, disputeTransaction]),
+        ])
+
+        cy.visit(TRANSACTIONS_LIST_URL)
+
+        cy.get('.transactions-list--row').should('have.length', 2)
+
+        assertTransactionRow(
+          0,
+          TRANSACTION.reference,
+          TRANSACTION_URL(TRANSACTION.transaction_id),
+          TRANSACTION.email!,
+          penceToPoundsWithCurrency(TRANSACTION.amount),
+          TRANSACTION.card_details!.card_brand,
+          'Success'
+        )
+
+        assertTransactionRow(
+          1,
+          disputeTransaction.reference,
+          TRANSACTION_URL(disputeTransaction.transaction_id),
+          disputeTransaction.email!,
+          penceToPoundsWithCurrency(disputeTransaction.amount),
+          disputeTransaction.card_details!.card_brand,
+          'Dispute won in your favour',
+          '',
+          ''
+        )
+      })
     })
   })
 
