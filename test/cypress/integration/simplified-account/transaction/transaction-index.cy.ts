@@ -105,15 +105,7 @@ describe('Transactions index', () => {
   describe('Common page content', () => {
     beforeEach(() => {
       sharedStubs()
-      cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
-      ])
+      cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success([TRANSACTION])])
       cy.visit(TRANSACTIONS_LIST_URL)
     })
 
@@ -133,15 +125,7 @@ describe('Transactions index', () => {
     })
 
     it('should display correctly when there are no results', () => {
-      cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [],
-          filters: { from_date: last12MonthsStartDate },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
-      ])
+      cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success([])])
       cy.visit(TRANSACTIONS_LIST_URL)
 
       cy.get('#transactions-list tbody').should('not.exist')
@@ -150,15 +134,7 @@ describe('Transactions index', () => {
     it('should display unfiltered results', () => {
       const transactions: TransactionData[] = generateTransactions(3)
 
-      cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions,
-          filters: { from_date: last12MonthsStartDate },
-          displaySize: 20,
-          transactionLength: transactions.length,
-        }),
-      ])
+      cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success(transactions)])
       cy.visit(TRANSACTIONS_LIST_URL)
 
       assertTransactionRow(
@@ -198,22 +174,13 @@ describe('Transactions index', () => {
     })
 
     it('should be able to filter using date-time pickers', () => {
-      const transactionsResponse = {
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        displaySize: 20,
-      }
-
       const unfilteredTransactions = generateTransactions(2)
 
       cy.task('setupStubs', [
+        getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success(unfilteredTransactions),
         transactionStubs.getLedgerTransactionsSuccess({
-          ...transactionsResponse,
-          filters: { from_date: last12MonthsStartDate },
-          transactions: unfilteredTransactions,
-          transactionLength: unfilteredTransactions.length,
-        }),
-        transactionStubs.getLedgerTransactionsSuccess({
-          ...transactionsResponse,
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          displaySize: 20,
           filters: { from_date: DateTime.local(2025), to_date: DateTime.local(2026) },
           transactions: [TRANSACTION],
           transactionLength: 1,
@@ -250,11 +217,6 @@ describe('Transactions index', () => {
     })
 
     it('should be able to filter using date ranges', () => {
-      const transactionsResponse = {
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        displaySize: 20,
-      }
-
       const now = DateTime.now().setLocale('en-GB').setZone('Europe/London')
       const yesterday = now.minus({ days: 1 })
 
@@ -265,14 +227,10 @@ describe('Transactions index', () => {
       }).toTransactionData()
 
       cy.task('setupStubs', [
+        getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success(unfilteredTransactions),
         transactionStubs.getLedgerTransactionsSuccess({
-          ...transactionsResponse,
-          filters: { from_date: last12MonthsStartDate },
-          transactions: unfilteredTransactions,
-          transactionLength: unfilteredTransactions.length,
-        }),
-        transactionStubs.getLedgerTransactionsSuccess({
-          ...transactionsResponse,
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          displaySize: 20,
           filters: { from_date: yesterday.startOf('day'), to_date: yesterday.endOf('day') },
           transactions: [transactionFromYesterday],
           transactionLength: 1,
@@ -295,15 +253,7 @@ describe('Transactions index', () => {
     })
 
     it('should check if the user has entered a potential PAN into the reference field', () => {
-      cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
-      ])
+      cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success([TRANSACTION])])
       cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
 
       cy.get('[data-cy=reference-filter]').type('4242424242424242')
@@ -340,13 +290,9 @@ describe('Transactions index', () => {
       }).toTransactionData()
 
       cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [transactionWithCorporateCardSurcharge],
-          filters: { from_date: last12MonthsStartDate },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
+        getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success([
+          transactionWithCorporateCardSurcharge,
+        ]),
       ])
       cy.visit(TRANSACTIONS_LIST_URL)
 
@@ -366,13 +312,7 @@ describe('Transactions index', () => {
       const stripeTransaction = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
 
       cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [stripeTransaction],
-          filters: { from_date: last12MonthsStartDate },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
+        getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success([stripeTransaction]),
       ])
       cy.visit(TRANSACTIONS_LIST_URL)
 
@@ -544,10 +484,6 @@ describe('Transactions index', () => {
       it('should display amounts correctly for dispute won in our favour', () => {
         sharedStubs('test', 'stripe')
 
-        const transactionAmounts = { netAmount: 1900, fee: 100, amount: 2000 }
-        const disputeTransactionAmounts = { netAmount: 4000, fee: 2000, amount: 2000 }
-        const transactionWithFees = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
-
         const state = new TransactionStateFixture({ status: Status.WON })
         const paymentDetails = new PaymentDetailsFixture()
         const disputeTransaction = new TransactionFixture({
@@ -598,15 +534,7 @@ describe('Transactions index', () => {
     const errorHeading = 'An error occurred'
 
     it('should show error message on a bad request while retrieving the list of transactions', () => {
-      cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
-      ])
+      cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success([TRANSACTION])])
 
       cy.visit(TRANSACTIONS_LIST_URL)
       cy.task('clearStubs')
@@ -636,15 +564,7 @@ describe('Transactions index', () => {
     })
 
     it('should display the generic error page, if an internal server error occurs while retrieving the list of transactions', () => {
-      cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
-      ])
+      cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID.toString()).success([TRANSACTION])])
 
       cy.visit(TRANSACTIONS_LIST_URL)
       cy.task('clearStubs')
