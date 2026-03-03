@@ -110,7 +110,7 @@ export class TransactionFixture {
       reason: this.reason,
       refund_summary: this.refundSummary?.toLedgerRefundSummaryData(),
       authorisation_summary: this.authorisationSummary?.toAuthorisationSummaryData(),
-      payment_details: this.paymentDetails?.toPaymentDetailsData()
+      payment_details: this.paymentDetails?.toPaymentDetailsData(),
     }
   }
 
