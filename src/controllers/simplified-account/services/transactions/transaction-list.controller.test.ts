@@ -454,7 +454,7 @@ describe('controller: services/ledger', () => {
         mockLedgerService.searchTransactions.should.have.been.calledOnce
 
         const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
-        searchParams.currentPage.should.eql(2)
+        searchParams.page.should.eql(2)
       })
 
       it('should default to page 1 for invalid page parameter', async () => {
@@ -467,7 +467,7 @@ describe('controller: services/ledger', () => {
         mockLedgerService.searchTransactions.should.have.been.calledOnce
 
         const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
-        searchParams.currentPage.should.eql(1)
+        searchParams.page.should.eql(1)
       })
 
       it('should default to page 1 for negative page number', async () => {
@@ -480,7 +480,7 @@ describe('controller: services/ledger', () => {
         mockLedgerService.searchTransactions.should.have.been.calledOnce
 
         const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
-        searchParams.currentPage.should.eql(1)
+        searchParams.page.should.eql(1)
       })
     })
   })
