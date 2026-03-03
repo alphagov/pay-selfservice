@@ -57,7 +57,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   })
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
-  const currentPage = Math.min(transactionSearchParams.currentPage!, totalPages)
+  const currentPage = Math.min(transactionSearchParams.page!, totalPages)
 
   const { path } = getUrlGenerator(req.query as Record<string, string>, transactionsUrl)
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, path)
