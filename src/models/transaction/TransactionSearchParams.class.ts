@@ -29,7 +29,6 @@ interface TransactionSearchQuery {
 export class TransactionSearchParams {
   accountIds: [number]
   agreementId?: string
-  currentPage?: number
   displaySize?: number
   page?: number
   limitTotal?: boolean
@@ -85,7 +84,7 @@ export class TransactionSearchParams {
 
   static forAgreement(gatewayAccountId: number, agreementExternalId: string, currentPage: number, displaySize: number) {
     const searchParams = new TransactionSearchParams(gatewayAccountId, true)
-    searchParams.currentPage = currentPage
+    searchParams.page = currentPage
     searchParams.displaySize = displaySize
     searchParams.agreementId = agreementExternalId
     return searchParams
@@ -100,7 +99,7 @@ export class TransactionSearchParams {
     const searchParams = new TransactionSearchParams(gatewayAccountId, withPagination)
 
     if (withPagination) {
-      searchParams.currentPage = parsePageNumber(
+      searchParams.page = parsePageNumber(
         typeof queryParams.page === 'string' ? queryParams.page : `${queryParams.page}`
       )
       searchParams.displaySize = pageSize
