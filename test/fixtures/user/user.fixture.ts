@@ -16,7 +16,7 @@ export class UserFixture {
   readonly internalUser: boolean
   readonly numberOfLiveServices: number
 
-  constructor(overrides?: Partial<UserData>) {
+  constructor(overrides?: Partial<UserFixture>) {
     this.externalId = 'user-123-external-id'
     this.email = 'homer.simpson@example.com'
     this.serviceRoles = [new ServiceRoleFixture()]

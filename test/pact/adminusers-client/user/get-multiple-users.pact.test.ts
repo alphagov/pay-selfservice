@@ -1,20 +1,23 @@
-'use strict'
-const { Pact } = require('@pact-foundation/pact')
-const path = require('path')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
-const userFixtures = require('../../../fixtures/user.fixtures')
-const random = require('../../../../src/utils/random')
-const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-let adminUsersClient
+import { Pact } from '@pact-foundation/pact'
+import path from 'path'
+import chai from 'chai'
+import Builder from '@test/test-helpers/pact/pact-interaction-builder'
+import AdminUsersClient from '@services/clients/pay/AdminUsersClient.class'
+import { pactify } from '@test/test-helpers/pact/pactify'
+import { UserFixture } from '@test/fixtures/user/user.fixture'
+import random from '@utils/random'
+import { ServiceRoleFixture } from '@test/fixtures/user/service-role.fixture'
+import { ServiceFixture } from '@test/fixtures/service/service.fixture'
+import User from '@models/user/User.class'
+const { PactInteractionBuilder } = Builder
+// constants
+let adminUsersClient: AdminUsersClient
 
-const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
+const expect = chai.expect
 
-chai.use(chaiAsPromised)
-
-const { expect } = chai
 const USER_PATH = '/v1/api/users'
+
+const serviceRoleFixture = new ServiceRoleFixture({ service: new ServiceFixture({ gatewayAccountIds: ['666', '7'] }) })
 
 describe('adminusers client - get users', function () {
   const provider = new Pact({
@@ -36,33 +39,19 @@ describe('adminusers client - get users', function () {
   describe('success', () => {
     const existingExternalIds = [random.randomUuid(), random.randomUuid()]
 
-    const params = existingExternalIds.map((existingExternalId) => {
-      return {
-        external_id: existingExternalId,
-        service_roles: [
-          {
-            service: {
-              gateway_account_ids: ['666', '7'],
-            },
-          },
-        ],
-      }
-    })
+    const expectedUsers = existingExternalIds.map((externalId) =>
+      new UserFixture({ externalId, serviceRoles: [serviceRoleFixture] }).toUserData()
+    )
 
-    const expectedUsers = userFixtures.validUsersResponse(params)
-    const usersPactified = userResponsePactifier.pactifySimpleArray(expectedUsers)
-
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(USER_PATH)
-            .withQuery('ids', existingExternalIds.join())
-            .withState('the given external id all refer to existing users')
-            .withUponReceiving('a valid get users request')
-            .withResponseBody(usersPactified)
-            .build()
-        )
-        .then(() => done())
+    before(async () => {
+      await provider.addInteraction(
+        new PactInteractionBuilder(USER_PATH)
+          .withQuery('ids', existingExternalIds.join())
+          .withState('the given external id all refer to existing users')
+          .withUponReceiving('a valid get users request')
+          .withResponseBody(pactify(expectedUsers))
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
@@ -70,7 +59,7 @@ describe('adminusers client - get users', function () {
     it('should find users successfully', function () {
       const result = expect(adminUsersClient.users.findMultipleByExternalIds(existingExternalIds))
 
-      return result.to.be.fulfilled.then(function (users) {
+      return result.to.be.fulfilled.then(function (users: User[]) {
         users.forEach((user, index) => {
           expect(user.externalId).to.be.equal(expectedUsers[index].external_id)
           expect(user.email).to.be.equal(expectedUsers[index].email)
@@ -89,18 +78,16 @@ describe('adminusers client - get users', function () {
   describe('not found', () => {
     const existingExternalIds = [random.randomUuid(), random.randomUuid()]
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(USER_PATH)
-            .withQuery('ids', existingExternalIds.join())
-            .withState('no users exits with the given external id')
-            .withUponReceiving('a valid get users request of an non existing user')
-            .withStatusCode(404)
-            .withResponseHeaders({})
-            .build()
-        )
-        .then(() => done())
+    before(async () => {
+      await provider.addInteraction(
+        new PactInteractionBuilder(USER_PATH)
+          .withQuery('ids', existingExternalIds.join())
+          .withState('no users exits with the given external id')
+          .withUponReceiving('a valid get users request of an non existing user')
+          .withStatusCode(404)
+          .withResponseHeaders({})
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
