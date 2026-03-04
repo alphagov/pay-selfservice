@@ -1,16 +1,15 @@
-const { Pact } = require('@pact-foundation/pact')
-const path = require('path')
-const chai = require('chai')
-const chaiAsPromised = require('chai-as-promised')
-const userFixtures = require('../../../fixtures/user.fixtures')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
-
-chai.use(chaiAsPromised)
+import { Pact } from '@pact-foundation/pact'
+import path from 'path'
+import chai from 'chai'
+import userFixtures from '@test/fixtures/user.fixtures'
+import Builder from '@test/test-helpers/pact/pact-interaction-builder'
+import AdminUsersClient from '@services/clients/pay/AdminUsersClient.class'
+import { UpdatePasswordFixture } from '@test/fixtures/user/update-password-request.fixture'
+const { PactInteractionBuilder } = Builder
 
 const expect = chai.expect
 const RESET_PASSWORD_PATH = '/v1/api/reset-password'
-let adminUsersClient
+let adminUsersClient: AdminUsersClient
 
 describe('adminusers client - update password', function () {
   const provider = new Pact({
@@ -29,21 +28,19 @@ describe('adminusers client - update password', function () {
   after(() => provider.finalize())
 
   describe('update password for user API - success', () => {
-    const request = userFixtures.validUpdatePasswordRequest('avalidforgottenpasswordtoken')
+    const request = new UpdatePasswordFixture().toRequest()
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(RESET_PASSWORD_PATH)
-            .withState('a valid forgotten password entry and a related user exists')
-            .withUponReceiving('a valid update password request')
-            .withMethod('POST')
-            .withRequestBody(request)
-            .withStatusCode(204)
-            .withResponseHeaders({})
-            .build()
-        )
-        .then(() => done())
+    before(async () => {
+      await provider.addInteraction(
+        new PactInteractionBuilder(RESET_PASSWORD_PATH)
+          .withState('a valid forgotten password entry and a related user exists')
+          .withUponReceiving('a valid update password request')
+          .withMethod('POST')
+          .withRequestBody(request)
+          .withStatusCode(204)
+          .withResponseHeaders({})
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
@@ -58,18 +55,16 @@ describe('adminusers client - update password', function () {
   describe('update password for user API - not found', () => {
     const request = userFixtures.validUpdatePasswordRequest()
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(RESET_PASSWORD_PATH)
-            .withState('a forgotten password does not exists')
-            .withUponReceiving('a valid update password request')
-            .withMethod('POST')
-            .withRequestBody(request)
-            .withStatusCode(404)
-            .build()
-        )
-        .then(() => done())
+    before(async () => {
+      await provider.addInteraction(
+        new PactInteractionBuilder(RESET_PASSWORD_PATH)
+          .withState('a forgotten password does not exists')
+          .withUponReceiving('a valid update password request')
+          .withMethod('POST')
+          .withRequestBody(request)
+          .withStatusCode(404)
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())

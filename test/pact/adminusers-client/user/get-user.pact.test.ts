@@ -1,21 +1,16 @@
-'use strict'
-
-const { Pact } = require('@pact-foundation/pact')
-const path = require('path')
-const chai = require('chai')
-const { expect } = chai
-const chaiAsPromised = require('chai-as-promised')
-
-const userFixtures = require('../../../fixtures/user.fixtures')
-const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
-const { userResponsePactifier } = require('../../../test-helpers/pact/pactifier')
-const AdminUsersClient = require('@services/clients/pay/AdminUsersClient.class')
-
+import { Pact } from '@pact-foundation/pact'
+import path from 'path'
+import chai from 'chai'
+import Builder from '@test/test-helpers/pact/pact-interaction-builder'
+import AdminUsersClient from '@services/clients/pay/AdminUsersClient.class'
+import { pactify } from '@test/test-helpers/pact/pactify'
+import { UserFixture } from '@test/fixtures/user/user.fixture'
+const { PactInteractionBuilder } = Builder
 // constants
-let adminUsersClient
+let adminUsersClient: AdminUsersClient
 const USER_PATH = '/v1/api/users'
 
-chai.use(chaiAsPromised)
+const expect = chai.expect
 
 describe('adminusers client - get user', () => {
   const provider = new Pact({
@@ -35,20 +30,16 @@ describe('adminusers client - get user', () => {
 
   describe('find a valid user', () => {
     const existingExternalId = '7d19aff33f8948deb97ed16b2912dcd3'
-    const getUserResponse = userFixtures.validUserResponse({ external_id: existingExternalId })
+    const getUserResponse = new UserFixture({ externalId: existingExternalId }).toUserData()
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}`)
-            .withState(`a user exists with the given external id ${existingExternalId}`)
-            .withUponReceiving('a valid get user request')
-            .withResponseBody(userResponsePactifier.pactify(getUserResponse))
-            .build()
-        )
-        .then(() => {
-          done()
-        })
+    before(async () => {
+      await provider.addInteraction(
+        new PactInteractionBuilder(`${USER_PATH}/${existingExternalId}`)
+          .withState(`a user exists with the given external id ${existingExternalId}`)
+          .withUponReceiving('a valid get user request')
+          .withResponseBody(pactify(getUserResponse))
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
@@ -78,19 +69,15 @@ describe('adminusers client - get user', () => {
       external_id: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', // non existent external id
     }
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${USER_PATH}/${params.external_id}`)
-            .withState('no user exists with the given external id')
-            .withUponReceiving('a valid get user request of an non existing user')
-            .withStatusCode(404)
-            .withResponseHeaders({})
-            .build()
-        )
-        .then(() => {
-          done()
-        })
+    before(async () => {
+      await provider.addInteraction(
+        new PactInteractionBuilder(`${USER_PATH}/${params.external_id}`)
+          .withState('no user exists with the given external id')
+          .withUponReceiving('a valid get user request of an non existing user')
+          .withStatusCode(404)
+          .withResponseHeaders({})
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
