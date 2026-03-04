@@ -110,6 +110,7 @@ async function getSimplifiedAccount(req: Request, _: Response, next: NextFunctio
     }
     const service = getService(request.user, serviceExternalId, gatewayAccount.id)
     if (service) {
+      service._locals.links.bind(accountType)
       request.service = service
       addField(SERVICE_EXTERNAL_ID, service.externalId)
     } else {
