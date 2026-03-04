@@ -191,6 +191,7 @@ module.exports = {
       index: '/transactions',
       detail: '/transactions/:transactionExternalId',
       refund: '/transactions/:transactionExternalId/refund',
+      downloadCsv: '/transactions/download-csv',
     },
     settings: {
       index: '/settings',

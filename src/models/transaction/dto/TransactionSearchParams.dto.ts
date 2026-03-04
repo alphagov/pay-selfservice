@@ -8,7 +8,7 @@ export class TransactionSearchParamsData {
   readonly limit_total: string
   readonly limit_total_size: string
   readonly display_size?: string
-  readonly page: string
+  readonly page?: string
   readonly cardholder_name?: string
   readonly last_digits_card_number?: string
   readonly metadata_value?: string
@@ -21,6 +21,7 @@ export class TransactionSearchParamsData {
   readonly payment_states?: string
   readonly refund_states?: string
   readonly dispute_states?: string
+  readonly gateway_payout_id?: string
 
   constructor(params: TransactionSearchParams) {
     this.account_id = params.accountIds.join(',')
@@ -28,11 +29,11 @@ export class TransactionSearchParamsData {
     this.limit_total = params.limitTotal ? params.limitTotal.toString() : 'true'
     this.limit_total_size = params.limitTotalSize?.toString() ?? '5001'
     this.display_size = params.displaySize?.toString() ?? undefined
-    this.page = params.currentPage?.toString() ?? '1'
+    this.page = params.page?.toString()
     this.cardholder_name = params.cardholderName?.toString() ?? undefined
     this.last_digits_card_number = params.lastDigitsCardNumber?.toString() ?? undefined
     this.metadata_value = params.metadataValue?.toString() ?? undefined
-    this.card_brands = params.brand?.toString() ?? undefined
+    this.card_brands = params.brand?.join(',') ?? undefined
     this.transaction_type = params.type ?? undefined
     this.reference = params.reference ?? undefined
     this.email = params.email ?? undefined
@@ -41,6 +42,7 @@ export class TransactionSearchParamsData {
     this.payment_states = params.paymentStates?.map(toLower).join(',')
     this.refund_states = params.refundStates?.map(toLower).join(',')
     this.dispute_states = params.disputeStates?.map(toLower).join(',')
+    this.gateway_payout_id = params.gatewayPayoutId
   }
 
   asQueryString(): string {

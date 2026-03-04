@@ -1,5 +1,22 @@
+import { InteractionObject } from '@pact-foundation/pact'
+import { HTTPMethod } from '@pact-foundation/pact/src/common/request'
+import { Headers, Query } from '@pact-foundation/pact/src/dsl/interaction'
+import { AnyTemplate, Matcher } from '@pact-foundation/pact/src/dsl/matchers'
+
 class PactInteractionBuilder {
-  constructor (url) {
+  url: string
+  state: string
+  method: HTTPMethod
+  uponReceiving: string
+  statusCode: number
+  requestBody?: AnyTemplate
+  responseBody?: AnyTemplate
+  requestHeaders?: Headers
+  responseHeaders?: Headers
+  query?: Query
+  withoutHeaders?: boolean
+
+  constructor(url: string) {
     this.url = url
     this.state = 'default'
     this.method = 'GET'
@@ -7,70 +24,71 @@ class PactInteractionBuilder {
     this.statusCode = 200
   }
 
-  withRequestBody (body) {
+  withRequestBody(body: AnyTemplate) {
     this.requestBody = body
     return this
   }
 
-  withResponseBody (body) {
+  withResponseBody(body: AnyTemplate) {
     this.responseBody = body
     return this
   }
 
-  withResponseHeaders (headers) {
+  withResponseHeaders(headers: Headers) {
     this.responseHeaders = headers
     return this
   }
 
-  withRequestHeaders (headers) {
+  withRequestHeaders(headers: Headers) {
     this.requestHeaders = headers
     return this
   }
 
-  withStatusCode (statusCode) {
+  withStatusCode(statusCode: number) {
     this.statusCode = statusCode
     return this
   }
 
-  withQuery (name, value) {
-    this.query = this.query || {}
+  withQuery(name: string, value: string | Matcher<string> | string[]) {
+    this.query = this.query ?? {}
+    // @ts-expect-error query should always be an object
     this.query[name] = value
     return this
   }
 
-  withMethod (method) {
+  withMethod(method: HTTPMethod) {
     this.method = method
     return this
   }
 
-  withState (state) {
+  withState(state: string) {
     this.state = state
     return this
   }
 
-  withUponReceiving (uponReceiving) {
+  withUponReceiving(uponReceiving: string) {
     this.uponReceiving = uponReceiving
     return this
   }
 
-  withResponseWithoutHeaders () {
+  withResponseWithoutHeaders() {
     this.withoutHeaders = true
     return this
   }
 
-  build () {
-    const pact = {
+  build(): InteractionObject {
+    const pact: InteractionObject = {
       state: this.state,
       uponReceiving: this.uponReceiving,
       withRequest: {
         method: this.method,
         path: this.url,
-        headers: { Accept: 'application/json' }
+        headers: { Accept: 'application/json' },
       },
       willRespondWith: {
         status: this.statusCode,
-        headers: { 'Content-Type': 'application/json' }
-      }
+        headers: { 'Content-Type': 'application/json' },
+      },
     }
 
     if (this.requestBody) {
@@ -101,4 +119,4 @@ class PactInteractionBuilder {
   }
 }
 
-module.exports.PactInteractionBuilder = PactInteractionBuilder
+export = { PactInteractionBuilder }

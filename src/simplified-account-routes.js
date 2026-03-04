@@ -309,6 +309,12 @@ simplifiedAccount.get(
   servicesController.transactions.list.get
 )
 simplifiedAccount.get(
+  paths.simplifiedAccount.transactions.downloadCsv,
+  experimentalFeature(Features.TRANSACTIONS),
+  permission('transactions-download:read'),
+  servicesController.transactions.downloadCsv.get
+)
+simplifiedAccount.get(
   paths.simplifiedAccount.transactions.detail,
   experimentalFeature(Features.TRANSACTIONS),
   permission('transactions-details:read'),
