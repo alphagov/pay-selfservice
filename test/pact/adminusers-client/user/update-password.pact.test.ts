@@ -1,7 +1,6 @@
 import { Pact } from '@pact-foundation/pact'
 import path from 'path'
 import chai from 'chai'
-import userFixtures from '@test/fixtures/user.fixtures'
 import Builder from '@test/test-helpers/pact/pact-interaction-builder'
 import AdminUsersClient from '@services/clients/pay/AdminUsersClient.class'
 import { UpdatePasswordFixture } from '@test/fixtures/user/update-password-request.fixture'
