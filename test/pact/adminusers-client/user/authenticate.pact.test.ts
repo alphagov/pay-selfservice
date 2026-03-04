@@ -75,8 +75,6 @@ describe('adminusers client - authenticate', function () {
   describe('authenticate user API - unauthorized', () => {
     const request = new AuthenticateRequestFixture({ email: 'nonexisting@example.com' }).toRequest()
 
-    // const unauthorizedResponse = UnauthorisedResponse
-
     before(async () => {
       await provider.addInteraction(
         new PactInteractionBuilder(`${USER_PATH}/authenticate`)

@@ -10,8 +10,8 @@ export class AuthenticateRequestFixture {
   readonly password: string
 
   constructor(overrides?: Partial<AuthenticateRequestFixture>) {
-    this.email = overrides?.email ?? 'homer.simpson@example.com'
-    this.password = overrides?.password ?? 'donuts'
+    this.email = overrides?.email ?? 'test@example.com'
+    this.password = overrides?.password ?? 'password'
   }
 
   toRequest(): AuthenticateRequest {
