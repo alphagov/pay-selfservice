@@ -53,7 +53,7 @@ describe('adminusers client - update password', function () {
   })
 
   describe('update password for user API - not found', () => {
-    const request = userFixtures.validUpdatePasswordRequest()
+    const request = new UpdatePasswordFixture().toRequest()
 
     before(async () => {
       await provider.addInteraction(
