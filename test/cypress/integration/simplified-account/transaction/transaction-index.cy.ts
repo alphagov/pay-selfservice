@@ -156,15 +156,8 @@ describe('Transactions index', () => {
     })
 
     it('should not display csv download link or informative text when 0 results', function () {
-      cy.task('setupStubs', [
-        getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          transactions: [],
-          transactionLength: 10,
-          filters: { from_date: last12MonthsStartDate },
-          displaySize: 20,
-        }),
-      ])
+      cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([])])
+
       cy.visit(TRANSACTIONS_LIST_URL)
 
       cy.get('.govuk-button--secondary').contains('Download CSV').should('not.exist')
