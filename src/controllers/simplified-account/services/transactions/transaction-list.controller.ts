@@ -13,6 +13,8 @@ import {
   WorldpayStatusFilters,
 } from '@utils/simplified-account/services/transactions/status-filters'
 
+const LEDGER_TRANSACTION_COUNT_LIMIT = 5
+
 const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
   const getPath = (pageNumber: number) => {
     const params = new URLSearchParams(filters)
@@ -69,6 +71,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   )
   const downloadQueryString = transactionSearchParams.getQueryParams().toString()
   const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
+  const showCsvDownload = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT || transactionSearchParams.getQueryParams().toString().length
 
   return response(req, res, 'simplified-account/transactions/index', {
     results,
@@ -80,6 +83,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     cardBrands: [{ value: '', text: 'Any' }, ...cardBrands],
     statuses: eventStates,
     downloadLink,
+    showCsvDownload,
   })
 }
 

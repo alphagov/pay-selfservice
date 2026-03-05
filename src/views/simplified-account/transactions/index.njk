@@ -83,13 +83,17 @@
     </form>
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-    {{
-      govukButton({
-        text: "Download CSV",
-        classes: "govuk-button--secondary",
-        href: downloadLink
-      })
-    }}
+    {% if (showCsvDownload) %}
+      {{
+        govukButton({
+          text: "Download CSV",
+          classes: "govuk-button--secondary",
+          href: downloadLink
+        })
+      }}
+    {% else %}
+      <p id="csv-download" class="govuk-body">Filter results to download a CSV of transactions</p>
+    {% endif %}
 
     {% if isBST %}
       <details class="govuk-details">
