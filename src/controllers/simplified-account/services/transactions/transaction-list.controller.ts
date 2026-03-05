@@ -71,7 +71,10 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   )
   const downloadQueryString = transactionSearchParams.getQueryParams().toString()
   const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
-  const showCsvDownload = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT || transactionSearchParams.getQueryParams().toString().length
+  const transactionCountWithinRange = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT
+  const hasQueryParams = transactionSearchParams.getQueryParams().toString().length
+  const showCsvDownload =
+    transactionCountWithinRange || (hasQueryParams && results.total > LEDGER_TRANSACTION_COUNT_LIMIT)
 
   return response(req, res, 'simplified-account/transactions/index', {
     results,
