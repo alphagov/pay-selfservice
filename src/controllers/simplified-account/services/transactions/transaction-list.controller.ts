@@ -13,7 +13,7 @@ import {
   WorldpayStatusFilters,
 } from '@utils/simplified-account/services/transactions/status-filters'
 
-const LEDGER_TRANSACTION_COUNT_LIMIT = 5
+const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
 const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
   const getPath = (pageNumber: number) => {
