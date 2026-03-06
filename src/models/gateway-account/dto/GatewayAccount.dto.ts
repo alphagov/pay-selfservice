@@ -29,5 +29,5 @@ export interface GatewayAccountData {
   worldpay_3ds_flex?: Worldpay3dsFlexCredentialData
   send_payer_email_to_gateway: boolean
   send_payer_ip_address_to_gateway: boolean
-  service_id: string
+  service_id?: string
 }

@@ -34,7 +34,7 @@ class GatewayAccount {
   readonly rawResponse: GatewayAccountData
   readonly sendPayerEmailToGateway: boolean
   readonly sendPayerIPAddressToGateway: boolean
-  readonly serviceId: string
+  readonly serviceId?: string
 
   constructor(gatewayAccountData: GatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
