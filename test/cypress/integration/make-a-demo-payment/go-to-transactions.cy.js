@@ -9,7 +9,6 @@ const transactionStubs = require('@test/cypress/stubs/transaction-stubs')
 const productsStubs = require('@test/cypress/stubs/products-stubs')
 const transactionFixture = require('@test/fixtures/transaction/transaction.fixture.ts')
 
-
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const GATEWAY_ACCOUNT_EXTERNAL_ID = 'gatewayaccount789ghi'
@@ -29,16 +28,16 @@ const setupStubs = (options = {}) => {
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
       paymentProvider: options.paymentProvider || 'sandbox',
-      type: options.type || 'test'
+      type: options.type || 'test',
     }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       gatewayAccountExternalId: GATEWAY_ACCOUNT_EXTERNAL_ID,
       paymentProvider: options.paymentProvider || 'sandbox',
-      type: options.type || 'test'
+      type: options.type || 'test',
     }),
     productsStubs.getProductByExternalId(PRODUCT_EXTERNAL_ID, {
-      gateway_account_id: GATEWAY_ACCOUNT_ID
+      gateway_account_id: GATEWAY_ACCOUNT_ID,
     }),
     transactionStubs.getLedgerTransactionsSuccess({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
