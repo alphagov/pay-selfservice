@@ -1,9 +1,13 @@
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
+
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const stripeAccountSetupStubs = require('@test/cypress/stubs/stripe-account-setup-stub')
 const transactionStubs = require('@test/cypress/stubs/transaction-stubs')
 const productsStubs = require('@test/cypress/stubs/products-stubs')
+const transactionFixture = require('@test/fixtures/transaction/transaction.fixture.ts')
 
 
 const USER_EXTERNAL_ID = 'user-123-abc'
@@ -37,9 +41,17 @@ const setupStubs = (options = {}) => {
       gateway_account_id: GATEWAY_ACCOUNT_ID
     }),
     transactionStubs.getLedgerTransactionsSuccess({
-      gatewayAccountId: GATEWAY_ACCOUNT_ID
+      gatewayAccountId: GATEWAY_ACCOUNT_ID,
+      displaySize: 20,
+      filters: { from_date: last12MonthsStartDate },
+      transactionLength: 1,
     }),
-    gatewayAccountStubs.getCardTypesSuccess()
+    gatewayAccountStubs.getCardTypesSuccess(),
+    gatewayAccountStubs.getAccountByServiceIdAndAccountType(SERVICE_EXTERNAL_ID, GatewayAccountType.TEST, {
+      gateway_account_id: GATEWAY_ACCOUNT_ID,
+      type: GatewayAccountType.TEST,
+      recurring_enabled: true,
+    }),
   ])
 }
 
@@ -52,6 +64,6 @@ describe('go to transactions redirect tests', () => {
   it('should redirect to the transactions for the gateway account associated with the payment link', () => {
     cy.visit(`/make-a-demo-payment/${PRODUCT_EXTERNAL_ID}/go-to-transactions`)
 
-    cy.location('pathname').should('eq', `/account/${GATEWAY_ACCOUNT_EXTERNAL_ID}/transactions`)
+    cy.location('pathname').should('eq', `/service/${SERVICE_EXTERNAL_ID}/account/test/transactions`)
   })
 })

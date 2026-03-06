@@ -1,6 +1,6 @@
 'use strict'
 
-function validCredentials (opts = {}) {
+function validCredentials(opts = {}) {
   const credentials = {}
 
   // Worldpay
@@ -46,7 +46,7 @@ function validCredentials (opts = {}) {
   return credentials
 }
 
-function validGatewayAccountCredential (credentialOpts = {}, gatewayAccountOpts = {}) {
+function validGatewayAccountCredential(credentialOpts = {}, gatewayAccountOpts = {}) {
   const gatewayAccountCredential = {
     gateway_account_credential_id: credentialOpts.id || 1,
     external_id: credentialOpts.external_id || 'a-valid-external-id',
@@ -62,13 +62,13 @@ function validGatewayAccountCredential (credentialOpts = {}, gatewayAccountOpts 
   return gatewayAccountCredential
 }
 
-function validNotificationCredentials (opts = {}) {
+function validNotificationCredentials(opts = {}) {
   return {
     userName: opts.username || 'username'
   }
 }
 
-function validWorldpay3dsFlexCredentials (opts = {}) {
+function validWorldpay3dsFlexCredentials(opts = {}) {
   return {
     organisational_unit_id: opts.organisational_unit_id || '5bd9b55e4444761ac0af1c80',
     issuer: opts.issuer || '5bd9e0e4444dce153428c940', // pragma: allowlist secret
@@ -77,7 +77,7 @@ function validWorldpay3dsFlexCredentials (opts = {}) {
   }
 }
 
-function validGatewayAccount (opts) {
+function validGatewayAccount(opts) {
   const gatewayAccount = {
     payment_provider: opts.payment_provider || 'sandbox',
     gateway_account_id: opts.gateway_account_id || 31,
@@ -85,6 +85,7 @@ function validGatewayAccount (opts) {
     allow_apple_pay: opts.allow_apple_pay || false,
     allow_google_pay: opts.allow_google_pay || false,
     service_name: opts.service_name || 'A fabulous service',
+    service_id: 'service456def',
     type: opts.type || 'test',
     email_collection_mode: opts.email_collection_mode || 'MANDATORY',
     email_notifications: opts.email_notifications || {
@@ -141,7 +142,7 @@ function validGatewayAccount (opts) {
   return gatewayAccount
 }
 
-function validGatewayAccountPatchRequest (opts = {}) {
+function validGatewayAccountPatchRequest(opts = {}) {
   return {
     op: 'replace',
     path: opts.path,
@@ -149,7 +150,7 @@ function validGatewayAccountPatchRequest (opts = {}) {
   }
 }
 
-function validGatewayAccountEmailRefundToggleRequest (enabled = true) {
+function validGatewayAccountEmailRefundToggleRequest(enabled = true) {
   return {
     op: 'replace',
     path: '/refund_issued/enabled',
@@ -157,7 +158,7 @@ function validGatewayAccountEmailRefundToggleRequest (enabled = true) {
   }
 }
 
-function validUpdateToggleApplePayRequest (allowApplePay) {
+function validUpdateToggleApplePayRequest(allowApplePay) {
   return {
     op: 'replace',
     path: 'allow_apple_pay',
@@ -165,7 +166,7 @@ function validUpdateToggleApplePayRequest (allowApplePay) {
   }
 }
 
-function validUpdateToggleGooglePayRequest (allowGooglePay) {
+function validUpdateToggleGooglePayRequest(allowGooglePay) {
   return {
     op: 'replace',
     path: 'allow_google_pay',
@@ -173,7 +174,7 @@ function validUpdateToggleGooglePayRequest (allowGooglePay) {
   }
 }
 
-function validGatewayAccountEmailConfirmationToggleRequest (enabled = true) {
+function validGatewayAccountEmailConfirmationToggleRequest(enabled = true) {
   return {
     op: 'replace',
     path: '/payment_confirmed/enabled',
@@ -181,7 +182,7 @@ function validGatewayAccountEmailConfirmationToggleRequest (enabled = true) {
   }
 }
 
-function validGatewayAccountEmailCollectionModeRequest (collectionMode = 'MANDATORY') {
+function validGatewayAccountEmailCollectionModeRequest(collectionMode = 'MANDATORY') {
   return {
     op: 'replace',
     path: 'email_collection_mode',
@@ -189,7 +190,7 @@ function validGatewayAccountEmailCollectionModeRequest (collectionMode = 'MANDAT
   }
 }
 
-function validGatewayAccountTokensResponse (opts = {}) {
+function validGatewayAccountTokensResponse(opts = {}) {
   return {
     tokens:
       [{
@@ -203,18 +204,18 @@ function validGatewayAccountTokensResponse (opts = {}) {
   }
 }
 
-function validGatewayAccountResponse (opts = {}) {
+function validGatewayAccountResponse(opts = {}) {
   return validGatewayAccount(opts)
 }
 
-function validGatewayAccountsResponse (opts = {}) {
+function validGatewayAccountsResponse(opts = {}) {
   const accounts = opts.accounts.map(validGatewayAccount)
   return {
     accounts
   }
 }
 
-function validCreateGatewayAccountRequest (opts = {}) {
+function validCreateGatewayAccountRequest(opts = {}) {
   const data = {
     payment_provider: opts.payment_provider || 'sandbox',
     service_name: opts.service_name || 'This is an account for the GOV.UK Pay team',
@@ -229,7 +230,7 @@ function validCreateGatewayAccountRequest (opts = {}) {
   return data
 }
 
-function validUpdateGatewayAccountCredentialsRequest (opts = {}) {
+function validUpdateGatewayAccountCredentialsRequest(opts = {}) {
   const credentials = {
     username: (opts.credentials && opts.credentials.username) || 'a-username',
     password: (opts.credentials && opts.credentials.password) || 'a-password',
@@ -250,7 +251,7 @@ function validUpdateGatewayAccountCredentialsRequest (opts = {}) {
   ]
 }
 
-function validGatewayAccountCredentialsResponse (opts = {}) {
+function validGatewayAccountCredentialsResponse(opts = {}) {
   const defaultCredentials = {
     username: 'a-username',
     password: 'a-password' // pragma: allowlist secret
@@ -276,7 +277,7 @@ function validGatewayAccountCredentialsResponse (opts = {}) {
   return data
 }
 
-function validPatchAccountGatewayAccountCredentialsStateRequest (opts = {}) {
+function validPatchAccountGatewayAccountCredentialsStateRequest(opts = {}) {
   return [
     {
       op: 'replace',
@@ -291,13 +292,13 @@ function validPatchAccountGatewayAccountCredentialsStateRequest (opts = {}) {
   ]
 }
 
-function validPatchServiceNameRequest (serviceName) {
+function validPatchServiceNameRequest(serviceName) {
   return {
     service_name: serviceName
   }
 }
 
-function validPatchMaskCardNumberRequest (mask) {
+function validPatchMaskCardNumberRequest(mask) {
   return {
     op: 'replace',
     path: 'moto_mask_card_number_input',
@@ -305,7 +306,7 @@ function validPatchMaskCardNumberRequest (mask) {
   }
 }
 
-function validPatchMaskSecurityCodeRequest (mask) {
+function validPatchMaskSecurityCodeRequest(mask) {
   return {
     op: 'replace',
     path: 'moto_mask_card_security_code_input',
@@ -313,7 +314,7 @@ function validPatchMaskSecurityCodeRequest (mask) {
   }
 }
 
-function validPatchIntegrationVersion3dsRequest (version) {
+function validPatchIntegrationVersion3dsRequest(version) {
   return {
     op: 'replace',
     path: 'integration_version_3ds',
@@ -321,7 +322,7 @@ function validPatchIntegrationVersion3dsRequest (version) {
   }
 }
 
-function validPatchWorldpayOneOffCustomerInitiatedRequest (opts = {}) {
+function validPatchWorldpayOneOffCustomerInitiatedRequest(opts = {}) {
   return [
     {
       op: 'replace',
@@ -340,7 +341,7 @@ function validPatchWorldpayOneOffCustomerInitiatedRequest (opts = {}) {
   ]
 }
 
-function validPatchWorldpayGooglePayMerchantIdRequest (opts = {}) {
+function validPatchWorldpayGooglePayMerchantIdRequest(opts = {}) {
   return [
     {
       op: 'replace',
@@ -355,7 +356,7 @@ function validPatchWorldpayGooglePayMerchantIdRequest (opts = {}) {
   ]
 }
 
-function validPatchGatewayCredentialsResponse (opts = {}) {
+function validPatchGatewayCredentialsResponse(opts = {}) {
   const defaultCredentials = {}
   if (opts.gatewayMerchantId !== undefined) {
     defaultCredentials.gateway_merchant_id = opts.gatewayMerchantId
@@ -381,14 +382,14 @@ function validPatchGatewayCredentialsResponse (opts = {}) {
   return data
 }
 
-function validPostAccountSwitchPSPRequest (opts = {}) {
+function validPostAccountSwitchPSPRequest(opts = {}) {
   return {
     user_external_id: opts.userExternalId || 'a-user-external-id',
     gateway_account_credential_external_id: opts.gatewayAccountCredentialExternalId
   }
 }
 
-function requestStripeTestAccountResponse (opts = {}) {
+function requestStripeTestAccountResponse(opts = {}) {
   return {
     stripe_connect_account_id: 'acct_1234',
     gateway_account_id: opts.gateway_account_id || '2',
