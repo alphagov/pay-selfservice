@@ -150,7 +150,6 @@ module.exports = {
       index: '/demo-payment',
       edit: '/demo-payment/edit',
       mockCard: '/demo-payment/mock-card-number',
-      inbound: '/make-a-demo-payment/:productExternalId/go-to-transactions',
     },
     paymentLinks: {
       index: '/payment-links',

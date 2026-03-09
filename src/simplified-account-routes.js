@@ -68,11 +68,6 @@ simplifiedAccount.post(
   restrictToSandboxOrStripeTestAccount,
   servicesController.demoPayment.post
 )
-simplifiedAccount.get(
-  paths.simplifiedAccount.demoPayment.inbound,
-  restrictToSandboxOrStripeTestAccount,
-  servicesController.demoPayment.inbound.get
-)
 
 // payment links
 
