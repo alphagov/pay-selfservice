@@ -393,6 +393,8 @@ describe('Transactions index', () => {
       const state = new TransactionStateFixture({ status: Status.SUCCESS })
       const paymentDetails = new PaymentDetailsFixture()
       const refundTransaction = new TransactionFixture({
+        externalId: TRANSACTION.transaction_id + '-refund',
+        parentTransactionExternalId: TRANSACTION.transaction_id,
         paymentDetails,
         transactionType: ResourceType.REFUND,
         state,
@@ -419,7 +421,7 @@ describe('Transactions index', () => {
       assertTransactionRow(
         1,
         refundTransaction.reference,
-        TRANSACTION_URL(refundTransaction.transaction_id),
+        TRANSACTION_URL(transactionWithFees.transaction_id),
         refundTransaction.email!,
         penceToPoundsWithCurrency(refundTransaction.amount),
         refundTransaction.card_details!.card_brand,
