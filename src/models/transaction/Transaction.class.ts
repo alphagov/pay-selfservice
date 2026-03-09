@@ -42,7 +42,7 @@ class Transaction {
   readonly evidenceDueDate?: DateTime
   readonly data: TransactionData
   readonly paymentDetails?: PaymentDetails
-  readonly parentExternalId?: string
+  readonly parentTransactionExternalId?: string
 
   readonly _locals: {
     links: TransactionLinksGenerator
@@ -76,10 +76,10 @@ class Transaction {
     this.evidenceDueDate = data.evidence_due_date ? DateTime.fromISO(data.evidence_due_date) : undefined
     this.data = data
     this.paymentDetails = data.payment_details && new PaymentDetails(data.payment_details)
-    this.parentExternalId = data.parent_transaction_id
+    this.parentTransactionExternalId = data.parent_transaction_id
 
     this._locals = {
-      links: new TransactionLinksGenerator(this.getTransactionId()),
+      links: new TransactionLinksGenerator(this.getRootTransactionId()),
       formatted: new TransactionDisplayValues(this),
     }
   }
@@ -92,8 +92,8 @@ class Transaction {
     return this.refundSummary ? this.refundSummary.amountAvailable : this.amount
   }
 
-  getTransactionId(): string {
-    return this.parentExternalId ?? this.externalId
+  getRootTransactionId(): string {
+    return this.parentTransactionExternalId ?? this.externalId
   }
 
   get friendlyTransactionStatus(): string {
