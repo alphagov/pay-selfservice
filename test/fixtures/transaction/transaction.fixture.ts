@@ -112,7 +112,7 @@ export class TransactionFixture {
       refund_summary: this.refundSummary?.toLedgerRefundSummaryData(),
       authorisation_summary: this.authorisationSummary?.toAuthorisationSummaryData(),
       payment_details: this.paymentDetails?.toPaymentDetailsData(),
-      parent_transaction_id: this.parentTransactionExternalId
+      parent_transaction_id: this.parentTransactionExternalId,
     }
   }
 
