@@ -41,4 +41,5 @@ export interface TransactionData {
   evidence_due_date?: string // dispute only
   reason?: string // dispute only
   payment_details?: PaymentDetailsData
+  parent_transaction_id?: string
 }
