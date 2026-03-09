@@ -34,6 +34,7 @@ class GatewayAccount {
   readonly rawResponse: GatewayAccountData
   readonly sendPayerEmailToGateway: boolean
   readonly sendPayerIPAddressToGateway: boolean
+  readonly serviceId?: string
 
   constructor(gatewayAccountData: GatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
@@ -67,6 +68,7 @@ class GatewayAccount {
     this.sendPayerIPAddressToGateway = gatewayAccountData.send_payer_ip_address_to_gateway
     /** @deprecated you should add any rawResponse data as part of the constructor */
     this.rawResponse = gatewayAccountData
+    this.serviceId = gatewayAccountData.service_id
   }
 
   getCurrentCredential() {

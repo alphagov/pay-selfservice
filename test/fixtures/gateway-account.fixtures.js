@@ -1,27 +1,27 @@
 'use strict'
 
-function validCredentials (opts = {}) {
+function validCredentials(opts = {}) {
   const credentials = {}
 
   // Worldpay
   if (opts.one_off_customer_initiated) {
     credentials.one_off_customer_initiated = {
       merchant_code: opts.one_off_customer_initiated.merchant_code,
-      username: opts.one_off_customer_initiated.username
+      username: opts.one_off_customer_initiated.username,
     }
   }
 
   if (opts.recurring_customer_initiated) {
     credentials.recurring_customer_initiated = {
       merchant_code: opts.recurring_customer_initiated.merchant_code,
-      username: opts.recurring_customer_initiated.username
+      username: opts.recurring_customer_initiated.username,
     }
   }
 
   if (opts.recurring_merchant_initiated) {
     credentials.recurring_merchant_initiated = {
       merchant_code: opts.recurring_merchant_initiated.merchant_code,
-      username: opts.recurring_merchant_initiated.username
+      username: opts.recurring_merchant_initiated.username,
     }
   }
 
@@ -46,7 +46,7 @@ function validCredentials (opts = {}) {
   return credentials
 }
 
-function validGatewayAccountCredential (credentialOpts = {}, gatewayAccountOpts = {}) {
+function validGatewayAccountCredential(credentialOpts = {}, gatewayAccountOpts = {}) {
   const gatewayAccountCredential = {
     gateway_account_credential_id: credentialOpts.id || 1,
     external_id: credentialOpts.external_id || 'a-valid-external-id',
@@ -55,29 +55,29 @@ function validGatewayAccountCredential (credentialOpts = {}, gatewayAccountOpts 
     gateway_account_id: gatewayAccountOpts.gateway_account_id || 31,
     active_start_date: credentialOpts.active_start_date || null,
     active_end_date: credentialOpts.active_end_date || null,
-    created_date: credentialOpts.created_date || '2021-05-09T01:00:00.000Z'
+    created_date: credentialOpts.created_date || '2021-05-09T01:00:00.000Z',
   }
 
   gatewayAccountCredential.credentials = validCredentials(credentialOpts.credentials || gatewayAccountOpts.credentials)
   return gatewayAccountCredential
 }
 
-function validNotificationCredentials (opts = {}) {
+function validNotificationCredentials(opts = {}) {
   return {
-    userName: opts.username || 'username'
+    userName: opts.username || 'username',
   }
 }
 
-function validWorldpay3dsFlexCredentials (opts = {}) {
+function validWorldpay3dsFlexCredentials(opts = {}) {
   return {
     organisational_unit_id: opts.organisational_unit_id || '5bd9b55e4444761ac0af1c80',
     issuer: opts.issuer || '5bd9e0e4444dce153428c940', // pragma: allowlist secret
     exemption_engine_enabled: opts.exemption_engine_enabled || false,
-    corporate_exemptions_enabled: opts.corporate_exemptions_enabled || false
+    corporate_exemptions_enabled: opts.corporate_exemptions_enabled || false,
   }
 }
 
-function validGatewayAccount (opts) {
+function validGatewayAccount(opts) {
   const gatewayAccount = {
     payment_provider: opts.payment_provider || 'sandbox',
     gateway_account_id: opts.gateway_account_id || 31,
@@ -85,18 +85,19 @@ function validGatewayAccount (opts) {
     allow_apple_pay: opts.allow_apple_pay || false,
     allow_google_pay: opts.allow_google_pay || false,
     service_name: opts.service_name || 'A fabulous service',
+    service_id: 'service456def',
     type: opts.type || 'test',
     email_collection_mode: opts.email_collection_mode || 'MANDATORY',
     email_notifications: opts.email_notifications || {
       PAYMENT_CONFIRMED: {
         version: 1,
         enabled: true,
-        template_body: 'template here'
+        template_body: 'template here',
       },
       REFUND_ISSUED: {
         version: 1,
-        enabled: true
-      }
+        enabled: true,
+      },
     },
     allow_moto: opts.allow_moto || false,
     moto_mask_card_number_input: opts.moto_mask_card_number_input || false,
@@ -107,7 +108,7 @@ function validGatewayAccount (opts) {
     disabled: opts.disabled || false,
     provider_switch_enabled: opts.provider_switch_enabled || false,
     send_payer_email_to_gateway: opts.send_payer_email_to_gateway || true,
-    send_payer_ip_address_to_gateway: opts.send_payer_ip_address_to_gateway || true
+    send_payer_ip_address_to_gateway: opts.send_payer_ip_address_to_gateway || true,
   }
 
   if (opts.description) {
@@ -124,8 +125,9 @@ function validGatewayAccount (opts) {
     }
   }
   if (opts.gateway_account_credentials) {
-    gatewayAccount.gateway_account_credentials = opts.gateway_account_credentials
-      .map((gatewayAccountCredentialOpt) => validGatewayAccountCredential(gatewayAccountCredentialOpt, opts))
+    gatewayAccount.gateway_account_credentials = opts.gateway_account_credentials.map((gatewayAccountCredentialOpt) =>
+      validGatewayAccountCredential(gatewayAccountCredentialOpt, opts)
+    )
   }
   if (opts.notificationCredentials) {
     gatewayAccount.notificationCredentials = validNotificationCredentials(opts.notificationCredentials)
@@ -141,87 +143,88 @@ function validGatewayAccount (opts) {
   return gatewayAccount
 }
 
-function validGatewayAccountPatchRequest (opts = {}) {
+function validGatewayAccountPatchRequest(opts = {}) {
   return {
     op: 'replace',
     path: opts.path,
-    value: opts.value
+    value: opts.value,
   }
 }
 
-function validGatewayAccountEmailRefundToggleRequest (enabled = true) {
+function validGatewayAccountEmailRefundToggleRequest(enabled = true) {
   return {
     op: 'replace',
     path: '/refund_issued/enabled',
-    value: enabled
+    value: enabled,
   }
 }
 
-function validUpdateToggleApplePayRequest (allowApplePay) {
+function validUpdateToggleApplePayRequest(allowApplePay) {
   return {
     op: 'replace',
     path: 'allow_apple_pay',
-    value: allowApplePay
+    value: allowApplePay,
   }
 }
 
-function validUpdateToggleGooglePayRequest (allowGooglePay) {
+function validUpdateToggleGooglePayRequest(allowGooglePay) {
   return {
     op: 'replace',
     path: 'allow_google_pay',
-    value: allowGooglePay
+    value: allowGooglePay,
   }
 }
 
-function validGatewayAccountEmailConfirmationToggleRequest (enabled = true) {
+function validGatewayAccountEmailConfirmationToggleRequest(enabled = true) {
   return {
     op: 'replace',
     path: '/payment_confirmed/enabled',
-    value: enabled
+    value: enabled,
   }
 }
 
-function validGatewayAccountEmailCollectionModeRequest (collectionMode = 'MANDATORY') {
+function validGatewayAccountEmailCollectionModeRequest(collectionMode = 'MANDATORY') {
   return {
     op: 'replace',
     path: 'email_collection_mode',
-    value: collectionMode
+    value: collectionMode,
   }
 }
 
-function validGatewayAccountTokensResponse (opts = {}) {
+function validGatewayAccountTokensResponse(opts = {}) {
   return {
-    tokens:
-      [{
+    tokens: [
+      {
         issued_date: opts.issued_date || '03 Sep 2018 - 10:05',
         last_used: opts.last_used || null,
         token_link: opts.token_link || '32fa3cdd-23c8-4602-a415-b48ede66b5e4',
         description: opts.description || 'Created from command line',
         token_type: opts.token_type || 'CARD',
-        created_by: opts.created_by || 'System generated'
-      }]
+        created_by: opts.created_by || 'System generated',
+      },
+    ],
   }
 }
 
-function validGatewayAccountResponse (opts = {}) {
+function validGatewayAccountResponse(opts = {}) {
   return validGatewayAccount(opts)
 }
 
-function validGatewayAccountsResponse (opts = {}) {
+function validGatewayAccountsResponse(opts = {}) {
   const accounts = opts.accounts.map(validGatewayAccount)
   return {
-    accounts
+    accounts,
   }
 }
 
-function validCreateGatewayAccountRequest (opts = {}) {
+function validCreateGatewayAccountRequest(opts = {}) {
   const data = {
     payment_provider: opts.payment_provider || 'sandbox',
     service_name: opts.service_name || 'This is an account for the GOV.UK Pay team',
     type: opts.type || 'test',
     service_id: opts.service_id || '46eb1b601348499196c99de90482ee68',
     send_payer_email_to_gateway: opts.send_payer_email_to_gateway || true,
-    send_payer_ip_address_to_gateway: opts.send_payer_ip_address_to_gateway || true
+    send_payer_ip_address_to_gateway: opts.send_payer_ip_address_to_gateway || true,
   }
   if (opts.analytics_id) {
     data.analytics_id = opts.analytics_id
@@ -229,31 +232,31 @@ function validCreateGatewayAccountRequest (opts = {}) {
   return data
 }
 
-function validUpdateGatewayAccountCredentialsRequest (opts = {}) {
+function validUpdateGatewayAccountCredentialsRequest(opts = {}) {
   const credentials = {
     username: (opts.credentials && opts.credentials.username) || 'a-username',
     password: (opts.credentials && opts.credentials.password) || 'a-password',
-    merchant_code: (opts.credentials && opts.credentials.merchant_code) || 'a-merchant-id'
+    merchant_code: (opts.credentials && opts.credentials.merchant_code) || 'a-merchant-id',
   }
 
   return [
     {
       op: 'replace',
       path: opts.path || 'credentials/worldpay/one_off_customer_initiated',
-      value: credentials
+      value: credentials,
     },
     {
       op: 'replace',
       path: 'last_updated_by_user_external_id',
-      value: opts.userExternalId || 'a-user-external-id'
-    }
+      value: opts.userExternalId || 'a-user-external-id',
+    },
   ]
 }
 
-function validGatewayAccountCredentialsResponse (opts = {}) {
+function validGatewayAccountCredentialsResponse(opts = {}) {
   const defaultCredentials = {
     username: 'a-username',
-    password: 'a-password' // pragma: allowlist secret
+    password: 'a-password', // pragma: allowlist secret
   }
   const data = {
     external_id: opts.externalId || 'an-external-id',
@@ -262,7 +265,7 @@ function validGatewayAccountCredentialsResponse (opts = {}) {
     payment_provider: opts.paymentProvider || 'worldpay',
     credentials: opts.credentials || defaultCredentials,
     state: opts.state || 'ACTIVE',
-    created_date: opts.createdDate || '2021-06-11T13:43:51.464Z'
+    created_date: opts.createdDate || '2021-06-11T13:43:51.464Z',
   }
   if (opts.lastUpdatedByUserExternalId !== undefined) {
     data.last_updated_by_user_external_id = opts.lastUpdatedByUserExternalId
@@ -276,52 +279,52 @@ function validGatewayAccountCredentialsResponse (opts = {}) {
   return data
 }
 
-function validPatchAccountGatewayAccountCredentialsStateRequest (opts = {}) {
+function validPatchAccountGatewayAccountCredentialsStateRequest(opts = {}) {
   return [
     {
       op: 'replace',
       path: 'state',
-      value: opts.state || 'VERIFIED_WITH_LIVE_PAYMENT'
+      value: opts.state || 'VERIFIED_WITH_LIVE_PAYMENT',
     },
     {
       op: 'replace',
       path: 'last_updated_by_user_external_id',
-      value: opts.userExternalId
-    }
+      value: opts.userExternalId,
+    },
   ]
 }
 
-function validPatchServiceNameRequest (serviceName) {
+function validPatchServiceNameRequest(serviceName) {
   return {
-    service_name: serviceName
+    service_name: serviceName,
   }
 }
 
-function validPatchMaskCardNumberRequest (mask) {
+function validPatchMaskCardNumberRequest(mask) {
   return {
     op: 'replace',
     path: 'moto_mask_card_number_input',
-    value: mask
+    value: mask,
   }
 }
 
-function validPatchMaskSecurityCodeRequest (mask) {
+function validPatchMaskSecurityCodeRequest(mask) {
   return {
     op: 'replace',
     path: 'moto_mask_card_security_code_input',
-    value: mask
+    value: mask,
   }
 }
 
-function validPatchIntegrationVersion3dsRequest (version) {
+function validPatchIntegrationVersion3dsRequest(version) {
   return {
     op: 'replace',
     path: 'integration_version_3ds',
-    value: version
+    value: version,
   }
 }
 
-function validPatchWorldpayOneOffCustomerInitiatedRequest (opts = {}) {
+function validPatchWorldpayOneOffCustomerInitiatedRequest(opts = {}) {
   return [
     {
       op: 'replace',
@@ -329,33 +332,33 @@ function validPatchWorldpayOneOffCustomerInitiatedRequest (opts = {}) {
       value: {
         merchant_id: opts.merchantCode,
         username: opts.username,
-        password: opts.password
-      }
+        password: opts.password,
+      },
     },
     {
       op: 'replace',
       path: 'last_updated_by_user_external_id',
-      value: opts.userExternalId
-    }
+      value: opts.userExternalId,
+    },
   ]
 }
 
-function validPatchWorldpayGooglePayMerchantIdRequest (opts = {}) {
+function validPatchWorldpayGooglePayMerchantIdRequest(opts = {}) {
   return [
     {
       op: 'replace',
       path: 'credentials/gateway_merchant_id',
-      value: opts.googlePayMerchantId || '0123456789abcde'
+      value: opts.googlePayMerchantId || '0123456789abcde',
     },
     {
       op: 'replace',
       path: 'last_updated_by_user_external_id',
-      value: opts.userExternalId || 'user-123-abc'
-    }
+      value: opts.userExternalId || 'user-123-abc',
+    },
   ]
 }
 
-function validPatchGatewayCredentialsResponse (opts = {}) {
+function validPatchGatewayCredentialsResponse(opts = {}) {
   const defaultCredentials = {}
   if (opts.gatewayMerchantId !== undefined) {
     defaultCredentials.gateway_merchant_id = opts.gatewayMerchantId
@@ -367,7 +370,7 @@ function validPatchGatewayCredentialsResponse (opts = {}) {
     payment_provider: opts.paymentProvider || 'worldpay',
     credentials: opts.credentials || defaultCredentials,
     state: opts.state || 'ACTIVE',
-    created_date: opts.createdDate || '2021-06-11T13:43:51.464Z'
+    created_date: opts.createdDate || '2021-06-11T13:43:51.464Z',
   }
   if (opts.lastUpdatedByUserExternalId !== undefined) {
     data.last_updated_by_user_external_id = opts.lastUpdatedByUserExternalId
@@ -381,18 +384,18 @@ function validPatchGatewayCredentialsResponse (opts = {}) {
   return data
 }
 
-function validPostAccountSwitchPSPRequest (opts = {}) {
+function validPostAccountSwitchPSPRequest(opts = {}) {
   return {
     user_external_id: opts.userExternalId || 'a-user-external-id',
-    gateway_account_credential_external_id: opts.gatewayAccountCredentialExternalId
+    gateway_account_credential_external_id: opts.gatewayAccountCredentialExternalId,
   }
 }
 
-function requestStripeTestAccountResponse (opts = {}) {
+function requestStripeTestAccountResponse(opts = {}) {
   return {
     stripe_connect_account_id: 'acct_1234',
     gateway_account_id: opts.gateway_account_id || '2',
-    gateway_account_external_id: opts.gateway_account_external_id || 'a-gateway-account-external-id'
+    gateway_account_external_id: opts.gateway_account_external_id || 'a-gateway-account-external-id',
   }
 }
 
@@ -419,5 +422,5 @@ module.exports = {
   validPostAccountSwitchPSPRequest,
   validUpdateToggleApplePayRequest,
   validUpdateToggleGooglePayRequest,
-  requestStripeTestAccountResponse
+  requestStripeTestAccountResponse,
 }

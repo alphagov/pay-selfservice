@@ -7,6 +7,7 @@ import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fix
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { AuthorisationSummaryFixture } from '@test/fixtures/transaction/authorisation-summary.fixture'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
+import { PaymentDetailsFixture } from './payment-details.fixture'
 
 export class TransactionFixture {
   gatewayAccountId: string
@@ -42,6 +43,7 @@ export class TransactionFixture {
   source: string
   authorisationMode: string
   agreementId: string
+  paymentDetails?: PaymentDetailsFixture
 
   constructor(options?: Partial<TransactionFixture>) {
     this.gatewayAccountId = '100'
@@ -68,6 +70,7 @@ export class TransactionFixture {
     this.authorisationMode = 'unknown'
     this.agreementId = 'none'
     this.refundSummary = new LedgerRefundSummaryFixture()
+    this.paymentDetails = new PaymentDetailsFixture()
     if (options) {
       Object.assign(this, options)
     }
@@ -107,6 +110,7 @@ export class TransactionFixture {
       reason: this.reason,
       refund_summary: this.refundSummary?.toLedgerRefundSummaryData(),
       authorisation_summary: this.authorisationSummary?.toAuthorisationSummaryData(),
+      payment_details: this.paymentDetails?.toPaymentDetailsData(),
     }
   }
 
