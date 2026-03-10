@@ -362,6 +362,14 @@ module.exports = {
     download: '/all-service-transactions/download',
     downloadStatusFilter: '/all-service-transactions/download/:statusFilter(test|live)',
     redirectDetail: '/redirect/transactions/:chargeId',
+    simplifiedAccount: {
+      index: '/transactions',
+      nosearch: '/transactions/nosearch',
+      download: '/transaction/download',
+      filter: '/transactions/:statusFilter(test|live)',
+      detail: '/transactions/:transactionId',
+      refund: '/transaction/:transactionId/refund',
+    },
   },
   user: {
     logIn: '/login',
