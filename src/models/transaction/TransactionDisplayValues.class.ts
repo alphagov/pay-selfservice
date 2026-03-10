@@ -23,6 +23,14 @@ export class TransactionDisplayValues {
   }
 
   get netAmount(): string {
+    if (this.isRefund && this.transaction.state.status === Status.SUCCESS) {
+      return penceToPoundsWithCurrency(-this.transaction.amount)
+    }
+
+    if (this.isDispute && this.transaction.state.status === Status.LOST) {
+      return penceToPoundsWithCurrency(-this.transaction.netAmount!)
+    }
+
     return this.transaction.netAmount ? penceToPoundsWithCurrency(this.transaction.netAmount) : ''
   }
 

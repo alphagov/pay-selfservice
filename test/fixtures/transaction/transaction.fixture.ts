@@ -44,6 +44,7 @@ export class TransactionFixture {
   authorisationMode: string
   agreementId: string
   paymentDetails?: PaymentDetailsFixture
+  parentTransactionExternalId?: string
 
   constructor(options?: Partial<TransactionFixture>) {
     this.gatewayAccountId = '100'
@@ -111,6 +112,7 @@ export class TransactionFixture {
       refund_summary: this.refundSummary?.toLedgerRefundSummaryData(),
       authorisation_summary: this.authorisationSummary?.toAuthorisationSummaryData(),
       payment_details: this.paymentDetails?.toPaymentDetailsData(),
+      parent_transaction_id: this.parentTransactionExternalId,
     }
   }
 

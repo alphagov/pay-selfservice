@@ -1,8 +1,10 @@
 import { stubBuilder } from '@test/cypress/stubs/stub-builder'
 import ledgerTransactionFixtures from '@test/fixtures/ledger-transaction.fixtures'
-import refundFixtures from '@test/fixtures/refund.fixtures'
-import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
+import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
+import refundFixtures from '@test/fixtures/refund.fixtures'
+import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 
 function getTransaction(transactionExternalId: string) {
   const path = `/v1/transaction/${transactionExternalId}`
@@ -28,6 +30,31 @@ function getTransactionForGatewayAccount(gatewayAccountId: string, transactionEx
         response: transaction.toTransactionData(),
         query: {
           account_id: gatewayAccountId,
+        },
+      })
+    },
+  }
+}
+
+function getTransactionsForGatewayAccount(gatewayAccountId: string) {
+  const path = `/v1/transaction`
+
+  return {
+    success: function (transactions: TransactionData[]) {
+      return stubBuilder('GET', path, 200, {
+        response: {
+          total: transactions.length,
+          count: transactions.length,
+          page: 1,
+          results: transactions,
+        },
+        query: {
+          account_id: [gatewayAccountId],
+          page: 1,
+          display_size: 20,
+          limit_total: true,
+          limit_total_size: 5001,
+          from_date: last12MonthsStartDate,
         },
       })
     },
@@ -74,4 +101,10 @@ function postRefund(serviceExternalId: string, transactionExternalId: string) {
   }
 }
 
-export { getTransaction, getTransactionForGatewayAccount, getTransactionEvents, postRefund }
+export {
+  getTransaction,
+  getTransactionForGatewayAccount,
+  getTransactionsForGatewayAccount,
+  getTransactionEvents,
+  postRefund,
+}
