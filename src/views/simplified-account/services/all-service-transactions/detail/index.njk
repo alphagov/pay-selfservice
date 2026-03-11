@@ -1,0 +1,33 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+
+{% set servicePageTitle %}
+  Transaction details - {{ pageID }}
+{% endset %}
+
+{% block serviceContent %}
+  <h1 class="govuk-heading-l govuk-!-margin-top-6">Transaction details all services</h1>
+
+  {% if not transaction.isFullyRefunded() and transaction.isRefundable() and permissions['refunds_create'] %}
+    {{
+      govukButton({
+        text: "Refund payment",
+        classes: "govuk-button--secondary",
+        href: transaction._locals.links.refund
+      })
+    }}
+  {% endif %}
+  {% include '../../transactions/detail/partials/_details.njk' %}
+  {% include '../../transactions/detail/partials/_amount.njk' %}
+  {% include '../../transactions/detail/partials/_payment-method.njk' %}
+  {% include '../../transactions/detail/partials/_payment-provider.njk' %}
+  {% if transaction.isDispute() or transaction.disputed %}
+    {% include '../../transactions/detail/partials/_dispute-details.njk' %}
+  {% endif %}
+  {% include '../../transactions/detail/partials/_transaction-events.njk' %}
+
+  <a class="govuk-button govuk-button--secondary" href="{{ oldView }}">GOTO old view</a>
+  <!-- TODO: PP-14639 remove before going live -->
+{% endblock %}
