@@ -1,6 +1,5 @@
 import paths from '@root/paths'
 import { getTransaction, getEvents, getDisputes } from '@services/transactions.service'
-import formatAccountPathsFor from '@utils/format-account-paths-for'
 import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
@@ -29,15 +28,11 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       req.service.externalId,
       req.account.type
     ),
+    // TODO update this to be all services index - when implemented
     events,
     transaction,
     dispute: disputes.length > 0 && disputes[0],
     pageID: `${transaction.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${transaction.reference}`,
-    oldView: formatAccountPathsFor(
-      paths.account.transactions.detail,
-      req.account.externalId,
-      req.params.transactionExternalId
-    ) as string,
     messages: res.locals.flash?.messages ?? [],
   })
 }
