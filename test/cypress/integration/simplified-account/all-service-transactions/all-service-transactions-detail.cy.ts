@@ -2,31 +2,18 @@ import userStubs from '@test/cypress/stubs/user-stubs'
 import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-account-type'
 import gatewayAccountStubs, { getCardTypesSuccess } from '@test/cypress/stubs/gateway-account-stubs'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
-import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
-import { SANDBOX } from '@models/constants/payment-providers'
-import changeCase from 'change-case'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
-import { AuthorisationSummaryFixture } from '@test/fixtures/transaction/authorisation-summary.fixture'
-import { DisputeStatusFriendlyNames, Status } from '@models/transaction/types/status'
-import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
-import { Reason, ReasonFriendlyNames } from '@models/transaction/types/reason'
-import { ResourceType } from '@models/transaction/types/resource-type'
 import {
   getTransactionEvents,
   getTransactionForGatewayAccount,
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
-import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
-import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
-import { DATE_TIME, TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
+import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
-import { checkServiceNavigation } from '../common/assertions'
 import ROLES from '@test/fixtures/roles.fixtures'
-import checkTitleAndHeading from '../service-settings/helpers/check-title-and-heading'
 
 const TRANSACTION = new TransactionFixture()
 const TRANSACTION_CREATED_TIMESTAMP = TRANSACTION.createdDate
-const CARD_DETAILS = TRANSACTION.cardDetails!
 
 const TRANSACTION_EVENTS = [
   new TransactionEventFixture({
@@ -52,6 +39,7 @@ const SERVICE_NAME = {
 
 const ALL_SERVICES_TRANSACTION_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/all-services/transactions/${TRANSACTION.externalId}`
 const TRANSACTIONS_LIST_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
+// TODO update this to be all services index - when implemented
 
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({
@@ -68,13 +56,21 @@ const userAndGatewayAccountStubs = [
   }),
 ]
 
-describe('Transaction details page', () => {
+describe('All services transaction details page', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+      getCardTypesSuccess(),
+      transactionStubs.getLedgerTransactionsSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactions: [TRANSACTION],
+        filters: { from_date: last12MonthsStartDate },
+        displaySize: 20,
+        transactionLength: 1,
+      }),
     ])
   })
 
@@ -88,8 +84,31 @@ describe('Transaction details page', () => {
 
     cy.visit(ALL_SERVICES_TRANSACTION_URL)
 
-    cy.title().should('eq', `${title} - ${TRANSACTION.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${TRANSACTION.reference} - GOV.UK Pay`)
+    cy.title().should(
+      'eq',
+      `${title} - ${TRANSACTION.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${TRANSACTION.reference} - GOV.UK Pay`
+    )
     cy.get('h1').should('contain.text', title)
   })
-})
 
+  it('should navigate to transactions list page when back link is clicked', () => {
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+      getCardTypesSuccess(),
+      transactionStubs.getLedgerTransactionsSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactions: [TRANSACTION],
+        filters: { from_date: last12MonthsStartDate },
+        displaySize: 20,
+        transactionLength: 1,
+      }),
+    ])
+
+    cy.visit(ALL_SERVICES_TRANSACTION_URL)
+    cy.get('.govuk-back-link').click()
+
+    cy.url().should('include', TRANSACTIONS_LIST_URL)
+  })
+})

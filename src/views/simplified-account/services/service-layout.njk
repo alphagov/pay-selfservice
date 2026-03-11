@@ -29,10 +29,12 @@
   >
     <div class="service-pane {% if fullWidth %}service-pane--full-width{% endif %}">
       {% if backLink %}
-        {{ govukBackLink({
-          text: backLinkText if backLinkText else "Back",
-          href: backLink
-        }) }}
+        {{
+          govukBackLink({
+            text: backLinkText if backLinkText else "Back",
+            href: backLink
+          })
+        }}
       {% endif %}
       {% if messages is defined and messages is iterable and messages|length > 0 %}
         {{ systemMessages({ messages: messages }) }}
