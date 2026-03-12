@@ -17,7 +17,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   if (transaction.isFullyRefunded() || !transaction.isRefundable()) {
     return res.redirect(
       formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.transactions.detail,
+        paths.simplifiedAccount.allServiceTransactions.detail,
         req.service.externalId,
         req.account.type,
         req.params.transactionExternalId
@@ -25,11 +25,11 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     )
   }
 
-  return response(req, res, 'simplified-account/services/transactions/refund', {
+  return response(req, res, 'simplified-account/services/all-service-transactions/detail/refund', {
     transaction,
     pageID: `${transaction.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${transaction.reference}`,
     backLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.transactions.detail,
+      paths.simplifiedAccount.allServiceTransactions.detail,
       req.service.externalId,
       req.account.type,
       req.params.transactionExternalId
