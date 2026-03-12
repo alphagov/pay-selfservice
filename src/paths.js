@@ -195,7 +195,7 @@ module.exports = {
     },
     allServiceTransactions: {
       detail: '/all-services/transactions/:transactionExternalId',
-      refund: '/all-services/transactions/:transactionExternalId/refund'
+      refund: '/all-services/transactions/:transactionExternalId/refund',
     },
     settings: {
       index: '/settings',
