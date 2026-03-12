@@ -338,7 +338,7 @@ simplifiedAccount.get(
   paths.simplifiedAccount.allServices.detail,
   experimentalFeature(Features.TRANSACTIONS),
   permission('transactions:read'),
-  servicesController.allServices.get
+  servicesController.allServiceTransactions.detail.get
 )
 
 // agreements
