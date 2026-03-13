@@ -1,6 +1,5 @@
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
-import formattedPathFor from '@utils/simplified-account/format/format-paths-for'
 
 export class TransactionLinksGenerator {
   readonly transactionId: string
@@ -23,7 +22,12 @@ export class TransactionLinksGenerator {
 
   get detail() {
     return this.allServiceView
-      ? formattedPathFor(paths.allServiceTransactions.simplifiedAccount.detail, this.transactionId)
+      ? formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.allServiceTransactions.detail,
+          this.serviceExternalId!,
+          this.accountType!,
+          this.transactionId
+        )
       : formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.transactions.detail,
           this.serviceExternalId!,
@@ -34,7 +38,12 @@ export class TransactionLinksGenerator {
 
   get refund() {
     return this.allServiceView
-      ? formattedPathFor(paths.allServiceTransactions.simplifiedAccount.refund, this.transactionId)
+      ? formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.allServiceTransactions.refund,
+          this.serviceExternalId!,
+          this.accountType!,
+          this.transactionId
+        )
       : formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.transactions.refund,
           this.serviceExternalId!,

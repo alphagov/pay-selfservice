@@ -193,6 +193,10 @@ module.exports = {
       refund: '/transactions/:transactionExternalId/refund',
       downloadCsv: '/transactions/download-csv',
     },
+    allServiceTransactions: {
+      detail: '/all-services/transactions/:transactionExternalId',
+      refund: '/all-services/transactions/:transactionExternalId/refund',
+    },
     settings: {
       index: '/settings',
       serviceName: {

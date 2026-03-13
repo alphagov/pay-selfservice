@@ -333,6 +333,21 @@ simplifiedAccount.post(
   servicesController.transactions.refund.post
 )
 
+// all service transactions
+simplifiedAccount.get(
+  paths.simplifiedAccount.allServiceTransactions.detail,
+  experimentalFeature(Features.TRANSACTIONS),
+  permission('transactions:read'),
+  servicesController.allServiceTransactions.detail.get
+)
+
+simplifiedAccount.get(
+  paths.simplifiedAccount.allServiceTransactions.refund,
+  experimentalFeature(Features.TRANSACTIONS),
+  permission('transactions:read'),
+  servicesController.allServiceTransactions.refund.get
+)
+
 // agreements
 simplifiedAccount.get(
   paths.simplifiedAccount.agreements.index,
