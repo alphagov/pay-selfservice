@@ -12,6 +12,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     getEvents(req.params.transactionExternalId, req.account.id),
   ])
   transaction._locals.links.bind(req.service.externalId, req.account.type)
+  transaction._locals.links.bindToAllServices()
 
   let disputes: Transaction[] = []
   if (transaction.disputed) {

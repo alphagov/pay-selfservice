@@ -92,23 +92,19 @@ describe('All services transaction details page', () => {
   })
 
   it('should navigate to transactions list page when back link is clicked', () => {
-    cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs,
-      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
-      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
-      getCardTypesSuccess(),
-      transactionStubs.getLedgerTransactionsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactions: [TRANSACTION],
-        filters: { from_date: last12MonthsStartDate },
-        displaySize: 20,
-        transactionLength: 1,
-      }),
-    ])
-
     cy.visit(ALL_SERVICES_TRANSACTION_URL)
     cy.get('.govuk-back-link').click()
 
     cy.url().should('include', TRANSACTIONS_LIST_URL)
+  })
+
+  it('should navigate to all services refund page when button is clicked', () => {
+    cy.visit(ALL_SERVICES_TRANSACTION_URL)
+
+    cy.contains('a.govuk-button', 'Refund payment').should('be.visible').click()
+
+    const refundUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/all-services/transactions/${TRANSACTION.externalId}/refund`
+
+    cy.url().should('include', refundUrl)
   })
 })

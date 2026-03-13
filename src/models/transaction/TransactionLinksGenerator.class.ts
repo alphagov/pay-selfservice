@@ -23,23 +23,33 @@ export class TransactionLinksGenerator {
 
   get detail() {
     return this.allServiceView
-      ? formattedPathFor(paths.allServiceTransactions.simplifiedAccount.detail, this.transactionId)
+      ? formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.allServiceTransactions.detail,
+        this.serviceExternalId!,
+        this.accountType!,
+        this.transactionId
+      )
       : formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.transactions.detail,
-          this.serviceExternalId!,
-          this.accountType!,
-          this.transactionId
-        )
+        paths.simplifiedAccount.transactions.detail,
+        this.serviceExternalId!,
+        this.accountType!,
+        this.transactionId
+      )
   }
 
   get refund() {
     return this.allServiceView
-      ? formattedPathFor(paths.allServiceTransactions.simplifiedAccount.refund, this.transactionId)
+      ? formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.allServiceTransactions.refund,
+        this.serviceExternalId!,
+        this.accountType!,
+        this.transactionId
+      )
       : formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.transactions.refund,
-          this.serviceExternalId!,
-          this.accountType!,
-          this.transactionId
-        )
+        paths.simplifiedAccount.transactions.refund,
+        this.serviceExternalId!,
+        this.accountType!,
+        this.transactionId
+      )
   }
 }
