@@ -54,7 +54,10 @@ const userAndGatewayAccountStubs = [
 describe('All services refund page', () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
-    cy.task('setupStubs', [...userAndGatewayAccountStubs, getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION)])
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+    ])
   })
 
   it('accessibility check', () => {
