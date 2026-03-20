@@ -1,8 +1,14 @@
 {% if services.length %}
   <h2 class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-2">
-    <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-link--no-visited-state"
-      >{{ 'Live' if flags.hasLiveAccount else 'Test' }} transactions: all services</a
-    >
+    {% if EnvironmentFeatures.isEnabled(EnvironmentFeatures.TRANSACTIONS) %}
+      <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-link--no-visited-state"
+        >{{ 'Live' if flags.hasLiveAccount else 'Test' }} transactions: all services</a
+      >
+    {% else %}
+      <a href="{{ allServiceTransactionsPath }}" class="govuk-link govuk-link--no-visited-state"
+        >Transactions for all services</a
+      >
+    {% endif %}
   </h2>
   <p class="govuk-body">View transactions for all of your services</p>
 
