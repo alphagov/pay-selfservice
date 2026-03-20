@@ -1,6 +1,8 @@
 // -- NOT PAYMENT LINKS RELATED
 // --
 
+import { experimentalFeature } from '@middleware/simplified-account'
+
 const { Router } = require('express')
 const passport = require('passport')
 
@@ -54,13 +56,13 @@ const registrationController = require('./controllers/registration/registration.
 const privacyController = require('./controllers/privacy/privacy.controller')
 const servicesController = require('./controllers/simplified-account/services')
 const homeController = require('./controllers/simplified-account/home')
-// const allServiceTransactionsController = require('./controllers/simplified-account/home/all-service-transactions')
 
 const simplifiedAccountRoutes = require('./simplified-account-routes')
 const { registrationSuccess } = require('@services/auth.service')
 const { account: routes } = require('@root/paths')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 import { serviceViewShim } from '@middleware/simplified-account/service-view-shim.middleware'
+import { Features } from '@root/config/experimental-features'
 
 // Assignments
 const {
@@ -179,7 +181,12 @@ module.exports.bind = function (app) {
   app.get(allServiceTransactions.redirectDetail, userIsAuthorised, transactionDetailRedirectController)
 
   // all service transactions - simplified account
-  app.get(allServiceTransactions.simplifiedAccount.index, userIsAuthorised, homeController.allServiceTransactions.get)
+  app.get(
+    allServiceTransactions.simplifiedAccount.index,
+    experimentalFeature(Features.TRANSACTIONS),
+    userIsAuthorised,
+    homeController.allServiceTransactions.get
+  )
 
   // demo payment return route
   app.get(demoPaymentFwd.goToTransaction, userIsAuthorised, servicesController.demoPayment.inbound.get)

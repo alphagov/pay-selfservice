@@ -36,12 +36,8 @@ async function get(
   })
 
   let services
-  let hasLiveService = false
   if (gatewayAccountIds.length > 0) {
     const gatewayAccounts = await getGatewayAccountsByIds(gatewayAccountIds)
-    hasLiveService = Object.values(gatewayAccounts).some(
-      (gatewayAccount) => gatewayAccount.type === GatewayAccountType.LIVE
-    )
     services = mergeServicesWithGatewayAccounts(userServiceRoles, gatewayAccounts, flags).sort((a, b) =>
       sortByLiveThenName(a, b)
     )
@@ -52,7 +48,7 @@ async function get(
   return response(req, res, 'simplified-account/home/my-services/index', {
     createServicePath: paths.services.create.index,
     allServiceTransactionsPath: Features.isEnabled(Features.TRANSACTIONS)
-      ? formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, hasLiveService ? 'live' : 'test')
+      ? formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, pathFilter)
       : formattedPathFor(paths.allServiceTransactions.indexStatusFilter, pathFilter),
     payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, pathFilter),
     services,
