@@ -28,13 +28,13 @@ const europeanDate = (dateString: string) => {
 }
 
 const zonedTime = (dateString: string) => {
-  const date = DateTime.fromISO(dateString)
+  const date = DateTime.fromISO(dateString).setZone('Europe/London')
   if (!date.isValid) {
     return ''
   }
 
-  const formattedDate = date.toFormat('H:mm:ss (ZZZZ)')
-  return formattedDate.replace('GMT+1', 'BST')
+  const offset = date.isInDST ? 'BST' : 'GMT'
+  return `${date.toFormat('H:mm:ss')} (${offset})`
 }
 
 export = {
