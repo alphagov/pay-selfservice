@@ -202,7 +202,7 @@ describe('User has access to no live services', () => {
     cy.visit('/my-services')
     cy.title().should('eq', myServicesPageTitle)
 
-    cy.get('a').contains('Transactions for all services').should('have.attr', 'href', '/all-service-transactions/test')
+    cy.get('a').contains('Transactions for all services').should('have.attr', 'href', '/transactions/test')
   })
 })
 
@@ -214,6 +214,6 @@ describe('User has access to one or more live services', () => {
     cy.visit('/my-services')
     cy.title().should('eq', myServicesPageTitle)
 
-    cy.get('a').contains('Transactions for all services').should('have.attr', 'href', '/all-service-transactions/live')
+    cy.get('a').contains('Transactions for all services').should('have.attr', 'href', '/transactions/live')
   })
 })
