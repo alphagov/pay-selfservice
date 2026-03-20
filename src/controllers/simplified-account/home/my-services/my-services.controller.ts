@@ -8,7 +8,6 @@ import {
   mergeServicesWithGatewayAccounts,
 } from '@utils/simplified-account/home/my-services/service-presentation-utils'
 import User from '@models/user/User.class'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { Features } from '@root/config/experimental-features'
 
 async function get(
