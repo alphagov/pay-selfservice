@@ -111,7 +111,7 @@ describe('The user has fewer than 8 services', () => {
     cy.get('h1').should('contain', 'My services')
     cy.get('#service-links__container').should('exist')
     cy.get('#service-search__container').should('not.exist')
-    cy.get('a').contains('Transactions for all services').should('exist')
+    cy.get('a').contains('Live transactions: all services').should('exist')
     cy.get('a').contains('Payments to your bank account').should('not.exist')
     cy.get('p').contains('You do not have any services').should('not.exist')
   })
