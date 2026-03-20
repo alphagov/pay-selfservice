@@ -1,7 +1,6 @@
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import ConnectorClient from '@services/clients/pay/ConnectorClient.class'
 import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { GatewayAccountSearchParams } from '@models/gateway-account/GatewayAccountSearchParams.class'
 
 const connectorClient = new ConnectorClient()

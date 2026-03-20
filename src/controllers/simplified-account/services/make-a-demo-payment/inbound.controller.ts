@@ -18,12 +18,8 @@ async function get(req: Request, res: Response, next: NextFunction) {
     const account = await getGatewayAccountById(product.gatewayAccountId)
 
     const transactionsIndex = Features.isEnabled(Features.TRANSACTIONS)
-      ? (formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.transactions.index,
-          account.serviceId,
-          account.type
-        ) as string)
-      : (formatAccountPathsFor(paths.account.transactions.index, account.externalId) as string)
+      ? formatSimplifiedAccountPathsFor(paths.simplifiedAccount.transactions.index, account.serviceId, account.type)
+      : formatAccountPathsFor(paths.account.transactions.index, account.externalId)
 
     res.redirect(302, transactionsIndex)
   } catch (err) {

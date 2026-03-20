@@ -54,7 +54,7 @@ async function get(
     allServiceTransactionsPath: Features.isEnabled(Features.TRANSACTIONS)
       ? formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, hasLiveService ? 'live' : 'test')
       : formattedPathFor(paths.allServiceTransactions.indexStatusFilter, pathFilter),
-    payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, pathFilter) as string,
+    payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, pathFilter),
     services,
     flags,
     messages: [

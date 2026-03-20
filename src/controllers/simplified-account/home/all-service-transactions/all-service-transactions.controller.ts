@@ -16,7 +16,6 @@ import lodash from 'lodash'
 import PaymentProviders from '@models/constants/payment-providers'
 import formattedPathFor from '@utils/simplified-account/format/format-paths-for'
 import getPagination from '@utils/simplified-account/pagination'
-import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 
 async function get(
   req: AuthenticatedRequest,
