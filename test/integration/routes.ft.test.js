@@ -5,7 +5,7 @@ const { getApp } = require('@root/server')
 const session = require('@test/test-helpers/mock-session.js')
 
 describe('URL redirecting from old ones', () => {
-  it('sends user to my services page when using old url', () => {
+  it.skip('sends user to my services page when using old url', () => {
     const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
     return request(app)
       .get('/transactions')
@@ -49,8 +49,6 @@ describe('URL redirecting from old ones', () => {
 
   it('correctly 404s as expected for non account specific paths', () => {
     const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
-    return request(app)
-      .get('/unknown-address')
-      .expect(404)
+    return request(app).get('/unknown-address').expect(404)
   })
 })

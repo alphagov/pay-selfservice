@@ -5,7 +5,7 @@ const { Router } = require('express')
 const passport = require('passport')
 
 const logger = require('./utils/logger')(__filename)
-const response = require('./utils/response.js').response
+const response = require('@utils/response.ts').response
 const generateRoute = require('./utils/generate-route')
 const paths = require('./paths')
 const accountUrls = require('./utils/gateway-account-urls')
@@ -54,6 +54,7 @@ const registrationController = require('./controllers/registration/registration.
 const privacyController = require('./controllers/privacy/privacy.controller')
 const servicesController = require('./controllers/simplified-account/services')
 const homeController = require('./controllers/simplified-account/home')
+// const allServiceTransactionsController = require('./controllers/simplified-account/home/all-service-transactions')
 
 const simplifiedAccountRoutes = require('./simplified-account-routes')
 const { registrationSuccess } = require('@services/auth.service')
@@ -176,6 +177,9 @@ module.exports.bind = function (app) {
   app.get(allServiceTransactions.download, userIsAuthorised, allTransactionsController.downloadTransactions)
   app.get(allServiceTransactions.downloadStatusFilter, userIsAuthorised, allTransactionsController.downloadTransactions)
   app.get(allServiceTransactions.redirectDetail, userIsAuthorised, transactionDetailRedirectController)
+
+  // all service transactions - simplified account
+  app.get(allServiceTransactions.simplifiedAccount.index, userIsAuthorised, homeController.allServiceTransactions.get)
 
   // demo payment return route
   app.get(demoPaymentFwd.goToTransaction, userIsAuthorised, servicesController.demoPayment.inbound.get)

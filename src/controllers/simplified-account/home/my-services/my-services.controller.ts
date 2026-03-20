@@ -8,6 +8,8 @@ import {
   mergeServicesWithGatewayAccounts,
 } from '@utils/simplified-account/home/my-services/service-presentation-utils'
 import User from '@models/user/User.class'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { Features } from '@root/config/experimental-features'
 
 async function get(
   req: express.Request & {
@@ -34,8 +36,12 @@ async function get(
   })
 
   let services
+  let hasLiveService = false
   if (gatewayAccountIds.length > 0) {
     const gatewayAccounts = await getGatewayAccountsByIds(gatewayAccountIds)
+    hasLiveService = Object.values(gatewayAccounts).some(
+      (gatewayAccount) => gatewayAccount.type === GatewayAccountType.LIVE
+    )
     services = mergeServicesWithGatewayAccounts(userServiceRoles, gatewayAccounts, flags).sort((a, b) =>
       sortByLiveThenName(a, b)
     )
@@ -45,7 +51,9 @@ async function get(
 
   return response(req, res, 'simplified-account/home/my-services/index', {
     createServicePath: paths.services.create.index,
-    allServiceTransactionsPath: formattedPathFor(paths.allServiceTransactions.indexStatusFilter, pathFilter) as string,
+    allServiceTransactionsPath: Features.isEnabled(Features.TRANSACTIONS)
+      ? formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, hasLiveService ? 'live' : 'test')
+      : formattedPathFor(paths.allServiceTransactions.indexStatusFilter, pathFilter),
     payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, pathFilter) as string,
     services,
     flags,

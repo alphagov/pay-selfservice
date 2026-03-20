@@ -26,7 +26,7 @@ const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: strin
 }
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
-  const isStripeAccount = req.account.paymentProvider === 'stripe'
+  const isStripe = req.account.paymentProvider === 'stripe'
   const gatewayAccountId = req.account.id
   const PAGE_SIZE = 20
   const transactionSearchParams = TransactionSearchParams.fromSearchQuery(gatewayAccountId, req.query, true, PAGE_SIZE)
@@ -41,7 +41,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     transaction._locals.links.bind(req.service.externalId, req.account.type)
   )
 
-  const statusFilters = isStripeAccount ? StripeStatusFilters : WorldpayStatusFilters
+  const statusFilters = isStripe ? StripeStatusFilters : WorldpayStatusFilters
   const eventStates = statusFilters.map((filter) => {
     return {
       value: filter.id,
@@ -82,7 +82,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     pagination,
     filters: transactionSearchParams,
     clearRedirect: transactionsUrl,
-    isStripeAccount,
+    isStripe,
     cardBrands: [{ value: '', text: 'Any' }, ...cardBrands],
     statuses: eventStates,
     downloadLink,

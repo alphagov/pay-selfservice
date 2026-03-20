@@ -1,38 +1,22 @@
+{% extends "layout.njk" %}
+{% from "macro/system-messages.njk" import systemMessages %}
 {% from "govuk/components/accordion/macro.njk" import govukAccordion %}
-{% extends "simplified-account/services/service-layout.njk" %}
-{% set fullWidth = true %}
 
 {% block pageTitle %}
-  Transactions - {{ currentService.name }} - GOV.UK Pay
+  {{ modeFilter | capitalize }}
+  transactions: all services - GOV.UK Pay
 {% endblock %}
 
-{% block serviceContent %}
+{% block mainContent %}
   <div class="govuk-grid-column-full" style="padding: 0">
-    {% if (isInvalidDateRange) %}
-      {{
-        govukErrorSummary({
-          titleText: "There is a problem",
-          attributes: {
-            'data-cy': 'error-summary'
-          },
-          errorList: [
-            {
-              text: "End date must be after start date",
-              href: "#toDate"
-            }
-          ]
-        })
-      }}
-    {% endif %}
-
-    <h1 class="govuk-heading-l"> Transactions </h1>
+    <h1 class="govuk-heading-l">{{ modeFilter | capitalize }} transactions: all services</h1>
 
     <form method="GET" novalidate autocomplete="off">
-      {% include "./filter.njk" %}
+      {% include "simplified-account/transactions/filter.njk" %}
 
 
       {% set advancedFilters %}
-        {% include "./advanced-filter.njk" %}
+        {% include "simplified-account/transactions/advanced-filter.njk" %}
       {% endset %}
 
       {{
@@ -42,11 +26,11 @@
           items: [
             {
               heading: {
-                text: "Advanced search"
-              },
+              text: "Advanced search"
+            },
               content: {
-                html: advancedFilters
-              }
+              html: advancedFilters
+            }
             }
           ]
         })
@@ -90,26 +74,22 @@
       </details>
     {% endif %}
 
-    {% if permissions.transactions_download_read %}
-
-      {% if (hasResults) %}
-        {% if (showCsvDownload) %}
-          <p id="csv-download" class="govuk-body">
-            <a
-              href="{{ downloadTransactionLink }}"
-              id="download-transactions-link"
-              class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16"
-            >
-              Download all transaction details as a CSV file
-            </a>
-          </p>
-        {% else %}
-          <p id="csv-download" class="govuk-body">Filter results to download a CSV of transactions</p>
-        {% endif %}
+    {% if (hasResults) %}
+      {% if (showCsvDownload) %}
+        <p id="csv-download" class="govuk-body">
+          <a
+            href="{{ downloadTransactionLink }}"
+            id="download-transactions-link"
+            class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16"
+          >
+            Download all transaction details as a CSV file
+          </a>
+        </p>
+      {% else %}
+        <p id="csv-download" class="govuk-body">Filter results to download a CSV of transactions</p>
       {% endif %}
     {% endif %}
-    {% include "transactions/paginator.njk" %}
-    {% include "./list.njk" %}
+    {% include "simplified-account/transactions/list.njk" %}
   </div>
 {% endblock %}
 

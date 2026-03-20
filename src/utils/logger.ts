@@ -3,6 +3,7 @@ import { createLogger, format, Logform, transports } from 'winston'
 import { logging } from '@govuk-pay/pay-js-commons'
 import { addSentryToErrorLevel } from '@utils/sentry.js'
 import { getLoggingFields } from '@services/clients/base/request-context'
+import { debugLogger } from '@utils/loggers/debug-logger'
 
 const { json, splat, prettyPrint, combine, timestamp, printf, colorize } = format
 
@@ -57,10 +58,13 @@ const simpleLogger = createLogger({
 })
 
 export = (loggerName: string) => {
-  if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true') {
+  if (process.env.GOVUK_PAY__LOGGING_FORMAT === 'debug') {
+    return debugLogger
+  }
+  if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'true' || process.env.GOVUK_PAY__LOGGING_FORMAT === 'basic') {
     return simpleLogger
   }
-  if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'console') {
+  if (process.env.GOVUK_PAY__USE_BASIC_LOGGER === 'console' || process.env.GOVUK_PAY__LOGGING_FORMAT === 'console') {
     return console // sometimes you just want console because it shows stack traces.
   }
   return addSentryToErrorLevel(logger.child({ logger_name: loggerName }))
