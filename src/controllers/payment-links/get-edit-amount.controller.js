@@ -2,18 +2,20 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('../../utils/response')
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const supportedLanguage = require('@models/constants/supported-language')
 
-module.exports = function showEditAmountPage (req, res) {
+module.exports = function showEditAmountPage(req, res) {
   const { productExternalId } = req.params
 
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
   if (!sessionData || sessionData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
-    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id))
+    return res.redirect(
+      formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id)
+    )
   }
 
   const recovered = sessionData.amountPageRecovered || {}
@@ -30,7 +32,7 @@ module.exports = function showEditAmountPage (req, res) {
     amountHint,
     isWelsh,
     errors: recovered.errors,
-    isEditing: true
+    isEditing: true,
   }
   return response(req, res, 'payment-links/amount', pageData)
 }

@@ -4,11 +4,13 @@ const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { expect } = require('chai')
 const paths = require('../../../paths')
-const mockResponse = {}
+const mockResponse = {
+  response: sinon.spy(),
+}
 
 const controller = function (mockResponses) {
   return proxyquire('./select-organisation-type.controller', {
-    '../../../utils/response': mockResponses
+    '../../../utils/response': mockResponses,
   })
 }
 
@@ -22,7 +24,7 @@ describe('Controller: selectOrganisationType, Method: get', () => {
     it('should redirect to the create service controller', () => {
       const selectOrganisationTypeController = controller(mockResponse)
       res = {
-        redirect: sinon.spy()
+        redirect: sinon.spy(),
       }
       selectOrganisationTypeController.get(req, res)
       sinon.assert.calledWith(res.redirect, paths.services.create.index)
@@ -31,10 +33,9 @@ describe('Controller: selectOrganisationType, Method: get', () => {
 
   describe('when there is pre-existing pageData', () => {
     beforeEach(() => {
-      mockResponse.response = sinon.spy()
       const selectOrganisationTypeController = controller(mockResponse)
       res = {
-        render: sinon.spy()
+        render: sinon.spy(),
       }
       req = {
         session: {
@@ -43,11 +44,11 @@ describe('Controller: selectOrganisationType, Method: get', () => {
               current_name: SERVICE_NAME,
               current_name_cy: WELSH_SERVICE_NAME,
               errors: {
-                organisation_type: 'Organisation type is required'
-              }
-            }
-          }
-        }
+                organisation_type: 'Organisation type is required',
+              },
+            },
+          },
+        },
       }
       selectOrganisationTypeController.get(req, res)
     })
@@ -58,7 +59,7 @@ describe('Controller: selectOrganisationType, Method: get', () => {
       expect(responseContext).to.have.property('current_name').to.equal(SERVICE_NAME)
       expect(responseContext).to.have.property('current_name_cy').to.equal(WELSH_SERVICE_NAME)
       expect(responseContext).to.have.property('errors').to.deep.equal({
-        organisation_type: 'Organisation type is required'
+        organisation_type: 'Organisation type is required',
       })
       expect(responseContext).to.have.property('back_link').to.equal(paths.services.create.index)
       expect(responseContext).to.have.property('submit_link').to.equal(paths.services.create.index)
@@ -73,15 +74,14 @@ describe('Controller: selectOrganisationType, Method: get', () => {
 describe('Controller: selectOrganisationType, Method: post', () => {
   describe('when request passes validation', () => {
     beforeEach(async () => {
-      mockResponse.response = sinon.spy()
       const selectOrganisationTypeController = controller(mockResponse)
       res = {}
       req = {
         body: {
           'service-name': SERVICE_NAME,
           'service-name-cy': WELSH_SERVICE_NAME,
-          'welsh-service-name-bool': true
-        }
+          'welsh-service-name-bool': true,
+        },
       }
       selectOrganisationTypeController.post(req, res)
     })
@@ -99,17 +99,16 @@ describe('Controller: selectOrganisationType, Method: post', () => {
   })
   describe('when request fails validation', () => {
     beforeEach(async () => {
-      mockResponse.response = sinon.spy()
       const selectOrganisationTypeController = controller(mockResponse)
       res = {
-        redirect: sinon.spy()
+        redirect: sinon.spy(),
       }
       req = {
         body: {
           'service-name': 'a veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery long service name oh nooooooooo!!!',
           'service-name-cy': 'a veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery long welsh service name oh nooooooooo!!!',
-          'welsh-service-name-bool': true
-        }
+          'welsh-service-name-bool': true,
+        },
       }
       selectOrganisationTypeController.post(req, res)
     })
@@ -119,7 +118,9 @@ describe('Controller: selectOrganisationType, Method: post', () => {
       sinon.assert.calledWith(res.redirect, paths.services.create.index)
       const expectedErrors = req.session.pageData.createService.errors
       expect(expectedErrors).to.have.property('service_name').to.equal('Service name must be 50 characters or fewer')
-      expect(expectedErrors).to.have.property('service_name_cy').to.equal('Welsh service name must be 50 characters or fewer')
+      expect(expectedErrors)
+        .to.have.property('service_name_cy')
+        .to.equal('Welsh service name must be 50 characters or fewer')
     })
   })
 })

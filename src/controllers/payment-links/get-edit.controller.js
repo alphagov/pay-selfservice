@@ -2,12 +2,12 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('../../utils/response')
 const paths = require('../../paths')
 const productsClient = require('../../services/clients/products.client.js')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 
-module.exports = async function showEditPaymentLink (req, res, next) {
+module.exports = async function showEditPaymentLink(req, res, next) {
   const { productExternalId } = req.params
   const accountExternalId = req.account && req.account.external_id
 
@@ -19,21 +19,40 @@ module.exports = async function showEditPaymentLink (req, res, next) {
     editPaymentLinkData = {}
   }
 
-  const addMetadataUrl = formatAccountPathsFor(paths.account.paymentLinks.manage.addMetadata, accountExternalId, productExternalId)
+  const addMetadataUrl = formatAccountPathsFor(
+    paths.account.paymentLinks.manage.addMetadata,
+    accountExternalId,
+    productExternalId
+  )
   const editMetadataPath = formatAccountPathsFor(paths.account.paymentLinks.manage.editMetadata, accountExternalId)
   const pageData = {
     self: formatAccountPathsFor(paths.account.paymentLinks.manage.edit, accountExternalId, productExternalId),
-    editInformation: formatAccountPathsFor(paths.account.paymentLinks.manage.editInformation, accountExternalId, productExternalId),
-    editReference: formatAccountPathsFor(paths.account.paymentLinks.manage.editReference, accountExternalId, productExternalId),
-    editAmount: formatAccountPathsFor(paths.account.paymentLinks.manage.editAmount, accountExternalId, productExternalId),
+    editInformation: formatAccountPathsFor(
+      paths.account.paymentLinks.manage.editInformation,
+      accountExternalId,
+      productExternalId
+    ),
+    editReference: formatAccountPathsFor(
+      paths.account.paymentLinks.manage.editReference,
+      accountExternalId,
+      productExternalId
+    ),
+    editAmount: formatAccountPathsFor(
+      paths.account.paymentLinks.manage.editAmount,
+      accountExternalId,
+      productExternalId
+    ),
     addMetadata: addMetadataUrl,
     editMetadata: editMetadataPath,
-    paths
+    paths,
   }
   const gatewayAccountId = req.account.gateway_account_id
 
   try {
-    const product = await productsClient.product.getByProductExternalIdAndGatewayAccountId(gatewayAccountId, productExternalId)
+    const product = await productsClient.product.getByProductExternalIdAndGatewayAccountId(
+      gatewayAccountId,
+      productExternalId
+    )
     const productCheck = lodash.cloneDeep(product)
 
     // if this is the first time we're loading the product, update the session editing copy

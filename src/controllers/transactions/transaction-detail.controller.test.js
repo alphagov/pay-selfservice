@@ -12,28 +12,26 @@ describe('Transaction details - GET', () => {
 
   const transactionId = 'a-transaction-id'
 
-  const account = validGatewayAccountResponse(
-    {
-      external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
-      gateway_account_id: gatewayAccountId,
-      payment_provider: 'sandbox',
-      credentials: { username: 'a-username' }
-    }
-  )
+  const account = validGatewayAccountResponse({
+    external_id: EXTERNAL_GATEWAY_ACCOUNT_ID,
+    gateway_account_id: gatewayAccountId,
+    payment_provider: 'sandbox',
+    credentials: { username: 'a-username' },
+  })
 
   const req = {
     account,
     session: {},
-    params: { chargeId: transactionId }
+    params: { chargeId: transactionId },
   }
 
   const responseSpy = {
-    response: sinon.spy()
+    response: sinon.spy(),
   }
 
   beforeEach(() => {
     res = {
-      render: sinon.spy()
+      render: sinon.spy(),
     }
 
     next = sinon.spy()
@@ -58,7 +56,7 @@ describe('Transaction details - GET', () => {
 
     it('should set flag=false when corporate exemptions = false on the gateway account', async () => {
       req.account.worldpay_3ds_flex = {
-        corporate_exemptions_enabled: false
+        corporate_exemptions_enabled: false,
       }
 
       const controller = getControllerWithMocks(transaction, responseSpy)
@@ -73,7 +71,7 @@ describe('Transaction details - GET', () => {
 
     it('should set flag=true when corporate exemptions = true on the gateway account', async () => {
       req.account.worldpay_3ds_flex = {
-        corporate_exemptions_enabled: true
+        corporate_exemptions_enabled: true,
       }
 
       const controller = getControllerWithMocks(transaction, responseSpy)
@@ -87,16 +85,16 @@ describe('Transaction details - GET', () => {
     })
   })
 
-  function getControllerWithMocks (transaction, responseSpy) {
+  function getControllerWithMocks(transaction, responseSpy) {
     transactionServiceSpy = {
       ledgerFindWithEvents: sinon.spy(() => {
         return transaction
-      })
+      }),
     }
 
     return proxyquire('./transaction-detail.controller', {
       '../../services/transaction.service': transactionServiceSpy,
-      '../../utils/response.js': responseSpy
+      '../../utils/response': responseSpy,
     })
   }
 })

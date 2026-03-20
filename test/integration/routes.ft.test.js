@@ -5,16 +5,6 @@ const { getApp } = require('@root/server')
 const session = require('@test/test-helpers/mock-session.js')
 
 describe('URL redirecting from old ones', () => {
-  it.skip('sends user to my services page when using old url', () => {
-    const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
-    return request(app)
-      .get('/transactions')
-      .expect(302)
-      .then((res) => {
-        res.header['location'].should.include('/my-services')
-      })
-  })
-
   it('sends user to my services page when using old url', () => {
     const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
     return request(app)
