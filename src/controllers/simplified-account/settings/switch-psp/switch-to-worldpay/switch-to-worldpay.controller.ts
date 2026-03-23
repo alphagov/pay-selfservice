@@ -27,7 +27,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     currentPsp: account.paymentProvider,
     incompleteTasks: worldpayTasks.hasIncompleteTasks(),
     tasks: worldpayTasks.tasks,
-    transactionsUrl: formatAccountPathsFor(paths.account.transactions.index, account.externalId) as string,
+    transactionsUrl: formatAccountPathsFor(paths.account.transactions.index, account.externalId),
   }
   return response(req, res, 'simplified-account/settings/switch-psp/switch-to-worldpay/index', context)
 }

@@ -1,7 +1,7 @@
 'use strict'
 
-const { response } = require('../../../utils/response.js')
+const { response } = require('../../../utils/response')
 
-module.exports = function showResendSmsCodePage (req, res) {
+module.exports = function showResendSmsCodePage(req, res) {
   return response(req, res, 'two-factor-auth/resend-sms-code', { phone: req.user.telephoneNumber })
 }

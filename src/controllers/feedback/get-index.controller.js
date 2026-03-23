@@ -2,11 +2,10 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('../../utils/response')
 
 module.exports = (req, res) => {
-  const pageData = {
-  }
+  const pageData = {}
 
   const sessionFeedback = lodash.get(req, 'session.pageData.feedback', {})
   if (sessionFeedback) {

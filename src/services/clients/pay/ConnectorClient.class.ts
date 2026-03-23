@@ -17,6 +17,7 @@ import { UpdateAcceptedCardTypesRequestData } from '@models/card-type/dto/Update
 import { UpdateAcceptedCardTypesRequest } from '@models/card-type/UpdateAcceptedCardTypesRequest.class'
 import { ChargeRefundRequest } from '@models/charge/ChargeRefundRequest.class'
 import { ChargeRefundRequestData } from '@models/charge/dto/ChargeRefundRequest.dto'
+import { GatewayAccountSearchParams } from '@models/gateway-account/GatewayAccountSearchParams.class'
 
 const SERVICE_NAME = 'connector'
 const SERVICE_BASE_URL = process.env.CONNECTOR_URL!
@@ -100,6 +101,12 @@ class ConnectorClient extends BaseClient {
 
   private get gatewayAccountsClient() {
     return {
+      search: async (searchParams: GatewayAccountSearchParams) => {
+        const path = `/v1/api/accounts?${searchParams.toJson().asQueryString()}`
+        const response = await this.get<{ accounts: GatewayAccountData[] }>(path, 'search gateway accounts')
+        return response.data.accounts.map((accountData) => new GatewayAccount(accountData))
+      },
+
       findByGatewayAccountIds: async (gatewayAccountIds: number[]) => {
         const path = '/v1/api/accounts?accountIds={gatewayAccountIds}'.replace(
           '{gatewayAccountIds}',

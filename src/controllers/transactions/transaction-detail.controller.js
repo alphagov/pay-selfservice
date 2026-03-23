@@ -2,9 +2,9 @@
 
 const { NotFoundError } = require('../../errors')
 const { ledgerFindWithEvents } = require('../../services/transaction.service')
-const { response } = require('../../utils/response.js')
+const { response } = require('../../utils/response')
 
-module.exports = async function showTransactionDetails (req, res, next) {
+module.exports = async function showTransactionDetails(req, res, next) {
   const accountId = req.account.gateway_account_id
   const chargeId = req.params.chargeId
   try {

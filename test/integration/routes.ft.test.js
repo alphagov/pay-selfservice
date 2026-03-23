@@ -8,16 +8,6 @@ describe('URL redirecting from old ones', () => {
   it('sends user to my services page when using old url', () => {
     const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
     return request(app)
-      .get('/transactions')
-      .expect(302)
-      .then((res) => {
-        res.header['location'].should.include('/my-services')
-      })
-  })
-
-  it('sends user to my services page when using old url', () => {
-    const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
-    return request(app)
       .get('/dashboard')
       .expect(302)
       .then((res) => {
@@ -49,8 +39,6 @@ describe('URL redirecting from old ones', () => {
 
   it('correctly 404s as expected for non account specific paths', () => {
     const app = session.getAppWithLoggedInUser(getApp(), session.getUser())
-    return request(app)
-      .get('/unknown-address')
-      .expect(404)
+    return request(app).get('/unknown-address').expect(404)
   })
 })

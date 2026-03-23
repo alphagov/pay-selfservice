@@ -27,7 +27,7 @@ interface TransactionSearchQuery {
 }
 
 export class TransactionSearchParams {
-  accountIds: [number]
+  accountIds: number[] | string[]
   agreementId?: string
   displaySize?: number
   page?: number
@@ -54,8 +54,8 @@ export class TransactionSearchParams {
   includeTime?: boolean
   withPagination: boolean
 
-  constructor(gatewayAccountId: number, withPagintion: boolean) {
-    this.accountIds = [gatewayAccountId]
+  constructor(gatewayAccountIds: number[] | string[], withPagintion: boolean) {
+    this.accountIds = gatewayAccountIds
     this.withPagination = withPagintion
   }
 
@@ -83,7 +83,7 @@ export class TransactionSearchParams {
   }
 
   static forAgreement(gatewayAccountId: number, agreementExternalId: string, currentPage: number, displaySize: number) {
-    const searchParams = new TransactionSearchParams(gatewayAccountId, true)
+    const searchParams = new TransactionSearchParams([gatewayAccountId], true)
     searchParams.page = currentPage
     searchParams.displaySize = displaySize
     searchParams.agreementId = agreementExternalId
@@ -91,12 +91,15 @@ export class TransactionSearchParams {
   }
 
   static fromSearchQuery(
-    gatewayAccountId: number,
+    gatewayAccountIds: number | number[] | string | string[],
     queryParams: TransactionSearchQuery,
     withPagination: boolean,
     pageSize?: number
   ) {
-    const searchParams = new TransactionSearchParams(gatewayAccountId, withPagination)
+    // @ts-expect-error while `number[] | string[]` and `(number | string)[]` are not interchangeable
+    // this is valid because we are constructing an array of length 1, so every element of the array is the same type
+    const accountIds: number[] | string[] = Array.isArray(gatewayAccountIds) ? gatewayAccountIds : [gatewayAccountIds]
+    const searchParams = new TransactionSearchParams(accountIds, withPagination)
 
     if (withPagination) {
       searchParams.page = parsePageNumber(

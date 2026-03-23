@@ -2,9 +2,9 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('../../utils/response')
 
-module.exports = function showReferencePage (req, res, next) {
+module.exports = function showReferencePage(req, res, next) {
   const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
   if (!sessionData) {
     return next(new Error('Payment link data not found in session cookie'))
@@ -25,6 +25,6 @@ module.exports = function showReferencePage (req, res, next) {
     paymentReferenceLabel,
     paymentReferenceHint,
     isWelsh: sessionData.isWelsh,
-    errors: recovered.errors
+    errors: recovered.errors,
   })
 }

@@ -111,7 +111,7 @@ describe('The user has fewer than 8 services', () => {
     cy.get('h1').should('contain', 'My services')
     cy.get('#service-links__container').should('exist')
     cy.get('#service-search__container').should('not.exist')
-    cy.get('a').contains('Transactions for all services').should('exist')
+    cy.get('a').contains('Live transactions: all services').should('exist')
     cy.get('a').contains('Payments to your bank account').should('not.exist')
     cy.get('p').contains('You do not have any services').should('not.exist')
   })
@@ -158,7 +158,8 @@ describe('The user does not have any services', () => {
     cy.get('h1').should('contain', 'My services')
     cy.get('#service-links__container').should('not.exist')
     cy.get('#service-search__container').should('not.exist')
-    cy.get('a').contains('Transactions for all services').should('not.exist')
+    cy.get('a').contains('Live transactions: all services').should('not.exist')
+    cy.get('a').contains('Test transactions: all services').should('not.exist')
     cy.get('a').contains('Payments to your bank account').should('not.exist')
 
     cy.get('p').contains('You do not have any services').should('exist')
@@ -189,7 +190,7 @@ describe('Service does not have a live account that supports payouts', () => {
     cy.visit('/my-services')
     cy.title().should('eq', myServicesPageTitle)
 
-    cy.get('a').contains('Transactions for all services').should('exist')
+    cy.get('a').contains('Test transactions: all services').should('exist')
     cy.get('a').contains('Payments to your bank account').should('not.exist')
   })
 })
@@ -202,7 +203,7 @@ describe('User has access to no live services', () => {
     cy.visit('/my-services')
     cy.title().should('eq', myServicesPageTitle)
 
-    cy.get('a').contains('Transactions for all services').should('have.attr', 'href', '/all-service-transactions/test')
+    cy.get('a').contains('Test transactions: all services').should('have.attr', 'href', '/transactions/test')
   })
 })
 
@@ -214,6 +215,6 @@ describe('User has access to one or more live services', () => {
     cy.visit('/my-services')
     cy.title().should('eq', myServicesPageTitle)
 
-    cy.get('a').contains('Transactions for all services').should('have.attr', 'href', '/all-service-transactions/live')
+    cy.get('a').contains('Live transactions: all services').should('have.attr', 'href', '/transactions/live')
   })
 })
