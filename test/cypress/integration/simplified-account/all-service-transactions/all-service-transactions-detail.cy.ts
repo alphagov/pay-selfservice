@@ -38,7 +38,7 @@ const SERVICE_NAME = {
 }
 
 const ALL_SERVICES_TRANSACTION_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/all-services/transactions/${TRANSACTION.externalId}`
-const TRANSACTIONS_LIST_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
+const TRANSACTIONS_LIST_URL = `/transactions/${TEST}`
 // TODO update this to be all services index - when implemented
 
 const userAndGatewayAccountStubs = [
@@ -92,6 +92,14 @@ describe('All services transaction details page', () => {
   })
 
   it('should navigate to transactions list page when back link is clicked', () => {
+    cy.task('setupStubs', [
+      gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
+        serviceExternalId: SERVICE_EXTERNAL_ID,
+        type: 'test',
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+      }),
+    ])
+
     cy.visit(ALL_SERVICES_TRANSACTION_URL)
     cy.get('.govuk-back-link').click()
 

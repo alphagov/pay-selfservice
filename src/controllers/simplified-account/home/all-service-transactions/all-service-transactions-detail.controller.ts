@@ -2,7 +2,6 @@ import paths, { formattedPathFor } from '@root/paths'
 import { getTransaction, getEvents, getDisputes } from '@services/transactions.service'
 import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
-import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { Transaction } from '@models/transaction/Transaction.class'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 
@@ -25,7 +24,6 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   return response(req, res, 'simplified-account/services/all-service-transactions/detail/index', {
     backLink: formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, req.account.type),
-    // TODO update this to be all services index - when implemented
     events,
     transaction,
     dispute: disputes.length > 0 && disputes[0],
