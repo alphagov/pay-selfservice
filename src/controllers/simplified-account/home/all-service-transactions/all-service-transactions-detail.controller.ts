@@ -1,4 +1,4 @@
-import paths from '@root/paths'
+import paths, { formattedPathFor } from '@root/paths'
 import { getTransaction, getEvents, getDisputes } from '@services/transactions.service'
 import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
@@ -24,11 +24,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   events.sort((eventA, eventB) => (eventA.timestamp > eventB.timestamp ? -1 : 1))
 
   return response(req, res, 'simplified-account/services/all-service-transactions/detail/index', {
-    backLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.transactions.index,
-      req.service.externalId,
-      req.account.type
-    ),
+    backLink: formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, req.account.type),
     // TODO update this to be all services index - when implemented
     events,
     transaction,
