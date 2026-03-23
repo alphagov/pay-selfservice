@@ -9,8 +9,11 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-three-quarters" style="padding: 0">
-    <h1 class="govuk-heading-l">{{ modeFilter | capitalize }} transactions: all services</h1>
-
+    <div class="govuk-button-group" style="display: flex; align-items: center;">
+      <h1 class="govuk-heading-l" style="margin-right: 20px" >{{ modeFilter | capitalize }}  transactions: all services</h1>
+      <a class="govuk-link govuk-link--no-visited-state" style="margin-top: -10px" href="{{ oppositeModeLink }}">View {{ oppositeMode }} transactions</a>
+    </div>
+    
     <form method="GET" novalidate autocomplete="off">
       {% include "simplified-account/transactions/filter.njk" %}
 
