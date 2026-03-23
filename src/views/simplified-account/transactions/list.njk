@@ -6,7 +6,7 @@
   <table id="transactions-list" class="govuk-table transactions-list-table" style="width:100%">
     <thead class="govuk-table__head govuk-!-font-size-16">
       <tr class="govuk-table__row">
-        {% if isStripeAccount %}
+        {% if isStripe %}
           <th class="govuk-table__header transactions-list__stripe-header--reference" scope="col" id="reference-header"
             >Reference number</th
           >
@@ -58,7 +58,7 @@
     </thead>
     <tbody class="govuk-table__body">
       {% for transaction in results.transactions %}
-        {% if isStripeAccount %}
+        {% if isStripe %}
           {{ stripeTransactionRow(transaction) }}
         {% else %}
           {{ worldpayTransactionRow(transaction) }}

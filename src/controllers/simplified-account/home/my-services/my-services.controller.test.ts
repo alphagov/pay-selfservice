@@ -109,11 +109,8 @@ describe('Controller: home/my-services/my-services.controller', () => {
       it('should pass correct service paths', () => {
         sinon.assert.calledWithMatch(mockResponse, sinon.match.any, sinon.match.any, sinon.match.any, {
           createServicePath: paths.services.create.index,
-          allServiceTransactionsPath: formattedPathFor(
-            paths.allServiceTransactions.indexStatusFilter,
-            'live'
-          ) as string,
-          payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, 'live') as string,
+          allServiceTransactionsPath: formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'live'),
+          payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, 'live'),
         })
       })
 
@@ -162,11 +159,8 @@ describe('Controller: home/my-services/my-services.controller', () => {
 
       it('should use test path filter for service paths', () => {
         sinon.assert.calledWithMatch(mockResponse, sinon.match.any, sinon.match.any, sinon.match.any, {
-          allServiceTransactionsPath: formattedPathFor(
-            paths.allServiceTransactions.indexStatusFilter,
-            'test'
-          ) as string,
-          payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, 'test') as string,
+          allServiceTransactionsPath: formattedPathFor(paths.allServiceTransactions.indexStatusFilter, 'test'),
+          payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, 'test'),
         })
       })
 

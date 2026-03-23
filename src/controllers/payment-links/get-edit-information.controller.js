@@ -2,25 +2,31 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('../../utils/response')
 const paths = require('../../paths')
 const formatAccountPathsFor = require('../../utils/format-account-paths-for')
 const supportedLanguage = require('@models/constants/supported-language')
 
-module.exports = function showEditInformationPage (req, res, next) {
+module.exports = function showEditInformationPage(req, res, next) {
   const { productExternalId } = req.params
 
   const sessionData = lodash.get(req, 'session.editPaymentLinkData')
   if (!sessionData || sessionData.externalId !== productExternalId) {
     req.flash('genericError', 'Something went wrong. Please try again.')
 
-    return res.redirect(formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id))
+    return res.redirect(
+      formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account && req.account.external_id)
+    )
   }
 
   const recovered = sessionData.informationPageRecovered || {}
   delete sessionData.informationPageRecovered
 
-  const self = formatAccountPathsFor(paths.account.paymentLinks.manage.editInformation, req.account && req.account.external_id, productExternalId)
+  const self = formatAccountPathsFor(
+    paths.account.paymentLinks.manage.editInformation,
+    req.account && req.account.external_id,
+    productExternalId
+  )
   const change = lodash.get(req, 'query.field', {})
   const paymentLinkTitle = recovered.name || sessionData.name
   const paymentLinkDescription = recovered.description || sessionData.description
@@ -32,7 +38,7 @@ module.exports = function showEditInformationPage (req, res, next) {
     paymentLinkTitle,
     paymentLinkDescription,
     isWelsh,
-    errors: recovered.errors
+    errors: recovered.errors,
   }
   return response(req, res, 'payment-links/edit-information', pageData)
 }

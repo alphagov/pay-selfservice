@@ -1,7 +1,7 @@
 'use strict'
 
 const generateRoute = require('./utils/generate-route')
-const formattedPathFor = require('./utils/replace-params-in-path')
+const formattedPathFor = require('@utils/replace-params-in-path')
 
 const keys = {
   ENVIRONMENT_ID: 'environmentId',
@@ -363,7 +363,7 @@ module.exports = {
     downloadStatusFilter: '/all-service-transactions/download/:statusFilter(test|live)',
     redirectDetail: '/redirect/transactions/:chargeId',
     simplifiedAccount: {
-      index: '/transactions',
+      index: '/transactions/:modeFilter?',
       nosearch: '/transactions/nosearch',
       download: '/transaction/download',
       filter: '/transactions/:statusFilter(test|live)',

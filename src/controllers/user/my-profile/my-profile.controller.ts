@@ -2,6 +2,7 @@ import { response } from '@utils/response'
 import secondFactorMethod from '@models/constants/second-factor-method'
 import paths from '@root/paths'
 import User from '@models/user/User.class'
+import { Request, Response } from 'express'
 
 function get(req: Request & { user: User }, res: Response) {
   return response(req, res, 'user/my-profile', {

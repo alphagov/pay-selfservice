@@ -9,6 +9,10 @@ class ServiceRole {
     this.service = new Service(serviceRoleData.service)
     this.role = serviceRoleData.role
   }
+
+  hasPermission(permissionName: string): boolean {
+    return this.role.permissions.some((permission) => permission.name === permissionName)
+  }
 }
 
 export = ServiceRole

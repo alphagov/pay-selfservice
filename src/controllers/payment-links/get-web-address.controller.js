@@ -2,9 +2,9 @@
 
 const lodash = require('lodash')
 
-const { response } = require('../../utils/response.js')
+const { response } = require('../../utils/response')
 
-module.exports = function showWebAddressPage (req, res, next) {
+module.exports = function showWebAddressPage(req, res, next) {
   const friendlyURL = process.env.PRODUCTS_FRIENDLY_BASE_URI
 
   const sessionData = lodash.get(req, 'session.pageData.createPaymentLink')
@@ -20,6 +20,6 @@ module.exports = function showWebAddressPage (req, res, next) {
   return response(req, res, 'payment-links/web-address', {
     friendlyURL,
     productNamePath,
-    errors: recovered.errors
+    errors: recovered.errors,
   })
 }

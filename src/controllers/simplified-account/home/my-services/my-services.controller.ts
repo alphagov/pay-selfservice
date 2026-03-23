@@ -8,6 +8,7 @@ import {
   mergeServicesWithGatewayAccounts,
 } from '@utils/simplified-account/home/my-services/service-presentation-utils'
 import User from '@models/user/User.class'
+import { Features } from '@root/config/experimental-features'
 
 async function get(
   req: express.Request & {
@@ -45,8 +46,10 @@ async function get(
 
   return response(req, res, 'simplified-account/home/my-services/index', {
     createServicePath: paths.services.create.index,
-    allServiceTransactionsPath: formattedPathFor(paths.allServiceTransactions.indexStatusFilter, pathFilter) as string,
-    payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, pathFilter) as string,
+    allServiceTransactionsPath: Features.isEnabled(Features.TRANSACTIONS)
+      ? formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, pathFilter)
+      : formattedPathFor(paths.allServiceTransactions.indexStatusFilter, pathFilter),
+    payoutsPath: formattedPathFor(paths.payouts.listStatusFilter, pathFilter),
     services,
     flags,
     messages: [
