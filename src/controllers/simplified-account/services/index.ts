@@ -6,7 +6,7 @@ import * as demoPayment from './make-a-demo-payment/make-a-demo-payment.controll
 import * as paymentLinks from './payment-links/payment-links.controller'
 import * as agreements from './agreements/agreements.controller'
 import * as transactions from './transactions'
-import * as allServiceTransactions from './all-service-transactions/'
+import * as allServiceTransactions from '../home/all-service-transactions/'
 
 export = {
   myServices,
