@@ -38,8 +38,7 @@ const SERVICE_NAME = {
 }
 
 const ALL_SERVICES_TRANSACTION_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/all-services/transactions/${TRANSACTION.externalId}`
-const TRANSACTIONS_LIST_URL = `/transactions/${TEST}`
-// TODO update this to be all services index - when implemented
+const ALL_SERVICES_TRANSACTIONS_LIST_URL = `/transactions/${TEST}`
 
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({
@@ -103,7 +102,7 @@ describe('All services transaction details page', () => {
     cy.visit(ALL_SERVICES_TRANSACTION_URL)
     cy.get('.govuk-back-link').click()
 
-    cy.url().should('include', TRANSACTIONS_LIST_URL)
+    cy.url().should('include', ALL_SERVICES_TRANSACTIONS_LIST_URL)
   })
 
   it('should navigate to all services refund page when button is clicked', () => {
