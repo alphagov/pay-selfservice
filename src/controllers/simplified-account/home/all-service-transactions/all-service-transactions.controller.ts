@@ -17,6 +17,8 @@ import PaymentProviders from '@models/constants/payment-providers'
 import formattedPathFor from '@utils/simplified-account/format/format-paths-for'
 import getPagination from '@utils/simplified-account/pagination'
 
+const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
+
 async function get(
   req: AuthenticatedRequest,
   res: express.Response<unknown, { flash?: Record<string, string[]> }>,
@@ -75,8 +77,13 @@ async function get(
   const { path } = getUrlGenerator(req.query as Record<string, string>, transactionsUrl)
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, path)
 
-  const downloadLink = ''
-  const showCsvDownload = false
+  const downloadUrl = formattedPathFor(paths.allServiceTransactions.simplifiedAccount.download, modeFilter)
+  const downloadQueryString = transactionSearchParams.getQueryParams().toString()
+  const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
+  const transactionCountWithinRange = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT
+  const hasQueryParams = transactionSearchParams.getQueryParams().toString().length
+  const showCsvDownload =
+    transactionCountWithinRange || (hasQueryParams && results.total > LEDGER_TRANSACTION_COUNT_LIMIT)
 
   return response(req, res, 'simplified-account/home/all-service-transactions/index', {
     modeFilter,
