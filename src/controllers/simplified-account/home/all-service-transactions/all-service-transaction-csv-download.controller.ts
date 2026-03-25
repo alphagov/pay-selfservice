@@ -8,9 +8,7 @@ import date from '@utils/dates'
 import { findGatewayAccountsByService } from '@services/gateway-accounts.service'
 const LOGGER = logger(__filename)
 
-async function get(req: AuthenticatedRequest,
-  res: express.Response<unknown, { flash?: Record<string, string[]> }>) {
-
+async function get(req: AuthenticatedRequest, res: express.Response<unknown, { flash?: Record<string, string[]> }>) {
   const modeFilter = req.params.modeFilter === 'test' ? 'test' : 'live'
 
   const userServiceExternalIds = req.user.serviceRoles
