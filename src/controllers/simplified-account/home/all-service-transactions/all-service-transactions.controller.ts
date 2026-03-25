@@ -93,7 +93,7 @@ async function get(
     statuses: eventStates,
     downloadLink,
     showCsvDownload,
-    oppositeModeLink
+    oppositeModeLink,
   })
 }
 
