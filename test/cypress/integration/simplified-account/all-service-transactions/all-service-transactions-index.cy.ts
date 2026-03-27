@@ -3,29 +3,10 @@ import gatewayAccountStubs, { getCardTypesSuccess } from '@test/cypress/stubs/ga
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { LIVE, TEST } from '@models/gateway-account/gateway-account-type'
 import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
-import {
-  getTransactionEvents,
-  getTransactionForGatewayAccount,
-} from '@test/cypress/stubs/simplified-account/transaction-stubs'
-import ROLES from '@test/fixtures/roles.fixtures'
-import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
+import { getTransactionForGatewayAccount } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 
 const TRANSACTION = new TransactionFixture()
-const TRANSACTION_CREATED_TIMESTAMP = TRANSACTION.createdDate
-
-const TRANSACTION_EVENTS = [
-  new TransactionEventFixture({
-    amount: 1250,
-    state: {
-      finished: false,
-      status: 'CREATED',
-    },
-    resourceType: 'PAYMENT',
-    eventType: 'PAYMENT_CREATED',
-    timestamp: TRANSACTION_CREATED_TIMESTAMP,
-  }),
-]
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -48,7 +29,6 @@ const userAndGatewayAccountStubs = [
     serviceExternalId: SERVICE_EXTERNAL_ID,
     gatewayAccountId: GATEWAY_ACCOUNT_ID,
     serviceName: SERVICE_NAME,
-    role: ROLES['view-and-refund'],
   }),
 ]
 
@@ -58,7 +38,6 @@ describe('All service transactions index', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
-      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
       getCardTypesSuccess(),
       transactionStubs.getLedgerTransactionsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
@@ -67,7 +46,6 @@ describe('All service transactions index', () => {
         displaySize: 20,
         transactionLength: 1,
       }),
-
       gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
         serviceExternalId: SERVICE_EXTERNAL_ID,
         type: 'test',
@@ -99,7 +77,7 @@ describe('All service transactions index', () => {
 
     it('should navigate to test transactions', () => {
       cy.contains('a.govuk-link', 'View test transactions').should('be.visible').click()
-      cy.get('h1').should('contain.text', 'Test transactions: all services')
+      cy.get('h1').should('contain.text', `Test ${HEADING_SUFFIX}`)
       cy.url().should('include', TEST_TRANSACTIONS_LIST_URL)
     })
   })
@@ -122,7 +100,7 @@ describe('All service transactions index', () => {
 
     it('should navigate to live transactions', () => {
       cy.contains('a.govuk-link', 'View live transactions').should('be.visible').click()
-      cy.get('h1').should('contain.text', 'Live transactions: all services')
+      cy.get('h1').should('contain.text', `Live ${HEADING_SUFFIX}`)
       cy.url().should('include', LIVE_TRANSACTIONS_LIST_URL)
     })
   })
