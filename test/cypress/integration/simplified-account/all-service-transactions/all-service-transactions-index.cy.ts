@@ -3,7 +3,10 @@ import gatewayAccountStubs, { getCardTypesSuccess } from '@test/cypress/stubs/ga
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { LIVE, TEST } from '@models/gateway-account/gateway-account-type'
 import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
-import { getTransactionEvents, getTransactionForGatewayAccount } from '@test/cypress/stubs/simplified-account/transaction-stubs'
+import {
+  getTransactionEvents,
+  getTransactionForGatewayAccount,
+} from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import ROLES from '@test/fixtures/roles.fixtures'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
@@ -75,7 +78,6 @@ describe('All service transactions index', () => {
         type: 'live',
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
       }),
-
     ])
   })
 
