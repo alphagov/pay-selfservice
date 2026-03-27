@@ -68,7 +68,7 @@ describe('All service transactions index', () => {
       cy.a11yCheck()
     })
 
-    it('should display correct heading', () => {
+    it('should display correct page title and heading', () => {
       const heading = `Live ${HEADING_SUFFIX}`
 
       cy.title().should('eq', `${heading} - GOV.UK Pay`)
@@ -91,7 +91,7 @@ describe('All service transactions index', () => {
       cy.a11yCheck()
     })
 
-    it('should display correct heading', () => {
+    it('should display correct page title and headings', () => {
       const heading = `Test ${HEADING_SUFFIX}`
 
       cy.title().should('eq', `${heading} - GOV.UK Pay`)
