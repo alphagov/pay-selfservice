@@ -1,0 +1,35 @@
+{% extends "simplified-account/services/service-layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% block sideNavigation %}
+{% endblock %}
+
+{% block pageTitle %}
+  Transaction details - {{ pageID }} - GOV.UK Pay
+{% endblock %}
+
+{% set backLinkText = "Back to transactions" %}
+
+{% block serviceContent %}
+  <h1 class="govuk-heading-l govuk-!-margin-top-6">Transaction details</h1>
+
+  {% if not transaction.isFullyRefunded() and transaction.isRefundable() and permissions['refunds_create'] %}
+    {{
+      govukButton({
+        text: "Refund payment",
+        classes: "govuk-button--secondary",
+        href: transaction._locals.links.refund
+      })
+    }}
+  {% endif %}
+  {% include '../../transactions/detail/partials/_details.njk' %}
+  {% include '../../transactions/detail/partials/_amount.njk' %}
+  {% include '../../transactions/detail/partials/_payment-method.njk' %}
+  {% include '../../transactions/detail/partials/_payment-provider.njk' %}
+  {% if transaction.isDispute() or transaction.disputed %}
+    {% include '../../transactions/detail/partials/_dispute-details.njk' %}
+  {% endif %}
+  {% include '../../transactions/detail/partials/_transaction-events.njk' %}
+{% endblock %}
