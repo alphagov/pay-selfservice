@@ -96,6 +96,30 @@ You can start the Cypress server with in-line source maps and auto reload enable
 `npm run cypress:dev-server`.
 This will allow you to set breakpoints and step through the source when running a spec.
 
+#### Accessibility Checks with Cypress AXE
+
+Add a test in the cypress file to check that accessibility requirements are met as follows:
+
+```js
+  describe('accessibility testing', () => {
+    it('should have no accessibility violations on the login page', () => {
+      cy.injectAxe()
+      cy.checkA11y(null, null, (violations) => {
+        console.table(violations);
+      });
+    })
+  })
+```
+
+Then run cypress tests headed with:
+
+```bash
+npm run cypress:dev-server
+npm run cypress:test-headed
+```
+
+Run the specific cypress test, check failures, open Dev tools to check the browser console, and open the Array of errors to see the results.
+
 ## Key environment variables
 
 | Variable               |      required      |  default value  | Description                                                                                                                                           |
