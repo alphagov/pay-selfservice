@@ -21,7 +21,7 @@ function getProductsClient (baseUrl) {
   })
 }
 
-describe('products client - find a product by it\'s external id', function () {
+describe('products client - find a product by its external id', function () {
   const provider = new Pact({
     consumer: 'selfservice',
     provider: 'products',

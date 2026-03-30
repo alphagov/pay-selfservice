@@ -91,7 +91,7 @@ module.exports = function errorHandler (err, req, res, next) {
     if (err.redirect) {
       return res.redirect(err.redirect)
     }
-    return renderErrorView(req, res, 'You can\'t start this task yet, go back and try again.', 428)
+    return renderErrorView(req, res, 'You can’t start this task yet, go back and try again.', 428)
   }
 
   if (err instanceof TaskAlreadyCompletedError) {
@@ -99,7 +99,7 @@ module.exports = function errorHandler (err, req, res, next) {
     res.status(302)
     return response(req, res, 'error-with-link', {
       error: {
-        title: 'You\'ve already completed this task',
+        title: 'You’ve already completed this task',
         message: 'Contact GOV.UK Pay support if you need to change your answers.'
       },
       enable_link: true,

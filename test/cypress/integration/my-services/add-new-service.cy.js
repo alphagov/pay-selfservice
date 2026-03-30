@@ -69,7 +69,7 @@ describe('Add a new service', () => {
       cy.get('button').contains('Create service').click()
 
       cy.title().should('contain', 'Dashboard')
-      cy.get('.system-messages').contains("We've created your service")
+      cy.get('.system-messages').contains("We’ve created your service")
     })
 
     it('should show the loading spinner when the submit button is clicked', () => {
@@ -185,7 +185,7 @@ describe('Add a new service', () => {
       cy.get('button').contains('Create service').click()
 
       cy.title().should('contain', 'Dashboard')
-      cy.get('.system-messages').contains("We've created your service")
+      cy.get('.system-messages').contains("We’ve created your service")
     })
   })
 })

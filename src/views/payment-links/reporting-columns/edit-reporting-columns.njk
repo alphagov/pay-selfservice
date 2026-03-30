@@ -30,7 +30,7 @@
     {% set columnHeaderHeading = "Column header" %}
     {% if isEditing and not canEditKey %}
       <p class="govuk-body edit-reporting-column--bottom-spacing">{{columnHeaderHeading}}</p>
-      <p class="govuk-body govuk-hint edit-reporting-column--bottom-spacing">You can't edit column headers.</span>
+      <p class="govuk-body govuk-hint edit-reporting-column--bottom-spacing">You can’t edit column headers.</p>
       <p class="govuk-body govuk-!-font-weight-bold" >{{form.values[metadataKeyField.id]}}</p>
       <input type="hidden" id="{{metadataKeyField.id}}" name="{{metadataKeyField.name}}"
        value="{{form.values[metadataKeyField.id]}}" />

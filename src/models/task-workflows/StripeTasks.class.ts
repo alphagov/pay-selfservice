@@ -52,7 +52,7 @@ class StripeTask extends Task {
     gatewayAccount: GatewayAccount
   ) {
     const task = new StripeTask(
-      "Organisation's bank details",
+      "Organisation’s bank details",
       StripeTaskIdentifiers.BANK.id,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.bankDetails,
@@ -162,7 +162,7 @@ class StripeTask extends Task {
     gatewayAccount: GatewayAccount
   ) {
     const task = new StripeTask(
-      "Confirm your organisation's name and address match your government entity document",
+      "Confirm your organisation’s name and address match your government entity document",
       StripeTaskIdentifiers.ORG.id,
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.stripeDetails.organisationDetails.index,
