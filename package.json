@@ -57,17 +57,18 @@
     "staticify": {
       "send": "0.19.0"
     },
-    "cross-spawn": "^7.0.5"
+    "cross-spawn": "^7.0.5",
+    "axios": "1.14.0"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.693.0",
     "@aws-sdk/s3-request-presigner": "3.693.0",
-    "@govuk-pay/pay-js-commons": "^7.0.14",
+    "@govuk-pay/pay-js-commons": "^7.0.43",
     "@govuk-pay/pay-js-metrics": "^1.0.14",
     "@sentry/node": "6.12.0",
     "@types/sinon-chai": "^4.0.0",
     "accessible-autocomplete": "2.0.4",
-    "axios": "^1.12.1",
+    "axios": "1.14.0",
     "body-parser": "1.20.3",
     "change-case": "3.1.0",
     "check-types": "11.2.x",
@@ -166,5 +167,8 @@
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.28.0",
     "wick-a11y": "^2.0.1"
+  },
+  "resolutions": {
+    "axios": "1.14.0"
   }
 }
