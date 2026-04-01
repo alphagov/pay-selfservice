@@ -276,5 +276,34 @@ describe('Transactions list pagination', () => {
         cy.get('button.pay-button--as-link.displaySize').should('contain', '100')
       })
     })
+
+    it('should display timezone notification banner on the Transaction List page', () => {
+      const opts = transactionSearchResultOpts(
+        150,
+        500,
+        1,
+        {},
+        {
+          self: {
+            href: '/v1/transactions?&page=1&display_size=500&state='
+          }
+        }
+      )
+      cy.task('setupStubs', getStubs(opts))
+      cy.visit(transactionsUrl + '?pageSize=500&page=1')
+      cy.get('.govuk-notification-banner').should('exist').within(() => {
+        cy.get('.govuk-notification-banner__heading')
+          .should('contain', 'BST has started and it could affect your reporting.')
+
+        cy.get('.govuk-body')
+          .should('contain', 'Clocks in the UK went forward 1 hour on 30 March 2025 for British Summer Time (BST)')
+          .and('contain', 'times in the GOV.UK Pay admin tool are 1 hour ahead of downloaded CSV files.')
+          .and('contain', 'how timezones work in GOV.UK Pay in our documentation')
+
+        cy.get('a.govuk-notification-banner__link')
+          .should('have.attr', 'href')
+          .and('include', 'https://docs.payments.service.gov.uk/reporting/#timezones-in-gov-uk-pay')
+      })
+    })
   })
 })
