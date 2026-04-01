@@ -7,17 +7,14 @@ const { expect } = require('chai')
 const goLiveStage = require('@models/constants/go-live-stage')
 const Service = require('@models/service/Service.class')
 const serviceFixtures = require('../../../../test/fixtures/service.fixtures')
-const gatewayAccountFixture = require('../../../../test/fixtures/gateway-account.fixtures')
-
+require('../../../../test/fixtures/gateway-account.fixtures')
 const mockResponse = sinon.stub()
 
 const loggerInfoMock = sinon.spy()
 const stripeAccountId = 'acct_123example123'
 const setStripeAccountSetupFlagMock = sinon.spy(() => Promise.resolve())
 const updateStripeAccountMock = sinon.spy(() => Promise.resolve())
-
-const stubGetStripeAccountId = sinon.stub().resolves(stripeAccountId)
-
+sinon.stub().resolves(stripeAccountId)
 const getController = function getController (mockServiceService) {
   return proxyquire('./post.controller', {
     '@services/service.service': mockServiceService,
