@@ -12,20 +12,20 @@ describe('Transactions list pagination', () => {
   const serviceName = 'Test Service'
   const defaultAmount = 1000
 
-  function generateTransactions (length) {
+  function generateTransactions(length) {
     const transactions = []
     for (let i = 0; i < length; i++) {
       transactions.push({
         reference: 'transaction' + i,
         amount: defaultAmount,
         type: 'payment',
-        charge_id: 'charge_id'
+        charge_id: 'charge_id',
       })
     }
     return transactions
   }
 
-  function transactionSearchResultOpts (transactionLength, displaySize, page, filters, links) {
+  function transactionSearchResultOpts(transactionLength, displaySize, page, filters, links) {
     return {
       gatewayAccountId,
       transactionLength: transactionLength || 50,
@@ -34,7 +34,7 @@ describe('Transactions list pagination', () => {
       transactionCount: 5,
       transactions: generateTransactions(5),
       filters,
-      links: links || {}
+      links: links || {},
     }
   }
 
@@ -44,7 +44,7 @@ describe('Transactions list pagination', () => {
       userStubs.getUsersSuccess(),
       gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({ gatewayAccountId, gatewayAccountExternalId }),
       gatewayAccountStubs.getCardTypesSuccess(),
-      transactionStubs.getLedgerTransactionsSuccess(transactionDetails)
+      transactionStubs.getLedgerTransactionsSuccess(transactionDetails),
     ]
   }
 
@@ -54,11 +54,16 @@ describe('Transactions list pagination', () => {
     })
     describe('Pagination', () => {
       it('should display pagination links with previous page disabled for first page', () => {
-        const opts = transactionSearchResultOpts(30, 5, 1, {},
+        const opts = transactionSearchResultOpts(
+          30,
+          5,
+          1,
+          {},
           {
             self: { href: '/v1/transactions?&page=&display_size=5&state=' },
-            next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' }
-          })
+            next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' },
+          }
+        )
 
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=')
@@ -66,22 +71,19 @@ describe('Transactions list pagination', () => {
 
         cy.get('div.pagination').should('exist').should('have.length', 2)
 
-        cy.get('nav.govuk-pagination')
-          .should('exist')
-          .and('have.attr', 'aria-label', 'Pagination')
+        cy.get('nav.govuk-pagination').should('exist').and('have.attr', 'aria-label', 'Pagination')
+
+        cy.get('ul.govuk-pagination__list').first().children('li.govuk-pagination__item').should('have.length', 4)
 
         cy.get('ul.govuk-pagination__list')
           .first()
-          .children('li.govuk-pagination__item')
-          .should('have.length', 4)
-
-        cy.get('ul.govuk-pagination__list').first().within((el) => {
-          cy.get('a')
-            .first()
-            .should('exist')
-            .and('have.attr', 'href', '/account/a-valid-external-id/transactions?pageSize=5&page=1')
-            .and('contain.text', '1')
-        })
+          .within((el) => {
+            cy.get('a')
+              .first()
+              .should('exist')
+              .and('have.attr', 'href', '/account/a-valid-external-id/transactions?pageSize=5&page=1')
+              .and('contain.text', '1')
+          })
 
         cy.get('li.govuk-pagination__item')
           .find('a.govuk-link.govuk-pagination__link')
@@ -109,12 +111,17 @@ describe('Transactions list pagination', () => {
       })
 
       it('should have both next and previous pagination links enabled, when ledger return both links ', () => {
-        const opts = transactionSearchResultOpts(30, 5, 3, {},
+        const opts = transactionSearchResultOpts(
+          30,
+          5,
+          3,
+          {},
           {
             self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
             next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' },
-            prev_page: { href: '/v1/transactions?&page=1&display_size=5&state=' }
-          })
+            prev_page: { href: '/v1/transactions?&page=1&display_size=5&state=' },
+          }
+        )
 
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=3')
@@ -128,13 +135,15 @@ describe('Transactions list pagination', () => {
           .should('have.attr', 'href', '/account/a-valid-external-id/transactions?pageSize=5&page=2')
           .and('have.attr', 'rel', 'prev')
 
-        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link').should('have.length', 2)
+        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
+          .should('have.length', 2)
           .first()
           .within(() => {
             cy.get('span.govuk-pagination__link-title').should('contain.text', ' Next')
           })
 
-        cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link').should('have.length', 2)
+        cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
+          .should('have.length', 2)
           .first()
           .within(() => {
             cy.get('span.govuk-pagination__link-title').should('contain.text', ' Previous')
@@ -142,11 +151,16 @@ describe('Transactions list pagination', () => {
       })
 
       it('should display the next page as disabled, when ledger does not return next page', () => {
-        const opts = transactionSearchResultOpts(30, 5, 6, {},
+        const opts = transactionSearchResultOpts(
+          30,
+          5,
+          6,
+          {},
           {
             self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
-            prev_page: { href: '/v1/transactions?&page=1&display_size=5&state=' }
-          })
+            prev_page: { href: '/v1/transactions?&page=1&display_size=5&state=' },
+          }
+        )
 
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=6')
@@ -156,14 +170,14 @@ describe('Transactions list pagination', () => {
           .should('have.attr', 'href', '/account/a-valid-external-id/transactions?pageSize=5&page=5')
           .and('have.attr', 'rel', 'prev')
 
-        cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link').should('have.length', 2)
+        cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
+          .should('have.length', 2)
           .first()
           .within(() => {
             cy.get('span.govuk-pagination__link-title').should('contain.text', ' Previous')
           })
 
-        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
-          .should('not.exist')
+        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link').should('not.exist')
       })
 
       it('should not display pagination links, when ledger does not provide both next and previous links', () => {
@@ -172,28 +186,31 @@ describe('Transactions list pagination', () => {
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=5&page=')
 
-        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link')
-          .should('not.exist')
+        cy.get('div.govuk-pagination__next a.govuk-link.govuk-pagination__link').should('not.exist')
 
-        cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link')
-          .should('not.exist')
+        cy.get('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link').should('not.exist')
       })
 
       it('should navigate to next page correctly with all filters intact', () => {
-        const opts = transactionSearchResultOpts(30, 5, 1, {
-          reference: 'ref123',
-          email: 'gds4',
-          cardholder_name: 'doe',
-          last_digits_card_number: '4242',
-          from_date: '2018-05-03T00:00:00.000Z',
-          to_date: '2018-05-04T00:00:01.000Z',
-          card_brands: 'visa,master-card',
-          payment_states: 'success'
-        },
-        {
-          self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
-          next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' }
-        })
+        const opts = transactionSearchResultOpts(
+          30,
+          5,
+          1,
+          {
+            reference: 'ref123',
+            email: 'gds4',
+            cardholder_name: 'doe',
+            last_digits_card_number: '4242',
+            from_date: '2018-05-03T00:00:00.000Z',
+            to_date: '2018-05-04T00:00:01.000Z',
+            card_brands: 'visa,master-card',
+            payment_states: 'success',
+          },
+          {
+            self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
+            next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' },
+          }
+        )
 
         const stubs = getStubs(opts)
 
@@ -203,7 +220,10 @@ describe('Transactions list pagination', () => {
         stubs.push(transactionStubs.getLedgerTransactionsSuccess(opts))
 
         cy.task('setupStubs', stubs)
-        cy.visit(transactionsUrl + '?pageSize=5&page=1&reference=ref123&email=gds4&cardholderName=doe&lastDigitsCardNumber=4242&fromDate=03%2F05%2F2018&fromTime=1%3A00%3A00&toDate=04%2F05%2F2018&toTime=1%3A00%3A00&brand=visa&brand=master-card&state=Success')
+        cy.visit(
+          transactionsUrl +
+            '?pageSize=5&page=1&reference=ref123&email=gds4&cardholderName=doe&lastDigitsCardNumber=4242&fromDate=03%2F05%2F2018&fromTime=1%3A00%3A00&toDate=04%2F05%2F2018&toTime=1%3A00%3A00&brand=visa&brand=master-card&state=Success'
+        )
 
         cy.get('.govuk-pagination__next').first().click()
 
@@ -220,32 +240,46 @@ describe('Transactions list pagination', () => {
       })
 
       it('should return correct display size options when total over 500', () => {
-        const opts = transactionSearchResultOpts(600, 100, 1, {},
-          { self: { href: '/v1/transactions?&page=1&display_size=100&state=' } })
+        const opts = transactionSearchResultOpts(
+          600,
+          100,
+          1,
+          {},
+          { self: { href: '/v1/transactions?&page=1&display_size=100&state=' } }
+        )
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=100&page=1')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
         cy.get('#displaySize').should('contain', 'Results per page:')
         cy.get('#displaySize').should('contain', '100')
-        cy.get('.displaySizeForm').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '1')
-          cy.get('input[name="pageSize"]').should('have.value', '500')
-        })
+        cy.get('.displaySizeForm')
+          .should('exist')
+          .within(() => {
+            cy.get('input[name="page"]').should('have.value', '1')
+            cy.get('input[name="pageSize"]').should('have.value', '500')
+          })
       })
 
       it('should return correct display size options when total between 100 and 500', () => {
-        const opts = transactionSearchResultOpts(400, 100, 1, {},
-          { self: { href: '/v1/transactions?&page=1&display_size=100&state=' } })
+        const opts = transactionSearchResultOpts(
+          400,
+          100,
+          1,
+          {},
+          { self: { href: '/v1/transactions?&page=1&display_size=100&state=' } }
+        )
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=100&page=1')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
 
         cy.get('#displaySize').should('contain', 'Results per page:')
         cy.get('#displaySize').should('contain', '100')
-        cy.get('.displaySizeForm').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '1')
-          cy.get('input[name="pageSize"]').should('have.value', '500')
-        })
+        cy.get('.displaySizeForm')
+          .should('exist')
+          .within(() => {
+            cy.get('input[name="page"]').should('have.value', '1')
+            cy.get('input[name="pageSize"]').should('have.value', '500')
+          })
         cy.get('button.pay-button--as-link.displaySize').should('contain', 'Show all')
       })
 
@@ -260,8 +294,13 @@ describe('Transactions list pagination', () => {
       })
 
       it('should return correct display size options when total under 1000', () => {
-        const opts = transactionSearchResultOpts(150, 500, 1, {},
-          { self: { href: '/v1/transactions?&page=1&display_size=500&state=' } })
+        const opts = transactionSearchResultOpts(
+          150,
+          500,
+          1,
+          {},
+          { self: { href: '/v1/transactions?&page=1&display_size=500&state=' } }
+        )
         cy.task('setupStubs', getStubs(opts))
         cy.visit(transactionsUrl + '?pageSize=500&page=1')
         cy.title().should('eq', `Transactions - ${serviceName} Sandbox test - GOV.UK Pay`)
@@ -269,10 +308,12 @@ describe('Transactions list pagination', () => {
         cy.get('form.paginationForm').should('not.exist')
         cy.get('#displaySize').should('contain', 'Results per page:')
         cy.get('#displaySize').should('contain', '100')
-        cy.get('.displaySizeForm').should('exist').within(() => {
-          cy.get('input[name="page"]').should('have.value', '1')
-          cy.get('input[name="pageSize"]').should('have.value', '100')
-        })
+        cy.get('.displaySizeForm')
+          .should('exist')
+          .within(() => {
+            cy.get('input[name="page"]').should('have.value', '1')
+            cy.get('input[name="pageSize"]').should('have.value', '100')
+          })
         cy.get('button.pay-button--as-link.displaySize').should('contain', '100')
       })
     })
@@ -285,25 +326,29 @@ describe('Transactions list pagination', () => {
         {},
         {
           self: {
-            href: '/v1/transactions?&page=1&display_size=500&state='
-          }
+            href: '/v1/transactions?&page=1&display_size=500&state=',
+          },
         }
       )
       cy.task('setupStubs', getStubs(opts))
       cy.visit(transactionsUrl + '?pageSize=500&page=1')
-      cy.get('.govuk-notification-banner').should('exist').within(() => {
-        cy.get('.govuk-notification-banner__heading')
-          .should('contain', 'BST has started and it could affect your reporting.')
+      cy.get('.govuk-notification-banner')
+        .should('exist')
+        .within(() => {
+          cy.get('.govuk-notification-banner__heading').should(
+            'contain',
+            'BST has started and it could affect your reporting.'
+          )
 
-        cy.get('.govuk-body')
-          .should('contain', 'Clocks in the UK went forward 1 hour on 29 March 2026 for British Summer Time (BST)')
-          .and('contain', 'times in the GOV.UK Pay admin tool are 1 hour ahead of downloaded CSV files.')
-          .and('contain', 'how timezones work in GOV.UK Pay in our documentation')
+          cy.get('.govuk-body')
+            .should('contain', 'Clocks in the UK went forward 1 hour on 29 March 2026 for British Summer Time (BST)')
+            .and('contain', 'times in the GOV.UK Pay admin tool are 1 hour ahead of downloaded CSV files.')
+            .and('contain', 'how timezones work in GOV.UK Pay in our documentation')
 
-        cy.get('a.govuk-notification-banner__link')
-          .should('have.attr', 'href')
-          .and('include', 'https://docs.payments.service.gov.uk/reporting/#timezones-in-gov-uk-pay')
-      })
+          cy.get('a.govuk-notification-banner__link')
+            .should('have.attr', 'href')
+            .and('include', 'https://docs.payments.service.gov.uk/reporting/#timezones-in-gov-uk-pay')
+        })
     })
   })
 })
