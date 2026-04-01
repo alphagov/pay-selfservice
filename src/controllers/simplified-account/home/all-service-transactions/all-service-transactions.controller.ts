@@ -72,6 +72,8 @@ async function get(
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   const currentPage = Math.min(transactionSearchParams.page!, totalPages)
   const transactionsUrl = formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, modeFilter)
+  const oppositeMode = modeFilter === 'test' ? 'live' : 'test'
+  const oppositeModeLink = formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, oppositeMode)
   const { path } = getUrlGenerator(req.query as Record<string, string>, transactionsUrl)
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, path)
 
@@ -80,6 +82,7 @@ async function get(
 
   return response(req, res, 'simplified-account/home/all-service-transactions/index', {
     modeFilter,
+    oppositeMode,
     results,
     isBST: isBritishSummerTime(),
     pagination,
@@ -90,6 +93,7 @@ async function get(
     statuses: eventStates,
     downloadLink,
     showCsvDownload,
+    oppositeModeLink,
   })
 }
 
