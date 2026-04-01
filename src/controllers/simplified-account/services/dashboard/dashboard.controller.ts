@@ -62,15 +62,15 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         switchMode:
           req.account.type === GatewayAccountType.LIVE
             ? formatServiceAndAccountPathsFor(
-              paths.simplifiedAccount.enterSandboxMode.index,
-              req.service.externalId,
-              GatewayAccountType.LIVE
-            )
+                paths.simplifiedAccount.enterSandboxMode.index,
+                req.service.externalId,
+                GatewayAccountType.LIVE
+              )
             : formatServiceAndAccountPathsFor(
-              paths.simplifiedAccount.exitSandboxMode.index,
-              req.service.externalId,
-              GatewayAccountType.TEST
-            ),
+                paths.simplifiedAccount.exitSandboxMode.index,
+                req.service.externalId,
+                GatewayAccountType.TEST
+              ),
         demoPayment: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.demoPayment.index,
           req.service.externalId,
