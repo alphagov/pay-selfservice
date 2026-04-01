@@ -625,7 +625,7 @@ describe('Transaction details page', () => {
           .should('contain', 'BST has started and it could affect your reporting.')
 
         cy.get('.govuk-body')
-          .should('contain', 'Clocks in the UK went forward 1 hour on 30 March 2025 for British Summer Time (BST)')
+          .should('contain', 'Clocks in the UK went forward 1 hour on 29 March 2026 for British Summer Time (BST)')
           .and('contain', 'times in the GOV.UK Pay admin tool are 1 hour ahead of downloaded CSV files.')
           .and('contain', 'how timezones work in GOV.UK Pay in our documentation')
 
