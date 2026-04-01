@@ -29,11 +29,6 @@ const getController = function getController (mockServiceService) {
     '@utils/response': {
       response: mockResponse
     },
-    '@controllers/stripe-setup/stripe-setup.util': {
-      getStripeAccountId: (...params) => {
-        return stubGetStripeAccountId(...params)
-      }
-    },
     '@utils/logger': function (filename) {
       return {
         info: loggerInfoMock
