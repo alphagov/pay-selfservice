@@ -159,7 +159,7 @@ describe('Controller: settings/stripe-details/director', () => {
           {
             errors: {
               summary: [
-                { text: 'There is a problem with the information you\'ve submitted. We\'ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.' }
+                { text: 'There is a problem with the information you’ve submitted. We’ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.' }
               ]
             },
             name: { firstName: 'Scrooge', lastName: 'McDuck' },

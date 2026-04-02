@@ -21,7 +21,7 @@ function getProductsClient (baseUrl) {
   })
 }
 
-describe('products client - find a payment by it\'s own external id', function () {
+describe('products client - find a payment by its own external id', function () {
   const provider = new Pact({
     consumer: 'selfservice-to-be',
     provider: 'products',

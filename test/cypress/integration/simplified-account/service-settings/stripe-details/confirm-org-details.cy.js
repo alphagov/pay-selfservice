@@ -94,7 +94,7 @@ describe('Stripe details settings', () => {
       })
       it('should show the task already completed page', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
-        cy.get('h1').should('contain', "You've already completed this task")
+        cy.get('h1').should('contain', "You’ve already completed this task")
       })
     })
     describe('Not yet started', () => {
@@ -175,7 +175,7 @@ describe('Stripe details settings', () => {
           cy.get('h1').should('contain', 'Stripe details')
           cy.location('pathname').should('not.contain', '/organisation-details/index')
           cy.get('.govuk-task-list__item')
-            .contains("Confirm your organisation's name and address match your government entity document")
+            .contains("Confirm your organisation’s name and address match your government entity document")
             .parent()
             .parent()
             .within(() => {
@@ -253,7 +253,7 @@ describe('Stripe details settings', () => {
             cy.get('h1').should('contain', 'Stripe details')
             cy.location('pathname').should('not.contain', '/organisation-details')
             cy.get('.govuk-task-list__item')
-              .contains("Confirm your organisation's name and address match your government entity document")
+              .contains("Confirm your organisation’s name and address match your government entity document")
               .parent()
               .parent()
               .within(() => {

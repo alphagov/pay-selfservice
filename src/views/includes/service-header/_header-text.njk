@@ -20,7 +20,7 @@
       </a>
     {% endif %}
   {% elif serviceView.statusTag === 'GO_LIVE_REQUESTED' %}
-    Your service is not live. You've requested a live account from the GOV.UK Pay team.
+    Your service is not live. You’ve requested a live account from the GOV.UK Pay team.
   {% elif serviceView.statusTag === 'PSP_ONBOARDING' %}
     {% if isAdminUser %}
       {% if currentGatewayAccount.paymentProvider | lower == 'stripe' %}
@@ -47,7 +47,7 @@
       >.
     {% endif %}
   {% elif serviceView.statusTag === 'SANDBOX_MODE' %}
-    You're in sandbox mode. Some settings are not available. Only test payment data is shown.
+    You’re in sandbox mode. Some settings are not available. Only test payment data is shown.
     <a
       class="govuk-link govuk-link--no-visited-state"
       href="{{ paths.simplifiedAccount.exitSandboxMode.index | formatServiceAndAccountPathsFor(currentService.externalId, 'test') }}"
@@ -55,7 +55,7 @@
       Exit sandbox mode </a
     >.
   {% elif serviceView.statusTag === 'RESTRICTED' %}
-    You're not taking payments at the moment and you cannot make refunds. To start taking payments, email
+    You’re not taking payments at the moment and you cannot make refunds. To start taking payments, email
     <a class="govuk-link govuk-link--no-visited-state" href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk">
       govuk-pay-support@digital.cabinet-office.gov.uk </a
     >.

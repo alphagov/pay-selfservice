@@ -9,7 +9,7 @@ const http = require('http')
 const httpProxy = require('http-proxy')
 
 /**
- * This test actually tests if request.js honour HTTP_PROXY, NO_PROXY var's as per the documentation.
+ * This test actually tests if request.js honour HTTP_PROXY, NO_PROXY vars as per the documentation.
  * The reason for doing this is;
  *  we need to route requests to "Auth0" via a proxy and we use `passport-auth0.js` (https://www.npmjs.com/package/passport-auth0)
  *  and this lib uses request.js internally. We don't have control to set options manually hence making use of the env variables.

@@ -239,7 +239,7 @@ describe('Controller: settings/stripe-details/responsible-person/responsible-per
           expect(responseStub.calledOnce).to.be.true
           const responseArgs = responseStub.firstCall.args
           expect(responseArgs[3].errors.summary[0].text).to.equal(
-            'There is a problem with the information you\'ve submitted. We\'ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.'
+            'There is a problem with the information you’ve submitted. We’ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.'
           )
         })
       })

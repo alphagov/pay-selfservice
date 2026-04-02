@@ -93,7 +93,7 @@ describe('Stripe details settings', () => {
       })
       it('should show the task already completed page', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
-        cy.get('h1').should('contain', "You've already completed this task")
+        cy.get('h1').should('contain', "You’ve already completed this task")
       })
     })
     describe('Not yet started', () => {
@@ -116,7 +116,7 @@ describe('Stripe details settings', () => {
           cy.title().should('eq', 'Organisation’s bank details - Settings - McDuck Enterprises - GOV.UK Pay')
         })
         it('should show the correct heading', () => {
-          cy.get('h1').should('contain', "Organisation's bank details")
+          cy.get('h1').should('contain', "Organisation’s bank details")
         })
       })
       describe('When inputting bank details', () => {
@@ -220,7 +220,7 @@ describe('Stripe details settings', () => {
           cy.get('h1').should('contain', 'Stripe details')
           cy.location('pathname').should('not.contain', '/bank-details')
           cy.get('.govuk-task-list__item')
-            .contains("Organisation's bank details")
+            .contains("Organisation’s bank details")
             .parent()
             .parent()
             .within(() => {
