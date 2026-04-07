@@ -185,7 +185,14 @@ module.exports.bind = function (app) {
     allServiceTransactions.simplifiedAccount.index,
     experimentalFeature(Features.TRANSACTIONS),
     userIsAuthorised,
-    homeController.allServiceTransactions.get
+    homeController.allServiceTransactions.list.get
+  )
+
+  app.get(
+    allServiceTransactions.simplifiedAccount.download,
+    experimentalFeature(Features.TRANSACTIONS),
+    userIsAuthorised,
+    homeController.allServiceTransactions.downloadCSV.get
   )
 
   // demo payment return route

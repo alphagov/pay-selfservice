@@ -369,7 +369,7 @@ module.exports = {
     simplifiedAccount: {
       index: '/transactions/:modeFilter?',
       nosearch: '/transactions/nosearch',
-      download: '/transaction/download',
+      download: '/transaction/download/:modeFilter?',
       filter: '/transactions/:statusFilter(test|live)',
       detail: '/transactions/:transactionId',
       refund: '/transaction/:transactionId/refund',
