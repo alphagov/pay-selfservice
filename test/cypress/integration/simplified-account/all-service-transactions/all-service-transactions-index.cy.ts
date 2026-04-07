@@ -31,6 +31,11 @@ const userAndGatewayAccountStubs = [
     gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
     serviceName: SERVICE_NAME,
   }),
+  gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
+    serviceExternalId: SERVICE_EXTERNAL_ID,
+    type: 'live',
+    gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
+  }),
 ]
 
 describe('All service transactions index', () => {
@@ -53,30 +58,20 @@ describe('All service transactions index', () => {
           displaySize: 20,
           transactionLength: 1,
         }),
-        gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
-          serviceExternalId: SERVICE_EXTERNAL_ID,
-          type: 'test',
-          gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
-        }),
-        gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
-          serviceExternalId: SERVICE_EXTERNAL_ID,
-          type: 'live',
-          gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
-        }),
       ])
       cy.visit(LIVE_TRANSACTIONS_LIST_URL)
     })
 
-    // it('accessibility check', () => {
-    //   cy.a11yCheck()
-    // })
+    it('accessibility check', () => {
+      cy.a11yCheck()
+    })
 
-    // it('should display correct page title and heading', () => {
-    //   const heading = `Live ${HEADING_SUFFIX}`
+    it('should display correct page title and heading', () => {
+      const heading = `Live ${HEADING_SUFFIX}`
 
-    //   cy.title().should('eq', `${heading} - GOV.UK Pay`)
-    //   cy.get('h1').should('contain.text', heading)
-    // })
+      cy.title().should('eq', `${heading} - GOV.UK Pay`)
+      cy.get('h1').should('contain.text', heading)
+    })
 
     it('should navigate to test transactions', () => {
       cy.task('setupStubs', [
@@ -93,6 +88,11 @@ describe('All service transactions index', () => {
           filters: { from_date: last12MonthsStartDate },
           displaySize: 20,
           transactionLength: 1,
+        }),
+        gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
+          serviceExternalId: SERVICE_EXTERNAL_ID,
+          type: 'test',
+          gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
         }),
       ])
 
@@ -162,18 +162,12 @@ describe('All service transactions index', () => {
 
     it('should navigate to live transactions', () => {
       cy.task('setupStubs', [
+        ...userAndGatewayAccountStubs,
         userStubs.getUserSuccess({
           userExternalId: USER_EXTERNAL_ID,
           email: USER_EMAIL,
           serviceExternalId: SERVICE_EXTERNAL_ID,
           gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
-          serviceName: SERVICE_NAME,
-        }),
-        userStubs.getUserSuccess({
-          userExternalId: USER_EXTERNAL_ID,
-          email: USER_EMAIL,
-          serviceExternalId: SERVICE_EXTERNAL_ID,
-          gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
           serviceName: SERVICE_NAME,
         }),
         transactionStubs.getLedgerTransactionsSuccess({
@@ -194,11 +188,6 @@ describe('All service transactions index', () => {
           serviceExternalId: SERVICE_EXTERNAL_ID,
           type: 'test',
           gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
-        }),
-        gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
-          serviceExternalId: SERVICE_EXTERNAL_ID,
-          type: 'live',
-          gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
         }),
       ])
       cy.visit(TEST_TRANSACTIONS_LIST_URL)
