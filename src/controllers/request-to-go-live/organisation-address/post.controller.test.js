@@ -18,7 +18,7 @@ const updateStripeAccountMock = sinon.spy(() => Promise.resolve())
 
 const stubGetStripeAccountId = sinon.stub().resolves(stripeAccountId)
 
-const getController = function getController (mockServiceService) {
+const getController = function getController(mockServiceService) {
   return proxyquire('./post.controller', {
     '@services/service.service': mockServiceService,
     '@services/clients/connector.client': {
@@ -28,11 +28,6 @@ const getController = function getController (mockServiceService) {
     },
     '@utils/response': {
       response: mockResponse
-    },
-    '@controllers/stripe-setup/stripe-setup.util': {
-      getStripeAccountId: (...params) => {
-        return stubGetStripeAccountId(...params)
-      }
     },
     '@utils/logger': function (filename) {
       return {
@@ -112,23 +107,23 @@ describe('organisation address - post controller', () => {
   })
 
   describe('Form validation', () => {
-      beforeEach(() => {
-        req.route.path = '/request-to-go-live/organisation-address'
-        controller(req, res, next)
-        responseData = mockResponse.getCalls()[0]
-      })
+    beforeEach(() => {
+      req.route.path = '/request-to-go-live/organisation-address'
+      controller(req, res, next)
+      responseData = mockResponse.getCalls()[0]
+    })
 
-      it('should return errors when the required fields are missing', () => {
-        expect(responseData.args[2]).to.equal('request-to-go-live/organisation-address')
+    it('should return errors when the required fields are missing', () => {
+      expect(responseData.args[2]).to.equal('request-to-go-live/organisation-address')
 
-        const errors = responseData.args[3].errors
-        expect(Object.keys(errors).length).to.equal(5)
-        expect(errors[errorKeysAndMessage.errorAddressLine1.key]).to.equal(errorKeysAndMessage.errorAddressLine1.text)
-        expect(errors[errorKeysAndMessage.errorAddressCity.key]).to.equal(errorKeysAndMessage.errorAddressCity.text)
-        expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
-        expect(errors[errorKeysAndMessage.errorTelephoneNumber.key]).to.equal(errorKeysAndMessage.errorTelephoneNumber.text)
-        expect(errors[errorKeysAndMessage.errorWebsiteAddress.key]).to.equal(errorKeysAndMessage.errorWebsiteAddress.text)
-      })
+      const errors = responseData.args[3].errors
+      expect(Object.keys(errors).length).to.equal(5)
+      expect(errors[errorKeysAndMessage.errorAddressLine1.key]).to.equal(errorKeysAndMessage.errorAddressLine1.text)
+      expect(errors[errorKeysAndMessage.errorAddressCity.key]).to.equal(errorKeysAndMessage.errorAddressCity.text)
+      expect(errors[errorKeysAndMessage.errorAddressPostcode.key]).to.equal(errorKeysAndMessage.errorAddressPostcode.text)
+      expect(errors[errorKeysAndMessage.errorTelephoneNumber.key]).to.equal(errorKeysAndMessage.errorTelephoneNumber.text)
+      expect(errors[errorKeysAndMessage.errorWebsiteAddress.key]).to.equal(errorKeysAndMessage.errorWebsiteAddress.text)
+    })
   })
 
   describe('Form submissions', () => {
@@ -303,5 +298,5 @@ describe('organisation address - post controller', () => {
         })
       })
     })
-    })
+  })
 })
