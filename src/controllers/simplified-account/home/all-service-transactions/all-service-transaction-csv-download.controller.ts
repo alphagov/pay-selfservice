@@ -12,7 +12,7 @@ async function get(req: AuthenticatedRequest, res: express.Response<unknown, { f
   const modeFilter = req.params.modeFilter === 'test' ? 'test' : 'live'
 
   const userServiceExternalIds = req.user.serviceRoles
-    .filter((serviceRole) => serviceRole.hasPermission('transactions:read'))
+    .filter((serviceRole) => serviceRole.hasPermission('transactions-download:read'))
     .map((serviceRole) => serviceRole.service)
     .map((service) => service.externalId)
 

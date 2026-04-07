@@ -26,7 +26,7 @@ async function get(
 ) {
   const modeFilter = req.params.modeFilter === 'test' ? 'test' : 'live'
   const userServiceExternalIds = req.user.serviceRoles
-    .filter((serviceRole) => serviceRole.hasPermission('transactions-download:read'))
+    .filter((serviceRole) => serviceRole.hasPermission('transactions:read'))
     .map((serviceRole) => serviceRole.service)
     .map((service) => service.externalId)
   if (!userServiceExternalIds.length) {
