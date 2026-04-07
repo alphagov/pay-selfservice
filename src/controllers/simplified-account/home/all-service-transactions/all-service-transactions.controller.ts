@@ -41,7 +41,7 @@ async function get(
     // no live gateway accounts
     return res.redirect(formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, 'test'))
   }
-
+  const showOppositeModeLink = true
   const isStripe = gatewayAccounts.some((gatewayAccount) => gatewayAccount.paymentProvider === PaymentProviders.STRIPE)
 
   const PAGE_SIZE = 20
@@ -93,6 +93,7 @@ async function get(
     statuses: eventStates,
     downloadLink,
     showCsvDownload,
+    showOppositeModeLink,
     oppositeModeLink,
   })
 }
