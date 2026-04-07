@@ -58,7 +58,7 @@
 //     cookieBannerObject.setCookieConsent(true)
 //
 //     expect(document.cookie).to.include('govuk_pay_cookie_policy={"analytics":true,"SameSite":"Lax"}')
-//     expect(document.body.innerHTML).to.contain('You\'ve accepted analytics cookies.')
+//     expect(document.body.innerHTML).to.contain('You’ve accepted analytics cookies.')
 //     expect(analyticsStub.calledOnce).to.be.true
 //   })
 //
@@ -66,7 +66,7 @@
 //     cookieBannerObject.setCookieConsent(true)
 //
 //     expect(document.cookie).to.include('govuk_pay_cookie_policy={"analytics":true,"SameSite":"Lax"}')
-//     expect(document.body.innerHTML).to.contain('You\'ve accepted analytics cookies.')
+//     expect(document.body.innerHTML).to.contain('You’ve accepted analytics cookies.')
 //     expect(analyticsStub.called).to.be.false
 //   })
 //

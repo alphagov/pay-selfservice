@@ -69,7 +69,7 @@ describe('Controller: createService, Method: post', () => {
       sinon.assert.calledWith(req.flash, 'messages', {
         state: 'success',
         icon: '&check;',
-        heading: "We've created your service.",
+        heading: "We’ve created your service.",
       })
       expect(res.redirect.called).to.equal(true)
       expect(res.redirect.args[0][0]).to.equal(

@@ -58,7 +58,7 @@ async function post (req, res, next) {
             })
           default:
             return postErrorResponse(req, res, {
-              summary: [{ text: 'There is a problem with the information you\'ve submitted. We\'ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.' }]
+              summary: [{ text: 'There is a problem with the information you’ve submitted. We’ve not been able to save your details. Email govuk-pay-support@digital.cabinet-office.gov.uk for help.' }]
             })
         }
       }

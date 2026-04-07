@@ -45,7 +45,7 @@ describe('Worldpay account setup banner', () => {
       cy.get('.govuk-notification-banner__content')
         .contains('Finish setting up your service to start taking payments')
         .parent()
-        .contains('You\'ve started to set up your live account. There are still some steps you need to complete.')
+        .contains('You’ve started to set up your live account. There are still some steps you need to complete.')
         .within(() => {
           cy.get('a')
             .should('have.attr', 'href', '/service/service123abc/account/live/settings/worldpay-details')

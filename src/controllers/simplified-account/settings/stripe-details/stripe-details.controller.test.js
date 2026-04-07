@@ -85,7 +85,7 @@ describe('Controller: settings/stripe-details', () => {
       it('should pass Stripe details tasks to the response method', () => {
         const stripeDetailsTasks = mockResponse.args[0][3].tasks
         expect(stripeDetailsTasks[0]).to.deep.equal({
-          linkText: "Organisation's bank details",
+          linkText: "Organisation’s bank details",
           href: `/service/${SERVICE_ID}/account/${ACCOUNT_TYPE}/settings/stripe-details/bank-details`,
           id: 'stripe-bank-details',
           status: COMPLETED_CANNOT_START,

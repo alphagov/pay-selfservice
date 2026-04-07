@@ -198,8 +198,8 @@ describe('Stripe details settings', () => {
       })
       const expectedTasks = [
         {
-          name: "Organisation's bank details",
-          heading: "Organisation's bank details",
+          name: "Organisation’s bank details",
+          heading: "Organisation’s bank details",
           status: taskStatus.NOT_STARTED,
           tagClass: 'govuk-tag govuk-tag--blue',
         },
@@ -228,7 +228,7 @@ describe('Stripe details settings', () => {
           tagClass: 'govuk-tag govuk-tag--blue',
         },
         {
-          name: "Confirm your organisation's name and address match your government entity document",
+          name: "Confirm your organisation’s name and address match your government entity document",
           heading: 'Organisation details',
           status: taskStatus.NOT_STARTED,
           tagClass: 'govuk-tag govuk-tag--blue',
@@ -266,8 +266,8 @@ describe('Stripe details settings', () => {
       })
       const expectedTasks = [
         {
-          name: "Organisation's bank details",
-          heading: "Organisation's bank details",
+          name: "Organisation’s bank details",
+          heading: "Organisation’s bank details",
           status: taskStatus.COMPLETE,
           tagClass: 'govuk-tag',
         },
@@ -296,7 +296,7 @@ describe('Stripe details settings', () => {
           tagClass: 'govuk-tag',
         },
         {
-          name: "Confirm your organisation's name and address match your government entity document",
+          name: "Confirm your organisation’s name and address match your government entity document",
           heading: 'Organisation details',
           status: taskStatus.COMPLETE,
           tagClass: 'govuk-tag',

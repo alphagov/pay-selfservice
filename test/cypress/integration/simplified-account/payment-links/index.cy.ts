@@ -94,7 +94,7 @@ describe('PaymentLinks dashboard', () => {
           cy.get('.service-pane').within(() => {
             cy.get('.govuk-inset-text')
               .should('exist')
-              .should('contain.text', "You don't have permission to create or edit payment links.")
+              .should('contain.text', "You don’t have permission to create or edit payment links.")
 
             cy.get('.govuk-warning-text')
               .should('exist')
@@ -140,7 +140,7 @@ describe('PaymentLinks dashboard', () => {
           cy.get('.service-pane').within(() => {
             cy.get('.govuk-inset-text')
               .should('exist')
-              .should('contain.text', "You don't have permission to create or edit payment links.")
+              .should('contain.text', "You don’t have permission to create or edit payment links.")
             cy.get('.govuk-warning-text').should('not.exist')
             cy.get('.govuk-body').should('have.length', 1).should('contain.text', 'There are no payment links.')
           })
@@ -162,7 +162,7 @@ describe('PaymentLinks dashboard', () => {
           cy.get('.service-pane').within(() => {
             cy.get('.govuk-inset-text')
               .should('exist')
-              .should('contain.text', "You don't have permission to create or edit payment links.")
+              .should('contain.text', "You don’t have permission to create or edit payment links.")
 
             cy.get('.govuk-warning-text').should('not.exist')
 
@@ -206,7 +206,7 @@ describe('PaymentLinks dashboard', () => {
           cy.get('.service-pane').within(() => {
             cy.get('.govuk-inset-text')
               .should('exist')
-              .should('contain.text', "You don't have permission to create or edit payment links.")
+              .should('contain.text', "You don’t have permission to create or edit payment links.")
             cy.get('.govuk-warning-text').should('not.exist')
             cy.get('.govuk-body').should('have.length', 1).should('contain.text', 'There are no payment links.')
           })

@@ -33,7 +33,7 @@ describe('Class: User', () => {
   })
 
   describe('Method: getRoleForService', () => {
-    it('should return the user\'s role if user has access to service', () => {
+    it('should return the user’s role if user has access to service', () => {
       result = user.getRoleForService(service.externalId)
       expect(result).to.deep.equal(role)
     })

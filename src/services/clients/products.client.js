@@ -106,7 +106,7 @@ async function getProductByExternalIdAndGatewayAccountId (gatewayAccountId, prod
   this.client = new Client(SERVICE_NAME)
   const url = `${baseUrl}/gateway-account/${gatewayAccountId}/products/${productExternalId}`
   configureClient(this.client, url)
-  const response = await this.client.get(url, 'find a product by it\'s external id')
+  const response = await this.client.get(url, 'find a product by its external id')
   return new Product(response.data)
 }
 
@@ -118,7 +118,7 @@ async function getProductByExternalId (productExternalId) {
   this.client = new Client(SERVICE_NAME)
   const url = `${baseUrl}/products/${productExternalId}`
   configureClient(this.client, url)
-  const response = await this.client.get(url, 'find a product by it\'s external id')
+  const response = await this.client.get(url, 'find a product by its external id')
   return new Product(response.data)
 }
 
@@ -180,7 +180,7 @@ async function getPaymentByPaymentExternalId (paymentExternalId) {
   this.client = new Client(SERVICE_NAME)
   const url = `${baseUrl}/payments/${paymentExternalId}`
   configureClient(this.client, url)
-  const response = await this.client.get(url, 'find a payment by it\'s external id')
+  const response = await this.client.get(url, 'find a payment by its external id')
   return new Payment(response.data)
 }
 
@@ -205,6 +205,6 @@ async function getProductByPath (serviceNamePath, productNamePath) {
   this.client = new Client(SERVICE_NAME)
   const url = `${baseUrl}/products?serviceNamePath=${serviceNamePath}&productNamePath=${productNamePath}`
   configureClient(this.client, url)
-  const response = await this.client.get(url, 'find a product by it\'s product path')
+  const response = await this.client.get(url, 'find a product by its product path')
   return new Product(response.data)
 }

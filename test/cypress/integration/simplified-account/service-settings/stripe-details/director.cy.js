@@ -93,7 +93,7 @@ describe('Stripe details settings', () => {
       })
       it('should show the task already completed page', () => {
         cy.title().should('eq', 'An error occurred - GOV.UK Pay')
-        cy.get('h1').should('contain', "You've already completed this task")
+        cy.get('h1').should('contain', "You’ve already completed this task")
       })
     })
     describe('Not yet started', () => {
