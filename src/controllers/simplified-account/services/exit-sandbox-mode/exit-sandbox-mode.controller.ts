@@ -5,7 +5,7 @@ import { NotFoundError } from '@root/errors'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { Message } from '@utils/types/express/Message'
-import { StatusTag } from '@models/service-status/ServiceView.class'
+import { StatusTag } from '@models/service-view/ServiceView.class'
 
 function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
   if (req.serviceView.statusTag !== StatusTag.SANDBOX_MODE) {

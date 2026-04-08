@@ -1,6 +1,6 @@
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { NextFunction } from 'express'
-import { StatusTag } from '@models/service-status/ServiceView.class'
+import { StatusTag } from '@models/service-view/ServiceView.class'
 import { NotFoundError } from '@root/errors'
 
 function requirePspOnboarding(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {

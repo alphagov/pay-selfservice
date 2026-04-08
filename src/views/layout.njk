@@ -38,7 +38,7 @@
 {% block header %}
   {% include "includes/header.njk" %}
   {% include "includes/service-navigation.njk" %}
-  {% if serviceView %}
+  {% if serviceView and serviceView.showHeader %}
     {% include "includes/service-header/service-header.njk" %}
   {% endif %}
 {% endblock %}

@@ -4,6 +4,7 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import GoLiveStage from '@models/constants/go-live-stage'
 import PaymentProviders from '@models/constants/payment-providers'
 import createLogger from '@utils/logger'
+import { ServiceViewLinksGenerator } from '@models/service-view/ServiceViewLinksGenerator.class'
 
 const logger = createLogger(__filename)
 
@@ -46,45 +47,58 @@ export class ServiceView {
   statusTag: StatusTag
   displayTag: DisplayTag
 
-  constructor(statusTag: StatusTag, displayTag: DisplayTag) {
+  showHeader: boolean
+
+  private readonly service: Service
+  private readonly accountType: string
+
+  private readonly links: ServiceViewLinksGenerator
+
+  constructor(statusTag: StatusTag, displayTag: DisplayTag, service: Service, accountType: string) {
     this.statusTag = statusTag
     this.displayTag = displayTag
+    this.service = service
+    this.accountType = accountType
+
+    // at present not all routes currently include the service header
+    this.showHeader = false
+    this.links = new ServiceViewLinksGenerator(service.externalId, accountType)
   }
 
-  static Live() {
-    return new ServiceView(StatusTag.LIVE, DisplayTag.LIVE)
+  static Live(service: Service) {
+    return new ServiceView(StatusTag.LIVE, DisplayTag.LIVE, service, GatewayAccountType.LIVE)
   }
 
-  static GoLiveRequested() {
-    return new ServiceView(StatusTag.GO_LIVE_REQUESTED, DisplayTag.NOT_LIVE_YET)
+  static GoLiveRequested(service: Service) {
+    return new ServiceView(StatusTag.GO_LIVE_REQUESTED, DisplayTag.NOT_LIVE_YET, service, GatewayAccountType.TEST)
   }
 
-  static GoLiveInProgress() {
-    return new ServiceView(StatusTag.GO_LIVE_IN_PROGRESS, DisplayTag.NOT_LIVE_YET)
+  static GoLiveInProgress(service: Service) {
+    return new ServiceView(StatusTag.GO_LIVE_IN_PROGRESS, DisplayTag.NOT_LIVE_YET, service, GatewayAccountType.TEST)
   }
 
-  static WorldpayTest() {
-    return new ServiceView(StatusTag.WORLDPAY_TEST, DisplayTag.WORLDPAY_TEST)
+  static WorldpayTest(service: Service) {
+    return new ServiceView(StatusTag.WORLDPAY_TEST, DisplayTag.WORLDPAY_TEST, service, GatewayAccountType.TEST)
   }
 
-  static PspOnboarding() {
-    return new ServiceView(StatusTag.PSP_ONBOARDING, DisplayTag.NOT_LIVE_YET)
+  static PspOnboarding(service: Service) {
+    return new ServiceView(StatusTag.PSP_ONBOARDING, DisplayTag.NOT_LIVE_YET, service, GatewayAccountType.LIVE)
   }
 
-  static TestAccountOnly() {
-    return new ServiceView(StatusTag.TEST_ACCOUNT_ONLY, DisplayTag.NOT_LIVE_YET)
+  static TestAccountOnly(service: Service) {
+    return new ServiceView(StatusTag.TEST_ACCOUNT_ONLY, DisplayTag.NOT_LIVE_YET, service, GatewayAccountType.TEST)
   }
 
-  static SandboxMode() {
-    return new ServiceView(StatusTag.SANDBOX_MODE, DisplayTag.SANDBOX_MODE)
+  static SandboxMode(service: Service) {
+    return new ServiceView(StatusTag.SANDBOX_MODE, DisplayTag.SANDBOX_MODE, service, GatewayAccountType.TEST)
   }
 
-  static Restricted() {
-    return new ServiceView(StatusTag.RESTRICTED, DisplayTag.NOT_TAKING_PAYMENTS)
+  static Restricted(service: Service, accountType: string) {
+    return new ServiceView(StatusTag.RESTRICTED, DisplayTag.NOT_TAKING_PAYMENTS, service, accountType)
   }
 
-  static Unknown() {
-    return new ServiceView(StatusTag.UNKNOWN, DisplayTag.NONE)
+  static Unknown(service: Service, accountType: string) {
+    return new ServiceView(StatusTag.UNKNOWN, DisplayTag.NONE, service, accountType)
   }
 
   static determineFor(service: Service, account: GatewayAccount) {
@@ -120,44 +134,44 @@ const determineServiceView = (service: Service, account: GatewayAccount) => {
   const isWorldpayTestService = account.paymentProvider === PaymentProviders.WORLDPAY && isTestGatewayAccount
 
   if (account.disabled) {
-    return ServiceView.Restricted()
+    return ServiceView.Restricted(service, account.type)
   }
 
   if (isInLiveMode && hasActiveCredential) {
-    return ServiceView.Live()
+    return ServiceView.Live(service)
   }
 
   if (isInLiveMode && ValidLivePaymentProviders.includes(account.paymentProvider)) {
-    return ServiceView.PspOnboarding()
+    return ServiceView.PspOnboarding(service)
   }
 
   if (isInLiveMode) {
-    return ServiceView.Unknown()
+    return ServiceView.Unknown(service, account.type)
   }
 
   if (isInSandboxMode) {
-    return ServiceView.SandboxMode()
+    return ServiceView.SandboxMode(service)
   }
 
   if (isWorldpayTestService) {
-    return ServiceView.WorldpayTest()
+    return ServiceView.WorldpayTest(service)
   }
 
   if (GoLiveRequestedStages.includes(currentGoLiveStage) && isNotLiveYet) {
-    return ServiceView.GoLiveRequested()
+    return ServiceView.GoLiveRequested(service)
   }
 
   if (GoLiveInProgressStages.includes(currentGoLiveStage) && isNotLiveYet) {
-    return ServiceView.GoLiveInProgress()
+    return ServiceView.GoLiveInProgress(service)
   }
 
   if (currentGoLiveStage === GoLiveStage.NOT_STARTED && isNotLiveYet) {
-    return ServiceView.TestAccountOnly()
+    return ServiceView.TestAccountOnly(service)
   }
 
   // this should never happen
   logger.error(
     `Service in unknown state [service_external_id: ${service.externalId}, gateway_account_external_id: ${account.externalId}]`
   )
-  return ServiceView.Unknown()
+  return ServiceView.Unknown(service, account.type)
 }

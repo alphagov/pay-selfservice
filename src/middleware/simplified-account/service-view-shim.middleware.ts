@@ -3,7 +3,7 @@ import Service from '@models/service/Service.class'
 import { ServiceData } from '@models/service/dto/Service.dto'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
-import { ServiceView } from '@models/service-status/ServiceView.class'
+import { ServiceView } from '@models/service-view/ServiceView.class'
 import createLogger from '@utils/logger'
 
 const logger = createLogger(__filename)
@@ -23,6 +23,7 @@ function serviceViewShim(
       req.account instanceof GatewayAccount ? req.account : new GatewayAccount(req.account as GatewayAccountData)
 
     req.serviceView = ServiceView.determineFor(service, account)
+    req.serviceView.showHeader = true
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
@@ -31,4 +32,19 @@ function serviceViewShim(
   return next()
 }
 
-export { serviceViewShim }
+function setServiceView(constructor: (service: Service) => ServiceView, showHeader?: boolean) {
+  return (req: Request & { service?: unknown; serviceView?: ServiceView }, res: Response, next: NextFunction) => {
+    try {
+      const service = req.service instanceof Service ? req.service : new Service(req.service as ServiceData)
+
+      req.serviceView = constructor(service)
+      req.serviceView.showHeader = showHeader ?? false
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      logger.warn('Attempting to set service view on incompatible route')
+    }
+    return next()
+  }
+}
+
+export { serviceViewShim, setServiceView }
