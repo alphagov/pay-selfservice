@@ -38,17 +38,17 @@ async function get(
     )
   }
 
-  const gatewayAccounts = await findGatewayAccountsByService(userServiceExternalIds, modeFilter)
   const allGatewayAccounts = await findGatewayAccountsByService(userServiceExternalIds)
-  const gatewayAccountIds = gatewayAccounts.map((gatewayAccountData) => gatewayAccountData.id)
+  const gatewayAccountsByMode = allGatewayAccounts.filter((gatewayAccount) => gatewayAccount.type === modeFilter)
+
+  const gatewayAccountIds = gatewayAccountsByMode.map((gatewayAccountData) => gatewayAccountData.id)
   if (!gatewayAccountIds.length && !req.params.modeFilter) {
     // no live gateway accounts
     return res.redirect(formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, 'test'))
   }
-  const showOppositeModeLink = allGatewayAccounts.some(
-    (gatewayAccount) => gatewayAccount.type === GatewayAccountType.LIVE
-  )
-  const isStripe = gatewayAccounts.some((gatewayAccount) => gatewayAccount.paymentProvider === PaymentProviders.STRIPE)
+
+  const showOppositeModeLink = allGatewayAccounts.length > gatewayAccountsByMode.length
+  const isStripe = gatewayAccountsByMode.some((gatewayAccount) => gatewayAccount.paymentProvider === PaymentProviders.STRIPE)
 
   const PAGE_SIZE = 20
   const transactionSearchParams = TransactionSearchParams.fromSearchQuery(gatewayAccountIds, req.query, true, PAGE_SIZE)

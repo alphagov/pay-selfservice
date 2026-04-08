@@ -144,9 +144,10 @@ function getGatewayAccountByServiceIdsSuccess(opts) {
 
 function getMultipleGatewayAccountsByServiceIdSuccess(opts) {
   const path = '/v1/api/accounts'
-  const accounts = opts.types.map(accountType => ({
-    gateway_account_id: opts.gatewayAccountId,
-    type: accountType
+
+  const accounts = opts.gatewayAccountIds.map((id, index) => ({
+    gateway_account_id: id,
+    type: opts.types[index]
   }));
 
   return stubBuilder('GET', path, 200, {
