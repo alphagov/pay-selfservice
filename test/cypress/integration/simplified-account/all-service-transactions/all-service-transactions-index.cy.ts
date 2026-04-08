@@ -64,7 +64,7 @@ describe('All service transactions index', () => {
         gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE],
-          gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID]
+          gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID],
         }),
       ])
       cy.visit(LIVE_TRANSACTIONS_LIST_URL)
@@ -83,7 +83,7 @@ describe('All service transactions index', () => {
         gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE],
-          gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID]
+          gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID],
         }),
       ])
       cy.visit(LIVE_TRANSACTIONS_LIST_URL)
@@ -106,7 +106,7 @@ describe('All service transactions index', () => {
         gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE],
-          gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID]
+          gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID],
         }),
       ])
       cy.visit(LIVE_TRANSACTIONS_LIST_URL)
@@ -131,7 +131,7 @@ describe('All service transactions index', () => {
         gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE, TEST],
-          gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID, TEST_GATEWAY_ACCOUNT_ID]
+          gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID, TEST_GATEWAY_ACCOUNT_ID],
         }),
       ])
       cy.visit(LIVE_TRANSACTIONS_LIST_URL)
@@ -172,7 +172,7 @@ describe('All service transactions index', () => {
         gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [TEST],
-          gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID]
+          gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID],
         }),
       ])
       cy.visit(TEST_TRANSACTIONS_LIST_URL)
@@ -184,7 +184,7 @@ describe('All service transactions index', () => {
         gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [TEST],
-          gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID]
+          gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID],
         }),
       ])
       cy.visit(TEST_TRANSACTIONS_LIST_URL)
@@ -199,7 +199,7 @@ describe('All service transactions index', () => {
         gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [TEST],
-          gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID]
+          gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID],
         }),
       ])
       cy.visit(TEST_TRANSACTIONS_LIST_URL)
@@ -220,7 +220,7 @@ describe('All service transactions index', () => {
         gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE, TEST],
-          gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID, TEST_GATEWAY_ACCOUNT_ID]
+          gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID, TEST_GATEWAY_ACCOUNT_ID],
         }),
         gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
