@@ -12,15 +12,15 @@ describe('Request to go live: index', () => {
         external_id: serviceExternalId,
         current_go_live_stage: goLiveStage,
         takes_payments_over_phone: takesPaymentsOverPhone,
-        gateway_account_ids: [gatewayAccountId]
-      }
+        gateway_account_ids: [gatewayAccountId],
+      },
     }
   }
 
   const setupStubs = (serviceRole) => {
     cy.task('setupStubs', [
       userStubs.getUserSuccessWithServiceRole({ userExternalId, serviceRole }),
-      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId })
+      gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
     ])
   }
 
@@ -32,7 +32,7 @@ describe('Request to go live: index', () => {
     beforeEach(() => {
       const serviceRole = buildServiceRoleForGoLiveStage('NOT_STARTED')
       serviceRole.role = {
-        permissions: []
+        permissions: [],
       }
       setupStubs(serviceRole)
     })
@@ -130,7 +130,9 @@ describe('Request to go live: index', () => {
       cy.get('#request-to-go-live-index-form > button').click()
 
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
+        expect(location.pathname).to.eq(
+          `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`
+        )
       })
     })
   })
@@ -173,7 +175,9 @@ describe('Request to go live: index', () => {
       cy.visit(requestToGoLivePageUrl)
       cy.get('#request-to-go-live-index-form > button').click()
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-takes-payments-over-phone`)
+        expect(location.pathname).to.eq(
+          `/service/${serviceExternalId}/request-to-go-live/choose-takes-payments-over-phone`
+        )
       })
     })
   })
@@ -214,7 +218,7 @@ describe('Request to go live: index', () => {
       setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_STRIPE'))
     })
 
-    it('should show "Request to go live" page with correct progress indication', () => {
+    it.only('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
@@ -227,6 +231,12 @@ describe('Request to go live: index', () => {
       cy.get('ol.govuk-list').should('not.exist')
 
       cy.get('#request-to-go-live-index-form > button').should('not.exist')
+
+      cy.get('.govuk-warning-text').within(() => {
+        cy.contains('a', 'manage your users')
+          .should('exist')
+          .and('have.attr', 'href', `/service/${serviceExternalId}/account/test/settings/team-members`)
+      })
     })
   })
 
@@ -249,7 +259,10 @@ describe('Request to go live: index', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
       cy.get('h1').should('contain', 'Request submitted')
-      cy.get('.govuk-inset-text').should('contain', 'To set up telephone payments you need to email govuk-pay-support@digital.cabinet-office.gov.uk.')
+      cy.get('.govuk-inset-text').should(
+        'contain',
+        'To set up telephone payments you need to email govuk-pay-support@digital.cabinet-office.gov.uk.'
+      )
 
       cy.get('ul > li').should('not.contain', 'responsible person')
       cy.get('ul > li').should('not.contain', 'bank details')
