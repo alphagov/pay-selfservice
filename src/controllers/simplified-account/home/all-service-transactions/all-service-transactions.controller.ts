@@ -16,6 +16,7 @@ import lodash from 'lodash'
 import PaymentProviders from '@models/constants/payment-providers'
 import formattedPathFor from '@utils/simplified-account/format/format-paths-for'
 import getPagination from '@utils/simplified-account/pagination'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 
 const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
@@ -38,12 +39,15 @@ async function get(
   }
 
   const gatewayAccounts = await findGatewayAccountsByService(userServiceExternalIds, modeFilter)
+  const allGatewayAccounts = await findGatewayAccountsByService(userServiceExternalIds)
   const gatewayAccountIds = gatewayAccounts.map((gatewayAccountData) => gatewayAccountData.id)
   if (!gatewayAccountIds.length && !req.params.modeFilter) {
     // no live gateway accounts
     return res.redirect(formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, 'test'))
   }
-  const showOppositeModeLink = true
+  const showOppositeModeLink = allGatewayAccounts.some(
+    (gatewayAccount) => gatewayAccount.type === GatewayAccountType.LIVE
+  )
   const isStripe = gatewayAccounts.some((gatewayAccount) => gatewayAccount.paymentProvider === PaymentProviders.STRIPE)
 
   const PAGE_SIZE = 20
