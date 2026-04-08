@@ -142,7 +142,7 @@ function getGatewayAccountByServiceIdsSuccess(opts) {
   })
 }
 
-function getMultipleGatewayAccountsByServiceIdSuccess(opts) {
+function getGatewayAccountsByServiceIdAndTypeSuccess(opts) {
   const path = '/v1/api/accounts'
 
   const accounts = opts.gatewayAccountIds.map((id, index) => ({
@@ -645,5 +645,5 @@ module.exports = {
   setRefundEmailEnabledByServiceIdAndAccountType,
   getAcceptedCardTypesByServiceExternalIdAndAccountType,
   postAcceptedCardTypesByServiceExternalIdAndAccountType,
-  getMultipleGatewayAccountsByServiceIdSuccess,
+  getGatewayAccountsByServiceIdAndTypeSuccess,
 }

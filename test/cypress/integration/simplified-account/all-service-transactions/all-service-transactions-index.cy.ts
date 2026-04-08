@@ -61,7 +61,7 @@ describe('All service transactions index', () => {
           displaySize: 20,
           transactionLength: 1,
         }),
-        gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
+        gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE],
           gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID],
@@ -80,7 +80,7 @@ describe('All service transactions index', () => {
           displaySize: 20,
           transactionLength: 1,
         }),
-        gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
+        gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE],
           gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID],
@@ -103,7 +103,7 @@ describe('All service transactions index', () => {
           displaySize: 20,
           transactionLength: 1,
         }),
-        gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
+        gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE],
           gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID],
@@ -128,7 +128,7 @@ describe('All service transactions index', () => {
           type: TEST,
           gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
         }),
-        gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
+        gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE, TEST],
           gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID, TEST_GATEWAY_ACCOUNT_ID],
@@ -169,7 +169,7 @@ describe('All service transactions index', () => {
 
     it('accessibility check', () => {
       cy.task('setupStubs', [
-        gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
+        gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [TEST],
           gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID],
@@ -181,7 +181,7 @@ describe('All service transactions index', () => {
 
     it('should display correct page title and headings', () => {
       cy.task('setupStubs', [
-        gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
+        gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [TEST],
           gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID],
@@ -196,7 +196,7 @@ describe('All service transactions index', () => {
 
     it('should not show link to live mode if no live accounts exist', () => {
       cy.task('setupStubs', [
-        gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
+        gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [TEST],
           gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID],
@@ -217,7 +217,7 @@ describe('All service transactions index', () => {
           displaySize: 20,
           transactionLength: 1,
         }),
-        gatewayAccountStubs.getMultipleGatewayAccountsByServiceIdSuccess({
+        gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE, TEST],
           gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID, TEST_GATEWAY_ACCOUNT_ID],
