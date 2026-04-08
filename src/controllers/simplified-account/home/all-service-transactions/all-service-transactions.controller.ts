@@ -39,8 +39,9 @@ async function get(
 
   const allGatewayAccounts = await findGatewayAccountsByService(userServiceExternalIds)
   const gatewayAccountsByMode = allGatewayAccounts.filter((gatewayAccount) => gatewayAccount.type === modeFilter)
-
   const gatewayAccountIds = gatewayAccountsByMode.map((gatewayAccountData) => gatewayAccountData.id)
+  const showOppositeModeLink = allGatewayAccounts.length > gatewayAccountsByMode.length
+
   if (!gatewayAccountIds.length && !req.params.modeFilter) {
     // no live gateway accounts
     return res.redirect(formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, 'test'))
@@ -50,7 +51,6 @@ async function get(
     throw new NotFoundError(`Could not retrieve any gateway accounts with provided parameters`)
   }
 
-  const showOppositeModeLink = allGatewayAccounts.length > gatewayAccountsByMode.length
   const isStripe = gatewayAccountsByMode.some(
     (gatewayAccount) => gatewayAccount.paymentProvider === PaymentProviders.STRIPE
   )
