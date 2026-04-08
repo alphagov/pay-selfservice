@@ -5,7 +5,7 @@ import { AuthenticatedRequest } from '@utils/types/express'
 import { findGatewayAccountsByService } from '@services/gateway-accounts.service'
 import { getAllCardTypes } from '@services/card-types.service'
 import { searchTransactions } from '@services/transactions.service'
-import { NoServicesWithPermissionError } from '@root/errors'
+import { NoServicesWithPermissionError, NotFoundError } from '@root/errors'
 import { isBritishSummerTime } from '@utils/dates'
 import paths from '@root/paths'
 import {
@@ -44,6 +44,10 @@ async function get(
   if (!gatewayAccountIds.length && !req.params.modeFilter) {
     // no live gateway accounts
     return res.redirect(formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, 'test'))
+  }
+
+  if (!gatewayAccountsByMode.length) {
+    throw new NotFoundError(`Could not retrieve any gateway accounts with provided parameters`)
   }
 
   const showOppositeModeLink = allGatewayAccounts.length > gatewayAccountsByMode.length
