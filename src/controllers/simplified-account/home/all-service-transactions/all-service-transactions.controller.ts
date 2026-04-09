@@ -5,7 +5,7 @@ import { AuthenticatedRequest } from '@utils/types/express'
 import { findGatewayAccountsByService } from '@services/gateway-accounts.service'
 import { getAllCardTypes } from '@services/card-types.service'
 import { searchTransactions } from '@services/transactions.service'
-import { NoServicesWithPermissionError } from '@root/errors'
+import { NoServicesWithPermissionError, NotFoundError } from '@root/errors'
 import { isBritishSummerTime } from '@utils/dates'
 import paths from '@root/paths'
 import {
@@ -37,14 +37,23 @@ async function get(
     )
   }
 
-  const gatewayAccounts = await findGatewayAccountsByService(userServiceExternalIds, modeFilter)
-  const gatewayAccountIds = gatewayAccounts.map((gatewayAccountData) => gatewayAccountData.id)
+  const allGatewayAccounts = await findGatewayAccountsByService(userServiceExternalIds)
+  const gatewayAccountsByMode = allGatewayAccounts.filter((gatewayAccount) => gatewayAccount.type === modeFilter)
+  const gatewayAccountIds = gatewayAccountsByMode.map((gatewayAccountData) => gatewayAccountData.id)
+  const showOppositeModeLink = allGatewayAccounts.length > gatewayAccountsByMode.length
+
   if (!gatewayAccountIds.length && !req.params.modeFilter) {
     // no live gateway accounts
     return res.redirect(formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, 'test'))
   }
 
-  const isStripe = gatewayAccounts.some((gatewayAccount) => gatewayAccount.paymentProvider === PaymentProviders.STRIPE)
+  if (!gatewayAccountsByMode.length) {
+    throw new NotFoundError(`Could not retrieve any gateway accounts with provided parameters`)
+  }
+
+  const isStripe = gatewayAccountsByMode.some(
+    (gatewayAccount) => gatewayAccount.paymentProvider === PaymentProviders.STRIPE
+  )
 
   const PAGE_SIZE = 20
   const transactionSearchParams = TransactionSearchParams.fromSearchQuery(gatewayAccountIds, req.query, true, PAGE_SIZE)
@@ -100,6 +109,7 @@ async function get(
     statuses: eventStates,
     downloadLink,
     showCsvDownload,
+    showOppositeModeLink,
     oppositeModeLink,
   })
 }

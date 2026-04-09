@@ -142,6 +142,24 @@ function getGatewayAccountByServiceIdsSuccess(opts) {
   })
 }
 
+function getGatewayAccountsByServiceIdAndTypeSuccess(opts) {
+  const path = '/v1/api/accounts'
+
+  const accounts = opts.gatewayAccountIds.map((id, index) => ({
+    gateway_account_id: id,
+    type: opts.types[index],
+  }))
+
+  return stubBuilder('GET', path, 200, {
+    query: {
+      serviceIds: opts.serviceExternalId,
+    },
+    response: gatewayAccountFixtures.validGatewayAccountsResponse({
+      accounts,
+    }),
+  })
+}
+
 function getGatewayAccountsSuccessForMultipleAccounts(accountsOpts) {
   const path = '/v1/api/accounts'
   return stubBuilder('GET', path, 200, {
@@ -627,4 +645,5 @@ module.exports = {
   setRefundEmailEnabledByServiceIdAndAccountType,
   getAcceptedCardTypesByServiceExternalIdAndAccountType,
   postAcceptedCardTypesByServiceExternalIdAndAccountType,
+  getGatewayAccountsByServiceIdAndTypeSuccess,
 }
