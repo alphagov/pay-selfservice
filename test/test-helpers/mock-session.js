@@ -13,7 +13,7 @@ const getUser = (opts) => {
 
 const createAppWithSession = function (app, sessionData, registerInviteData) {
   const proxyApp = express()
-  proxyApp.all('*', function (req, res, next) {
+  proxyApp.all('*splat', function (req, res, next) {
     sessionData.destroy = sinon.stub()
     req.session = req.session || sessionData || {}
     req.register_invite = registerInviteData || {}
@@ -55,11 +55,11 @@ const getMockSession = function (user) {
     csrfSecret: '123',
     12345: { refunded_amount: 5 },
     passport: {
-      user
+      user,
     },
     secondFactor: 'totp',
     last_url: 'last_url',
-    version: user.sessionVersion
+    version: user.sessionVersion,
   })
 }
 
@@ -71,5 +71,5 @@ module.exports = {
   getUser,
   getAppWithSessionWithoutSecondFactor,
   getAppWithRegisterInvitesCookie,
-  getAppWithLoggedOutSession
+  getAppWithLoggedOutSession,
 }
