@@ -81,8 +81,16 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
           req.service.externalId,
           req.account.type
         ),
-        createPaymentLink: formatAccountPathsFor(paths.account.paymentLinks.start, req.account.externalId),
-        managePaymentLinks: formatAccountPathsFor(paths.account.paymentLinks.manage.index, req.account.externalId),
+        createPaymentLink: formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.paymentLinks.create,
+          req.service.externalId,
+          req.account.type
+        ),
+        managePaymentLinks: formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.paymentLinks.index,
+          req.service.externalId,
+          req.account.type
+        ),
         telephonePaymentLink: agentInitiatedMotoPaymentLink,
         requestPspTestAccount: formatServicePathsFor(paths.service.requestPspTestAccount, req.service.externalId),
         requestLiveAccount: formatServicePathsFor(paths.service.requestToGoLive.index, req.service.externalId),

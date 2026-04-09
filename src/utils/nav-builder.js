@@ -55,11 +55,7 @@ const serviceNavigationItems = (currentPath, permissions, type, currentUrl, serv
       id: 'navigation-menu-payment-links',
       name: 'Payment links',
       url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.paymentLinks.index, serviceExternalId, account.type),
-      current:
-        currentPath !== '/' &&
-        flattenNestedValues(paths.account.paymentLinks)
-          .concat(['payment-links'])
-          .filter((path) => currentPath.includes(path)).length,
+      current: pathLookup(currentPath, paths.simplifiedAccount.paymentLinks.index),
       permissions: permissions.transactions_read,
     })
   }
