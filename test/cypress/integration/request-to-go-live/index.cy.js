@@ -218,7 +218,7 @@ describe('Request to go live: index', () => {
       setupStubs(buildServiceRoleForGoLiveStage('TERMS_AGREED_STRIPE'))
     })
 
-    it.only('should show "Request to go live" page with correct progress indication', () => {
+    it('should show "Request to go live" page with correct progress indication', () => {
       const requestToGoLivePageUrl = `/service/${serviceExternalId}/request-to-go-live`
       cy.visit(requestToGoLivePageUrl)
 
