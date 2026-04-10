@@ -12,7 +12,7 @@ import {
 import { getAllCardTypes, getAcceptedCardTypes, updateAcceptedCardTypes } from '@services/card-types.service'
 import { cardTypesSchema, sanitiseToArray } from '@utils/simplified-account/validation/card-types.schema'
 import { UpdateAcceptedCardTypesRequest } from '@models/card-type/UpdateAcceptedCardTypesRequest.class'
-import { StatusTag } from '@models/service-status/ServiceView.class'
+import { StatusTag } from '@models/service-view/ServiceView.class'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const isAdminUser = req.user.isAdminUserForService(req.service.externalId)

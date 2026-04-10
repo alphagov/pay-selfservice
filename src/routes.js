@@ -60,8 +60,9 @@ const simplifiedAccountRoutes = require('./simplified-account-routes')
 const { registrationSuccess } = require('@services/auth.service')
 const { account: routes } = require('@root/paths')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
-import { serviceViewShim } from '@middleware/simplified-account/service-view-shim.middleware'
+import { serviceViewShim, setServiceView } from '@middleware/simplified-account/service-view-shim.middleware'
 import { Features } from '@root/config/experimental-features'
+import { ServiceView } from '@models/service-view/ServiceView.class'
 
 // Assignments
 const {
@@ -231,7 +232,12 @@ module.exports.bind = function (app) {
   // --------------------
 
   // Request to go live
-  service.get(requestToGoLive.index, permission('go-live-stage:read'), requestToGoLiveIndexController.get)
+  service.get(
+    requestToGoLive.index,
+    permission('go-live-stage:read'),
+    setServiceView(ServiceView.GoLiveInProgress, false),
+    requestToGoLiveIndexController.get
+  )
   service.post(requestToGoLive.index, permission('go-live-stage:update'), requestToGoLiveIndexController.post)
   service.get(
     requestToGoLive.organisationName,

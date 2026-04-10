@@ -5,7 +5,7 @@ import type GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import type StripeAccountSetup from '@models/StripeAccountSetup.class'
 import ClientSessionsCookie from '@utils/types/client-sessions/ClientSessionsCookie'
 import { Message } from '@utils/types/express/Message'
-import { ServiceView } from '@models/service-status/ServiceView.class'
+import { ServiceView } from '@models/service-view/ServiceView.class'
 
 export default interface ServiceRequest<T = never> extends express.Request {
   user: User

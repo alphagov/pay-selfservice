@@ -10,7 +10,7 @@ import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import Service from '@models/service/Service.class'
 import { getGatewayAccountByServiceExternalIdAndType } from '@services/gateway-accounts.service'
-import { ServiceView } from '@models/service-status/ServiceView.class'
+import { ServiceView } from '@models/service-view/ServiceView.class'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, GATEWAY_ACCOUNT_EXTERNAL_ID } = keys
 
@@ -110,7 +110,6 @@ async function getSimplifiedAccount(req: Request, _: Response, next: NextFunctio
     }
     const service = getService(request.user, serviceExternalId, gatewayAccount.id)
     if (service) {
-      service._locals.links.bind(accountType)
       request.service = service
       addField(SERVICE_EXTERNAL_ID, service.externalId)
     } else {
@@ -118,6 +117,7 @@ async function getSimplifiedAccount(req: Request, _: Response, next: NextFunctio
     }
 
     request.serviceView = ServiceView.determineFor(service, gatewayAccount)
+    request.serviceView.showHeader = true
     next()
   } catch (err) {
     next(err)
