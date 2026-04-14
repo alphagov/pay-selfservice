@@ -124,8 +124,8 @@
         {% if totalOverLimit %}
           Over {{ maxLimitFormatted }} transactions
         {% else %}
-          {{ totalFormatted }}
-          transactions
+          <!-- prettier-ignore -->
+          {{ totalFormatted }} transactions
         {% endif %}
         {{ filtersDescription | safe }}
       {% endif %}
