@@ -16,6 +16,7 @@ const WebhookUpdateRequest = require('@models/webhooks/WebhookUpdateRequest.clas
  * @returns {Promise<void>}
  */
 async function get (req, res) {
+  console.log('!! 2 - inside controller')
   const webhook = await webhooksService.getWebhook(req.params.webhookExternalId, req.service.externalId, req.account.id)
 
   response(req, res, 'simplified-account/settings/webhooks/edit', {

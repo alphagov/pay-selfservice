@@ -26,6 +26,7 @@ async function webhook (webhookExternalId, serviceExternalId, gatewayAccountId, 
   const url = urlJoin(baseUrl, '/v1/webhook', webhookExternalId)
   const fullUrl = `${url}?service_id=${serviceExternalId}&gateway_account_id=${gatewayAccountId}`
   configureClient(client, fullUrl)
+  console.log('!! - webhook client');
   const response = await client.get(fullUrl, 'Get one webhook')
   return Webhook.fromJson(response.data)
 }

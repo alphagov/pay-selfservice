@@ -31,6 +31,7 @@ function formatPages (searchResponse) {
  * @returns {Promise<Webhook[]>}
  */
 async function listWebhooks (serviceExternalId, gatewayAccountId, isLive) {
+  console.log('!!-list Webhooks');
   const webhooks = await webhooksClient.webhooks(serviceExternalId, gatewayAccountId, isLive)
   return webhooks.sort(sortByActiveStatus)
 }
@@ -79,6 +80,7 @@ function getWebhookMessageAttempts (messageId, webhookId) {
 }
 
 async function getWebhookMessages (id, options = {}) {
+  console.log('!! - options: ', options)
   const searchResponse = await webhooksClient.messages(id, options)
   return formatPages(searchResponse)
 }
