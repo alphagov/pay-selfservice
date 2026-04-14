@@ -5,7 +5,7 @@
 {% set hideServiceHeader = contextIsAllServiceTransactions %}
 
 {% block pageTitle %}
-  Transaction details {{charge_id}} - {{currentService.name}} {{currentGatewayAccount.full_type}} - GOV.UK Pay
+  Transaction details {{ charge_id }} - {{ currentService.name }} {{ currentGatewayAccount.full_type }} - GOV.UK Pay
 {% endblock %}
 
 {% block beforeContent %}
@@ -14,12 +14,15 @@
       <span>Transactions for all services</span>
       <strong class="govuk-tag govuk-tag--grey service-info--tag">{{ "Live" if live else "Test" }}</strong>
     {% endset %}
-    {{ breadcrumbs([
-      { text: "My services", href: routes.services.index },
-      { html: pageTitleBreadcrumbWithTag  }
-    ]) }}
+    {{
+      breadcrumbs([
+        { text: "My services", href: routes.services.index },
+        { html: pageTitleBreadcrumbWithTag  }
+      ])
+    }}
 
-    {% set allServicesBackLink %}{{routes.allServiceTransactions.index}}{% if allServicesTransactionsStatusFilter %}/{{allServicesTransactionsStatusFilter}}{% endif %}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
+
+    {% set allServicesBackLink %}{{ routes.allServiceTransactions.index }}{% if allServicesTransactionsStatusFilter %}/{{ allServicesTransactionsStatusFilter }}{% endif %}{% if indexFilters %}?{{ indexFilters }}{% endif %}{% endset %}
     {{
       govukBackLink({
         text: 'Back to transactions for all services',
@@ -28,7 +31,7 @@
     }}
   {% else %}
     {{ super() }}
-    {% set serviceTransactionsBackLink %}{{formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id)}}{% if indexFilters %}?{{indexFilters}}{% endif %}{% endset %}
+    {% set serviceTransactionsBackLink %}{{ formatAccountPathsFor(routes.account.transactions.index, currentGatewayAccount.external_id) }}{% if indexFilters %}?{{ indexFilters }}{% endif %}{% endset %}
     {{
       govukBackLink({
         text: 'Transactions list',
@@ -36,7 +39,6 @@
       })
     }}
   {% endif %}
-
 {% endblock %}
 
 {% block mainContent %}
@@ -47,18 +49,24 @@
         <p class="govuk-body">It may take up to 6 days to process.</p>
       {% endset %}
 
-      {{ govukNotificationBanner({
-        html: html,
-        type: 'success'
-      }) }}
+      {{
+        govukNotificationBanner({
+          html: html,
+          type: 'success'
+        })
+      }}
     {% elif flash.refundError %}
-      <div class="govuk-error-summary hidden" aria-labelledby="error-summary-heading-example-1" role="alert" tabindex="-1" data-module="govuk-error-summary">
-        <h2 class="govuk-error-summary__title" id="error-summary-heading-example-1">
-          Refund failed
-        </h2>
+      <div
+        class="govuk-error-summary hidden"
+        aria-labelledby="error-summary-heading-example-1"
+        role="alert"
+        tabindex="-1"
+        data-module="govuk-error-summary"
+      >
+        <h2 class="govuk-error-summary__title" id="error-summary-heading-example-1"> Refund failed </h2>
         <div class="govuk-error-summary__body">
           <ul class="govuk-list govuk-error-summary__list">
-            <li>{{flash.refundError | safe}}</li>
+            <li>{{ flash.refundError | safe }}</li>
           </ul>
         </div>
       </div>
@@ -94,7 +102,11 @@
         {% include "./_refund.njk" %}
         <div class="target-to-show--toggle-container {% if not flash.genericError %}active{% endif %}">
           <p class="govuk-body">Make a full or partial refund.</p>
-          <a href="#refundForm" class="govuk-button govuk-button--secondary refund__toggle target-to-show--toggle delete">Refund payment</a>
+          <a
+            href="#refundForm"
+            class="govuk-button govuk-button--secondary refund__toggle target-to-show--toggle delete"
+            >Refund payment</a
+          >
         </div>
       {% endif %}
     {% endif %}
