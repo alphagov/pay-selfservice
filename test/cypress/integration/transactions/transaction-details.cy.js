@@ -15,7 +15,7 @@ const disputeTransactionId = 'vldb123def456'
 const gatewayAccountId = 42
 const serviceName = 'Test Service'
 
-function formatDate (date) {
+function formatDate(date) {
   const monthNames = [
     'Jan', 'Feb', 'Mar',
     'Apr', 'May', 'Jun', 'Jul',
@@ -31,7 +31,7 @@ function formatDate (date) {
   return day + ' ' + monthNames[monthIndex] + ' ' + year + ' — '
 }
 
-function utcToDisplay (date) {
+function utcToDisplay(date) {
   return moment(date).tz('Europe/London').format('DD MMM YYYY — HH:mm:ss')
 }
 
@@ -47,7 +47,7 @@ const defaultTransactionEvents = [{
   data: {}
 }]
 
-function defaultTransactionDetails (events, opts = {}) {
+function defaultTransactionDetails(events, opts = {}) {
   return {
     amount: defaultAmount,
     state: { finished: true, status: 'success' },
@@ -75,7 +75,7 @@ function defaultTransactionDetails (events, opts = {}) {
   }
 }
 
-function defaultDisputeDetails () {
+function defaultDisputeDetails() {
   return {
     parent_transaction_id: transactionId,
     gateway_account_id: gatewayAccountId,
@@ -608,30 +608,6 @@ describe('Transaction details page', () => {
         cy.get('[data-cy=dispute-reason]').contains('Product not received').should('exist')
         cy.get('[data-cy=dispute-date]').contains(utcToDisplay('2022-07-26T19:57:26.000Z')).should('exist')
         cy.get('[data-cy=dispute-evidence-due-date]').contains(utcToDisplay('2022-08-04T13:59:59.000Z')).should('exist')
-      })
-    })
-
-    it('should display timezone notification banner', () => {
-      const disputedPaymentDetails = defaultTransactionDetails()
-      disputedPaymentDetails.disputed = true
-      disputedPaymentDetails.refund_summary_status = 'unavailable'
-      const disputeTransactionDetails = defaultDisputeDetails()
-
-      cy.task('setupStubs', getStubs(disputedPaymentDetails, {}, disputeTransactionDetails))
-      cy.visit(`${transactionsUrl}/${disputedPaymentDetails.transaction_id}`)
-
-      cy.get('.govuk-notification-banner').should('exist').within(() => {
-        cy.get('.govuk-notification-banner__heading')
-          .should('contain', 'BST has started and it could affect your reporting.')
-
-        cy.get('.govuk-body')
-          .should('contain', 'Clocks in the UK went forward 1 hour on 29 March 2026 for British Summer Time (BST)')
-          .and('contain', 'times in the GOV.UK Pay admin tool are 1 hour ahead of downloaded CSV files.')
-          .and('contain', 'how timezones work in GOV.UK Pay in our documentation')
-
-        cy.get('a.govuk-notification-banner__link')
-          .should('have.attr', 'href')
-          .and('include', 'https://docs.payments.service.gov.uk/reporting/#timezones-in-gov-uk-pay')
       })
     })
   })

@@ -12,7 +12,7 @@ describe('Transactions list pagination', () => {
   const serviceName = 'Test Service'
   const defaultAmount = 1000
 
-  function generateTransactions (length) {
+  function generateTransactions(length) {
     const transactions = []
     for (let i = 0; i < length; i++) {
       transactions.push({
@@ -25,7 +25,7 @@ describe('Transactions list pagination', () => {
     return transactions
   }
 
-  function transactionSearchResultOpts (transactionLength, displaySize, page, filters, links) {
+  function transactionSearchResultOpts(transactionLength, displaySize, page, filters, links) {
     return {
       gatewayAccountId,
       transactionLength: transactionLength || 50,
@@ -190,10 +190,10 @@ describe('Transactions list pagination', () => {
           card_brands: 'visa,master-card',
           payment_states: 'success'
         },
-        {
-          self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
-          next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' }
-        })
+          {
+            self: { href: '/v1/transactions?&page=2&display_size=5&state=' },
+            next_page: { href: '/v1/transactions?&page=3&display_size=5&state=' }
+          })
 
         const stubs = getStubs(opts)
 
@@ -274,38 +274,6 @@ describe('Transactions list pagination', () => {
           cy.get('input[name="pageSize"]').should('have.value', '100')
         })
         cy.get('button.pay-button--as-link.displaySize').should('contain', '100')
-      })
-      it('should display timezone notification banner on the Transaction List page', () => {
-        const opts = transactionSearchResultOpts(
-          150,
-          500,
-          1,
-          {},
-          {
-            self: {
-              href: '/v1/transactions?&page=1&display_size=500&state=',
-            },
-          }
-        )
-        cy.task('setupStubs', getStubs(opts))
-        cy.visit(transactionsUrl + '?pageSize=500&page=1')
-        cy.get('.govuk-notification-banner')
-          .should('exist')
-          .within(() => {
-            cy.get('.govuk-notification-banner__heading').should(
-              'contain',
-              'BST has started and it could affect your reporting.'
-            )
-
-            cy.get('.govuk-body')
-              .should('contain', 'Clocks in the UK went forward 1 hour on 29 March 2026 for British Summer Time (BST)')
-              .and('contain', 'times in the GOV.UK Pay admin tool are 1 hour ahead of downloaded CSV files.')
-              .and('contain', 'how timezones work in GOV.UK Pay in our documentation')
-
-            cy.get('a.govuk-notification-banner__link')
-              .should('have.attr', 'href')
-              .and('include', 'https://docs.payments.service.gov.uk/reporting/#timezones-in-gov-uk-pay')
-          })
       })
     })
   })
