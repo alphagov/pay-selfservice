@@ -4,7 +4,7 @@ const getPagination = require('@utils/simplified-account/pagination')
 const webhooksService = require('@services/webhooks.service')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const { constants } = require('@govuk-pay/pay-js-commons')
-const { query } = require('express-validator')
+const { query, matchedData } = require('express-validator')
 const { ALL, SUCCESSFUL, FAILED, PENDING, WILL_NOT_SEND } = require('@models/constants/webhook-delivery-status')
 
 const PAGE_SIZE = 10
@@ -42,10 +42,9 @@ async function get(req, res) {
   ]
 
   await Promise.all(validations.map(async (validation) => validation.run(req)))
-  console.log('!! - req.query: ', JSON.stringify(req.query))
-  console.log('!! - req.query.page: ', req.query.page)
-  let currentPage = Number(req.query.page)
-  const deliveryStatus = req.query.deliveryStatus
+
+  const { page, deliveryStatus } = matchedData(req)
+  let currentPage = Number(page)
 
   const webhook = await webhooksService.getWebhook(req.params.webhookExternalId, req.service.externalId, req.account.id)
   console.log('!! 5 - validation')
