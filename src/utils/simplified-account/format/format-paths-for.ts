@@ -1,11 +1,25 @@
-const formattedPathFor = (path: string, ...pathParams: string[]) => {
-  const paramNames = path.split('/').filter((segment) => segment.startsWith(':'))
-  paramNames.forEach((paramName, index) => {
-    if (pathParams[index]) {
-      path = path.replace(paramName, encodeURIComponent(pathParams[index]))
+const formattedPathFor = (path: string, ...pathParams: string[]): string => {
+  let paramIndex = 0
+
+  // Unwrap optional segments: {/:param} -> /:param and :param? -> :param
+  const unwrapped = path.replace('{/', '/').replace('}', '')
+
+  const segments = unwrapped.split('/')
+  const result: string[] = []
+
+  segments.forEach((segment) => {
+    if (segment.startsWith(':')) {
+      const value = pathParams[paramIndex]
+      paramIndex++
+      if (value) {
+        result.push(encodeURIComponent(value))
+      }
+    } else {
+      result.push(segment)
     }
   })
-  return path
+
+  return result.join('/')
 }
 
 export = formattedPathFor
