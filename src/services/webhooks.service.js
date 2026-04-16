@@ -8,18 +8,18 @@ const { NotFoundError } = require('@root/errors')
 
 const PAGE_SIZE = 10
 
-function sortByActiveStatus (a, b) {
+function sortByActiveStatus(a, b) {
   return Number(b.status === 'ACTIVE') - Number(a.status === 'ACTIVE')
 }
 
-function formatPages (searchResponse) {
+function formatPages(searchResponse) {
   const { page, count } = searchResponse
   const paginator = new Paginator(null, PAGE_SIZE, page)
-  const hasMultiplePages = (count >= PAGE_SIZE) || (page > 1)
+  const hasMultiplePages = count >= PAGE_SIZE || page > 1
   const links = hasMultiplePages && paginator.buildNavigation(count)
   return {
     ...searchResponse,
-    links
+    links,
   }
 }
 
@@ -30,12 +30,13 @@ function formatPages (searchResponse) {
  * @param isLive {boolean}
  * @returns {Promise<Webhook[]>}
  */
-async function listWebhooks (serviceExternalId, gatewayAccountId, isLive) {
+async function listWebhooks(serviceExternalId, gatewayAccountId, isLive) {
+  console.log('!!-list Webhooks')
   const webhooks = await webhooksClient.webhooks(serviceExternalId, gatewayAccountId, isLive)
   return webhooks.sort(sortByActiveStatus)
 }
 
-function createWebhook (serviceId, gatewayAccountId, isLive, options = {}) {
+function createWebhook(serviceId, gatewayAccountId, isLive, options = {}) {
   options.subscriptions = typeof options.subscriptions === 'string' ? [options.subscriptions] : options.subscriptions
   return webhooksClient.createWebhook(serviceId, gatewayAccountId, isLive, options)
 }
@@ -48,7 +49,7 @@ function createWebhook (serviceId, gatewayAccountId, isLive, options = {}) {
  * @param patchRequest {WebhookUpdateRequest}
  * @returns {Promise<*>}
  */
-function updateWebhook (webhookExternalId, serviceExternalId, gatewayAccountId, patchRequest) {
+function updateWebhook(webhookExternalId, serviceExternalId, gatewayAccountId, patchRequest) {
   return webhooksClient.updateWebhook(webhookExternalId, serviceExternalId, gatewayAccountId, patchRequest)
 }
 
@@ -59,35 +60,37 @@ function updateWebhook (webhookExternalId, serviceExternalId, gatewayAccountId, 
  * @param gatewayAccountId {String}
  * @returns {Promise<Webhook>}
  */
-function getWebhook (webhookExternalId, serviceExternalId, gatewayAccountId) {
-  return webhooksClient.webhook(webhookExternalId, serviceExternalId, gatewayAccountId)
-    .catch(e => {
-      if (e.errorCode === 404) {
-        throw new NotFoundError(`Webhook with external ID <${webhookExternalId}> not found for service <${serviceExternalId}>, account <${gatewayAccountId}>`)
-      } else {
-        throw e
-      }
-    })
+function getWebhook(webhookExternalId, serviceExternalId, gatewayAccountId) {
+  return webhooksClient.webhook(webhookExternalId, serviceExternalId, gatewayAccountId).catch((e) => {
+    if (e.errorCode === 404) {
+      throw new NotFoundError(
+        `Webhook with external ID <${webhookExternalId}> not found for service <${serviceExternalId}>, account <${gatewayAccountId}>`
+      )
+    } else {
+      throw e
+    }
+  })
 }
 
-function getWebhookMessage (id, webhookId) {
+function getWebhookMessage(id, webhookId) {
   return webhooksClient.message(id, webhookId)
 }
 
-function getWebhookMessageAttempts (messageId, webhookId) {
+function getWebhookMessageAttempts(messageId, webhookId) {
   return webhooksClient.attempts(messageId, webhookId)
 }
 
-async function getWebhookMessages (id, options = {}) {
+async function getWebhookMessages(id, options = {}) {
+  console.log('!! - options: ', options)
   const searchResponse = await webhooksClient.messages(id, options)
   return formatPages(searchResponse)
 }
 
-function getSigningSecret (webhookId, serviceId, gatewayAccountId) {
+function getSigningSecret(webhookId, serviceId, gatewayAccountId) {
   return webhooksClient.signingSecret(webhookId, serviceId, gatewayAccountId)
 }
 
-function resetSigningSecret (webhookId, serviceId, gatewayAccountId) {
+function resetSigningSecret(webhookId, serviceId, gatewayAccountId) {
   return webhooksClient.resetSigningSecret(webhookId, serviceId, gatewayAccountId)
 }
 
@@ -99,14 +102,13 @@ function resetSigningSecret (webhookId, serviceId, gatewayAccountId) {
  * @param currentStatus {WebhookStatus}
  * @returns {Promise<*>}
  */
-function toggleStatus (webhookExternalId, serviceId, gatewayAccountId, currentStatus) {
+function toggleStatus(webhookExternalId, serviceId, gatewayAccountId, currentStatus) {
   const status = currentStatus === WebhookStatus.ACTIVE ? WebhookStatus.INACTIVE : WebhookStatus.ACTIVE
-  const webhookUpdateRequest = new WebhookUpdateRequest()
-    .replace().status(status)
+  const webhookUpdateRequest = new WebhookUpdateRequest().replace().status(status)
   return webhooksClient.updateWebhook(webhookExternalId, serviceId, gatewayAccountId, webhookUpdateRequest)
 }
 
-function resendWebhookMessage (webhookId, messageId) {
+function resendWebhookMessage(webhookId, messageId) {
   return webhooksClient.resendWebhookMessage(webhookId, messageId)
 }
 
@@ -121,5 +123,5 @@ module.exports = {
   getWebhookMessages,
   getWebhookMessage,
   getWebhookMessageAttempts,
-  resendWebhookMessage
+  resendWebhookMessage,
 }

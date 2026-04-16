@@ -338,16 +338,16 @@ module.exports = {
   index: '/',
   allServiceTransactions: {
     index: '/all-service-transactions',
-    indexStatusFilter: '/all-service-transactions/:statusFilter(test|live)',
-    indexStatusFilterWithoutSearch: '/all-service-transactions/nosearch/:statusFilter(test|live)',
+    indexStatusFilter: '/all-service-transactions/:statusFilter',
+    indexStatusFilterWithoutSearch: '/all-service-transactions/nosearch/:statusFilter',
     download: '/all-service-transactions/download',
-    downloadStatusFilter: '/all-service-transactions/download/:statusFilter(test|live)',
+    downloadStatusFilter: '/all-service-transactions/download/:statusFilter',
     redirectDetail: '/redirect/transactions/:chargeId',
     simplifiedAccount: {
-      index: '/transactions/:modeFilter?',
+      index: '/transactions{/:modeFilter}',
       nosearch: '/transactions/nosearch',
-      download: '/transaction/download/:modeFilter?',
-      filter: '/transactions/:statusFilter(test|live)',
+      download: '/transaction/download{/:modeFilter}',
+      filter: '/transactions/:statusFilter',
       detail: '/transactions/:transactionId',
       refund: '/transaction/:transactionId/refund',
     },
@@ -401,7 +401,7 @@ module.exports = {
   policyPage: '/policy/:key',
   payouts: {
     list: '/payments-to-your-bank-account',
-    listStatusFilter: '/payments-to-your-bank-account/:statusFilter(test|live)',
+    listStatusFilter: '/payments-to-your-bank-account/:statusFilter',
   },
   privacy: '/privacy',
   demoPaymentFwd: {
