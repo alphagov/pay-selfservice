@@ -76,7 +76,7 @@ describe('webhook settings - toggle webhook status', () => {
           })
         })
 
-        it.only('should be accessible from the webhook detail page', () => {
+        it('should be accessible from the webhook detail page', () => {
           cy.visit(`/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/webhooks/${WEBHOOK_EXTERNAL_ID}`)
 
           cy.get('a').contains('Deactivate webhook').click()

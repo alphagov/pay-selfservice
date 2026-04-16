@@ -1,14 +1,16 @@
 const { expect } = require('chai')
 const formattedPathFor = require('./replace-params-in-path')
 
-describe.only('1 formattedPathFor', () => {
+describe('formattedPathFor', () => {
   describe('with a required parameter', () => {
     it('should replace a single param', () => {
       expect(formattedPathFor('/service/:serviceId', 'abc123')).to.equal('/service/abc123')
     })
 
     it('should replace multiple params', () => {
-      expect(formattedPathFor('/service/:serviceId/account/:accountId', 'abc123', 'def456')).to.equal('/service/abc123/account/def456')
+      expect(formattedPathFor('/service/:serviceId/account/:accountId', 'abc123', 'def456')).to.equal(
+        '/service/abc123/account/def456'
+      )
     })
 
     it('should encode special characters in params', () => {

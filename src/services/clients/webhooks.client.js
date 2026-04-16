@@ -8,7 +8,7 @@ const { Webhook } = require('@models/webhooks/Webhook.class')
 const defaultRequestOptions = {
   baseUrl: process.env.WEBHOOKS_URL,
   json: true,
-  service: 'webhooks'
+  service: 'webhooks',
 }
 
 const client = new Client(defaultRequestOptions.service)
@@ -21,17 +21,17 @@ const client = new Client(defaultRequestOptions.service)
  * @param options {{ baseUrl: String }}
  * @returns {Promise<Webhook>}
  */
-async function webhook (webhookExternalId, serviceExternalId, gatewayAccountId, options = {}) {
+async function webhook(webhookExternalId, serviceExternalId, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook', webhookExternalId)
   const fullUrl = `${url}?service_id=${serviceExternalId}&gateway_account_id=${gatewayAccountId}`
   configureClient(client, fullUrl)
-  console.log('!! - webhook client');
+  console.log('!! - webhook client')
   const response = await client.get(fullUrl, 'Get one webhook')
   return Webhook.fromJson(response.data)
 }
 
-async function signingSecret (webhookId, serviceId, gatewayAccountId, options = {}) {
+async function signingSecret(webhookId, serviceId, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook/', webhookId, '/signing-key')
   const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}`
@@ -40,7 +40,7 @@ async function signingSecret (webhookId, serviceId, gatewayAccountId, options = 
   return response.data
 }
 
-async function resetSigningSecret (webhookId, serviceId, gatewayAccountId, options = {}) {
+async function resetSigningSecret(webhookId, serviceId, gatewayAccountId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook/', webhookId, '/signing-key')
   const fullUrl = `${url}?service_id=${serviceId}&gateway_account_id=${gatewayAccountId}`
@@ -57,16 +57,16 @@ async function resetSigningSecret (webhookId, serviceId, gatewayAccountId, optio
  * @param options {{ baseUrl: String }}
  * @returns {Promise<[Webhook]>}
  */
-async function webhooks (serviceExternalId, gatewayAccountId, isLive, options = {}) {
+async function webhooks(serviceExternalId, gatewayAccountId, isLive, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook')
   const fullUrl = `${url}?service_id=${serviceExternalId}&gateway_account_id=${gatewayAccountId}&live=${isLive}`
   configureClient(client, fullUrl)
   const response = await client.get(fullUrl, 'List webhooks for service')
-  return response.data.map(webhookData => Webhook.fromJson(webhookData))
+  return response.data.map((webhookData) => Webhook.fromJson(webhookData))
 }
 
-async function message (id, webhookId, options = {}) {
+async function message(id, webhookId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook', webhookId, 'message', id)
   configureClient(client, url)
@@ -74,7 +74,7 @@ async function message (id, webhookId, options = {}) {
   return response.data
 }
 
-async function attempts (messageId, webhookId, options = {}) {
+async function attempts(messageId, webhookId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook', webhookId, 'message', messageId, 'attempt')
   configureClient(client, url)
@@ -82,7 +82,7 @@ async function attempts (messageId, webhookId, options = {}) {
   return response.data
 }
 
-async function messages (id, options = {}) {
+async function messages(id, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook', id, 'message')
   let fullUrl = `${url}?page=${options.page}`
@@ -95,14 +95,14 @@ async function messages (id, options = {}) {
 }
 
 // TODO refactor to explicitly pass all params in the method once old webhooks controller code is deleted
-async function createWebhook (serviceId, gatewayAccountId, isLive, options = {}) {
+async function createWebhook(serviceId, gatewayAccountId, isLive, options = {}) {
   const body = {
     service_id: serviceId,
     gateway_account_id: gatewayAccountId,
     live: isLive,
     callback_url: options.callbackUrl || options.callback_url,
     subscriptions: options.subscriptions,
-    description: options.description
+    description: options.description,
   }
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook')
@@ -120,19 +120,18 @@ async function createWebhook (serviceId, gatewayAccountId, isLive, options = {})
  * @param options {{ baseUrl: String }}
  * @returns {Promise<*>}
  */
-async function updateWebhook (webhookExternalId, serviceExternalId, gatewayAccountId, patchRequest, options = {}) {
+async function updateWebhook(webhookExternalId, serviceExternalId, gatewayAccountId, patchRequest, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook', webhookExternalId)
   const fullUrl = `${url}?service_id=${serviceExternalId}&gateway_account_id=${gatewayAccountId}`
   configureClient(client, fullUrl)
-  const response = await client.patch(fullUrl, patchRequest.toJson(), 'Update webhook')
-    .catch(e => {
-      throw e
-    })
+  const response = await client.patch(fullUrl, patchRequest.toJson(), 'Update webhook').catch((e) => {
+    throw e
+  })
   return response.data
 }
 
-async function resendWebhookMessage (webhookId, messageId, options = {}) {
+async function resendWebhookMessage(webhookId, messageId, options = {}) {
   const baseUrl = options.baseUrl ? options.baseUrl : defaultRequestOptions.baseUrl
   const url = urlJoin(baseUrl, '/v1/webhook', webhookId, 'message', messageId, 'resend')
   configureClient(client, url)
@@ -150,5 +149,5 @@ module.exports = {
   messages,
   message,
   attempts,
-  resendWebhookMessage
+  resendWebhookMessage,
 }

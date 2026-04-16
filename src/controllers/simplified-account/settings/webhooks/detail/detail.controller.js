@@ -54,8 +54,6 @@ async function get(req, res) {
     req.account.id
   )
 
-  console.log('!! 6 - after signing')
-
   const webhookMessages = await webhooksService.getWebhookMessages(req.params.webhookExternalId, {
     page: currentPage,
     ...(deliveryStatus && { status: deliveryStatus }),

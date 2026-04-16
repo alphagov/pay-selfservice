@@ -195,7 +195,6 @@ module.exports.bind = function (app) {
   // all service transactions - simplified account
   app.get(
     allServiceTransactions.simplifiedAccount.index,
-    validateStatusFilter,
     experimentalFeature(Features.TRANSACTIONS),
     userIsAuthorised,
     homeController.allServiceTransactions.list.get
