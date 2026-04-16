@@ -18,13 +18,17 @@ import {
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
-import { DATE_TIME, TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
-import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import { DATE_TIME } from '@models/constants/time-formats'
 import { checkServiceNavigation } from '../common/assertions'
 import ROLES from '@test/fixtures/roles.fixtures'
+import { DateTime } from 'luxon'
+import { TimeConstants } from '@utils/time/time-constants'
+import { setGlobalTimeDefaults } from '@utils/time/global-time-defaults'
+setGlobalTimeDefaults()
 
-const TRANSACTION = new TransactionFixture()
-const TRANSACTION_CREATED_TIMESTAMP = TRANSACTION.createdDate
+const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
+const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
+
 const CARD_DETAILS = TRANSACTION.cardDetails!
 
 const TRANSACTION_EVENTS = [
@@ -94,7 +98,7 @@ describe('Transaction details page', () => {
 
     cy.title().should(
       'eq',
-      `Transaction details - ${TRANSACTION.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
+      `Transaction details - 22 Jul 2025 03:14:15 - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
     )
     cy.get('h1').should('contain.text', 'Transaction details')
     cy.get('h2').should('contain.text', 'Amount')
@@ -111,7 +115,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerTransactionsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactions: [TRANSACTION],
-        filters: { from_date: last12MonthsStartDate },
+        filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
         displaySize: 20,
         transactionLength: 1,
       }),
@@ -157,10 +161,7 @@ describe('Transaction details page', () => {
       .eq(3)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Date created')
-        cy.get('.govuk-summary-list__value').should(
-          'contain.text',
-          `${TRANSACTION.createdDate.toFormat(DATE_TIME)} (BST)`
-        )
+        cy.get('.govuk-summary-list__value').should('contain.text', `22 Jul 25 - 03:14:15 (BST)`)
       })
 
     cy.get('.govuk-summary-list__row')
@@ -557,10 +558,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Declined')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        cy.get('.govuk-table__cell:eq(2)').should(
-          'contain.text',
-          `${transactionDeclinedTimestamp.toFormat(DATE_TIME)} (GMT)`
-        )
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `22 Nov 25 - 03:14:15 (GMT)`)
       })
 
     cy.get('.govuk-table__row')
@@ -568,10 +566,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Started')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        cy.get('.govuk-table__cell:eq(2)').should(
-          'contain.text',
-          `${transactionStartedTimestamp.toFormat(DATE_TIME)} (BST)`
-        )
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `22 Jul 25 - 03:15:15 (BST)`)
       })
 
     cy.get('.govuk-table__row')
@@ -579,10 +574,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Created')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        cy.get('.govuk-table__cell:eq(2)').should(
-          'contain.text',
-          `${TRANSACTION_CREATED_TIMESTAMP.toFormat(DATE_TIME)} (BST)`
-        )
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `22 Jul 25 - 03:14:15 (BST)`)
       })
   })
 

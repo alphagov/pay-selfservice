@@ -1,5 +1,5 @@
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
-import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import { TimeConstants } from '@utils/time/time-constants'
 
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const ROLES = require('@test/fixtures/roles.fixtures')
@@ -42,7 +42,7 @@ const setupStubs = (options = {}) => {
     transactionStubs.getLedgerTransactionsSuccess({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       displaySize: 20,
-      filters: { from_date: last12MonthsStartDate },
+      filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
       transactionLength: 1,
     }),
     gatewayAccountStubs.getCardTypesSuccess(),

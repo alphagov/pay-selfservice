@@ -3,8 +3,8 @@ import ledgerTransactionFixtures from '@test/fixtures/ledger-transaction.fixture
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import refundFixtures from '@test/fixtures/refund.fixtures'
-import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
+import { TimeConstants } from '@utils/time/time-constants'
 
 function getTransaction(transactionExternalId: string) {
   const path = `/v1/transaction/${transactionExternalId}`
@@ -54,7 +54,7 @@ function getTransactionsForGatewayAccount(gatewayAccountId: string) {
           display_size: 20,
           limit_total: true,
           limit_total_size: 5001,
-          from_date: last12MonthsStartDate,
+          from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
         },
       })
     },

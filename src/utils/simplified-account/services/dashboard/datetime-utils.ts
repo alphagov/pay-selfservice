@@ -1,4 +1,5 @@
 import { DateTime, DateTimeFormatOptions } from 'luxon'
+import { TimeConstants } from '@utils/time/time-constants'
 
 export type Period =
   | 'today'
@@ -27,45 +28,43 @@ export const DT_FULL = {
 
 export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
   const now = DateTime.now().setLocale('en-GB').setZone('Europe/London')
-  const yesterday = now.minus({ days: 1 })
 
   switch (period) {
     case 'yesterday':
       return {
-        start: yesterday.startOf('day'),
-        end: yesterday.endOf('day'),
+        start: TimeConstants.YESTERDAY,
+        end: TimeConstants.YESTERDAY.endOf('day'),
       }
 
     case 'previous-seven-days':
       return {
-        start: yesterday.minus({ days: 6 }).startOf('day'),
-        end: yesterday.endOf('day'),
+        start: TimeConstants.SEVEN_DAYS_AGO,
+        end: TimeConstants.END_OF_YESTERDAY,
       }
 
     case 'previous-thirty-days':
       return {
-        start: yesterday.minus({ days: 29 }).startOf('day'),
-        end: yesterday.endOf('day'),
+        start: TimeConstants.THIRTY_DAYS_AGO,
+        end: TimeConstants.END_OF_YESTERDAY,
       }
 
     case 'previous-month': {
-      const lastMonth = now.minus({ months: 1 })
       return {
-        start: lastMonth.startOf('month'),
-        end: lastMonth.endOf('month'),
+        start: TimeConstants.START_OF_LAST_MONTH,
+        end: TimeConstants.END_OF_LAST_MONTH,
       }
     }
 
     case 'last-12-months': {
       return {
-        start: now.startOf('day').minus({ years: 1 }),
+        start: TimeConstants.TWELVE_MONTHS_AGO,
         end: now,
       }
     }
 
     case 'all-time': {
       return {
-        start: now.startOf('day').minus({ years: 7 }),
+        start: TimeConstants.SEVEN_YEARS_AGO,
         end: now,
       }
     }
@@ -78,9 +77,3 @@ export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
       }
   }
 }
-
-export const last12MonthsStartDate = DateTime.now()
-  .setLocale('en-GB')
-  .setZone('Europe/London')
-  .startOf('day')
-  .minus({ years: 1 })
