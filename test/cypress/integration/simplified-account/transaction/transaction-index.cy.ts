@@ -265,7 +265,7 @@ describe('Transactions index', () => {
       cy.get('#toDate').should('be.empty')
     })
 
-    it.skip('should be able to filter using date ranges', () => {
+    it('should be able to filter using date ranges', () => {
       const now = DateTime.now().setLocale('en-GB').setZone('Europe/London')
       const yesterday = now.minus({ days: 1 })
 
