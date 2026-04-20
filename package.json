@@ -58,17 +58,17 @@
       "send": "0.19.0"
     },
     "cross-spawn": "^7.0.5",
-    "axios": "1.14.0"
+    "axios": "1.15.0"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.693.0",
-    "@aws-sdk/s3-request-presigner": "3.693.0",
-    "@govuk-pay/pay-js-commons": "^7.0.43",
+    "@aws-sdk/client-s3": "3.1030.0",
+    "@aws-sdk/s3-request-presigner": "3.1030.0",
+    "@govuk-pay/pay-js-commons": "^7.0.49",
     "@govuk-pay/pay-js-metrics": "^1.0.14",
     "@sentry/node": "6.12.0",
     "@types/sinon-chai": "^4.0.0",
     "accessible-autocomplete": "2.0.4",
-    "axios": "1.14.0",
+    "axios": "1.15.0",
     "body-parser": "1.20.3",
     "change-case": "3.1.0",
     "check-types": "11.2.x",
@@ -77,26 +77,26 @@
     "common-password": "0.1.2",
     "connect-flash": "0.1.1",
     "cookie-parser": "1.4.x",
-    "express": "4.21.2",
+    "express": "4.22.1",
     "express-validator": "^7.3.0",
     "google-libphonenumber": "3.2.33",
     "govuk-frontend": "^5.11.1",
     "http-proxy": "1.18.x",
     "https-proxy-agent": "5.0.1",
     "joi": "17.12.1",
-    "lodash": "4.17.21",
+    "lodash": "4.18.1",
     "luhn-js": "^1.1.2",
     "luxon": "^3.5.0",
     "module-alias": "^2.2.3",
     "moment-timezone": "0.5.43",
     "morgan": "1.10.1",
-    "multer": "^2.0.1",
+    "multer": "^2.1.1",
     "nunjucks": "3.2.4",
     "passport": "^0.7.0",
     "passport-custom": "^1.1.1",
     "passport-local": "^1.0.0",
     "qrcode": "1.5.3",
-    "qs": "6.14.1",
+    "qs": "6.14.2",
     "rfc822-validate": "1.0.0",
     "staticify": "5.0.0",
     "stripe": "^10.12.0",
@@ -145,7 +145,7 @@
     "eslint-config-prettier": "^10.1.1",
     "gaap-analytics": "3.1.0",
     "globals": "^16.0.0",
-    "jsdom": "^21.1.1",
+    "jsdom": "^29.0.2",
     "lint-staged": "^15.5.1",
     "mocha": "^10.2.0",
     "nock": "13.3.3",
@@ -169,6 +169,6 @@
     "wick-a11y": "^2.0.1"
   },
   "resolutions": {
-    "axios": "1.14.0"
+    "axios": "1.15.0"
   }
 }
