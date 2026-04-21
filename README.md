@@ -90,6 +90,18 @@ npm run cypress:test # headless
 npm run cypress:test-headed # in a browser
 ```
 
+### Cypress accessibility testing
+
+The [wick-a11y](https://www.npmjs.com/package/wick-a11y) module has been integrated.
+
+Use the following Cypress command to check accessibility on the visited page:
+
+```js
+cy.a11yCheck()
+```
+
+Any failures will show up in a table in the test results.
+
 #### Debugging Cypress tests
 
 You can start the Cypress server with in-line source maps and auto reload enabled by running
