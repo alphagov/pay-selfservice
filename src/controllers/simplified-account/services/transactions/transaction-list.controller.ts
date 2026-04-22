@@ -30,6 +30,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const gatewayAccountId = req.account.id
   const PAGE_SIZE = 20
   const transactionSearchParams = TransactionSearchParams.fromSearchQuery(gatewayAccountId, req.query, true, PAGE_SIZE)
+  console.log(transactionSearchParams)
 
   const transactionsUrl = formatServiceAndAccountPathsFor(
     paths.simplifiedAccount.transactions.index,

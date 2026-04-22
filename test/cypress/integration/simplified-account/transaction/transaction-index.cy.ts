@@ -265,7 +265,7 @@ describe('Transactions index', () => {
       cy.get('#toDate').should('be.empty')
     })
 
-    it('should be able to filter using date ranges', () => {
+    it.only('should be able to filter using date ranges', () => {
       const now = DateTime.now().setLocale('en-GB').setZone('Europe/London')
       const yesterday = now.minus({ days: 1 })
 
@@ -273,6 +273,8 @@ describe('Transactions index', () => {
         reference: 'transaction-yesterday',
         createdDate: yesterday.set({ hour: 11 }),
       }).toTransactionData()
+      cy.log(now.toISO()!)
+      cy.log(yesterday.toISO()!)
 
       cy.task('setupStubs', [
         getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success(unfilteredTransactions),
