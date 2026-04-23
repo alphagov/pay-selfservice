@@ -7,7 +7,6 @@ import {
   getTransactionForGatewayAccount,
   postRefund,
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
-import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
