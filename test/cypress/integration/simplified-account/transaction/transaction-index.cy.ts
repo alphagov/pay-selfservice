@@ -275,13 +275,14 @@ describe('Transactions index', () => {
       }).toTransactionData()
       cy.log(now.toISO()!)
       cy.log(yesterday.toISO()!)
+      cy.log(JSON.stringify(yesterday.startOf('day')))
 
       cy.task('setupStubs', [
         getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success(unfilteredTransactions),
         getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           displaySize: 20,
-          filters: { from_date: yesterday.startOf('day'), to_date: yesterday.endOf('day') },
+          filters: { from_date: yesterday.startOf('day').toISO(), to_date: yesterday.endOf('day').toISO() },
           transactions: [transactionFromYesterday],
           transactionLength: 1,
         }),

@@ -1,3 +1,6 @@
+const { setGlobalLocale } = require('@utils/time/global-locale')
+setGlobalLocale()
+
 const path = require('path')
 const express = require('express')
 const metrics = require('@govuk-pay/pay-js-metrics')
