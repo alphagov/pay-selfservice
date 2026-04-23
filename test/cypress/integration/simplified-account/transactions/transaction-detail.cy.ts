@@ -18,13 +18,15 @@ import {
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
-import { DATE_TIME, TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
+import { DATE_TIME } from '@models/constants/time-formats'
 import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { checkServiceNavigation } from '../common/assertions'
 import ROLES from '@test/fixtures/roles.fixtures'
+import { DateTime } from 'luxon'
 
-const TRANSACTION = new TransactionFixture()
-const TRANSACTION_CREATED_TIMESTAMP = TRANSACTION.createdDate
+const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
+const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
+
 const CARD_DETAILS = TRANSACTION.cardDetails!
 
 const TRANSACTION_EVENTS = [
@@ -94,7 +96,7 @@ describe('Transaction details page', () => {
 
     cy.title().should(
       'eq',
-      `Transaction details - ${TRANSACTION.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
+      `Transaction details - 22 Jul 2025 03:14:15 - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
     )
     cy.get('h1').should('contain.text', 'Transaction details')
     cy.get('h2').should('contain.text', 'Amount')
@@ -157,10 +159,7 @@ describe('Transaction details page', () => {
       .eq(3)
       .within(() => {
         cy.get('.govuk-summary-list__key').should('contain.text', 'Date created')
-        cy.get('.govuk-summary-list__value').should(
-          'contain.text',
-          `${TRANSACTION.createdDate.toFormat(DATE_TIME)} (BST)`
-        )
+        cy.get('.govuk-summary-list__value').should('contain.text', `22 Jul 25 - 03:14:15 (BST)`)
       })
 
     cy.get('.govuk-summary-list__row')

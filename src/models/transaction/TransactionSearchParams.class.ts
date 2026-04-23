@@ -6,7 +6,7 @@ import {
   PaymentStatusFilterMapping,
   RefundStatusFilterMapping,
 } from '@utils/simplified-account/services/transactions/status-filters'
-import { DateTime } from 'luxon'
+import { parseDateTime } from '@utils/time/parse-date-time'
 
 interface TransactionSearchQuery {
   cardholderName?: string
@@ -161,14 +161,6 @@ export class TransactionSearchParams {
 
     return searchParams
   }
-}
-
-function parseDateTime(date: string, time: string, includeTime: boolean): DateTime {
-  if (includeTime && time !== '') {
-    const dateTime = `${date} ${time}`
-    return DateTime.fromFormat(dateTime, 'dd/LL/yyyy H:mm:ss')
-  }
-  return DateTime.fromFormat(date, 'dd/LL/yyyy')
 }
 
 function convertStateFilter(stateFilters: string | string[]): ConnectorStates {
