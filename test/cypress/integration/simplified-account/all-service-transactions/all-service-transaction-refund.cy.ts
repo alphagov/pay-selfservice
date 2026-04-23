@@ -6,11 +6,13 @@ import {
   getTransactionEvents,
   getTransactionForGatewayAccount,
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
-import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import ROLES from '@test/fixtures/roles.fixtures'
+import { DateTime } from 'luxon'
 
-const TRANSACTION = new TransactionFixture()
+const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
+const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
+
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
 const GATEWAY_ACCOUNT_ID = TRANSACTION.gatewayAccountId
@@ -66,14 +68,9 @@ describe('All services refund page', () => {
   })
 
   it('should display correct page title and headings', () => {
-    const title = 'Refund'
-
     cy.visit(TRANSACTION_REFUND_URL)
-    cy.title().should(
-      'eq',
-      `${title} - ${TRANSACTION.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${TRANSACTION.reference} - GOV.UK Pay`
-    )
-    cy.get('h1').should('contain.text', title)
+    cy.title().should('eq', `Refund - 22 Jul 2025 03:14:15 - ${TRANSACTION.reference} - GOV.UK Pay`)
+    cy.get('h1').should('contain.text', 'Refund')
   })
 
   it('should navigate to transaction detail page when back link is clicked', () => {

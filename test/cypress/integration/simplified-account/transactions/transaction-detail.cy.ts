@@ -556,10 +556,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Declined')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        cy.get('.govuk-table__cell:eq(2)').should(
-          'contain.text',
-          `${transactionDeclinedTimestamp.toFormat(DATE_TIME)} (GMT)`
-        )
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `22 Nov 25 - 03:14:15 (GMT)`)
       })
 
     cy.get('.govuk-table__row')
@@ -567,10 +564,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Started')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        cy.get('.govuk-table__cell:eq(2)').should(
-          'contain.text',
-          `${transactionStartedTimestamp.toFormat(DATE_TIME)} (BST)`
-        )
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `22 Jul 25 - 03:15:15 (BST)`)
       })
 
     cy.get('.govuk-table__row')
@@ -578,10 +572,7 @@ describe('Transaction details page', () => {
       .within(() => {
         cy.get('.govuk-table__cell:eq(0)').should('contain.text', 'Created')
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
-        cy.get('.govuk-table__cell:eq(2)').should(
-          'contain.text',
-          `${TRANSACTION_CREATED_TIMESTAMP.toFormat(DATE_TIME)} (BST)`
-        )
+        cy.get('.govuk-table__cell:eq(2)').should('contain.text', `22 Jul 25 - 03:14:15 (BST)`)
       })
   })
 

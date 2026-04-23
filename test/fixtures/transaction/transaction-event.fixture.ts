@@ -18,7 +18,7 @@ export class TransactionEventFixture {
     this.amount = 1000
     this.resourceType = ResourceType.PAYMENT
     this.eventType = EventType.PAYMENT_CREATED
-    this.timestamp = DateTime.fromISO('2025-07-22T03:14:15.926Z')
+    this.timestamp = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
     this.state = new TransactionStateFixture()
 
     if (options) {
