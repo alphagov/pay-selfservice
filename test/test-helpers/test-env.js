@@ -9,6 +9,10 @@ const sinon = require('sinon')
 chai.should()
 chai.use(sinonChai)
 chai.use(chaiAsPromised)
+const { Settings } = require('luxon')
+
+Settings.defaultLocale = 'en-GB'
+Settings.defaultZone = 'Europe/London'
 
 afterEach(() => {
   sinon.resetHistory()
