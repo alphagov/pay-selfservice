@@ -1,5 +1,5 @@
 const { expect } = require('chai')
-const formattedPathFor = require('./replace-params-in-path')
+const formattedPathFor = require('@utils/simplified-account/format/format-paths-for')
 
 describe('formattedPathFor', () => {
   describe('with a required parameter', () => {
