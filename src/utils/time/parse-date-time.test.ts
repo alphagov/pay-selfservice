@@ -1,6 +1,3 @@
-import { setGlobalLocale } from '@utils/time/global-locale'
-setGlobalLocale()
-
 import { parseDateTime } from '@utils/time/parse-date-time'
 
 const JANUARY_FIRST_2027 = '2027-01-01T00:00:00.000+00:00'

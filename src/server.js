@@ -1,5 +1,5 @@
-const { setGlobalLocale } = require('@utils/time/global-locale')
-setGlobalLocale()
+const { setGlobalTimeDefaults } = require('@utils/time/global-time-defaults')
+setGlobalTimeDefaults()
 
 const path = require('path')
 const express = require('express')

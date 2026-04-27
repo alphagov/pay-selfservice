@@ -11,9 +11,6 @@
 import 'wick-a11y'
 import '@percy/cypress'
 
-import { setGlobalLocale } from '@utils/time/global-locale'
-setGlobalLocale()
-
 Cypress.Commands.add('setEncryptedCookies', (userId, pageData = {}) => {
   cy.task('getCookies', {
     user_external_id: userId,

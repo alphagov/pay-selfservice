@@ -23,6 +23,8 @@ import { last12MonthsStartDate } from '@utils/simplified-account/services/dashbo
 import { checkServiceNavigation } from '../common/assertions'
 import ROLES from '@test/fixtures/roles.fixtures'
 import { DateTime } from 'luxon'
+import { setGlobalTimeDefaults } from '@utils/time/global-time-defaults'
+setGlobalTimeDefaults()
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
 const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
