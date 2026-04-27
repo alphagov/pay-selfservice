@@ -158,10 +158,13 @@ describe('controller: services/ledger', () => {
 
         mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as {
+          fromDate: DateTime<true>
+          toDate: DateTime<true>
+        } & Record<string, object>
         searchParams.dateFilter.should.eql('yesterday')
-        searchParams.fromDate.should.eql('2025-11-01T00:00:00.000+00:00')
-        searchParams.toDate.should.eql('2025-11-01T23:59:59.999+00:00')
+        searchParams.fromDate.toUTC().toISO().should.eql('2025-11-01T00:00:00.000Z')
+        searchParams.toDate.toUTC().toISO().should.eql('2025-11-01T23:59:59.999Z')
       })
 
       it('should include filters in context', async () => {
@@ -171,10 +174,12 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        const context = mockResponse.args[0][3] as {
+          filters: { fromDate: DateTime<true>; toDate: DateTime<true> } & Record<string, object>
+        }
         context.filters.dateFilter.should.eql('yesterday')
-        context.filters.fromDate.should.eql('2025-11-01T00:00:00.000+00:00')
-        context.filters.toDate.should.eql('2025-11-01T23:59:59.999+00:00')
+        context.filters.fromDate.toUTC().toISO().should.eql('2025-11-01T00:00:00.000Z')
+        context.filters.toDate.toUTC().toISO().should.eql('2025-11-01T23:59:59.999Z')
       })
     })
 
@@ -188,10 +193,13 @@ describe('controller: services/ledger', () => {
 
         mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as {
+          fromDate: DateTime<true>
+          toDate: DateTime<true>
+        } & Record<string, object>
         searchParams.dateFilter.should.eql('custom-range')
-        searchParams.fromDate.should.eql('2025-11-01T00:00:00.000+00:00')
-        searchParams.toDate.should.eql('2025-11-30T23:59:59.999+00:00')
+        searchParams.fromDate.toUTC().toISO().should.eql('2025-11-01T00:00:00.000Z')
+        searchParams.toDate.toUTC().toISO().should.eql('2025-11-30T23:59:59.999Z')
       })
 
       it('should include the filters in the context', async () => {
@@ -201,10 +209,15 @@ describe('controller: services/ledger', () => {
 
         await call('get')
 
-        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        const context = mockResponse.args[0][3] as {
+          filters: {
+            fromDate: DateTime<true>
+            toDate: DateTime<true>
+          } & Record<string, object>
+        }
         context.filters.dateFilter.should.eql('custom-range')
-        context.filters.fromDate.should.eql('2025-11-01T00:00:00.000+00:00')
-        context.filters.toDate.should.eql('2025-11-30T23:59:59.999+00:00')
+        context.filters.fromDate.toUTC().toISO().should.eql('2025-11-01T00:00:00.000Z')
+        context.filters.toDate.toUTC().toISO().should.eql('2025-11-30T23:59:59.999Z')
       })
     })
 
@@ -225,9 +238,12 @@ describe('controller: services/ledger', () => {
 
         mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
-        searchParams.fromDate.should.eql('2025-11-01T09:30:00.000+00:00')
-        searchParams.toDate.should.eql('2025-11-30T17:45:00.000+00:00')
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as {
+          fromDate: DateTime<true>
+          toDate: DateTime<true>
+        } & Record<string, object>
+        searchParams.fromDate.toUTC().toISO().should.eql('2025-11-01T09:30:00.000Z')
+        searchParams.toDate.toUTC().toISO().should.eql('2025-11-30T17:45:00.000Z')
       })
 
       it('should include the filters in the context', async () => {
@@ -246,10 +262,13 @@ describe('controller: services/ledger', () => {
 
         mockLedgerService.searchTransactions.should.have.been.calledOnce
 
-        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
+        const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as {
+          fromDate: DateTime<true>
+          toDate: DateTime<true>
+        } & Record<string, object>
         searchParams.includeTime.should.eql(true)
-        searchParams.fromDate.should.eql('2025-11-01T09:30:00.000+00:00')
-        searchParams.toDate.should.eql('2025-11-30T17:45:00.000+00:00')
+        searchParams.fromDate.toUTC().toISO().should.eql('2025-11-01T09:30:00.000Z')
+        searchParams.toDate.toUTC().toISO().should.eql('2025-11-30T17:45:00.000Z')
       })
     })
 

@@ -2,10 +2,10 @@ import userStubs from '@test/cypress/stubs/user-stubs'
 import gatewayAccountStubs, { getCardTypesSuccess } from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { LIVE, TEST } from '@models/gateway-account/gateway-account-type'
-import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { getTransactionForGatewayAccount } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 import { DateTime } from 'luxon'
+import { TimeConstants } from '@utils/time/time-constants'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
 const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
@@ -47,7 +47,7 @@ describe('All service transactions index', () => {
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 1,
         }),
@@ -59,7 +59,7 @@ describe('All service transactions index', () => {
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 1,
         }),
@@ -78,7 +78,7 @@ describe('All service transactions index', () => {
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 1,
         }),
@@ -101,7 +101,7 @@ describe('All service transactions index', () => {
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 1,
         }),
@@ -121,7 +121,7 @@ describe('All service transactions index', () => {
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 1,
         }),
@@ -157,7 +157,7 @@ describe('All service transactions index', () => {
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 1,
         }),
@@ -215,7 +215,7 @@ describe('All service transactions index', () => {
         transactionStubs.getLedgerTransactionsSuccess({
           gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 1,
         }),

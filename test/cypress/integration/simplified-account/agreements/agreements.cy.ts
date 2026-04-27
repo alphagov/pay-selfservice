@@ -7,7 +7,7 @@ import {
   checkServiceNavigation,
   checkTitleAndHeading,
 } from '@test/cypress/integration/simplified-account/common/assertions'
-import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import { TimeConstants } from '@utils/time/time-constants'
 
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@pay.gov.uk'
@@ -170,7 +170,7 @@ describe('Agreements', () => {
         filters: {
           agreement_id: 'a-valid-agreement-id',
           display_size: 5,
-          from_date: last12MonthsStartDate.toISO(),
+          from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
         },
       }),
     ])
@@ -289,7 +289,7 @@ describe('Agreements', () => {
         filters: {
           agreement_id: 'agreement123abc',
           display_size: 5,
-          from_date: last12MonthsStartDate.toISO(),
+          from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
         },
       }),
       agreementStubs.postCancelAgreementByServiceExternalIdAndAccountType({

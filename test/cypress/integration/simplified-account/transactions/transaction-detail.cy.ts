@@ -19,10 +19,10 @@ import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 import { DATE_TIME } from '@models/constants/time-formats'
-import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { checkServiceNavigation } from '../common/assertions'
 import ROLES from '@test/fixtures/roles.fixtures'
 import { DateTime } from 'luxon'
+import { TimeConstants } from '@utils/time/time-constants'
 import { setGlobalTimeDefaults } from '@utils/time/global-time-defaults'
 setGlobalTimeDefaults()
 
@@ -115,7 +115,7 @@ describe('Transaction details page', () => {
       transactionStubs.getLedgerTransactionsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactions: [TRANSACTION],
-        filters: { from_date: last12MonthsStartDate },
+        filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
         displaySize: 20,
         transactionLength: 1,
       }),

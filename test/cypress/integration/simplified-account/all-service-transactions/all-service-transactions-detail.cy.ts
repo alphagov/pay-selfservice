@@ -8,9 +8,9 @@ import {
   getTransactionForGatewayAccount,
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
-import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import ROLES from '@test/fixtures/roles.fixtures'
 import { DateTime } from 'luxon'
+import { TimeConstants } from '@utils/time/time-constants'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
 const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
@@ -66,7 +66,7 @@ describe('All services transaction details page', () => {
       transactionStubs.getLedgerTransactionsSuccess({
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactions: [TRANSACTION],
-        filters: { from_date: last12MonthsStartDate },
+        filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
         displaySize: 20,
         transactionLength: 1,
       }),
