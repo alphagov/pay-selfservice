@@ -61,7 +61,7 @@ class Transaction {
     this.netAmount = data.net_amount
     this.totalAmount = data.total_amount
     this.fee = data.fee
-    this.createdDate = DateTime.fromISO(data.created_date)
+    this.createdDate = DateTime.fromISO(data.created_date, { zone: 'Europe/London' }).setZone()
     this.description = data.description
     this.paymentProvider = data.payment_provider
     this.walletType = data.wallet_type
@@ -73,7 +73,9 @@ class Transaction {
     this.cardDetails = data.card_details && new CardDetails(data.card_details)
     this.transactionType = data.transaction_type
     this.reason = data.reason ? parseReason(data.reason) : undefined
-    this.evidenceDueDate = data.evidence_due_date ? DateTime.fromISO(data.evidence_due_date) : undefined
+    this.evidenceDueDate = data.evidence_due_date
+      ? DateTime.fromISO(data.evidence_due_date, { zone: 'Europe/London' })
+      : undefined
     this.data = data
     this.paymentDetails = data.payment_details && new PaymentDetails(data.payment_details)
     this.parentTransactionExternalId = data.parent_transaction_id

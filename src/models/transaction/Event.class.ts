@@ -19,7 +19,7 @@ class Event {
     this.amount = data.amount
     this.resourceType = data.resource_type
     this.eventType = data.event_type
-    this.timestamp = DateTime.fromISO(data.timestamp)
+    this.timestamp = DateTime.fromISO(data.timestamp, { zone: 'Europe/London' })
     this.state = new State(data.state)
     this.metadata = data.data
 
