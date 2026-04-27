@@ -7,6 +7,7 @@ import {
   RefundStatusFilterMapping,
 } from '@utils/simplified-account/services/transactions/status-filters'
 import { parseDateTime } from '@utils/time/parse-date-time'
+import { DateTime } from 'luxon'
 
 interface TransactionSearchQuery {
   cardholderName?: string
@@ -41,8 +42,8 @@ export class TransactionSearchParams {
   email?: string
   type?: string
   dateFilter?: string
-  fromDate?: string
-  toDate?: string
+  fromDate?: DateTime
+  toDate?: DateTime
   state?: string[]
   paymentStates?: string[]
   refundStates?: string[]
@@ -129,11 +130,11 @@ export class TransactionSearchParams {
         queryParams.fromDate!,
         queryParams.fromTime!,
         queryParams.includeTime === 'include'
-      ).toISO()!
+      )
 
       // parse end date/time, clamp to end of day if not including time
       const toDate = parseDateTime(queryParams.toDate!, queryParams.toTime!, queryParams.includeTime === 'include')
-      searchParams.toDate = queryParams.includeTime === 'include' ? toDate.toISO()! : toDate.endOf('day').toISO()!
+      searchParams.toDate = queryParams.includeTime === 'include' ? toDate : toDate.endOf('day')
 
       searchParams.dateFilter = queryParams.dateFilter
       searchParams.includeTime = queryParams.includeTime === 'include'
@@ -141,8 +142,8 @@ export class TransactionSearchParams {
       const dateRange = getPeriodUKDateTimeRange(queryParams.dateFilter as Period)
 
       searchParams.dateFilter = queryParams.dateFilter
-      searchParams.fromDate = dateRange.start.toISO()!
-      searchParams.toDate = dateRange.end.toISO()!
+      searchParams.fromDate = dateRange.start
+      searchParams.toDate = dateRange.end
       searchParams.includeTime = false
     }
 

@@ -1,6 +1,3 @@
-const { setGlobalTimeDefaults } = require('@utils/time/global-time-defaults')
-setGlobalTimeDefaults()
-
 const path = require('path')
 const express = require('express')
 const metrics = require('@govuk-pay/pay-js-metrics')
