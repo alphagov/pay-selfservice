@@ -273,9 +273,6 @@ describe('Transactions index', () => {
         reference: 'transaction-yesterday',
         createdDate: yesterday.set({ hour: 11 }),
       }).toTransactionData()
-      cy.log(now.toISO()!)
-      cy.log(yesterday.toISO()!)
-      cy.log(JSON.stringify(yesterday.startOf('day')))
 
       cy.task('setupStubs', [
         getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success(unfilteredTransactions),
