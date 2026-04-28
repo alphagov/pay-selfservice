@@ -27,7 +27,7 @@ describe('DateTime Utility', () => {
         minute: '2-digit',
         second: undefined,
         timeZoneName: 'short',
-        hour12: true
+        hour12: true,
       })
     })
   })
@@ -106,6 +106,46 @@ describe('DateTime Utility', () => {
       })
     })
 
+    describe('when period is "last-12-months"', () => {
+      it('should return range for 12 months ending now', () => {
+        const result = getPeriodUKDateTimeRange('last-12-months')
+
+        const expectedStart = DateTime.fromISO('2024-01-15T00:00:00.000', { zone: 'Europe/London' })
+        const expectedEnd = DateTime.fromISO('2025-01-15T14:30:00.000Z', { zone: 'Europe/London' })
+
+        expect(result.start.toISO()).to.equal(expectedStart.toISO())
+        expect(result.end.toISO()).to.equal(expectedEnd.toISO())
+      })
+
+      it('should span exactly 12 months', () => {
+        const result = getPeriodUKDateTimeRange('last-12-months')
+        const daysDiff = result.end.diff(result.start, 'months').months
+
+        expect(Math.floor(daysDiff)).to.equal(12)
+        expect(daysDiff).to.be.greaterThan(11.9)
+      })
+    })
+
+    describe('when period is "all-time"', () => {
+      it('should return range for 7 years ending now', () => {
+        const result = getPeriodUKDateTimeRange('all-time')
+
+        const expectedStart = DateTime.fromISO('2018-01-15T00:00:00.000', { zone: 'Europe/London' })
+        const expectedEnd = DateTime.fromISO('2025-01-15T14:30:00.000Z', { zone: 'Europe/London' })
+
+        expect(result.start.toISO()).to.equal(expectedStart.toISO())
+        expect(result.end.toISO()).to.equal(expectedEnd.toISO())
+      })
+
+      it('should span exactly 12 months', () => {
+        const result = getPeriodUKDateTimeRange('all-time')
+        const daysDiff = result.end.diff(result.start, 'years').years
+
+        expect(Math.floor(daysDiff)).to.equal(7)
+        expect(daysDiff).to.be.greaterThan(6.9)
+      })
+    })
+
     describe('edge cases', () => {
       it('should handle leap year correctly for period', () => {
         clock.restore()
@@ -143,7 +183,7 @@ describe('DateTime Utility', () => {
       it('should ensure start is always before or equal to end', () => {
         const periods: Period[] = ['today', 'yesterday', 'previous-seven-days', 'previous-thirty-days']
 
-        periods.forEach(period => {
+        periods.forEach((period) => {
           const result = getPeriodUKDateTimeRange(period)
           expect(result.start.toMillis()).to.be.lessThan(result.end.toMillis())
         })

@@ -57,7 +57,7 @@ export class TimeConstants {
     return DateTime.now()
       .setLocale('en-GB')
       .setZone('Europe/London')
-      .minus({ years: 1 })
+      .minus({ years: 7 })
       .startOf('day') as DateTime<true>
   }
 }

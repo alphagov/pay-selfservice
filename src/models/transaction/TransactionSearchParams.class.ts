@@ -7,7 +7,7 @@ import {
   RefundStatusFilterMapping,
 } from '@utils/simplified-account/services/transactions/status-filters'
 import { parseDateTime } from '@utils/time/parse-date-time'
-import { DateTime } from 'luxon'
+import type { DateTime } from 'luxon'
 
 interface TransactionSearchQuery {
   cardholderName?: string

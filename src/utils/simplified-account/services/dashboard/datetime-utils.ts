@@ -11,8 +11,8 @@ export type Period =
   | 'all-time'
 
 interface DateTimeRange {
-  start: DateTime
-  end: DateTime
+  start: DateTime<true>
+  end: DateTime<true>
 }
 
 export const DT_FULL = {
@@ -27,7 +27,7 @@ export const DT_FULL = {
 } as DateTimeFormatOptions
 
 export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
-  const now = DateTime.now().setLocale('en-GB').setZone('Europe/London')
+  const now = DateTime.now().setLocale('en-GB').setZone('Europe/London') as DateTime<true>
 
   switch (period) {
     case 'yesterday':

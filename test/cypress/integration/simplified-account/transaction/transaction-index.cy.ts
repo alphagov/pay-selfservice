@@ -279,7 +279,10 @@ describe('Transactions index', () => {
         getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           displaySize: 20,
-          filters: { from_date: yesterday.startOf('day').toISO(), to_date: yesterday.endOf('day').toISO() },
+          filters: {
+            from_date: yesterday.startOf('day').toUTC().toISO(),
+            to_date: yesterday.endOf('day').toUTC().toISO(),
+          },
           transactions: [transactionFromYesterday],
           transactionLength: 1,
         }),
@@ -764,7 +767,7 @@ describe('Transactions index', () => {
         getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 10,
           page: 1,
