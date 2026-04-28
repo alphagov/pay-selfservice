@@ -7,14 +7,15 @@ import {
   getTransactionForGatewayAccount,
   postRefund,
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
-import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import { checkServiceNavigation } from '../common/assertions'
 import ROLES from '@test/fixtures/roles.fixtures'
+import { DateTime } from 'luxon'
 
-const TRANSACTION = new TransactionFixture()
+const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
+const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
 const GATEWAY_ACCOUNT_ID = TRANSACTION.gatewayAccountId
@@ -82,7 +83,7 @@ describe('Refund page', () => {
     checkServiceNavigation('Transactions', transactionListUrl)
     cy.title().should(
       'eq',
-      `Refund - ${TRANSACTION.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
+      `Refund - 22 Jul 2025 03:14:15 - ${TRANSACTION.reference} - ${SERVICE_NAME.en} - GOV.UK Pay`
     )
     cy.get('h1').should('contain.text', 'Refund')
   })

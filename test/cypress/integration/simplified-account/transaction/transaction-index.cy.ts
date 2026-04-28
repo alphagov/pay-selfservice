@@ -3,7 +3,6 @@ import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { checkServiceNavigation, checkTitleAndHeading } from '../common/assertions'
 import { TEST } from '@models/gateway-account/gateway-account-type'
-import { last12MonthsStartDate } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { Status } from '@models/transaction/types/status'
@@ -13,6 +12,7 @@ import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-
 import { getTransactionsForGatewayAccount } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { PaymentDetailsFixture } from '@test/fixtures/transaction/payment-details.fixture'
 import { getLedgerTransactionsFailure, getLedgerTransactionsSuccess } from '@test/cypress/stubs/transaction-stubs'
+import { TimeConstants } from '@utils/time/time-constants'
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
 
@@ -129,7 +129,7 @@ describe('Transactions index', () => {
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
           transactionLength: 6000,
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
         }),
       ])
@@ -145,7 +145,7 @@ describe('Transactions index', () => {
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
           transactionLength: 6000,
-          filters: { reference: 'unfiltered', from_date: last12MonthsStartDate },
+          filters: { reference: 'unfiltered', from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
         }),
       ])
@@ -265,7 +265,7 @@ describe('Transactions index', () => {
       cy.get('#toDate').should('be.empty')
     })
 
-    it.skip('should be able to filter using date ranges', () => {
+    it('should be able to filter using date ranges', () => {
       const now = DateTime.now().setLocale('en-GB').setZone('Europe/London')
       const yesterday = now.minus({ days: 1 })
 
@@ -279,7 +279,10 @@ describe('Transactions index', () => {
         getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           displaySize: 20,
-          filters: { from_date: yesterday.startOf('day'), to_date: yesterday.endOf('day') },
+          filters: {
+            from_date: yesterday.startOf('day').toUTC().toISO(),
+            to_date: yesterday.endOf('day').toUTC().toISO(),
+          },
           transactions: [transactionFromYesterday],
           transactionLength: 1,
         }),
@@ -585,7 +588,7 @@ describe('Transactions index', () => {
             gatewayAccountId: GATEWAY_ACCOUNT_ID,
             transactions: [TRANSACTION],
             filters: {
-              from_date: last12MonthsStartDate,
+              from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
             },
             displaySize: 20,
             transactionLength: 1,
@@ -615,7 +618,7 @@ describe('Transactions index', () => {
             gatewayAccountId: GATEWAY_ACCOUNT_ID,
             transactions: [TRANSACTION],
             filters: {
-              from_date: last12MonthsStartDate,
+              from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
             },
             displaySize: 20,
             transactionLength: 1,
@@ -644,7 +647,7 @@ describe('Transactions index', () => {
         getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 50,
         }),
@@ -695,7 +698,7 @@ describe('Transactions index', () => {
         getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 100,
           page: 3,
@@ -734,7 +737,7 @@ describe('Transactions index', () => {
         getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 100,
           page: 5,
@@ -764,7 +767,7 @@ describe('Transactions index', () => {
         getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
-          filters: { from_date: last12MonthsStartDate },
+          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
           displaySize: 20,
           transactionLength: 10,
           page: 1,
@@ -792,7 +795,7 @@ describe('Transactions index', () => {
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactions: [TRANSACTION],
         filters: {
-          from_date: last12MonthsStartDate,
+          from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
           reference,
           email,
           cardholder_name: cardholderNameSearchParam,
