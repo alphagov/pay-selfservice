@@ -3,7 +3,7 @@ import * as cancel from './cancel/cancel-agreement.controller'
 import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { searchAgreements } from '@services/agreements.service'
-import { query, validationResult } from 'express-validator'
+import { query, validationResult, matchedData } from 'express-validator'
 import { ACTIVE, INACTIVE, CANCELLED, CREATED } from '@models/agreements/agreement-status'
 import getPagination from '@utils/simplified-account/pagination'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
@@ -40,6 +40,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   await Promise.all(validations.map(async (validation) => validation.run(req)))
 
   const errors = validationResult(req)
+  const { page } = matchedData(req)
 
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)
@@ -48,7 +49,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         summary: formattedErrors.errorSummary,
         formErrors: formattedErrors.formErrors,
       },
-      ...(await loadAgreements(req.service.externalId, req.account.id, req.account.type, Number(req.query.page))),
+      ...(await loadAgreements(req.service.externalId, req.account.id, req.account.type, Number(page))),
     })
   }
 
@@ -61,13 +62,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   req.session.agreementsFilter = req.url.split('?')[1] || ''
 
   return response(req, res, 'simplified-account/services/agreements/index', {
-    ...(await loadAgreements(
-      req.service.externalId,
-      req.account.id,
-      req.account.type,
-      Number(req.query.page),
-      filters
-    )),
+    ...(await loadAgreements(req.service.externalId, req.account.id, req.account.type, Number(page), filters)),
   })
 }
 
