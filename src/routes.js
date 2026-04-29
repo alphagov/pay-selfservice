@@ -21,6 +21,7 @@ const { enforceUserFirstFactor, redirectLoggedInUser } = require('./services/aut
 const trimUsername = require('./middleware/trim-username')
 const permission = require('./middleware/permission')
 const inviteCookieIsPresent = require('./middleware/invite-cookie-is-present')
+const validateStatusFilter = require('./middleware/validate-status-filter')
 
 // Controllers
 const staticController = require('./controllers/static.controller')
@@ -170,14 +171,25 @@ module.exports.bind = function (app) {
 
   // All service transactions
   app.get(allServiceTransactions.index, userIsAuthorised, allTransactionsController.getController)
-  app.get(allServiceTransactions.indexStatusFilter, userIsAuthorised, allTransactionsController.getController)
+  app.get(
+    allServiceTransactions.indexStatusFilter,
+    validateStatusFilter,
+    userIsAuthorised,
+    allTransactionsController.getController
+  )
   app.get(
     allServiceTransactions.indexStatusFilterWithoutSearch,
+    validateStatusFilter,
     userIsAuthorised,
     allTransactionsController.noAutosearchTransactions
   )
   app.get(allServiceTransactions.download, userIsAuthorised, allTransactionsController.downloadTransactions)
-  app.get(allServiceTransactions.downloadStatusFilter, userIsAuthorised, allTransactionsController.downloadTransactions)
+  app.get(
+    allServiceTransactions.downloadStatusFilter,
+    validateStatusFilter,
+    userIsAuthorised,
+    allTransactionsController.downloadTransactions
+  )
   app.get(allServiceTransactions.redirectDetail, userIsAuthorised, transactionDetailRedirectController)
 
   // all service transactions - simplified account
@@ -200,7 +212,7 @@ module.exports.bind = function (app) {
 
   // Payouts
   app.get(payouts.list, userIsAuthorised, payoutsController.listAllServicesPayouts)
-  app.get(payouts.listStatusFilter, userIsAuthorised, payoutsController.listAllServicesPayouts)
+  app.get(payouts.listStatusFilter, validateStatusFilter, userIsAuthorised, payoutsController.listAllServicesPayouts)
 
   // Stripe terms and conditions
   app.get(stripeTermsAndConditions, userIsAuthorised, stripeTermsAndConditionsController.get)
