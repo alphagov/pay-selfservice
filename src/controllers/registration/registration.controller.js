@@ -15,7 +15,7 @@ const {
   validatePhoneNumber
 } = require('../../utils/validation/server-side-form-validations')
 const { isEmpty } = require('../../utils/validation/field-validation-checks')
-const { sanitiseSecurityCode } = require('../../utils/security-code-utils')
+const { sanitiseSecurityCode } = require('../../utils/sanitise-input-value-utils')
 const { validationErrors } = require('../../utils/validation/field-validation-checks')
 const { INVITE_SESSION_COOKIE_NAME } = require('../../utils/constants')
 const { APP, SMS } = require('@models/constants/second-factor-method')

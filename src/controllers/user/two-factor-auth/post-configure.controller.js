@@ -8,7 +8,7 @@ const secondFactorMethod = require('@models/constants/second-factor-method')
 const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors')
 const { validateOtp } = require('../../../utils/validation/server-side-form-validations')
 const { validationErrors } = require('../../../utils/validation/field-validation-checks')
-const { sanitiseSecurityCode } = require('../../../utils/security-code-utils')
+const { sanitiseSecurityCode } = require('../../../utils/sanitise-input-value-utils')
 
 module.exports = async function postUpdateSecondFactorMethod(req, res, next) {
   const code = sanitiseSecurityCode(req.body.code)

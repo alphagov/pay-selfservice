@@ -6,6 +6,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
+import { sanitiseHtmlValue } from '@utils/sanitise-input-value-utils'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { service, account } = req
@@ -16,11 +17,10 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     )
   }
   const isWelsh = currentSession.language === 'cy'
-
   const formValues = {
     referenceTypeGroup: currentSession.paymentReferenceType,
     ...(currentSession.paymentReferenceType === 'custom' && {
-      referenceLabel: currentSession.paymentReferenceLabel,
+      referenceLabel: sanitiseHtmlValue(currentSession.paymentReferenceLabel),
       referenceHint: currentSession.paymentReferenceHint,
     }),
   }
@@ -91,7 +91,7 @@ async function post(req: ServiceRequest<CreateLinkReferenceBody>, res: ServiceRe
 
   PaymentLinkCreationSession.set(req, currentSession, {
     paymentReferenceType: req.body.referenceTypeGroup,
-    paymentReferenceLabel: req.body.referenceTypeGroup === 'custom' ? req.body.referenceLabel : undefined,
+    paymentReferenceLabel: req.body.referenceTypeGroup === 'custom' ? sanitiseHtmlValue(req.body.referenceLabel) : undefined,
     paymentReferenceHint: req.body.referenceTypeGroup === 'custom' ? req.body.referenceHint : undefined,
     gatewayAccountId: account.id, // todo: remove me once implemented in simplified journey
   } as PaymentLinkCreationSession)
