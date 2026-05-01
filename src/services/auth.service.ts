@@ -16,7 +16,7 @@ import { addField } from '@services/clients/base/request-context'
 import { logging } from '@govuk-pay/pay-js-commons'
 import { validationErrors } from '@utils/validation/field-validation-checks'
 import { validateOtp } from '@utils/validation/server-side-form-validations'
-import { sanitiseSecurityCode } from '@utils/security-code-utils'
+import { sanitiseSecurityCode } from '@utils/sanitise-input-value-utils'
 // @ts-expect-error js commons is not updated for typescript support yet
 import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
 

@@ -367,7 +367,7 @@ describe('controller: services/payment-links/edit/reference/edit-link-reference'
           params: { productExternalId: PRODUCT_EXTERNAL_ID },
           body: {
             referenceTypeGroup: 'custom',
-            referenceLabel: 'Valid Label',
+            referenceLabel: '<h1>Valid Label</h1>',
             referenceHint: longHint,
           },
         })
@@ -381,6 +381,33 @@ describe('controller: services/payment-links/edit/reference/edit-link-reference'
         sinon.assert.match(context.errors, sinon.match.object)
         sinon.assert.match(context.errors, sinon.match.has('summary'))
         sinon.assert.match(context.errors, sinon.match.has('formErrors'))
+      })
+    })
+
+    describe('with sanitised reference product', () => {
+      const mockProduct = {
+        externalId: PRODUCT_EXTERNAL_ID,
+        name: 'Test Payment Link',
+        description: 'Test Description',
+        referenceEnabled: true,
+        referenceLabel: '<h1>Order Number</h1>',
+        referenceHint: 'Enter your order number',
+        language: 'en',
+      } as Product
+      beforeEach(async () => {
+        mockGetProductByGatewayAccountIdAndExternalId.resolves(mockProduct)
+        nextRequest({
+          params: { productExternalId: PRODUCT_EXTERNAL_ID },
+        })
+        await call('get')
+      })
+
+      it('should set form values for custom reference type', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const formValues = context.formValues as Record<string, string>
+        sinon.assert.match(formValues.referenceTypeGroup, 'custom')
+        sinon.assert.match(formValues.referenceLabel, 'Order Number')
+        sinon.assert.match(formValues.referenceHint, 'Enter your order number')
       })
     })
   })

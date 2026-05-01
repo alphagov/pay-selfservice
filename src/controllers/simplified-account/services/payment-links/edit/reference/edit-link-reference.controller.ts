@@ -7,6 +7,7 @@ import { ProductUpdateRequestBuilder } from '@models/products/ProductUpdateReque
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
+import { sanitiseHtmlValue } from '@utils/sanitise-input-value-utils'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
@@ -21,7 +22,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     isWelsh: product.language === 'cy',
     formValues: {
       referenceTypeGroup: product.referenceEnabled ? 'custom' : 'standard',
-      referenceLabel: product.referenceLabel,
+      referenceLabel: sanitiseHtmlValue(product.referenceLabel),
       referenceHint: product.referenceHint,
     },
     productName: product.name,
@@ -67,7 +68,7 @@ async function post(req: ServiceRequest<EditLinkReferenceBody>, res: ServiceResp
   const productUpdateRequest = ProductUpdateRequestBuilder.fromProduct(product)
     .setReference({
       enabled: req.body.referenceTypeGroup === 'custom',
-      label: req.body.referenceLabel,
+      label: sanitiseHtmlValue(req.body.referenceLabel),
       hint: req.body.referenceHint,
     })
     .build()

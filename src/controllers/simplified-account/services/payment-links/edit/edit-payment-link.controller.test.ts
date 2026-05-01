@@ -308,5 +308,27 @@ describe('controller: services/payment-links/edit/edit-payment-link', () => {
         sinon.assert.match(context.amountHint, undefined)
       })
     })
+
+    describe('with product with sanitised reference label', () => {
+      beforeEach(async () => {
+        const productWithSanitisedReference = {
+          ...mockProduct,
+          referenceLabel: '<h1>Sanitised Reference</h1>',
+        }
+        mockGetProductByGatewayAccountIdAndExternalId.resolves(productWithSanitisedReference)
+        mockResponse.resetHistory()
+
+        nextRequest({
+          params: { productExternalId: PRODUCT_EXTERNAL_ID },
+        })
+        await call('get')
+      })
+
+      it('should set default reference when none provided', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const product = context.product as Record<string, unknown>
+        sinon.assert.match(product.reference, 'Sanitised Reference')
+      })
+    })
   })
 })

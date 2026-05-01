@@ -8,6 +8,7 @@ import { getProductByGatewayAccountIdAndExternalId } from '@services/products.se
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
+import { sanitiseHtmlValue } from '@utils/sanitise-input-value-utils'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
@@ -23,7 +24,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     product: {
       name: product.name,
       details: product.description ?? 'None given',
-      reference: product.referenceLabel ?? 'Created by GOV.UK Pay',
+      reference: sanitiseHtmlValue(product.referenceLabel) ?? 'Created by GOV.UK Pay',
       referenceHint: product.referenceHint,
       amount: product.price ? penceToPoundsWithCurrency(product.price) : 'User can choose',
       amountHint: product.amountHint,

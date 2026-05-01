@@ -7,6 +7,7 @@ import paths from '@root/paths'
 import { body, validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { NextFunction } from 'client-sessions'
+import { sanitiseHtmlValue } from '@utils/sanitise-input-value-utils'
 
 interface DeletePaymentLinkBody {
   confirmDelete?: 'yes' | 'no'
@@ -75,7 +76,7 @@ async function post(req: ServiceRequest<DeletePaymentLinkBody>, res: ServiceResp
         name: paymentLink.name,
         description: paymentLink.description,
         formattedPrice: paymentLink.price ? penceToPoundsWithCurrency(paymentLink.price) : 'User can choose',
-        referenceLabel: paymentLink.referenceEnabled ? paymentLink.referenceLabel : 'Created by GOV.UK Pay',
+        referenceLabel: paymentLink.referenceEnabled ? sanitiseHtmlValue(paymentLink.referenceLabel) : 'Created by GOV.UK Pay',
       },
     })
   }

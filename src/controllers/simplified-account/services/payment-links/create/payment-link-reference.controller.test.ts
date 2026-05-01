@@ -441,5 +441,38 @@ describe('controller: services/payment-links/create/payment-link-reference', () 
         sinon.assert.match(context.errors, sinon.match.has('formErrors'))
       })
     })
+
+    describe('with sanitised session data', () => {
+      beforeEach(async () => {
+        const sessionData: Partial<PaymentLinkCreationSession> = {
+          paymentLinkTitle: 'Test Payment Link',
+          paymentLinkDescription: 'Test Description',
+          language: 'en',
+          serviceNamePath: 'mcduck-enterprises' as SlugifiedString,
+          productNamePath: 'test-payment-link' as SlugifiedString,
+          paymentReferenceType: 'custom',
+          paymentReferenceLabel: '<h1>Order Number</h1>',
+          paymentReferenceHint: 'Enter your order number',
+        }
+
+        nextRequest({
+          session: {
+            pageData: {
+              createPaymentLink: sessionData,
+            },
+          },
+        })
+
+        await call('get')
+      })
+
+      it('should set sanitised form values from session in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const formValues = context.formValues as Record<string, unknown>
+        sinon.assert.match(formValues.referenceTypeGroup, 'custom')
+        sinon.assert.match(formValues.referenceLabel, 'Order Number')
+        sinon.assert.match(formValues.referenceHint, 'Enter your order number')
+      })
+    })
   })
 })

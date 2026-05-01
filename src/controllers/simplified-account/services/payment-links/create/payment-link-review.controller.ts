@@ -8,6 +8,7 @@ import { createProduct } from '@services/products.service'
 import { CreateProductRequest } from '@models/products/CreateProductRequest.class'
 import { createPaymentLinkToken } from '@services/tokens.service'
 import { ProductType } from '@models/products/product-type'
+import { sanitiseHtmlValue } from '@utils/sanitise-input-value-utils'
 
 const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
 
@@ -113,7 +114,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     .withType(ProductType.ADHOC)
     .withReferenceEnabled(currentSession.paymentReferenceType === 'custom')
     .withReferenceHint(currentSession.paymentReferenceHint)
-    .withReferenceLabel(currentSession.paymentReferenceLabel)
+    .withReferenceLabel(sanitiseHtmlValue(currentSession.paymentReferenceLabel))
 
   const paymentLink = await createProduct(createProductRequest)
   const successBannerBody =
