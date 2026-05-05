@@ -19,6 +19,7 @@ const organisationDetailsSchema = {
       .notEmpty()
       .withMessage('Enter an organisation name')
       .bail()
+      .escape()
       .isLength({ max: ORGANISATION_NAME_MAX_LENGTH })
       .withMessage(`Organisation name must be ${ORGANISATION_NAME_MAX_LENGTH} characters or fewer`),
   },
@@ -29,12 +30,14 @@ const organisationDetailsSchema = {
         .notEmpty()
         .withMessage('Enter a building and street')
         .bail()
+        .escape()
         .isLength({ max: ADDRESS_FIELD_MAX_LENGTH })
         .withMessage(`Building and street must be ${ADDRESS_FIELD_MAX_LENGTH} characters or fewer`),
     },
     line2: {
       validate: body('addressLine2')
         .trim()
+        .escape()
         .isLength({ max: ADDRESS_FIELD_MAX_LENGTH })
         .withMessage(`Building and street must be ${ADDRESS_FIELD_MAX_LENGTH} characters or fewer`),
     },
@@ -44,6 +47,7 @@ const organisationDetailsSchema = {
         .notEmpty()
         .withMessage('Enter a town or city')
         .bail()
+        .escape()
         .isLength({ max: ADDRESS_FIELD_MAX_LENGTH })
         .withMessage(`Town or city must be ${ADDRESS_FIELD_MAX_LENGTH} characters or fewer`),
     },

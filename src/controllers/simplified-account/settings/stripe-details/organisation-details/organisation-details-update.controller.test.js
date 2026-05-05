@@ -6,40 +6,48 @@ const ControllerTestBuilder = require('@test/test-helpers/simplified-account/con
 
 const mockResponse = sinon.stub()
 const mockStripeDetailsService = {
-  updateStripeDetailsOrganisationNameAndAddress: sinon.stub().resolves()
+  updateStripeDetailsOrganisationNameAndAddress: sinon.stub().resolves(),
 }
 const mockCommonsUtils = {
   countries: {
-    govukFrontendFormatted: sinon.stub().returns([{
-      value: 'CS',
-      text: 'Calisota'
-    }])
-  }
+    govukFrontendFormatted: sinon.stub().returns([
+      {
+        value: 'CS',
+        text: 'Calisota',
+      },
+    ]),
+  },
 }
 
 const ACCOUNT_TYPE = 'live'
 const SERVICE_ID = 'service-id-123abc'
-const STRIPE_DETAILS_INDEX_PATH = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, SERVICE_ID, ACCOUNT_TYPE)
-const STRIPE_DETAILS_ORG_DETAILS_INDEX_PATH = formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.organisationDetails.index, SERVICE_ID, ACCOUNT_TYPE)
+const STRIPE_DETAILS_INDEX_PATH = formatSimplifiedAccountPathsFor(
+  paths.simplifiedAccount.settings.stripeDetails.index,
+  SERVICE_ID,
+  ACCOUNT_TYPE
+)
+const STRIPE_DETAILS_ORG_DETAILS_INDEX_PATH = formatSimplifiedAccountPathsFor(
+  paths.simplifiedAccount.settings.stripeDetails.organisationDetails.index,
+  SERVICE_ID,
+  ACCOUNT_TYPE
+)
 
-const {
-  res,
-  nextRequest,
-  call
-} = new ControllerTestBuilder('@controllers/simplified-account/settings/stripe-details/organisation-details/organisation-details-update.controller')
+const { res, nextRequest, call } = new ControllerTestBuilder(
+  '@controllers/simplified-account/settings/stripe-details/organisation-details/organisation-details-update.controller'
+)
   .withService({
     externalId: SERVICE_ID,
     merchantDetails: {
       name: 'McDuck Enterprises',
       addressLine1: 'McDuck Manor',
-      addressCity: 'Duckburg'
-    }
+      addressCity: 'Duckburg',
+    },
   })
   .withAccount({ type: ACCOUNT_TYPE })
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/stripe-details.service': mockStripeDetailsService,
-    '@govuk-pay/pay-js-commons': { utils: mockCommonsUtils }
+    '@govuk-pay/pay-js-commons': { utils: mockCommonsUtils },
   })
   .build()
 
@@ -53,7 +61,8 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
       expect(mockResponse).to.have.been.calledWith(
         sinon.match.any,
         sinon.match.any,
-        'simplified-account/settings/stripe-details/organisation-details/update-organisation-details', {
+        'simplified-account/settings/stripe-details/organisation-details/update-organisation-details',
+        {
           backLink: STRIPE_DETAILS_ORG_DETAILS_INDEX_PATH,
           countries: [{ value: 'CS', text: 'Calisota' }],
           organisationDetails: {
@@ -62,9 +71,10 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
             addressLine2: undefined,
             addressCity: 'Duckburg',
             addressPostcode: undefined,
-            addressCountry: undefined
-          }
-        })
+            addressCountry: undefined,
+          },
+        }
+      )
     })
   })
 
@@ -77,8 +87,8 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
             addressLine1: 'McDuck Manor',
             addressCity: 'Duckburg',
             addressPostcode: 'SW1A 1AA',
-            addressCountry: 'CS'
-          }
+            addressCountry: 'CS',
+          },
         })
         await call('post', 1)
       })
@@ -92,8 +102,9 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
             address_line1: 'McDuck Manor',
             address_city: 'Duckburg',
             address_postcode: 'SW1A 1AA',
-            address_country: 'CS'
-          })
+            address_country: 'CS',
+          }
+        )
       })
 
       it('should redirect to the stripe details index page', () => {
@@ -102,16 +113,16 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
       })
     })
 
-    describe('when submitting invalid details', () => {
+    describe('when submitting invalid details - empty organisation name', () => {
       beforeEach(async () => {
         nextRequest({
           body: {
             organisationName: '',
             addressLine1: 'McDuck Manor',
             addressCity: 'Duckburg',
-            addressPostcode: '',
-            addressCountry: 'CS'
-          }
+            addressPostcode: 'E96FB',
+            addressCountry: 'CS',
+          },
         })
         await call('post', 1)
       })
@@ -128,22 +139,18 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
         expect(mockResponse).to.have.been.calledWith(
           sinon.match.any,
           sinon.match.any,
-          'simplified-account/settings/stripe-details/organisation-details/update-organisation-details', {
+          'simplified-account/settings/stripe-details/organisation-details/update-organisation-details',
+          {
             errors: {
               summary: [
                 {
                   text: 'Enter an organisation name',
-                  href: '#organisation-name'
+                  href: '#organisation-name',
                 },
-                {
-                  text: 'Enter a postcode',
-                  href: '#address-postcode'
-                }
               ],
               formErrors: {
                 organisationName: 'Enter an organisation name',
-                addressPostcode: 'Enter a postcode'
-              }
+              },
             },
             backLink: STRIPE_DETAILS_ORG_DETAILS_INDEX_PATH,
             organisationDetails: {
@@ -151,11 +158,66 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
               addressLine1: 'McDuck Manor',
               addressLine2: '',
               addressCity: 'Duckburg',
-              addressPostcode: '',
-              addressCountry: 'CS'
+              addressPostcode: 'E96FB',
+              addressCountry: 'CS',
             },
-            countries: [{ value: 'CS', text: 'Calisota' }]
-          })
+            countries: [{ value: 'CS', text: 'Calisota' }],
+          }
+        )
+      })
+    })
+
+    describe('when submitting invalid details - empty postcode', () => {
+      beforeEach(async () => {
+        nextRequest({
+          body: {
+            organisationName: 'McDuck Manor',
+            addressLine1: 'McDuck Manor',
+            addressCity: 'Duckburg',
+            addressPostcode: '',
+            addressCountry: 'CS',
+          },
+        })
+        await call('post', 1)
+      })
+
+      it('should not submit organisation details to the stripe details service', () => {
+        expect(mockStripeDetailsService.updateStripeDetailsOrganisationNameAndAddress).to.not.have.been.called
+      })
+
+      it('should not redirect', () => {
+        expect(res.redirect).to.not.have.been.called
+      })
+
+      it('should pass context data to the response method with errors', () => {
+        expect(mockResponse).to.have.been.calledWith(
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/settings/stripe-details/organisation-details/update-organisation-details',
+          {
+            errors: {
+              summary: [
+                {
+                  text: 'Enter a postcode',
+                  href: '#address-postcode',
+                },
+              ],
+              formErrors: {
+                addressPostcode: 'Enter a postcode',
+              },
+            },
+            backLink: STRIPE_DETAILS_ORG_DETAILS_INDEX_PATH,
+            organisationDetails: {
+              organisationName: 'McDuck Manor',
+              addressLine1: 'McDuck Manor',
+              addressLine2: '',
+              addressCity: 'Duckburg',
+              addressPostcode: '',
+              addressCountry: 'CS',
+            },
+            countries: [{ value: 'CS', text: 'Calisota' }],
+          }
+        )
       })
     })
 
@@ -168,8 +230,8 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
             addressLine2: 'The Money Bin',
             addressCity: 'Duckburg',
             addressPostcode: 'SW1A 1AA',
-            addressCountry: 'CS'
-          }
+            addressCountry: 'CS',
+          },
         })
         await call('post', 1)
       })
@@ -184,8 +246,9 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
             address_line2: 'The Money Bin',
             address_city: 'Duckburg',
             address_postcode: 'SW1A 1AA',
-            address_country: 'CS'
-          })
+            address_country: 'CS',
+          }
+        )
       })
     })
   })
