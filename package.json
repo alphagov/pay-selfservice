@@ -58,7 +58,8 @@
       "send": "0.19.0"
     },
     "cross-spawn": "^7.0.5",
-    "axios": "1.15.2"
+    "axios": "1.15.2",
+    "qs": "6.15.0"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1030.0",
@@ -96,7 +97,7 @@
     "passport-custom": "^1.1.1",
     "passport-local": "^1.0.0",
     "qrcode": "1.5.3",
-    "qs": "6.14.2",
+    "qs": "6.15.0",
     "rfc822-validate": "1.0.0",
     "staticify": "5.0.0",
     "stripe": "^10.12.0",
@@ -167,8 +168,5 @@
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.28.0",
     "wick-a11y": "^2.0.1"
-  },
-  "resolutions": {
-    "axios": "1.15.2"
   }
 }
