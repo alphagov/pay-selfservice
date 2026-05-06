@@ -20,7 +20,11 @@ const organisationDetailsSchema = {
       .withMessage('Enter an organisation name')
       .bail()
       .isLength({ max: ORGANISATION_NAME_MAX_LENGTH })
-      .withMessage(`Organisation name must be ${ORGANISATION_NAME_MAX_LENGTH} characters or fewer`),
+      .withMessage(`Organisation name must be ${ORGANISATION_NAME_MAX_LENGTH} characters or fewer`)
+      .bail()
+      .unescape()
+      .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
+      .withMessage('You cannot use any of the following characters < > | in the organisation name'),
   },
   organisationAddress: {
     line1: {
@@ -30,13 +34,21 @@ const organisationDetailsSchema = {
         .withMessage('Enter a building and street')
         .bail()
         .isLength({ max: ADDRESS_FIELD_MAX_LENGTH })
-        .withMessage(`Building and street must be ${ADDRESS_FIELD_MAX_LENGTH} characters or fewer`),
+        .withMessage(`Building and street must be ${ADDRESS_FIELD_MAX_LENGTH} characters or fewer`)
+        .bail()
+        .unescape()
+        .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
+        .withMessage('You cannot use any of the following characters < > | in the address line 1'),
     },
     line2: {
       validate: body('addressLine2')
-        .trim()
+        .trim().optional({ values: 'falsy' })
         .isLength({ max: ADDRESS_FIELD_MAX_LENGTH })
-        .withMessage(`Building and street must be ${ADDRESS_FIELD_MAX_LENGTH} characters or fewer`),
+        .withMessage(`Building and street must be ${ADDRESS_FIELD_MAX_LENGTH} characters or fewer`)
+        .bail()
+        .unescape()
+        .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
+        .withMessage('You cannot use any of the following characters < > | in the address line 2'),
     },
     city: {
       validate: body('addressCity')
@@ -45,7 +57,11 @@ const organisationDetailsSchema = {
         .withMessage('Enter a town or city')
         .bail()
         .isLength({ max: ADDRESS_FIELD_MAX_LENGTH })
-        .withMessage(`Town or city must be ${ADDRESS_FIELD_MAX_LENGTH} characters or fewer`),
+        .withMessage(`Town or city must be ${ADDRESS_FIELD_MAX_LENGTH} characters or fewer`)
+        .bail()
+        .unescape()
+        .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
+        .withMessage('You cannot use any of the following characters < > | in the town or city'),
     },
     postcode: {
       validate: body('addressPostcode')

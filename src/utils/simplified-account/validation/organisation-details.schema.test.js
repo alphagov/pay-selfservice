@@ -25,7 +25,7 @@ describe('Organisation details Validation', () => {
       expect(validationResult(BASE_REQ).isEmpty()).to.be.true
     })
 
-    it('should fail when first name is empty', async () => {
+    it('should fail when organisation name is empty', async () => {
       const invalidReq = {
         body: Object.assign({}, BASE_REQ.body, { organisationName: '' })
       }
@@ -41,6 +41,51 @@ describe('Organisation details Validation', () => {
       await organisationDetailsSchema.organisationName.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
       expect(errors.array()[0].msg).to.equal('Organisation name must be 100 characters or fewer')
+    })
+
+    it('should fail with invalid characters - less than', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { organisationName: 'Name with < character'  })
+      }
+      await organisationDetailsSchema.organisationName.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in the organisation name')
+    })
+
+    it('should fail with invalid encoded characters - less than', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { organisationName: 'Name with &lt;  character'  })
+      }
+      await organisationDetailsSchema.organisationName.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in the organisation name')
+    })
+
+    it('should fail with invalid characters - greater than', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { organisationName: 'Name with > character'  })
+      }
+      await organisationDetailsSchema.organisationName.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in the organisation name')
+    })
+
+    it('should fail with invalid encoded characters - greater than', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { organisationName: 'Name with &gt; character'  })
+      }
+      await organisationDetailsSchema.organisationName.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in the organisation name')
+    })
+
+    it('should fail with invalid characters - pipe', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { organisationName: 'Name with | character' })
+      }
+      await organisationDetailsSchema.organisationName.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in the organisation name')
     })
   })
 

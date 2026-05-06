@@ -149,7 +149,7 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
             organisationDetails: {
               organisationName: '',
               addressLine1: 'McDuck Manor',
-              addressLine2: '',
+              addressLine2: undefined,
               addressCity: 'Duckburg',
               addressPostcode: '',
               addressCountry: 'CS'
