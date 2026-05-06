@@ -113,11 +113,11 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
       })
     })
 
-    describe('when submitting invalid details', () => {
+    describe('when submitting invalid details - missing postcode', () => {
       beforeEach(async () => {
         nextRequest({
           body: {
-            organisationName: '',
+            organisationName: 'McDuck Institute',
             addressLine1: 'McDuck Manor',
             addressCity: 'Duckburg',
             addressPostcode: '',
@@ -144,17 +144,66 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
             errors: {
               summary: [
                 {
-                  text: 'Enter an organisation name',
-                  href: '#organisation-name',
-                },
-                {
                   text: 'Enter a postcode',
                   href: '#address-postcode',
                 },
               ],
               formErrors: {
-                organisationName: 'Enter an organisation name',
                 addressPostcode: 'Enter a postcode',
+              },
+            },
+            backLink: STRIPE_DETAILS_ORG_DETAILS_INDEX_PATH,
+            organisationDetails: {
+              organisationName: 'McDuck Institute',
+              addressLine1: 'McDuck Manor',
+              addressLine2: undefined,
+              addressCity: 'Duckburg',
+              addressPostcode: '',
+              addressCountry: 'CS',
+            },
+            countries: [{ value: 'CS', text: 'Calisota' }],
+          }
+        )
+      })
+    })
+
+    describe('when submitting invalid details - missing organisation name', () => {
+      beforeEach(async () => {
+        nextRequest({
+          body: {
+            organisationName: '',
+            addressLine1: 'McDuck Manor',
+            addressCity: 'Duckburg',
+            addressPostcode: 'E9 6FB',
+            addressCountry: 'CS',
+          },
+        })
+        await call('post', 1)
+      })
+
+      it('should not submit organisation details to the stripe details service', () => {
+        expect(mockStripeDetailsService.updateStripeDetailsOrganisationNameAndAddress).to.not.have.been.called
+      })
+
+      it('should not redirect', () => {
+        expect(res.redirect).to.not.have.been.called
+      })
+
+      it('should pass context data to the response method with errors', () => {
+        expect(mockResponse).to.have.been.calledWith(
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/settings/stripe-details/organisation-details/update-organisation-details',
+          {
+            errors: {
+              summary: [
+                {
+                  text: 'Enter an organisation name',
+                  href: '#organisation-name',
+                },
+              ],
+              formErrors: {
+                organisationName: 'Enter an organisation name',
               },
             },
             backLink: STRIPE_DETAILS_ORG_DETAILS_INDEX_PATH,
@@ -163,7 +212,61 @@ describe('Controller: settings/stripe-details/organisation-details-update', () =
               addressLine1: 'McDuck Manor',
               addressLine2: undefined,
               addressCity: 'Duckburg',
-              addressPostcode: '',
+              addressPostcode: 'E9 6FB',
+              addressCountry: 'CS',
+            },
+            countries: [{ value: 'CS', text: 'Calisota' }],
+          }
+        )
+      })
+    })
+
+    describe('when submitting invalid details - invalid characters in organisation name', () => {
+      beforeEach(async () => {
+        nextRequest({
+          body: {
+            organisationName: 'McDuck Institute <script>alert("xss!")</script>',
+            addressLine1: 'McDuck Manor',
+            addressCity: 'Duckburg',
+            addressPostcode: 'E9 6FB',
+            addressCountry: 'CS',
+          },
+        })
+        await call('post', 1)
+      })
+
+      it('should not submit organisation details to the stripe details service', () => {
+        expect(mockStripeDetailsService.updateStripeDetailsOrganisationNameAndAddress).to.not.have.been.called
+      })
+
+      it('should not redirect', () => {
+        expect(res.redirect).to.not.have.been.called
+      })
+
+      it('should pass context data to the response method with errors', () => {
+        expect(mockResponse).to.have.been.calledWith(
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/settings/stripe-details/organisation-details/update-organisation-details',
+          {
+            errors: {
+              summary: [
+                {
+                  text: 'You cannot use any of the following characters < > | in the organisation name',
+                  href: '#organisation-name',
+                },
+              ],
+              formErrors: {
+                organisationName: 'You cannot use any of the following characters < > | in the organisation name',
+              },
+            },
+            backLink: STRIPE_DETAILS_ORG_DETAILS_INDEX_PATH,
+            organisationDetails: {
+              organisationName: 'McDuck Institute <script>alert("xss!")</script>',
+              addressLine1: 'McDuck Manor',
+              addressLine2: undefined,
+              addressCity: 'Duckburg',
+              addressPostcode: 'E9 6FB',
               addressCountry: 'CS',
             },
             countries: [{ value: 'CS', text: 'Calisota' }],

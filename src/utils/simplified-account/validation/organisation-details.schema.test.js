@@ -109,12 +109,30 @@ describe('Organisation details Validation', () => {
       expect(validationResult(BASE_REQ).isEmpty()).to.be.true
     })
 
+    it('should fail when address line 1 contains forbidden characters', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { addressLine1: '<script>alert("XSS!");</script>' }),
+      }
+      await organisationDetailsSchema.organisationAddress.line1.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in the address line 1')
+    })
+
     it('should pass with empty address line 2', async () => {
       const validReq = {
         body: Object.assign({}, BASE_REQ.body, { addressLine2: '' }),
       }
       await organisationDetailsSchema.organisationAddress.line2.validate.run(validReq)
       expect(validationResult(validReq).isEmpty()).to.be.true
+    })
+
+    it('should fail when address line 2 contains forbidden characters', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { addressLine2: '<script>alert("XSS!");</script>' }),
+      }
+      await organisationDetailsSchema.organisationAddress.line2.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in the address line 2')
     })
 
     it('should fail when city is empty', async () => {
@@ -133,6 +151,15 @@ describe('Organisation details Validation', () => {
       await organisationDetailsSchema.organisationAddress.city.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
       expect(errors.array()[0].msg).to.equal('Town or city must be 255 characters or fewer')
+    })
+
+    it('should fail when city contains forbidden characters', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { addressCity: '<script>alert("XSS!");</script>' }),
+      }
+      await organisationDetailsSchema.organisationAddress.city.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in the town or city')
     })
 
     it('should fail when postcode is empty', async () => {
