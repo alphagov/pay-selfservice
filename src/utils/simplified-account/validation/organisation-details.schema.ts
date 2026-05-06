@@ -42,7 +42,8 @@ const organisationDetailsSchema = {
     },
     line2: {
       validate: body('addressLine2')
-        .trim().optional({ values: 'falsy' })
+        .trim()
+        .optional({ values: 'falsy' })
         .isLength({ max: ADDRESS_FIELD_MAX_LENGTH })
         .withMessage(`Building and street must be ${ADDRESS_FIELD_MAX_LENGTH} characters or fewer`)
         .bail()
