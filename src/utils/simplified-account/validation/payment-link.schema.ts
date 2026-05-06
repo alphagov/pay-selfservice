@@ -14,7 +14,12 @@ const paymentLinkSchema = {
         .withMessage('Enter a title')
         .bail()
         .isLength({ max: 230 })
-        .withMessage('Title must be 230 characters or fewer'),
+        .withMessage('Title must be 230 characters or fewer')
+        .bail()
+        .unescape()
+        .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
+        .withMessage('You cannot use any of the following characters < > | in the Title')
+        .bail(),
     },
     description: {
       validate: body('description')
@@ -22,8 +27,11 @@ const paymentLinkSchema = {
         .trim()
         .isLength({ min: 0, max: 5000 })
         .withMessage('Details must be less than 5000 characters')
+        .bail()
+        .unescape()
         .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
-        .withMessage('Details contains invalid characters'),
+        .withMessage('You cannot use any of the following characters < > | in the Details')
+        .bail(),
     },
   },
   existing: {
@@ -35,6 +43,7 @@ const paymentLinkSchema = {
         .bail()
         .isLength({ max: 230 })
         .withMessage('a payment link address must be 230 characters or fewer')
+        .bail()
         .custom(async (value: string, { req }) => {
           const currentSession = PaymentLinkCreationSession.extract(req as ServiceRequest)
           if (!currentSession.serviceNamePath || !value) {
@@ -46,7 +55,8 @@ const paymentLinkSchema = {
           ).catch(() => undefined)
           return paymentLink ? Promise.reject(new Error()) : Promise.resolve()
         })
-        .withMessage('The website address is already taken'),
+        .withMessage('The website address is already taken')
+        .bail(),
     },
   },
   reference: {
@@ -57,22 +67,34 @@ const paymentLinkSchema = {
         .withMessage('Please select an option')
         .bail()
         .isIn(['custom', 'standard'])
-        .withMessage('Please select an option'),
+        .withMessage('Please select an option')
+        .bail(),
     },
     label: {
       validate: body('referenceLabel')
         .trim()
         .notEmpty()
         .withMessage('Please enter a reference')
+        .bail()
         .isLength({ max: 50 })
-        .withMessage('Reference must be be 50 characters or fewer'),
+        .withMessage('Reference must be be 50 characters or fewer')
+        .bail()
+        .unescape()
+        .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
+        .withMessage('You cannot use any of the following characters < > | in the Reference')
+        .bail(),
     },
     hint: {
       validate: body('referenceHint')
         .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 255 })
-        .withMessage('Hint text must be be 255 characters or fewer'),
+        .withMessage('Hint text must be be 255 characters or fewer')
+        .bail()
+        .unescape()
+        .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
+        .withMessage('You cannot use any of the following characters < > | in the Reference Hint')
+        .bail(),
     },
   },
   amount: {
@@ -83,7 +105,8 @@ const paymentLinkSchema = {
         .withMessage('Please select an option')
         .bail()
         .isIn(['fixed', 'variable'])
-        .withMessage('Please select an option'),
+        .withMessage('Please select an option')
+        .bail(),
     },
     price: {
       validate: demoPaymentSchema.paymentAmount.validate,
@@ -93,7 +116,12 @@ const paymentLinkSchema = {
         .optional({ values: 'falsy' })
         .trim()
         .isLength({ max: 255 })
-        .withMessage('Hint text must be be 255 characters or fewer'),
+        .withMessage('Hint text must be be 255 characters or fewer')
+        .bail()
+        .unescape()
+        .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
+        .withMessage('You cannot use any of the following characters < > | in the Amount Hint')
+        .bail(),
     },
   },
   metadata: {
@@ -113,7 +141,8 @@ const paymentLinkSchema = {
         .withMessage('Enter the cell content')
         .bail()
         .isLength({ min: 1, max: 100 })
-        .withMessage('Cell content must be 100 characters or fewer'),
+        .withMessage('Cell content must be 100 characters or fewer')
+        .bail(),
     },
   },
 }
