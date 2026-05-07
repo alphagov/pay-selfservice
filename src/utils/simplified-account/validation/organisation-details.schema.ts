@@ -38,7 +38,7 @@ const organisationDetailsSchema = {
         .bail()
         .unescape()
         .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
-        .withMessage('You cannot use any of the following characters < > | in the address line 1'),
+        .withMessage('You cannot use any of the following characters < > | in address line 1'),
     },
     line2: {
       validate: body('addressLine2')
@@ -49,7 +49,7 @@ const organisationDetailsSchema = {
         .bail()
         .unescape()
         .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
-        .withMessage('You cannot use any of the following characters < > | in the address line 2'),
+        .withMessage('You cannot use any of the following characters < > | in address line 2'),
     },
     city: {
       validate: body('addressCity')

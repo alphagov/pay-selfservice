@@ -115,9 +115,7 @@ describe('Organisation details Validation', () => {
       }
       await organisationDetailsSchema.organisationAddress.line1.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
-      expect(errors.array()[0].msg).to.equal(
-        'You cannot use any of the following characters < > | in the address line 1'
-      )
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in address line 1')
     })
 
     it('should pass with empty address line 2', async () => {
@@ -134,9 +132,7 @@ describe('Organisation details Validation', () => {
       }
       await organisationDetailsSchema.organisationAddress.line2.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
-      expect(errors.array()[0].msg).to.equal(
-        'You cannot use any of the following characters < > | in the address line 2'
-      )
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in address line 2')
     })
 
     it('should fail when city is empty', async () => {
