@@ -9,6 +9,7 @@ import { Transaction } from '@models/transaction/Transaction.class'
 import { Event } from '@models/transaction/Event.class'
 import { EventsData } from '@models/transaction/dto/Event.dto'
 import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
+import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
 
 const SERVICE_NAME = 'ledger'
 const SERVICE_BASE_URL = process.env.LEDGER_URL!

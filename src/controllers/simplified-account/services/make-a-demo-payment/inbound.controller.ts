@@ -1,4 +1,3 @@
-// @ts-expect-error js commons is not updated for typescript support yet
 import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
 import createLogger from '@utils/logger'
 import { Request, Response, NextFunction } from 'express'

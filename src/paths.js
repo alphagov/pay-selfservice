@@ -171,6 +171,8 @@ module.exports = {
       downloadCsv: '/transactions/download-csv',
     },
     allServiceTransactions: {
+      // the service ID must be known in order to get an individual transaction from Ledger
+      // without using the override to ignore the account ID restriction
       detail: '/all-services/transactions/:transactionExternalId',
       refund: '/all-services/transactions/:transactionExternalId/refund',
     },
@@ -344,12 +346,12 @@ module.exports = {
     downloadStatusFilter: '/all-service-transactions/download/:statusFilter',
     redirectDetail: '/redirect/transactions/:chargeId',
     simplifiedAccount: {
-      index: '/transactions{/:modeFilter}',
-      nosearch: '/transactions/nosearch',
-      download: '/transaction/download{/:modeFilter}',
-      filter: '/transactions/:statusFilter',
-      detail: '/transactions/:transactionId',
-      refund: '/transaction/:transactionId/refund',
+      // detail and refund paths require service ID
+      // see paths.simplifiedAccount.allServiceTransactions
+      index: '/transactions/:modeFilter',
+      download: '/transactions/:modeFilter/download',
+      timeout: '/transactions/:modeFilter/timeout',
+      nosearch: '/transactions/:modeFilter/nosearch',
     },
   },
   user: {

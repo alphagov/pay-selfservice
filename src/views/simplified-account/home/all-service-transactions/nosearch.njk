@@ -1,0 +1,110 @@
+{% extends "layout.njk" %}
+{% from "macro/system-messages.njk" import systemMessages %}
+{% from "govuk/components/accordion/macro.njk" import govukAccordion %}
+
+{% block pageTitle %}
+  {{ modeFilter | capitalize }}
+  transactions: all services - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-three-quarters" style="padding: 0">
+    <div class="govuk-button-group" style="display: flex; align-items: center;">
+      <h1 class="govuk-heading-l" style="margin-right: 20px"
+        >{{ modeFilter | capitalize }} transactions: all services</h1
+      >
+      {% if (showOppositeModeLink) %}
+        <a class="govuk-link govuk-link--no-visited-state" style="margin-top: -10px" href="{{ oppositeModeLink }}"
+          >View {{ oppositeMode }} transactions</a
+        >
+      {% endif %}
+    </div>
+
+    <form method="GET" novalidate autocomplete="off" action="{{ searchLink }}">
+      {% include "simplified-account/transactions/filter.njk" %}
+
+
+      {% set advancedFilters %}
+        {% include "simplified-account/transactions/advanced-filter.njk" %}
+      {% endset %}
+
+      {{
+        govukAccordion({
+          id: "accordion-default",
+          classes: "disable-accordion-controls",
+          items: [
+            {
+              heading: {
+              text: "Advanced search"
+            },
+              content: {
+              html: advancedFilters
+            }
+            }
+          ]
+        })
+      }}
+
+      <div class="govuk-button-group">
+        {{
+          govukButton({
+            text: "Search transactions"
+          })
+        }}
+      </div>
+    </form>
+    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+
+    {% if isBST %}
+      <details class="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text"> How times work in CSV downloads </span>
+        </summary>
+        <div class="govuk-details__text govuk-grid-column-two-thirds" style="margin-bottom: 20px">
+          The UK is on British Summertime (BST) but CSV downloads are in UTC (Coordinated Universal Time), which is the
+          same as GMT (Greenwich Mean Time).<br /><br />
+          If you want to download a day’s transactions, you can change your filters so it’s one hour ahead, for example
+          01:00:00 to 01:00:00 instead of 00:00:00 to 00:00:00.
+        </div>
+      </details>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block pageSpecificStyle %}
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.standalone.min.css"
+    integrity="sha512-D5/oUZrMTZE/y4ldsD6UOeuPR4lwjLnfNMWkjC0pffPTCVlqzcHTNvkn3dhL7C0gYifHQJAIrRTASbMvLmpEug=="
+    crossorigin="anonymous"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.14.1/jquery.timepicker.min.css"
+    integrity="sha512-WlaNl0+Upj44uL9cq9cgIWSobsjEOD1H7GK1Ny1gmwl43sO0QAUxVpvX2x+5iQz/C60J3+bM7V07aC/CNWt/Yw=="
+    crossorigin="anonymous"
+  />
+{% endblock %}
+
+{% block pageSpecificJS %}
+  <script
+    src="https://unpkg.com/jquery@3.7.1/dist/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"
+    integrity="sha512-LsnSViqQyaXpD4mBBdRYeP6sRwJiJveh2ZIbW41EBrNmKxgr/LFZIiWT6yr+nycvhvauz8c2nYMhrP80YhG7Cw=="
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.14.1/jquery.timepicker.min.js"
+    integrity="sha512-TYfUH4Mbt6NcWkJI7RS5MoMqFSkpBCChADy2EjAiFr5ckAdTjOUUjnTA3GH8PQAIa2Nz7eR/4PR9xXY3uhnu/A=="
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/datepair.js/0.4.17/jquery.datepair.min.js"
+    integrity="sha512-dY39OLVn61yY3H9Iboby9hTzf4HyP7SdTuqPvWJzBmHqu+zbVQKEUPm+HmZT5/Mh9G/UV52nQ2PfcmG/OoRQdQ=="
+    crossorigin="anonymous"
+  ></script>
+{% endblock %}

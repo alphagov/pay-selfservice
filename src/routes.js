@@ -21,7 +21,8 @@ const { enforceUserFirstFactor, redirectLoggedInUser } = require('./services/aut
 const trimUsername = require('./middleware/trim-username')
 const permission = require('./middleware/permission')
 const inviteCookieIsPresent = require('./middleware/invite-cookie-is-present')
-const validateStatusFilter = require('./middleware/validate-status-filter')
+const validateStatusFilter = require('@middleware/validate-status-filter')
+const { validateModeFilter, viewModeStrategy } = require('@middleware/view-mode-strategy.middleware')
 
 // Controllers
 const staticController = require('./controllers/static.controller')
@@ -197,6 +198,7 @@ module.exports.bind = function (app) {
     allServiceTransactions.simplifiedAccount.index,
     experimentalFeature(Features.TRANSACTIONS),
     userIsAuthorised,
+    viewModeStrategy('transactions:read'),
     homeController.allServiceTransactions.list.get
   )
 
@@ -204,7 +206,24 @@ module.exports.bind = function (app) {
     allServiceTransactions.simplifiedAccount.download,
     experimentalFeature(Features.TRANSACTIONS),
     userIsAuthorised,
+    viewModeStrategy('transactions-download:read'),
     homeController.allServiceTransactions.downloadCSV.get
+  )
+
+  app.get(
+    allServiceTransactions.simplifiedAccount.timeout,
+    experimentalFeature(Features.TRANSACTIONS),
+    validateModeFilter,
+    userIsAuthorised,
+    servicesController.allServiceTransactions.timeout.get
+  )
+
+  app.get(
+    allServiceTransactions.simplifiedAccount.nosearch,
+    experimentalFeature(Features.TRANSACTIONS),
+    userIsAuthorised,
+    viewModeStrategy('transactions:read'),
+    servicesController.allServiceTransactions.nosearch.get
   )
 
   // demo payment return route

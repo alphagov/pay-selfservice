@@ -6,6 +6,8 @@ import { Transaction } from '@models/transaction/Transaction.class'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
+  req.serviceView.showHeader = false
+
   const [transaction, events] = await Promise.all([
     getTransaction(req.params.transactionExternalId, req.account.id),
     getEvents(req.params.transactionExternalId, req.account.id),
