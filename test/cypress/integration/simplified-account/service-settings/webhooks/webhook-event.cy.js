@@ -117,10 +117,16 @@ describe('for an admin', () => {
 
   it('should show event body in detail component', () => {
     cy.get('.govuk-details summary').should('contain.text', 'Payment captured event body').click()
-    cy.get('.govuk-details div.govuk-details__text pre code').should(
-      'contain.text',
-      JSON.stringify(WEBHOOK_EVENT_RESOURCE, null, 4)
-    )
+    cy.get('.govuk-details div.govuk-details__text pre code')
+      .invoke('text')
+      .then((text) => {
+        return text.replaceAll('\t', '').replaceAll('\n', '').replaceAll(' ', '')
+      })
+      .then((trimmedText) => {
+        expect(trimmedText).to.eq(
+          JSON.stringify(WEBHOOK_EVENT_RESOURCE, null, 0).replaceAll('\n', '').replaceAll(' ', '')
+        )
+      })
   })
 
   it('should show active "Webhooks" link', () => {

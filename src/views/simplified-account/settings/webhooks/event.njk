@@ -1,5 +1,6 @@
 {% extends "../settings-layout.njk" %}
 {% from "./macro/webhook-event-status.njk" import webhookEventStatus %}
+{% from "./json/json.njk" import json %}
 
 {% set heading = eventTypes[event.event_type | upper] %}
 {% set settingsPageTitle = heading + " event details - " + webhookDescription %}
@@ -44,12 +45,7 @@
     })
   }}
 
-  {{
-    govukDetails({
-      summaryText: heading + " event body",
-      html: '<pre class="json-block"><code>' + event.resource | dump(4) + '</code></pre>'
-    })
-  }}
+  {{ json(heading + " event body", event.resource) }}
 
   <h2 class="govuk-heading-m">Delivery attempts</h2>
   {% set attemptRows = [] %}
