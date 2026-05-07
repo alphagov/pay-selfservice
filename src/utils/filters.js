@@ -7,16 +7,15 @@ const Paginator = require('../utils/paginator.js')
 const states = require('../utils/states')
 const _ = require('lodash')
 
-function validateFilters (filters) {
+function validateFilters(filters) {
   const pageSizeIsNull = !check.assigned(filters.pageSize)
   const pageSizeInRange = check.inRange(Number(filters.pageSize), 1, Paginator.MAX_PAGE_SIZE)
   const pageIsNull = !check.assigned(filters.page)
   const pageIsPositive = check.positive(Number(filters.page))
-  return (pageSizeIsNull || pageSizeInRange) &&
-    (pageIsNull || pageIsPositive)
+  return (pageSizeIsNull || pageSizeInRange) && (pageIsNull || pageIsPositive)
 }
 
-function trimFilterValues (filters) {
+function trimFilterValues(filters) {
   for (const [key, value] of Object.entries(filters)) {
     if (typeof value === 'string') {
       filters[key] = value.trim()
@@ -25,7 +24,7 @@ function trimFilterValues (filters) {
   return filters
 }
 
-function validateDateRange (filters) {
+function validateDateRange(filters) {
   const result = moment(filters.fromDate, 'DD/MM/YYYY').isAfter(moment(filters.toDate, 'DD/MM/YYYY')) ? 1 : -1
   let isInvalid = false
 
@@ -35,11 +34,11 @@ function validateDateRange (filters) {
   return {
     isInvalidDateRange: isInvalid,
     fromDateParam: filters.fromDate,
-    toDateParam: filters.toDate
+    toDateParam: filters.toDate,
   }
 }
 
-function getFilters (req) {
+function getFilters(req) {
   let filters = trimFilterValues(qs.parse(req.query))
   filters.selectedStates = []
   if (filters.state) {
@@ -54,15 +53,23 @@ function getFilters (req) {
     filters.selectedBrands = typeof filters.brand === 'string' ? [filters.brand] : filters.brand
   }
 
+  if (filters.fromDate && !moment(filters.fromDate, 'DD/MM/YYYY').isValid()) {
+    filters.fromDate = ''
+  }
+
+  if (filters.toDate && !moment(filters.toDate, 'DD/MM/YYYY').isValid()) {
+    filters.toDate = ''
+  }
+
   filters = _.omitBy(filters, _.isEmpty)
   return {
     dateRangeState: validateDateRange(filters),
     valid: validateFilters(filters),
-    result: filters
+    result: filters,
   }
 }
 
-function describeFilters (filters) {
+function describeFilters(filters) {
   let description = ''
   if (filters.fromDate) description += ` from <strong>${filters.fromDate}</strong>`
   if (filters.toDate) description += ` to <strong>${filters.toDate}</strong>`
@@ -77,7 +84,7 @@ function describeFilters (filters) {
   }
 
   if (filters.selectedBrands && filters.selectedBrands.length > 0) {
-    const brandStates = filters.selectedBrands.map(brand => {
+    const brandStates = filters.selectedBrands.map((brand) => {
       if (brand === 'jcb') {
         brand = 'JCB'
       }
@@ -92,5 +99,5 @@ function describeFilters (filters) {
 module.exports = {
   getFilters,
   describeFilters,
-  validateDateRange
+  validateDateRange,
 }
