@@ -46,12 +46,24 @@ async function post(req: ServiceRequest<EditServiceNameBody>, res: ServiceRespon
   const validations = [
     body('serviceName')
       .trim()
+      .unescape()
+      .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
+      .withMessage('You cannot use any of the following characters < > | in the service name')
+      .bail()
       .isLength({ max: SERVICE_NAME_MAX_LENGTH })
       .withMessage(`Service name must be ${SERVICE_NAME_MAX_LENGTH} characters or fewer`),
   ]
   // we don't check presence for welsh names
   if (!editCy) {
-    validations.push(body('serviceName').trim().notEmpty().withMessage('Service name is required'))
+    validations.push(
+      body('serviceName')
+      .trim()
+      .unescape()
+      .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
+      .withMessage('You cannot use any of the following characters < > | in the service name')
+      .bail()
+      .notEmpty().withMessage('Service name is required')
+    )
   }
 
   await Promise.all(validations.map((validation) => validation.run(req)))

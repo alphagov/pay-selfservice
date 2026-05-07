@@ -179,7 +179,7 @@ describe('Controller: edit service name', () => {
       })
     })
 
-    describe('when submitting an invalid service name', () => {
+    describe('when submitting an invalid service name: length', () => {
       const longName =
           'this is a really really really long service name that is longer than fifty characters'
       beforeEach(async () => {
@@ -210,6 +210,112 @@ describe('Controller: edit service name', () => {
 
         sinon.assert.match(context.editCy, false)
         sinon.assert.match(context.serviceName, longName)
+
+        const errors = context.errors as Record<string, unknown>
+        sinon.assert.match(errors.summary, sinon.match.array)
+        sinon.assert.match(errors.formErrors, sinon.match.object)
+
+        sinon.assert.match(context.backLink, formatSimplifiedAccountPathsFor(
+          paths.simplifiedAccount.settings.serviceName.index,
+          SERVICE_EXTERNAL_ID,
+          ACCOUNT_TYPE
+        ))
+        sinon.assert.match(context.submitLink, formatSimplifiedAccountPathsFor(
+          paths.simplifiedAccount.settings.serviceName.edit,
+          SERVICE_EXTERNAL_ID,
+          ACCOUNT_TYPE
+        ))
+        sinon.assert.match(context.removeCyLink, formatSimplifiedAccountPathsFor(
+          paths.simplifiedAccount.settings.serviceName.removeCy,
+          SERVICE_EXTERNAL_ID,
+          ACCOUNT_TYPE
+        ))
+      })
+    })
+
+    describe('when submitting an invalid service name: special characters', () => {
+      const invalidName = '<script>alert("xss!")</script>'
+      beforeEach(async () => {
+        mockUpdateServiceName.resetHistory()
+        mockResponse.resetHistory()
+        nextRequest({
+          body: {
+            serviceName: invalidName,
+            cy: 'false'
+          }
+        })
+        await call('post')
+      })
+
+      it('should not update the service name', () => {
+        sinon.assert.notCalled(mockUpdateServiceName)
+      })
+
+      it('should render the edit page with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+
+        const templatePath = mockResponse.args[0][2] as string
+        sinon.assert.match(templatePath, 'simplified-account/settings/service-name/edit-service-name')
+      })
+
+      it('should set error context data', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+
+        sinon.assert.match(context.editCy, false)
+        sinon.assert.match(context.serviceName, invalidName)
+
+        const errors = context.errors as Record<string, unknown>
+        sinon.assert.match(errors.summary, sinon.match.array)
+        sinon.assert.match(errors.formErrors, sinon.match.object)
+
+        sinon.assert.match(context.backLink, formatSimplifiedAccountPathsFor(
+          paths.simplifiedAccount.settings.serviceName.index,
+          SERVICE_EXTERNAL_ID,
+          ACCOUNT_TYPE
+        ))
+        sinon.assert.match(context.submitLink, formatSimplifiedAccountPathsFor(
+          paths.simplifiedAccount.settings.serviceName.edit,
+          SERVICE_EXTERNAL_ID,
+          ACCOUNT_TYPE
+        ))
+        sinon.assert.match(context.removeCyLink, formatSimplifiedAccountPathsFor(
+          paths.simplifiedAccount.settings.serviceName.removeCy,
+          SERVICE_EXTERNAL_ID,
+          ACCOUNT_TYPE
+        ))
+      })
+    })
+
+    describe('when submitting an invalid Welsh service name: special characters', () => {
+      const invalidName = '<script>alert("xss!")</script>'
+      beforeEach(async () => {
+        mockUpdateServiceName.resetHistory()
+        mockResponse.resetHistory()
+        nextRequest({
+          body: {
+            serviceName: invalidName,
+            cy: 'true'
+          }
+        })
+        await call('post')
+      })
+
+      it('should not update the service name', () => {
+        sinon.assert.notCalled(mockUpdateServiceName)
+      })
+
+      it('should render the edit page with errors', () => {
+        sinon.assert.calledOnce(mockResponse)
+
+        const templatePath = mockResponse.args[0][2] as string
+        sinon.assert.match(templatePath, 'simplified-account/settings/service-name/edit-service-name')
+      })
+
+      it('should set error context data', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+
+        sinon.assert.match(context.editCy, true)
+        sinon.assert.match(context.serviceName, invalidName)
 
         const errors = context.errors as Record<string, unknown>
         sinon.assert.match(errors.summary, sinon.match.array)
