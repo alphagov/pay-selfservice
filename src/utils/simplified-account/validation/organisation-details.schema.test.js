@@ -14,8 +14,8 @@ describe('Organisation details Validation', () => {
         addressCountry: 'GB',
         addressPostcode: 'NT1 1AA',
         telephoneNumber: '01611234567',
-        organisationUrl: 'https://www.compuglobalhypermeganet.example.com'
-      }
+        organisationUrl: 'https://www.compuglobalhypermeganet.example.com',
+      },
     }
   })
 
@@ -25,9 +25,9 @@ describe('Organisation details Validation', () => {
       expect(validationResult(BASE_REQ).isEmpty()).to.be.true
     })
 
-    it('should fail when first name is empty', async () => {
+    it('should fail when organisation name is empty', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { organisationName: '' })
+        body: Object.assign({}, BASE_REQ.body, { organisationName: '' }),
       }
       await organisationDetailsSchema.organisationName.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
@@ -36,11 +36,66 @@ describe('Organisation details Validation', () => {
 
     it('should fail when organisation name exceeds 100 characters', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { organisationName: 'a'.repeat(101) })
+        body: Object.assign({}, BASE_REQ.body, { organisationName: 'a'.repeat(101) }),
       }
       await organisationDetailsSchema.organisationName.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
       expect(errors.array()[0].msg).to.equal('Organisation name must be 100 characters or fewer')
+    })
+
+    it('should fail with invalid characters - less than', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { organisationName: 'Name with < character' }),
+      }
+      await organisationDetailsSchema.organisationName.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal(
+        'You cannot use any of the following characters < > | in the organisation name'
+      )
+    })
+
+    it('should fail with invalid encoded characters - less than', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { organisationName: 'Name with &lt;  character' }),
+      }
+      await organisationDetailsSchema.organisationName.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal(
+        'You cannot use any of the following characters < > | in the organisation name'
+      )
+    })
+
+    it('should fail with invalid characters - greater than', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { organisationName: 'Name with > character' }),
+      }
+      await organisationDetailsSchema.organisationName.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal(
+        'You cannot use any of the following characters < > | in the organisation name'
+      )
+    })
+
+    it('should fail with invalid encoded characters - greater than', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { organisationName: 'Name with &gt; character' }),
+      }
+      await organisationDetailsSchema.organisationName.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal(
+        'You cannot use any of the following characters < > | in the organisation name'
+      )
+    })
+
+    it('should fail with invalid characters - pipe', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { organisationName: 'Name with | character' }),
+      }
+      await organisationDetailsSchema.organisationName.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal(
+        'You cannot use any of the following characters < > | in the organisation name'
+      )
     })
   })
 
@@ -54,17 +109,35 @@ describe('Organisation details Validation', () => {
       expect(validationResult(BASE_REQ).isEmpty()).to.be.true
     })
 
+    it('should fail when address line 1 contains forbidden characters', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { addressLine1: '<script>alert("XSS!");</script>' }),
+      }
+      await organisationDetailsSchema.organisationAddress.line1.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in address line 1')
+    })
+
     it('should pass with empty address line 2', async () => {
       const validReq = {
-        body: Object.assign({}, BASE_REQ.body, { addressLine2: '' })
+        body: Object.assign({}, BASE_REQ.body, { addressLine2: '' }),
       }
       await organisationDetailsSchema.organisationAddress.line2.validate.run(validReq)
       expect(validationResult(validReq).isEmpty()).to.be.true
     })
 
+    it('should fail when address line 2 contains forbidden characters', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { addressLine2: '<script>alert("XSS!");</script>' }),
+      }
+      await organisationDetailsSchema.organisationAddress.line2.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in address line 2')
+    })
+
     it('should fail when city is empty', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { addressCity: '' })
+        body: Object.assign({}, BASE_REQ.body, { addressCity: '' }),
       }
       await organisationDetailsSchema.organisationAddress.city.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
@@ -73,16 +146,25 @@ describe('Organisation details Validation', () => {
 
     it('should fail when city exceeds 255 characters', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { addressCity: 'a'.repeat(256) })
+        body: Object.assign({}, BASE_REQ.body, { addressCity: 'a'.repeat(256) }),
       }
       await organisationDetailsSchema.organisationAddress.city.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
       expect(errors.array()[0].msg).to.equal('Town or city must be 255 characters or fewer')
     })
 
+    it('should fail when city contains forbidden characters', async () => {
+      const invalidReq = {
+        body: Object.assign({}, BASE_REQ.body, { addressCity: '<script>alert("XSS!");</script>' }),
+      }
+      await organisationDetailsSchema.organisationAddress.city.validate.run(invalidReq)
+      const errors = validationResult(invalidReq)
+      expect(errors.array()[0].msg).to.equal('You cannot use any of the following characters < > | in the town or city')
+    })
+
     it('should fail when postcode is empty', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { addressPostcode: '' })
+        body: Object.assign({}, BASE_REQ.body, { addressPostcode: '' }),
       }
       await organisationDetailsSchema.organisationAddress.postcode.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
@@ -91,7 +173,7 @@ describe('Organisation details Validation', () => {
 
     it('should fail with invalid postcode', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { addressPostcode: 'not a postcode' })
+        body: Object.assign({}, BASE_REQ.body, { addressPostcode: 'not a postcode' }),
       }
       await organisationDetailsSchema.organisationAddress.postcode.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
@@ -100,7 +182,7 @@ describe('Organisation details Validation', () => {
 
     it('should pass with invalid postcode if country code is not GB', async () => {
       const validReq = {
-        body: Object.assign({}, BASE_REQ.body, { addressPostcode: 'not a postcode', addressCountry: 'US' })
+        body: Object.assign({}, BASE_REQ.body, { addressPostcode: 'not a postcode', addressCountry: 'US' }),
       }
       await organisationDetailsSchema.organisationAddress.postcode.validate.run(validReq)
       expect(validationResult(validReq).isEmpty()).to.be.true
@@ -109,34 +191,34 @@ describe('Organisation details Validation', () => {
     const validPostcodes = [
       {
         postcode: 'SW1A 1AA',
-        description: 'standard London postcode'
+        description: 'standard London postcode',
       },
       {
         postcode: 'SW1A1AA',
-        description: 'standard London postcode no space'
+        description: 'standard London postcode no space',
       },
       {
         postcode: 'M2 3AA',
-        description: 'short-form postcode'
+        description: 'short-form postcode',
       },
       {
         postcode: 'SK4 4PB',
-        description: '6 character postcode'
+        description: '6 character postcode',
       },
       {
         postcode: 'W1A 0AX',
-        description: 'special case postcode'
+        description: 'special case postcode',
       },
       {
         postcode: 'GIR 0AA',
-        description: 'special case postcode'
-      }
+        description: 'special case postcode',
+      },
     ]
 
     validPostcodes.forEach(({ postcode, description }) => {
       it(`should validate ${description}: ${postcode}`, async () => {
         const validReq = {
-          body: Object.assign({}, BASE_REQ.body, { addressPostcode: postcode })
+          body: Object.assign({}, BASE_REQ.body, { addressPostcode: postcode }),
         }
         await organisationDetailsSchema.organisationAddress.postcode.validate.run(validReq)
         expect(validationResult(validReq).isEmpty()).to.be.true
@@ -146,27 +228,27 @@ describe('Organisation details Validation', () => {
     const invalidPostcodes = [
       {
         postcode: 'INVALID',
-        description: 'completely invalid format'
+        description: 'completely invalid format',
       },
       {
         postcode: '123 456',
-        description: 'numeric only'
+        description: 'numeric only',
       },
       {
         postcode: 'ABC DEF',
-        description: 'letters only'
+        description: 'letters only',
       },
 
       {
         postcode: 'SW1A 1AAA',
-        description: 'too many characters'
-      }
+        description: 'too many characters',
+      },
     ]
 
     invalidPostcodes.forEach(({ postcode, description }) => {
       it(`should reject invalid ${description}: ${postcode}`, async () => {
         const invalidReq = {
-          body: Object.assign({}, BASE_REQ.body, { addressPostcode: postcode })
+          body: Object.assign({}, BASE_REQ.body, { addressPostcode: postcode }),
         }
         await organisationDetailsSchema.organisationAddress.postcode.validate.run(invalidReq)
         const errors = validationResult(invalidReq)
@@ -177,7 +259,7 @@ describe('Organisation details Validation', () => {
 
     it('should fail when country is empty', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { addressCountry: '' })
+        body: Object.assign({}, BASE_REQ.body, { addressCountry: '' }),
       }
       await organisationDetailsSchema.organisationAddress.country.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
@@ -186,7 +268,7 @@ describe('Organisation details Validation', () => {
 
     it('should fail when country is shorter than 2 characters', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { addressCountry: 'A' })
+        body: Object.assign({}, BASE_REQ.body, { addressCountry: 'A' }),
       }
       await organisationDetailsSchema.organisationAddress.country.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
@@ -195,7 +277,7 @@ describe('Organisation details Validation', () => {
 
     it('should fail when country is longer than 2 characters', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { addressCountry: 'AAA' })
+        body: Object.assign({}, BASE_REQ.body, { addressCountry: 'AAA' }),
       }
       await organisationDetailsSchema.organisationAddress.country.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
@@ -211,7 +293,7 @@ describe('Organisation details Validation', () => {
 
     it('should fail with empty telephone number', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { telephoneNumber: '' })
+        body: Object.assign({}, BASE_REQ.body, { telephoneNumber: '' }),
       }
       await organisationDetailsSchema.telephoneNumber.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
@@ -220,11 +302,13 @@ describe('Organisation details Validation', () => {
 
     it('should fail with invalid telephone number', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { telephoneNumber: 'not a phone number' })
+        body: Object.assign({}, BASE_REQ.body, { telephoneNumber: 'not a phone number' }),
       }
       await organisationDetailsSchema.telephoneNumber.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
-      expect(errors.array()[0].msg).to.equal('Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192')
+      expect(errors.array()[0].msg).to.equal(
+        'Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192'
+      )
     })
   })
 
@@ -236,7 +320,7 @@ describe('Organisation details Validation', () => {
 
     it('should fail with an empty url', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { organisationUrl: '' })
+        body: Object.assign({}, BASE_REQ.body, { organisationUrl: '' }),
       }
       await organisationDetailsSchema.organisationUrl.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
@@ -245,7 +329,7 @@ describe('Organisation details Validation', () => {
 
     it('should fail with an invalid url', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { organisationUrl: 'not-a-valid-url' })
+        body: Object.assign({}, BASE_REQ.body, { organisationUrl: 'not-a-valid-url' }),
       }
       await organisationDetailsSchema.organisationUrl.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
@@ -254,7 +338,7 @@ describe('Organisation details Validation', () => {
 
     it('should fail with when missing a url protocol', async () => {
       const invalidReq = {
-        body: Object.assign({}, BASE_REQ.body, { organisationUrl: 'nohttp.exmaple.com' })
+        body: Object.assign({}, BASE_REQ.body, { organisationUrl: 'nohttp.exmaple.com' }),
       }
       await organisationDetailsSchema.organisationUrl.validate.run(invalidReq)
       const errors = validationResult(invalidReq)
