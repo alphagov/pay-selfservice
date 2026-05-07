@@ -57,12 +57,13 @@ async function post(req: ServiceRequest<EditServiceNameBody>, res: ServiceRespon
   if (!editCy) {
     validations.push(
       body('serviceName')
-      .trim()
-      .unescape()
-      .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
-      .withMessage('You cannot use any of the following characters < > | in the service name')
-      .bail()
-      .notEmpty().withMessage('Service name is required')
+        .trim()
+        .unescape()
+        .matches(/^[^<>|]*$/) // no '<' or '>' or '|' characters
+        .withMessage('You cannot use any of the following characters < > | in the service name')
+        .bail()
+        .notEmpty()
+        .withMessage('Service name is required')
     )
   }
 

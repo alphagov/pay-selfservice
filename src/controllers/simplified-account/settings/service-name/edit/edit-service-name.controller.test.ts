@@ -12,12 +12,7 @@ const CY_SERVICE_NAME = 'Fy Ngwasanaeth Cwl'
 const mockResponse = sinon.stub()
 const mockUpdateServiceName = sinon.stub()
 
-const {
-  req,
-  res,
-  call,
-  nextRequest
-} = new ControllerTestBuilder(
+const { req, res, call, nextRequest } = new ControllerTestBuilder(
   '@controllers/simplified-account/settings/service-name/edit/edit-service-name.controller'
 )
   .withService({
@@ -25,13 +20,13 @@ const {
     externalId: SERVICE_EXTERNAL_ID,
     serviceName: {
       en: EN_SERVICE_NAME,
-      cy: CY_SERVICE_NAME
-    }
+      cy: CY_SERVICE_NAME,
+    },
   })
   .withAccountType(ACCOUNT_TYPE)
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/service.service': { updateServiceName: mockUpdateServiceName }
+    '@services/service.service': { updateServiceName: mockUpdateServiceName },
   })
   .build()
 
@@ -48,28 +43,29 @@ describe('Controller: edit service name', () => {
       })
 
       it('should pass req, res and template path to the response method', () => {
-        sinon.assert.calledWith(
-          mockResponse,
-          req,
-          res,
-          'simplified-account/settings/service-name/edit-service-name'
-        )
+        sinon.assert.calledWith(mockResponse, req, res, 'simplified-account/settings/service-name/edit-service-name')
       })
 
       it('should set context data', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.editCy, false)
         sinon.assert.match(context.serviceName, EN_SERVICE_NAME)
-        sinon.assert.match(context.backLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.index,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
-        sinon.assert.match(context.submitLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.edit,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
+        sinon.assert.match(
+          context.backLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.index,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
+        sinon.assert.match(
+          context.submitLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.edit,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
       })
     })
 
@@ -93,21 +89,30 @@ describe('Controller: edit service name', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.editCy, true)
         sinon.assert.match(context.serviceName, CY_SERVICE_NAME)
-        sinon.assert.match(context.backLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.index,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
-        sinon.assert.match(context.submitLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.edit,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
-        sinon.assert.match(context.removeCyLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.removeCy,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
+        sinon.assert.match(
+          context.backLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.index,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
+        sinon.assert.match(
+          context.submitLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.edit,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
+        sinon.assert.match(
+          context.removeCyLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.removeCy,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
       })
     })
   })
@@ -118,19 +123,14 @@ describe('Controller: edit service name', () => {
         mockUpdateServiceName.resetHistory()
         res.redirect.resetHistory?.()
         nextRequest({
-          body: { serviceName: 'New English Name', cy: 'false' }
+          body: { serviceName: 'New English Name', cy: 'false' },
         })
         await call('post')
       })
 
       it('should update the service name', () => {
         sinon.assert.calledOnce(mockUpdateServiceName)
-        sinon.assert.calledWith(
-          mockUpdateServiceName,
-          SERVICE_EXTERNAL_ID,
-          'New English Name',
-          CY_SERVICE_NAME
-        )
+        sinon.assert.calledWith(mockUpdateServiceName, SERVICE_EXTERNAL_ID, 'New English Name', CY_SERVICE_NAME)
       })
 
       it('should redirect to the service name index page', () => {
@@ -151,19 +151,14 @@ describe('Controller: edit service name', () => {
         mockUpdateServiceName.resetHistory()
         res.redirect.resetHistory?.()
         nextRequest({
-          body: { serviceName: 'New Welsh Name', cy: 'true' }
+          body: { serviceName: 'New Welsh Name', cy: 'true' },
         })
         await call('post')
       })
 
       it('should update the service name', () => {
         sinon.assert.calledOnce(mockUpdateServiceName)
-        sinon.assert.calledWith(
-          mockUpdateServiceName,
-          SERVICE_EXTERNAL_ID,
-          EN_SERVICE_NAME,
-          'New Welsh Name'
-        )
+        sinon.assert.calledWith(mockUpdateServiceName, SERVICE_EXTERNAL_ID, EN_SERVICE_NAME, 'New Welsh Name')
       })
 
       it('should redirect to the service name index page', () => {
@@ -180,16 +175,15 @@ describe('Controller: edit service name', () => {
     })
 
     describe('when submitting an invalid service name: length', () => {
-      const longName =
-          'this is a really really really long service name that is longer than fifty characters'
+      const longName = 'this is a really really really long service name that is longer than fifty characters'
       beforeEach(async () => {
         mockUpdateServiceName.resetHistory()
         mockResponse.resetHistory()
         nextRequest({
           body: {
             serviceName: longName,
-            cy: 'false'
-          }
+            cy: 'false',
+          },
         })
         await call('post')
       })
@@ -215,21 +209,30 @@ describe('Controller: edit service name', () => {
         sinon.assert.match(errors.summary, sinon.match.array)
         sinon.assert.match(errors.formErrors, sinon.match.object)
 
-        sinon.assert.match(context.backLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.index,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
-        sinon.assert.match(context.submitLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.edit,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
-        sinon.assert.match(context.removeCyLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.removeCy,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
+        sinon.assert.match(
+          context.backLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.index,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
+        sinon.assert.match(
+          context.submitLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.edit,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
+        sinon.assert.match(
+          context.removeCyLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.removeCy,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
       })
     })
 
@@ -241,8 +244,8 @@ describe('Controller: edit service name', () => {
         nextRequest({
           body: {
             serviceName: invalidName,
-            cy: 'false'
-          }
+            cy: 'false',
+          },
         })
         await call('post')
       })
@@ -268,21 +271,30 @@ describe('Controller: edit service name', () => {
         sinon.assert.match(errors.summary, sinon.match.array)
         sinon.assert.match(errors.formErrors, sinon.match.object)
 
-        sinon.assert.match(context.backLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.index,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
-        sinon.assert.match(context.submitLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.edit,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
-        sinon.assert.match(context.removeCyLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.removeCy,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
+        sinon.assert.match(
+          context.backLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.index,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
+        sinon.assert.match(
+          context.submitLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.edit,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
+        sinon.assert.match(
+          context.removeCyLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.removeCy,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
       })
     })
 
@@ -294,8 +306,8 @@ describe('Controller: edit service name', () => {
         nextRequest({
           body: {
             serviceName: invalidName,
-            cy: 'true'
-          }
+            cy: 'true',
+          },
         })
         await call('post')
       })
@@ -321,21 +333,30 @@ describe('Controller: edit service name', () => {
         sinon.assert.match(errors.summary, sinon.match.array)
         sinon.assert.match(errors.formErrors, sinon.match.object)
 
-        sinon.assert.match(context.backLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.index,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
-        sinon.assert.match(context.submitLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.edit,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
-        sinon.assert.match(context.removeCyLink, formatSimplifiedAccountPathsFor(
-          paths.simplifiedAccount.settings.serviceName.removeCy,
-          SERVICE_EXTERNAL_ID,
-          ACCOUNT_TYPE
-        ))
+        sinon.assert.match(
+          context.backLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.index,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
+        sinon.assert.match(
+          context.submitLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.edit,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
+        sinon.assert.match(
+          context.removeCyLink,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.serviceName.removeCy,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
+        )
       })
     })
   })
