@@ -1,0 +1,15 @@
+{% macro json(title, content) %}
+  <div class="govuk-body">
+    <details class="govuk-details">
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text"> {{ title }} </span>
+      </summary>
+      <div class="govuk-details__text scrollflow">
+        <pre>
+        <code>{{ content | dump('\t') }}</code>
+        </pre
+        >
+      </div>
+    </details>
+  </div>
+{% endmacro %}
