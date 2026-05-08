@@ -333,7 +333,7 @@ module.exports.bind = function (app) {
   app.get('/.well-known/security.txt', (req, res) => res.redirect(securitytxt))
   app.get('/security.txt', (req, res) => res.redirect(securitytxt))
 
-  app.all('*', (req, res, next) => {
+  app.all('*splat', (req, res, next) => {
     if (accountUrls.isLegacyAccountsUrl(req.url)) {
       logger.info('Accounts URL utility forwarding a legacy account URL', {
         url: req.originalUrl,

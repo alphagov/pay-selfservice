@@ -344,9 +344,9 @@ module.exports = {
     downloadStatusFilter: '/all-service-transactions/download/:statusFilter',
     redirectDetail: '/redirect/transactions/:chargeId',
     simplifiedAccount: {
-      index: '/transactions/:modeFilter?',
+      index: '/transactions{/:modeFilter}',
       nosearch: '/transactions/nosearch',
-      download: '/transaction/download/:modeFilter?',
+      download: '/transaction/download{/:modeFilter}',
       filter: '/transactions/:statusFilter',
       detail: '/transactions/:transactionId',
       refund: '/transaction/:transactionId/refund',
