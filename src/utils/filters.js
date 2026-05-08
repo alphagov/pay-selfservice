@@ -53,11 +53,11 @@ function getFilters(req) {
     filters.selectedBrands = typeof filters.brand === 'string' ? [filters.brand] : filters.brand
   }
 
-  if (filters.fromDate && !moment(filters.fromDate, 'DD/MM/YYYY').isValid()) {
+  if (filters.fromDate && !moment(filters.fromDate, 'DD/MM/YYYY', true).isValid()) {
     filters.fromDate = ''
   }
 
-  if (filters.toDate && !moment(filters.toDate, 'DD/MM/YYYY').isValid()) {
+  if (filters.toDate && !moment(filters.toDate, 'DD/MM/YYYY', true).isValid()) {
     filters.toDate = ''
   }
 
