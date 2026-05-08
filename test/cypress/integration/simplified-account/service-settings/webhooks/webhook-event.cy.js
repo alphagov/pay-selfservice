@@ -22,6 +22,12 @@ const webhookEvent = {
   external_id: 'webhook-event-id-1',
   event_date: '2025-02-25T11:30:48.015Z',
   resource_id: 'webhook-event-resource-id-1',
+  resource: {
+    transaction_id: 'an-external-id',
+    includeAddress: true,
+    includeCardDetails: true,
+    billing_address_line1: 'This is <script>foo</script> bar',
+  },
 }
 
 const WEBHOOK_BASE_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/webhooks`
@@ -29,7 +35,12 @@ const WEBHOOK_DETAILS_URL = `${WEBHOOK_BASE_URL}/${WEBHOOK_ID}`
 const WEBHOOK_EVENT_URL = `${WEBHOOK_DETAILS_URL}/event/${webhookEvent.external_id}`
 const WEBHOOK_EVENT_RESOURCE_URL = `/account/a-valid-external-id/transactions/${webhookEvent.resource_id}`
 
-const WEBHOOK_EVENT_RESOURCE = transactionFixtures.validTransactionDetailsResponse({ transaction_id: 'an-external-id' })
+const WEBHOOK_EVENT_RESOURCE = transactionFixtures.validTransactionDetailsResponse({
+  transaction_id: 'an-external-id',
+  includeAddress: true,
+  includeCardDetails: true,
+  billing_address_line1: 'This is <script>foo</script> bar',
+})
 
 const attempts = [
   {
@@ -127,6 +138,10 @@ describe('for an admin', () => {
           JSON.stringify(WEBHOOK_EVENT_RESOURCE, null, 0).replaceAll('\n', '').replaceAll(' ', '')
         )
       })
+  })
+
+  it('should render malicious script safely', () => {
+    cy.get('.govuk-details div.govuk-details__text pre code').should('contain.text', 'This is <script>foo</script> bar')
   })
 
   it('should show active "Webhooks" link', () => {
