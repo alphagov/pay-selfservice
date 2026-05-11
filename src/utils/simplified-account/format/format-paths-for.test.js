@@ -18,17 +18,7 @@ describe('formattedPathFor', () => {
     })
   })
 
-  describe('with an Express 4 optional parameter (:param?)', () => {
-    it('should replace the param when a value is provided', () => {
-      expect(formattedPathFor('/transactions/:modeFilter?', 'live')).to.equal('/transactions/live')
-    })
-
-    it('should not replace a placeholder if no replacement is supplied', () => {
-      expect(formattedPathFor('/transactions/:modeFilter?')).to.equal('/transactions')
-    })
-  })
-
-  describe('with an Express 5 optional parameter ({/:param})', () => {
+  describe('with an optional parameter ({/:param})', () => {
     it('should replace the param when a value is provided', () => {
       expect(formattedPathFor('/transactions{/:modeFilter}', 'live')).to.equal('/transactions/live')
     })
