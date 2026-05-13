@@ -31,7 +31,7 @@ const searchLedger = async function searchLedger(gatewayAccountIds = [], filters
           'The search has timed out. Try searching for a specific date range or applying other filters.'
         )
       } else {
-        throw new GatewayTimeoutError.Ledger('Your request has timed out. Please apply more filters and try again.')
+        throw GatewayTimeoutError.Ledger('Your request has timed out. Please apply more filters and try again.')
       }
     } else {
       throw new Error('Unable to retrieve list of transactions or card types.')
