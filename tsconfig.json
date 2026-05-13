@@ -39,8 +39,8 @@
       "@views/*": ["src/views/*"],
       "@root/*": ["src/*"],
       "@test/*": ["test/*"]
-    },
-    /* Specify a set of entries that re-map imports to additional lookup locations. */ // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
+    } /* Specify a set of entries that re-map imports to additional lookup locations. */,
+    // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     "typeRoots": [
       "./node_modules/@types",
       "./types"
