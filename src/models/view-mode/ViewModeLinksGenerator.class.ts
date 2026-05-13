@@ -22,4 +22,8 @@ class AllServiceTransactionsLinks {
   get timeout() {
     return formatPathFor(paths.allServiceTransactions.simplifiedAccount.timeout, this.viewMode.modeName)
   }
+
+  get nosearch() {
+    return formatPathFor(paths.allServiceTransactions.simplifiedAccount.nosearch, this.viewMode.modeName)
+  }
 }

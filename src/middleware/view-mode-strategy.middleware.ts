@@ -27,6 +27,7 @@ function viewModeStrategy(permission?: string) {
     }
 
     req.viewMode = await ViewMode.forUser(req.user, req.params.modeFilter, permission)
+    res.locals.viewMode = req.viewMode
 
     return next()
   }

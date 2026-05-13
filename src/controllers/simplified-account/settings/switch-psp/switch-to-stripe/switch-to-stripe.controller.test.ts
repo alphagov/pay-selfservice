@@ -5,12 +5,10 @@ import sinon from 'sinon'
 import StripeAccountSetup from '@models/StripeAccountSetup.class'
 import { buildGetStripeAccountSetupResponse } from '@test/fixtures/stripe-account-setup.fixtures'
 import CredentialState from '@models/constants/credential-state'
-import GatewayAccountSwitchPaymentProviderRequest
-  from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'
+import GatewayAccountSwitchPaymentProviderRequest from '@models/gateway-account/GatewayAccountSwitchPaymentProviderRequest.class'
 import formatPSPName from '@utils/format-PSP-name'
 import { formatSimplifiedAccountPathsFor } from '@utils/simplified-account/format'
 import paths from '@root/paths'
-// @ts-expect-error pay js commons is not typescript ready
 import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
 
 const ACCOUNT_TYPE = 'live'
@@ -26,7 +24,7 @@ const ALL_TASKS_COMPLETED_RESPONSE = buildGetStripeAccountSetupResponse({
   government_entity_document: true,
   vat_number: true,
   director: true,
-  organisation_details: true
+  organisation_details: true,
 })
 
 const mockResponse = sinon.stub()
@@ -119,8 +117,8 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
                 .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
                 .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
                 .withState(CredentialState.CREATED)
-            }
-          }
+            },
+          },
         })
         await call('get')
       })
@@ -161,8 +159,8 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
                 .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
                 .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
                 .withState(CredentialState.ENTERED)
-            }
-          }
+            },
+          },
         })
         await call('get')
       })
@@ -197,8 +195,8 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
                 .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
                 .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
                 .withState(CredentialState.VERIFIED)
-            }
-          }
+            },
+          },
         })
         await call('get')
       })
@@ -244,8 +242,8 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
                 .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
                 .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
                 .withState(CredentialState.VERIFIED)
-            }
-          }
+            },
+          },
         })
         await call('post')
       })
@@ -254,7 +252,8 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
         const expectedRequest = new GatewayAccountSwitchPaymentProviderRequest()
           .withUserExternalId(USER_EXTERNAL_ID)
           .withGatewayAccountCredentialExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
-        sinon.assert.calledOnceWithExactly(mockGatewayAccountsService.completePaymentServiceProviderSwitch,
+        sinon.assert.calledOnceWithExactly(
+          mockGatewayAccountsService.completePaymentServiceProviderSwitch,
           SERVICE_EXTERNAL_ID,
           ACCOUNT_TYPE,
           expectedRequest
@@ -262,19 +261,22 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
       })
 
       it('should set success message', () => {
-        sinon.assert.calledOnceWithExactly(req.flash,
-          'messages', {
-            state: 'success',
-            icon: '&check;',
-            heading: `Service connected to ${formatPSPName(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)}`,
-            body: 'This service can now take payments'
-          }
-        )
+        sinon.assert.calledOnceWithExactly(req.flash, 'messages', {
+          state: 'success',
+          icon: '&check;',
+          heading: `Service connected to ${formatPSPName(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)}`,
+          body: 'This service can now take payments',
+        })
       })
 
       it('should redirect to stripe settings index', () => {
-        sinon.assert.calledOnceWithExactly(res.redirect,
-          formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.stripeDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
+        sinon.assert.calledOnceWithExactly(
+          res.redirect,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.stripeDetails.index,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
         )
       })
     })
@@ -285,18 +287,21 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
       })
 
       it('should set error message', () => {
-        sinon.assert.calledOnceWithExactly(req.flash,
-          'messages', {
-            state: 'error',
-            heading: 'There is a problem',
-            body: 'You cannot switch providers until all required tasks are completed'
-          }
-        )
+        sinon.assert.calledOnceWithExactly(req.flash, 'messages', {
+          state: 'error',
+          heading: 'There is a problem',
+          body: 'You cannot switch providers until all required tasks are completed',
+        })
       })
 
       it('should redirect to switch to stripe tasks index', () => {
-        sinon.assert.calledOnceWithExactly(res.redirect,
-          formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToStripe.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
+        sinon.assert.calledOnceWithExactly(
+          res.redirect,
+          formatSimplifiedAccountPathsFor(
+            paths.simplifiedAccount.settings.switchPsp.switchToStripe.index,
+            SERVICE_EXTERNAL_ID,
+            ACCOUNT_TYPE
+          )
         )
       })
     })
@@ -310,20 +315,18 @@ describe('Controller: settings/switch-psp/switch-to-stripe', () => {
                 .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
                 .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
                 .withState(CredentialState.VERIFIED)
-            }
-          }
+            },
+          },
         })
-        // pay js commons is not typescript ready
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-        const error = new RESTClientError('whoops')
+        const error = new RESTClientError('whoops', 'connector', 500, null, 'bad things')
         mockGatewayAccountsService.completePaymentServiceProviderSwitch.rejects(error)
         await call('post')
       })
 
       it('should call next with error', () => {
-        sinon.assert.calledOnceWithMatch(next,
-          sinon.match.instanceOf(RESTClientError)
-            .and(sinon.match.has('message', 'whoops'))
+        sinon.assert.calledOnceWithMatch(
+          next,
+          sinon.match.instanceOf(RESTClientError).and(sinon.match.has('message', 'whoops'))
         )
       })
     })
