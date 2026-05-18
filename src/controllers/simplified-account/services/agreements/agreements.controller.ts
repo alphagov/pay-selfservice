@@ -40,7 +40,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   await Promise.all(validations.map(async (validation) => validation.run(req)))
 
   const errors = validationResult(req)
-  const { page } = matchedData(req)
+  const { page, status } = matchedData<{ page: string; status?: string }>(req)
 
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)
@@ -54,7 +54,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   }
 
   const filters = {
-    ...(req.query.status && { status: req.query.status as string }),
+    ...(status && { status }),
     ...(req.query.reference && { reference: req.query.reference as string }),
   }
 
