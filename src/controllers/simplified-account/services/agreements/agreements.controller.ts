@@ -40,7 +40,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   await Promise.all(validations.map(async (validation) => validation.run(req)))
 
   const errors = validationResult(req)
-  const { page, status } = matchedData<{ page: string; status?: string }>(req);
+  const { page, status } = matchedData<{ page: string; status?: string }>(req)
 
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)
