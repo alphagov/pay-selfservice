@@ -1,6 +1,6 @@
 'use strict'
 
-const { string } = require('@pact-foundation/pact').Matchers
+const { string } = require('@pact-foundation/pact').MatchersV2
 
 function validPostChargeRequestRequest (opts = {}) {
   return {

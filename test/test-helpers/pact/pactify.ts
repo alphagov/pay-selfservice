@@ -1,4 +1,4 @@
-import { Matchers } from '@pact-foundation/pact'
+import { MatchersV2 as Matchers } from '@pact-foundation/pact'
 import { AnyTemplate } from '@pact-foundation/pact/src/dsl/matchers'
 const { somethingLike } = Matchers
 

@@ -1,6 +1,6 @@
 'use strict'
 
-const { Pact } = require('@pact-foundation/pact')
+const { PactV2: Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -25,7 +25,7 @@ describe('connector client', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -38,15 +38,17 @@ describe('connector client', function () {
     const validCardTypesResponse = cardFixtures.validCardTypesResponse()
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${CARD_TYPES_RESOURCE}`)
-          .withUponReceiving('a valid card types request')
-          .withState('Card types exist in the database')
-          .withMethod('GET')
-          .withStatusCode(200)
-          .withResponseBody(pactify(validCardTypesResponse))
-          .build()
-      ).then(() => done())
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${CARD_TYPES_RESOURCE}`)
+            .withUponReceiving('a valid card types request')
+            .withState('Card types exist in the database')
+            .withMethod('GET')
+            .withStatusCode(200)
+            .withResponseBody(pactify(validCardTypesResponse))
+            .build()
+        )
+        .then(() => done())
         .catch(done)
     })
 
@@ -54,7 +56,7 @@ describe('connector client', function () {
 
     it('should get card types successfully', function (done) {
       const getCardTypes = validCardTypesResponse
-      connectorClient.getAllCardTypes().then(response => {
+      connectorClient.getAllCardTypes().then((response) => {
         expect(response).to.deep.equal(getCardTypes)
         done()
       })

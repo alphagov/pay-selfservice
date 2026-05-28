@@ -1,13 +1,13 @@
 'use strict'
 
-const { Pact } = require('@pact-foundation/pact')
+const { PactV2: Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const Connector = require('../../../src/services/clients/connector.client').ConnectorClient
-const { string } = require('@pact-foundation/pact').Matchers
+const { string } = require('@pact-foundation/pact').MatchersV2
 
 // Constants
 let connectorClient
@@ -24,7 +24,7 @@ describe('connector client - request stripe test account', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -38,14 +38,16 @@ describe('connector client - request stripe test account', function () {
       const validResponse = {
         stripe_connect_account_id: 'acct_123',
         gateway_account_id: string('1'),
-        gateway_account_external_id: string('an-external-id')
+        gateway_account_external_id: string('an-external-id'),
       }
 
       before(() => {
         return provider.addInteraction(
           new PactInteractionBuilder(`/v1/api/service/${serviceId}/request-stripe-test-account`)
             .withUponReceiving('a request for a stripe test account')
-            .withState('a sandbox gateway account with service id a-service-id exists and stripe is configured to create a connect account with id acct_123')
+            .withState(
+              'a sandbox gateway account with service id a-service-id exists and stripe is configured to create a connect account with id acct_123'
+            )
             .withMethod('POST')
             .withStatusCode(200)
             .withResponseHeaders({ 'Content-Type': 'application/json' })
