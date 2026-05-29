@@ -1,6 +1,6 @@
 'use strict'
 
-const { Pact } = require('@pact-foundation/pact')
+const { PactV2: Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -25,7 +25,7 @@ describe('connector client - get multiple gateway accounts', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -36,23 +36,21 @@ describe('connector client - get multiple gateway accounts', function () {
 
   describe('get multiple gateway accounts - success', () => {
     const validGetGatewayAccountsResponse = gatewayAccountFixtures.validGatewayAccountsResponse({
-      accounts: [
-        { gateway_account_id: 111 },
-        { gateway_account_id: 222 }
-      ]
+      accounts: [{ gateway_account_id: 111 }, { gateway_account_id: 222 }],
     })
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(ACCOUNTS_RESOURCE)
-          .withUponReceiving('a valid get gateway accounts request')
-          .withState('gateway accounts with ids 111, 222 exist in the database')
-          .withMethod('GET')
-          .withQuery('accountIds', '111,222')
-          .withResponseBody(pactify(validGetGatewayAccountsResponse))
-          .withStatusCode(200)
-          .build()
-      )
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(ACCOUNTS_RESOURCE)
+            .withUponReceiving('a valid get gateway accounts request')
+            .withState('gateway accounts with ids 111, 222 exist in the database')
+            .withMethod('GET')
+            .withQuery('accountIds', '111,222')
+            .withResponseBody(pactify(validGetGatewayAccountsResponse))
+            .withStatusCode(200)
+            .build()
+        )
         .then(() => done())
         .catch(done)
     })
@@ -60,10 +58,12 @@ describe('connector client - get multiple gateway accounts', function () {
     afterEach(() => provider.verify())
 
     it('should get multiple gateway accounts successfully', function (done) {
-      connectorClient.getAccounts({ gatewayAccountIds: [111, 222] })
+      connectorClient
+        .getAccounts({ gatewayAccountIds: [111, 222] })
         .should.be.fulfilled.then((response) => {
           expect(response).to.deep.equal(validGetGatewayAccountsResponse)
-        }).should.notify(done)
+        })
+        .should.notify(done)
     })
   })
 })

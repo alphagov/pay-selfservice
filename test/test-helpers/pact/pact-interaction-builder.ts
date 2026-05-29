@@ -1,7 +1,7 @@
 import { InteractionObject } from '@pact-foundation/pact'
 import { HTTPMethod } from '@pact-foundation/pact/src/common/request'
 import { Headers, Query } from '@pact-foundation/pact/src/dsl/interaction'
-import { AnyTemplate, Matcher } from '@pact-foundation/pact/src/dsl/matchers'
+import { AnyTemplate, MatcherV2 as Matcher } from '@pact-foundation/pact/src/dsl/matchers'
 
 class PactInteractionBuilder {
   url: string

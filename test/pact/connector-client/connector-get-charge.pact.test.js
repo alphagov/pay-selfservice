@@ -1,6 +1,6 @@
 'use strict'
 
-const { Pact } = require('@pact-foundation/pact')
+const { PactV2: Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
@@ -23,7 +23,7 @@ const provider = new Pact({
   log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
   dir: path.resolve(process.cwd(), 'pacts'),
   spec: 2,
-  pactfileWriteMode: 'merge'
+  pactfileWriteMode: 'merge',
 })
 
 describe('connector client - get single charge by service external id and account type', () => {
@@ -42,27 +42,31 @@ describe('connector client - get single charge by service external id and accoun
       chargeId: existingChargeExternalId,
       state: {
         status: 'success',
-        finished: true
-      }
+        finished: true,
+      },
     }
     const response = chargeFixture.validGetChargeResponse(opts)
 
     before(() => {
       return provider.addInteraction(
-        new PactInteractionBuilder(`/v1/api/service/${serviceExternalId}/account/test/charges/${existingChargeExternalId}`)
+        new PactInteractionBuilder(
+          `/v1/api/service/${serviceExternalId}/account/test/charges/${existingChargeExternalId}`
+        )
           .withUponReceiving('a valid get charge request')
           .withState(defaultState)
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactify(response))
-          .build())
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
 
     it('should get a charge successfully', function () {
-      return connectorClient.getChargeByServiceExternalIdAndAccountType(serviceExternalId, 'test', existingChargeExternalId)
-        .then(charge => {
+      return connectorClient
+        .getChargeByServiceExternalIdAndAccountType(serviceExternalId, 'test', existingChargeExternalId)
+        .then((charge) => {
           expect(charge.charge_id).to.equal(existingChargeExternalId)
           expect(charge.state.status).to.equal('success')
           expect(charge.state.finished).to.equal(true)
@@ -87,8 +91,8 @@ describe('connector client - get single charge by gateway account id', () => {
       chargeId: existingChargeExternalId,
       state: {
         status: 'success',
-        finished: true
-      }
+        finished: true,
+      },
     }
     const response = chargeFixture.validGetChargeResponse(opts)
 
@@ -100,18 +104,18 @@ describe('connector client - get single charge by gateway account id', () => {
           .withMethod('GET')
           .withStatusCode(200)
           .withResponseBody(pactify(response))
-          .build())
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
 
     it('should get a charge successfully', function () {
-      return connectorClient.getCharge(existingGatewayAccountId, existingChargeExternalId)
-        .then(charge => {
-          expect(charge.charge_id).to.equal(existingChargeExternalId)
-          expect(charge.state.status).to.equal('success')
-          expect(charge.state.finished).to.equal(true)
-        })
+      return connectorClient.getCharge(existingGatewayAccountId, existingChargeExternalId).then((charge) => {
+        expect(charge.charge_id).to.equal(existingChargeExternalId)
+        expect(charge.state.status).to.equal('success')
+        expect(charge.state.finished).to.equal(true)
+      })
     })
   })
 })

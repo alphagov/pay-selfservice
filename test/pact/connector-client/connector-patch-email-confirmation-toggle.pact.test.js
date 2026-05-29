@@ -1,6 +1,6 @@
 'use strict'
 
-const { Pact } = require('@pact-foundation/pact')
+const { PactV2: Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -27,7 +27,7 @@ describe('connector client - patch email confirmation toggle', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -37,19 +37,21 @@ describe('connector client - patch email confirmation toggle', function () {
   after(() => provider.finalize())
 
   describe('patch email confirmation toggle - enabled', () => {
-    const validGatewayAccountEmailConfirmationToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(true)
+    const validGatewayAccountEmailConfirmationToggleRequest =
+      gatewayAccountFixtures.validGatewayAccountEmailConfirmationToggleRequest(true)
 
     before((done) => {
-      provider.addInteraction(
-        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/email-notification`)
-          .withUponReceiving('a valid patch email confirmation toggle (enabled) request')
-          .withState(defaultState)
-          .withMethod('PATCH')
-          .withRequestBody(validGatewayAccountEmailConfirmationToggleRequest)
-          .withStatusCode(200)
-          .withResponseHeaders({})
-          .build()
-      )
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/email-notification`)
+            .withUponReceiving('a valid patch email confirmation toggle (enabled) request')
+            .withState(defaultState)
+            .withMethod('PATCH')
+            .withRequestBody(validGatewayAccountEmailConfirmationToggleRequest)
+            .withStatusCode(200)
+            .withResponseHeaders({})
+            .build()
+        )
         .then(() => done())
         .catch(done)
     })
@@ -59,7 +61,7 @@ describe('connector client - patch email confirmation toggle', function () {
     it('should toggle successfully', function () {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
-        payload: validGatewayAccountEmailConfirmationToggleRequest
+        payload: validGatewayAccountEmailConfirmationToggleRequest,
       }
 
       return expect(connectorClient.updateConfirmationEmailEnabled(params)).to.be.fulfilled
