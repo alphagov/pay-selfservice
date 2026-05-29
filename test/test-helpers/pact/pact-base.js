@@ -1,6 +1,6 @@
 const _ = require('lodash')
-const { Matchers } = require('@pact-foundation/pact')
-const { somethingLike, eachLike, term } = Matchers
+const { MatchersV2 } = require('@pact-foundation/pact')
+const { somethingLike, eachLike, term } = MatchersV2
 
 module.exports = function (options = {}) {
   const pactifySimpleArray = (arr) => {
@@ -21,7 +21,7 @@ module.exports = function (options = {}) {
 
   const pactify = (object) => {
     if (object instanceof Array) {
-      return object.map(o => pactify(o))
+      return object.map((o) => pactify(o))
     }
     const pactified = {}
     _.forIn(object, (value, key) => {
@@ -29,8 +29,8 @@ module.exports = function (options = {}) {
         pactified[key] = null
       } else if (options.array && options.array.indexOf(key) !== -1) {
         let length
-        if (options.length && options.length.find(lengthKey => lengthKey.key === key)) {
-          length = options.length.find(lengthKey => lengthKey.key === key).length
+        if (options.length && options.length.find((lengthKey) => lengthKey.key === key)) {
+          length = options.length.find((lengthKey) => lengthKey.key === key).length
         } else {
           length = value.length
         }
@@ -49,7 +49,7 @@ module.exports = function (options = {}) {
   const withPactified = (payload) => {
     return {
       getPlain: () => payload,
-      getPactified: () => pactify(payload)
+      getPactified: () => pactify(payload),
     }
   }
 
@@ -62,6 +62,6 @@ module.exports = function (options = {}) {
     pactifySimpleArray,
     pactifyNestedArray,
     pactify,
-    withPactified
+    withPactified,
   }
 }
