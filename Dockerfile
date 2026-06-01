@@ -13,6 +13,7 @@ FROM base AS builder
 COPY . .
 RUN npm ci --quiet
 RUN npm run compile
+RUN npm install @pact-foundation/pact-core-linux-x64-musl@19.2.0 --no-save
 
 FROM base AS final
 
