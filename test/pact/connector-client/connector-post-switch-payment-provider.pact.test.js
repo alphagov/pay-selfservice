@@ -1,6 +1,6 @@
 'use strict'
 
-const { Pact } = require('@pact-foundation/pact')
+const { PactV2: Pact } = require('@pact-foundation/pact')
 const path = require('path')
 
 const PactInteractionBuilder = require('../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
@@ -18,7 +18,7 @@ describe('connector client - post switch payment provider', () => {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -30,29 +30,30 @@ describe('connector client - post switch payment provider', () => {
   describe('when a post to switch payment provider is made', () => {
     const requestPayload = {
       userExternalId: 'a-user-external-id',
-      gatewayAccountCredentialExternalId: 'switchto1234'
+      gatewayAccountCredentialExternalId: 'switchto1234',
     }
     const request = gatewayAccountFixtures.validPostAccountSwitchPSPRequest(requestPayload)
 
     before(() => {
       return provider.addInteraction(
         new PactInteractionBuilder(`/v1/api/accounts/${existingGatewayAccountId}/switch-psp`)
-          .withState(`a Worldpay gateway account with id ${existingGatewayAccountId} with two credentials ready to be switched`)
+          .withState(
+            `a Worldpay gateway account with id ${existingGatewayAccountId} with two credentials ready to be switched`
+          )
           .withUponReceiving('a request to switch payment provider')
           .withMethod('POST')
           .withRequestHeaders({ 'Content-Type': 'application/json' })
           .withRequestBody(request)
           .withStatusCode(200)
           .withResponseHeaders({})
-          .build())
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
 
-    it('should switch payment provider', done => {
-      connectorClient.postAccountSwitchPSP(existingGatewayAccountId, request)
-        .should.be.fulfilled
-        .notify(done)
+    it('should switch payment provider', (done) => {
+      connectorClient.postAccountSwitchPSP(existingGatewayAccountId, request).should.be.fulfilled.notify(done)
     })
   })
 })
