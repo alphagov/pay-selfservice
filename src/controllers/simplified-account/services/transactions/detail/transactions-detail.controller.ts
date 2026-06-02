@@ -6,6 +6,7 @@ import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { Transaction } from '@models/transaction/Transaction.class'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
+import { TimeConstants } from '@utils/time/time-constants'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const [transaction, events] = await Promise.all([
@@ -19,6 +20,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     disputes = await getDisputes(req.params.transactionExternalId, req.account.id)
     disputes.forEach((dispute) => dispute._locals.links.bind(req.service.externalId, req.account.type))
   }
+
+  const isOverSevenYearsOld = transaction.createdDate < TimeConstants.SEVEN_YEARS_AGO
 
   // sort by most recent first
   events.sort((eventA, eventB) => (eventA.timestamp > eventB.timestamp ? -1 : 1))
@@ -39,6 +42,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       req.params.transactionExternalId
     ),
     messages: res.locals.flash?.messages ?? [],
+    isOverSevenYearsOld,
   })
 }
 

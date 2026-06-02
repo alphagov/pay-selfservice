@@ -10,6 +10,14 @@
 {% block serviceContent %}
   <h1 class="govuk-heading-l govuk-!-margin-top-6">Transaction details</h1>
 
+  {% if isOverSevenYearsOld %}
+    {{
+      govukInsetText({
+      text: "Some personal information has been redacted because this transaction is more than 7 years old."
+        })
+    }}
+  {% endif %}
+
   {% if not transaction.isFullyRefunded() and transaction.isRefundable() and permissions['refunds_create'] %}
     {{
       govukButton({
