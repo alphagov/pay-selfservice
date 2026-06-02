@@ -608,7 +608,7 @@ describe('Transaction details page', () => {
     cy.contains('a.govuk-button', 'Refund payment').should('not.exist')
   })
 
-  it('should display inset text if transaction if over 7 years old', () => {
+  it('should display inset text if transaction is over 7 years old', () => {
     const transactionCreatedTimestamp = DateTime.now().minus({ years: 7, months: 1 })
     const oldTransaction = new TransactionFixture({ createdDate: transactionCreatedTimestamp })
 
