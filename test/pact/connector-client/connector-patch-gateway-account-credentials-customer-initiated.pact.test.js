@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const { expect } = require('chai')
 const path = require('path')
 
@@ -22,7 +22,7 @@ describe('connector client - patch gateway account credentials for recurring cus
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -35,33 +35,29 @@ describe('connector client - patch gateway account credentials for recurring cus
     const credentialsInRequest = {
       username: 'a-username',
       password: 'a-password', // pragma: allowlist secret
-      merchant_code: 'a-merchant-code',
+      merchant_code: 'a-merchant-code'
     }
     const credentialsInResponse = {
       recurring_customer_initiated: {
         username: 'a-username',
-        merchant_code: 'a-merchant-code',
-      },
+        merchant_code: 'a-merchant-code'
+      }
     }
     const userExternalId = 'a-user-external-id'
     const request = gatewayAccountFixtures.validUpdateGatewayAccountCredentialsRequest({
       credentials: credentialsInRequest,
       path: worldpayMerchantDetailOperations.RECURRING_CUSTOMER_INITIATED.patch,
-      userExternalId,
+      userExternalId
     })
     const response = gatewayAccountFixtures.validGatewayAccountCredentialsResponse({
       credentials: credentialsInResponse,
-      lastUpdatedByUserExternalId: userExternalId,
+      lastUpdatedByUserExternalId: userExternalId
     })
 
     before(() => {
       return provider.addInteraction(
-        new PactInteractionBuilder(
-          `/v1/api/accounts/${existingGatewayAccountId}/credentials/${existingGatewayAccountCredentialsId}`
-        )
-          .withState(
-            `a Worldpay gateway account with id ${existingGatewayAccountId} with gateway account credentials with id ${existingGatewayAccountCredentialsId}`
-          )
+        new PactInteractionBuilder(`/v1/api/accounts/${existingGatewayAccountId}/credentials/${existingGatewayAccountCredentialsId}`)
+          .withState(`a Worldpay gateway account with id ${existingGatewayAccountId} with gateway account credentials with id ${existingGatewayAccountCredentialsId}`)
           .withUponReceiving('a request to update credentials map for recurring customer initiated credentials')
           .withMethod('PATCH')
           .withRequestHeaders({ 'Content-Type': 'application/json' })
@@ -69,8 +65,7 @@ describe('connector client - patch gateway account credentials for recurring cus
           .withStatusCode(200)
           .withResponseHeaders({ 'Content-Type': 'application/json' })
           .withResponseBody(pactify(response))
-          .build()
-      )
+          .build())
     })
 
     afterEach(() => provider.verify())
@@ -81,7 +76,7 @@ describe('connector client - patch gateway account credentials for recurring cus
         gatewayAccountCredentialsId: existingGatewayAccountCredentialsId,
         credentials: credentialsInRequest,
         path: worldpayMerchantDetailOperations.RECURRING_CUSTOMER_INITIATED.patch,
-        userExternalId,
+        userExternalId
       })
       expect(connectorResponse.credentials).to.deep.equal(credentialsInResponse)
     })

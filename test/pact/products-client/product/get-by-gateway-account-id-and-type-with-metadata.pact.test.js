@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
@@ -13,11 +13,11 @@ const { pactifySimpleArray } = require('../../../test-helpers/pact/pactifier').d
 const API_RESOURCE = '/v1/api'
 let result, productsClient
 
-function getProductsClient(baseUrl) {
+function getProductsClient (baseUrl) {
   return proxyquire('@services/clients/products.client', {
     '@root/config': {
-      PRODUCTS_URL: baseUrl,
-    },
+      PRODUCTS_URL: baseUrl
+    }
   })
 }
 
@@ -28,7 +28,7 @@ describe('products client - find a product with metadata associated with a parti
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -41,14 +41,9 @@ describe('products client - find a product with metadata associated with a parti
     const gatewayAccountId = 42
     const productType = 'ADHOC'
     const response = [
-      productFixtures.validProductResponse({
-        gateway_account_id: gatewayAccountId,
-        price: 1000,
-        type: productType,
-        metadata: { key: 'value' },
-      }),
+      productFixtures.validProductResponse({ gateway_account_id: gatewayAccountId, price: 1000, type: productType, metadata: { key: 'value' } })
     ]
-    before((done) => {
+    before(done => {
       const interaction = new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products`)
         .withQuery('type', productType)
         .withUponReceiving('a valid get product with metadata by gateway account id and type request')
@@ -57,10 +52,9 @@ describe('products client - find a product with metadata associated with a parti
         .withStatusCode(200)
         .withResponseBody(pactifySimpleArray(response))
         .build()
-      provider
-        .addInteraction(interaction)
+      provider.addInteraction(interaction)
         .then(() => productsClient.product.getByGatewayAccountIdAndType(gatewayAccountId, productType))
-        .then((res) => {
+        .then(res => {
           result = res
           done()
         })
@@ -80,19 +74,11 @@ describe('products client - find a product with metadata associated with a parti
         expect(product).to.have.property('links')
         expect(Object.keys(product.links).length).to.equal(2)
         expect(product.links).to.have.property('self')
-        expect(product.links.self)
-          .to.have.property('method')
-          .to.equal(response[index]._links.find((link) => link.rel === 'self').method)
-        expect(product.links.self)
-          .to.have.property('href')
-          .to.equal(response[index]._links.find((link) => link.rel === 'self').href)
+        expect(product.links.self).to.have.property('method').to.equal(response[index]._links.find(link => link.rel === 'self').method)
+        expect(product.links.self).to.have.property('href').to.equal(response[index]._links.find(link => link.rel === 'self').href)
         expect(product.links).to.have.property('pay')
-        expect(product.links.pay)
-          .to.have.property('method')
-          .to.equal(response[index]._links.find((link) => link.rel === 'pay').method)
-        expect(product.links.pay)
-          .to.have.property('href')
-          .to.equal(response[index]._links.find((link) => link.rel === 'pay').href)
+        expect(product.links.pay).to.have.property('method').to.equal(response[index]._links.find(link => link.rel === 'pay').method)
+        expect(product.links.pay).to.have.property('href').to.equal(response[index]._links.find(link => link.rel === 'pay').href)
         expect(product.metadata).to.exist.and.to.have.property('key').equal(response[index].metadata.key)
       })
     })

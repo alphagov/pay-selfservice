@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -26,7 +26,7 @@ describe('adminusers client - patch collect billing address toggle', function ()
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -36,26 +36,23 @@ describe('adminusers client - patch collect billing address toggle', function ()
   after(() => provider.finalize())
 
   describe('patch collect billing address toggle - disabled', () => {
-    const validUpdateCollectBillingAddressRequest = serviceFixtures.validCollectBillingAddressToggleRequest({
-      enabled: false,
-    })
+    const validUpdateCollectBillingAddressRequest = serviceFixtures.validCollectBillingAddressToggleRequest({ enabled: false })
     const validUpdateCollectBillingAddressResponse = serviceFixtures.validServiceResponse({
       external_id: serviceExternalId,
-      collect_billing_address: false,
+      collect_billing_address: false
     })
 
     before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
-            .withUponReceiving('a valid patch collect billing address toggle (disabled) request')
-            .withState(`a service exists with external id ${serviceExternalId}`)
-            .withMethod('PATCH')
-            .withRequestBody(validUpdateCollectBillingAddressRequest)
-            .withStatusCode(200)
-            .withResponseBody(pactify(validUpdateCollectBillingAddressResponse))
-            .build()
-        )
+      provider.addInteraction(
+        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
+          .withUponReceiving('a valid patch collect billing address toggle (disabled) request')
+          .withState(`a service exists with external id ${serviceExternalId}`)
+          .withMethod('PATCH')
+          .withRequestBody(validUpdateCollectBillingAddressRequest)
+          .withStatusCode(200)
+          .withResponseBody(pactify(validUpdateCollectBillingAddressResponse))
+          .build()
+      )
         .then(() => done())
         .catch(done)
     })
@@ -63,13 +60,11 @@ describe('adminusers client - patch collect billing address toggle', function ()
     afterEach(() => provider.verify())
 
     it('should toggle successfully', function (done) {
-      adminUsersClient
-        .updateCollectBillingAddress(serviceExternalId, false)
-        .should.be.fulfilled.then((service) => {
+      adminUsersClient.updateCollectBillingAddress(serviceExternalId, false)
+        .should.be.fulfilled.then(service => {
           expect(service.external_id).to.equal(serviceExternalId)
           expect(service.collect_billing_address).to.equal(false)
-        })
-        .should.notify(done)
+        }).should.notify(done)
     })
   })
 })

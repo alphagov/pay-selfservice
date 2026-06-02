@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 
 const path = require('path')
 
@@ -10,7 +10,7 @@ const pactProvider = new Pact({
   log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
   dir: path.resolve(process.cwd(), 'pacts'),
   spec: 2,
-  pactfileWriteMode: 'merge',
+  pactfileWriteMode: 'merge'
 })
 module.exports = {
   addInteraction: function (pact) {
@@ -24,5 +24,5 @@ module.exports = {
   },
   finalize: function () {
     return pactProvider.finalize()
-  },
+  }
 }

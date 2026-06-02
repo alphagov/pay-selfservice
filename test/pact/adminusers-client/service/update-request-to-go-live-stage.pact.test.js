@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -26,7 +26,7 @@ describe('adminusers client - patch request to go live stage', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -40,21 +40,20 @@ describe('adminusers client - patch request to go live stage', function () {
     const validUpdateRequestToGoLiveRequest = serviceFixtures.validUpdateRequestToGoLiveRequest(value)
     const validUpdateRequestToGoLiveResponse = serviceFixtures.validServiceResponse({
       external_id: serviceExternalId,
-      current_go_live_stage: 'ENTERED_ORGANISATION_NAME',
+      current_go_live_stage: 'ENTERED_ORGANISATION_NAME'
     })
 
     before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
-            .withUponReceiving('a valid patch current go live stage request')
-            .withState(`a service exists with external id ${serviceExternalId}`)
-            .withMethod('PATCH')
-            .withRequestBody(validUpdateRequestToGoLiveRequest)
-            .withStatusCode(200)
-            .withResponseBody(pactify(validUpdateRequestToGoLiveResponse))
-            .build()
-        )
+      provider.addInteraction(
+        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}`)
+          .withUponReceiving('a valid patch current go live stage request')
+          .withState(`a service exists with external id ${serviceExternalId}`)
+          .withMethod('PATCH')
+          .withRequestBody(validUpdateRequestToGoLiveRequest)
+          .withStatusCode(200)
+          .withResponseBody(pactify(validUpdateRequestToGoLiveResponse))
+          .build()
+      )
         .then(() => done())
         .catch(done)
     })
@@ -62,13 +61,11 @@ describe('adminusers client - patch request to go live stage', function () {
     afterEach(() => provider.verify())
 
     it('should update successfully', function (done) {
-      adminUsersClient
-        .updateCurrentGoLiveStage(serviceExternalId, 'ENTERED_ORGANISATION_NAME')
-        .should.be.fulfilled.then((service) => {
+      adminUsersClient.updateCurrentGoLiveStage(serviceExternalId, 'ENTERED_ORGANISATION_NAME')
+        .should.be.fulfilled.then(service => {
           expect(service.externalId).to.equal(serviceExternalId)
           expect(service.currentGoLiveStage).to.equal('ENTERED_ORGANISATION_NAME')
-        })
-        .should.notify(done)
+        }).should.notify(done)
     })
   })
 })

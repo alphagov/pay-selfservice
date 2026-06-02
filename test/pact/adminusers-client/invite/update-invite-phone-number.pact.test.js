@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -21,7 +21,7 @@ describe('adminusers client - update invite phone number', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -37,17 +37,15 @@ describe('adminusers client - update invite phone number', function () {
     const validUpdateInvitePhoneNumberRequest = inviteFixtures.validUpdateInvitePhoneNumberRequest(phoneNumber)
 
     before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`/v1/api/invites/${inviteCode}`)
-            .withState('a valid self-signup invite exists with invite code an-invite-code')
-            .withUponReceiving('a valid request to update the phone number for an invite')
-            .withMethod('PATCH')
-            .withRequestBody(validUpdateInvitePhoneNumberRequest)
-            .withStatusCode(200)
-            .build()
-        )
-        .then(() => done())
+      provider.addInteraction(
+        new PactInteractionBuilder(`/v1/api/invites/${inviteCode}`)
+          .withState('a valid self-signup invite exists with invite code an-invite-code')
+          .withUponReceiving('a valid request to update the phone number for an invite')
+          .withMethod('PATCH')
+          .withRequestBody(validUpdateInvitePhoneNumberRequest)
+          .withStatusCode(200)
+          .build()
+      ).then(() => done())
         .catch(done)
     })
 

@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -24,7 +24,7 @@ describe('connector client - create gateway account', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -37,15 +37,14 @@ describe('connector client - create gateway account', function () {
     const validCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()
 
     before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(ACCOUNTS_RESOURCE)
-            .withUponReceiving('a valid create gateway account request')
-            .withMethod('POST')
-            .withRequestBody(validCreateGatewayAccountRequest)
-            .withStatusCode(201)
-            .build()
-        )
+      provider.addInteraction(
+        new PactInteractionBuilder(ACCOUNTS_RESOURCE)
+          .withUponReceiving('a valid create gateway account request')
+          .withMethod('POST')
+          .withRequestBody(validCreateGatewayAccountRequest)
+          .withStatusCode(201)
+          .build()
+      )
         .then(() => done())
         .catch(done)
     })
@@ -53,17 +52,15 @@ describe('connector client - create gateway account', function () {
     afterEach(() => provider.verify())
 
     it('should submit create gateway account successfully', function (done) {
-      connectorClient
-        .createGatewayAccount(
-          validCreateGatewayAccountRequest.payment_provider,
-          validCreateGatewayAccountRequest.type,
-          validCreateGatewayAccountRequest.service_name,
-          validCreateGatewayAccountRequest.analytics_id,
-          validCreateGatewayAccountRequest.service_id,
-          validCreateGatewayAccountRequest.send_payer_email_to_gateway,
-          validCreateGatewayAccountRequest.send_payer_ip_address_to_gateway
-        )
-        .should.be.fulfilled.should.notify(done)
+      connectorClient.createGatewayAccount(
+        validCreateGatewayAccountRequest.payment_provider,
+        validCreateGatewayAccountRequest.type,
+        validCreateGatewayAccountRequest.service_name,
+        validCreateGatewayAccountRequest.analytics_id,
+        validCreateGatewayAccountRequest.service_id,
+        validCreateGatewayAccountRequest.send_payer_email_to_gateway,
+        validCreateGatewayAccountRequest.send_payer_ip_address_to_gateway
+      ).should.be.fulfilled.should.notify(done)
     })
   })
 
@@ -71,20 +68,19 @@ describe('connector client - create gateway account', function () {
     const invalidCreateGatewayAccountRequest = gatewayAccountFixtures.validCreateGatewayAccountRequest()
     invalidCreateGatewayAccountRequest.payment_provider = 'non-existent-payment-provider'
     const errorResponse = {
-      message: ['Unsupported payment provider value.'],
+      message: ['Unsupported payment provider value.']
     }
 
     before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(ACCOUNTS_RESOURCE)
-            .withUponReceiving('an invalid create gateway account request')
-            .withMethod('POST')
-            .withRequestBody(invalidCreateGatewayAccountRequest)
-            .withStatusCode(422)
-            .withResponseBody(errorResponse)
-            .build()
-        )
+      provider.addInteraction(
+        new PactInteractionBuilder(ACCOUNTS_RESOURCE)
+          .withUponReceiving('an invalid create gateway account request')
+          .withMethod('POST')
+          .withRequestBody(invalidCreateGatewayAccountRequest)
+          .withStatusCode(422)
+          .withResponseBody(errorResponse)
+          .build()
+      )
         .then(() => done())
         .catch(done)
     })
@@ -92,21 +88,18 @@ describe('connector client - create gateway account', function () {
     afterEach(() => provider.verify())
 
     it('should return 422 for unsupported payment provider', function (done) {
-      connectorClient
-        .createGatewayAccount(
-          invalidCreateGatewayAccountRequest.payment_provider,
-          invalidCreateGatewayAccountRequest.type,
-          invalidCreateGatewayAccountRequest.service_name,
-          invalidCreateGatewayAccountRequest.analytics_id,
-          invalidCreateGatewayAccountRequest.service_id,
-          invalidCreateGatewayAccountRequest.send_payer_email_to_gateway,
-          invalidCreateGatewayAccountRequest.send_payer_ip_address_to_gateway
-        )
-        .should.be.rejected.then(function (response) {
-          expect(response.errorCode).to.equal(422)
-          expect(response.message).to.equal(errorResponse.message[0])
-        })
-        .should.notify(done)
+      connectorClient.createGatewayAccount(
+        invalidCreateGatewayAccountRequest.payment_provider,
+        invalidCreateGatewayAccountRequest.type,
+        invalidCreateGatewayAccountRequest.service_name,
+        invalidCreateGatewayAccountRequest.analytics_id,
+        invalidCreateGatewayAccountRequest.service_id,
+        invalidCreateGatewayAccountRequest.send_payer_email_to_gateway,
+        invalidCreateGatewayAccountRequest.send_payer_ip_address_to_gateway
+      ).should.be.rejected.then(function (response) {
+        expect(response.errorCode).to.equal(422)
+        expect(response.message).to.equal(errorResponse.message[0])
+      }).should.notify(done)
     })
   })
 })

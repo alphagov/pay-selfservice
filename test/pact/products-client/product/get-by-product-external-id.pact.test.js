@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
@@ -13,11 +13,11 @@ const { pactify } = require('../../../test-helpers/pact/pactifier').defaultPacti
 const API_RESOURCE = '/v1/api'
 let result, productsClient
 
-function getProductsClient(baseUrl) {
+function getProductsClient (baseUrl) {
   return proxyquire('@services/clients/products.client', {
     '@root/config': {
-      PRODUCTS_URL: baseUrl,
-    },
+      PRODUCTS_URL: baseUrl
+    }
   })
 }
 
@@ -28,7 +28,7 @@ describe('products client - find a product by its external id', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -47,26 +47,21 @@ describe('products client - find a product by its external id', function () {
       name: 'A Product Name',
       description: 'About this product',
       return_url: 'https://example.gov.uk',
-      type: 'DEMO',
+      type: 'DEMO'
     })
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(
-            `${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`
-          )
-            .withUponReceiving('a valid get product request by external id')
-            .withMethod('GET')
-            .withState('a product with external id existing-id and gateway account id 42 exists')
-            .withStatusCode(200)
-            .withResponseBody(pactify(response))
-            .build()
-        )
-        .then(() =>
-          productsClient.product.getByProductExternalIdAndGatewayAccountId(gatewayAccountId, productExternalId)
-        )
-        .then((res) => {
+    before(done => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`)
+          .withUponReceiving('a valid get product request by external id')
+          .withMethod('GET')
+          .withState('a product with external id existing-id and gateway account id 42 exists')
+          .withStatusCode(200)
+          .withResponseBody(pactify(response))
+          .build()
+      )
+        .then(() => productsClient.product.getByProductExternalIdAndGatewayAccountId(gatewayAccountId, productExternalId))
+        .then(res => {
           result = res
           done()
         })
@@ -85,41 +80,27 @@ describe('products client - find a product by its external id', function () {
       expect(result).to.have.property('links')
       expect(Object.keys(result.links).length).to.equal(2)
       expect(result.links).to.have.property('self')
-      expect(result.links.self)
-        .to.have.property('method')
-        .to.equal(response._links.find((link) => link.rel === 'self').method)
-      expect(result.links.self)
-        .to.have.property('href')
-        .to.equal(response._links.find((link) => link.rel === 'self').href)
+      expect(result.links.self).to.have.property('method').to.equal(response._links.find(link => link.rel === 'self').method)
+      expect(result.links.self).to.have.property('href').to.equal(response._links.find(link => link.rel === 'self').href)
       expect(result.links).to.have.property('pay')
-      expect(result.links.pay)
-        .to.have.property('method')
-        .to.equal(response._links.find((link) => link.rel === 'pay').method)
-      expect(result.links.pay)
-        .to.have.property('href')
-        .to.equal(response._links.find((link) => link.rel === 'pay').href)
+      expect(result.links.pay).to.have.property('method').to.equal(response._links.find(link => link.rel === 'pay').method)
+      expect(result.links.pay).to.have.property('href').to.equal(response._links.find(link => link.rel === 'pay').href)
     })
   })
 
   describe('when a product is not found', () => {
-    before((done) => {
+    before(done => {
       const gatewayAccountId = 999
       const productExternalId = 'non-existing-id'
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(
-            `${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`
-          )
-            .withUponReceiving('a valid find product request with non existing id')
-            .withMethod('GET')
-            .withStatusCode(404)
-            .withResponseHeaders({})
-            .build()
-        )
-        .then(
-          () => productsClient.product.getByProductExternalIdAndGatewayAccountId(gatewayAccountId, productExternalId),
-          done
-        )
+      provider.addInteraction(
+        new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`)
+          .withUponReceiving('a valid find product request with non existing id')
+          .withMethod('GET')
+          .withStatusCode(404)
+          .withResponseHeaders({})
+          .build()
+      )
+        .then(() => productsClient.product.getByProductExternalIdAndGatewayAccountId(gatewayAccountId, productExternalId), done)
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {
           result = err

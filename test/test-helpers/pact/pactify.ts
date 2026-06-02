@@ -1,6 +1,6 @@
-import { MatchersV2 } from '@pact-foundation/pact'
+import { Matchers } from '@pact-foundation/pact'
 import { AnyTemplate } from '@pact-foundation/pact/src/dsl/matchers'
-const { somethingLike } = MatchersV2
+const { somethingLike } = Matchers
 
 type Pactified = AnyTemplate
 

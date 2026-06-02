@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -27,7 +27,7 @@ describe('connector client - patch google pay toggle (enabled) request', () => {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -37,7 +37,8 @@ describe('connector client - patch google pay toggle (enabled) request', () => {
   after(() => provider.finalize())
 
   describe('google pay toggle - supported payment provider request', () => {
-    const googlePayToggleSupportedPaymentProviderState = `a gateway account supporting digital wallet with external id ${existingGatewayAccountId} exists in the database`
+    const googlePayToggleSupportedPaymentProviderState =
+      `a gateway account supporting digital wallet with external id ${existingGatewayAccountId} exists in the database`
 
     before(() => {
       return provider.addInteraction(
@@ -48,14 +49,15 @@ describe('connector client - patch google pay toggle (enabled) request', () => {
           .withRequestBody(request)
           .withStatusCode(200)
           .withResponseHeaders({})
-          .build()
-      )
+          .build())
     })
 
     afterEach(() => provider.verify())
 
-    it('should toggle successfully', (done) => {
-      connectorClient.toggleGooglePay(existingGatewayAccountId, true, null).should.be.fulfilled.notify(done)
+    it('should toggle successfully', done => {
+      connectorClient.toggleGooglePay(existingGatewayAccountId, true, null)
+        .should.be.fulfilled
+        .notify(done)
     })
   })
 })

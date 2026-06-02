@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -27,7 +27,7 @@ describe('connector client - patch email refund toggle', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -37,21 +37,19 @@ describe('connector client - patch email refund toggle', function () {
   after(() => provider.finalize())
 
   describe('patch email refund toggle - enabled', () => {
-    const validGatewayAccountEmailRefundToggleRequest =
-      gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(true)
+    const validGatewayAccountEmailRefundToggleRequest = gatewayAccountFixtures.validGatewayAccountEmailRefundToggleRequest(true)
 
     before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/email-notification`)
-            .withUponReceiving('a valid patch email refund toggle (enabled) request')
-            .withState(defaultState)
-            .withMethod('PATCH')
-            .withRequestBody(validGatewayAccountEmailRefundToggleRequest)
-            .withStatusCode(200)
-            .withResponseHeaders({})
-            .build()
-        )
+      provider.addInteraction(
+        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/email-notification`)
+          .withUponReceiving('a valid patch email refund toggle (enabled) request')
+          .withState(defaultState)
+          .withMethod('PATCH')
+          .withRequestBody(validGatewayAccountEmailRefundToggleRequest)
+          .withStatusCode(200)
+          .withResponseHeaders({})
+          .build()
+      )
         .then(() => done())
         .catch(done)
     })
@@ -61,7 +59,7 @@ describe('connector client - patch email refund toggle', function () {
     it('should toggle successfully', function () {
       const params = {
         gatewayAccountId: existingGatewayAccountId,
-        payload: validGatewayAccountEmailRefundToggleRequest,
+        payload: validGatewayAccountEmailRefundToggleRequest
       }
 
       return expect(connectorClient.updateRefundEmailEnabled(params)).to.be.fulfilled

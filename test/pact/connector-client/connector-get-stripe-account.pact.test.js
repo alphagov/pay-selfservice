@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 const path = require('path')
@@ -28,7 +28,7 @@ describe('connector client - get stripe account', () => {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -39,34 +39,30 @@ describe('connector client - get stripe account', () => {
 
   describe('get stripe account setup success', () => {
     const stripeAccountOpts = {
-      stripe_account_id: 'acct_123example123',
+      stripe_account_id: 'acct_123example123'
     }
     const response = stripeAccountFixtures.buildGetStripeAccountResponse(stripeAccountOpts)
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-account`)
-            .withUponReceiving('a valid get stripe account request')
-            .withState(defaultState)
-            .withMethod('GET')
-            .withStatusCode(200)
-            .withResponseBody(pactify(response))
-            .build()
-        )
+    before(done => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${ACCOUNTS_RESOURCE}/${existingGatewayAccountId}/stripe-account`)
+          .withUponReceiving('a valid get stripe account request')
+          .withState(defaultState)
+          .withMethod('GET')
+          .withStatusCode(200)
+          .withResponseBody(pactify(response))
+          .build()
+      )
         .then(() => done())
         .catch(done)
     })
 
     afterEach(() => provider.verify())
 
-    it('should get successfully', (done) => {
-      connectorClient
-        .getStripeAccount(existingGatewayAccountId, 'correlation-id')
-        .should.be.fulfilled.then((stripeAccount) => {
-          expect(stripeAccount.stripeAccountId).to.equal(stripeAccountOpts.stripe_account_id)
-        })
-        .should.notify(done)
+    it('should get successfully', done => {
+      connectorClient.getStripeAccount(existingGatewayAccountId, 'correlation-id').should.be.fulfilled.then(stripeAccount => {
+        expect(stripeAccount.stripeAccountId).to.equal(stripeAccountOpts.stripe_account_id)
+      }).should.notify(done)
     })
   })
 })
