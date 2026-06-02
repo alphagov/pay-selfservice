@@ -242,6 +242,7 @@ describe('Transaction details page', () => {
       })
 
     cy.get('.govuk-summary-list__key').contains('3D Secure (3DS)').should('not.exist')
+    cy.get('.govuk-inset-text').should('not.exist')
   })
 
   it('should display partial refund amount', () => {
@@ -605,5 +606,21 @@ describe('Transaction details page', () => {
     ])
     cy.visit(TRANSACTION_URL)
     cy.contains('a.govuk-button', 'Refund payment').should('not.exist')
+  })
+
+  it('should display inset text if transaction if over 7 years old', () => {
+    const transactionCreatedTimestamp = DateTime.now().minus({ years: 7, months: 1 })
+    const oldTransaction = new TransactionFixture({ createdDate: transactionCreatedTimestamp })
+
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
+        oldTransaction
+      ),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+    ])
+    cy.visit(TRANSACTION_URL)
+    cy.get('.govuk-inset-text').should('exist')
+    cy.get('.govuk-inset-text').should('contain.text', 'Some personal information has been redacted because this transaction is more than 7 years old.')
   })
 })
