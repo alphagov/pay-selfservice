@@ -1,4 +1,4 @@
-import { PactV2 as Pact } from '@pact-foundation/pact'
+import { Pact } from '@pact-foundation/pact'
 import path from 'path'
 import chai from 'chai'
 import userFixtures from '@test/fixtures/user.fixtures'

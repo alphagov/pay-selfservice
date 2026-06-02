@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')

@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -29,7 +29,7 @@ describe('connector client', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -42,7 +42,7 @@ describe('connector client', function () {
     describe('success', () => {
       const validPostRefundRequest = transactionDetailsFixtures.validTransactionRefundRequest({
         amount: 100,
-        refund_amount_available: 100,
+        refund_amount_available: 100
       })
 
       before(() => {
@@ -68,7 +68,7 @@ describe('connector client', function () {
     describe('failure', () => {
       const invalidTransactionRefundRequest = transactionDetailsFixtures.validTransactionRefundRequest({
         amount: 101,
-        refund_amount_available: 100,
+        refund_amount_available: 100
       })
       const invalidTransactionRefundResponse = transactionDetailsFixtures.invalidTransactionRefundResponse()
 
@@ -88,9 +88,8 @@ describe('connector client', function () {
       afterEach(() => provider.verify())
 
       it('should fail with a refund amount greater than the refund amount available', () => {
-        return connectorClient
-          .postChargeRefund(gatewayAccountId, chargeId, invalidTransactionRefundRequest, 'correlation-id')
-          .should.be.rejected.then((response) => {
+        return connectorClient.postChargeRefund(gatewayAccountId, chargeId, invalidTransactionRefundRequest, 'correlation-id')
+          .should.be.rejected.then(response => {
             expect(response.errorCode).to.equal(400)
             expect(response.errorIdentifier).to.equal(invalidTransactionRefundResponse.error_identifier)
             expect(response.reason).to.equal(invalidTransactionRefundResponse.reason)

@@ -1,14 +1,13 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
 const path = require('path')
 const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interaction-builder').PactInteractionBuilder
 const getAdminUsersClient = require('../../../../src/services/clients/adminusers.client')
-const validPostStripeAgreementRequest =
-  require('../../../fixtures/go-live-requests.fixture').validPostStripeAgreementRequest
+const validPostStripeAgreementRequest = require('../../../fixtures/go-live-requests.fixture').validPostStripeAgreementRequest
 
 // Constants
 const SERVICE_RESOURCE = '/v1/api/services'
@@ -25,7 +24,7 @@ describe('adminusers client - post stripe agreement - ip address', () => {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -39,27 +38,25 @@ describe('adminusers client - post stripe agreement - ip address', () => {
     const opts = { ip_address: ipAddress }
     const validStripeAgreementRequest = validPostStripeAgreementRequest(opts)
 
-    before((done) => {
-      provider
-        .addInteraction(
-          new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}/stripe-agreement`)
-            .withUponReceiving('a valid post stripe agreement - ip address request')
-            .withState(`a service exists with external id ${serviceExternalId} and go live stage equals to NOT_STARTED`)
-            .withMethod('POST')
-            .withRequestBody(validStripeAgreementRequest)
-            .withStatusCode(201)
-            .withResponseHeaders({})
-            .build()
-        )
-        .then(() => {
-          done()
-        })
+    before(done => {
+      provider.addInteraction(
+        new PactInteractionBuilder(`${SERVICE_RESOURCE}/${serviceExternalId}/stripe-agreement`)
+          .withUponReceiving('a valid post stripe agreement - ip address request')
+          .withState(`a service exists with external id ${serviceExternalId} and go live stage equals to NOT_STARTED`)
+          .withMethod('POST')
+          .withRequestBody(validStripeAgreementRequest)
+          .withStatusCode(201)
+          .withResponseHeaders({})
+          .build()
+      )
+        .then(() => { done() })
     })
 
     afterEach(() => provider.verify())
 
-    it('should post ip address successfully', (done) => {
-      adminUsersClient.addStripeAgreementIpAddress(serviceExternalId, ipAddress).should.be.fulfilled.should.notify(done)
+    it('should post ip address successfully', done => {
+      adminUsersClient.addStripeAgreementIpAddress(serviceExternalId, ipAddress)
+        .should.be.fulfilled.should.notify(done)
     })
   })
 })

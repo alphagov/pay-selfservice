@@ -1,6 +1,6 @@
 'use strict'
 
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -26,7 +26,7 @@ describe('connector client', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -40,7 +40,7 @@ describe('connector client', function () {
       const validPostCreateChargeRequest = chargeFixture.validPostChargeRequestRequest({
         amount: 100,
         return_url: 'https://somewhere.gov.uk/rainbow/1',
-        credential_id: 'creds123',
+        credential_id: 'creds123'
       })
 
       const validResponse = chargeFixture.validPostChargeRequestResponse()
@@ -49,9 +49,7 @@ describe('connector client', function () {
         return provider.addInteraction(
           new PactInteractionBuilder(`${CHARGES_RESOURCE}/${gatewayAccountId}/charges`)
             .withUponReceiving('a valid post create charge request')
-            .withState(
-              'a Worldpay gateway account with id 3456, gateway account credentials with external_id creds123 exists'
-            )
+            .withState('a Worldpay gateway account with id 3456, gateway account credentials with external_id creds123 exists')
             .withMethod('POST')
             .withRequestBody(validPostCreateChargeRequest)
             .withStatusCode(201)
@@ -64,10 +62,7 @@ describe('connector client', function () {
       afterEach(() => provider.verify())
 
       it('should create a charge request successfully', async () => {
-        const connectorResponse = await connectorClient.postChargeRequest(
-          gatewayAccountId,
-          validPostCreateChargeRequest
-        )
+        const connectorResponse = await connectorClient.postChargeRequest(gatewayAccountId, validPostCreateChargeRequest)
         expect(connectorResponse.state.status).to.equal('created')
         expect(connectorResponse.return_url).to.equal('https://somewhere.gov.uk/rainbow/1')
         expect(connectorResponse.links).to.be.a('array')

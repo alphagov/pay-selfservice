@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -29,7 +29,7 @@ describe('connector client - patch MOTO mask security code toggle (enabled) requ
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -39,7 +39,8 @@ describe('connector client - patch MOTO mask security code toggle (enabled) requ
   after(() => provider.finalize())
 
   describe('MOTO mask security code input toggle - supported payment provider request', () => {
-    const motoMaskSecurityCodeInputProviderState = `a gateway account with MOTO enabled and an external id ${existingGatewayAccountId} exists in the database`
+    const motoMaskSecurityCodeInputProviderState =
+      `a gateway account with MOTO enabled and an external id ${existingGatewayAccountId} exists in the database`
 
     before(() => {
       return provider.addInteraction(
@@ -50,16 +51,15 @@ describe('connector client - patch MOTO mask security code toggle (enabled) requ
           .withRequestBody(request)
           .withStatusCode(200)
           .withResponseHeaders({})
-          .build()
-      )
+          .build())
     })
 
     afterEach(() => provider.verify())
 
-    it('should toggle successfully', (done) => {
-      connectorClient
-        .toggleMotoMaskSecurityCodeInput(existingGatewayAccountId, true, null)
-        .should.be.fulfilled.notify(done)
+    it('should toggle successfully', done => {
+      connectorClient.toggleMotoMaskSecurityCodeInput(existingGatewayAccountId, true, null)
+        .should.be.fulfilled
+        .notify(done)
     })
   })
 })

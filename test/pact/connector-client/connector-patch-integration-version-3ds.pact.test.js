@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const { PactV2: Pact } = require('@pact-foundation/pact')
+const { Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -27,7 +27,7 @@ describe('Update 3DS integration version', () => {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge',
+    pactfileWriteMode: 'merge'
   })
 
   before(async () => {
@@ -49,14 +49,15 @@ describe('Update 3DS integration version', () => {
           .withRequestBody(request)
           .withStatusCode(200)
           .withResponseHeaders({})
-          .build()
-      )
+          .build())
     })
 
     afterEach(() => provider.verify())
 
-    it('should set version to 1 successfully', (done) => {
-      connectorClient.updateIntegrationVersion3ds(existingGatewayAccountId, 1, null).should.be.fulfilled.notify(done)
+    it('should set version to 1 successfully', done => {
+      connectorClient.updateIntegrationVersion3ds(existingGatewayAccountId, 1, null)
+        .should.be.fulfilled
+        .notify(done)
     })
   })
 
@@ -73,14 +74,15 @@ describe('Update 3DS integration version', () => {
           .withRequestBody(request)
           .withStatusCode(200)
           .withResponseHeaders({})
-          .build()
-      )
+          .build())
     })
 
     afterEach(() => provider.verify())
 
-    it('should set version to 2 successfully', (done) => {
-      connectorClient.updateIntegrationVersion3ds(existingGatewayAccountId, 2, null).should.be.fulfilled.notify(done)
+    it('should set version to 2 successfully', done => {
+      connectorClient.updateIntegrationVersion3ds(existingGatewayAccountId, 2, null)
+        .should.be.fulfilled
+        .notify(done)
     })
   })
 })
