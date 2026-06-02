@@ -614,13 +614,14 @@ describe('Transaction details page', () => {
 
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
-        oldTransaction
-      ),
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(oldTransaction),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
     cy.visit(TRANSACTION_URL)
     cy.get('.govuk-inset-text').should('exist')
-    cy.get('.govuk-inset-text').should('contain.text', 'Some personal information has been redacted because this transaction is more than 7 years old.')
+    cy.get('.govuk-inset-text').should(
+      'contain.text',
+      'Some personal information has been redacted because this transaction is more than 7 years old.'
+    )
   })
 })
