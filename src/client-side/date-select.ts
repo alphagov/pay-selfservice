@@ -6,7 +6,7 @@ function register() {
     if (!(event.target instanceof HTMLSelectElement)) {
       return
     }
-    if (event.target.value === 'custom-range') {
+    if (event.target.value === 'custom-range' || event.target.value === 'all-time') {
       clearDates()
       return
     }
@@ -38,16 +38,21 @@ function hideTimePicker() {
 }
 
 function clearDates() {
-  ;(document.getElementById('fromDate') as HTMLInputElement).value = ''
-  ;(document.getElementById('toDate') as HTMLInputElement).value = ''
+  ; (document.getElementById('fromDate') as HTMLInputElement).value = ''
+    ; (document.getElementById('toDate') as HTMLInputElement).value = ''
 }
 
-function setFromDate(date: DateTime) {
-  ;(document.getElementById('fromDate') as HTMLInputElement).value = date.toFormat('dd/LL/yyyy')
+function setFromDate(date: DateTime | undefined) {
+  if (date) {
+    ; (document.getElementById('fromDate') as HTMLInputElement).value = date.toFormat('dd/LL/yyyy')
+  }
+
 }
 
-function setEndDate(date: DateTime) {
-  ;(document.getElementById('toDate') as HTMLInputElement).value = date.toFormat('dd/LL/yyyy')
+function setEndDate(date: DateTime | undefined) {
+  if (date) {
+    ; (document.getElementById('toDate') as HTMLInputElement).value = date.toFormat('dd/LL/yyyy')
+  }
 }
 
 export default function inject() {
