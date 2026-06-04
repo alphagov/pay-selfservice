@@ -25,16 +25,16 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const currentPeriod = req.query.period as Period
   const { start, end } = getPeriodUKDateTimeRange(currentPeriod)
 
-  const searchParams = new URLSearchParams();
+  const searchParams = new URLSearchParams()
 
   if (start && end) {
-    searchParams.append('fromDate', start.toFormat('dd/MM/yyyy'));
-    searchParams.append('fromTime', start.toFormat('HH:mm:ss'));
-    searchParams.append('toDate', end.toFormat('dd/MM/yyyy'));
-    searchParams.append('toTime', end.toFormat('HH:mm:ss'));
+    searchParams.append('fromDate', start.toFormat('dd/MM/yyyy'))
+    searchParams.append('fromTime', start.toFormat('HH:mm:ss'))
+    searchParams.append('toDate', end.toFormat('dd/MM/yyyy'))
+    searchParams.append('toTime', end.toFormat('HH:mm:ss'))
   }
 
-  const transactionsPeriodQueryParams = searchParams.toString();
+  const transactionsPeriodQueryParams = searchParams.toString()
 
   const humanDates = {
     start: start?.toLocaleString(DT_FULL),
@@ -46,7 +46,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/services/dashboard/index', {
     messages: res.locals.flash?.messages ?? [],
     currentPeriod,
-    activity: (start && end) ? await getActivity(req.account.id, start, end) : {},
+    activity: start && end ? await getActivity(req.account.id, start, end) : {},
     humanDates,
     possibleActions,
     dashboardActions: getActionsToDisplay(
@@ -68,15 +68,15 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         switchMode:
           req.account.type === GatewayAccountType.LIVE
             ? formatServiceAndAccountPathsFor(
-              paths.simplifiedAccount.enterSandboxMode.index,
-              req.service.externalId,
-              GatewayAccountType.LIVE
-            )
+                paths.simplifiedAccount.enterSandboxMode.index,
+                req.service.externalId,
+                GatewayAccountType.LIVE
+              )
             : formatServiceAndAccountPathsFor(
-              paths.simplifiedAccount.exitSandboxMode.index,
-              req.service.externalId,
-              GatewayAccountType.TEST
-            ),
+                paths.simplifiedAccount.exitSandboxMode.index,
+                req.service.externalId,
+                GatewayAccountType.TEST
+              ),
         demoPayment: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.demoPayment.index,
           req.service.externalId,

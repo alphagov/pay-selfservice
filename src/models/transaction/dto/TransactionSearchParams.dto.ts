@@ -47,11 +47,10 @@ export class TransactionSearchParamsData {
 
   setFromDate(params: TransactionSearchParams) {
     if (params.dateFilter === 'all-time') {
-      return undefined;
+      return undefined
     } else if (params.fromDate?.isValid) {
       return params.fromDate.toUTC().toISO()
-    }
-    else {
+    } else {
       return TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO()
     }
   }
