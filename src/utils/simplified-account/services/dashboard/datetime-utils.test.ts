@@ -40,17 +40,17 @@ describe('DateTime Utility', () => {
         const expectedStart = DateTime.fromISO('2025-01-15T00:00:00.000', { zone: 'Europe/London' })
         const expectedEnd = DateTime.fromISO('2025-01-15T14:30:00.000', { zone: 'Europe/London' })
 
-        expect(result.start.toISO()).to.equal(expectedStart.toISO())
-        expect(result.end.toISO()).to.equal(expectedEnd.toISO())
+        expect(result.start!.toISO()).to.equal(expectedStart.toISO())
+        expect(result.end!.toISO()).to.equal(expectedEnd.toISO())
       })
 
       it('should use UK locale and London timezone', () => {
         const result = getPeriodUKDateTimeRange('today')
 
-        expect(result.start.locale).to.equal('en-GB')
-        expect(result.start.zoneName).to.equal('Europe/London')
-        expect(result.end.locale).to.equal('en-GB')
-        expect(result.end.zoneName).to.equal('Europe/London')
+        expect(result.start!.locale).to.equal('en-GB')
+        expect(result.start!.zoneName).to.equal('Europe/London')
+        expect(result.end!.locale).to.equal('en-GB')
+        expect(result.end!.zoneName).to.equal('Europe/London')
       })
     })
 
@@ -61,8 +61,8 @@ describe('DateTime Utility', () => {
         const expectedStart = DateTime.fromISO('2025-01-14T00:00:00.000', { zone: 'Europe/London' })
         const expectedEnd = DateTime.fromISO('2025-01-14T23:59:59.999', { zone: 'Europe/London' })
 
-        expect(result.start.toISO()).to.equal(expectedStart.toISO())
-        expect(result.end.toISO()).to.equal(expectedEnd.toISO())
+        expect(result.start!.toISO()).to.equal(expectedStart.toISO())
+        expect(result.end!.toISO()).to.equal(expectedEnd.toISO())
       })
     })
 
@@ -73,13 +73,13 @@ describe('DateTime Utility', () => {
         const expectedStart = DateTime.fromISO('2025-01-08T00:00:00.000', { zone: 'Europe/London' })
         const expectedEnd = DateTime.fromISO('2025-01-14T23:59:59.999', { zone: 'Europe/London' })
 
-        expect(result.start.toISO()).to.equal(expectedStart.toISO())
-        expect(result.end.toISO()).to.equal(expectedEnd.toISO())
+        expect(result.start!.toISO()).to.equal(expectedStart.toISO())
+        expect(result.end!.toISO()).to.equal(expectedEnd.toISO())
       })
 
       it('should span exactly 7 days', () => {
         const result = getPeriodUKDateTimeRange('previous-seven-days')
-        const daysDiff = result.end.diff(result.start, 'days').days
+        const daysDiff = result.end!.diff(result.start!, 'days').days
 
         expect(Math.floor(daysDiff)).to.equal(6)
         expect(daysDiff).to.be.greaterThan(6.9)
@@ -93,13 +93,13 @@ describe('DateTime Utility', () => {
         const expectedStart = DateTime.fromISO('2024-12-16T00:00:00.000', { zone: 'Europe/London' })
         const expectedEnd = DateTime.fromISO('2025-01-14T23:59:59.999', { zone: 'Europe/London' })
 
-        expect(result.start.toISO()).to.equal(expectedStart.toISO())
-        expect(result.end.toISO()).to.equal(expectedEnd.toISO())
+        expect(result.start!.toISO()).to.equal(expectedStart.toISO())
+        expect(result.end!.toISO()).to.equal(expectedEnd.toISO())
       })
 
       it('should span exactly 30 days', () => {
         const result = getPeriodUKDateTimeRange('previous-thirty-days')
-        const daysDiff = result.end.diff(result.start, 'days').days
+        const daysDiff = result.end!.diff(result.start!, 'days').days
 
         expect(Math.floor(daysDiff)).to.equal(29)
         expect(daysDiff).to.be.greaterThan(29.9)
@@ -113,13 +113,13 @@ describe('DateTime Utility', () => {
         const expectedStart = DateTime.fromISO('2024-01-15T00:00:00.000', { zone: 'Europe/London' })
         const expectedEnd = DateTime.fromISO('2025-01-15T14:30:00.000Z', { zone: 'Europe/London' })
 
-        expect(result.start.toISO()).to.equal(expectedStart.toISO())
-        expect(result.end.toISO()).to.equal(expectedEnd.toISO())
+        expect(result.start!.toISO()).to.equal(expectedStart.toISO())
+        expect(result.end!.toISO()).to.equal(expectedEnd.toISO())
       })
 
       it('should span exactly 12 months', () => {
         const result = getPeriodUKDateTimeRange('last-12-months')
-        const daysDiff = result.end.diff(result.start, 'months').months
+        const daysDiff = result.end!.diff(result.start!, 'months').months
 
         expect(Math.floor(daysDiff)).to.equal(12)
         expect(daysDiff).to.be.greaterThan(11.9)
@@ -127,22 +127,11 @@ describe('DateTime Utility', () => {
     })
 
     describe('when period is "all-time"', () => {
-      it('should return range for 7 years ending now', () => {
+      it('should not return start or end time', () => {
         const result = getPeriodUKDateTimeRange('all-time')
 
-        const expectedStart = DateTime.fromISO('2018-01-15T00:00:00.000', { zone: 'Europe/London' })
-        const expectedEnd = DateTime.fromISO('2025-01-15T14:30:00.000Z', { zone: 'Europe/London' })
-
-        expect(result.start.toISO()).to.equal(expectedStart.toISO())
-        expect(result.end.toISO()).to.equal(expectedEnd.toISO())
-      })
-
-      it('should span exactly 12 months', () => {
-        const result = getPeriodUKDateTimeRange('all-time')
-        const daysDiff = result.end.diff(result.start, 'years').years
-
-        expect(Math.floor(daysDiff)).to.equal(7)
-        expect(daysDiff).to.be.greaterThan(6.9)
+        expect(result.start).to.equal(undefined)
+        expect(result.end).to.equal(undefined)
       })
     })
 
@@ -156,7 +145,7 @@ describe('DateTime Utility', () => {
 
         const expectedStart = DateTime.fromISO('2024-02-29T00:00:00.000', { zone: 'Europe/London' })
 
-        expect(result.start.toISO()).to.equal(expectedStart.toISO())
+        expect(result.start!.toISO()).to.equal(expectedStart.toISO())
       })
 
       it('should handle daylight saving time transitions', () => {
@@ -165,8 +154,8 @@ describe('DateTime Utility', () => {
 
         const result = getPeriodUKDateTimeRange('previous-seven-days')
 
-        expect(result.start.offset).to.equal(0)
-        expect(result.end.offset).to.equal(60)
+        expect(result.start!.offset).to.equal(0)
+        expect(result.end!.offset).to.equal(60)
       })
     })
 
@@ -185,7 +174,7 @@ describe('DateTime Utility', () => {
 
         periods.forEach((period) => {
           const result = getPeriodUKDateTimeRange(period)
-          expect(result.start.toMillis()).to.be.lessThan(result.end.toMillis())
+          expect(result.start!.toMillis()).to.be.lessThan(result.end!.toMillis())
         })
       })
     })
@@ -195,8 +184,8 @@ describe('DateTime Utility', () => {
         const result1 = getPeriodUKDateTimeRange('previous-seven-days')
         const result2 = getPeriodUKDateTimeRange('previous-seven-days')
 
-        expect(result1.start.toMillis()).to.equal(result2.start.toMillis())
-        expect(result1.end.toMillis()).to.equal(result2.end.toMillis())
+        expect(result1.start!.toMillis()).to.equal(result2.start!.toMillis())
+        expect(result1.end!.toMillis()).to.equal(result2.end!.toMillis())
       })
     })
   })

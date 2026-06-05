@@ -37,14 +37,22 @@ export class TransactionSearchParamsData {
     this.transaction_type = params.type ?? undefined
     this.reference = params.reference ?? undefined
     this.email = params.email ?? undefined
-    this.from_date = params.fromDate?.isValid
-      ? params.fromDate.toUTC().toISO()!
-      : TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO()
+    this.from_date = this.setFromDate(params) ?? undefined
     this.to_date = params.toDate?.isValid ? params.toDate.toUTC().toISO()! : undefined
     this.payment_states = params.paymentStates?.map(toLower).join(',')
     this.refund_states = params.refundStates?.map(toLower).join(',')
     this.dispute_states = params.disputeStates?.map(toLower).join(',')
     this.gateway_payout_id = params.gatewayPayoutId
+  }
+
+  setFromDate(params: TransactionSearchParams) {
+    if (params.dateFilter === 'all-time') {
+      return undefined
+    } else if (params.fromDate?.isValid) {
+      return params.fromDate.toUTC().toISO()
+    } else {
+      return TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO()
+    }
   }
 
   asQueryString(): string {

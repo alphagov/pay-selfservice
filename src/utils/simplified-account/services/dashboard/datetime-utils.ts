@@ -11,8 +11,8 @@ export type Period =
   | 'all-time'
 
 interface DateTimeRange {
-  start: DateTime<true>
-  end: DateTime<true>
+  start: DateTime<true> | undefined
+  end: DateTime<true> | undefined
 }
 
 export const DT_FULL = {
@@ -26,7 +26,7 @@ export const DT_FULL = {
   hour12: true,
 } as DateTimeFormatOptions
 
-export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
+export function getPeriodUKDateTimeRange(period: Period | undefined): DateTimeRange {
   const now = DateTime.now().setLocale('en-GB').setZone('Europe/London') as DateTime<true>
 
   switch (period) {
@@ -64,8 +64,8 @@ export function getPeriodUKDateTimeRange(period: Period): DateTimeRange {
 
     case 'all-time': {
       return {
-        start: TimeConstants.SEVEN_YEARS_AGO,
-        end: now,
+        start: undefined,
+        end: undefined,
       }
     }
 
