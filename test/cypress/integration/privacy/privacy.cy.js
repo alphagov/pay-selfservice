@@ -13,9 +13,9 @@ describe('Privacy page', () => {
       cy.get('h1').should('contain', 'Privacy notice')
 
       cy.get('[data-cy=sub-navigation]').should('exist')
-      cy.get('[data-cy=sub-navigation] li').should('have.length', 11)
+      cy.get('[data-cy=sub-navigation] li').should('have.length', 12)
 
-      cy.get('main h2').should('have.length', 11)
+      cy.get('main h2').should('have.length', 12)
 
       cy.get('#navigation').should('contain', 'Sign in')
     })
@@ -23,9 +23,7 @@ describe('Privacy page', () => {
 
   describe('Logged in user', () => {
     it('should show the privacy page correctly', () => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, gatewayAccountExternalId })
-      ])
+      cy.task('setupStubs', [userStubs.getUserSuccess({ userExternalId, gatewayAccountId, gatewayAccountExternalId })])
 
       cy.setEncryptedCookies(userExternalId)
 
