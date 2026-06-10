@@ -23,9 +23,7 @@ describe('Privacy page', () => {
 
   describe('Logged in user', () => {
     it('should show the privacy page correctly', () => {
-      cy.task('setupStubs', [
-        userStubs.getUserSuccess({ userExternalId, gatewayAccountId, gatewayAccountExternalId })
-      ])
+      cy.task('setupStubs', [userStubs.getUserSuccess({ userExternalId, gatewayAccountId, gatewayAccountExternalId })])
 
       cy.setEncryptedCookies(userExternalId)
 
