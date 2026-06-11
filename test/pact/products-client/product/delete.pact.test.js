@@ -1,6 +1,6 @@
 'use strict'
 
-const { Pact } = require('@pact-foundation/pact')
+const { PactV2: Pact } = require('@pact-foundation/pact')
 const { expect } = require('chai')
 const proxyquire = require('proxyquire')
 
@@ -11,11 +11,11 @@ const PactInteractionBuilder = require('../../../test-helpers/pact/pact-interact
 const API_RESOURCE = '/v1/api'
 let result, productExternalId, gatewayAccountId, productsClient
 
-function getProductsClient (baseUrl) {
+function getProductsClient(baseUrl) {
   return proxyquire('@services/clients/products.client', {
     '@root/config': {
-      PRODUCTS_URL: baseUrl
-    }
+      PRODUCTS_URL: baseUrl,
+    },
   })
 }
 
@@ -26,7 +26,7 @@ describe('products client - delete a product', () => {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -36,22 +36,25 @@ describe('products client - delete a product', () => {
   after(() => provider.finalize())
 
   describe('when a product is successfully deleted', () => {
-    before(done => {
+    before((done) => {
       gatewayAccountId = '999'
       productExternalId = 'a_valid_external_id'
-      provider.addInteraction(
-        new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`)
-          .withUponReceiving('a valid delete product request')
-          .withMethod('DELETE')
-          .withStatusCode(204)
-          .build()
-      )
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(
+            `${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`
+          )
+            .withUponReceiving('a valid delete product request')
+            .withMethod('DELETE')
+            .withStatusCode(204)
+            .build()
+        )
         .then(() => productsClient.product.delete(gatewayAccountId, productExternalId))
-        .then(res => {
+        .then((res) => {
           result = res
           done()
         })
-        .catch(e => done(e))
+        .catch((e) => done(e))
     })
 
     afterEach(() => provider.verify())
@@ -62,15 +65,18 @@ describe('products client - delete a product', () => {
   })
 
   describe('delete a product - bad request', () => {
-    before(done => {
+    before((done) => {
       productExternalId = 'a_non_existant_external_id'
-      provider.addInteraction(
-        new PactInteractionBuilder(`${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`)
-          .withUponReceiving('an invalid delete product request')
-          .withMethod('DELETE')
-          .withStatusCode(404)
-          .build()
-      )
+      provider
+        .addInteraction(
+          new PactInteractionBuilder(
+            `${API_RESOURCE}/gateway-account/${gatewayAccountId}/products/${productExternalId}`
+          )
+            .withUponReceiving('an invalid delete product request')
+            .withMethod('DELETE')
+            .withStatusCode(404)
+            .build()
+        )
         .then(() => productsClient.product.delete(gatewayAccountId, productExternalId), done)
         .then(() => done(new Error('Promise unexpectedly resolved')))
         .catch((err) => {

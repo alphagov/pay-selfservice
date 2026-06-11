@@ -1,6 +1,6 @@
 'use strict'
 
-const { Pact } = require('@pact-foundation/pact')
+const { PactV2: Pact } = require('@pact-foundation/pact')
 const path = require('path')
 const chai = require('chai')
 const { expect } = chai
@@ -18,11 +18,11 @@ chai.use(chaiAsPromised)
 
 let publicAuthClient
 
-function getPublicAuthClient (baseUrl) {
+function getPublicAuthClient(baseUrl) {
   return proxyquire('@services/clients/public-auth.client', {
     '@root/config': {
-      PUBLIC_AUTH_URL: baseUrl
-    }
+      PUBLIC_AUTH_URL: baseUrl,
+    },
   })
 }
 
@@ -33,7 +33,7 @@ describe('publicauth client - get tokens', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -44,7 +44,7 @@ describe('publicauth client - get tokens', function () {
 
   describe('success', () => {
     const params = {
-      accountId: 42
+      accountId: 42,
     }
 
     const getServiceAuthResponse = gatewayAccountFixtures.validGatewayAccountTokensResponse(params)
