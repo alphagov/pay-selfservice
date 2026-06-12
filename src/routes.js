@@ -213,8 +213,8 @@ module.exports.bind = function (app) {
   app.get(
     allServiceTransactions.simplifiedAccount.timeout,
     experimentalFeature(Features.TRANSACTIONS),
-    validateModeFilter,
     userIsAuthorised,
+    viewModeStrategy('transactions:read'),
     servicesController.allServiceTransactions.timeout.get
   )
 

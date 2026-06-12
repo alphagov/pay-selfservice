@@ -4,6 +4,7 @@ import { ViewMode } from '@models/view-mode/ViewMode.class'
 import { AuthenticatedRequest } from '@utils/types/express'
 
 // for use on routes where determining if the user has services in the given mode is not important
+// and it is only required that the view mode is valid (test|live)
 function validateModeFilter(
   req: AuthenticatedRequest & { viewMode: ViewMode },
   res: express.Response,
@@ -16,6 +17,7 @@ function validateModeFilter(
   return next()
 }
 
+// for use on routes where it is required that the user has services in the given mode
 function viewModeStrategy(permission?: string) {
   return async function (
     req: AuthenticatedRequest & { viewMode: ViewMode },

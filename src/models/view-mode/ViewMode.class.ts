@@ -45,6 +45,8 @@ export class ViewMode {
     }
   }
 
+  // determines all services viewable in specified mode (test|live)
+  // optionally for which user has a given permission
   static async forUser(user: User, modeFilter: ViewModeName, permission?: string): Promise<ViewMode> {
     const userServiceRoles = permission
       ? user.serviceRoles.filter((serviceRole) => serviceRole.hasPermission(permission))
