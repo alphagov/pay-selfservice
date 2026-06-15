@@ -8,7 +8,7 @@ import {
   mergeServicesWithGatewayAccounts,
 } from '@utils/simplified-account/home/my-services/service-presentation-utils'
 import User from '@models/user/User.class'
-import { Features } from '@root/config/experimental-features'
+import { Features } from '@root/config/features'
 
 async function get(
   req: express.Request & {

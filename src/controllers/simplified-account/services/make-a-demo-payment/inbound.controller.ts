@@ -6,7 +6,7 @@ import paths from '@root/paths'
 import { getProductByExternalId } from '@services/products.service'
 import { getGatewayAccountById } from '@services/gateway-accounts.service'
 import formatSimplifiedAccountPathsFor from '@utils/simplified-account/format/format-simplified-account-paths-for'
-import { Features } from '@root/config/experimental-features'
+import { Features } from '@root/config/features'
 import formatAccountPathsFor from '@utils/format-account-paths-for'
 
 const logger = createLogger(__filename)

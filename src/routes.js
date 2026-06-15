@@ -62,7 +62,7 @@ const { registrationSuccess } = require('@services/auth.service')
 const { account: routes } = require('@root/paths')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 import { serviceViewShim, setServiceView } from '@middleware/simplified-account/service-view-shim.middleware'
-import { Features } from '@root/config/experimental-features'
+import { Features } from '@root/config/features'
 import { ServiceView } from '@models/service-view/ServiceView.class'
 
 // Assignments

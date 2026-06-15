@@ -10,7 +10,7 @@ const { getPSPPageLinks } = require('./credentials')
 const CREDENTIAL_STATE = require('@models/constants/credential-state')
 const flattenNestedValues = require('./flatten-nested-values')
 
-import { Features } from '@root/config/experimental-features'
+import { Features } from '@root/config/features'
 
 const mainSettingsPaths = [
   paths.account.settings,

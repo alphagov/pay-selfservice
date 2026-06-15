@@ -6,19 +6,19 @@ import proxyquire from 'proxyquire'
 const nextStub = sinon.stub()
 const enabledStub = sinon.stub()
 
-let experimentalFeatureMiddleware: (featureName: string) => RequestHandler
+let featureMiddleware: (featureName: string) => RequestHandler
 
 describe('experimental features middleware', () => {
   beforeEach(() => {
-    experimentalFeatureMiddleware = proxyquire('@middleware/simplified-account/experimental-feature.middleware', {
-      '@root/config/experimental-features': { Features: { isEnabled: enabledStub } },
+    featureMiddleware = proxyquire('@middleware/simplified-account/feature.middleware', {
+      '@root/config/features': { Features: { isEnabled: enabledStub } },
     }) as (featureName: string) => RequestHandler
   })
 
   describe('for an enabled feature', () => {
     it('should call the next function with no arguments', async () => {
       enabledStub.returns(true)
-      const middleware = experimentalFeatureMiddleware('enabled_feature')
+      const middleware = featureMiddleware('enabled_feature')
 
       await middleware({} as express.Request, {} as express.Response, nextStub)
 
@@ -30,7 +30,7 @@ describe('experimental features middleware', () => {
   describe('for a disabled feature', () => {
     it('should call the next function with an error', async () => {
       enabledStub.returns(false)
-      const middleware = experimentalFeatureMiddleware('disabled_feature')
+      const middleware = featureMiddleware('disabled_feature')
 
       await middleware({} as express.Request, {} as express.Response, nextStub)
 
