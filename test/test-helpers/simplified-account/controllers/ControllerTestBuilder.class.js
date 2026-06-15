@@ -1,6 +1,9 @@
 const sinon = require('sinon')
 const _ = require('lodash')
 const proxyquire = require('proxyquire')
+const Service = require('@models/service/Service.class')
+const GatewayAccount = require('@models/gateway-account/GatewayAccount.class')
+const { ServiceView } = require('@models/service-view/ServiceView.class')
 
 module.exports = class ControllerTestBuilder {
   constructor(controllerPath) {
@@ -137,8 +140,17 @@ module.exports = class ControllerTestBuilder {
         if (typeof fn !== 'function') {
           throw new Error(`No function found for method '${method}'${index !== undefined ? ` at index ${index}` : ''}`)
         }
-        const result = await fn(this.nextReq || this.req, this.nextRes || this.res, this.next)
         const currentReq = this.nextReq || this.req
+        if (
+          currentReq.service &&
+          currentReq.service instanceof Service &&
+          currentReq.account &&
+          currentReq.account instanceof GatewayAccount &&
+          !currentReq.serviceView
+        ) {
+          currentReq.serviceView = ServiceView.determineFor(currentReq.service, currentReq.account)
+        }
+        const result = await fn(currentReq, this.nextRes || this.res, this.next)
         const currentRes = this.nextRes || this.res
         this.nextReq = this.nextRes = null
         return { result, req: currentReq, res: currentRes }
