@@ -3,7 +3,7 @@ import User from '@models/user/User.class'
 import { findGatewayAccountsByService } from '@services/gateway-accounts.service'
 import { ViewModeLinksGenerator } from '@models/view-mode/ViewModeLinksGenerator.class'
 
-export type ViewModeName = 'test' | 'live' | 'unknown'
+export type ViewModeName = 'test' | 'live'
 
 /*
 For use on dashboard level routes where a view mode (test or live) can be specified
@@ -45,7 +45,7 @@ export class ViewMode {
     }
   }
 
-  // determines all services viewable in specified mode (test|live)
+  // determines all services viewable in specified mode (test or live)
   // optionally for which user has a given permission
   static async forUser(user: User, modeFilter: ViewModeName, permission?: string): Promise<ViewMode> {
     const userServiceRoles = permission
@@ -56,7 +56,7 @@ export class ViewMode {
       .map((serviceRole) => serviceRole.service)
       .map((service) => service.externalId)
     if (!userServiceExternalIds.length) {
-      return new ViewMode(modeFilter, false, opposite(modeFilter), false, [], [], permission)
+      return new ViewMode(modeFilter, false, oppositeModeNames[modeFilter], false, [], [], permission)
     }
 
     const allGatewayAccounts = await findGatewayAccountsByService(userServiceExternalIds)
@@ -73,7 +73,7 @@ export class ViewMode {
     return new ViewMode(
       modeFilter,
       hasServicesInMode,
-      opposite(modeFilter),
+      oppositeModeNames[modeFilter],
       hasServicesInOppositeMode,
       gatewayAccountIdsForMode,
       paymentProviders,
@@ -82,13 +82,7 @@ export class ViewMode {
   }
 }
 
-function opposite(modeName: ViewModeName) {
-  switch (modeName) {
-    case 'live':
-      return 'test'
-    case 'test':
-      return 'live'
-    default:
-      return 'unknown'
-  }
+const oppositeModeNames: Record<ViewModeName, ViewModeName> = {
+  live: 'test',
+  test: 'live',
 }

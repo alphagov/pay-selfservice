@@ -3,8 +3,8 @@ import { NotFoundError } from '@root/errors'
 import { ViewMode } from '@models/view-mode/ViewMode.class'
 import { AuthenticatedRequest } from '@utils/types/express'
 
-// for use on routes where determining if the user has services in the given mode is not important
-// and it is only required that the view mode is valid (test|live)
+// for use on routes where determining if the user has services in the given mode is not required
+// but it is required that the view mode is valid (test or live)
 function validateModeFilter(
   req: AuthenticatedRequest & { viewMode: ViewMode },
   res: express.Response,
