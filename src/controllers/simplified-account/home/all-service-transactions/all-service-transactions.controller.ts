@@ -96,6 +96,8 @@ async function get(
   const showCsvDownload =
     transactionCountWithinRange || (hasQueryParams && results.total > LEDGER_TRANSACTION_COUNT_LIMIT)
 
+  req.session.transactionFilters = req.url.split('?')[1] || ''
+
   return response(req, res, 'simplified-account/home/all-service-transactions/index', {
     modeFilter,
     oppositeMode,

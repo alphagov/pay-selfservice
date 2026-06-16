@@ -26,16 +26,19 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   // sort by most recent first
   events.sort((eventA, eventB) => (eventA.timestamp > eventB.timestamp ? -1 : 1))
 
+  const transactionFilters = req.session.transactionFilters as string
+
   return response(req, res, 'simplified-account/services/transactions/detail/index', {
-    backLink: formatServiceAndAccountPathsFor(
+    backLink: `${formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.transactions.index,
       req.service.externalId,
       req.account.type
-    ),
+    )
+      }${transactionFilters ? `?${transactionFilters}` : ''} `,
     events,
     transaction,
     dispute: disputes.length > 0 && disputes[0],
-    pageID: `${transaction.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${transaction.reference}`,
+    pageID: `${transaction.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${transaction.reference} `,
     oldView: formatAccountPathsFor(
       paths.account.transactions.detail,
       req.account.externalId,
