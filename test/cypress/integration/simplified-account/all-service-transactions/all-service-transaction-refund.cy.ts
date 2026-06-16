@@ -5,10 +5,12 @@ import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixtu
 import {
   getTransactionEvents,
   getTransactionForGatewayAccount,
+  postRefund,
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import ROLES from '@test/fixtures/roles.fixtures'
 import { DateTime } from 'luxon'
+import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
 const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
@@ -81,6 +83,38 @@ describe('All services refund page', () => {
 
     cy.visit(TRANSACTION_REFUND_URL)
     cy.get('.govuk-back-link').click()
+
+    cy.url().should('include', TRANSACTION_DETAIL_URL)
+  })
+
+  it('should navigate to transaction detail page when refund is made', () => {
+    const refundAmount = TRANSACTION.amount
+
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+      postRefund(SERVICE_EXTERNAL_ID, TRANSACTION.externalId).success(
+        refundAmount,
+        TRANSACTION,
+        USER_EXTERNAL_ID,
+        USER_EMAIL
+      ),
+    ])
+
+    cy.visit(TRANSACTION_REFUND_URL)
+
+    cy.get('#refund-payment').check()
+    cy.get('.govuk-radios__hint')
+      .first()
+      .should(
+        'contain',
+        `Refund the full amount of ${penceToPoundsWithCurrency(TRANSACTION.refundSummary.amountAvailable)}`
+      )
+    cy.contains(' Confirm refund ').should('be.visible').click()
+    cy.get('.govuk-notification-banner--success')
+      .should('be.visible')
+      .and('contain', 'Refund successful')
+      .and('contain', 'It may take up to six days to process')
 
     cy.url().should('include', TRANSACTION_DETAIL_URL)
   })
