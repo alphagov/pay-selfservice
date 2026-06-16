@@ -17,7 +17,6 @@ import { logging } from '@govuk-pay/pay-js-commons'
 import { validationErrors } from '@utils/validation/field-validation-checks'
 import { validateOtp } from '@utils/validation/server-side-form-validations'
 import { sanitiseSecurityCode } from '@utils/security-code-utils'
-// @ts-expect-error js commons is not updated for typescript support yet
 import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
 
 const logger = createLogger(__filename)
@@ -202,15 +201,7 @@ function deserializeUser(externalId: string, done: AuthenticateCallback) {
     })
     .catch((err) => {
       if (err instanceof RESTClientError) {
-        logger.info(
-          `Failed to retrieve user, '${externalId}', from adminusers with statuscode: ${
-            (
-              err as {
-                errorCode: string
-              }
-            ).errorCode
-          }`
-        )
+        logger.info(`Failed to retrieve user, '${externalId}', from adminusers with statuscode: ${err.errorCode}`)
       }
       done(err)
     })

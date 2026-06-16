@@ -13,6 +13,8 @@ import { Message } from '@utils/types/express/Message'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
+  req.serviceView.showHeader = false
+
   const transaction = await getTransaction(req.params.transactionExternalId, req.account.id)
   if (transaction.isFullyRefunded() || !transaction.isRefundable()) {
     return res.redirect(
