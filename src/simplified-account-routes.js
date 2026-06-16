@@ -29,7 +29,7 @@ const {
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 const testWithYourUsersController = require('src/controllers/simplified-account/services/test-with-your-users')
 
-import { Features } from '@root/config/experimental-features'
+import { Features } from '@root/config/features'
 
 const upload = multer({ storage: multer.memoryStorage() })
 const simplifiedAccount = new Router({ mergeParams: true })

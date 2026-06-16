@@ -28,7 +28,7 @@ const healthcheckController = require('@controllers/healthcheck.controller')
 const { healthcheck } = require('@root/paths.js')
 const { boolToText, boolToOnOrOff } = require('@utils/on-or-off')
 
-const { Features } = require('@root/config/experimental-features')
+const { Features } = require('@root/config/features')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 
 // Global constants

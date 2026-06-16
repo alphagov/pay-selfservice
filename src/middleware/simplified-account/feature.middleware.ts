@@ -1,8 +1,8 @@
 import express from 'express'
 import { NotFoundError } from '@root/errors'
-import { Features } from '@root/config/experimental-features'
+import { Features } from '@root/config/features'
 
-const experimentalFeatureMiddleware = (featureName: string) => {
+const FeatureMiddleware = (featureName: string) => {
   if (Features.isEnabled(featureName)) {
     return (req: express.Request, res: express.Response, next: express.NextFunction) => next()
   }
@@ -10,4 +10,4 @@ const experimentalFeatureMiddleware = (featureName: string) => {
     next(new NotFoundError(`Feature [${featureName}] is not enabled in this environment`))
 }
 
-export = experimentalFeatureMiddleware
+export = FeatureMiddleware
