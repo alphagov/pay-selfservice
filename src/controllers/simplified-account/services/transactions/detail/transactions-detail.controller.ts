@@ -33,8 +33,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       paths.simplifiedAccount.transactions.index,
       req.service.externalId,
       req.account.type
-    )
-      }${transactionFilters ? `?${transactionFilters}` : ''} `,
+    )}${transactionFilters ? `?${transactionFilters}` : ''} `,
     events,
     transaction,
     dispute: disputes.length > 0 && disputes[0],
