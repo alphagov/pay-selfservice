@@ -57,7 +57,6 @@ const userAndGatewayAccountStubs = [
 
 describe('All services transaction details page', () => {
   beforeEach(() => {
-    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
@@ -74,11 +73,13 @@ describe('All services transaction details page', () => {
   })
 
   it('accessibility check', () => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.visit(ALL_SERVICES_TRANSACTION_URL)
     cy.a11yCheck()
   })
 
   it('should display correct page title and headings', () => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.visit(ALL_SERVICES_TRANSACTION_URL)
 
     cy.title().should('eq', `Transaction details - 22 Jul 2025 03:14:15 - ${TRANSACTION.reference} - GOV.UK Pay`)
@@ -86,6 +87,7 @@ describe('All services transaction details page', () => {
   })
 
   it('should navigate to transactions list page when back link is clicked', () => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
         serviceExternalId: SERVICE_EXTERNAL_ID,
@@ -100,7 +102,26 @@ describe('All services transaction details page', () => {
     cy.url().should('include', ALL_SERVICES_TRANSACTIONS_LIST_URL)
   })
 
+  it('should persist filters when back link is clicked', () => {
+    const filters = { transactionFilters: '&state=success&dateFilter=last-12-months' }
+
+    cy.setEncryptedCookies(USER_EXTERNAL_ID, filters)
+    cy.task('setupStubs', [
+      gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
+        serviceExternalId: SERVICE_EXTERNAL_ID,
+        type: 'test',
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+      }),
+    ])
+
+    cy.visit(ALL_SERVICES_TRANSACTION_URL)
+    cy.get('.govuk-back-link').click()
+
+    cy.url().should('include', ALL_SERVICES_TRANSACTIONS_LIST_URL + `?` + filters.transactionFilters)
+  })
+
   it('should navigate to all services refund page when button is clicked', () => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.visit(ALL_SERVICES_TRANSACTION_URL)
 
     cy.contains('a.govuk-button', 'Refund payment').should('be.visible').click()
