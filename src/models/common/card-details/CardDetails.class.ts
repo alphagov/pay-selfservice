@@ -1,15 +1,10 @@
 import { CardDetailsData } from '@models/common/card-details/dto/CardDetails.dto'
 
 class CardDetails {
-  // it is unclear whether these fields are always present
-  // but it is safest to assume not
   readonly cardBrand?: string
   readonly lastDigitsCardNumber?: string
   readonly expiryDate?: string
   readonly cardType?: string
-
-  // these fields are definitely optional
-  // they may be present for some transactions, but not all
   readonly cardholderName?: string
   readonly billingAddress?: {
     line1: string
