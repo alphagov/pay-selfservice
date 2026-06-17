@@ -530,6 +530,57 @@ describe('Transaction details page', () => {
       })
   })
 
+  it('should display transaction metadata when present', () => {
+    const transactionWithMetadata = new TransactionFixture({
+      metadata: {
+        'Metadata 1': 'This is some metadata',
+        'Metadata 2': 'This is some more metadata',
+      },
+    })
+
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithMetadata),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+    ])
+    cy.visit(TRANSACTION_URL)
+
+    cy.get('.govuk-heading-m')
+      .contains('Metadata')
+      .next()
+      .should('have.class', 'govuk-summary-list')
+      .within(() => {
+        cy.get('.govuk-summary-list__row')
+          .eq(0)
+          .within(() => {
+            cy.get('.govuk-summary-list__key').should('contain.text', 'Metadata 1')
+            cy.get('.govuk-summary-list__value').should('contain.text', 'This is some metadata')
+          })
+
+        cy.get('.govuk-summary-list__row')
+          .eq(1)
+          .within(() => {
+            cy.get('.govuk-summary-list__key').should('contain.text', 'Metadata 2')
+            cy.get('.govuk-summary-list__value').should('contain.text', 'This is some more metadata')
+          })
+      })
+  })
+
+  it('should not display metadata when none is present', () => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
+        new TransactionFixture({ metadata: undefined })
+      ),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+    ])
+    cy.visit(TRANSACTION_URL)
+
+    cy.get('.govuk-heading-m').should('not.contain.text', 'Metadata')
+  })
+
   it('should display events', () => {
     const state = new TransactionStateFixture({ status: Status.DECLINED })
     const transactionAmount = 12345
