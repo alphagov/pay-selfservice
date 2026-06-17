@@ -10,9 +10,10 @@ const zendeskStubs = require('../../stubs/zendesk-stubs')
 
 const requestToGoLiveAgreementUrl = `/service/${serviceExternalId}/request-to-go-live/agreement`
 
-function getStubsForPageSubmission (chosenPspGoLiveStage, termsAgreedGoLiveStage) {
+function getStubsForPageSubmission(chosenPspGoLiveStage, termsAgreedGoLiveStage) {
   return [
-    userStubs.getUserSuccessRespondDifferentlySecondTime(userExternalId,
+    userStubs.getUserSuccessRespondDifferentlySecondTime(
+      userExternalId,
       { gatewayAccountId, serviceExternalId, goLiveStage: chosenPspGoLiveStage, merchantName: 'GDS' },
       { gatewayAccountId, serviceExternalId, goLiveStage: termsAgreedGoLiveStage, merchantName: 'GDS' }
     ),
@@ -20,11 +21,11 @@ function getStubsForPageSubmission (chosenPspGoLiveStage, termsAgreedGoLiveStage
     serviceStubs.patchUpdateServiceGoLiveStageSuccess({
       serviceExternalId,
       gatewayAccountId,
-      currentGoLiveStage: termsAgreedGoLiveStage
+      currentGoLiveStage: termsAgreedGoLiveStage,
     }),
     goLiveRequestStubs.postGovUkPayAgreement({ userExternalId, serviceExternalId }),
     goLiveRequestStubs.postStripeAgreementIpAddress(serviceExternalId),
-    zendeskStubs.createTicketSuccess()
+    zendeskStubs.createTicketSuccess(),
   ]
 }
 
@@ -37,7 +38,7 @@ describe('Request to go live: agreement', () => {
     it('should show an error when the user does not have enough permissions', () => {
       const serviceRole = utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE')
       serviceRole.role = {
-        permissions: []
+        permissions: [],
       }
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
 
@@ -68,8 +69,14 @@ describe('Request to go live: agreement', () => {
 
       cy.get('h1').should('contain', 'Read and accept our legal terms')
 
-      cy.get('fieldset').should('contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')
-      cy.get('fieldset').should('contain', 'You must also accept Stripe’s legal terms: Stripe Connected Account Agreement.')
+      cy.get('fieldset').should(
+        'contain',
+        'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.'
+      )
+      cy.get('fieldset').should(
+        'contain',
+        'You must also accept Stripe’s legal terms: Stripe Connected Account Agreement.'
+      )
       cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body memorandum of understanding')
       cy.get('ul.govuk-list>li').eq(1).should('contain', 'Non-Crown body contract')
 
@@ -86,19 +93,24 @@ describe('Request to go live: agreement', () => {
       cy.get('#request-to-go-live-agreement-form > button').click()
 
       cy.get('h2').should('contain', 'There is a problem')
-      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'You need to accept our legal terms to continue')
+      cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should(
+        'contain',
+        'You need to accept our legal terms to continue'
+      )
       cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#agreement')
 
-      cy.get('.govuk-form-group--error').should('exist').within(() => {
-        cy.get('.govuk-error-message').should('contain', 'You need to accept our legal terms to continue')
-      })
+      cy.get('.govuk-form-group--error')
+        .should('exist')
+        .within(() => {
+          cy.get('.govuk-error-message').should('contain', 'You need to accept our legal terms to continue')
+        })
 
       // set up new stubs where the first time we get the service it returns the go_live_stage as CHOSEN_PSP_STRIPE,
       // and the second time TERMS_AGREED_STRIPE so that the next page in the journey is loaded
       cy.task('clearStubs')
       cy.task('setupStubs', [
         ...getStubsForPageSubmission('CHOSEN_PSP_STRIPE', 'TERMS_AGREED_STRIPE'),
-        goLiveRequestStubs.postStripeAgreementIpAddress(serviceExternalId, '127.0.0.1')
+        goLiveRequestStubs.postStripeAgreementIpAddress(serviceExternalId, '127.0.0.1'),
       ])
 
       cy.get('#agreement').check()
@@ -112,16 +124,28 @@ describe('Request to go live: agreement', () => {
 
   describe('Government banking PSP - Takes payments over the phone stage has been completed', () => {
     it('should display "Read and accept our legal terms" page when service stage is GOV_BANKING_MOTO_OPTION_COMPLETED', () => {
-      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('GOV_BANKING_MOTO_OPTION_COMPLETED'))
+      utils.setupGetUserAndGatewayAccountStubs(
+        utils.buildServiceRoleForGoLiveStage('GOV_BANKING_MOTO_OPTION_COMPLETED')
+      )
 
       cy.visit(requestToGoLiveAgreementUrl)
-      cy.get('fieldset').should('not.contain', 'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.')
+      cy.get('fieldset').should(
+        'not.contain',
+        'These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.'
+      )
+      cy.get('fieldset').should(
+        'not.contain',
+        'These include the legal terms of Adyen, GOV.UK Pay’s payment service provider.'
+      )
       cy.get('ul.govuk-list>li').eq(0).should('contain', 'Crown body memorandum of understanding')
 
       // set up new stubs where the first time we get the service it returns the go_live_stage as GOV_BANKING_MOTO_OPTION_COMPLETED,
       // and the second time TERMS_AGREED_GOV_BANKING_WORLDPAY so that the next page in the journey is loaded
       cy.task('clearStubs')
-      cy.task('setupStubs', getStubsForPageSubmission('GOV_BANKING_MOTO_OPTION_COMPLETED', 'TERMS_AGREED_GOV_BANKING_WORLDPAY'))
+      cy.task(
+        'setupStubs',
+        getStubsForPageSubmission('GOV_BANKING_MOTO_OPTION_COMPLETED', 'TERMS_AGREED_GOV_BANKING_WORLDPAY')
+      )
 
       cy.get('#agreement').check()
       cy.get('#request-to-go-live-agreement-form > button').click()
@@ -139,11 +163,11 @@ describe('Request to go live: agreement', () => {
           gatewayAccountId,
           serviceExternalId,
           goLiveStage: 'CHOSEN_PSP_STRIPE',
-          merchantName: 'GDS'
+          merchantName: 'GDS',
         }),
         gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
         goLiveRequestStubs.postGovUkPayAgreement({ userExternalId, serviceExternalId }),
-        utils.patchUpdateGoLiveStageErrorStub('TERMS_AGREED_STRIPE')
+        utils.patchUpdateGoLiveStageErrorStub('TERMS_AGREED_STRIPE'),
       ])
     })
 

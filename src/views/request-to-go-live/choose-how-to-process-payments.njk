@@ -7,21 +7,47 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-
-    {{ errorSummary ({
-      errors: errors,
-      hrefs: {
-        'choose-how-to-process-payments-mode': '#choose-how-to-process-payments-mode'
-      }
-    }) }}
+    {{
+      errorSummary ({
+        errors: errors,
+        hrefs: {
+          'choose-how-to-process-payments-mode': '#choose-how-to-process-payments-mode'
+        }
+      })
+    }}
 
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 2 of 3</span>
 
-    <form id="request-to-go-live-choose-how-to-process-payments-form" method="post"
-          action="{{formatServicePathsFor(routes.service.requestToGoLive.chooseHowToProcessPayments, currentService.externalId)}}" >
-      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
-
-      {{ govukRadios({
+    <form
+      id="request-to-go-live-choose-how-to-process-payments-form"
+      method="post"
+      action="{{ formatServicePathsFor(routes.service.requestToGoLive.chooseHowToProcessPayments, currentService.externalId) }}"
+    >
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+      {%
+        set govUkPayProviderItem = {
+          value: "adyen",
+          text: 'GOV.UK Pay’s provider',
+          label: {
+            classes: "govuk-label--s"
+          },
+          hint: {
+            text: 'For local authorities, police and government-owned charitable groups. GOV.UK Pay has a contract with Adyen to process payments. Using Adyen means that you do not need your own contract with a payment service provider.'
+          }
+        } if EnvironmentFeatures.isAdyenEnabledInGoLiveRequest() else
+          {
+              value: 'stripe',
+              text: 'GOV.UK Pay’s provider',
+              label: {
+                classes: "govuk-label--s"
+              },
+              hint: {
+                text: 'For local authorities, police and government-owned charitable groups. GOV.UK Pay has a contract with Stripe to process payments. Using Stripe means that you do not need your own contract with a payment service provider.'
+           }
+        }
+      %}
+      {{
+        govukRadios({
         idPrefix: 'choose-how-to-process-payments-mode',
         name: 'choose-how-to-process-payments-mode',
         fieldset: {
@@ -33,16 +59,7 @@
         },
         errorMessage: { text: errors['choose-how-to-process-payments-mode'] } if errors['choose-how-to-process-payments-mode'] else false,
         items: [
-          {
-            value: 'stripe',
-            text: 'GOV.UK Pay’s provider',
-            label: {
-              classes: "govuk-label--s"
-            },
-            hint: {
-              text: 'For local authorities, police and government-owned charitable groups. GOV.UK Pay has a contract with Stripe to process payments. Using Stripe means that you do not need your own contract with a payment service provider.'
-            }
-          },
+          govUkPayProviderItem,
           {
             value: 'gov_banking',
             text: "Government Banking’s provider",
@@ -54,7 +71,8 @@
             }
           }
         ]
-        }) }}
+        })
+      }}
 
       {{ govukButton({ text: "Continue" }) }}
     </form>

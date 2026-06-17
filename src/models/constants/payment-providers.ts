@@ -1,7 +1,8 @@
 const PaymentProviders = {
   STRIPE: 'stripe',
   WORLDPAY: 'worldpay',
-  SANDBOX: 'sandbox'
+  SANDBOX: 'sandbox',
+  ADYEN: 'adyen',
 }
 
 export = PaymentProviders

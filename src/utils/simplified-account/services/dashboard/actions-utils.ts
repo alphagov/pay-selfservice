@@ -28,12 +28,17 @@ const possibleActions = {
 const goLiveStartedStages = [
   GoLiveStage.ENTERED_ORGANISATION_NAME,
   GoLiveStage.ENTERED_ORGANISATION_ADDRESS,
+  GoLiveStage.CHOSEN_PSP_ADYEN,
   GoLiveStage.CHOSEN_PSP_STRIPE,
   GoLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY,
   GoLiveStage.GOV_BANKING_MOTO_OPTION_COMPLETED,
 ]
 
-const goLiveRequestedStages = [GoLiveStage.TERMS_AGREED_STRIPE, GoLiveStage.TERMS_AGREED_GOV_BANKING_WORLDPAY]
+const goLiveRequestedStages = [
+  GoLiveStage.TERMS_AGREED_ADYEN,
+  GoLiveStage.TERMS_AGREED_STRIPE,
+  GoLiveStage.TERMS_AGREED_GOV_BANKING_WORLDPAY,
+]
 
 const goLiveLinkNotDisplayedStages = [GoLiveStage.LIVE, GoLiveStage.DENIED]
 
@@ -146,13 +151,14 @@ const getConfigurePSPAccountLink = (service: Service, account: GatewayAccount) =
   const credential = account.getCurrentCredential()
   const paymentProvider = credential?.paymentProvider
 
-  if (!paymentProvider || ![WORLDPAY, STRIPE].includes(paymentProvider)) {
+  if (!paymentProvider || ![WORLDPAY, STRIPE, PaymentProviders.ADYEN].includes(paymentProvider)) {
     return undefined
   }
 
   const simplifiedPaths = {
     [WORLDPAY]: paths.simplifiedAccount.settings.worldpayDetails.index,
     [STRIPE]: paths.simplifiedAccount.settings.stripeDetails.index,
+    [PaymentProviders.ADYEN]: paths.simplifiedAccount.settings.stripeDetails.index,
   }
 
   return formatServiceAndAccountPathsFor(simplifiedPaths[paymentProvider], service.externalId, account.type)

@@ -7,38 +7,59 @@
 
 {% block mainContent %}
   <div class="govuk-grid-column-two-thirds">
-    {{ errorSummary ({
-      errors: errors,
-      hrefs: {
-        "agreement": "#agreement"
-      }
-    }) }}
+    {{
+      errorSummary ({
+        errors: errors,
+        hrefs: {
+          "agreement": "#agreement"
+        }
+      })
+    }}
 
     <span id="request-to-go-live-current-step" class="govuk-caption-l">Step 3 of 3</span>
 
-    <form id="request-to-go-live-agreement-form" method="post"
-          action="{{formatServicePathsFor(routes.service.requestToGoLive.agreement, currentService.externalId)}}" >
-      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    <form
+      id="request-to-go-live-agreement-form"
+      method="post"
+      action="{{ formatServicePathsFor(routes.service.requestToGoLive.agreement, currentService.externalId) }}"
+    >
+      <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
       <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-6">
-          <h1 class="govuk-fieldset__heading">
-            Read and accept our legal terms
-          </h1>
+          <h1 class="govuk-fieldset__heading"> Read and accept our legal terms </h1>
         </legend>
-        <p class="govuk-body">To use GOV.UK Pay your organisation must accept our legal terms. {% if displayStripeAgreement %}These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.{% endif %}</p>
+        {% set paymentProvider = "Adyen" if EnvironmentFeatures.isAdyenEnabledInGoLiveRequest() else "Stripe" %}
+        <p class="govuk-body"
+          >To use GOV.UK Pay your organisation must accept our legal terms.
+          {% if displayStripeAgreement %}
+            These include the legal terms of {{ paymentProvider }}, GOV.UK Pay’s payment service provider.
+          {% endif %}</p
+        >
 
         <p class="govuk-body">Download the relevant GOV.UK Pay legal terms for your organisation:</p>
         <ul class="govuk-list govuk-list--bullet">
-          <li><a href="/policy/memorandum-of-understanding-for-crown-bodies" class="govuk-link">Crown body memorandum of understanding</a></li>
+          <li
+            ><a href="/policy/memorandum-of-understanding-for-crown-bodies" class="govuk-link"
+              >Crown body memorandum of understanding</a
+            ></li
+          >
           <li><a href="/policy/contract-for-non-crown-bodies" class="govuk-link">Non-Crown body contract</a></li>
         </ul>
 
         {% if displayStripeAgreement %}
-          <p class="govuk-body">You must also accept Stripe’s legal terms: <a href="/policy/stripe-connected-account-agreement" class="govuk-link">Stripe Connected Account Agreement.</a></p>
+          <p class="govuk-body"
+            >You must also accept {{ paymentProvider }}’s legal terms:
+            <a href="/policy/stripe-connected-account-agreement" class="govuk-link"
+              >{{ paymentProvider }} Connected Account Agreement.</a
+            ></p
+          >
         {% endif %}
-        <p class="govuk-body govuk-!-margin-bottom-6">These terms are confidential and must not be shared outside your organisation.</p>
+        <p class="govuk-body govuk-!-margin-bottom-6"
+          >These terms are confidential and must not be shared outside your organisation.</p
+        >
 
-          {{ govukCheckboxes({
+        {{
+          govukCheckboxes({
             idPrefix: "agreement",
             name: "agreement",
             fieldset: {
@@ -57,7 +78,8 @@
                 }
               }
             ]
-          }) }}
+          })
+        }}
       </fieldset>
 
       {{ govukButton({ text: "Continue" }) }}
