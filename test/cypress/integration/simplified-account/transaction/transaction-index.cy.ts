@@ -13,6 +13,7 @@ import { getTransactionsForGatewayAccount } from '@test/cypress/stubs/simplified
 import { PaymentDetailsFixture } from '@test/fixtures/transaction/payment-details.fixture'
 import { getLedgerTransactionsFailure, getLedgerTransactionsSuccess } from '@test/cypress/stubs/transaction-stubs'
 import { TimeConstants } from '@utils/time/time-constants'
+import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
 
@@ -189,7 +190,7 @@ describe('Transactions index', () => {
         TRANSACTION_URL(unfilteredTransactions[0].transaction_id),
         unfilteredTransactions[0].email!,
         penceToPoundsWithCurrency(unfilteredTransactions[0].amount),
-        unfilteredTransactions[0].card_details!.card_brand,
+        'Visa',
         'Success'
       )
 
@@ -199,7 +200,7 @@ describe('Transactions index', () => {
         TRANSACTION_URL(unfilteredTransactions[1].transaction_id),
         unfilteredTransactions[1].email!,
         penceToPoundsWithCurrency(unfilteredTransactions[1].amount),
-        unfilteredTransactions[1].card_details!.card_brand,
+        'Visa',
         'Success'
       )
 
@@ -209,7 +210,7 @@ describe('Transactions index', () => {
         TRANSACTION_URL(unfilteredTransactions[2].transaction_id),
         unfilteredTransactions[2].email!,
         penceToPoundsWithCurrency(unfilteredTransactions[2].amount),
-        unfilteredTransactions[2].card_details!.card_brand,
+        'Visa',
         'Success'
       )
 
@@ -394,7 +395,7 @@ describe('Transactions index', () => {
       sharedStubs('test', 'stripe')
 
       const state = new TransactionStateFixture({ status: Status.SUCCESS })
-      const paymentDetails = new PaymentDetailsFixture()
+      const paymentDetails = new PaymentDetailsFixture({ cardDetails: new CardDetailsFixture({ cardBrand: 'Visa' }) })
       const refundTransaction = new TransactionFixture({
         externalId: TRANSACTION.transaction_id + '-refund',
         parentTransactionExternalId: TRANSACTION.transaction_id,
@@ -417,7 +418,7 @@ describe('Transactions index', () => {
         TRANSACTION_URL(transactionWithFees.transaction_id),
         transactionWithFees.email!,
         penceToPoundsWithCurrency(transactionWithFees.amount),
-        transactionWithFees.card_details!.card_brand,
+        'Visa',
         'Success'
       )
 
@@ -427,7 +428,7 @@ describe('Transactions index', () => {
         TRANSACTION_URL(transactionWithFees.transaction_id),
         refundTransaction.email!,
         penceToPoundsWithCurrency(refundTransaction.amount),
-        refundTransaction.card_details!.card_brand,
+        'Visa',
         'Refund successful',
         '',
         penceToPoundsWithCurrency(-refundTransaction.amount)
@@ -439,7 +440,7 @@ describe('Transactions index', () => {
         sharedStubs('test', 'stripe')
 
         const state = new TransactionStateFixture({ status: Status.NEEDS_RESPONSE })
-        const paymentDetails = new PaymentDetailsFixture()
+        const paymentDetails = new PaymentDetailsFixture({ cardDetails: new CardDetailsFixture({ cardBrand: 'Visa' }) })
         const disputeTransaction = new TransactionFixture({
           paymentDetails,
           transactionType: ResourceType.DISPUTE,
@@ -460,7 +461,7 @@ describe('Transactions index', () => {
           TRANSACTION_URL(transactionWithFees.transaction_id),
           transactionWithFees.email!,
           penceToPoundsWithCurrency(transactionWithFees.amount),
-          transactionWithFees.card_details!.card_brand,
+          'Visa',
           'Success'
         )
 
@@ -470,7 +471,7 @@ describe('Transactions index', () => {
           TRANSACTION_URL(disputeTransaction.transaction_id),
           disputeTransaction.email!,
           penceToPoundsWithCurrency(disputeTransaction.amount),
-          disputeTransaction.card_details!.card_brand,
+          'Visa',
           'Dispute awaiting evidence',
           '',
           ''
@@ -484,7 +485,7 @@ describe('Transactions index', () => {
         const disputeTransactionAmounts = { netAmount: 4000, fee: 2000, amount: 2000 }
         const transactionWithFees = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
         const state = new TransactionStateFixture({ status: Status.LOST })
-        const paymentDetails = new PaymentDetailsFixture()
+        const paymentDetails = new PaymentDetailsFixture({ cardDetails: new CardDetailsFixture({ cardBrand: 'Visa' }) })
         const disputeTransaction = new TransactionFixture({
           paymentDetails,
           transactionType: ResourceType.DISPUTE,
@@ -506,7 +507,7 @@ describe('Transactions index', () => {
           TRANSACTION_URL(transactionWithFees.transaction_id),
           transactionWithFees.email!,
           penceToPoundsWithCurrency(transactionWithFees.amount),
-          transactionWithFees.card_details!.card_brand,
+          'Visa',
           'Success'
         )
 
@@ -516,18 +517,18 @@ describe('Transactions index', () => {
           TRANSACTION_URL(disputeTransaction.transaction_id),
           disputeTransaction.email!,
           penceToPoundsWithCurrency(disputeTransaction.amount),
-          disputeTransaction.card_details!.card_brand,
+          'Visa',
           'Dispute lost to customer',
           penceToPoundsWithCurrency(disputeTransactionAmounts.fee),
           penceToPoundsWithCurrency(-disputeTransaction.net_amount!)
         )
       })
 
-      it('should display amounts correctly for dispute won in our favour', () => {
+      it('should display amounts correctly for a dispute won in the service’s favour', () => {
         sharedStubs('test', 'stripe')
 
         const state = new TransactionStateFixture({ status: Status.WON })
-        const paymentDetails = new PaymentDetailsFixture()
+        const paymentDetails = new PaymentDetailsFixture({ cardDetails: new CardDetailsFixture({ cardBrand: 'Visa' }) })
         const disputeTransaction = new TransactionFixture({
           paymentDetails,
           transactionType: ResourceType.DISPUTE,
@@ -548,7 +549,7 @@ describe('Transactions index', () => {
           TRANSACTION_URL(TRANSACTION.transaction_id),
           TRANSACTION.email!,
           penceToPoundsWithCurrency(TRANSACTION.amount),
-          TRANSACTION.card_details!.card_brand,
+          'Visa',
           'Success'
         )
 
@@ -558,7 +559,7 @@ describe('Transactions index', () => {
           TRANSACTION_URL(disputeTransaction.transaction_id),
           disputeTransaction.email!,
           penceToPoundsWithCurrency(disputeTransaction.amount),
-          disputeTransaction.card_details!.card_brand,
+          'Visa',
           'Dispute won in your favour',
           '',
           ''

@@ -26,7 +26,7 @@
       {%- endif -%}
     </td>
     <td class="govuk-table__cell govuk-!-font-size-16 brand vertical-align-middle">
-      {{ transaction.cardDetails.cardBrand }}
+      {{ transaction._locals.formatted.cardBrand }}
     </td>
     <td class="govuk-table__cell govuk-!-font-size-16 state vertical-align-middle">
       {{ transaction._locals.formatted.status }}

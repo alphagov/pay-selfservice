@@ -16,14 +16,14 @@
           text: 'Card brand'
         },
         value: {
-          text: transaction.cardDetails.cardBrand
+          text: transaction._locals.formatted.cardBrand
         }
       }, {
         key: {
           text: 'Name on card'
         },
         value: {
-          text: transaction.cardDetails.cardholderName
+          text: transaction._locals.formatted.cardholderName
         }
       }, {
         key: {
@@ -37,7 +37,7 @@
           text: 'Card expiry date'
         },
         value: {
-          text: transaction.cardDetails.expiryDate
+          text: transaction._locals.formatted.cardExpiryDate
         }
       }
     ])
