@@ -34,6 +34,9 @@
   {% if transaction.isDispute() or transaction.disputed %}
     {% include './partials/_dispute-details.njk' %}
   {% endif %}
+  {% if transaction.metadata %}
+    {% include './partials/_metadata.njk' %}
+  {% endif %}
   {% include './partials/_transaction-events.njk' %}
 
   <a class="govuk-button govuk-button--secondary" href="{{ oldView }}">GOTO old view</a>

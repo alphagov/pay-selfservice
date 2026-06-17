@@ -42,4 +42,5 @@ export interface TransactionData {
   reason?: string // dispute only
   payment_details?: PaymentDetailsData
   parent_transaction_id?: string
+  metadata?: Record<string, string>
 }

@@ -1,0 +1,15 @@
+<h2 class="govuk-heading-m govuk-!-margin-top-8">Metadata</h2>
+{% set metadataRows = [] %}
+{% for metadataKey, metadataValue in transaction.metadata | dictsort %}
+  {%
+    set metadataRows = metadataRows.concat({
+      key: {
+        text: metadataKey
+      },
+      value: {
+        text: metadataValue
+      }
+    })
+  %}
+{% endfor %}
+{{ govukSummaryList({ rows: metadataRows }) }}
