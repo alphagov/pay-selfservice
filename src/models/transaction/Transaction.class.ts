@@ -43,6 +43,7 @@ class Transaction {
   readonly data: TransactionData
   readonly paymentDetails?: PaymentDetails
   readonly parentTransactionExternalId?: string
+  readonly metadata?: Record<string, string>
 
   readonly _locals: {
     links: TransactionLinksGenerator
@@ -79,6 +80,7 @@ class Transaction {
     this.data = data
     this.paymentDetails = data.payment_details && new PaymentDetails(data.payment_details)
     this.parentTransactionExternalId = data.parent_transaction_id
+    this.metadata = data.metadata
 
     this._locals = {
       links: new TransactionLinksGenerator(this.getRootTransactionId()),
