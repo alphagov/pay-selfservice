@@ -1,0 +1,118 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+
+
+{% set settingsPageTitle %}Your provider is changing to Adyen{% endset %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+
+  <p class="govuk-body">
+    <a
+      class="govuk-link"
+      href="https://gds.blog.gov.uk/2026/06/02/building-for-the-future-making-change-simple-on-gov-uk-pay/"
+    >
+      GDS has procured a payment provider to replace Stripe </a
+    >. This means your payment provider is changing to Adyen. We're doing everything we can to minimise disruption and
+    make sure there is as little as possible that you need to do.
+  </p>
+
+  <p class="govuk-body">
+    Nothing will change for paying users. You do not need to contact them or tell them anything because the change will
+    be invisible for them and there is nothing they need to do. We will make sure that there will be no loss of data or
+    features.
+  </p>
+
+  <h2 class="govuk-heading-m">Switching to Adyen</h2>
+  <p class="govuk-body"> All services will move to Adyen by the end of 2026. We will tell you when switching opens. </p>
+  <p class="govuk-body">
+    Services already live will need to provide similar information to when you went live with Stripe.
+  </p>
+  <p class="govuk-body"> You will need: </p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>your organisation’s bank details</li>
+    <li>
+      the name, date of birth, home address, work telephone number, and work email address of someone who has the
+      authority to sign a contract on behalf of your organisation (called your responsible person’)
+    </li>
+    <li>your organisation’s VAT number (if applicable)</li>
+    <li>
+      the name, home address, date of birth and work email address of the director of your service (or someone at
+      director level)
+    </li>
+    <li>your company registration number (if applicable)</li>
+  </ul>
+  <p class="govuk-body">
+    You must also add a document that verifies your organisation is a government entity. This must be a copy of one of
+    the following:
+  </p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>your VAT Registration</li>
+    <li>your certificate of incorporation</li>
+    <li>a document from Companies House</li>
+    <li>a VAT certificate from HM Revenue and Customs (HMRC)</li>
+    <li>an account statement from HMRC</li>
+    <li>a document from the Charity Commission</li>
+    <li>a document from the Scottish Charity Regulator (OSCR)</li>
+  </ul>
+  <p class="govuk-body"> The address on your government entity document must not be a PO box. </p>
+
+  <h3 class="govuk-heading-s">
+    Cadets, parish councils and other organisations that cannot provide a government entity document
+  </h3>
+
+  <p class="govuk-body">
+    Cadets, parish councils and other organisations that cannot provide a government entity document will need to
+    produce a letter on letter headed paper with the following information on it, and ask the director in your
+    organisation to sign it. If the director is currently the same person as the senior responsible officer, it needs to
+    be a different director. The letter must include:
+  </p>
+
+  <ul class="govuk-list govuk-list--bullet">
+    <li>an authorising statement from the director at the start of the letter</li>
+    <li>account owner name</li>
+    <li>account owner title</li>
+    <li>business name(s)</li>
+    <li>website URL(s)</li>
+    <li>Adyen account ID(s)</li>
+    <li>business address</li>
+    <li>business tax IDs</li>
+  </ul>
+
+  <h2 class="govuk-heading-m">Fees</h2>
+  <p class="govuk-body">
+    <a id="download-adyen-fee-link" href="{{ feesPath }}">Information about Adyen s fees is now available</a>
+  </p>
+
+  <p class="govuk-body">
+    Adyen's fees are similar to Stripe but are slightly different in some areas. For example, the most common type of
+    card used on GOV.UK Pay is a UK debit card. Stripe charge a flat rate of a few pence plus a percentage of the value
+    of the transaction. Adyen charge a higher flat rate but the percentage is lower. However, credit card fees, Amex
+    fees, non-European card fees and chargebacks (also known as disputes) are cheaper. The exact change depends on your
+    service's transactions.
+  </p>
+
+  <h2 class="govuk-heading-m">Minor technical changes for API users</h2>
+  <p class="govuk-body">
+    There will be some minor changes to how the API works. We will contact you about the changes soon but we expect it
+    will be quick and easy to make the necessary changes to your service.
+  </p>
+
+  <h2 class="govuk-heading-m">We're looking for early adopters</h2>
+  <p class="govuk-body">
+    We want to work with a few services to help us make sure everything goes smoothly. You will need to commit to a few
+    feedback sessions discussing any problems or concerns you have. It will not affect your ability to take payments but
+    you'll be helping us make the process smooth for everyone.
+  </p>
+  <p class="govuk-body">
+    Get in touch with us if you're interested by emailing
+    <a href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk">govuk-pay-support@digital.cabinet-office.gov.uk</a>
+  </p>
+
+  <h2 class="govuk-heading-m">Questions and support</h2>
+  <p class="govuk-body">
+    Email
+    <a href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk">govuk-pay-support@digital.cabinet-office.gov.uk</a>
+    if you have questions about the change of provider.
+  </p>
+  <p class="govuk-body"> Please do not contact Adyen or Stripe about the move send any questions or comments to us. </p>
+{% endblock %}
