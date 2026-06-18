@@ -13,6 +13,8 @@ import { Message } from '@utils/types/express/Message'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
+  req.serviceView.showHeader = false
+
   const transaction = await getTransaction(req.params.transactionExternalId, req.account.id)
   if (transaction.isFullyRefunded() || !transaction.isRefundable()) {
     return res.redirect(
@@ -47,7 +49,7 @@ async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResp
   if (transaction.isFullyRefunded() || !transaction.isRefundable()) {
     return res.redirect(
       formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.transactions.detail,
+        paths.simplifiedAccount.allServiceTransactions.detail,
         req.service.externalId,
         req.account.type,
         req.params.transactionExternalId
@@ -64,14 +66,14 @@ async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResp
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)
-    return response(req, res, 'simplified-account/services/transactions/refund', {
+    return response(req, res, 'simplified-account/services/all-service-transactions/refund', {
       transaction,
       errors: {
         summary: formattedErrors.errorSummary,
         formErrors: formattedErrors.formErrors,
       },
       backLink: formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.transactions.detail,
+        paths.simplifiedAccount.allServiceTransactions.detail,
         req.service.externalId,
         req.account.type,
         req.params.transactionExternalId
@@ -105,7 +107,7 @@ async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResp
 
   return res.redirect(
     formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.transactions.detail,
+      paths.simplifiedAccount.allServiceTransactions.detail,
       req.service.externalId,
       req.account.type,
       req.params.transactionExternalId

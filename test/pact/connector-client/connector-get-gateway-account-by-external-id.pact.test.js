@@ -1,6 +1,6 @@
 'use strict'
 
-const { Pact } = require('@pact-foundation/pact')
+const { PactV2: Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 
 const path = require('path')
@@ -22,7 +22,7 @@ describe('connector client - get gateway account by external id', function () {
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -37,26 +37,28 @@ describe('connector client - get gateway account by external id', function () {
       payment_provider: 'worldpay',
       description: 'A description',
       analytics_id: 'an-analytics-id',
-      gateway_account_credentials: [{
-        credentials: {
-          one_off_customer_initiated: {
-            merchant_code: 'a-merchant-code',
-            username: 'a-username'
+      gateway_account_credentials: [
+        {
+          credentials: {
+            one_off_customer_initiated: {
+              merchant_code: 'a-merchant-code',
+              username: 'a-username',
+            },
+            recurring_customer_initiated: {
+              username: 'a-username',
+              merchant_code: 'a-merchant-code',
+            },
+            recurring_merchant_initiated: {
+              username: 'a-username',
+              merchant_code: 'a-merchant-code',
+            },
           },
-          recurring_customer_initiated: {
-            username: 'a-username',
-            merchant_code: 'a-merchant-code'
-          },
-          recurring_merchant_initiated: {
-            username: 'a-username',
-            merchant_code: 'a-merchant-code'
-          }
-        }
-      }],
+        },
+      ],
       worldpay_3ds_flex: {
         organisational_unit_id: 'an-org-id',
-        issuer: 'an-issues'
-      }
+        issuer: 'an-issues',
+      },
     })
 
     before(() => {
@@ -75,7 +77,7 @@ describe('connector client - get gateway account by external id', function () {
 
     it('should get gateway account successfully', async () => {
       const params = {
-        gatewayAccountExternalId
+        gatewayAccountExternalId,
       }
       const response = await connectorClient.getAccountByExternalId(params)
       expect(response).to.deep.equal(validGetGatewayAccountResponse)
@@ -87,7 +89,7 @@ describe('connector client - get gateway account by external id', function () {
       external_id: gatewayAccountExternalId,
       payment_provider: 'worldpay',
       description: 'A description',
-      analytics_id: 'an-analytics-id'
+      analytics_id: 'an-analytics-id',
     })
 
     before(() => {
@@ -106,7 +108,7 @@ describe('connector client - get gateway account by external id', function () {
 
     it('should get gateway account successfully', async () => {
       const params = {
-        gatewayAccountExternalId
+        gatewayAccountExternalId,
       }
       const response = await connectorClient.getAccountByExternalId(params)
       expect(response).to.deep.equal(validGetGatewayAccountResponse)

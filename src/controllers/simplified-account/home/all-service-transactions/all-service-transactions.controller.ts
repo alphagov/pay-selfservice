@@ -2,10 +2,9 @@ import express, { NextFunction } from 'express'
 import { response } from '@utils/response'
 import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
 import { AuthenticatedRequest } from '@utils/types/express'
-import { findGatewayAccountsByService } from '@services/gateway-accounts.service'
 import { getAllCardTypes } from '@services/card-types.service'
-import { searchTransactions } from '@services/transactions.service'
-import { NoServicesWithPermissionError, NotFoundError } from '@root/errors'
+import { searchTransactions, TransactionSearchResults } from '@services/transactions.service'
+import { GatewayTimeoutError, NoServicesWithPermissionError, NotFoundError } from '@root/errors'
 import { isBritishSummerTime } from '@utils/dates'
 import paths from '@root/paths'
 import {
@@ -16,20 +15,18 @@ import lodash from 'lodash'
 import PaymentProviders from '@models/constants/payment-providers'
 import formattedPathFor from '@utils/simplified-account/format/format-paths-for'
 import getPagination from '@utils/simplified-account/pagination'
+import { ViewMode } from '@models/view-mode/ViewMode.class'
+import { GatewayName } from '@models/gateway/gateway-name'
+import { CardType } from '@models/card-type/CardType.class'
 
 const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
 
 async function get(
-  req: AuthenticatedRequest,
+  req: AuthenticatedRequest & { viewMode: ViewMode },
   res: express.Response<unknown, { flash?: Record<string, string[]> }>,
   next: NextFunction
 ) {
-  const modeFilter = req.params.modeFilter === 'test' ? 'test' : 'live'
-  const userServiceExternalIds = req.user.serviceRoles
-    .filter((serviceRole) => serviceRole.hasPermission('transactions:read'))
-    .map((serviceRole) => serviceRole.service)
-    .map((service) => service.externalId)
-  if (!userServiceExternalIds.length) {
+  if (!req.viewMode.hasServicesInMode && !req.viewMode.hasServicesInOppositeMode) {
     return next(
       new NoServicesWithPermissionError(
         'You do not have any associated services with rights to view these transactions.'
@@ -37,29 +34,38 @@ async function get(
     )
   }
 
-  const allGatewayAccounts = await findGatewayAccountsByService(userServiceExternalIds)
-  const gatewayAccountsByMode = allGatewayAccounts.filter((gatewayAccount) => gatewayAccount.type === modeFilter)
-  const gatewayAccountIds = gatewayAccountsByMode.map((gatewayAccountData) => gatewayAccountData.id)
-  const showOppositeModeLink = allGatewayAccounts.length > gatewayAccountsByMode.length
-
-  if (!gatewayAccountIds.length && !req.params.modeFilter) {
-    // no live gateway accounts
-    return res.redirect(formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, 'test'))
+  if (!req.viewMode.hasServicesInMode) {
+    throw new NotFoundError(
+      `User has no services in mode [${req.viewMode.modeName}] with permission [${req.viewMode.permission}]`
+    )
   }
 
-  if (!gatewayAccountsByMode.length) {
-    throw new NotFoundError(`Could not retrieve any gateway accounts with provided parameters`)
-  }
-
-  const isStripe = gatewayAccountsByMode.some(
-    (gatewayAccount) => gatewayAccount.paymentProvider === PaymentProviders.STRIPE
-  )
+  const isStripe = req.viewMode.paymentProviders.includes(PaymentProviders.STRIPE)
 
   const PAGE_SIZE = 20
-  const transactionSearchParams = TransactionSearchParams.fromSearchQuery(gatewayAccountIds, req.query, true, PAGE_SIZE)
-  const [cardTypes, results] = await Promise.all([getAllCardTypes(), searchTransactions(transactionSearchParams)])
+  const transactionSearchParams = TransactionSearchParams.fromSearchQuery(
+    req.viewMode.gatewayAccountIds,
+    req.query,
+    true,
+    PAGE_SIZE
+  )
+
+  let cardTypes: CardType[]
+  let results: TransactionSearchResults
+  try {
+    const [_cardTypes, _results] = await Promise.all([getAllCardTypes(), searchTransactions(transactionSearchParams)])
+    cardTypes = _cardTypes
+    results = _results
+  } catch (err) {
+    if (err instanceof GatewayTimeoutError && err.gatewayName === GatewayName.LEDGER) {
+      return res.redirect(req.viewMode._locals.links.allServiceTransactions.timeout)
+    } else {
+      throw err
+    }
+  }
+
   results.transactions.forEach((transaction) => {
-    transaction._locals.links.bind(transaction.serviceExternalId, modeFilter)
+    transaction._locals.links.bind(transaction.serviceExternalId, req.viewMode.modeName)
     transaction._locals.links.bindToAllServices()
   })
 
@@ -82,13 +88,15 @@ async function get(
 
   const totalPages = Math.ceil(results.total / PAGE_SIZE)
   const currentPage = Math.min(transactionSearchParams.page!, totalPages)
-  const transactionsUrl = formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, modeFilter)
-  const oppositeMode = modeFilter === 'test' ? 'live' : 'test'
-  const oppositeModeLink = formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, oppositeMode)
+  const transactionsUrl = formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, req.viewMode.modeName)
+  const oppositeModeLink = formattedPathFor(
+    paths.allServiceTransactions.simplifiedAccount.index,
+    req.viewMode.oppositeModeName
+  )
   const { path } = getUrlGenerator(req.query as Record<string, string>, transactionsUrl)
   const pagination = getPagination(currentPage, PAGE_SIZE, results.total, path)
 
-  const downloadUrl = formattedPathFor(paths.allServiceTransactions.simplifiedAccount.download, modeFilter)
+  const downloadUrl = formattedPathFor(paths.allServiceTransactions.simplifiedAccount.download, req.viewMode.modeName)
   const downloadQueryString = transactionSearchParams.getQueryParams().toString()
   const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
   const transactionCountWithinRange = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT
@@ -96,9 +104,11 @@ async function get(
   const showCsvDownload =
     transactionCountWithinRange || (hasQueryParams && results.total > LEDGER_TRANSACTION_COUNT_LIMIT)
 
+  req.session.transactionFilters = req.url.split('?')[1] || ''
+
   return response(req, res, 'simplified-account/home/all-service-transactions/index', {
-    modeFilter,
-    oppositeMode,
+    modeFilter: req.viewMode.modeName,
+    oppositeMode: req.viewMode.oppositeModeName,
     results,
     isBST: isBritishSummerTime(),
     pagination,
@@ -109,7 +119,7 @@ async function get(
     statuses: eventStates,
     downloadLink,
     showCsvDownload,
-    showOppositeModeLink,
+    showOppositeModeLink: req.viewMode.hasServicesInOppositeMode,
     oppositeModeLink,
   })
 }

@@ -6,6 +6,8 @@ import { Transaction } from '@models/transaction/Transaction.class'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
+  req.serviceView.showHeader = false
+
   const [transaction, events] = await Promise.all([
     getTransaction(req.params.transactionExternalId, req.account.id),
     getEvents(req.params.transactionExternalId, req.account.id),
@@ -22,8 +24,10 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   // sort by most recent first
   events.sort((eventA, eventB) => (eventA.timestamp > eventB.timestamp ? -1 : 1))
 
+  const transactionFilters = req.session.transactionFilters as string
+
   return response(req, res, 'simplified-account/services/all-service-transactions/detail/index', {
-    backLink: formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, req.account.type),
+    backLink: `${formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, req.account.type)}${transactionFilters ? `?${transactionFilters}` : ''} `,
     events,
     transaction,
     dispute: disputes.length > 0 && disputes[0],

@@ -1,7 +1,7 @@
 'use strict'
 
 // NPM dependencies
-const { Pact } = require('@pact-foundation/pact')
+const { PactV2: Pact } = require('@pact-foundation/pact')
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 
@@ -28,7 +28,7 @@ describe('connector client - patch MOTO mask card number toggle (enabled) reques
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
     spec: 2,
-    pactfileWriteMode: 'merge'
+    pactfileWriteMode: 'merge',
   })
 
   before(async () => {
@@ -38,8 +38,7 @@ describe('connector client - patch MOTO mask card number toggle (enabled) reques
   after(() => provider.finalize())
 
   describe('MOTO mask card number input toggle - supported payment provider request', () => {
-    const motoMaskCardNumberInputProviderState =
-      `a gateway account with MOTO enabled and an external id ${existingGatewayAccountId} exists in the database`
+    const motoMaskCardNumberInputProviderState = `a gateway account with MOTO enabled and an external id ${existingGatewayAccountId} exists in the database`
 
     before(() => {
       return provider.addInteraction(
@@ -50,15 +49,16 @@ describe('connector client - patch MOTO mask card number toggle (enabled) reques
           .withRequestBody(request)
           .withStatusCode(200)
           .withResponseHeaders({})
-          .build())
+          .build()
+      )
     })
 
     afterEach(() => provider.verify())
 
-    it('should toggle successfully', done => {
-      connectorClient.toggleMotoMaskCardNumberInput(existingGatewayAccountId, true, null)
-        .should.be.fulfilled
-        .notify(done)
+    it('should toggle successfully', (done) => {
+      connectorClient
+        .toggleMotoMaskCardNumberInput(existingGatewayAccountId, true, null)
+        .should.be.fulfilled.notify(done)
     })
   })
 })

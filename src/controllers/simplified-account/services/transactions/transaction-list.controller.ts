@@ -76,6 +76,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const showCsvDownload =
     transactionCountWithinRange || (hasQueryParams && results.total > LEDGER_TRANSACTION_COUNT_LIMIT)
 
+  req.session.transactionFilters = req.url.split('?')[1] || ''
+
   return response(req, res, 'simplified-account/transactions/index', {
     results,
     isBST: isBritishSummerTime(),

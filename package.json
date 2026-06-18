@@ -32,7 +32,7 @@
     "cypress:test": "cypress run",
     "cypress:test-headed": "cypress open",
     "cypress:test-percy": "percy exec -- cypress run",
-    "publish-pacts": "./bin/publish-pacts.js"
+    "publish-pacts": "find ./pacts -name '*.json' ! -name '*to-be*' | xargs pact-broker publish --consumer-app-version=$PACT_CONSUMER_VERSION --broker-base-url=$PACT_BROKER_URL --broker-username=$PACT_BROKER_USERNAME --broker-password=$PACT_BROKER_PASSWORD"
   },
   "lint-staged": {
     "*.js": [
@@ -111,8 +111,9 @@
     "@cypress/webpack-preprocessor": "^6.0.2",
     "@eslint/js": "^9.23.0",
     "@govuk-pay/run-amock": "0.0.13",
-    "@pact-foundation/pact": "^12.1.1",
-    "@pact-foundation/pact-core": "^14.0.5",
+    "@pact-foundation/pact": "^16.5.0",
+    "@pact-foundation/pact-cli": "^18.1.0",
+    "@pact-foundation/pact-core": "^19.2.0",
     "@percy/cli": "^1.31.8",
     "@percy/cypress": "^3.1.7",
     "@types/chai": "^5.2.2",

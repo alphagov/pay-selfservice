@@ -2,6 +2,9 @@ import LedgerClient from '@services/clients/pay/LedgerClient.class'
 import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
 import express from 'express'
 import Stream from '@services/clients/stream.client'
+import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
+import { GatewayTimeoutError } from '@root/errors'
+import { Transaction } from '@models/transaction/Transaction.class'
 
 const ledgerClient = new LedgerClient()
 
@@ -25,8 +28,23 @@ const dashboardTransactionSummary = async (gatewayAccountId: number, fromDateTim
 const getTransaction = async (transactionExternalId: string, gatewayAccountId: number) =>
   await ledgerClient.transactions.get(transactionExternalId, gatewayAccountId)
 
-const searchTransactions = async (transactionSearchParams: TransactionSearchParams) => {
-  return ledgerClient.transactions.search(transactionSearchParams)
+interface TransactionSearchResults {
+  total: number
+  count: number
+  page: number
+  transactions: Transaction[]
+}
+
+const searchTransactions = async (
+  transactionSearchParams: TransactionSearchParams
+): Promise<TransactionSearchResults> => {
+  return ledgerClient.transactions.search(transactionSearchParams).catch((e) => {
+    if (e instanceof RESTClientError && e.errorCode === 504) {
+      throw GatewayTimeoutError.Ledger('Transactions search timed out')
+    } else {
+      throw e
+    }
+  })
 }
 
 const downloadCsv = async (
@@ -65,4 +83,12 @@ const getEvents = async (transactionExternalId: string, gatewayAccountId: number
 const getDisputes = async (transactionExternalId: string, gatewayAccountId: number) =>
   await ledgerClient.transactions.disputes(transactionExternalId, gatewayAccountId)
 
-export { dashboardTransactionSummary, getTransaction, searchTransactions, getEvents, getDisputes, downloadCsv }
+export {
+  dashboardTransactionSummary,
+  getTransaction,
+  searchTransactions,
+  getEvents,
+  getDisputes,
+  downloadCsv,
+  TransactionSearchResults,
+}

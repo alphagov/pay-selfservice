@@ -1,0 +1,24 @@
+{% extends "layout.njk" %}
+
+{% block pageTitle %}
+  An error occurred - GOV.UK Pay
+{% endblock %}
+
+{% block mainContent %}
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l page-title">An error occurred</h1>
+    <div class="govuk-body" id="errorMsg"
+      >The search has timed out. Try searching for a specific date range or applying other filters.</div
+    >
+    <div>
+      <p class="govuk-body"
+        ><a
+          class="govuk-link"
+          href="{{ viewMode._locals.links.allServiceTransactions.nosearch }}"
+          id="linkToAllServicesSearch"
+          >Back to transactions search</a
+        ></p
+      >
+    </div>
+  </div>
+{% endblock %}

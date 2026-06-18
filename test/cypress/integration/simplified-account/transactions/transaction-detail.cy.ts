@@ -72,11 +72,8 @@ const userAndGatewayAccountStubs = [
 ]
 
 describe('Transaction details page', () => {
-  beforeEach(() => {
-    cy.setEncryptedCookies(USER_EXTERNAL_ID)
-  })
-
   it('accessibility check', () => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
@@ -87,6 +84,7 @@ describe('Transaction details page', () => {
   })
 
   it('should display correct page title and headings', () => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
@@ -107,6 +105,7 @@ describe('Transaction details page', () => {
   })
 
   it('should navigate to transactions list page when back link is clicked', () => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
@@ -127,7 +126,31 @@ describe('Transaction details page', () => {
     cy.url().should('include', TRANSACTIONS_LIST_URL)
   })
 
+  it('should persist filters when back link is clicked', () => {
+    const filters = { transactionFilters: '&state=success&dateFilter=last-12-months' }
+    cy.setEncryptedCookies(USER_EXTERNAL_ID, filters)
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+      getCardTypesSuccess(),
+      transactionStubs.getLedgerTransactionsSuccess({
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactions: [TRANSACTION],
+        filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
+        displaySize: 20,
+        transactionLength: 1,
+      }),
+    ])
+
+    cy.visit(TRANSACTION_URL)
+    cy.get('.govuk-back-link').click()
+
+    cy.url().should('include', TRANSACTIONS_LIST_URL + `?` + filters.transactionFilters)
+  })
+
   it('should display transaction details correctly for a payment', () => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
@@ -255,6 +278,7 @@ describe('Transaction details page', () => {
     })
     const transactionWithRefund = new TransactionFixture({ refundSummary })
 
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, transactionWithRefund.externalId).success(
@@ -279,6 +303,7 @@ describe('Transaction details page', () => {
   it('should not display card details type when not present', () => {
     const transactionWithoutCardDetails = new TransactionFixture({ cardDetails: undefined })
 
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
@@ -306,6 +331,7 @@ describe('Transaction details page', () => {
       }),
     })
 
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWith3DSRequired),
@@ -326,6 +352,7 @@ describe('Transaction details page', () => {
       authorisationSummary: new AuthorisationSummaryFixture(),
     })
 
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
@@ -345,6 +372,8 @@ describe('Transaction details page', () => {
 
   it('should display wallet type when present', () => {
     const transactionWithWalletType = new TransactionFixture({ walletType: 'APPLE_PAY' })
+
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithWalletType),
@@ -363,6 +392,8 @@ describe('Transaction details page', () => {
   it('should display fees when present', () => {
     const transactionAmounts = { corporateCardSurcharge: 25, fee: 15, totalAmount: 1075 }
     const transactionWithFees = new TransactionFixture({ ...transactionAmounts })
+
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithFees),
@@ -409,6 +440,7 @@ describe('Transaction details page', () => {
 
     const transactionFee = penceToPoundsWithCurrency(disputeTransaction.fee)
 
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       transactionStubs.getLedgerTransactionSuccess({
@@ -498,6 +530,57 @@ describe('Transaction details page', () => {
       })
   })
 
+  it('should display transaction metadata when present', () => {
+    const transactionWithMetadata = new TransactionFixture({
+      metadata: {
+        'Metadata 1': 'This is some metadata',
+        'Metadata 2': 'This is some more metadata',
+      },
+    })
+
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithMetadata),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+    ])
+    cy.visit(TRANSACTION_URL)
+
+    cy.get('.govuk-heading-m')
+      .contains('Metadata')
+      .next()
+      .should('have.class', 'govuk-summary-list')
+      .within(() => {
+        cy.get('.govuk-summary-list__row')
+          .eq(0)
+          .within(() => {
+            cy.get('.govuk-summary-list__key').should('contain.text', 'Metadata 1')
+            cy.get('.govuk-summary-list__value').should('contain.text', 'This is some metadata')
+          })
+
+        cy.get('.govuk-summary-list__row')
+          .eq(1)
+          .within(() => {
+            cy.get('.govuk-summary-list__key').should('contain.text', 'Metadata 2')
+            cy.get('.govuk-summary-list__value').should('contain.text', 'This is some more metadata')
+          })
+      })
+  })
+
+  it('should not display metadata when none is present', () => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
+    cy.task('setupStubs', [
+      ...userAndGatewayAccountStubs,
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
+        new TransactionFixture({ metadata: undefined })
+      ),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
+    ])
+    cy.visit(TRANSACTION_URL)
+
+    cy.get('.govuk-heading-m').should('not.contain.text', 'Metadata')
+  })
+
   it('should display events', () => {
     const state = new TransactionStateFixture({ status: Status.DECLINED })
     const transactionAmount = 12345
@@ -542,6 +625,7 @@ describe('Transaction details page', () => {
       }),
     ]
 
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(declinedTransaction),
@@ -580,6 +664,7 @@ describe('Transaction details page', () => {
   })
 
   it('should navigate to refund page', () => {
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
@@ -597,6 +682,7 @@ describe('Transaction details page', () => {
     const refundUnavailableState = new LedgerRefundSummaryFixture({ status: RefundSummaryStatus.UNAVAILABLE })
     const transactionWithRefundUnavailable = new TransactionFixture({ refundSummary: refundUnavailableState })
 
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
@@ -612,6 +698,7 @@ describe('Transaction details page', () => {
     const transactionCreatedTimestamp = DateTime.now().minus({ years: 7, months: 1 })
     const oldTransaction = new TransactionFixture({ createdDate: transactionCreatedTimestamp })
 
+    cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(oldTransaction),

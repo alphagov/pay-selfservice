@@ -5,7 +5,6 @@ import createLogger from '@utils/logger'
 import User from '@models/user/User.class'
 import { addField } from '@services/clients/base/request-context'
 import _ from 'lodash'
-// @ts-expect-error js commons is not updated for typescript support yet
 import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import Service from '@models/service/Service.class'
