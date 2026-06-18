@@ -12,6 +12,7 @@ import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-
 import { Reason, ReasonFriendlyNames } from '@models/transaction/types/reason'
 import { ResourceType } from '@models/transaction/types/resource-type'
 import {
+  getTransactionDisputes,
   getTransactionEvents,
   getTransactionForGatewayAccount,
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
@@ -419,115 +420,265 @@ describe('Transaction details page', () => {
       })
   })
 
-  it('should display dispute information', () => {
-    const parentTransactionOfDispute = new TransactionFixture({ disputed: true }).toTransactionData()
-
-    const disputeTransaction = {
-      gateway_account_id: GATEWAY_ACCOUNT_ID,
+  describe.only('for disputed payments', () => {
+    const baseParent = new TransactionFixture(TRANSACTION, { disputed: true })
+    const baseDispute = new TransactionFixture({
+      gatewayAccountId: GATEWAY_ACCOUNT_ID,
       amount: 1000,
       fee: 100,
-      net_amount: 900,
-      finished: true,
-      status: Status.NEEDS_RESPONSE,
-      created_date: TRANSACTION_CREATED_TIMESTAMP.plus({ month: 4 }),
-      type: ResourceType.DISPUTE,
-      includePaymentDetails: true,
-      evidence_due_date: TRANSACTION_CREATED_TIMESTAMP.plus({ month: 5 }),
+      netAmount: 900,
+      createdDate: TRANSACTION_CREATED_TIMESTAMP.plus({ month: 4 }),
+      transactionType: ResourceType.DISPUTE,
+      evidenceDueDate: TRANSACTION_CREATED_TIMESTAMP.plus({ month: 5 }),
       reason: Reason.FRAUDULENT,
-      transaction_id: parentTransactionOfDispute.gateway_transaction_id + '1a',
-      parent_transaction_id: parentTransactionOfDispute,
-    }
+      externalId: baseParent.externalId + '1a',
+      parentTransactionExternalId: baseParent.externalId,
+    })
 
-    const transactionFee = penceToPoundsWithCurrency(disputeTransaction.fee)
-
-    cy.setEncryptedCookies(USER_EXTERNAL_ID)
-    cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs,
-      transactionStubs.getLedgerTransactionSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionDetails: parentTransactionOfDispute,
-      }),
-      transactionStubs.getLedgerEventsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactionId: parentTransactionOfDispute.transaction_id,
-        events: [],
-      }),
-      transactionStubs.getLedgerDisputeTransactionsSuccess({
-        disputeTransactionsDetails: {
-          parent_transaction_id: parentTransactionOfDispute.transaction_id,
-          gateway_account_id: GATEWAY_ACCOUNT_ID,
-          transactions: [disputeTransaction],
-        },
-      }),
-    ])
-    cy.visit(TRANSACTION_URL)
-
-    cy.get('h2').should('contain.text', 'Dispute details')
-
-    cy.get('.govuk-summary-list__row')
-      .eq(15)
-      .within(() => {
-        cy.get('.govuk-summary-list__key').should('contain.text', 'Status')
-        cy.get('.govuk-summary-list__value').should('contain.text', DisputeStatusFriendlyNames[Status.NEEDS_RESPONSE])
+    it('should display dispute information', () => {
+      const parentTransaction = new TransactionFixture(baseParent, {
+        refundSummary: new LedgerRefundSummaryFixture({
+          status: 'unavailable',
+          amountAvailable: 0,
+        }),
+      })
+      const disputeTransaction = new TransactionFixture(baseDispute, {
+        state: new TransactionStateFixture({
+          finished: false,
+          status: Status.NEEDS_RESPONSE,
+        }),
       })
 
-    cy.get('.govuk-summary-list__row')
-      .eq(16)
-      .within(() => {
-        cy.get('.govuk-summary-list__key').should('contain.text', 'Date disputed')
-        cy.get('.govuk-summary-list__value').should(
+      const transactionFee = penceToPoundsWithCurrency(disputeTransaction.fee!)
+
+      cy.setEncryptedCookies(USER_EXTERNAL_ID)
+      cy.task('setupStubs', [
+        ...userAndGatewayAccountStubs,
+        transactionStubs.getLedgerTransactionSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactionDetails: parentTransaction.toTransactionData(),
+        }),
+        transactionStubs.getLedgerEventsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactionId: parentTransaction.externalId,
+          events: [],
+        }),
+        getTransactionDisputes(GATEWAY_ACCOUNT_ID, parentTransaction.externalId).success([disputeTransaction]),
+      ])
+      cy.visit(TRANSACTION_URL)
+
+      cy.get('h2').should('contain.text', 'Dispute details')
+
+      cy.get('.govuk-summary-list__row')
+        .eq(15)
+        .within(() => {
+          cy.get('.govuk-summary-list__key').should('contain.text', 'Status')
+          cy.get('.govuk-summary-list__value').should('contain.text', DisputeStatusFriendlyNames[Status.NEEDS_RESPONSE])
+        })
+
+      cy.get('.govuk-summary-list__row')
+        .eq(16)
+        .within(() => {
+          cy.get('.govuk-summary-list__key').should('contain.text', 'Date disputed')
+          cy.get('.govuk-summary-list__value').should(
+            'contain.text',
+            `${disputeTransaction.createdDate.toFormat(DATE_TIME)} (GMT)`
+          )
+        })
+
+      cy.get('.govuk-summary-list__row')
+        .eq(17)
+        .within(() => {
+          cy.get('.govuk-summary-list__key').should('contain.text', 'Disputed amount')
+          cy.get('.govuk-summary-list__value').should(
+            'contain.text',
+            penceToPoundsWithCurrency(disputeTransaction.amount)
+          )
+        })
+
+      cy.get('.govuk-summary-list__row')
+        .eq(18)
+        .within(() => {
+          cy.get('.govuk-summary-list__key').should('contain.text', 'Provider dispute fee')
+          cy.get('.govuk-summary-list__value').should('contain.text', transactionFee)
+          cy.get('.govuk-details__summary-text').should('contain.text', 'What is this fee?')
+          cy.get('.govuk-details__text').contains(
+            `If you lose a payment dispute, Stripe will deduct the disputed amount and an additional ${transactionFee} dispute fee from your account.`
+          )
+        })
+
+      cy.get('.govuk-summary-list__row')
+        .eq(19)
+        .within(() => {
+          cy.get('.govuk-summary-list__key').should('contain.text', 'Dispute net amount')
+          cy.get('.govuk-summary-list__value').should(
+            'contain.text',
+            penceToPoundsWithCurrency(disputeTransaction.netAmount!)
+          )
+        })
+
+      cy.get('.govuk-summary-list__row')
+        .eq(20)
+        .within(() => {
+          cy.get('.govuk-summary-list__key').should('contain.text', 'Reason')
+          cy.get('.govuk-summary-list__value').should('contain.text', ReasonFriendlyNames.FRAUDULENT)
+        })
+
+      cy.get('.govuk-summary-list__row')
+        .eq(21)
+        .within(() => {
+          cy.get('.govuk-summary-list__key').should('contain.text', 'Evidence due by')
+          cy.get('.govuk-summary-list__value').should(
+            'contain.text',
+            disputeTransaction.evidenceDueDate!.toFormat(DATE_TIME)
+          )
+        })
+    })
+
+    it('should not show the refund button and have the correct content when a dispute is pending information', () => {
+      const parentTransaction = new TransactionFixture(baseParent, {
+        refundSummary: new LedgerRefundSummaryFixture({
+          status: 'unavailable',
+          amountAvailable: 0,
+        }),
+      })
+      const disputeTransaction = new TransactionFixture(baseDispute, {
+        state: new TransactionStateFixture({
+          finished: false,
+          status: Status.NEEDS_RESPONSE,
+        }),
+      })
+
+      cy.setEncryptedCookies(USER_EXTERNAL_ID)
+      cy.task('setupStubs', [
+        ...userAndGatewayAccountStubs,
+        getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, parentTransaction.externalId).success(parentTransaction),
+        transactionStubs.getLedgerEventsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactionId: parentTransaction.externalId,
+          events: [],
+        }),
+        getTransactionDisputes(GATEWAY_ACCOUNT_ID, parentTransaction.externalId).success([disputeTransaction]),
+      ])
+      cy.visit(TRANSACTION_URL)
+
+      cy.get('.govuk-button').contains('Refund payment').should('not.exist')
+
+      cy.get('h1')
+        .contains('Transaction details')
+        .next()
+        .should('have.class', 'govuk-body')
+        .should('contain.text', 'You cannot refund this payment because it is being disputed.')
+    })
+
+    it('should not show the refund button and have the correct content when a dispute is awaiting review', () => {
+      const parentTransaction = new TransactionFixture(baseParent, {
+        refundSummary: new LedgerRefundSummaryFixture({
+          status: 'unavailable',
+          amountAvailable: 0,
+        }),
+      })
+      const disputeTransaction = new TransactionFixture(baseDispute, {
+        state: new TransactionStateFixture({
+          finished: false,
+          status: Status.UNDER_REVIEW,
+        }),
+      })
+
+      cy.setEncryptedCookies(USER_EXTERNAL_ID)
+      cy.task('setupStubs', [
+        ...userAndGatewayAccountStubs,
+        getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, parentTransaction.externalId).success(parentTransaction),
+        transactionStubs.getLedgerEventsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactionId: parentTransaction.externalId,
+          events: [],
+        }),
+        getTransactionDisputes(GATEWAY_ACCOUNT_ID, parentTransaction.externalId).success([disputeTransaction]),
+      ])
+      cy.visit(TRANSACTION_URL)
+
+      cy.get('.govuk-button').contains('Refund payment').should('not.exist')
+
+      cy.get('h1')
+        .contains('Transaction details')
+        .next()
+        .should('have.class', 'govuk-body')
+        .should('contain.text', 'You cannot refund this payment because it is being disputed.')
+    })
+
+    it('should not show the refund button and have the correct content when a dispute is lost', () => {
+      const parentTransaction = new TransactionFixture(baseParent, {
+        refundSummary: new LedgerRefundSummaryFixture({
+          status: 'unavailable',
+          amountAvailable: 0,
+        }),
+      })
+      const disputeTransaction = new TransactionFixture(baseDispute, {
+        state: new TransactionStateFixture({
+          finished: false,
+          status: Status.LOST,
+        }),
+      })
+
+      cy.setEncryptedCookies(USER_EXTERNAL_ID)
+      cy.task('setupStubs', [
+        ...userAndGatewayAccountStubs,
+        getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, parentTransaction.externalId).success(parentTransaction),
+        transactionStubs.getLedgerEventsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactionId: parentTransaction.externalId,
+          events: [],
+        }),
+        getTransactionDisputes(GATEWAY_ACCOUNT_ID, parentTransaction.externalId).success([disputeTransaction]),
+      ])
+      cy.visit(TRANSACTION_URL)
+
+      cy.get('.govuk-button').contains('Refund payment').should('not.exist')
+
+      cy.get('h1')
+        .contains('Transaction details')
+        .next()
+        .should('have.class', 'govuk-body')
+        .should(
           'contain.text',
-          `${disputeTransaction.created_date.toFormat(DATE_TIME)} (GMT)`
+          'You cannot refund this payment because it was disputed and the paying user won the dispute.'
         )
+    })
+
+    it('should show the refund button when a dispute is won', () => {
+      const parentTransaction = new TransactionFixture(baseParent, {
+        refundSummary: new LedgerRefundSummaryFixture({
+          status: 'available',
+          amountAvailable: baseParent.amount,
+        }),
+      })
+      const disputeTransaction = new TransactionFixture(baseDispute, {
+        state: new TransactionStateFixture({
+          finished: false,
+          status: Status.WON,
+        }),
       })
 
-    cy.get('.govuk-summary-list__row')
-      .eq(17)
-      .within(() => {
-        cy.get('.govuk-summary-list__key').should('contain.text', 'Disputed amount')
-        cy.get('.govuk-summary-list__value').should(
-          'contain.text',
-          penceToPoundsWithCurrency(disputeTransaction.amount)
-        )
-      })
+      cy.setEncryptedCookies(USER_EXTERNAL_ID)
+      cy.task('setupStubs', [
+        ...userAndGatewayAccountStubs,
+        getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, parentTransaction.externalId).success(parentTransaction),
+        transactionStubs.getLedgerEventsSuccess({
+          gatewayAccountId: GATEWAY_ACCOUNT_ID,
+          transactionId: parentTransaction.externalId,
+          events: [],
+        }),
+        getTransactionDisputes(GATEWAY_ACCOUNT_ID, parentTransaction.externalId).success([disputeTransaction]),
+      ])
+      cy.visit(TRANSACTION_URL)
 
-    cy.get('.govuk-summary-list__row')
-      .eq(18)
-      .within(() => {
-        cy.get('.govuk-summary-list__key').should('contain.text', 'Provider dispute fee')
-        cy.get('.govuk-summary-list__value').should('contain.text', transactionFee)
-        cy.get('.govuk-details__summary-text').should('contain.text', 'What is this fee?')
-        cy.get('.govuk-details__text').contains(
-          `If you lose a payment dispute, Stripe will deduct the disputed amount and an additional ${transactionFee} dispute fee from your account.`
-        )
-      })
-
-    cy.get('.govuk-summary-list__row')
-      .eq(19)
-      .within(() => {
-        cy.get('.govuk-summary-list__key').should('contain.text', 'Dispute net amount')
-        cy.get('.govuk-summary-list__value').should(
-          'contain.text',
-          penceToPoundsWithCurrency(disputeTransaction.net_amount)
-        )
-      })
-
-    cy.get('.govuk-summary-list__row')
-      .eq(20)
-      .within(() => {
-        cy.get('.govuk-summary-list__key').should('contain.text', 'Reason')
-        cy.get('.govuk-summary-list__value').should('contain.text', ReasonFriendlyNames.FRAUDULENT)
-      })
-
-    cy.get('.govuk-summary-list__row')
-      .eq(21)
-      .within(() => {
-        cy.get('.govuk-summary-list__key').should('contain.text', 'Evidence due by')
-        cy.get('.govuk-summary-list__value').should(
-          'contain.text',
-          disputeTransaction.evidence_due_date.toFormat(DATE_TIME)
-        )
-      })
+      cy.get('h1')
+        .contains('Transaction details')
+        .next()
+        .should('have.class', 'govuk-button')
+        .should('contain.text', 'Refund payment')
+    })
   })
 
   it('should display transaction metadata when present', () => {

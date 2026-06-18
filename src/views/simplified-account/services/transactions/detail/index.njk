@@ -9,8 +9,6 @@
 
 {% block serviceContent %}
   <h1 class="govuk-heading-l govuk-!-margin-top-6">Transaction details</h1>
-  {% include './partials/_details-page.njk' %}
-
   {% if isOverSevenYearsOld %}
     {{
       govukInsetText({
