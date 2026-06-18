@@ -6,7 +6,12 @@ import { LedgerRefundSummary } from '@models/common/refund-summary/LedgerRefundS
 import { SettlementSummary } from '@models/common/settlement-summary/SettlementSummary.class'
 import { CardDetails } from '@models/common/card-details/CardDetails.class'
 import { ResourceType } from './types/resource-type'
-import { DisputeStatusFriendlyNames, PaymentStatusFriendlyNames, RefundStatusFriendlyNames } from './types/status'
+import {
+  DisputeStatusFriendlyNames,
+  PaymentStatusFriendlyNames,
+  RefundStatusFriendlyNames,
+  Status,
+} from './types/status'
 import { State } from './State.class'
 import { parseReason, Reason } from './types/reason'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
@@ -115,6 +120,16 @@ class Transaction {
 
   isDispute(): boolean {
     return this.transactionType === ResourceType.DISPUTE
+  }
+
+  isDisputePending(): boolean {
+    return (
+      this.isDispute() && (this.state.status === Status.NEEDS_RESPONSE || this.state.status === Status.UNDER_REVIEW)
+    )
+  }
+
+  isDisputeLost(): boolean {
+    return this.isDispute() && this.state.status === Status.LOST
   }
 
   hasRefund(): boolean {
