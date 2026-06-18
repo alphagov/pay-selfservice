@@ -32,6 +32,6 @@ export const EventTypeFriendlyNames: Record<EventType, string> = {
   AUTHORISATION_REJECTED: 'Declined',
   DISPUTE_CREATED: 'Dispute awaiting evidence',
   DISPUTE_EVIDENCE_SUBMITTED: 'Dispute under review',
-  DISPUTE_LOST: 'Dispute lost to customer',
+  DISPUTE_LOST: 'Dispute lost to user',
   DISPUTE_WON: 'Dispute won in your favour',
 }

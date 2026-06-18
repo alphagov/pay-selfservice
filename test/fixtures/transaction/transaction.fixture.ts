@@ -8,6 +8,7 @@ import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-re
 import { AuthorisationSummaryFixture } from '@test/fixtures/transaction/authorisation-summary.fixture'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { PaymentDetailsFixture } from './payment-details.fixture'
+import { SettlementSummaryFixture } from '@test/fixtures/transaction/settlement-summary.fixture'
 
 export class TransactionFixture {
   gatewayAccountId: string
@@ -31,7 +32,7 @@ export class TransactionFixture {
   walletType?: string
   disputed: boolean
   refundSummary: LedgerRefundSummaryFixture
-  settlementSummary?: unknown
+  settlementSummary?: SettlementSummaryFixture
   authorisationSummary?: AuthorisationSummaryFixture
   cardDetails?: CardDetailsFixture
   transactionType: ResourceType
@@ -116,6 +117,7 @@ export class TransactionFixture {
       payment_details: this.paymentDetails?.toPaymentDetailsData(),
       parent_transaction_id: this.parentTransactionExternalId,
       metadata: this.metadata,
+      settlement_summary: this.settlementSummary?.toSettlementSummaryData(),
     }
   }
 
