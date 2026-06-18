@@ -420,7 +420,7 @@ describe('Transaction details page', () => {
       })
   })
 
-  describe.only('for disputed payments', () => {
+  describe('for disputed payments', () => {
     const baseParent = new TransactionFixture(TRANSACTION, { disputed: true })
     const baseDispute = new TransactionFixture({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
