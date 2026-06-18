@@ -1,3 +1,4 @@
+const checkSettingsNavigation = require('@test/cypress/integration/simplified-account/service-settings/helpers/check-settings-nav')
 const userStubs = require('@test/cypress/stubs/user-stubs')
 const gatewayAccountStubs = require('@test/cypress/stubs/gateway-account-stubs')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
@@ -52,6 +53,9 @@ describe('Switch to Adyen info', () => {
         })
         cy.visit(PROVIDER_CHANGE_TO_ADYEN, { failOnStatusCode: false })
         cy.title().should('contain', 'Your provider is changing to Adyen')
+
+        const PROVIDER_CHANGE_TO_ADYEN_URL = `/service/${SERVICE_EXTERNAL_ID}/account/live/settings/switch-psp/switch-to-adyen/provider-change-to-adyen`
+        checkSettingsNavigation('Your provider is changing to Adyen', PROVIDER_CHANGE_TO_ADYEN_URL)
       })
       it('should show error page to non-admin user', () => {
         setStubs({

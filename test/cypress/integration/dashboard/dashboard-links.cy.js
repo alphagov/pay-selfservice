@@ -69,6 +69,8 @@ describe('the links are displayed correctly on the dashboard', () => {
 
       cy.get('#test-payment-link-link').should('exist')
       cy.get('#test-payment-link-link').should('have.class', 'flex-grid--column-third')
+
+      cy.get('#provider-change-to-adyen-link').should('not.exist')
     })
 
     it('should display 2 links for a live service in live mode', () => {
@@ -86,6 +88,19 @@ describe('the links are displayed correctly on the dashboard', () => {
 
       cy.get('#payment-links-link').should('exist')
       cy.get('#payment-links-link').should('have.class', 'flex-grid--column-half')
+
+      cy.get('#provider-change-to-adyen-link').should('not.exist')
+    })
+
+    it('should display "Your provider is changing to Adyen" link for a Stripe live account', () => {
+      cy.task(
+        'setupStubs',
+        getStubsForDashboard(gatewayAccountId, GatewayAccountType.LIVE, PaymentProviders.STRIPE, GoLiveStage.LIVE)
+      )
+
+      cy.visit(dashboardUrl(GatewayAccountType.LIVE))
+
+      cy.get('#provider-change-to-adyen-link').should('exist')
     })
 
     it('should display 3 links for a test sandbox account created since onboarding flow changed on 29/08/2024', () => {
@@ -164,6 +179,8 @@ describe('the links are displayed correctly on the dashboard', () => {
 
       cy.get('#request-to-go-live-link').should('exist')
       cy.get('#request-to-go-live-link').should('have.class', 'flex-grid--column-half')
+
+      cy.get('#provider-change-to-adyen-link').should('not.exist')
     })
 
     it('should display 3 links (demo payment, test with users and request to go live) for a Stripe test account', () => {
@@ -188,6 +205,8 @@ describe('the links are displayed correctly on the dashboard', () => {
 
       cy.get('#request-to-go-live-link').should('exist')
       cy.get('#request-to-go-live-link').should('have.class', 'flex-grid--column-third')
+
+      cy.get('#provider-change-to-adyen-link').should('not.exist')
     })
   })
 })

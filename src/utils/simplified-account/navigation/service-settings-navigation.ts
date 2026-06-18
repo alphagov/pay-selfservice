@@ -7,6 +7,7 @@ import Service from '@models/service/Service.class'
 import { LIVE } from '@models/constants/go-live-stage'
 import UserPermissions from '@models/user/permissions'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { Features } from '@root/config/features'
 
 export = (account: GatewayAccount, service: Service, currentUrl: string, permissions: Record<string, boolean>) => {
   const navBuilder = new NavigationBuilder(currentUrl, permissions)
@@ -100,6 +101,20 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
       ),
       hasPermission: UserPermissions.settings.gatewayCredentials.gatewayCredentialsUpdate,
       conditions: account.isSwitchingToProvider(STRIPE),
+    })
+    .add({
+      id: 'provider-change-to-adyen',
+      name: 'Your provider is changing to Adyen',
+      path: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.switchPsp.switchToAdyen.providerChangeToAdyen,
+        service.externalId,
+        account.type
+      ),
+      hasPermission: UserPermissions.settings.stripe.stripeAccountDetailsUpdate,
+      conditions:
+        account.paymentProvider === STRIPE &&
+        account.type === GatewayAccountType.LIVE &&
+        Features.isProviderChangeToAdyenLinkEnabled(),
     })
     .category('payments', { collapsible: true })
     .add({
