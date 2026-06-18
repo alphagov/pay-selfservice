@@ -1,0 +1,26 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+
+
+{% set settingsPageTitle %}Adyen card fees{% endset %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+
+  <p class="govuk-body"> Details of Adyen’s fees for card payments. </p>
+
+  {{
+    govukInsetText({
+      text: "Fees are confidential and must not be shared outside your organisation."
+    })
+  }}
+
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
+  <h2 class="govuk-heading-m">
+    <a class="govuk-link" href="{{ downloadLink }}"> Download the PDF Version </a>
+  </h2>
+
+  <p class="govuk-body"> PDF, 141KB, 2 pages </p>
+
+  <p class="govuk-body"> This file may not be accessible for users of assistive technologies. </p>
+{% endblock %}

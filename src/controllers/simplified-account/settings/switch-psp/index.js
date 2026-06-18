@@ -1,3 +1,4 @@
+module.exports.adyenFees = require('./switch-to-adyen/adyen-fees.controller')
 module.exports.providerChangeToAdyen = require('./switch-to-adyen/provider-change-to-adyen.controller')
 module.exports.switchToWorldpay = require('./switch-to-worldpay/switch-to-worldpay.controller')
 module.exports.switchToStripe = require('./switch-to-stripe/switch-to-stripe.controller')
