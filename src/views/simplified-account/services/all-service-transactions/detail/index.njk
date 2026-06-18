@@ -23,6 +23,12 @@
         href: transaction._locals.links.refund
       })
     }}
+  {% elif dispute and dispute.isDisputePending() %}
+    <p class="govuk-body">You cannot refund this payment because it is being disputed.</p>
+  {% elif dispute and dispute.isDisputeLost() %}
+    <p class="govuk-body">
+      You cannot refund this payment because it was disputed and the paying user won the dispute.
+    </p>
   {% endif %}
   {% include '../../transactions/detail/partials/_details.njk' %}
   {% include '../../transactions/detail/partials/_amount.njk' %}

@@ -79,6 +79,25 @@ function getTransactionEvents(gatewayAccountId: string, transactionExternalId: s
   }
 }
 
+function getTransactionDisputes(gatewayAccountId: string, transactionExternalId: string) {
+  const path = `/v1/transaction/${transactionExternalId}/transaction`
+
+  return {
+    success: function (disputes: TransactionFixture[]) {
+      return stubBuilder('GET', path, 200, {
+        query: {
+          gateway_account_id: gatewayAccountId,
+          transaction_type: 'DISPUTE',
+        },
+        response: {
+          parent_transaction_id: transactionExternalId,
+          transactions: disputes.map((dispute) => dispute.toTransactionData()),
+        },
+      })
+    },
+  }
+}
+
 function postRefund(serviceExternalId: string, transactionExternalId: string) {
   const path = `/v1/api/service/${serviceExternalId}/account/test/charges/${transactionExternalId}/refunds`
 
@@ -106,5 +125,6 @@ export {
   getTransactionForGatewayAccount,
   getTransactionsForGatewayAccount,
   getTransactionEvents,
+  getTransactionDisputes,
   postRefund,
 }

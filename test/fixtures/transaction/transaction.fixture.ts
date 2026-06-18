@@ -47,7 +47,7 @@ export class TransactionFixture {
   parentTransactionExternalId?: string
   metadata?: Record<string, string>
 
-  constructor(options?: Partial<TransactionFixture>) {
+  constructor(...options: Partial<TransactionFixture>[]) {
     this.gatewayAccountId = '100'
     this.serviceExternalId = 'service-external-id-123-abc'
     this.externalId = 'transaction-external-id-123-abc'
@@ -73,9 +73,10 @@ export class TransactionFixture {
     this.agreementId = 'none'
     this.refundSummary = new LedgerRefundSummaryFixture()
     this.paymentDetails = new PaymentDetailsFixture()
-    if (options) {
-      Object.assign(this, options)
-    }
+
+    options.forEach((optionObject) => {
+      Object.assign(this, optionObject)
+    })
   }
 
   toTransactionData(): TransactionData {
@@ -108,7 +109,7 @@ export class TransactionFixture {
       agreement_id: this.agreementId,
       disputed: this.disputed,
       transaction_id: this.externalId,
-      evidence_due_date: this.evidenceDueDate ? this.evidenceDueDate.toISODate()! : undefined,
+      evidence_due_date: this.evidenceDueDate ? this.evidenceDueDate.toISO()! : undefined,
       reason: this.reason,
       refund_summary: this.refundSummary?.toLedgerRefundSummaryData(),
       authorisation_summary: this.authorisationSummary?.toAuthorisationSummaryData(),
