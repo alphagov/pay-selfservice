@@ -1,35 +1,31 @@
 import { DateTime } from 'luxon'
 
-const shortDate = (dateString: string) => {
-  const date = DateTime.fromISO(dateString)
-  if (!date.isValid) {
+const shortDate = (date?: DateTime) => {
+  if (!date?.isValid) {
     return ''
   }
 
   return date.toFormat('dd LLL yy')
 }
 
-const shortTime = (dateString: string) => {
-  const date = DateTime.fromISO(dateString)
-  if (!date.isValid) {
+const shortTime = (date?: DateTime) => {
+  if (!date?.isValid) {
     return ''
   }
 
   return date.toFormat('H:mm:ss')
 }
 
-const europeanDate = (dateString: string) => {
-  const date = DateTime.fromISO(dateString)
-  if (!date.isValid) {
+const europeanDate = (date?: DateTime) => {
+  if (!date?.isValid) {
     return ''
   }
 
-  return date.toFormat('dd/LL/yyyy')
+  return date?.toFormat('dd/LL/yyyy')
 }
 
-const zonedTime = (dateString: string) => {
-  const date = DateTime.fromISO(dateString).setZone('Europe/London')
-  if (!date.isValid) {
+const zonedTime = (date?: DateTime) => {
+  if (!date?.isValid) {
     return ''
   }
 
