@@ -112,4 +112,21 @@ export class TransactionDisplayValues {
       ? (ReasonFriendlyNames[this.transaction.reason] ?? ReasonFriendlyNames.OTHER)
       : ''
   }
+
+  get cardBrand(): string {
+    // either the transaction is a payment, and has associated card details
+    // or it is a refund/dispute, and will have paymentDetails for the parent payment attached
+    // or it has no card details at all (e.g. it has timed out)
+    return this.transaction.cardDetails?.cardBrand ?? this.transaction.paymentDetails?.cardDetails?.cardBrand ?? ''
+  }
+
+  get cardholderName(): string {
+    return (
+      this.transaction.cardDetails?.cardholderName ?? this.transaction.paymentDetails?.cardDetails?.cardholderName ?? ''
+    )
+  }
+
+  get cardExpiryDate(): string {
+    return this.transaction.cardDetails?.expiryDate ?? this.transaction.paymentDetails?.cardDetails?.expiryDate ?? ''
+  }
 }
