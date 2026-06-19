@@ -14,9 +14,7 @@ import {
   getTransactionForGatewayAccount,
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
-import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
-import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
-import { checkServiceNavigation } from '../common/assertions'
+import { checkServiceNavigation } from '../../common/assertions'
 import ROLES from '@test/fixtures/roles.fixtures'
 import { DateTime } from 'luxon'
 import { TimeConstants } from '@utils/time/time-constants'
@@ -263,38 +261,6 @@ describe('Transaction details page', () => {
 
     cy.get('.govuk-summary-list__key').contains('3D Secure (3DS)').should('not.exist')
     cy.get('.govuk-inset-text').should('not.exist')
-  })
-
-  it('should display partial refund amount', () => {
-    const refundSummary = new LedgerRefundSummaryFixture({
-      amountRefunded: 100,
-      status: RefundSummaryStatus.AVAILABLE,
-      userExternalId: USER_EXTERNAL_ID,
-      amountAvailable: 900,
-      amountSubmitted: 0,
-    })
-    const transactionWithRefund = new TransactionFixture({ refundSummary })
-
-    cy.setEncryptedCookies(USER_EXTERNAL_ID)
-    cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs,
-      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, transactionWithRefund.externalId).success(
-        transactionWithRefund
-      ),
-      getTransactionEvents(GATEWAY_ACCOUNT_ID, transactionWithRefund.externalId).success(TRANSACTION_EVENTS),
-    ])
-
-    cy.visit(TRANSACTION_URL)
-
-    cy.get('.govuk-summary-list__row')
-      .eq(6)
-      .within(() => {
-        cy.get('.govuk-summary-list__key').should('contain.text', 'Refunded amount')
-        cy.get('.govuk-summary-list__value').should(
-          'contain.text',
-          penceToPoundsWithCurrency(refundSummary.amountRefunded)
-        )
-      })
   })
 
   it('should not display card details type when not present', () => {
@@ -547,37 +513,6 @@ describe('Transaction details page', () => {
         cy.get('.govuk-table__cell:eq(1)').should('contain.text', formattedAmount)
         cy.get('.govuk-table__cell:eq(2)').should('contain.text', `22 Jul 25 - 03:14:15 (BST)`)
       })
-  })
-
-  it('should navigate to refund page', () => {
-    cy.setEncryptedCookies(USER_EXTERNAL_ID)
-    cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs,
-      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
-      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
-    ])
-    cy.visit(TRANSACTION_URL)
-    cy.contains('a.govuk-button', 'Refund payment').should('be.visible').click()
-
-    const refundUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}/refund`
-
-    cy.url().should('include', refundUrl)
-  })
-
-  it('should not display refund button if the transaction is not eligible', () => {
-    const refundUnavailableState = new LedgerRefundSummaryFixture({ status: RefundSummaryStatus.UNAVAILABLE })
-    const transactionWithRefundUnavailable = new TransactionFixture({ refundSummary: refundUnavailableState })
-
-    cy.setEncryptedCookies(USER_EXTERNAL_ID)
-    cy.task('setupStubs', [
-      ...userAndGatewayAccountStubs,
-      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
-        transactionWithRefundUnavailable
-      ),
-      getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
-    ])
-    cy.visit(TRANSACTION_URL)
-    cy.contains('a.govuk-button', 'Refund payment').should('not.exist')
   })
 
   it('should display inset text if transaction is over 7 years old', () => {

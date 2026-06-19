@@ -3,7 +3,6 @@ import {
   getTransactionDisputes,
   getTransactionForGatewayAccount,
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
-import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { DateTime } from 'luxon'
 import {
@@ -17,7 +16,6 @@ import userStubs from '@test/cypress/stubs/user-stubs'
 import ROLES from '@test/fixtures/roles.fixtures'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
-import { DATE_TIME } from '@models/constants/time-formats'
 import { beforeEach } from 'mocha'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
