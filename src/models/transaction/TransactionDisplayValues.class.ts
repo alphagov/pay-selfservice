@@ -27,10 +27,6 @@ export class TransactionDisplayValues {
       return penceToPoundsWithCurrency(-this.transaction.amount)
     }
 
-    if (this.isDispute && this.transaction.state.status === Status.LOST) {
-      return penceToPoundsWithCurrency(-this.transaction.netAmount!)
-    }
-
     return this.transaction.netAmount ? penceToPoundsWithCurrency(this.transaction.netAmount) : ''
   }
 
@@ -40,7 +36,7 @@ export class TransactionDisplayValues {
 
   get refundedAmount(): string {
     return this.transaction.refundSummary
-      ? penceToPoundsWithCurrency(this.transaction.refundSummary.amountRefunded)
+      ? penceToPoundsWithCurrency(-this.transaction.refundSummary.amountRefunded)
       : ''
   }
 

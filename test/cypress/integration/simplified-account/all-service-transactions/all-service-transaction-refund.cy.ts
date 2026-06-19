@@ -110,12 +110,88 @@ describe('All services refund page', () => {
         'contain',
         `Refund the full amount of ${penceToPoundsWithCurrency(TRANSACTION.refundSummary.amountAvailable)}`
       )
-    cy.contains(' Confirm refund ').should('be.visible').click()
+    cy.contains('Confirm refund').should('be.visible').click()
     cy.get('.govuk-notification-banner--success')
       .should('be.visible')
       .and('contain', 'Refund successful')
       .and('contain', 'It may take up to six days to process')
 
     cy.url().should('include', TRANSACTION_DETAIL_URL)
+  })
+
+  it('should display error when no amount is entered for partial refund', () => {
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+    ])
+
+    const errorMessage = 'Enter a refund amount'
+
+    cy.visit(TRANSACTION_REFUND_URL)
+
+    cy.get('#refund-payment-2').check()
+    cy.contains('Confirm refund').should('be.visible').click()
+
+    cy.get('.govuk-error-summary')
+      .should('exist')
+      .should('contain.text', 'There is a problem')
+      .should('contain.text', errorMessage)
+    cy.get('.govuk-error-message').should('exist').should('contain.text', errorMessage)
+  })
+
+  it('should display error when amount entered is too high for partial refund', () => {
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+    ])
+
+    const errorMessage = `Enter a refund amount greater than ${penceToPoundsWithCurrency(0)} and less than ${penceToPoundsWithCurrency(TRANSACTION.amount)}`
+
+    cy.visit(TRANSACTION_REFUND_URL)
+
+    cy.get('#refund-payment-2').check()
+    cy.get('#partial-refund-amount').click().focused().clear().type(TRANSACTION.amount.toString())
+
+    cy.contains('Confirm refund').should('be.visible').click()
+    cy.get('.govuk-error-summary')
+      .should('exist')
+      .should('contain.text', 'There is a problem')
+      .should('contain.text', errorMessage)
+    cy.get('.govuk-error-message').should('exist').should('contain.text', errorMessage)
+  })
+
+  it('should display error when amount entered is incorrectly formatted', () => {
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+    ])
+
+    const errorMessage = `Enter an amount to refund in pounds and pence using digits and a decimal point. For example “10.50”`
+
+    cy.visit(TRANSACTION_REFUND_URL)
+
+    cy.get('#refund-payment-2').check()
+    cy.get('#partial-refund-amount').click().focused().clear().type('.50')
+
+    cy.contains('Confirm refund').should('be.visible').click()
+    cy.get('.govuk-error-summary')
+      .should('exist')
+      .should('contain.text', 'There is a problem')
+      .should('contain.text', errorMessage)
+    cy.get('.govuk-error-message').should('exist').should('contain.text', errorMessage)
+  })
+
+  it('should display error when neither radio button is checked', () => {
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
+    ])
+
+    const errorMessage = `Select an option`
+
+    cy.visit(TRANSACTION_REFUND_URL)
+
+    cy.contains('Confirm refund').should('be.visible').click()
+    cy.get('.govuk-error-summary')
+      .should('exist')
+      .should('contain.text', 'There is a problem')
+      .should('contain.text', errorMessage)
+    cy.get('.govuk-error-message').should('exist').should('contain.text', errorMessage)
   })
 })

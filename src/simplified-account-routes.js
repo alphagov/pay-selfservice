@@ -809,6 +809,14 @@ simplifiedAccount.get(
   serviceSettingsController.switchPsp.providerChangeToAdyen.get
 )
 simplifiedAccount.get(
+  paths.simplifiedAccount.settings.switchPsp.switchToAdyen.adyenFees,
+  experimentalFeature(Features.PROVIDER_CHANGE_TO_ADYEN_LINK),
+  enforceLiveAccountOnly,
+  enforcePaymentProviderType(STRIPE),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.switchPsp.adyenFees.get
+)
+simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
   restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),

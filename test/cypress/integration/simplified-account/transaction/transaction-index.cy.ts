@@ -14,6 +14,7 @@ import { PaymentDetailsFixture } from '@test/fixtures/transaction/payment-detail
 import { getLedgerTransactionsFailure, getLedgerTransactionsSuccess } from '@test/cypress/stubs/transaction-stubs'
 import { TimeConstants } from '@utils/time/time-constants'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
+import { DISPUTE_LOST_DATA } from '@test/fixtures/transaction/fixture-data/dispute-fixture-data'
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
 
@@ -388,7 +389,7 @@ describe('Transactions index', () => {
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute awaiting evidence')
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute under review')
       cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute won in your favour')
-      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute lost to customer')
+      cy.get('#list-of-sectors-state').invoke('text').should('contain', 'Dispute lost to user')
     })
 
     it('should display refund transactions correctly', () => {
@@ -478,23 +479,19 @@ describe('Transactions index', () => {
         )
       })
 
-      it('should display amounts correctly for dispute lost to customer', () => {
+      it('should display amounts correctly for dispute lost to user', () => {
         sharedStubs('test', 'stripe')
-
-        const transactionAmounts = { netAmount: 1900, fee: 100, amount: 2000 }
-        const disputeTransactionAmounts = { netAmount: 4000, fee: 2000, amount: 2000 }
-        const transactionWithFees = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
-        const state = new TransactionStateFixture({ status: Status.LOST })
-        const paymentDetails = new PaymentDetailsFixture({ cardDetails: new CardDetailsFixture({ cardBrand: 'Visa' }) })
-        const disputeTransaction = new TransactionFixture({
-          paymentDetails,
-          transactionType: ResourceType.DISPUTE,
-          state,
-          ...disputeTransactionAmounts,
-        }).toTransactionData()
+        const transacion = new TransactionFixture({
+          fee: 100,
+          netAmount: 900,
+        })
+        const lostDisputeTransaction = new TransactionFixture(DISPUTE_LOST_DATA)
 
         cy.task('setupStubs', [
-          getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([transactionWithFees, disputeTransaction]),
+          getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([
+            lostDisputeTransaction.toTransactionData(),
+            transacion.toTransactionData(),
+          ]),
         ])
 
         cy.visit(TRANSACTIONS_LIST_URL)
@@ -503,24 +500,24 @@ describe('Transactions index', () => {
 
         assertTransactionRow(
           0,
-          transactionWithFees.reference,
-          TRANSACTION_URL(transactionWithFees.transaction_id),
-          transactionWithFees.email!,
-          penceToPoundsWithCurrency(transactionWithFees.amount),
+          lostDisputeTransaction.reference,
+          TRANSACTION_URL(lostDisputeTransaction.externalId),
+          lostDisputeTransaction.email!,
+          '£10.00',
           'Visa',
-          'Success'
+          'Dispute lost to user',
+          '£20.00',
+          '-£30.00'
         )
 
         assertTransactionRow(
           1,
-          disputeTransaction.reference,
-          TRANSACTION_URL(disputeTransaction.transaction_id),
-          disputeTransaction.email!,
-          penceToPoundsWithCurrency(disputeTransaction.amount),
+          transacion.reference,
+          TRANSACTION_URL(transacion.externalId),
+          transacion.email!,
+          '£10.00',
           'Visa',
-          'Dispute lost to customer',
-          penceToPoundsWithCurrency(disputeTransactionAmounts.fee),
-          penceToPoundsWithCurrency(-disputeTransaction.net_amount!)
+          'Success'
         )
       })
 
