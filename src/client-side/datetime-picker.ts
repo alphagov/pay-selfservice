@@ -1,15 +1,15 @@
-declare const $: JQueryStatic
+declare const $: JQueryStatic | undefined
 
 const initDateTimePicker = () => {
   const datePicker = () => {
-    $('.date-picker').datepicker({
+    $!('.date-picker').datepicker({
       format: 'dd/mm/yyyy',
       autoclose: true,
     })
   }
 
   const timePicker = () => {
-    $('.time-picker').timepicker({
+    $!('.time-picker').timepicker({
       showDuration: true,
       timeFormat: 'G:i:s',
       roundingFunction: () => null,
@@ -17,15 +17,17 @@ const initDateTimePicker = () => {
   }
 
   const datePair = () => {
-    $('.datetime-pair').datepair({
+    $!('.datetime-pair').datepair({
       dateClass: 'date-picker',
       timeClass: 'time-picker',
     })
   }
 
-  datePicker()
-  timePicker()
-  datePair()
+  if (Object.hasOwn(window, '$') && $) {
+    datePicker()
+    timePicker()
+    datePair()
+  }
 }
 
 export default initDateTimePicker

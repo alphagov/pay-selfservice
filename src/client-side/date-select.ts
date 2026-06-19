@@ -4,11 +4,22 @@ import {
   getPeriodUKDateTimeRange,
   dateRangeAsPeriod,
 } from '@utils/simplified-account/services/dashboard/datetime-utils'
-declare const $: JQueryStatic
+declare const $: JQueryStatic | undefined
 
 import { TRANSACTION_SEARCH_DATE_FORMAT } from '@utils/time/time-formats'
+import awaitJQuery from '@utils/client-side/await-jquery'
 
 function register() {
+  setJsEnabled()
+  bindDateFilterChangeListener()
+  bindIncludeTimeCheckboxListener()
+
+  awaitJQuery(() => {
+    bindDatePickerChangeListener()
+  })
+}
+
+function bindDateFilterChangeListener() {
   document.getElementById('dateFilter')?.addEventListener('change', (event) => {
     if (!(event.target instanceof HTMLSelectElement)) {
       return
@@ -22,14 +33,9 @@ function register() {
     setFromDate(dates.start)
     setEndDate(dates.end)
   })
+}
 
-  $('.date-picker')
-    .datepicker()
-    .on('changeDate', (_) => {
-      console.log('date changed')
-      setDateFilter()
-    })
-
+function bindIncludeTimeCheckboxListener() {
   document.getElementById('include-time-checkbox')?.addEventListener('change', (event) => {
     if (!(event.target instanceof HTMLInputElement)) {
       return
@@ -41,11 +47,16 @@ function register() {
       hideTimePicker()
     }
   })
-  ;(document.getElementById('js-enabled') as HTMLInputElement).value = 'true'
+}
+
+function setJsEnabled() {
+  const jsEnabledHiddenInput = document.getElementById('js-enabled')
+  if (jsEnabledHiddenInput instanceof HTMLInputElement) {
+    jsEnabledHiddenInput.value = 'true'
+  }
 }
 
 function setDateFilter() {
-  console.log('changed')
   const fromDate = (document.getElementById('fromDate') as HTMLInputElement).value
   const toDate = (document.getElementById('toDate') as HTMLInputElement).value
 
@@ -76,6 +87,17 @@ function setFromDate(date: DateTime | undefined) {
 function setEndDate(date: DateTime | undefined) {
   if (date) {
     ;(document.getElementById('toDate') as HTMLInputElement).value = date.toFormat(TRANSACTION_SEARCH_DATE_FORMAT)
+  }
+}
+
+function bindDatePickerChangeListener() {
+  if (Object.hasOwn(window, '$') && $) {
+    $('.date-picker')
+      .datepicker()
+      .on('changeDate', (_) => {
+        console.log('date changed')
+        setDateFilter()
+      })
   }
 }
 
