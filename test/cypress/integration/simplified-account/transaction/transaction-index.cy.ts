@@ -227,7 +227,7 @@ describe('Transactions index', () => {
         getLedgerTransactionsSuccess({
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           displaySize: 20,
-          filters: { from_date: DateTime.local(2025), to_date: DateTime.local(2026) },
+          filters: { from_date: '2025-01-01T00:00:00.000Z', to_date: '2026-01-01T23:59:59.999Z' },
           transactions: [TRANSACTION],
           transactionLength: 1,
         }),
@@ -236,12 +236,6 @@ describe('Transactions index', () => {
       cy.visit(TRANSACTIONS_LIST_URL)
 
       cy.get('.datepicker').should('not.exist')
-
-      cy.get('#fromDate').type('01/01/25')
-      cy.get('.datepicker').should('be.visible')
-
-      cy.get('#toDate').type('01/01/26')
-      cy.get('.datepicker').should('be.visible')
 
       cy.contains('Search transactions').click()
 
@@ -261,10 +255,18 @@ describe('Transactions index', () => {
         .find('th')
         .should('contain', unfilteredTransactions[2].reference)
 
-      cy.get('a').contains('Clear filter').click()
+      cy.get('#fromDate').type('01/01/2025')
+      cy.get('.datepicker').should('be.visible')
 
-      cy.get('#fromDate').should('be.empty')
-      cy.get('#toDate').should('be.empty')
+      cy.get('#toDate').type('01/01/2026')
+      cy.get('.datepicker').should('be.visible')
+
+      cy.get('.govuk-button').contains('Search transactions').click()
+
+      cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', TRANSACTION.reference)
+
+      cy.get('#fromDate').should('have.value', '01/01/2025')
+      cy.get('#toDate').should('have.value', '01/01/2026')
     })
 
     it('should be able to filter using date ranges', () => {

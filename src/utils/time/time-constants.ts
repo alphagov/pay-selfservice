@@ -9,6 +9,18 @@ export class TimeConstants {
       .minus({ years: 1 }) as DateTime<true>
   }
 
+  static get TODAY(): DateTime<true> {
+    return DateTime.now().setLocale('en-GB').setZone('Europe/London').startOf('day') as DateTime<true>
+  }
+
+  static get END_OF_TODAY(): DateTime<true> {
+    return DateTime.now().setLocale('en-GB').setZone('Europe/London').endOf('day') as DateTime<true>
+  }
+
+  static get NOW(): DateTime<true> {
+    return DateTime.now().setLocale('en-GB').setZone('Europe/London') as DateTime<true>
+  }
+
   static get YESTERDAY(): DateTime<true> {
     return DateTime.now()
       .setLocale('en-GB')
