@@ -66,7 +66,7 @@ async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResp
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)
-    return response(req, res, 'simplified-account/services/all-service-transactions/refund', {
+    return response(req, res, 'simplified-account/services/all-service-transactions/detail/refund', {
       transaction,
       errors: {
         summary: formattedErrors.errorSummary,
