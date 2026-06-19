@@ -86,6 +86,20 @@ describe('Transaction details page', () => {
           .should('contain.text', 'You cannot refund this payment because it is being disputed.')
       })
 
+      it('should show the payment status', () => {
+        cy.visit(TRANSACTION_URL)
+
+        cy.get('.govuk-summary-list')
+          .eq(0)
+          .within(() => {
+            cy.get('.govuk-summary-list__key')
+              .contains('Payment status')
+              .next()
+              .should('have.class', 'govuk-summary-list__value')
+              .should('contain.text', 'Success')
+          })
+      })
+
       it('should display the correct dispute information', () => {
         cy.visit(TRANSACTION_URL)
 
@@ -163,6 +177,20 @@ describe('Transaction details page', () => {
           .should('contain.text', 'You cannot refund this payment because it is being disputed.')
       })
 
+      it('should show the payment status', () => {
+        cy.visit(TRANSACTION_URL)
+
+        cy.get('.govuk-summary-list')
+          .eq(0)
+          .within(() => {
+            cy.get('.govuk-summary-list__key')
+              .contains('Payment status')
+              .next()
+              .should('have.class', 'govuk-summary-list__value')
+              .should('contain.text', 'Success')
+          })
+      })
+
       it('should display the correct dispute information', () => {
         cy.visit(TRANSACTION_URL)
 
@@ -236,6 +264,20 @@ describe('Transaction details page', () => {
           .next()
           .should('have.class', 'govuk-button')
           .should('contain.text', 'Refund payment')
+      })
+
+      it('should show the payment status', () => {
+        cy.visit(TRANSACTION_URL)
+
+        cy.get('.govuk-summary-list')
+          .eq(0)
+          .within(() => {
+            cy.get('.govuk-summary-list__key')
+              .contains('Payment status')
+              .next()
+              .should('have.class', 'govuk-summary-list__value')
+              .should('contain.text', 'Success')
+          })
       })
 
       it('should display the correct dispute information', () => {
@@ -316,6 +358,20 @@ describe('Transaction details page', () => {
             'contain.text',
             'You cannot refund this payment because it was disputed and the paying user won the dispute.'
           )
+      })
+
+      it('should show the payment status', () => {
+        cy.visit(TRANSACTION_URL)
+
+        cy.get('.govuk-summary-list')
+          .eq(0)
+          .within(() => {
+            cy.get('.govuk-summary-list__key')
+              .contains('Payment status')
+              .next()
+              .should('have.class', 'govuk-summary-list__value')
+              .should('contain.text', 'Dispute lost to user')
+          })
       })
 
       it('should display the correct dispute information', () => {
