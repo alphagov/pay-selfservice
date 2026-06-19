@@ -22,7 +22,7 @@ const DISPUTE_NEEDS_RESPONSE_DATA: Partial<TransactionFixture> = {
   transactionType: ResourceType.DISPUTE,
   paymentDetails: new PaymentDetailsFixture({
     description: BASE_FIXTURE.description,
-    reference: BASE_FIXTURE.description,
+    reference: BASE_FIXTURE.reference,
     email: BASE_FIXTURE.email,
     cardDetails: BASE_FIXTURE.cardDetails,
     transactionType: ResourceType.PAYMENT,
@@ -43,7 +43,7 @@ const DISPUTE_UNDER_REVIEW_DATA: Partial<TransactionFixture> = {
   transactionType: ResourceType.DISPUTE,
   paymentDetails: new PaymentDetailsFixture({
     description: BASE_FIXTURE.description,
-    reference: BASE_FIXTURE.description,
+    reference: BASE_FIXTURE.reference,
     email: BASE_FIXTURE.email,
     cardDetails: BASE_FIXTURE.cardDetails,
     transactionType: ResourceType.PAYMENT,
@@ -64,7 +64,7 @@ const DISPUTE_WON_DATA: Partial<TransactionFixture> = {
   transactionType: ResourceType.DISPUTE,
   paymentDetails: new PaymentDetailsFixture({
     description: BASE_FIXTURE.description,
-    reference: BASE_FIXTURE.description,
+    reference: BASE_FIXTURE.reference,
     email: BASE_FIXTURE.email,
     cardDetails: BASE_FIXTURE.cardDetails,
     transactionType: ResourceType.PAYMENT,
@@ -91,7 +91,7 @@ const DISPUTE_LOST_DATA: Partial<TransactionFixture> = {
   transactionType: ResourceType.DISPUTE,
   paymentDetails: new PaymentDetailsFixture({
     description: BASE_FIXTURE.description,
-    reference: BASE_FIXTURE.description,
+    reference: BASE_FIXTURE.reference,
     email: BASE_FIXTURE.email,
     cardDetails: BASE_FIXTURE.cardDetails,
     transactionType: ResourceType.PAYMENT,

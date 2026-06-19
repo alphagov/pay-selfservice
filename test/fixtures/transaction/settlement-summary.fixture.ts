@@ -8,7 +8,7 @@ export class SettlementSummaryFixture {
   readonly settledDate?: DateTime
 
   constructor(...options: Partial<SettlementSummaryFixture>[]) {
-    this.captureSubmitTime = DateTime.fromISO('2025-07-22T03:14:20.926+01:00')
+    this.captureSubmitTime = DateTime.fromISO('2025-07-22T03:14:20.926+01:00', { zone: 'Europe/London' })
     this.capturedDate = '2025-07-22'
 
     options.forEach((optionObject) => {
