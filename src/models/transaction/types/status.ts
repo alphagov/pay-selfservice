@@ -33,7 +33,7 @@ export const parseStatus = (apiStatus: string): Status => {
 export const DisputeStatusFriendlyNames: Partial<Record<Status, string>> = {
   NEEDS_RESPONSE: 'Dispute awaiting evidence',
   UNDER_REVIEW: 'Dispute under review',
-  LOST: 'Dispute lost to customer',
+  LOST: 'Dispute lost to user',
   WON: 'Dispute won in your favour',
 }
 

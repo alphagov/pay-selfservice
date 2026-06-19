@@ -90,7 +90,7 @@ const DisputeStatusFilters: StatusFilter[] = [
   },
   {
     id: 'dispute_lost',
-    friendly: 'Dispute lost to customer',
+    friendly: 'Dispute lost to user',
     statuses: [Status.LOST],
   },
 ]

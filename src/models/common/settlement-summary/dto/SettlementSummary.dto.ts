@@ -1,4 +1,5 @@
 export interface SettlementSummaryData {
-  capture_submit_time: string | null
-  captured_date: string | null
+  capture_submit_time?: string | null
+  captured_date?: string | null
+  settled_date?: string
 }
