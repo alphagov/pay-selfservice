@@ -110,7 +110,7 @@ describe('All services refund page', () => {
         'contain',
         `Refund the full amount of ${penceToPoundsWithCurrency(TRANSACTION.refundSummary.amountAvailable)}`
       )
-    cy.contains(' Confirm refund ').should('be.visible').click()
+    cy.contains('Confirm refund').should('be.visible').click()
     cy.get('.govuk-notification-banner--success')
       .should('be.visible')
       .and('contain', 'Refund successful')
@@ -129,7 +129,7 @@ describe('All services refund page', () => {
     cy.visit(TRANSACTION_REFUND_URL)
 
     cy.get('#refund-payment-2').check()
-    cy.contains(' Confirm refund ').should('be.visible').click()
+    cy.contains('Confirm refund').should('be.visible').click()
 
     cy.get('.govuk-error-summary')
       .should('exist')
@@ -150,7 +150,7 @@ describe('All services refund page', () => {
     cy.get('#refund-payment-2').check()
     cy.get('#partial-refund-amount').click().focused().clear().type(TRANSACTION.amount.toString())
 
-    cy.contains(' Confirm refund ').should('be.visible').click()
+    cy.contains('Confirm refund').should('be.visible').click()
     cy.get('.govuk-error-summary')
       .should('exist')
       .should('contain.text', 'There is a problem')
@@ -170,7 +170,7 @@ describe('All services refund page', () => {
     cy.get('#refund-payment-2').check()
     cy.get('#partial-refund-amount').click().focused().clear().type('.50')
 
-    cy.contains(' Confirm refund ').should('be.visible').click()
+    cy.contains('Confirm refund').should('be.visible').click()
     cy.get('.govuk-error-summary')
       .should('exist')
       .should('contain.text', 'There is a problem')
@@ -187,7 +187,7 @@ describe('All services refund page', () => {
 
     cy.visit(TRANSACTION_REFUND_URL)
 
-    cy.contains(' Confirm refund ').should('be.visible').click()
+    cy.contains('Confirm refund').should('be.visible').click()
     cy.get('.govuk-error-summary')
       .should('exist')
       .should('contain.text', 'There is a problem')
