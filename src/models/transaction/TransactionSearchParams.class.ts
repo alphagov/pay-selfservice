@@ -6,8 +6,9 @@ import {
   PaymentStatusFilterMapping,
   RefundStatusFilterMapping,
 } from '@utils/simplified-account/services/transactions/status-filters'
-import { parseDateTime } from '@utils/time/parse-date-time'
+import { parseTransactionSearchDateTime } from '@utils/time/parse-date-time'
 import type { DateTime } from 'luxon'
+import { TRANSACTION_SEARCH_DATE_FORMAT } from '@utils/time/time-formats'
 
 interface TransactionSearchQuery {
   cardholderName?: string
@@ -25,6 +26,7 @@ interface TransactionSearchQuery {
   toTime?: string
   includeTime?: string
   gatewayPayoutId?: string
+  jsEnabled?: string
 }
 
 export class TransactionSearchParams {
@@ -125,22 +127,37 @@ export class TransactionSearchParams {
       searchParams.brand = queryParams.brand.split(',')
     }
 
-    if (queryParams.fromDate || queryParams.toDate) {
-      searchParams.fromDate = parseDateTime(
+    const dateRange = getPeriodUKDateTimeRange(queryParams.dateFilter as Period)
+
+    const isJsDateFilterSearch =
+      queryParams.jsEnabled !== 'false' && !queryParams.fromDate && !queryParams.toDate && queryParams.dateFilter
+    const isNoJsDateFilterSearch = queryParams.jsEnabled === 'false' && queryParams.dateFilter
+
+    if (!isJsDateFilterSearch && !isNoJsDateFilterSearch) {
+      searchParams.fromDate = parseTransactionSearchDateTime(
         queryParams.fromDate!,
         queryParams.fromTime!,
         queryParams.includeTime === 'include'
       )
 
       // parse end date/time, clamp to end of day if not including time
-      const toDate = parseDateTime(queryParams.toDate!, queryParams.toTime!, queryParams.includeTime === 'include')
+      const toDate = parseTransactionSearchDateTime(
+        queryParams.toDate!,
+        queryParams.toTime!,
+        queryParams.includeTime === 'include'
+      )
       searchParams.toDate = queryParams.includeTime === 'include' ? toDate : toDate.endOf('day')
 
-      searchParams.dateFilter = queryParams.dateFilter
+      // if the selected dates match the filter, persist the filter, otherwise set to custom-range
+      // this ensures the correct filter is displayed to the user
+      searchParams.dateFilter =
+        queryParams.fromDate === dateRange.start?.toFormat(TRANSACTION_SEARCH_DATE_FORMAT) &&
+        queryParams.toDate === dateRange.end?.toFormat(TRANSACTION_SEARCH_DATE_FORMAT)
+          ? queryParams.dateFilter
+          : 'custom-range'
+
       searchParams.includeTime = queryParams.includeTime === 'include'
     } else if (queryParams.dateFilter) {
-      const dateRange = getPeriodUKDateTimeRange(queryParams.dateFilter as Period)
-
       searchParams.dateFilter = queryParams.dateFilter
       searchParams.fromDate = dateRange.start
       searchParams.toDate = dateRange.end

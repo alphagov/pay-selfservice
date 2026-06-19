@@ -1,9 +1,10 @@
-/* global $ */
+declare const $: JQueryStatic
+
 const initDateTimePicker = () => {
   const datePicker = () => {
     $('.date-picker').datepicker({
       format: 'dd/mm/yyyy',
-      autoclose: true
+      autoclose: true,
     })
   }
 
@@ -11,14 +12,14 @@ const initDateTimePicker = () => {
     $('.time-picker').timepicker({
       showDuration: true,
       timeFormat: 'G:i:s',
-      roundingFunction: () => null
+      roundingFunction: () => null,
     })
   }
 
   const datePair = () => {
     $('.datetime-pair').datepair({
       dateClass: 'date-picker',
-      timeClass: 'time-picker'
+      timeClass: 'time-picker',
     })
   }
 
