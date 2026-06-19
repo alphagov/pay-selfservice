@@ -78,8 +78,6 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   req.session.transactionFilters = req.url.split('?')[1] || ''
 
-  console.log(transactionSearchParams)
-
   return response(req, res, 'simplified-account/transactions/index', {
     results,
     isBST: isBritishSummerTime(),

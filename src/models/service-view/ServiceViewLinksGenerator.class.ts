@@ -18,14 +18,14 @@ export class ServiceViewLinksGenerator {
 
 export class ServiceTransactionLinks {
   private readonly serviceViewGenerator: ServiceViewLinksGenerator
-  public defaultSearches?: eTransactionDefaultSearchLinks
+  public defaultSearches?: TransactionDefaultSearchLinks
 
   constructor(serviceViewGenerator: ServiceViewLinksGenerator) {
     this.serviceViewGenerator = serviceViewGenerator
   }
 
   withDefaultSearchParams(searchParams: URLSearchParams) {
-    this.defaultSearches = new eTransactionDefaultSearchLinks(this.serviceViewGenerator, searchParams)
+    this.defaultSearches = new TransactionDefaultSearchLinks(this.serviceViewGenerator, searchParams)
   }
 
   get downloadCsv() {
@@ -37,7 +37,7 @@ export class ServiceTransactionLinks {
   }
 }
 
-class eTransactionDefaultSearchLinks {
+class TransactionDefaultSearchLinks {
   private readonly serviceViewGenerator: ServiceViewLinksGenerator
   private readonly searchParams: URLSearchParams
 
@@ -65,7 +65,7 @@ class eTransactionDefaultSearchLinks {
         this.serviceViewGenerator.serviceExternalId,
         this.serviceViewGenerator.accountType
       ) +
-      'state=refund_success&' +
+      '?state=refund_success&' +
       this.searchParams.toString()
     )
   }
@@ -77,7 +77,7 @@ class eTransactionDefaultSearchLinks {
         this.serviceViewGenerator.serviceExternalId,
         this.serviceViewGenerator.accountType
       ) +
-      'state=success&state=refund_success&' +
+      '?state=success&state=refund_success&' +
       this.searchParams.toString()
     )
   }
