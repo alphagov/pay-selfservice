@@ -52,7 +52,7 @@ export class ServiceView {
   private readonly service: Service
   private readonly accountType: string
 
-  private readonly links: ServiceViewLinksGenerator
+  public readonly links: ServiceViewLinksGenerator
 
   constructor(statusTag: StatusTag, displayTag: DisplayTag, service: Service, accountType: string) {
     this.statusTag = statusTag

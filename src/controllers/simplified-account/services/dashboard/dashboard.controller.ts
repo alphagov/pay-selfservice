@@ -1,7 +1,12 @@
 import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { dashboardTransactionSummary } from '@services/transactions.service'
-import { DT_FULL, getPeriodUKDateTimeRange, Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import {
+  DT_FULL,
+  getPeriodUKDateTimeRange,
+  Period,
+  TRANSACTION_FILTER_PERIODS,
+} from '@utils/simplified-account/services/dashboard/datetime-utils'
 import formatAccountPathsFor from '@utils/format-account-paths-for'
 import paths from '@root/paths'
 import formatServicePathsFor from '@utils/format-service-paths-for'
@@ -22,10 +27,11 @@ import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 const logger = createLogger(__filename)
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
-  const currentPeriod = req.query.period as Period
+  const currentPeriod = (req.query.period as Period) ?? Period.TODAY
   const { start, end } = getPeriodUKDateTimeRange(currentPeriod)
 
   const searchParams = new URLSearchParams()
+  searchParams.append('dateFilter', TRANSACTION_FILTER_PERIODS.has(currentPeriod) ? currentPeriod : 'custom-range')
 
   if (start && end) {
     searchParams.append('fromDate', start.toFormat('dd/MM/yyyy'))
@@ -33,6 +39,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     searchParams.append('toDate', end.toFormat('dd/MM/yyyy'))
     searchParams.append('toTime', end.toFormat('HH:mm:ss'))
   }
+
+  req.serviceView.links.transactions.withDefaultSearchParams(searchParams)
 
   const transactionsPeriodQueryParams = searchParams.toString()
 
