@@ -33,7 +33,7 @@
         text: 'Payment status'
       },
       value: {
-        text: transaction._locals.formatted.status
+        text: dispute._locals.formatted.status if (transaction.disputed and dispute and dispute.isDisputeLost()) else transaction._locals.formatted.status
       }
     }, {
       key: {
