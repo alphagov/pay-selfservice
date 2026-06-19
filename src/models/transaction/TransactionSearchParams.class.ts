@@ -135,15 +135,15 @@ export class TransactionSearchParams {
 
     if (!isJsDateFilterSearch && !isNoJsDateFilterSearch) {
       searchParams.fromDate = parseTransactionSearchDateTime(
-        queryParams.fromDate!,
-        queryParams.fromTime!,
+        queryParams.fromDate ?? '',
+        queryParams.fromTime ?? '',
         queryParams.includeTime === 'include'
       )
 
       // parse end date/time, clamp to end of day if not including time
       const toDate = parseTransactionSearchDateTime(
-        queryParams.toDate!,
-        queryParams.toTime!,
+        queryParams.toDate ?? '',
+        queryParams.toTime ?? '',
         queryParams.includeTime === 'include'
       )
       searchParams.toDate = queryParams.includeTime === 'include' ? toDate : toDate.endOf('day')
