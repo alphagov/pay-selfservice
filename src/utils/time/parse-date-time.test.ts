@@ -56,7 +56,7 @@ describe('date and time parsing tests', () => {
           const parsed = parseTransactionSearchDateTime('notadate', '13:42:00', false, defaultTime)
           parsed.should.not.be.null
           parsed.isValid.should.be.true
-          expect(parsed.toISO()).to.equal('2025-09-12T11:47:32.980+01:00')
+          expect(parsed.toUTC().toISO()).to.equal('2025-09-12T10:47:32.980Z')
         })
       })
 
@@ -67,7 +67,7 @@ describe('date and time parsing tests', () => {
           const parsed = parseTransactionSearchDateTime('01/06/2027', 'notatime', true, defaultTime)
           parsed.should.not.be.null
           parsed.isValid.should.be.true
-          expect(parsed.toISO()).to.equal('2025-09-12T11:47:32.980+01:00')
+          expect(parsed.toUTC().toISO()).to.equal('2025-09-12T10:47:32.980Z')
         })
       })
     })
