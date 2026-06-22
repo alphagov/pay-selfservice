@@ -15,6 +15,7 @@ import { getLedgerTransactionsFailure, getLedgerTransactionsSuccess } from '@tes
 import { TimeConstants } from '@utils/time/time-constants'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
 import { DISPUTE_LOST_DATA } from '@test/fixtures/transaction/fixture-data/dispute-fixture-data'
+import { LEDGER_TRANSACTION_COUNT_LIMIT } from '@controllers/simplified-account/services/transactions/constants'
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
 
@@ -139,6 +140,9 @@ describe('Transactions index', () => {
 
       cy.get('.govuk-button--secondary').contains('Download CSV').should('not.exist')
       cy.get('#csv-download').should('contain', 'Filter results to download a CSV of transactions')
+      cy.get('[data-cy=pagination-detail]').contains(
+        `Over ${LEDGER_TRANSACTION_COUNT_LIMIT.toLocaleString()} transactions`
+      )
     })
 
     it('should display csv download link when results >5k and filters applied', function () {
@@ -155,6 +159,9 @@ describe('Transactions index', () => {
 
       cy.get('.govuk-button--secondary').contains('Download CSV').should('exist')
       cy.get('#csv-download').should('not.exist')
+      cy.get('[data-cy=pagination-detail]').contains(
+        `Over ${LEDGER_TRANSACTION_COUNT_LIMIT.toLocaleString()} transactions`
+      )
     })
 
     it('should not display csv download link or informative text when 0 results', function () {
@@ -818,7 +825,7 @@ describe('Transactions index', () => {
 
       cy.visit(
         TRANSACTIONS_LIST_URL +
-          `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
+        `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
       )
 
       cy.get('.govuk-pagination__next').first().click()

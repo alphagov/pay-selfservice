@@ -18,8 +18,7 @@ import getPagination from '@utils/simplified-account/pagination'
 import { ViewMode } from '@models/view-mode/ViewMode.class'
 import { GatewayName } from '@models/gateway/gateway-name'
 import { CardType } from '@models/card-type/CardType.class'
-
-const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
+import { LEDGER_TRANSACTION_COUNT_LIMIT } from '@controllers/simplified-account/services/transactions/constants'
 
 async function get(
   req: AuthenticatedRequest & { viewMode: ViewMode },
