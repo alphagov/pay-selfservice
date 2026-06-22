@@ -70,10 +70,10 @@
     <p data-cy="pagination-detail" class="govuk-body govuk-!-font-size-16">
       {% if not transactionCountWithinRange %}
         Over {{ maxTransactions.toLocaleString() }} transactions
-        {% else %}
-          {% if pagination.total > 0 %}Showing {{ pagination.startIndex }} to {{ pagination.endIndex }} of{% endif %}
-          {{ pagination.total }}
-          transactions
+      {% else %}
+        {% if pagination.total > 0 %}Showing {{ pagination.startIndex }} to {{ pagination.endIndex }} of{% endif %}
+        {{ pagination.total }}
+        transactions
       {% endif %}
     </p>
     <div style="margin: auto">

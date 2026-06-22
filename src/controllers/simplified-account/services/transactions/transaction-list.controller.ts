@@ -89,7 +89,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     downloadLink,
     showCsvDownload,
     transactionCountWithinRange,
-    maxTransactions: LEDGER_TRANSACTION_COUNT_LIMIT
+    maxTransactions: LEDGER_TRANSACTION_COUNT_LIMIT,
   })
 }
 
