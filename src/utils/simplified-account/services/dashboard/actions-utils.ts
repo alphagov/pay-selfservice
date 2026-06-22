@@ -12,6 +12,7 @@ import CredentialState from '@models/constants/credential-state'
 import { getConnectorStripeAccountSetup, getStripeAccountCapabilities } from '@services/stripe-details.service'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { ProductType } from '@models/products/product-type'
+import { Features } from '@root/config/features'
 
 const logger = createLogger(__filename)
 
@@ -23,6 +24,7 @@ const possibleActions = {
   goLive: 4,
   telephonePaymentLink: 5,
   switchMode: 6,
+  displayProviderChangeToAdyen: 7,
 }
 
 const goLiveStartedStages = [
@@ -92,6 +94,14 @@ const getTelephonePaymentLink = async (user: User, service: Service, gatewayAcco
   return undefined
 }
 
+function isALiveStripeServiceAndAdminUser(service: Service, account: GatewayAccount, user: User) {
+  return (
+    account.type === GatewayAccountType.LIVE &&
+    account.paymentProvider === PaymentProviders.STRIPE &&
+    user.hasPermission(service.externalId, 'stripe-account-details:update')
+  )
+}
+
 const getActionsToDisplay = (
   service: Service,
   account: GatewayAccount,
@@ -121,6 +131,10 @@ const getActionsToDisplay = (
 
   if (displaySwitchMode(service, account)) {
     actionsToDisplay.push(possibleActions.switchMode)
+  }
+
+  if (isALiveStripeServiceAndAdminUser(service, account, user) && Features.isProviderChangeToAdyenLinkEnabled()) {
+    actionsToDisplay.push(possibleActions.displayProviderChangeToAdyen)
   }
 
   return actionsToDisplay

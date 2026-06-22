@@ -11,13 +11,13 @@ import formatAccountPathsFor from '@utils/format-account-paths-for'
 import paths from '@root/paths'
 import formatServicePathsFor from '@utils/format-service-paths-for'
 import {
-  possibleActions,
+  getAccountStatus,
   getActionsToDisplay,
+  getConfigurePSPAccountLink,
   getGoLiveStatus,
   getTelephonePaymentLink,
   isWorldpayTestService,
-  getConfigurePSPAccountLink,
-  getAccountStatus,
+  possibleActions,
 } from '@utils/simplified-account/services/dashboard/actions-utils'
 import createLogger from '@utils/logger'
 import type { DateTime } from 'luxon'
@@ -109,6 +109,11 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
         requestPspTestAccount: formatServicePathsFor(paths.service.requestPspTestAccount, req.service.externalId),
         requestLiveAccount: formatServicePathsFor(paths.service.requestToGoLive.index, req.service.externalId),
         configurePSPAccount: getConfigurePSPAccountLink(req.service, req.account),
+        providerChangeToAdyen: formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.providerChangeToAdyen,
+          req.service.externalId,
+          req.account.type
+        ),
       },
     },
   })
