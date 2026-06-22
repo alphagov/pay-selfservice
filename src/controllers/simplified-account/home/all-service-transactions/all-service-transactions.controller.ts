@@ -120,6 +120,8 @@ async function get(
     showCsvDownload,
     showOppositeModeLink: req.viewMode.hasServicesInOppositeMode,
     oppositeModeLink,
+    transactionCountWithinRange,
+    maxTransactions: LEDGER_TRANSACTION_COUNT_LIMIT,
   })
 }
 
