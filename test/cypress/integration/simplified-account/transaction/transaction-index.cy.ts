@@ -825,7 +825,7 @@ describe('Transactions index', () => {
 
       cy.visit(
         TRANSACTIONS_LIST_URL +
-          `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
+        `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
       )
 
       cy.get('.govuk-pagination__next').first().click()
@@ -835,6 +835,102 @@ describe('Transactions index', () => {
       cy.get('#lastDigitsCardNumber').invoke('val').should('contain', lastFourDigits)
       cy.get('#state').invoke('text').should('contain', 'Success')
       cy.get('#card-brand').invoke('text').should('contain', 'Visa')
+    })
+
+    it('should not display CSV download link on subsequent pages if transaction count is over limit', () => {
+      const ledgerTransactionsParams = {
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactions: [TRANSACTION],
+        filters: {
+          from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+
+        },
+        displaySize: 20,
+        transactionLength: 6000,
+      }
+
+      cy.task('setupStubs', [
+        getLedgerTransactionsSuccess({
+          ...ledgerTransactionsParams,
+          page: 1,
+        }),
+        getLedgerTransactionsSuccess({
+          ...ledgerTransactionsParams,
+          page: 2,
+        }),
+      ])
+
+      cy.visit(TRANSACTIONS_LIST_URL)
+
+      cy.get('.govuk-button--secondary').contains('Download CSV').should('not.exist')
+      cy.get('#csv-download').should('contain', 'Filter results to download a CSV of transactions')
+      cy.get('[data-cy=pagination-detail]').contains(
+        `Over ${LEDGER_TRANSACTION_COUNT_LIMIT.toLocaleString()} transactions`
+      )
+
+      cy.get('.govuk-pagination__next').first().click()
+
+      cy.get('.govuk-button--secondary').contains('Download CSV').should('not.exist')
+      cy.get('#csv-download').should('contain', 'Filter results to download a CSV of transactions')
+      cy.get('[data-cy=pagination-detail]').contains(
+        `Over ${LEDGER_TRANSACTION_COUNT_LIMIT.toLocaleString()} transactions`
+      )
+    })
+
+    it('should display CSV download link subsequent pages if transaction count is over limit but filters are applied', () => {
+      const reference = TRANSACTION.reference
+      const email = TRANSACTION.email
+      const cardholderName = TRANSACTION.card_details?.cardholder_name
+      const cardholderNameSearchParam = cardholderName!.split(' ').join('+')
+      const transactionState = TRANSACTION.state?.status.toLowerCase()
+      const lastFourDigits = TRANSACTION.card_details?.last_digits_card_number
+      const cardBrands = 'visa'
+
+      const ledgerTransactionsParams = {
+        gatewayAccountId: GATEWAY_ACCOUNT_ID,
+        transactions: [TRANSACTION],
+        filters: {
+          from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+          reference,
+          email,
+          cardholder_name: cardholderNameSearchParam,
+          payment_states: transactionState,
+          last_digits_card_number: lastFourDigits,
+          card_brands: cardBrands,
+        },
+        displaySize: 20,
+        transactionLength: 6000,
+      }
+
+      cy.task('setupStubs', [
+        getLedgerTransactionsSuccess({
+          ...ledgerTransactionsParams,
+          page: 1,
+        }),
+        getLedgerTransactionsSuccess({
+          ...ledgerTransactionsParams,
+          page: 2,
+        }),
+      ])
+
+      cy.visit(
+        TRANSACTIONS_LIST_URL +
+        `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
+      )
+
+      cy.get('.govuk-button--secondary').contains('Download CSV').should('exist')
+      cy.get('#csv-download').should('not.exist')
+      cy.get('[data-cy=pagination-detail]').contains(
+        `Over ${LEDGER_TRANSACTION_COUNT_LIMIT.toLocaleString()} transactions`
+      )
+
+      cy.get('.govuk-pagination__next').first().click()
+
+      cy.get('.govuk-button--secondary').contains('Download CSV').should('exist')
+      cy.get('#csv-download').should('not.exist')
+      cy.get('[data-cy=pagination-detail]').contains(
+        `Over ${LEDGER_TRANSACTION_COUNT_LIMIT.toLocaleString()} transactions`
+      )
     })
   })
 })
