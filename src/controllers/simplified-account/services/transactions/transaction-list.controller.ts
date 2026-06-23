@@ -72,8 +72,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
   const transactionCountWithinRange = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT
 
-  const userSelectedFilters = new URLSearchParams(transactionSearchParams.getQueryParams());
-  userSelectedFilters.delete("page");
+  const userSelectedFilters = new URLSearchParams(transactionSearchParams.getQueryParams())
+  userSelectedFilters.delete('page')
 
   const hasQueryParams = userSelectedFilters.toString().length
   const showCsvDownload =

@@ -825,7 +825,7 @@ describe('Transactions index', () => {
 
       cy.visit(
         TRANSACTIONS_LIST_URL +
-        `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
+          `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
       )
 
       cy.get('.govuk-pagination__next').first().click()
@@ -843,7 +843,6 @@ describe('Transactions index', () => {
         transactions: [TRANSACTION],
         filters: {
           from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
-
         },
         displaySize: 20,
         transactionLength: 6000,
@@ -915,7 +914,7 @@ describe('Transactions index', () => {
 
       cy.visit(
         TRANSACTIONS_LIST_URL +
-        `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
+          `?reference=${reference}&email=${email}&cardholderName=${cardholderNameSearchParam}&lastDigitsCardNumber=${lastFourDigits}&brand=visa&state=success&page=1`
       )
 
       cy.get('.govuk-button--secondary').contains('Download CSV').should('exist')
