@@ -18,7 +18,7 @@ export class ServiceFixture {
   readonly defaultBillingAddressCountry?: string
   readonly takesPaymentsOverPhone: boolean
 
-  constructor(overrides?: Partial<ServiceFixture>) {
+  constructor(...overrides: Partial<ServiceFixture>[]) {
     this.id = 1
     this.externalId = 'service-external-id-123-abc'
     this.name = 'Power Plant Safety Inspection'
@@ -34,9 +34,9 @@ export class ServiceFixture {
     this.agentInitiatedMotoEnabled = false
     this.takesPaymentsOverPhone = false
 
-    if (overrides) {
-      Object.assign(this, overrides)
-    }
+    overrides?.forEach((overrideValues) => {
+      Object.assign(this, overrideValues)
+    })
   }
 
   toServiceData(): ServiceData {

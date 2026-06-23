@@ -1,6 +1,16 @@
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 import { TimeConstants } from '@utils/time/time-constants'
 
+export const Period: Record<string, Period> = {
+  TODAY: 'today',
+  YESTERDAY: 'yesterday',
+  PREVIOUS_SEVEN_DAYS: 'previous-seven-days',
+  PREVIOUS_THIRTY_DAYS: 'previous-thirty-days',
+  PREVIOUS_MONTH: 'previous-month',
+  LAST_12_MONTHS: 'last-12-months',
+  ALL_TIME: 'all-time',
+}
+
 export type Period =
   | 'today'
   | 'yesterday'
@@ -9,6 +19,14 @@ export type Period =
   | 'previous-month'
   | 'last-12-months'
   | 'all-time'
+
+export const TRANSACTION_FILTER_PERIODS: Set<Period> = new Set<Period>([
+  Period.TODAY,
+  Period.YESTERDAY,
+  Period.PREVIOUS_MONTH,
+  Period.TODAY,
+  Period.ALL_TIME,
+])
 
 interface DateTimeRange {
   start: DateTime<true> | undefined

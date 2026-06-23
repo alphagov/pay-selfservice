@@ -11,6 +11,17 @@
   data-click-action="First steps link clicked"
 >
   <div class="flex-grid--row">
+    {% if possibleActions.displayProviderChangeToAdyen in dashboardActions %}
+      <article class="{{ columnClass }} links__box" id="switch-to-adyen-info">
+        <a id="provider-change-to-adyen-link" href="{{ links.dashboardActions.providerChangeToAdyen }}">
+          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Your provider is changing to Adyen</h2>
+          <p class="govuk-body govuk-!-margin-bottom-0">
+            All services are moving from Stripe to Adyen by the end of 2026. Find out everything you need to know and
+            what you’ll need to do.
+          </p>
+        </a>
+      </article>
+    {% endif %}
     {% if possibleActions.switchMode in dashboardActions %}
       <article class="{{ columnClass }} links__box" id="switch-mode">
         <a href="{{ links.dashboardActions.switchMode }}">
