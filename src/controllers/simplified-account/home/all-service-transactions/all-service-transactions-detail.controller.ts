@@ -2,7 +2,7 @@ import paths, { formattedPathFor } from '@root/paths'
 import { getTransaction, getEvents, getDisputes } from '@services/transactions.service'
 import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
-import { Transaction } from '@models/transaction/Transaction.class'
+import { Transaction } from '@models/transaction/Transaction.model'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {

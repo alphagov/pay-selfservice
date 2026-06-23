@@ -8,7 +8,7 @@ const { ConnectorClient } = require('../../services/clients/connector.client')
 const { NotFoundError } = require('../../errors')
 const connector = new ConnectorClient(process.env.CONNECTOR_URL)
 
-module.exports = async function redirectToTransactionDetail (req, res, next) {
+module.exports = async function redirectToTransactionDetail(req, res, next) {
   const chargeId = req.params.chargeId
 
   try {
@@ -17,7 +17,7 @@ module.exports = async function redirectToTransactionDetail (req, res, next) {
       req.session.contextIsAllServiceTransactions = true
 
       const account = await connector.getAccount({
-        gatewayAccountId: charge.gateway_account_id
+        gatewayAccountId: charge.gateway_account_id,
       })
 
       res.redirect(302, formatAccountPathsFor(router.paths.account.transactions.detail, account.external_id, chargeId))

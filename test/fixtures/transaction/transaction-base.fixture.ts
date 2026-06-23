@@ -7,7 +7,8 @@ import { AuthorisationSummaryFixture } from '@test/fixtures/transaction/authoris
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
 import { Reason } from '@models/transaction/types/reason'
 import { PaymentDetailsFixture } from '@test/fixtures/transaction/payment-details.fixture'
-import { Transaction, TransactionData } from '@models/transaction/Transaction'
+import { Transaction } from '@models/transaction/Transaction.model'
+import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 
 export class TransactionBaseFixture {
   gatewayAccountId: string
@@ -67,21 +68,6 @@ export class TransactionBaseFixture {
       Object.assign(this, optionObject)
     })
   }
-
-  // static Disputes = {
-  //   NeedsResponse: function (...options: Partial<TransactionFixture>[]) {
-  //     return new TransactionFixture(DISPUTE_NEEDS_RESPONSE_DATA, ...options)
-  //   },
-  //   UnderReview: function (...options: Partial<TransactionFixture>[]) {
-  //     return new TransactionFixture(DISPUTE_UNDER_REVIEW_DATA, ...options)
-  //   },
-  //   Won: function (...options: Partial<TransactionFixture>[]) {
-  //     return new TransactionFixture(DISPUTE_WON_DATA, ...options)
-  //   },
-  //   Lost: function (...options: Partial<TransactionFixture>[]) {
-  //     return new TransactionFixture(DISPUTE_LOST_DATA, ...options)
-  //   },
-  // }
 
   toTransactionData(): TransactionData {
     return {

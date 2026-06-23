@@ -3,7 +3,7 @@ const {
   legacyConnectorTransactionParity,
   legacyConnectorTransactionsParity,
   legacyConnectorEventsParity,
-  legacyConnectorTransactionSummaryParity
+  legacyConnectorTransactionSummaryParity,
 } = require('./ledger-legacy-connector-parity')
 
 describe('Ledger service client legacy parity utilities', () => {
@@ -12,8 +12,8 @@ describe('Ledger service client legacy parity utilities', () => {
       const ledgerTransactionFixture = {
         transaction_id: 'some-transaction-id',
         refund_summary: {
-          amount_refunded: 1000
-        }
+          amount_refunded: 1000,
+        },
       }
 
       const result = legacyConnectorTransactionParity(ledgerTransactionFixture)
@@ -28,7 +28,7 @@ describe('Ledger service client legacy parity utilities', () => {
         transaction_type: 'REFUND',
         refunded_by: 'f579410614654249987ad939f5ef53a1',
         refund_summary: {
-          amount_refunded: 1000
+          amount_refunded: 1000,
         },
         gateway_transaction_id: 'refund-gateway-transaction-id',
         payment_details: {
@@ -40,9 +40,9 @@ describe('Ledger service client legacy parity utilities', () => {
             card_brand: 'visa',
             last_digits_card_number: '5556',
             first_digits_card_number: '400005',
-            expiry_date: '11/21'
-          }
-        }
+            expiry_date: '11/21',
+          },
+        },
       }
 
       const result = legacyConnectorTransactionParity(ledgerTransactionFixture)
@@ -63,21 +63,25 @@ describe('Ledger service client legacy parity utilities', () => {
 
   describe('Event parity', () => {
     const ledgerTransactionEventsFixture = {
-      events: [{
-        timestamp: 'some-iso-timestamp',
-        resource_type: 'PAYMENT',
-        data: {}
-      }]
+      events: [
+        {
+          timestamp: 'some-iso-timestamp',
+          resource_type: 'PAYMENT',
+          data: {},
+        },
+      ],
     }
 
     const ledgerTransactionRefundedEventFixture = {
-      events: [{
-        timestamp: 'some-iso-timestamp',
-        resource_type: 'REFUND',
-        data: {
-          refunded_by: 'some-user-id'
-        }
-      }]
+      events: [
+        {
+          timestamp: 'some-iso-timestamp',
+          resource_type: 'REFUND',
+          data: {
+            refunded_by: 'some-user-id',
+          },
+        },
+      ],
     }
     it('Correctly maps fields from expected ledger values to current connector names', () => {
       const { events } = legacyConnectorEventsParity(ledgerTransactionEventsFixture)
@@ -106,18 +110,20 @@ describe('Ledger service client legacy parity utilities', () => {
   describe('Transactions parity', () => {
     it('Applies transaction parity to the result set of a search response', () => {
       const ledgerTransactionsSearchFixture = {
-        results: [{
-          transaction_id: 'some-charge-id'
-        },
-        {
-          transaction_id: 'some-transaction-id',
-          parent_transaction_id: 'payment-transaction-id',
-          transaction_type: 'REFUND',
-          refunded_by: 'f579410614654249987ad939f5ef53a1',
-          payment_details: {
-            reference: 'payment-reference'
-          }
-        }]
+        results: [
+          {
+            transaction_id: 'some-charge-id',
+          },
+          {
+            transaction_id: 'some-transaction-id',
+            parent_transaction_id: 'payment-transaction-id',
+            transaction_type: 'REFUND',
+            refunded_by: 'f579410614654249987ad939f5ef53a1',
+            payment_details: {
+              reference: 'payment-reference',
+            },
+          },
+        ],
       }
       const transactions = legacyConnectorTransactionsParity(ledgerTransactionsSearchFixture)
 
@@ -133,12 +139,12 @@ describe('Ledger service client legacy parity utilities', () => {
       const ledgerTransactionSummaryFixture = {
         payments: {
           count: 10,
-          gross_amount: 12001
+          gross_amount: 12001,
         },
         refunds: {
           count: 2,
-          gross_amount: 2302
-        }
+          gross_amount: 2302,
+        },
       }
       const summary = legacyConnectorTransactionSummaryParity(ledgerTransactionSummaryFixture)
       assert.strictEqual(summary.successful_payments.count, 10)

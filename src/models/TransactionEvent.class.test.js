@@ -17,8 +17,8 @@ describe('Transaction event model', () => {
         status: 'success',
         code: 'P0010',
         finished: true,
-        message: 'Payment successful'
-      }
+        message: 'Payment successful',
+      },
     }
 
     const transactionEvent = new TransactionEvent(eventData)
@@ -33,15 +33,10 @@ describe('Transaction event model', () => {
     expect(transactionEvent.state.finished).to.equal(true)
     expect(transactionEvent.state.message).to.equal('Payment successful')
 
-    expect(transactionEvent.updated_friendly).to.equal(
-      dates.utcToDisplay('2022-07-27T14:45:22.000Z')
-    )
+    expect(transactionEvent.updated_friendly).to.equal(dates.utcToDisplay('2022-07-27T14:45:22.000Z'))
     expect(transactionEvent.amount_friendly).to.equal('£50.00')
     expect(transactionEvent.state_friendly).to.equal(
-      states.getEventDisplayNameForConnectorState(
-        transactionEvent.state,
-        transactionEvent.type
-      )
+      states.getEventDisplayNameForConnectorState(transactionEvent.state, transactionEvent.type)
     )
   })
 
@@ -56,8 +51,8 @@ describe('Transaction event model', () => {
         status: 'success',
         code: 'R0020',
         finished: true,
-        message: 'Refund processed'
-      }
+        message: 'Refund processed',
+      },
     }
 
     const transactionEvent = new TransactionEvent(eventData)
@@ -80,8 +75,8 @@ describe('Transaction event model', () => {
         status: 'needs_response',
         code: 'D0030',
         finished: false,
-        message: 'Dispute needs response'
-      }
+        message: 'Dispute needs response',
+      },
     }
 
     const transactionEvent = new TransactionEvent(eventData)
@@ -103,8 +98,8 @@ describe('Transaction event model', () => {
         status: 'needs_response',
         code: 'D0030',
         finished: false,
-        message: 'Dispute needs response'
-      }
+        message: 'Dispute needs response',
+      },
     }
 
     const transactionEvent = new TransactionEvent(eventData)
@@ -126,8 +121,8 @@ describe('Transaction event model', () => {
         status: 'won',
         code: 'D0050',
         finished: true,
-        message: 'Dispute won in your favor'
-      }
+        message: 'Dispute won in your favor',
+      },
     }
 
     const transactionEvent = new TransactionEvent(eventData)
@@ -144,8 +139,8 @@ describe('Transaction event model', () => {
       amount: 1000,
       updated: '2022-07-30T16:22:10.000Z',
       state: {
-        status: 'created'
-      }
+        status: 'created',
+      },
     }
 
     const transactionEvent = new TransactionEvent(eventData)
@@ -161,15 +156,10 @@ describe('Transaction event model', () => {
     expect(transactionEvent.state.finished).to.equal(undefined)
     expect(transactionEvent.state.message).to.equal(undefined)
 
-    expect(transactionEvent.updated_friendly).to.equal(
-      dates.utcToDisplay('2022-07-30T16:22:10.000Z')
-    )
+    expect(transactionEvent.updated_friendly).to.equal(dates.utcToDisplay('2022-07-30T16:22:10.000Z'))
     expect(transactionEvent.amount_friendly).to.equal('£10.00')
     expect(transactionEvent.state_friendly).to.equal(
-      states.getEventDisplayNameForConnectorState(
-        { status: 'created' },
-        'PAYMENT'
-      )
+      states.getEventDisplayNameForConnectorState({ status: 'created' }, 'PAYMENT')
     )
   })
 
@@ -179,8 +169,8 @@ describe('Transaction event model', () => {
       updated: '2022-07-31T08:45:12.000Z',
       state: {
         status: 'submitted',
-        finished: false
-      }
+        finished: false,
+      },
     }
 
     const transactionEvent = new TransactionEvent(eventData)
@@ -188,10 +178,7 @@ describe('Transaction event model', () => {
     expect(transactionEvent.amount).to.equal(undefined)
     expect(transactionEvent.amount_friendly).to.equal('£NaN')
     expect(transactionEvent.state_friendly).to.equal(
-      states.getEventDisplayNameForConnectorState(
-        { status: 'submitted', finished: false },
-        'REFUND'
-      )
+      states.getEventDisplayNameForConnectorState({ status: 'submitted', finished: false }, 'REFUND')
     )
   })
 })

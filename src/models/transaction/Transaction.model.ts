@@ -5,10 +5,9 @@ import { PaymentData } from '@models/transaction/dto/Payment.dto'
 import { RefundData } from '@models/transaction/dto/Refund.dto'
 import { DisputeData } from '@models/transaction/dto/Dispute.dto'
 import { ResourceType } from '@models/transaction/types/resource-type'
+import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 
 export type Transaction = Payment | Refund | Dispute
-
-export type TransactionData = PaymentData | RefundData | DisputeData
 
 export const Transaction = {
   fromLedgerResponse: function (data: TransactionData): Transaction {
