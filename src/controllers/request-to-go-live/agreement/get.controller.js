@@ -12,11 +12,10 @@ const chosenOptions = [CHOSEN_PSP_ADYEN, CHOSEN_PSP_STRIPE, GOV_BANKING_MOTO_OPT
 
 module.exports = (req, res) => {
   if (chosenOptions.includes(req.service.currentGoLiveStage)) {
-    let displayStripeAdyenAgreement = lodash.get(req, 'service.currentGoLiveStage', '')
+    let currentGoLiveStage = lodash.get(req, 'service.currentGoLiveStage', '')
     return response(req, res, 'request-to-go-live/agreement', {
-      displayStripeAgreement:
-        displayStripeAdyenAgreement === goLiveStage.CHOSEN_PSP_STRIPE ||
-        displayStripeAdyenAgreement === goLiveStage.CHOSEN_PSP_ADYEN,
+      displayGovUkPspAgreement:
+        currentGoLiveStage === goLiveStage.CHOSEN_PSP_STRIPE || currentGoLiveStage === goLiveStage.CHOSEN_PSP_ADYEN,
     })
   }
   return res.redirect(

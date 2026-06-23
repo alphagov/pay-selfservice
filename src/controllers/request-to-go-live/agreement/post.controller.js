@@ -99,7 +99,7 @@ module.exports = async (req, res, next) => {
   } else {
     let displayStripeAdyenAgreement = lodash.get(req, 'service.currentGoLiveStage', '')
     return response(req, res, 'request-to-go-live/agreement', {
-      displayStripeAgreement:
+      displayGovUkPspAgreement:
         displayStripeAdyenAgreement === goLiveStage.CHOSEN_PSP_STRIPE ||
         displayStripeAdyenAgreement === goLiveStage.CHOSEN_PSP_ADYEN,
       errors: {
