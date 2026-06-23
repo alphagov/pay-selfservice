@@ -55,6 +55,7 @@ const TX_5 = new TransactionFixture.Payment({
   state: TransactionStateFixture.Timedout(),
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const REFUNDED_TX = new TransactionFixture.Payment({
   amount: 100_00,
   state: TransactionStateFixture.Success(),

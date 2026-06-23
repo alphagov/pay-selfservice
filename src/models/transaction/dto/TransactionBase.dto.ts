@@ -56,19 +56,3 @@ export interface TransactionBaseData {
   net_amount?: number
   fee?: number
 }
-
-const t: TransactionBaseData = {
-  gateway_account_id: '1',
-  service_id: '1',
-  amount: 1,
-  state: {
-    status: 'CREATED',
-    finished: false,
-  },
-  created_date: '',
-  gateway_transaction_id: '',
-  transaction_type: 'PAYMENT',
-  transaction_id: '',
-  live: false,
-  settlement_summary: {},
-}

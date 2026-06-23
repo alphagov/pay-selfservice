@@ -1,6 +1,5 @@
 import { TransactionBase } from '@models/transaction/TransactionBase.class'
 import { LedgerRefundSummary } from '@models/common/refund-summary/LedgerRefundSummary.class'
-import { SettlementSummary } from '@models/common/settlement-summary/SettlementSummary.class'
 import { AuthorisationSummary } from '@models/common/authorisation-summary/AuthorisationSummary.class'
 import { CardDetails } from '@models/common/card-details/CardDetails.class'
 import { ResourceType } from '@models/transaction/types/resource-type'
