@@ -1,13 +1,19 @@
 import { ConnectorStates } from '@models/transaction/types/status'
-import { getPeriodUKDateTimeRange, Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import {
+  getPeriodUKDateTimeRange,
+  Period,
+  TRANSACTION_FILTER_PERIODS,
+} from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { TransactionSearchParamsData } from '@models/transaction/dto/TransactionSearchParams.dto'
 import {
   DisputeStatusFilterMapping,
   PaymentStatusFilterMapping,
   RefundStatusFilterMapping,
 } from '@utils/simplified-account/services/transactions/status-filters'
-import { parseDateTime } from '@utils/time/parse-date-time'
+import { parseTransactionSearchDateTime } from '@utils/time/parse-date-time'
 import type { DateTime } from 'luxon'
+import { TRANSACTION_SEARCH_DATE_FORMAT } from '@utils/time/time-formats'
+import { TimeConstants } from '@utils/time/time-constants'
 
 interface TransactionSearchQuery {
   cardholderName?: string
@@ -25,6 +31,7 @@ interface TransactionSearchQuery {
   toTime?: string
   includeTime?: string
   gatewayPayoutId?: string
+  jsEnabled?: string
 }
 
 export class TransactionSearchParams {
@@ -42,8 +49,8 @@ export class TransactionSearchParams {
   email?: string
   type?: string
   dateFilter?: string
-  fromDate?: DateTime
-  toDate?: DateTime
+  fromDate?: DateTime<true>
+  toDate?: DateTime<true>
   state?: string[]
   paymentStates?: string[]
   refundStates?: string[]
@@ -125,27 +132,7 @@ export class TransactionSearchParams {
       searchParams.brand = queryParams.brand.split(',')
     }
 
-    if (queryParams.fromDate || queryParams.toDate) {
-      searchParams.fromDate = parseDateTime(
-        queryParams.fromDate!,
-        queryParams.fromTime!,
-        queryParams.includeTime === 'include'
-      )
-
-      // parse end date/time, clamp to end of day if not including time
-      const toDate = parseDateTime(queryParams.toDate!, queryParams.toTime!, queryParams.includeTime === 'include')
-      searchParams.toDate = queryParams.includeTime === 'include' ? toDate : toDate.endOf('day')
-
-      searchParams.dateFilter = queryParams.dateFilter
-      searchParams.includeTime = queryParams.includeTime === 'include'
-    } else if (queryParams.dateFilter) {
-      const dateRange = getPeriodUKDateTimeRange(queryParams.dateFilter as Period)
-
-      searchParams.dateFilter = queryParams.dateFilter
-      searchParams.fromDate = dateRange.start
-      searchParams.toDate = dateRange.end
-      searchParams.includeTime = false
-    }
+    Object.assign(searchParams, processDateAndTime(queryParams))
 
     if (queryParams.state) {
       const stateFilters = convertStateFilter(queryParams.state)
@@ -198,4 +185,68 @@ function parsePageNumber(pageNumber?: string) {
 
 const nonEmpty = (value: string | undefined) => {
   return value === '' ? undefined : value
+}
+
+interface DateTimeSearchParams {
+  dateFilter?: string
+  fromDate?: DateTime<true>
+  toDate?: DateTime<true>
+  fromTime?: string
+  toTime?: string
+  includeTime?: boolean
+}
+
+const processDateAndTime = (queryParams: TransactionSearchQuery): DateTimeSearchParams => {
+  const searchParams: DateTimeSearchParams = {}
+
+  const dateRange = getPeriodUKDateTimeRange(queryParams.dateFilter as Period)
+  const isJsEnabled = queryParams.jsEnabled !== 'false'
+  const isDateFilterValidPeriod = TRANSACTION_FILTER_PERIODS.has(queryParams.dateFilter as Period)
+
+  const isDateRangeEntered = Boolean(queryParams.fromDate) || Boolean(queryParams.toDate)
+  const isJsDateFilterSearch = isJsEnabled && !isDateRangeEntered && isDateFilterValidPeriod
+  // with JS disabled, override any entered dates & times if the filter is valid
+  const isNoJsDateFilterSearch = !isJsEnabled && isDateFilterValidPeriod
+
+  if (isJsDateFilterSearch || isNoJsDateFilterSearch) {
+    searchParams.dateFilter = queryParams.dateFilter
+    searchParams.fromDate = dateRange.start
+    searchParams.toDate = dateRange.end
+    searchParams.includeTime = false
+
+    return searchParams
+  }
+
+  if (queryParams.fromDate || queryParams.toDate) {
+    searchParams.fromDate = parseTransactionSearchDateTime(
+      queryParams.fromDate ?? '',
+      queryParams.fromTime ?? '',
+      queryParams.includeTime === 'include',
+      TimeConstants.TWELVE_MONTHS_AGO
+    )
+
+    // parse end date/time, clamp to end of day if not including time
+    const toDate = parseTransactionSearchDateTime(
+      queryParams.toDate ?? '',
+      queryParams.toTime ?? '',
+      queryParams.includeTime === 'include',
+      TimeConstants.END_OF_TODAY
+    )
+    searchParams.toDate = queryParams.includeTime === 'include' ? toDate : toDate.endOf('day')
+
+    // if the selected dates match the filter, persist the filter, otherwise set to custom-range
+    // this ensures the correct filter is displayed to the user
+    searchParams.dateFilter =
+      isSameDate(queryParams.fromDate, dateRange.start) && isSameDate(queryParams.toDate, dateRange.end)
+        ? queryParams.dateFilter
+        : 'custom-range'
+
+    searchParams.includeTime = queryParams.includeTime === 'include'
+  }
+
+  return searchParams
+}
+
+function isSameDate(dateString: string | undefined, date: DateTime | undefined) {
+  return dateString === date?.toFormat(TRANSACTION_SEARCH_DATE_FORMAT)
 }

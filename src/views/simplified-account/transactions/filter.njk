@@ -54,11 +54,15 @@
     <div class="govuk-grid-column-one-third"> <br class="transactions-list__br" /></div>
   </div>
 
+  <!-- value will be updated to 'true' if JS is enabled -->
+  <input type="hidden" name="jsEnabled" value="false" id="js-enabled" />
+
   {% if filters.metadataValue or filters.agreementId %}
     {% set detailsElementOpenHtml = 'open="true"' %}
   {% endif %}
 </div>
 
+<!-- this is inlined to ensure it runs as soon as the filters are rendered -->
 <script>
   if (!document.getElementById('include-time-checkbox').checked) {
     document.getElementById('time-picker').hidden = true

@@ -116,6 +116,7 @@
     "@pact-foundation/pact-core": "^19.2.0",
     "@percy/cli": "^1.31.8",
     "@percy/cypress": "^3.1.7",
+    "@types/bootstrap-datepicker": "^1.10.1",
     "@types/chai": "^5.2.2",
     "@types/chai-as-promised": "^8.0.2",
     "@types/client-sessions": "^0.8.6",

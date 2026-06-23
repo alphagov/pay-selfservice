@@ -1,7 +1,25 @@
 import { DateTime } from 'luxon'
-import { Period, getPeriodUKDateTimeRange } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import {
+  Period,
+  getPeriodUKDateTimeRange,
+  dateRangeAsPeriod,
+} from '@utils/simplified-account/services/dashboard/datetime-utils'
+declare const $: JQueryStatic | undefined
+
+import { TRANSACTION_SEARCH_DATE_FORMAT } from '@utils/time/time-formats'
+import awaitJQuery from '@utils/client-side/await-jquery'
 
 function register() {
+  setJsEnabled()
+  bindDateFilterChangeListener()
+  bindIncludeTimeCheckboxListener()
+
+  awaitJQuery(() => {
+    bindDatePickerChangeListener()
+  })
+}
+
+function bindDateFilterChangeListener() {
   document.getElementById('dateFilter')?.addEventListener('change', (event) => {
     if (!(event.target instanceof HTMLSelectElement)) {
       return
@@ -15,7 +33,9 @@ function register() {
     setFromDate(dates.start)
     setEndDate(dates.end)
   })
+}
 
+function bindIncludeTimeCheckboxListener() {
   document.getElementById('include-time-checkbox')?.addEventListener('change', (event) => {
     if (!(event.target instanceof HTMLInputElement)) {
       return
@@ -27,6 +47,21 @@ function register() {
       hideTimePicker()
     }
   })
+}
+
+function setJsEnabled() {
+  const jsEnabledHiddenInput = document.getElementById('js-enabled')
+  if (jsEnabledHiddenInput instanceof HTMLInputElement) {
+    jsEnabledHiddenInput.value = 'true'
+  }
+}
+
+function setDateFilter() {
+  const fromDate = (document.getElementById('fromDate') as HTMLInputElement).value
+  const toDate = (document.getElementById('toDate') as HTMLInputElement).value
+
+  const period = dateRangeAsPeriod(fromDate, toDate, TRANSACTION_SEARCH_DATE_FORMAT)
+  ;(document.getElementById('dateFilter') as HTMLInputElement).value = period ?? 'custom-range'
 }
 
 function showTimePicker() {
@@ -44,13 +79,23 @@ function clearDates() {
 
 function setFromDate(date: DateTime | undefined) {
   if (date) {
-    ;(document.getElementById('fromDate') as HTMLInputElement).value = date.toFormat('dd/LL/yyyy')
+    ;(document.getElementById('fromDate') as HTMLInputElement).value = date.toFormat(TRANSACTION_SEARCH_DATE_FORMAT)
   }
 }
 
 function setEndDate(date: DateTime | undefined) {
   if (date) {
-    ;(document.getElementById('toDate') as HTMLInputElement).value = date.toFormat('dd/LL/yyyy')
+    ;(document.getElementById('toDate') as HTMLInputElement).value = date.toFormat(TRANSACTION_SEARCH_DATE_FORMAT)
+  }
+}
+
+function bindDatePickerChangeListener() {
+  if (Object.hasOwn(window, '$') && $) {
+    $('.date-picker')
+      .datepicker()
+      .on('changeDate', (_) => {
+        setDateFilter()
+      })
   }
 }
 

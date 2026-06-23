@@ -95,3 +95,15 @@ export function getPeriodUKDateTimeRange(period: Period | undefined): DateTimeRa
       }
   }
 }
+
+export function dateRangeAsPeriod(fromDate: string, toDate: string, dateFormat?: string): Period | undefined {
+  const format = dateFormat ?? 'dd/LL/yyyy'
+
+  const periods: Period[] = ['today', 'yesterday', 'previous-month', 'last-12-months', 'all-time']
+
+  return periods.find((period) => {
+    const range = getPeriodUKDateTimeRange(period)
+
+    return range.start?.toFormat(format) === fromDate && range.end?.toFormat(format) === toDate
+  })
+}
