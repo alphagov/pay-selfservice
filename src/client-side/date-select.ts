@@ -61,7 +61,6 @@ function setDateFilter() {
   const toDate = (document.getElementById('toDate') as HTMLInputElement).value
 
   const period = dateRangeAsPeriod(fromDate, toDate, TRANSACTION_SEARCH_DATE_FORMAT)
-  console.log(period)
   ;(document.getElementById('dateFilter') as HTMLInputElement).value = period ?? 'custom-range'
 }
 
@@ -95,7 +94,6 @@ function bindDatePickerChangeListener() {
     $('.date-picker')
       .datepicker()
       .on('changeDate', (_) => {
-        console.log('date changed')
         setDateFilter()
       })
   }

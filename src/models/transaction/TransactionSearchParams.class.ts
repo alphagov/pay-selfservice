@@ -203,8 +203,8 @@ const processDateAndTime = (queryParams: TransactionSearchQuery): DateTimeSearch
   const isJsEnabled = queryParams.jsEnabled !== 'false'
   const isDateFilterValidPeriod = TRANSACTION_FILTER_PERIODS.has(queryParams.dateFilter as Period)
 
-  // with JS enabled, override the selected filter if any dates are entered
-  const isJsDateFilterSearch = isJsEnabled && !queryParams.fromDate && !queryParams.toDate && isDateFilterValidPeriod
+  const isDateRangeEntered = Boolean(queryParams.fromDate) || Boolean(queryParams.toDate)
+  const isJsDateFilterSearch = isJsEnabled && !isDateRangeEntered && isDateFilterValidPeriod
   // with JS disabled, override any entered dates & times if the filter is valid
   const isNoJsDateFilterSearch = !isJsEnabled && isDateFilterValidPeriod
 
@@ -237,8 +237,7 @@ const processDateAndTime = (queryParams: TransactionSearchQuery): DateTimeSearch
     // if the selected dates match the filter, persist the filter, otherwise set to custom-range
     // this ensures the correct filter is displayed to the user
     searchParams.dateFilter =
-      queryParams.fromDate === dateRange.start?.toFormat(TRANSACTION_SEARCH_DATE_FORMAT) &&
-      queryParams.toDate === dateRange.end?.toFormat(TRANSACTION_SEARCH_DATE_FORMAT)
+      isSameDate(queryParams.fromDate, dateRange.start) && isSameDate(queryParams.toDate, dateRange.end)
         ? queryParams.dateFilter
         : 'custom-range'
 
@@ -246,4 +245,8 @@ const processDateAndTime = (queryParams: TransactionSearchQuery): DateTimeSearch
   }
 
   return searchParams
+}
+
+function isSameDate(dateString: string | undefined, date: DateTime | undefined) {
+  return dateString === date?.toFormat(TRANSACTION_SEARCH_DATE_FORMAT)
 }
