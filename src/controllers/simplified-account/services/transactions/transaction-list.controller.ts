@@ -12,8 +12,7 @@ import {
   StripeStatusFilters,
   WorldpayStatusFilters,
 } from '@utils/simplified-account/services/transactions/status-filters'
-
-const LEDGER_TRANSACTION_COUNT_LIMIT = 5000
+import { LEDGER_TRANSACTION_COUNT_LIMIT } from './constants'
 
 const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
   const getPath = (pageNumber: number) => {
@@ -89,6 +88,8 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     statuses: eventStates,
     downloadLink,
     showCsvDownload,
+    transactionCountWithinRange,
+    maxTransactions: LEDGER_TRANSACTION_COUNT_LIMIT,
   })
 }
 
