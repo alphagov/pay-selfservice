@@ -4,20 +4,18 @@ import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixtu
 import { checkServiceNavigation, checkTitleAndHeading } from '../common/assertions'
 import { TEST } from '@models/gateway-account/gateway-account-type'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
-import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { Status } from '@models/transaction/types/status'
 import { ResourceType } from '@models/transaction/types/resource-type'
-import { DateTime } from 'luxon'
 import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
 import { getTransactionsForGatewayAccount } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { PaymentDetailsFixture } from '@test/fixtures/transaction/payment-details.fixture'
 import { getLedgerTransactionsFailure, getLedgerTransactionsSuccess } from '@test/cypress/stubs/transaction-stubs'
 import { TimeConstants } from '@utils/time/time-constants'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
-import { DISPUTE_LOST_DATA } from '@test/fixtures/transaction/fixture-data/dispute-fixture-data'
 import { LEDGER_TRANSACTION_COUNT_LIMIT } from '@controllers/simplified-account/services/transactions/constants'
+import { assertTransactionRow } from '@test/cypress/integration/simplified-account/transaction/utils/assert-transaction-row.assertion'
 
-const TRANSACTION = new TransactionFixture().toTransactionData()
+const TRANSACTION = new TransactionFixture.Payment().toTransactionData()
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -46,58 +44,6 @@ const sharedStubs = (gatewayAccountType = 'test', paymentProvider = 'worldpay') 
     }),
     gatewayAccountStubs.getCardTypesSuccess(),
   ])
-}
-
-function assertTransactionRow(
-  row: number,
-  reference: string,
-  transactionLink: string,
-  email: string,
-  amount: string,
-  cardBrand: string,
-  state: string,
-  fee?: string,
-  netAmount?: string
-) {
-  cy.get('#transactions-list tbody').find('tr').eq(row).find('th').should('contain', reference)
-  cy.get('#transactions-list tbody')
-    .find('tr > th')
-    .eq(row)
-    .find('.reference')
-    .should('have.attr', 'href', transactionLink)
-  cy.get('#transactions-list tbody').find('tr').eq(row).find('.email').should('contain', email)
-  cy.get('#transactions-list tbody').find('tr').eq(row).find('.amount').should('contain', amount)
-  cy.get('#transactions-list tbody').find('tr').eq(row).find('.brand').should('contain', cardBrand)
-  cy.get('#transactions-list tbody').find('tr').eq(row).find('.state').should('contain', state)
-
-  if (netAmount) {
-    cy.get('#transactions-list tbody')
-      .find('tr')
-      .eq(row)
-      .get('[data-cell-type="net"]')
-      .eq(row)
-      .find('span')
-      .should('contain', netAmount)
-  }
-
-  if (fee) {
-    cy.get('#transactions-list tbody').find('tr').eq(row).get('[data-cell-type="fee"]').eq(row).should('contain', fee)
-  }
-}
-
-function generateTransactions(size: number) {
-  const transactions: TransactionData[] = []
-
-  for (let i = 1; i <= size; i++) {
-    transactions.push(
-      new TransactionFixture({
-        amount: i * 1111,
-        reference: `reference-${i}`,
-        externalId: `transaction-${i}`,
-      }).toTransactionData()
-    )
-  }
-  return transactions
 }
 
 describe('Transactions index', () => {
@@ -174,180 +120,14 @@ describe('Transactions index', () => {
     })
   })
 
-  describe('Filtering', () => {
-    beforeEach(() => {
-      sharedStubs()
-    })
-
-    const unfilteredTransactions: TransactionData[] = generateTransactions(3)
-
-    it('should display correctly when there are no results', () => {
-      cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([])])
-      cy.visit(TRANSACTIONS_LIST_URL)
-
-      cy.get('#transactions-list tbody').should('not.exist')
-    })
-
-    it('should display unfiltered results', () => {
-      cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success(unfilteredTransactions)])
-      cy.visit(TRANSACTIONS_LIST_URL)
-
-      assertTransactionRow(
-        0,
-        unfilteredTransactions[0].reference,
-        TRANSACTION_URL(unfilteredTransactions[0].transaction_id),
-        unfilteredTransactions[0].email!,
-        penceToPoundsWithCurrency(unfilteredTransactions[0].amount),
-        'Visa',
-        'Success'
-      )
-
-      assertTransactionRow(
-        1,
-        unfilteredTransactions[1].reference,
-        TRANSACTION_URL(unfilteredTransactions[1].transaction_id),
-        unfilteredTransactions[1].email!,
-        penceToPoundsWithCurrency(unfilteredTransactions[1].amount),
-        'Visa',
-        'Success'
-      )
-
-      assertTransactionRow(
-        2,
-        unfilteredTransactions[2].reference,
-        TRANSACTION_URL(unfilteredTransactions[2].transaction_id),
-        unfilteredTransactions[2].email!,
-        penceToPoundsWithCurrency(unfilteredTransactions[2].amount),
-        'Visa',
-        'Success'
-      )
-
-      cy.get('#transactions-list tbody').find('tr').should('have.length', unfilteredTransactions.length)
-      cy.get('[data-cy=pagination-detail]').contains(
-        `Showing 1 to ${unfilteredTransactions.length} of ${unfilteredTransactions.length} transactions`
-      )
-    })
-
-    it('should be able to filter using date-time pickers', () => {
-      cy.task('setupStubs', [
-        getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success(unfilteredTransactions),
-        getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          displaySize: 20,
-          filters: { from_date: '2025-01-01T00:00:00.000Z', to_date: '2026-01-01T23:59:59.999Z' },
-          transactions: [TRANSACTION],
-          transactionLength: 1,
-        }),
-      ])
-
-      cy.visit(TRANSACTIONS_LIST_URL)
-
-      cy.get('.datepicker').should('not.exist')
-
-      cy.contains('Search transactions').click()
-
-      cy.get('#transactions-list tbody')
-        .find('tr')
-        .first()
-        .find('th')
-        .should('contain', unfilteredTransactions[0].reference)
-      cy.get('#transactions-list tbody')
-        .find('tr')
-        .eq(1)
-        .find('th')
-        .should('contain', unfilteredTransactions[1].reference)
-      cy.get('#transactions-list tbody')
-        .find('tr')
-        .eq(2)
-        .find('th')
-        .should('contain', unfilteredTransactions[2].reference)
-
-      cy.get('#fromDate').type('01/01/2025')
-      cy.get('.datepicker').should('be.visible')
-
-      cy.get('#toDate').type('01/01/2026')
-      cy.get('.datepicker').should('be.visible')
-
-      cy.get('.govuk-button').contains('Search transactions').click()
-
-      cy.get('#transactions-list tbody').find('tr').first().find('th').should('contain', TRANSACTION.reference)
-
-      cy.get('#fromDate').should('have.value', '01/01/2025')
-      cy.get('#toDate').should('have.value', '01/01/2026')
-    })
-
-    it('should be able to filter using date ranges', () => {
-      const now = DateTime.now().setLocale('en-GB').setZone('Europe/London')
-      const yesterday = now.minus({ days: 1 })
-
-      const transactionFromYesterday = new TransactionFixture({
-        reference: 'transaction-yesterday',
-        createdDate: yesterday.set({ hour: 11 }),
-      }).toTransactionData()
-
-      cy.task('setupStubs', [
-        getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success(unfilteredTransactions),
-        getLedgerTransactionsSuccess({
-          gatewayAccountId: GATEWAY_ACCOUNT_ID,
-          displaySize: 20,
-          filters: {
-            from_date: yesterday.startOf('day').toUTC().toISO(),
-            to_date: yesterday.endOf('day').toUTC().toISO(),
-          },
-          transactions: [transactionFromYesterday],
-          transactionLength: 1,
-        }),
-      ])
-
-      cy.visit(TRANSACTIONS_LIST_URL)
-
-      cy.get('#dateFilter').select('yesterday')
-      cy.contains('Search transactions').click()
-
-      cy.get('#fromDate').get('#toDate').should('have.value', yesterday.toFormat('dd/LL/yyyy'))
-
-      cy.get('#transactions-list tbody').find('tr').should('have.length', [transactionFromYesterday].length)
-      cy.get('#transactions-list tbody')
-        .find('tr')
-        .first()
-        .find('th')
-        .should('contain', transactionFromYesterday.reference)
-    })
-
-    it('should check if the user has entered a potential PAN into the reference field', () => {
-      cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([TRANSACTION])])
-      cy.visit(TRANSACTIONS_LIST_URL, { failOnStatusCode: false })
-
-      cy.get('[data-cy=reference-filter]').type('4242424242424242')
-      cy.get('[data-cy=email-filter]').click()
-
-      cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
-      cy.get('[data-cy=pan-error]').should('exist')
-
-      cy.get('[data-cy=reference-filter]').clear()
-      cy.get('[data-cy=reference-filter]').type('a reference')
-      cy.get('[data-cy=email-filter]').click()
-
-      cy.get('[data-cy=reference-filter]').parent().should('not.have.class', 'govuk-form-group--error')
-      cy.get('[data-cy=pan-error]').should('not.exist')
-
-      cy.get('[data-cy=reference-filter]').clear()
-      cy.get('[data-cy=reference-filter]').type('4444333322221111')
-      cy.get('[data-cy=email-filter]').click()
-
-      cy.get('[data-cy=reference-filter]').parent().should('have.class', 'govuk-form-group--error')
-      cy.get('[data-cy=pan-error]').should('exist')
-    })
-  })
-
   describe('Display', () => {
     const transactionAmounts = { netAmount: 970, fee: 30, amount: 1000 }
-    const transactionWithFees = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
+    const transactionWithFees = new TransactionFixture.Payment({ ...transactionAmounts }).toTransactionData()
 
     it('should display card fee with corporate card surcharge transaction', () => {
       sharedStubs('test')
       const transactionAmounts = { corporateCardSurcharge: 25, fee: 15, totalAmount: 1075 }
-      const transactionWithCorporateCardSurcharge = new TransactionFixture({
+      const transactionWithCorporateCardSurcharge = new TransactionFixture.Payment({
         ...transactionAmounts,
       }).toTransactionData()
 
@@ -369,7 +149,7 @@ describe('Transactions index', () => {
       sharedStubs('test', 'stripe')
 
       const transactionAmounts = { netAmount: 1000, fee: 30, amount: 1030 }
-      const stripeTransaction = new TransactionFixture({ ...transactionAmounts }).toTransactionData()
+      const stripeTransaction = new TransactionFixture.Payment({ ...transactionAmounts }).toTransactionData()
 
       cy.task('setupStubs', [getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([stripeTransaction])])
       cy.visit(TRANSACTIONS_LIST_URL)
@@ -406,7 +186,7 @@ describe('Transactions index', () => {
 
       const state = new TransactionStateFixture({ status: Status.SUCCESS })
       const paymentDetails = new PaymentDetailsFixture({ cardDetails: new CardDetailsFixture({ cardBrand: 'Visa' }) })
-      const refundTransaction = new TransactionFixture({
+      const refundTransaction = new TransactionFixture.Refund({
         externalId: TRANSACTION.transaction_id + '-refund',
         parentTransactionExternalId: TRANSACTION.transaction_id,
         paymentDetails,
@@ -424,7 +204,7 @@ describe('Transactions index', () => {
 
       assertTransactionRow(
         0,
-        transactionWithFees.reference,
+        transactionWithFees.reference!,
         TRANSACTION_URL(transactionWithFees.transaction_id),
         transactionWithFees.email!,
         penceToPoundsWithCurrency(transactionWithFees.amount),
@@ -434,7 +214,7 @@ describe('Transactions index', () => {
 
       assertTransactionRow(
         1,
-        refundTransaction.reference,
+        refundTransaction.reference!,
         TRANSACTION_URL(transactionWithFees.transaction_id),
         refundTransaction.email!,
         penceToPoundsWithCurrency(refundTransaction.amount),
@@ -449,12 +229,10 @@ describe('Transactions index', () => {
       it('should display amounts correctly for dispute awaiting evidence', () => {
         sharedStubs('test', 'stripe')
 
-        const state = new TransactionStateFixture({ status: Status.NEEDS_RESPONSE })
+        // const state = new TransactionStateFixture({ status: Status.NEEDS_RESPONSE })
         const paymentDetails = new PaymentDetailsFixture({ cardDetails: new CardDetailsFixture({ cardBrand: 'Visa' }) })
-        const disputeTransaction = new TransactionFixture({
+        const disputeTransaction = TransactionFixture.Dispute.NeedsResponse({
           paymentDetails,
-          transactionType: ResourceType.DISPUTE,
-          state,
         }).toTransactionData()
 
         cy.task('setupStubs', [
@@ -467,7 +245,7 @@ describe('Transactions index', () => {
 
         assertTransactionRow(
           0,
-          transactionWithFees.reference,
+          transactionWithFees.reference!,
           TRANSACTION_URL(transactionWithFees.transaction_id),
           transactionWithFees.email!,
           penceToPoundsWithCurrency(transactionWithFees.amount),
@@ -477,7 +255,7 @@ describe('Transactions index', () => {
 
         assertTransactionRow(
           1,
-          disputeTransaction.reference,
+          disputeTransaction.reference!,
           TRANSACTION_URL(disputeTransaction.transaction_id),
           disputeTransaction.email!,
           penceToPoundsWithCurrency(disputeTransaction.amount),
@@ -490,11 +268,11 @@ describe('Transactions index', () => {
 
       it('should display amounts correctly for dispute lost to user', () => {
         sharedStubs('test', 'stripe')
-        const transacion = new TransactionFixture({
+        const transacion = new TransactionFixture.Payment({
           fee: 100,
           netAmount: 900,
         })
-        const lostDisputeTransaction = new TransactionFixture(DISPUTE_LOST_DATA)
+        const lostDisputeTransaction = TransactionFixture.Dispute.Lost()
 
         cy.task('setupStubs', [
           getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([
@@ -509,7 +287,7 @@ describe('Transactions index', () => {
 
         assertTransactionRow(
           0,
-          lostDisputeTransaction.reference,
+          lostDisputeTransaction.reference!,
           TRANSACTION_URL(lostDisputeTransaction.externalId),
           lostDisputeTransaction.email!,
           '£10.00',
@@ -533,12 +311,10 @@ describe('Transactions index', () => {
       it('should display amounts correctly for a dispute won in the service’s favour', () => {
         sharedStubs('test', 'stripe')
 
-        const state = new TransactionStateFixture({ status: Status.WON })
+        // const state = new TransactionStateFixture({ status: Status.WON })
         const paymentDetails = new PaymentDetailsFixture({ cardDetails: new CardDetailsFixture({ cardBrand: 'Visa' }) })
-        const disputeTransaction = new TransactionFixture({
+        const disputeTransaction = TransactionFixture.Dispute.Won({
           paymentDetails,
-          transactionType: ResourceType.DISPUTE,
-          state,
         }).toTransactionData()
 
         cy.task('setupStubs', [
@@ -551,7 +327,7 @@ describe('Transactions index', () => {
 
         assertTransactionRow(
           0,
-          TRANSACTION.reference,
+          TRANSACTION.reference!,
           TRANSACTION_URL(TRANSACTION.transaction_id),
           TRANSACTION.email!,
           penceToPoundsWithCurrency(TRANSACTION.amount),
@@ -561,7 +337,7 @@ describe('Transactions index', () => {
 
         assertTransactionRow(
           1,
-          disputeTransaction.reference,
+          disputeTransaction.reference!,
           TRANSACTION_URL(disputeTransaction.transaction_id),
           disputeTransaction.email!,
           penceToPoundsWithCurrency(disputeTransaction.amount),

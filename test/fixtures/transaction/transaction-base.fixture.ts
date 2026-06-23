@@ -1,26 +1,15 @@
+import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
 import { DateTime } from 'luxon'
 import { ResourceType } from '@models/transaction/types/resource-type'
-import { Reason } from '@models/transaction/types/reason'
-import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
-import { Transaction, TransactionData } from '@models/transaction/Transaction'
-import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
+import { SettlementSummaryFixture } from '@test/fixtures/transaction/settlement-summary.fixture'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { AuthorisationSummaryFixture } from '@test/fixtures/transaction/authorisation-summary.fixture'
-import { PaymentDetailsFixture } from './payment-details.fixture'
-import { SettlementSummaryFixture } from '@test/fixtures/transaction/settlement-summary.fixture'
-import { PaymentFixture } from '@test/fixtures/transaction/payment.fixture'
-import { RefundFixture } from '@test/fixtures/transaction/refund.fixture'
-import { DisputeFixture } from '@test/fixtures/transaction/dispute.fixture'
+import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
+import { Reason } from '@models/transaction/types/reason'
+import { PaymentDetailsFixture } from '@test/fixtures/transaction/payment-details.fixture'
+import { Transaction, TransactionData } from '@models/transaction/Transaction'
 
-export type TransactionFixture = PaymentFixture | RefundFixture | DisputeFixture
-
-export const TransactionFixture = {
-  Payment: PaymentFixture,
-  Refund: RefundFixture,
-  Dispute: DisputeFixture,
-}
-
-export class TX_FIX {
+export class TransactionBaseFixture {
   gatewayAccountId: string
   serviceExternalId: string
   externalId: string
@@ -61,12 +50,11 @@ export class TX_FIX {
   refundedBy?: string
   refundedByUserEmail?: string
 
-  constructor(...options: Partial<TX_FIX>[]) {
+  constructor(...options: Partial<TransactionBaseFixture>[]) {
     this.gatewayAccountId = '100'
     this.serviceExternalId = 'service-external-id-123-abc'
     this.externalId = 'transaction-external-id-123-abc'
     this.gatewayTransactionId = 'gateway-transaction-id-123'
-    this.reference = 'transaction-reference'
     this.state = new TransactionStateFixture()
     this.amount = 1000
     this.createdDate = DateTime.fromISO('2025-07-22T03:14:15.926+01:00', { zone: 'Europe/London' })
@@ -78,30 +66,6 @@ export class TX_FIX {
     options.forEach((optionObject) => {
       Object.assign(this, optionObject)
     })
-  }
-
-  static Payments = {
-    Success: function (...options: Partial<TX_FIX>[]) {
-      return new TX_FIX(
-        {
-          credentialExternalId: 'credential-external-id-123-abc',
-          language: 'en',
-          returnUrl: 'https://payments.service.gov.uk',
-          description: 'a test transaction',
-          paymentProvider: 'sandbox',
-          state: TransactionStateFixture.Success(),
-          cardDetails: new CardDetailsFixture(),
-          disputed: false,
-          delayedCapture: false,
-          moto: false,
-          source: 'API',
-          authorisationMode: 'unknown',
-          agreementId: 'none',
-          refundSummary: new LedgerRefundSummaryFixture(),
-        },
-        ...options
-      )
-    },
   }
 
   // static Disputes = {

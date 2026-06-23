@@ -68,7 +68,7 @@ export class TransactionSearchParams {
   }
 
   toJson() {
-    return new TransactionSearchParamsData(this)
+    return TransactionSearchParamsData.fromSearchParams(this)
   }
 
   getQueryParams() {

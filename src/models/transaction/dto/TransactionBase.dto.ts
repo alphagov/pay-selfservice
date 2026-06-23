@@ -6,43 +6,69 @@ import { ResourceType } from '../types/resource-type'
 import { StateData } from './State.dto'
 import { PaymentDetailsData } from '@models/transaction/dto/PaymentDetails.dto'
 
-export interface TransactionData {
+export interface TransactionBaseData {
   gateway_account_id: string
   service_id: string
-  credential_external_id?: string
   amount: number
-  net_amount?: number
-  total_amount?: number
-  corporate_card_surcharge?: number
-  fee?: number
   state: StateData
+  created_date: string
+  gateway_transaction_id: string
+  transaction_type: ResourceType
+  transaction_id: string
+  live: boolean
+  settlement_summary: SettlementSummaryData
+
+  // payments only
+  credential_external_id?: string
+  payment_provider?: string
   description?: string
   reference?: string
   language?: string
   return_url?: string
-  email?: string
-  payment_provider?: string
-  created_date: string
   card_details?: CardDetailsData
   delayed_capture?: boolean
-  gateway_transaction_id: string
-  refund_summary?: LedgerRefundSummaryData
-  settlement_summary?: SettlementSummaryData
-  authorisation_summary?: AuthorisationSummaryData
-  transaction_type: ResourceType
+  corporate_card_surcharge?: number
+  email?: string
   wallet_type?: string
   moto?: boolean
-  live?: boolean
   source?: string
   authorisation_mode?: string
   agreement_id?: string
   disputed?: boolean
-  transaction_id: string
-  evidence_due_date?: string // dispute only
-  reason?: string // dispute only
-  payment_details?: PaymentDetailsData
-  parent_transaction_id?: string
   metadata?: Record<string, string>
+  total_amount?: number
+  refund_summary?: LedgerRefundSummaryData
+  authorisation_summary?: AuthorisationSummaryData
+
+  // refunds only
   refunded_by?: string
   refunded_by_user_email?: string
+
+  // disputes only
+  evidence_due_date?: string
+  reason?: string
+
+  // refunds and disputes
+  parent_transaction_id?: string
+  payment_details?: PaymentDetailsData
+
+  // payments and disputes
+  net_amount?: number
+  fee?: number
+}
+
+const t: TransactionBaseData = {
+  gateway_account_id: '1',
+  service_id: '1',
+  amount: 1,
+  state: {
+    status: 'CREATED',
+    finished: false,
+  },
+  created_date: '',
+  gateway_transaction_id: '',
+  transaction_type: 'PAYMENT',
+  transaction_id: '',
+  live: false,
+  settlement_summary: {},
 }

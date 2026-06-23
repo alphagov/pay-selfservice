@@ -13,7 +13,7 @@ import { DateTime } from 'luxon'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
-const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
+const TRANSACTION = new TransactionFixture.Payment({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
 
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
@@ -108,7 +108,7 @@ describe('All services refund page', () => {
       .first()
       .should(
         'contain',
-        `Refund the full amount of ${penceToPoundsWithCurrency(TRANSACTION.refundSummary.amountAvailable)}`
+        `Refund the full amount of ${penceToPoundsWithCurrency(TRANSACTION.refundSummary!.amountAvailable)}`
       )
     cy.contains('Confirm refund').should('be.visible').click()
     cy.get('.govuk-notification-banner--success')

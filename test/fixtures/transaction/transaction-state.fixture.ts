@@ -30,4 +30,53 @@ export class TransactionStateFixture {
       can_retry: this.canRetry,
     }
   }
+
+  static Created() {
+    return new TransactionStateFixture({
+      status: Status.CREATED,
+      finished: false,
+    })
+  }
+
+  static Submitted() {
+    return new TransactionStateFixture({
+      status: Status.SUBMITTED,
+      finished: false,
+    })
+  }
+
+  static Cancelled() {
+    return new TransactionStateFixture({
+      status: Status.CANCELLED,
+      finished: true,
+    })
+  }
+
+  static Timedout() {
+    return new TransactionStateFixture({
+      status: Status.TIMEDOUT,
+      finished: true,
+    })
+  }
+
+  static Success() {
+    return new TransactionStateFixture({
+      status: Status.SUCCESS,
+      finished: true,
+    })
+  }
+
+  static RefundSuccess() {
+    return new TransactionStateFixture({
+      status: Status.SUCCESS,
+      finished: true,
+    })
+  }
+
+  static DisputeWon() {
+    return new TransactionStateFixture({
+      status: Status.WON,
+      finished: true,
+    })
+  }
 }

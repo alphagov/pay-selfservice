@@ -18,7 +18,7 @@ const CARD_BRAND = 'visa'
 const REFERENCE = 'REF 123'
 const NOW_DATE_TIME = '2025-11-02T11:47:32.980Z'
 
-const transaction = new TransactionFixture({
+const transaction = new TransactionFixture.Payment({
   gatewayAccountId: GATEWAY_ACCOUNT_ID,
   serviceExternalId: SERVICE_EXTERNAL_ID,
   externalId: TRANSACTION_EXTERNAL_ID,

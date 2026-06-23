@@ -13,83 +13,80 @@ import {
   Status,
 } from './types/status'
 import { State } from './State.class'
-import { parseReason, Reason } from './types/reason'
+import { Reason } from './types/reason'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 import { TransactionLinksGenerator } from '@models/transaction/TransactionLinksGenerator.class'
 import { TransactionDisplayValues } from '@models/transaction/TransactionDisplayValues.class'
 import { PaymentDetails } from '@models/transaction/PaymentDetails.class'
+import { TransactionBaseData } from '@models/transaction/dto/TransactionBase.dto'
 
-class Transaction {
+// describes all possible properties on a Transaction
+// some properties are common to all Transaction types
+// some are only set on certain Transaction types
+export class TransactionBase {
   // INFO: this is not a complete class yet, see TransactionData interface
+  // common to all transactions
   readonly gatewayAccountId: string
   readonly serviceExternalId: string
   readonly externalId: string
   readonly gatewayTransactionId: string
-  readonly reference?: string
   readonly state: State
   readonly amount: number // pence
-  readonly corporateCardSurcharge?: number // pence
-  readonly netAmount?: number // pence
-  readonly totalAmount?: number // pence
-  readonly fee?: number // pence
   readonly createdDate: DateTime
-  readonly description?: string
-  readonly paymentProvider?: string
-  readonly email?: string
-  readonly walletType?: string
-  readonly disputed?: boolean
-  readonly refundSummary?: LedgerRefundSummary
-  readonly settlementSummary?: SettlementSummary
-  readonly authorisationSummary?: AuthorisationSummary
-  readonly cardDetails?: CardDetails
   readonly transactionType: ResourceType
-  readonly reason?: Reason
-  readonly evidenceDueDate?: DateTime
-  readonly data: TransactionData
-  readonly paymentDetails?: PaymentDetails
-  readonly parentTransactionExternalId?: string
-  readonly metadata?: Record<string, string>
+  readonly isLive: boolean
+  readonly settlementSummary: SettlementSummary
 
-  readonly _locals: {
+  // only on some transactions
+  reference?: string
+  corporateCardSurcharge?: number // pence
+  netAmount?: number // pence
+  totalAmount?: number // pence
+  fee?: number // pence
+  description?: string
+  paymentProvider?: string
+  email?: string
+  walletType?: string
+  disputed?: boolean
+  refundSummary?: LedgerRefundSummary
+  authorisationSummary?: AuthorisationSummary
+  cardDetails?: CardDetails
+  reason?: Reason
+  evidenceDueDate?: DateTime
+  paymentDetails?: PaymentDetails
+  parentTransactionExternalId?: string
+  metadata?: Record<string, string>
+  refundedBy?: string
+  refundedByUserEmail?: string
+
+  data: TransactionBaseData
+
+  _locals: {
     links: TransactionLinksGenerator
     formatted: TransactionDisplayValues
   }
 
-  constructor(data: TransactionData) {
+  constructor(data: TransactionBaseData) {
     this.gatewayAccountId = data.gateway_account_id
     this.serviceExternalId = data.service_id
     this.externalId = data.transaction_id
     this.gatewayTransactionId = data.gateway_transaction_id
-    this.reference = data.reference
     this.state = new State(data.state)
     this.amount = data.amount
-    this.corporateCardSurcharge = data.corporate_card_surcharge
-    this.netAmount = data.net_amount
-    this.totalAmount = data.total_amount
-    this.fee = data.fee
     this.createdDate = DateTime.fromISO(data.created_date, { zone: 'Europe/London' })
-    this.description = data.description
-    this.paymentProvider = data.payment_provider
-    this.walletType = data.wallet_type
-    this.email = data.email
-    this.disputed = data.disputed
-    this.refundSummary = data.refund_summary && new LedgerRefundSummary(data.refund_summary)
-    this.settlementSummary = data.settlement_summary && new SettlementSummary(data.settlement_summary)
-    this.authorisationSummary = data.authorisation_summary && new AuthorisationSummary(data.authorisation_summary)
-    this.cardDetails = data.card_details && new CardDetails(data.card_details)
     this.transactionType = data.transaction_type
-    this.reason = data.reason ? parseReason(data.reason) : undefined
-    this.evidenceDueDate = data.evidence_due_date
-      ? DateTime.fromISO(data.evidence_due_date, { zone: 'Europe/London' })
-      : undefined
+    this.settlementSummary = new SettlementSummary(data.settlement_summary)
+    // this.reason = data.reason ? parseReason(data.reason) : undefined
+    // this.evidenceDueDate = data.evidence_due_date
+    //   ? DateTime.fromISO(data.evidence_due_date, { zone: 'Europe/London' })
+    //   : undefined
     this.data = data
-    this.paymentDetails = data.payment_details && new PaymentDetails(data.payment_details)
-    this.parentTransactionExternalId = data.parent_transaction_id
-    this.metadata = data.metadata
+    // this.paymentDetails = data.payment_details && new PaymentDetails(data.payment_details)
+    // this.parentTransactionExternalId = data.parent_transaction_id
+    this.isLive = data.live
 
     this._locals = {
       links: new TransactionLinksGenerator(this.getRootTransactionId()),
-      // @ts-expect-error this is being removed
       formatted: new TransactionDisplayValues(this),
     }
   }
@@ -156,5 +153,3 @@ class Transaction {
     return this.corporateCardSurcharge ?? false
   }
 }
-
-export { Transaction }

@@ -5,6 +5,7 @@ import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-
 import refundFixtures from '@test/fixtures/refund.fixtures'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { TimeConstants } from '@utils/time/time-constants'
+import { TransactionSearchParamsFixture } from '@test/fixtures/transaction/transaction-search-params.fixture'
 
 function getTransaction(transactionExternalId: string) {
   const path = `/v1/transaction/${transactionExternalId}`
@@ -98,6 +99,28 @@ function getTransactionDisputes(gatewayAccountId: string, transactionExternalId:
   }
 }
 
+function searchTransactions() {
+  const path = `/v1/transaction`
+
+  return {
+    query: function (searchParams: TransactionSearchParamsFixture) {
+      return {
+        success: function (transactions: TransactionFixture[]) {
+          return stubBuilder('GET', path, 200, {
+            query: searchParams.toSearchParamsData(),
+            response: {
+              total: transactions.length,
+              count: transactions.length,
+              page: searchParams.page ?? 1,
+              results: transactions.map((transaction) => transaction.toTransactionData()),
+            },
+          })
+        },
+      }
+    },
+  }
+}
+
 function postRefund(serviceExternalId: string, transactionExternalId: string) {
   const path = `/v1/api/service/${serviceExternalId}/account/test/charges/${transactionExternalId}/refunds`
 
@@ -126,5 +149,6 @@ export {
   getTransactionsForGatewayAccount,
   getTransactionEvents,
   getTransactionDisputes,
+  searchTransactions,
   postRefund,
 }

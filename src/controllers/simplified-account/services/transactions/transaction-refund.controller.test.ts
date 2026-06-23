@@ -15,8 +15,8 @@ const TRANSACTION_EXTERNAL_ID = 'transaction-123-external-id-abc'
 const USER_EMAIL_ADDRESS = 'homer.simpson@example.com'
 const USER_EXTERNAL_ID = 'user-external-id-123-abc'
 
-const transactionFixture = new TransactionFixture()
-const refundedTransaction = new TransactionFixture({
+const transactionFixture = TransactionFixture.Payment.Success()
+const refundedTransaction = new TransactionFixture.Payment({
   amount: 1000,
   refundSummary: new LedgerRefundSummaryFixture({
     amountSubmitted: 1000,
@@ -25,7 +25,7 @@ const refundedTransaction = new TransactionFixture({
     status: 'full',
   }),
 })
-const partiallyRefundedTransaction = new TransactionFixture({
+const partiallyRefundedTransaction = new TransactionFixture.Payment({
   amount: 1000,
   refundSummary: new LedgerRefundSummaryFixture({
     amountSubmitted: 700,

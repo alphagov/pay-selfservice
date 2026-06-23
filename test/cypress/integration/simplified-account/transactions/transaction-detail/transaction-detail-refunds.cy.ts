@@ -13,7 +13,7 @@ import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
-const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
+const TRANSACTION = new TransactionFixture.Payment({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
 
 const TRANSACTION_EVENTS = [
   new TransactionEventFixture({
@@ -68,7 +68,7 @@ describe('Transaction details page', () => {
           amountAvailable: amount - refundAmount,
           amountSubmitted: refundAmount,
         })
-        const transactionWithRefund = new TransactionFixture({ amount, refundSummary })
+        const transactionWithRefund = new TransactionFixture.Payment({ amount, refundSummary })
 
         cy.setEncryptedCookies(USER_EXTERNAL_ID)
         cy.task('setupStubs', [
@@ -102,7 +102,7 @@ describe('Transaction details page', () => {
           amountAvailable: amount - refundAmount,
           amountSubmitted: refundAmount,
         })
-        const transactionWithRefund = new TransactionFixture({ amount, refundSummary })
+        const transactionWithRefund = new TransactionFixture.Payment({ amount, refundSummary })
 
         cy.setEncryptedCookies(USER_EXTERNAL_ID)
         cy.task('setupStubs', [
@@ -145,7 +145,7 @@ describe('Transaction details page', () => {
   describe('for a payment not eligible for a refund', () => {
     it('should not display refund button', () => {
       const refundUnavailableState = new LedgerRefundSummaryFixture({ status: RefundSummaryStatus.UNAVAILABLE })
-      const transactionWithRefundUnavailable = new TransactionFixture({ refundSummary: refundUnavailableState })
+      const transactionWithRefundUnavailable = new TransactionFixture.Payment({ refundSummary: refundUnavailableState })
 
       cy.setEncryptedCookies(USER_EXTERNAL_ID)
       cy.task('setupStubs', [

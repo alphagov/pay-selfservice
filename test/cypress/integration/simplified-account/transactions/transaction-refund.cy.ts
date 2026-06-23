@@ -15,7 +15,7 @@ import ROLES from '@test/fixtures/roles.fixtures'
 import { DateTime } from 'luxon'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
-const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
+const TRANSACTION = new TransactionFixture.Payment({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
 const GATEWAY_ACCOUNT_ID = TRANSACTION.gatewayAccountId
@@ -121,7 +121,7 @@ describe('Refund page', () => {
       .first()
       .should(
         'contain',
-        `Refund the full amount of ${penceToPoundsWithCurrency(TRANSACTION.refundSummary.amountAvailable)}`
+        `Refund the full amount of ${penceToPoundsWithCurrency(TRANSACTION.refundSummary!.amountAvailable)}`
       )
     cy.contains('Confirm refund').should('be.visible').click()
     cy.get('.govuk-notification-banner--success')
@@ -133,7 +133,7 @@ describe('Refund page', () => {
 
   it('should display corporate surcharge in radio hint', () => {
     const transactionAmounts = { corporateCardSurcharge: 25, fee: 15, totalAmount: 1075 }
-    const transactionWithFees = new TransactionFixture({ ...transactionAmounts })
+    const transactionWithFees = new TransactionFixture.Payment({ ...transactionAmounts })
 
     cy.task('setupStubs', [
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithFees),
@@ -145,7 +145,7 @@ describe('Refund page', () => {
     cy.get('.govuk-radios__hint')
       .first()
       .contains(
-        `Refund the full amount of ${penceToPoundsWithCurrency(transactionWithFees.refundSummary.amountAvailable)} (including card fee of ${penceToPoundsWithCurrency(transactionAmounts.corporateCardSurcharge)})`
+        `Refund the full amount of ${penceToPoundsWithCurrency(transactionWithFees.refundSummary!.amountAvailable)} (including card fee of ${penceToPoundsWithCurrency(transactionAmounts.corporateCardSurcharge)})`
       )
   })
 
@@ -157,7 +157,7 @@ describe('Refund page', () => {
       amountSubmitted: 0,
       userExternalId: USER_EXTERNAL_ID,
     })
-    const transactionWithPartialRefund = new TransactionFixture({ refundSummary })
+    const transactionWithPartialRefund = new TransactionFixture.Payment({ refundSummary })
 
     cy.task('setupStubs', [
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(transactionWithPartialRefund),
@@ -170,7 +170,7 @@ describe('Refund page', () => {
       .first()
       .should(
         'contain',
-        `Refund the remaining amount of ${penceToPoundsWithCurrency(transactionWithPartialRefund.refundSummary.amountAvailable)}`
+        `Refund the remaining amount of ${penceToPoundsWithCurrency(transactionWithPartialRefund.refundSummary!.amountAvailable)}`
       )
   })
 

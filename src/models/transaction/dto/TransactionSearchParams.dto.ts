@@ -23,36 +23,45 @@ export class TransactionSearchParamsData {
   readonly dispute_states?: string
   readonly gateway_payout_id?: string
 
-  constructor(params: TransactionSearchParams) {
-    this.account_id = params.accountIds.join(',')
-    this.agreement_id = params.agreementId?.toString() ?? undefined
-    this.limit_total = params.limitTotal ? params.limitTotal.toString() : 'true'
-    this.limit_total_size = params.limitTotalSize?.toString() ?? '5001'
-    this.display_size = params.displaySize?.toString() ?? undefined
-    this.page = params.page?.toString()
-    this.cardholder_name = params.cardholderName?.toString() ?? undefined
-    this.last_digits_card_number = params.lastDigitsCardNumber?.toString() ?? undefined
-    this.metadata_value = params.metadataValue?.toString() ?? undefined
-    this.card_brands = params.brand?.join(',') ?? undefined
-    this.transaction_type = params.type ?? undefined
-    this.reference = params.reference ?? undefined
-    this.email = params.email ?? undefined
-    this.from_date = this.setFromDate(params) ?? undefined
-    this.to_date = params.toDate?.isValid ? params.toDate.toUTC().toISO() : undefined
-    this.payment_states = params.paymentStates?.map(toLower).join(',')
-    this.refund_states = params.refundStates?.map(toLower).join(',')
-    this.dispute_states = params.disputeStates?.map(toLower).join(',')
-    this.gateway_payout_id = params.gatewayPayoutId
+  constructor(
+    gatewayAccountId: string,
+    limitTotal: string,
+    limitTotalSize: string,
+    optionalParams?: Partial<TransactionSearchParamsData>
+  ) {
+    this.account_id = gatewayAccountId
+    this.limit_total = limitTotal
+    this.limit_total_size = limitTotalSize
+
+    Object.assign(this, optionalParams)
   }
 
-  setFromDate(params: TransactionSearchParams) {
-    if (params.dateFilter === 'all-time') {
-      return undefined
-    } else if (params.fromDate?.isValid) {
-      return params.fromDate.toUTC().toISO()
-    } else {
-      return TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO()
+  static fromSearchParams(searchParams: TransactionSearchParams) {
+    const additionalParams = {
+      agreement_id: searchParams.agreementId?.toString() ?? undefined,
+      display_size: searchParams.displaySize?.toString() ?? undefined,
+      page: searchParams.page?.toString(),
+      cardholder_name: searchParams.cardholderName?.toString() ?? undefined,
+      last_digits_card_number: searchParams.lastDigitsCardNumber?.toString() ?? undefined,
+      metadata_value: searchParams.metadataValue?.toString() ?? undefined,
+      card_brands: searchParams.brand?.join(',') ?? undefined,
+      transaction_type: searchParams.type ?? undefined,
+      reference: searchParams.reference ?? undefined,
+      email: searchParams.email ?? undefined,
+      from_date: getFromDate(searchParams) ?? undefined,
+      to_date: searchParams.toDate?.isValid ? searchParams.toDate.toUTC().toISO() : undefined,
+      payment_states: searchParams.paymentStates?.map(toLower).join(','),
+      refund_states: searchParams.refundStates?.map(toLower).join(','),
+      dispute_states: searchParams.disputeStates?.map(toLower).join(','),
+      gateway_payout_id: searchParams.gatewayPayoutId,
     }
+
+    return new TransactionSearchParamsData(
+      searchParams.accountIds.join(','),
+      searchParams.limitTotal === false ? 'false' : 'true',
+      searchParams.limitTotalSize?.toString() ?? '5001',
+      additionalParams
+    )
   }
 
   asQueryString(): string {
@@ -65,5 +74,15 @@ export class TransactionSearchParamsData {
     })
 
     return urlParams.toString()
+  }
+}
+
+function getFromDate(params: TransactionSearchParams): string | undefined {
+  if (params.dateFilter === 'all-time') {
+    return undefined
+  } else if (params.fromDate?.isValid) {
+    return params.fromDate.toUTC().toISO()
+  } else {
+    return TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO()
   }
 }
