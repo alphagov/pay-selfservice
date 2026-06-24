@@ -13,7 +13,10 @@ import { DateTime } from 'luxon'
 import { TimeConstants } from '@utils/time/time-constants'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
-const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
+const TRANSACTION = new TransactionFixture({
+  createdDate: TRANSACTION_CREATED_TIMESTAMP,
+  metadata: { account: '123a' },
+})
 
 const TRANSACTION_EVENTS = [
   new TransactionEventFixture({
