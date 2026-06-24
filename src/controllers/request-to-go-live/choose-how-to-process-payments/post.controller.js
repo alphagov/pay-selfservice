@@ -11,10 +11,11 @@ const response = require('../../../utils/response')
 const PSP = 'choose-how-to-process-payments-mode'
 const stages = {
   stripe: goLiveStage.CHOSEN_PSP_STRIPE,
-  gov_banking: goLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY
+  adyen: goLiveStage.CHOSEN_PSP_ADYEN,
+  gov_banking: goLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY,
 }
 
-module.exports = async function submitPspChoice (req, res, next) {
+module.exports = async function submitPspChoice(req, res, next) {
   const psp = req.body[PSP]
 
   const errors = {}
@@ -35,7 +36,7 @@ module.exports = async function submitPspChoice (req, res, next) {
     }
   } else {
     return response.response(req, res, 'request-to-go-live/choose-how-to-process-payments', {
-      errors
+      errors,
     })
   }
 }

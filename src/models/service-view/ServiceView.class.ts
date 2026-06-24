@@ -106,18 +106,23 @@ export class ServiceView {
   }
 }
 
-const PaymentProvidersThatCanGoLive = [PaymentProviders.SANDBOX, PaymentProviders.STRIPE]
+const PaymentProvidersThatCanGoLive = [PaymentProviders.SANDBOX, PaymentProviders.STRIPE, PaymentProviders.ADYEN]
 const ValidLivePaymentProviders = [PaymentProviders.WORLDPAY, PaymentProviders.STRIPE]
 
 const GoLiveInProgressStages = [
   GoLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY,
   GoLiveStage.CHOSEN_PSP_STRIPE,
+  GoLiveStage.CHOSEN_PSP_ADYEN,
   GoLiveStage.ENTERED_ORGANISATION_ADDRESS,
   GoLiveStage.ENTERED_ORGANISATION_NAME,
   GoLiveStage.GOV_BANKING_MOTO_OPTION_COMPLETED,
 ]
 
-const GoLiveRequestedStages = [GoLiveStage.TERMS_AGREED_STRIPE, GoLiveStage.TERMS_AGREED_GOV_BANKING_WORLDPAY]
+const GoLiveRequestedStages = [
+  GoLiveStage.TERMS_AGREED_ADYEN,
+  GoLiveStage.TERMS_AGREED_STRIPE,
+  GoLiveStage.TERMS_AGREED_GOV_BANKING_WORLDPAY,
+]
 
 const determineServiceView = (service: Service, account: GatewayAccount) => {
   const currentGoLiveStage = service.currentGoLiveStage

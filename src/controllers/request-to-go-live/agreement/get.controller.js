@@ -7,13 +7,15 @@ const paths = require('../../../paths')
 const { response } = require('../../../utils/response')
 const formatServicePathsFor = require('../../../utils/format-service-paths-for')
 
-const { CHOSEN_PSP_STRIPE, GOV_BANKING_MOTO_OPTION_COMPLETED } = goLiveStage
-const chosenOptions = [CHOSEN_PSP_STRIPE, GOV_BANKING_MOTO_OPTION_COMPLETED]
+const { CHOSEN_PSP_ADYEN, CHOSEN_PSP_STRIPE, GOV_BANKING_MOTO_OPTION_COMPLETED } = goLiveStage
+const chosenOptions = [CHOSEN_PSP_ADYEN, CHOSEN_PSP_STRIPE, GOV_BANKING_MOTO_OPTION_COMPLETED]
 
 module.exports = (req, res) => {
   if (chosenOptions.includes(req.service.currentGoLiveStage)) {
+    let currentGoLiveStage = lodash.get(req, 'service.currentGoLiveStage', '')
     return response(req, res, 'request-to-go-live/agreement', {
-      displayStripeAgreement: (lodash.get(req, 'service.currentGoLiveStage', '') === goLiveStage.CHOSEN_PSP_STRIPE)
+      displayGovUkPspAgreement:
+        currentGoLiveStage === goLiveStage.CHOSEN_PSP_STRIPE || currentGoLiveStage === goLiveStage.CHOSEN_PSP_ADYEN,
     })
   }
   return res.redirect(
