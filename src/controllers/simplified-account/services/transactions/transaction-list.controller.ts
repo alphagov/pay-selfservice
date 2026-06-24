@@ -71,9 +71,10 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const downloadQueryString = transactionSearchParams.getQueryParams().toString()
   const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
   const transactionCountWithinRange = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT
-  const hasQueryParams = transactionSearchParams.getQueryParams().toString().length
+
   const showCsvDownload =
-    transactionCountWithinRange || (hasQueryParams && results.total > LEDGER_TRANSACTION_COUNT_LIMIT)
+    transactionCountWithinRange ||
+    (transactionSearchParams.hasUserSelectedFilters() && results.total > LEDGER_TRANSACTION_COUNT_LIMIT)
 
   req.session.transactionFilters = req.url.split('?')[1] || ''
 

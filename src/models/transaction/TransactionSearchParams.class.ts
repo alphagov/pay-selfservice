@@ -90,6 +90,12 @@ export class TransactionSearchParams {
       .sort()
   }
 
+  hasUserSelectedFilters() {
+    const filters = this.getQueryParams()
+    filters.delete('page')
+    return filters.toString().length > 0
+  }
+
   static forAgreement(gatewayAccountId: number, agreementExternalId: string, currentPage: number, displaySize: number) {
     const searchParams = new TransactionSearchParams([gatewayAccountId], true)
     searchParams.page = currentPage
