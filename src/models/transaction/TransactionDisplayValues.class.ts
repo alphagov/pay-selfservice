@@ -1,17 +1,18 @@
-import { Transaction } from '@models/transaction/Transaction.class'
+// import { Transaction } from '@models/transaction/Transaction.class'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { getFriendlyStatus, Status } from '@models/transaction/types/status'
 import changeCase from 'change-case'
 import { ReasonFriendlyNames } from '@models/transaction/types/reason'
 import { ResourceType } from '@models/transaction/types/resource-type'
 import { DATE_TIME, dateTimeWithOffset, ZONED_DATE_TIME } from '@models/constants/time-formats'
+import { TransactionBase } from '@models/transaction/TransactionBase.class'
 
 export class TransactionDisplayValues {
-  private readonly transaction: Transaction
+  private readonly transaction: TransactionBase
   private readonly isRefund: boolean
   private readonly isDispute: boolean
 
-  constructor(transaction: Transaction) {
+  constructor(transaction: TransactionBase) {
     this.transaction = transaction
 
     this.isRefund = transaction.transactionType === ResourceType.REFUND
@@ -79,16 +80,12 @@ export class TransactionDisplayValues {
   }
 
   get email(): string {
-    return (this.isRefund ? this.transaction.paymentDetails!.email : this.transaction.email) ?? ''
-  }
-
-  get paymentProvider(): string {
-    return changeCase.upperCaseFirst(this.transaction.paymentProvider)
+    return (this.isRefund || this.isDispute ? this.transaction.paymentDetails!.email : this.transaction.email) ?? ''
   }
 
   // reference for the parent payment if refund or dispute
   get paymentReference(): string {
-    return this.isRefund || this.isDispute ? this.transaction.paymentDetails!.reference : this.transaction.reference
+    return this.isRefund || this.isDispute ? this.transaction.paymentDetails!.reference : this.transaction.reference!
   }
 
   get paymentType(): string {

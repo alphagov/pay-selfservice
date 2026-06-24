@@ -10,25 +10,25 @@ describe('Transaction view utilities', () => {
     const testCases = [
       {
         refund_summary_status: 'unavailable',
-        expectations: { refund_unavailable_due_to_dispute: true, refundable: false }
+        expectations: { refund_unavailable_due_to_dispute: true, refundable: false },
       },
       {
         refund_summary_status: 'available',
-        expectations: { refund_unavailable_due_to_dispute: false, refundable: true }
+        expectations: { refund_unavailable_due_to_dispute: false, refundable: true },
       },
       { refund_summary_status: 'error', expectations: { refund_unavailable_due_to_dispute: false, refundable: true } },
       { refund_summary_status: 'full', expectations: { refund_unavailable_due_to_dispute: false, refundable: false } },
       {
         refund_summary_status: 'pending',
-        expectations: { refund_unavailable_due_to_dispute: false, refundable: false }
-      }
+        expectations: { refund_unavailable_due_to_dispute: false, refundable: false },
+      },
     ]
 
-    testCases.forEach(testCase => {
+    testCases.forEach((testCase) => {
       it(`should return correct refundable fields for disputed payment with refund status ${testCase.refund_summary_status}`, () => {
         const transaction = transactionFixtures.validTransactionDetailsResponse({
           disputed: true,
-          refund_summary_status: testCase.refund_summary_status
+          refund_summary_status: testCase.refund_summary_status,
         })
         const events = transactionFixtures.validTransactionEventsResponse()
         const view = buildPaymentView(transaction, events, {})
@@ -60,14 +60,23 @@ describe('Transaction view utilities', () => {
             state: { status: 'under_review' },
             amount: 2000,
             created_date: '2025-04-01T10:00:00Z',
-            updated: '2025-04-02T10:00:00Z'
-          }
+            updated: '2025-04-02T10:00:00Z',
+          },
         ],
         _links: {},
-        page: 1
+        page: 1,
       }
 
-      const formattedData = buildPaymentList(connectorData, { card_types: [] }, 'test-account', {}, null, null, null, null)
+      const formattedData = buildPaymentList(
+        connectorData,
+        { card_types: [] },
+        'test-account',
+        {},
+        null,
+        null,
+        null,
+        null
+      )
 
       expect(formattedData.results[0].amount).to.include('–£')
     })
@@ -81,26 +90,35 @@ describe('Transaction view utilities', () => {
             state: { status: 'won' },
             amount: 2000,
             created_date: '2025-04-01T10:00:00Z',
-            updated: '2025-04-02T10:00:00Z'
-          }
+            updated: '2025-04-02T10:00:00Z',
+          },
         ],
         _links: {},
-        page: 1
+        page: 1,
       }
 
-      const formattedData = buildPaymentList(connectorData, { card_types: [] }, 'test-account', {}, null, null, null, null)
+      const formattedData = buildPaymentList(
+        connectorData,
+        { card_types: [] },
+        'test-account',
+        {},
+        null,
+        null,
+        null,
+        null
+      )
 
       expect(formattedData.results[0].amount).to.not.include('–£')
       expect(formattedData.results[0].amount).to.include('£20.00')
     })
   })
 
-  it('should set text to \'Data unavailable\' for fields redacted for PII', () => {
+  it("should set text to 'Data unavailable' for fields redacted for PII", () => {
     const transaction = transactionFixtures.validTransactionDetailsResponse({
       reference: '<DELETED>',
       description: '<DELETED>',
       email: '<DELETED>',
-      cardholder_name: '<DELETED>'
+      cardholder_name: '<DELETED>',
     })
     const events = transactionFixtures.validTransactionEventsResponse()
     const paymentView = buildPaymentView(transaction, events)
@@ -111,12 +129,12 @@ describe('Transaction view utilities', () => {
     expect(paymentView.card_details.cardholder_name).to.equal('Data unavailable')
   })
 
-  it('should not set text to \'Data unavailable\' for fields not redacted', () => {
+  it("should not set text to 'Data unavailable' for fields not redacted", () => {
     const transaction = transactionFixtures.validTransactionDetailsResponse({
       reference: 'ref-1',
       description: 'desc-1',
       email: 'test@example.org',
-      cardholder_name: 'Jane D'
+      cardholder_name: 'Jane D',
     })
     const events = transactionFixtures.validTransactionEventsResponse()
     const paymentView = buildPaymentView(transaction, events)
@@ -141,9 +159,9 @@ describe('Transaction view utilities', () => {
       const transaction = transactionFixtures.validTransactionDetailsResponse({
         authorisation_summary: {
           three_d_secure: {
-            required: true
-          }
-        }
+            required: true,
+          },
+        },
       })
 
       const events = transactionFixtures.validTransactionEventsResponse()
@@ -156,9 +174,9 @@ describe('Transaction view utilities', () => {
       const transaction = transactionFixtures.validTransactionDetailsResponse({
         authorisation_summary: {
           three_d_secure: {
-            required: false
-          }
-        }
+            required: false,
+          },
+        },
       })
 
       const events = transactionFixtures.validTransactionEventsResponse()
@@ -177,9 +195,9 @@ describe('Transaction view utilities', () => {
               requested: true,
               type: 'corporate',
               outcome: {
-                result: 'honoured'
-              }
-            }
+                result: 'honoured',
+              },
+            },
           })
 
           const events = transactionFixtures.validTransactionEventsResponse()
@@ -194,9 +212,9 @@ describe('Transaction view utilities', () => {
               requested: true,
               type: 'corporate',
               outcome: {
-                result: 'rejected'
-              }
-            }
+                result: 'rejected',
+              },
+            },
           })
 
           const events = transactionFixtures.validTransactionEventsResponse()
@@ -211,9 +229,9 @@ describe('Transaction view utilities', () => {
               requested: true,
               type: 'corporate',
               outcome: {
-                result: 'out of scope'
-              }
-            }
+                result: 'out of scope',
+              },
+            },
           })
 
           const events = transactionFixtures.validTransactionEventsResponse()
@@ -226,8 +244,8 @@ describe('Transaction view utilities', () => {
           const transaction = transactionFixtures.validTransactionDetailsResponse({
             exemption: {
               requested: true,
-              type: 'corporate'
-            }
+              type: 'corporate',
+            },
           })
 
           const events = transactionFixtures.validTransactionEventsResponse()
@@ -244,9 +262,9 @@ describe('Transaction view utilities', () => {
               exemption: {
                 requested: true,
                 outcome: {
-                  result: 'honoured'
-                }
-              }
+                  result: 'honoured',
+                },
+              },
             })
 
             const events = transactionFixtures.validTransactionEventsResponse()
@@ -262,9 +280,9 @@ describe('Transaction view utilities', () => {
               exemption: {
                 requested: true,
                 outcome: {
-                  result: 'honoured'
-                }
-              }
+                  result: 'honoured',
+                },
+              },
             })
 
             const events = transactionFixtures.validTransactionEventsResponse()
@@ -281,8 +299,8 @@ describe('Transaction view utilities', () => {
         it('should not set the field', () => {
           const transaction = transactionFixtures.validTransactionDetailsResponse({
             exemption: {
-              requested: false
-            }
+              requested: false,
+            },
           })
 
           const events = transactionFixtures.validTransactionEventsResponse()
@@ -296,8 +314,8 @@ describe('Transaction view utilities', () => {
         it('should set the field to `not requested`', () => {
           const transaction = transactionFixtures.validTransactionDetailsResponse({
             exemption: {
-              requested: false
-            }
+              requested: false,
+            },
           })
 
           const events = transactionFixtures.validTransactionEventsResponse()

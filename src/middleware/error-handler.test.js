@@ -2,8 +2,12 @@ const sinon = require('sinon')
 const proxyquire = require('proxyquire')
 const { expect } = require('chai')
 const {
-  NotAuthenticatedError, UserAccountDisabledError, NotAuthorisedError, NotFoundError, PermissionDeniedError,
-  ExpiredInviteError
+  NotAuthenticatedError,
+  UserAccountDisabledError,
+  NotAuthorisedError,
+  NotFoundError,
+  PermissionDeniedError,
+  ExpiredInviteError,
 } = require('../errors')
 const paths = require('../paths')
 const User = require('@models/user/User.class')
@@ -15,9 +19,9 @@ const gatewayAccountFixtures = require('../../test/fixtures/gateway-account.fixt
 const correlationId = 'a-request-id'
 const req = {
   headers: {
-    'x-request-id': correlationId
+    'x-request-id': correlationId,
   },
-  session: {}
+  session: {},
 }
 
 describe('Error handler middleware', () => {
@@ -30,7 +34,7 @@ describe('Error handler middleware', () => {
       status: sinon.spy(),
       render: sinon.spy(),
       redirect: sinon.spy(),
-      setHeader: sinon.stub()
+      setHeader: sinon.stub(),
     }
 
     infoLoggerSpy = sinon.spy()
@@ -38,12 +42,12 @@ describe('Error handler middleware', () => {
     errorHandler = proxyquire('./error-handler', {
       '../utils/logger': () => {
         return {
-          info: infoLoggerSpy
+          info: infoLoggerSpy,
         }
       },
       '@sentry/node': {
-        captureException: sentrySpy
-      }
+        captureException: sentrySpy,
+      },
     })
   })
 
@@ -87,7 +91,7 @@ describe('Error handler middleware', () => {
   it('should render error page with status code 410 if error is ExpiredInviteError', () => {
     const err = new ExpiredInviteError('Invite has expired')
     const expectedMessage = {
-      message: 'This invitation is no longer valid'
+      message: 'This invitation is no longer valid',
     }
     errorHandler(err, req, res, null)
     sinon.assert.notCalled(next)
@@ -115,18 +119,19 @@ describe('Error handler middleware', () => {
       ...req,
       user: new User(userFixtures.validUserResponse({ external_id: userExternalId })),
       service: new Service(serviceFixtures.validServiceResponse({ external_id: serviceExternalId })),
-      account: gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: gatewayAccountId })
+      account: gatewayAccountFixtures.validGatewayAccountResponse({ gateway_account_id: gatewayAccountId }),
     }
 
     it('should log at info level for NotAuthenticatedError', () => {
       const err = new NotAuthenticatedError('not authenticated')
       const notAuthorisedReq = {
         ...reqWithSessionData,
-        originalUrl: '/foo/bar'
+        originalUrl: '/foo/bar',
       }
       errorHandler(err, notAuthorisedReq, res, null)
 
-      const expectedMessage = 'NotAuthenticatedError handled: not authenticated. Redirecting attempt to access /foo/bar to /login'
+      const expectedMessage =
+        'NotAuthenticatedError handled: not authenticated. Redirecting attempt to access /foo/bar to /login'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
       sinon.assert.notCalled(sentrySpy)
     })
@@ -153,7 +158,8 @@ describe('Error handler middleware', () => {
       const err = new PermissionDeniedError('do-cool-things')
       errorHandler(err, reqWithSessionData, res, null)
 
-      const expectedMessage = 'PermissionDeniedError handled: User does not have permission do-cool-things for service. Rendering error page'
+      const expectedMessage =
+        'PermissionDeniedError handled: User does not have permission do-cool-things for service. Rendering error page'
       sinon.assert.calledWith(infoLoggerSpy, expectedMessage)
       sinon.assert.notCalled(sentrySpy)
     })

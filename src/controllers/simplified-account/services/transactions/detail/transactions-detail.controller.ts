@@ -4,7 +4,7 @@ import formatAccountPathsFor from '@utils/format-account-paths-for'
 import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import { Transaction } from '@models/transaction/Transaction.class'
+import { Transaction } from '@models/transaction/Transaction.model'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 import { TimeConstants } from '@utils/time/time-constants'
 

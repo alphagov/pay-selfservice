@@ -4,7 +4,7 @@ import express from 'express'
 import Stream from '@services/clients/stream.client'
 import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-client/errors'
 import { GatewayTimeoutError } from '@root/errors'
-import { Transaction } from '@models/transaction/Transaction.class'
+import { Transaction } from '@models/transaction/Transaction.model'
 
 const ledgerClient = new LedgerClient()
 

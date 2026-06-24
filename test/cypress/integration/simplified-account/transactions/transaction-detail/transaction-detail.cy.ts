@@ -22,7 +22,7 @@ import { setGlobalTimeDefaults } from '@utils/time/global-time-defaults'
 setGlobalTimeDefaults()
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
-const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
+const TRANSACTION = new TransactionFixture.Payment({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
 
 const CARD_DETAILS = TRANSACTION.cardDetails!
 
@@ -264,7 +264,7 @@ describe('Transaction details page', () => {
   })
 
   it('should not display card details type when not present', () => {
-    const transactionWithoutCardDetails = new TransactionFixture({ cardDetails: undefined })
+    const transactionWithoutCardDetails = new TransactionFixture.Payment({ cardDetails: undefined })
 
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
@@ -286,7 +286,7 @@ describe('Transaction details page', () => {
   })
 
   it('should display 3D Secure required when authorisation summary exists', () => {
-    const transactionWith3DSRequired = new TransactionFixture({
+    const transactionWith3DSRequired = new TransactionFixture.Payment({
       authorisationSummary: new AuthorisationSummaryFixture({
         threeDSecure: {
           required: true,
@@ -311,7 +311,7 @@ describe('Transaction details page', () => {
   })
 
   it('should display 3D Secure as not required when authorisation summary exists', () => {
-    const transactionWith3DSNotRequired = new TransactionFixture({
+    const transactionWith3DSNotRequired = new TransactionFixture.Payment({
       authorisationSummary: new AuthorisationSummaryFixture(),
     })
 
@@ -334,7 +334,7 @@ describe('Transaction details page', () => {
   })
 
   it('should display wallet type when present', () => {
-    const transactionWithWalletType = new TransactionFixture({ walletType: 'APPLE_PAY' })
+    const transactionWithWalletType = new TransactionFixture.Payment({ walletType: 'APPLE_PAY' })
 
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
@@ -354,7 +354,7 @@ describe('Transaction details page', () => {
 
   it('should display fees when present', () => {
     const transactionAmounts = { corporateCardSurcharge: 25, fee: 15, totalAmount: 1075 }
-    const transactionWithFees = new TransactionFixture({ ...transactionAmounts })
+    const transactionWithFees = new TransactionFixture.Payment({ ...transactionAmounts })
 
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [
@@ -383,7 +383,7 @@ describe('Transaction details page', () => {
   })
 
   it('should display transaction metadata when present', () => {
-    const transactionWithMetadata = new TransactionFixture({
+    const transactionWithMetadata = new TransactionFixture.Payment({
       metadata: {
         'Metadata 1': 'This is some metadata',
         'Metadata 2': 'This is some more metadata',
@@ -424,7 +424,7 @@ describe('Transaction details page', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(
-        new TransactionFixture({ metadata: undefined })
+        new TransactionFixture.Payment({ metadata: undefined })
       ),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
     ])
@@ -437,7 +437,7 @@ describe('Transaction details page', () => {
     const state = new TransactionStateFixture({ status: Status.DECLINED })
     const transactionAmount = 12345
     const formattedAmount = penceToPoundsWithCurrency(transactionAmount)
-    const declinedTransaction = new TransactionFixture({ state, amount: transactionAmount })
+    const declinedTransaction = new TransactionFixture.Payment({ state, amount: transactionAmount })
     const transactionStartedTimestamp = TRANSACTION_CREATED_TIMESTAMP.plus({ minute: 1 })
     const transactionDeclinedTimestamp = TRANSACTION_CREATED_TIMESTAMP.plus({ month: 4 })
 
@@ -517,7 +517,7 @@ describe('Transaction details page', () => {
 
   it('should display inset text if transaction is over 7 years old', () => {
     const transactionCreatedTimestamp = DateTime.now().minus({ years: 7, months: 1 })
-    const oldTransaction = new TransactionFixture({ createdDate: transactionCreatedTimestamp })
+    const oldTransaction = new TransactionFixture.Payment({ createdDate: transactionCreatedTimestamp })
 
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
     cy.task('setupStubs', [

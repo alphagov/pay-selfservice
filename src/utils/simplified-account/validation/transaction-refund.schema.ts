@@ -1,6 +1,6 @@
 import { body } from 'express-validator'
 import { ServiceRequest } from '@utils/types/express'
-import { Transaction } from '@models/transaction/Transaction.class'
+import { Transaction } from '@models/transaction/Transaction.model'
 
 interface RefundRequestBody {
   refundPayment: string

@@ -5,12 +5,6 @@ import {
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { DateTime } from 'luxon'
-import {
-  DISPUTE_LOST_DATA,
-  DISPUTE_NEEDS_RESPONSE_DATA,
-  DISPUTE_UNDER_REVIEW_DATA,
-  DISPUTE_WON_DATA,
-} from '@test/fixtures/transaction/fixture-data/dispute-fixture-data'
 import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-account-type'
 import userStubs from '@test/cypress/stubs/user-stubs'
 import ROLES from '@test/fixtures/roles.fixtures'
@@ -19,7 +13,7 @@ import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 import { beforeEach } from 'mocha'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
-const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
+const TRANSACTION = new TransactionFixture.Payment({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
 
 const USER_EXTERNAL_ID = 'user456def'
 const USER_EMAIL = 's.mcduck@example.com'
@@ -49,17 +43,17 @@ const userAndGatewayAccountStubs = [
 
 describe('Transaction details page', () => {
   describe('for disputed payments', () => {
-    const baseParent = new TransactionFixture(TRANSACTION, { disputed: true })
+    const baseParent = new TransactionFixture.Payment(TRANSACTION, { disputed: true })
 
     describe('for a dispute awaiting evidence', () => {
       beforeEach(() => {
-        const parentTransaction = new TransactionFixture(baseParent, {
+        const parentTransaction = new TransactionFixture.Payment(baseParent, {
           refundSummary: new LedgerRefundSummaryFixture({
             status: 'unavailable',
             amountAvailable: 0,
           }),
         })
-        const disputeTransaction = new TransactionFixture(DISPUTE_NEEDS_RESPONSE_DATA)
+        const disputeTransaction = TransactionFixture.Dispute.Won()
 
         cy.setEncryptedCookies(USER_EXTERNAL_ID)
         cy.task('setupStubs', [
@@ -144,13 +138,13 @@ describe('Transaction details page', () => {
 
     describe('for a dispute under review', () => {
       beforeEach(() => {
-        const parentTransaction = new TransactionFixture(baseParent, {
+        const parentTransaction = new TransactionFixture.Payment(baseParent, {
           refundSummary: new LedgerRefundSummaryFixture({
             status: 'unavailable',
             amountAvailable: 0,
           }),
         })
-        const disputeTransaction = new TransactionFixture(DISPUTE_UNDER_REVIEW_DATA)
+        const disputeTransaction = TransactionFixture.Dispute.UnderReview()
 
         cy.setEncryptedCookies(USER_EXTERNAL_ID)
         cy.task('setupStubs', [
@@ -235,13 +229,13 @@ describe('Transaction details page', () => {
 
     describe('for a dispute won in the services favour', () => {
       beforeEach(() => {
-        const parentTransaction = new TransactionFixture(baseParent, {
+        const parentTransaction = new TransactionFixture.Payment(baseParent, {
           refundSummary: new LedgerRefundSummaryFixture({
             status: 'available',
             amountAvailable: baseParent.amount,
           }),
         })
-        const disputeTransaction = new TransactionFixture(DISPUTE_WON_DATA)
+        const disputeTransaction = TransactionFixture.Dispute.Won()
 
         cy.setEncryptedCookies(USER_EXTERNAL_ID)
         cy.task('setupStubs', [
@@ -324,13 +318,13 @@ describe('Transaction details page', () => {
 
     describe('for a dispute lost to the user', () => {
       beforeEach(() => {
-        const parentTransaction = new TransactionFixture(baseParent, {
+        const parentTransaction = new TransactionFixture.Payment(baseParent, {
           refundSummary: new LedgerRefundSummaryFixture({
             status: 'unavailable',
             amountAvailable: 0,
           }),
         })
-        const disputeTransaction = new TransactionFixture(DISPUTE_LOST_DATA)
+        const disputeTransaction = TransactionFixture.Dispute.Lost()
 
         cy.setEncryptedCookies(USER_EXTERNAL_ID)
         cy.task('setupStubs', [
