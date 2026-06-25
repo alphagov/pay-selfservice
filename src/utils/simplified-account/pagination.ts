@@ -45,7 +45,7 @@ export const getPagination = (
   }
 
   const items: PaginationItem[] = []
-  // 5 pages or fewer, show all page numbers without ellipses
+  // 5 pages or fewer, show all page numbers without ellipsis
   if (totalPages <= 5) {
     for (let i = 0; i < totalPages; i++) {
       items[i] = {

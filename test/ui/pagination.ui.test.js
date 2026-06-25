@@ -28,7 +28,7 @@ describe('The pagination links', function () {
     body.should.containSelector('a.govuk-link.govuk-pagination__link').withText('Previous page')
     body.should.containSelector('div.govuk-pagination__next').withText('Next page')
     body.should.containSelector('a.govuk-link.govuk-pagination__link[href="/all-service-transactions/test?page=1"]').withText('1')
-    body.should.containSelector('li.govuk-pagination__item.govuk-pagination__item--ellipses').withText('⋯')
+    body.should.containSelector('li.govuk-pagination__item.govuk-pagination__item--ellipsis').withText('⋯')
     body.should.containSelector('a.govuk-link.govuk-pagination__link[href="/all-service-transactions/test?page=10"]').withText('10')
   })
 
@@ -44,7 +44,7 @@ describe('The pagination links', function () {
     body.should.containSelector('a.govuk-link.govuk-pagination__link[href="/all-service-transactions/test?page=10"]').withText('10')
     body.should.containSelector('a.govuk-link.govuk-pagination__link[href="/all-service-transactions/test?page=9"]').withText('9')
     body.should.not.containSelector('a.govuk-link.govuk-pagination__link[href="/all-service-transactions/test?page=8"]').withText('8')
-    body.should.containSelector('li.govuk-pagination__item.govuk-pagination__item--ellipses').withText('⋯')
+    body.should.containSelector('li.govuk-pagination__item.govuk-pagination__item--ellipsis').withText('⋯')
     body.should
       .containSelector('div.govuk-pagination__prev a.govuk-link.govuk-pagination__link span.govuk-pagination__link-title')
       .withText('Previous')
