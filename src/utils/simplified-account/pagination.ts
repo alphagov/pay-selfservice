@@ -5,7 +5,7 @@ interface PaginationItem {
   ellipsis?: boolean
 }
 
-interface PaginationResult {
+export interface PaginationResult {
   classes: string
   total: number
   startIndex: number
@@ -15,7 +15,7 @@ interface PaginationResult {
   items?: PaginationItem[]
 }
 
-const getPagination = (
+export const getPagination = (
   currentPage: number,
   pageSize: number,
   totalItems: number,
@@ -109,5 +109,3 @@ const getPagination = (
 
   return pagination
 }
-
-export = getPagination

@@ -6,6 +6,7 @@ import { expect } from 'chai'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
+import { PaginationResult } from '@utils/simplified-account/pagination'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const TRANSACTION_EXTERNAL_ID = 'transaction123abc'
@@ -144,6 +145,27 @@ describe('controller: services/ledger', () => {
         context.filters.state.should.eql(['in_progress'])
         context.filters.paymentStates.should.eql(['CREATED', 'STARTED', 'CAPTURABLE', 'SUBMITTED'])
         expect(context.filters.refundStates).to.be.undefined
+        expect(context.filters.disputeStates).to.be.undefined
+      })
+
+      it('should accept multiple filters as a csv string', async () => {
+        nextRequest({
+          query: { state: 'in_progress,success,timed_out,refund_success' },
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as { filters: Record<string, object> }
+        context.filters.state.should.eql(['in_progress', 'success', 'timed_out', 'refund_success'])
+        context.filters.paymentStates.should.eql([
+          'CREATED',
+          'STARTED',
+          'CAPTURABLE',
+          'SUBMITTED',
+          'SUCCESS',
+          'TIMEDOUT',
+        ])
+        context.filters.refundStates.should.eql(['SUCCESS'])
         expect(context.filters.disputeStates).to.be.undefined
       })
     })
@@ -500,6 +522,36 @@ describe('controller: services/ledger', () => {
 
         const searchParams = mockLedgerService.searchTransactions.firstCall.args[0] as Record<string, object>
         searchParams.page.should.eql(1)
+      })
+    })
+
+    describe('pagination', () => {
+      it('should return correct pagination', async () => {
+        nextRequest({
+          query: { state: ['in_progress', 'success', 'declined', 'timed_out'] },
+        })
+        mockLedgerService.searchTransactions.resolves({
+          total: 100,
+          count: 20,
+          page: 1,
+          transactions: new Array(20).fill(transaction.toTransaction()),
+        })
+
+        await call('get')
+
+        const context = mockResponse.args[0][3] as { pagination: PaginationResult }
+        const pagination = context.pagination
+
+        pagination.total.should.eql(100)
+        pagination.startIndex.should.eql(1)
+        pagination.endIndex.should.eql(20)
+        expect(pagination.previous).to.be.undefined
+        pagination.next?.should.not.be.undefined
+
+        const [nextPath, nextQuery] = pagination.next!.href.split('?')
+        const nextQueryParams = new URLSearchParams(nextQuery)
+        nextPath.should.eql(`/service/${SERVICE_EXTERNAL_ID}/account/test/transactions`)
+        nextQueryParams.get('state')!.should.eql('in_progress,success,declined,timed_out')
       })
     })
   })

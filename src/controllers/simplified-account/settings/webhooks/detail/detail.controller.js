@@ -1,6 +1,6 @@
 const paths = require('@root/paths')
 const { response } = require('@utils/response')
-const getPagination = require('@utils/simplified-account/pagination')
+const { getPagination } = require('@utils/simplified-account/pagination')
 const webhooksService = require('@services/webhooks.service')
 const formatSimplifiedAccountPathsFor = require('@utils/simplified-account/format/format-simplified-account-paths-for')
 const { constants } = require('@govuk-pay/pay-js-commons')

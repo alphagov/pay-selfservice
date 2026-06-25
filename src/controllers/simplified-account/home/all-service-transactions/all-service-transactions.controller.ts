@@ -14,7 +14,7 @@ import {
 import lodash from 'lodash'
 import PaymentProviders from '@models/constants/payment-providers'
 import formattedPathFor from '@utils/simplified-account/format/format-paths-for'
-import getPagination from '@utils/simplified-account/pagination'
+import { getPagination } from '@utils/simplified-account/pagination'
 import { ViewMode } from '@models/view-mode/ViewMode.class'
 import { GatewayName } from '@models/gateway/gateway-name'
 import { CardType } from '@models/card-type/CardType.class'
