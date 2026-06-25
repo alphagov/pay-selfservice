@@ -79,7 +79,7 @@ export class TransactionDisplayValues {
   }
 
   get email(): string {
-    return (this.isRefund ? this.transaction.paymentDetails!.email : this.transaction.email) ?? ''
+    return this.transaction.email ?? this.transaction.paymentDetails?.email ?? ''
   }
 
   get paymentProvider(): string {

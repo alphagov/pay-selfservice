@@ -29,6 +29,7 @@ const DISPUTE_NEEDS_RESPONSE_DATA: Partial<TransactionFixture> = {
   }),
   evidenceDueDate: BASE_FIXTURE.createdDate.plus({ month: 5 }),
   reason: Reason.FRAUDULENT,
+  email: undefined,
 }
 
 const DISPUTE_UNDER_REVIEW_DATA: Partial<TransactionFixture> = {
@@ -50,6 +51,7 @@ const DISPUTE_UNDER_REVIEW_DATA: Partial<TransactionFixture> = {
   }),
   evidenceDueDate: BASE_FIXTURE.createdDate.plus({ month: 5 }),
   reason: Reason.FRAUDULENT,
+  email: undefined,
 }
 
 const DISPUTE_WON_DATA: Partial<TransactionFixture> = {
@@ -71,6 +73,7 @@ const DISPUTE_WON_DATA: Partial<TransactionFixture> = {
   }),
   evidenceDueDate: BASE_FIXTURE.createdDate.plus({ month: 5 }),
   reason: Reason.FRAUDULENT,
+  email: undefined,
 }
 
 const PSP_DISPUTE_FEE = 2000
@@ -98,6 +101,7 @@ const DISPUTE_LOST_DATA: Partial<TransactionFixture> = {
   }),
   evidenceDueDate: BASE_FIXTURE.createdDate.plus({ month: 5 }),
   reason: Reason.FRAUDULENT,
+  email: undefined,
 }
 
 export { DISPUTE_NEEDS_RESPONSE_DATA, DISPUTE_UNDER_REVIEW_DATA, DISPUTE_WON_DATA, DISPUTE_LOST_DATA }

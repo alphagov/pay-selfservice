@@ -124,4 +124,14 @@ export class TransactionFixture {
   toTransaction() {
     return new Transaction(this.toTransactionData())
   }
+
+  asPaymentDetailsFixture(): PaymentDetailsFixture {
+    return new PaymentDetailsFixture({
+      description: this.description,
+      reference: this.reference,
+      email: this.email,
+      transactionType: this.transactionType,
+      cardDetails: this.cardDetails,
+    })
+  }
 }

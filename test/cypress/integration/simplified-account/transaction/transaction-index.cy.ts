@@ -14,7 +14,11 @@ import { PaymentDetailsFixture } from '@test/fixtures/transaction/payment-detail
 import { getLedgerTransactionsFailure, getLedgerTransactionsSuccess } from '@test/cypress/stubs/transaction-stubs'
 import { TimeConstants } from '@utils/time/time-constants'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
-import { DISPUTE_LOST_DATA } from '@test/fixtures/transaction/fixture-data/dispute-fixture-data'
+import {
+  DISPUTE_LOST_DATA,
+  DISPUTE_NEEDS_RESPONSE_DATA,
+  DISPUTE_WON_DATA,
+} from '@test/fixtures/transaction/fixture-data/dispute-fixture-data'
 import { LEDGER_TRANSACTION_COUNT_LIMIT } from '@controllers/simplified-account/services/transactions/constants'
 
 const TRANSACTION = new TransactionFixture().toTransactionData()
@@ -448,17 +452,21 @@ describe('Transactions index', () => {
     describe('Disputes', () => {
       it('should display amounts correctly for dispute awaiting evidence', () => {
         sharedStubs('test', 'stripe')
-
-        const state = new TransactionStateFixture({ status: Status.NEEDS_RESPONSE })
-        const paymentDetails = new PaymentDetailsFixture({ cardDetails: new CardDetailsFixture({ cardBrand: 'Visa' }) })
-        const disputeTransaction = new TransactionFixture({
-          paymentDetails,
-          transactionType: ResourceType.DISPUTE,
-          state,
-        }).toTransactionData()
+        const transaction = new TransactionFixture({
+          fee: 100,
+          netAmount: 900,
+        })
+        const disputeTransaction = new TransactionFixture(DISPUTE_NEEDS_RESPONSE_DATA, {
+          paymentDetails: transaction.asPaymentDetailsFixture(),
+          reference: transaction.reference,
+          parentTransactionExternalId: transaction.externalId,
+        })
 
         cy.task('setupStubs', [
-          getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([TRANSACTION, disputeTransaction]),
+          getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([
+            transaction.toTransactionData(),
+            disputeTransaction.toTransactionData(),
+          ]),
         ])
 
         cy.visit(TRANSACTIONS_LIST_URL)
@@ -467,19 +475,19 @@ describe('Transactions index', () => {
 
         assertTransactionRow(
           0,
-          transactionWithFees.reference,
-          TRANSACTION_URL(transactionWithFees.transaction_id),
-          transactionWithFees.email!,
-          penceToPoundsWithCurrency(transactionWithFees.amount),
+          transaction.reference,
+          TRANSACTION_URL(transaction.externalId),
+          transaction.email!,
+          penceToPoundsWithCurrency(transaction.amount),
           'Visa',
           'Success'
         )
 
         assertTransactionRow(
           1,
-          disputeTransaction.reference,
-          TRANSACTION_URL(disputeTransaction.transaction_id),
-          disputeTransaction.email!,
+          transaction.reference,
+          TRANSACTION_URL(disputeTransaction.parentTransactionExternalId!),
+          transaction.email!,
           penceToPoundsWithCurrency(disputeTransaction.amount),
           'Visa',
           'Dispute awaiting evidence',
@@ -490,16 +498,20 @@ describe('Transactions index', () => {
 
       it('should display amounts correctly for dispute lost to user', () => {
         sharedStubs('test', 'stripe')
-        const transacion = new TransactionFixture({
+        const transaction = new TransactionFixture({
           fee: 100,
           netAmount: 900,
         })
-        const lostDisputeTransaction = new TransactionFixture(DISPUTE_LOST_DATA)
+        const lostDisputeTransaction = new TransactionFixture(DISPUTE_LOST_DATA, {
+          paymentDetails: transaction.asPaymentDetailsFixture(),
+          reference: transaction.reference,
+          parentTransactionExternalId: transaction.externalId,
+        })
 
         cy.task('setupStubs', [
           getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([
             lostDisputeTransaction.toTransactionData(),
-            transacion.toTransactionData(),
+            transaction.toTransactionData(),
           ]),
         ])
 
@@ -511,7 +523,7 @@ describe('Transactions index', () => {
           0,
           lostDisputeTransaction.reference,
           TRANSACTION_URL(lostDisputeTransaction.externalId),
-          lostDisputeTransaction.email!,
+          transaction.email!,
           '£10.00',
           'Visa',
           'Dispute lost to user',
@@ -521,9 +533,9 @@ describe('Transactions index', () => {
 
         assertTransactionRow(
           1,
-          transacion.reference,
-          TRANSACTION_URL(transacion.externalId),
-          transacion.email!,
+          transaction.reference,
+          TRANSACTION_URL(transaction.externalId),
+          transaction.email!,
           '£10.00',
           'Visa',
           'Success'
@@ -532,17 +544,21 @@ describe('Transactions index', () => {
 
       it('should display amounts correctly for a dispute won in the service’s favour', () => {
         sharedStubs('test', 'stripe')
-
-        const state = new TransactionStateFixture({ status: Status.WON })
-        const paymentDetails = new PaymentDetailsFixture({ cardDetails: new CardDetailsFixture({ cardBrand: 'Visa' }) })
-        const disputeTransaction = new TransactionFixture({
-          paymentDetails,
-          transactionType: ResourceType.DISPUTE,
-          state,
-        }).toTransactionData()
+        const transaction = new TransactionFixture({
+          fee: 100,
+          netAmount: 900,
+        })
+        const disputeTransaction = new TransactionFixture(DISPUTE_WON_DATA, {
+          paymentDetails: transaction.asPaymentDetailsFixture(),
+          reference: transaction.reference,
+          parentTransactionExternalId: transaction.externalId,
+        })
 
         cy.task('setupStubs', [
-          getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([TRANSACTION, disputeTransaction]),
+          getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([
+            transaction.toTransactionData(),
+            disputeTransaction.toTransactionData(),
+          ]),
         ])
 
         cy.visit(TRANSACTIONS_LIST_URL)
@@ -551,19 +567,19 @@ describe('Transactions index', () => {
 
         assertTransactionRow(
           0,
-          TRANSACTION.reference,
-          TRANSACTION_URL(TRANSACTION.transaction_id),
-          TRANSACTION.email!,
-          penceToPoundsWithCurrency(TRANSACTION.amount),
+          transaction.reference,
+          TRANSACTION_URL(transaction.externalId),
+          transaction.email!,
+          penceToPoundsWithCurrency(transaction.amount),
           'Visa',
           'Success'
         )
 
         assertTransactionRow(
           1,
-          disputeTransaction.reference,
-          TRANSACTION_URL(disputeTransaction.transaction_id),
-          disputeTransaction.email!,
+          transaction.reference,
+          TRANSACTION_URL(disputeTransaction.parentTransactionExternalId!),
+          transaction.email!,
           penceToPoundsWithCurrency(disputeTransaction.amount),
           'Visa',
           'Dispute won in your favour',
