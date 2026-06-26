@@ -10,14 +10,15 @@ const gatewayAccountId = variables.gatewayAccountId
 const serviceExternalId = variables.serviceExternalId
 const requestToGoLiveChooseHowToProcessPaymentUrl = `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`
 
-function setupStubsForSubmittingChoice (nextGoLiveStage) {
+function setupStubsForSubmittingChoice(nextGoLiveStage) {
   cy.task('setupStubs', [
-    userStubs.getUserSuccessRespondDifferentlySecondTime(userExternalId,
+    userStubs.getUserSuccessRespondDifferentlySecondTime(
+      userExternalId,
       { gatewayAccountId, serviceExternalId, goLiveStage: 'ENTERED_ORGANISATION_ADDRESS' },
       { gatewayAccountId, serviceExternalId, goLiveStage: nextGoLiveStage }
     ),
     gatewayAccountStubs.getGatewayAccountSuccess({ gatewayAccountId }),
-    utils.patchUpdateGoLiveStageSuccessStub(nextGoLiveStage)
+    utils.patchUpdateGoLiveStageSuccessStub(nextGoLiveStage),
   ])
 }
 
@@ -36,6 +37,7 @@ describe('Request to go live: choose how to process payments', () => {
       cy.get('#request-to-go-live-choose-how-to-process-payments-form').should('exist')
       cy.get('#choose-how-to-process-payments-mode').should('exist')
       cy.get('#choose-how-to-process-payments-mode-2').should('exist')
+      cy.get('#choose-how-to-process-payments-mode-3').should('exist')
 
       // set up new stubs where the first time we get the service it returns the go_live_stage as ENTERED_ORGANISATION_ADDRESS,
       // and the second time CHOSEN_PSP_STRIPE so that the next page in the journey is loaded
@@ -43,6 +45,33 @@ describe('Request to go live: choose how to process payments', () => {
       setupStubsForSubmittingChoice('CHOSEN_PSP_STRIPE')
 
       cy.get('#choose-how-to-process-payments-mode').click()
+
+      cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').should('exist')
+      cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').should('contain', 'Continue')
+      cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
+
+      cy.location().should((location) => {
+        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/agreement`)
+      })
+    })
+  })
+
+  describe('Service has correct go live stage and user selects Adyen account', () => {
+    it('should allow user to select Stripe', () => {
+      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
+
+      cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
+
+      cy.get('#request-to-go-live-current-step').should('exist')
+      cy.get('#request-to-go-live-choose-how-to-process-payments-form').should('exist')
+      cy.get('#choose-how-to-process-payments-mode').should('exist')
+      cy.get('#choose-how-to-process-payments-mode-2').should('exist')
+      cy.get('#choose-how-to-process-payments-mode-3').should('exist')
+
+      cy.task('clearStubs')
+      setupStubsForSubmittingChoice('CHOSEN_PSP_ADYEN')
+
+      cy.get('#choose-how-to-process-payments-mode-2').click()
 
       cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').should('exist')
       cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').should('contain', 'Continue')
@@ -65,10 +94,12 @@ describe('Request to go live: choose how to process payments', () => {
       cy.task('clearStubs')
       setupStubsForSubmittingChoice('CHOSEN_PSP_GOV_BANKING_WORLDPAY')
 
-      cy.get('#choose-how-to-process-payments-mode-2').click()
+      cy.get('#choose-how-to-process-payments-mode-3').click()
       cy.get('#request-to-go-live-choose-how-to-process-payments-form > button').click()
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-takes-payments-over-phone`)
+        expect(location.pathname).to.eq(
+          `/service/${serviceExternalId}/request-to-go-live/choose-takes-payments-over-phone`
+        )
       })
     })
   })
@@ -86,14 +117,25 @@ describe('Request to go live: choose how to process payments', () => {
 
         cy.get('h2').should('contain', 'There is a problem')
         cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('contain', 'You need to select an option')
-        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should('have.attr', 'href', '#choose-how-to-process-payments-mode')
+        cy.get('ul.govuk-error-summary__list > li:nth-child(1) > a').should(
+          'have.attr',
+          'href',
+          '#choose-how-to-process-payments-mode'
+        )
 
-        cy.get('.govuk-form-group--error').should('exist').within(() => {
-          cy.get('.govuk-error-message#choose-how-to-process-payments-mode-error').should('contain', 'You need to select an option')
-        })
+        cy.get('.govuk-form-group--error')
+          .should('exist')
+          .within(() => {
+            cy.get('.govuk-error-message#choose-how-to-process-payments-mode-error').should(
+              'contain',
+              'You need to select an option'
+            )
+          })
 
         cy.location().should((location) => {
-          expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
+          expect(location.pathname).to.eq(
+            `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`
+          )
         })
       })
     })
@@ -116,7 +158,7 @@ describe('Request to go live: choose how to process payments', () => {
     it('should show an error when the user does not have enough permissions', () => {
       const serviceRole = utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS')
       serviceRole.role = {
-        permissions: []
+        permissions: [],
       }
       utils.setupGetUserAndGatewayAccountStubs(serviceRole)
 
@@ -129,8 +171,10 @@ describe('Request to go live: choose how to process payments', () => {
   describe('Adminusers returns an error', () => {
     it('should show "An error occurred: There is a problem with the payments platform"', () => {
       cy.task('setupStubs', [
-        ...utils.getUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'),
-          utils.patchUpdateGoLiveStageErrorStub('CHOSEN_PSP_STRIPE'))
+        ...utils.getUserAndGatewayAccountStubs(
+          utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'),
+          utils.patchUpdateGoLiveStageErrorStub('CHOSEN_PSP_STRIPE')
+        ),
       ])
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
@@ -141,7 +185,9 @@ describe('Request to go live: choose how to process payments', () => {
       cy.get('h1').should('contain', 'An error occurred')
       cy.get('#errorMsg').should('contain', 'There is a problem with the payments platform')
       cy.location().should((location) => {
-        expect(location.pathname).to.eq(`/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`)
+        expect(location.pathname).to.eq(
+          `/service/${serviceExternalId}/request-to-go-live/choose-how-to-process-payments`
+        )
       })
     })
   })

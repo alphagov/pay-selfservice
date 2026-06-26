@@ -14,8 +14,8 @@ module.exports = (req, res) => {
   if (chosenOptions.includes(req.service.currentGoLiveStage)) {
     let currentGoLiveStage = lodash.get(req, 'service.currentGoLiveStage', '')
     return response(req, res, 'request-to-go-live/agreement', {
-      displayGovUkPspAgreement:
-        currentGoLiveStage === goLiveStage.CHOSEN_PSP_STRIPE || currentGoLiveStage === goLiveStage.CHOSEN_PSP_ADYEN,
+      displayAdyenPspAgreement: currentGoLiveStage === goLiveStage.CHOSEN_PSP_ADYEN,
+      displayStripePspAgreement: currentGoLiveStage === goLiveStage.CHOSEN_PSP_STRIPE,
     })
   }
   return res.redirect(
