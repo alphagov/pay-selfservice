@@ -143,20 +143,15 @@ export class TransactionSearchParams {
     searchParams.reference = nonEmpty(queryParams.reference)
     searchParams.email = nonEmpty(queryParams.email)
 
-    if (queryParams.brand === undefined || queryParams.brand === '') {
-      searchParams.brand = undefined
-    } else if (Array.isArray(queryParams.brand)) {
-      searchParams.brand = queryParams.brand
-    } else {
-      searchParams.brand = queryParams.brand.split(',')
-    }
+    searchParams.brand = parseAsArray(queryParams.brand)
 
     Object.assign(searchParams, processDateAndTime(queryParams))
 
-    if (queryParams.state) {
-      const stateFilters = convertStateFilter(queryParams.state)
+    const selectedStateFilters = parseAsArray(queryParams.state)
+    if (selectedStateFilters) {
+      const stateFilters = convertStateFilter(selectedStateFilters)
 
-      searchParams.state = Array.isArray(queryParams.state) ? queryParams.state : [queryParams.state]
+      searchParams.state = selectedStateFilters
       searchParams.paymentStates = stateFilters.paymentStates
       searchParams.refundStates = stateFilters.refundStates
       searchParams.disputeStates = stateFilters.disputeStates
@@ -170,8 +165,7 @@ export class TransactionSearchParams {
   }
 }
 
-function convertStateFilter(stateFilters: string | string[]): ConnectorStates {
-  const selected = Array.isArray(stateFilters) ? stateFilters : [stateFilters]
+function convertStateFilter(selected: string[]): ConnectorStates {
   const paymentStates = selected
     .filter((filterId) => PaymentStatusFilterMapping.has(filterId))
     .flatMap((filerId) => PaymentStatusFilterMapping.get(filerId)!)
@@ -268,4 +262,14 @@ const processDateAndTime = (queryParams: TransactionSearchQuery): DateTimeSearch
 
 function isSameDate(dateString: string | undefined, date: DateTime | undefined) {
   return dateString === date?.toFormat(TRANSACTION_SEARCH_DATE_FORMAT)
+}
+
+function parseAsArray(queryParam: string[] | string | undefined): string[] | undefined {
+  if (queryParam === undefined || queryParam === '' || queryParam.length === 0) {
+    return undefined
+  } else if (Array.isArray(queryParam)) {
+    return queryParam
+  } else {
+    return queryParam.split(',')
+  }
 }
