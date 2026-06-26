@@ -18,7 +18,10 @@ import getPagination from '@utils/simplified-account/pagination'
 import { ViewMode } from '@models/view-mode/ViewMode.class'
 import { GatewayName } from '@models/gateway/gateway-name'
 import { CardType } from '@models/card-type/CardType.class'
-import { LEDGER_TRANSACTION_COUNT_LIMIT } from '@controllers/simplified-account/services/transactions/constants'
+import {
+  LEDGER_TRANSACTION_COUNT_LIMIT,
+  MAX_TRANSACTIONS_PER_PAGE,
+} from '@controllers/simplified-account/services/transactions/constants'
 
 async function get(
   req: AuthenticatedRequest & { viewMode: ViewMode },
@@ -41,12 +44,11 @@ async function get(
 
   const isStripe = req.viewMode.paymentProviders.includes(PaymentProviders.STRIPE)
 
-  const PAGE_SIZE = 20
   const transactionSearchParams = TransactionSearchParams.fromSearchQuery(
     req.viewMode.gatewayAccountIds,
     req.query,
     true,
-    PAGE_SIZE
+    MAX_TRANSACTIONS_PER_PAGE
   )
 
   let cardTypes: CardType[]
@@ -85,7 +87,7 @@ async function get(
     }
   })
 
-  const totalPages = Math.ceil(results.total / PAGE_SIZE)
+  const totalPages = Math.ceil(results.total / MAX_TRANSACTIONS_PER_PAGE)
   const currentPage = Math.min(transactionSearchParams.page!, totalPages)
   const transactionsUrl = formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, req.viewMode.modeName)
   const oppositeModeLink = formattedPathFor(
@@ -93,15 +95,14 @@ async function get(
     req.viewMode.oppositeModeName
   )
   const { path } = getUrlGenerator(req.query as Record<string, string>, transactionsUrl)
-  const pagination = getPagination(currentPage, PAGE_SIZE, results.total, path)
+  const pagination = getPagination(currentPage, MAX_TRANSACTIONS_PER_PAGE, results.total, path)
 
   const downloadUrl = formattedPathFor(paths.allServiceTransactions.simplifiedAccount.download, req.viewMode.modeName)
   const downloadQueryString = transactionSearchParams.getQueryParams().toString()
   const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
   const transactionCountWithinRange = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT
-  const hasQueryParams = transactionSearchParams.getQueryParams().toString().length
-  const showCsvDownload =
-    transactionCountWithinRange || (hasQueryParams && results.total > LEDGER_TRANSACTION_COUNT_LIMIT)
+
+  const showCsvDownload = transactionCountWithinRange || transactionSearchParams.isRefinedSearch()
 
   req.session.transactionFilters = req.url.split('?')[1] || ''
 
