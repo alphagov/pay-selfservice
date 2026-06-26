@@ -649,7 +649,6 @@ describe('controller: services/ledger', () => {
 
           const context = mockResponse.args[0][3] as { showCsvDownload: boolean }
           context.showCsvDownload.should.eql(true)
-
         })
       })
     })
