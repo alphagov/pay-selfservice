@@ -90,10 +90,23 @@ export class TransactionSearchParams {
       .sort()
   }
 
+  isRefinedSearch() {
+    // not a refined search if the only filter is an all-time date range
+    return this.hasUserSelectedFilters() && !this.isUnfilteredAllTimeSearch()
+  }
+
   hasUserSelectedFilters() {
     const filters = this.getQueryParams()
     filters.delete('page')
-    return filters.toString().length > 0
+    filters.delete('jsEnabled')
+    return filters.size > 0
+  }
+
+  isUnfilteredAllTimeSearch() {
+    const filters = this.getQueryParams()
+    filters.delete('page')
+    filters.delete('jsEnabled')
+    return filters.size === 1 && filters.get('dateFilter') === Period.ALL_TIME
   }
 
   static forAgreement(gatewayAccountId: number, agreementExternalId: string, currentPage: number, displaySize: number) {

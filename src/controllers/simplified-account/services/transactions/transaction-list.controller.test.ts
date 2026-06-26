@@ -554,5 +554,104 @@ describe('controller: services/ledger', () => {
         nextQueryParams.get('state')!.should.eql('in_progress,success,declined,timed_out')
       })
     })
+
+    describe('show csv download button', () => {
+      describe('for an unfiltered search', () => {
+        it('should show the CSV download button if the transaction count is within range', async () => {
+          mockLedgerService.searchTransactions.resolves({
+            total: 4999,
+            count: 1,
+            page: 1,
+            transactions: [transaction.toTransaction()],
+          })
+          nextRequest({
+            query: {},
+          })
+
+          await call('get')
+
+          const context = mockResponse.args[0][3] as { showCsvDownload: boolean }
+          context.showCsvDownload.should.eql(true)
+        })
+
+        it('should not show the CSV download if the transaction count is higher than the limit', async () => {
+          mockLedgerService.searchTransactions.resolves({
+            total: 5001,
+            count: 1,
+            page: 1,
+            transactions: [transaction.toTransaction()],
+          })
+          nextRequest({
+            query: {},
+          })
+
+          await call('get')
+
+          const context = mockResponse.args[0][3] as { showCsvDownload: boolean }
+          context.showCsvDownload.should.eql(false)
+        })
+      })
+
+      describe('for a filtered search', () => {
+        it('should show the CSV download button if the transaction count is higher than the range', async () => {
+          mockLedgerService.searchTransactions.resolves({
+            total: 5001,
+            count: 1,
+            page: 1,
+            transactions: [transaction.toTransaction()],
+          })
+          nextRequest({
+            query: {
+              dateFilter: 'last-12-months',
+            },
+          })
+
+          await call('get')
+
+          const context = mockResponse.args[0][3] as { showCsvDownload: boolean }
+          context.showCsvDownload.should.eql(true)
+        })
+
+        it('should not show the CSV download button if the search is only for all time', async () => {
+          mockLedgerService.searchTransactions.resolves({
+            total: 5001,
+            count: 1,
+            page: 1,
+            transactions: [transaction.toTransaction()],
+          })
+          nextRequest({
+            query: {
+              dateFilter: 'all-time',
+            },
+          })
+
+          await call('get')
+
+          const context = mockResponse.args[0][3] as { showCsvDownload: boolean }
+          context.showCsvDownload.should.eql(false)
+        })
+
+        it('should show the CSV download button if the search is for all time, with other filters', async () => {
+          mockLedgerService.searchTransactions.resolves({
+            total: 5001,
+            count: 1,
+            page: 1,
+            transactions: [transaction.toTransaction()],
+          })
+          nextRequest({
+            query: {
+              dateFilter: 'all-time',
+              state: 'in_progress,success,timed_out,refund_success',
+            },
+          })
+
+          await call('get')
+
+          const context = mockResponse.args[0][3] as { showCsvDownload: boolean }
+          context.showCsvDownload.should.eql(true)
+
+        })
+      })
+    })
   })
 })

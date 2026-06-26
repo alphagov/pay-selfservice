@@ -12,7 +12,7 @@ import {
   StripeStatusFilters,
   WorldpayStatusFilters,
 } from '@utils/simplified-account/services/transactions/status-filters'
-import { LEDGER_TRANSACTION_COUNT_LIMIT } from './constants'
+import { LEDGER_TRANSACTION_COUNT_LIMIT, MAX_TRANSACTIONS_PER_PAGE } from './constants'
 
 const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
   const getPath = (pageNumber: number) => {
@@ -27,8 +27,12 @@ const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: strin
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const isStripe = req.account.paymentProvider === 'stripe'
   const gatewayAccountId = req.account.id
-  const PAGE_SIZE = 20
-  const transactionSearchParams = TransactionSearchParams.fromSearchQuery(gatewayAccountId, req.query, true, PAGE_SIZE)
+  const transactionSearchParams = TransactionSearchParams.fromSearchQuery(
+    gatewayAccountId,
+    req.query,
+    true,
+    MAX_TRANSACTIONS_PER_PAGE
+  )
 
   const transactionsUrl = formatServiceAndAccountPathsFor(
     paths.simplifiedAccount.transactions.index,
@@ -57,11 +61,11 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     }
   })
 
-  const totalPages = Math.ceil(results.total / PAGE_SIZE)
+  const totalPages = Math.ceil(results.total / MAX_TRANSACTIONS_PER_PAGE)
   const currentPage = Math.min(transactionSearchParams.page!, totalPages)
 
   const { path } = getUrlGenerator(req.query as Record<string, string>, transactionsUrl)
-  const pagination = getPagination(currentPage, PAGE_SIZE, results.total, path)
+  const pagination = getPagination(currentPage, MAX_TRANSACTIONS_PER_PAGE, results.total, path)
 
   const downloadUrl = formatServiceAndAccountPathsFor(
     paths.simplifiedAccount.transactions.downloadCsv,
@@ -72,9 +76,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
   const transactionCountWithinRange = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT
 
-  const showCsvDownload =
-    transactionCountWithinRange ||
-    (transactionSearchParams.hasUserSelectedFilters() && results.total > LEDGER_TRANSACTION_COUNT_LIMIT)
+  const showCsvDownload = transactionCountWithinRange || transactionSearchParams.isRefinedSearch()
 
   req.session.transactionFilters = req.url.split('?')[1] || ''
 
