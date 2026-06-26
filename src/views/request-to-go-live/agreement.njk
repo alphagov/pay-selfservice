@@ -28,11 +28,12 @@
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-margin-bottom-6">
           <h1 class="govuk-fieldset__heading"> Read and accept our legal terms </h1>
         </legend>
-        {% set paymentProvider = "Adyen" if EnvironmentFeatures.isAdyenEnabledInGoLiveRequest() else "Stripe" %}
         <p class="govuk-body"
           >To use GOV.UK Pay your organisation must accept our legal terms.
-          {% if displayGovUkPspAgreement %}
-            These include the legal terms of {{ paymentProvider }}, GOV.UK Pay’s payment service provider.
+          {% if displayAdyenPspAgreement and EnvironmentFeatures.isAdyenEnabledInGoLiveRequest() %}
+            These include the legal terms of Adyen, GOV.UK Pay’s payment service provider.
+          {% elif displayStripePspAgreement %}
+            These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.
           {% endif %}</p
         >
 
@@ -46,9 +47,9 @@
           <li><a href="/policy/contract-for-non-crown-bodies" class="govuk-link">Non-Crown body contract</a></li>
         </ul>
 
-        {% if displayGovUkPspAgreement and EnvironmentFeatures.isAdyenEnabledInGoLiveRequest() %}
+        {% if displayAdyenPspAgreement and EnvironmentFeatures.isAdyenEnabledInGoLiveRequest() %}
           {% include './partials/_adyen-legal-terms.njk' %}
-        {% elif displayGovUkPspAgreement %}
+        {% elif displayStripePspAgreement %}
           {% include './partials/_stripe-legal-terms.njk' %}
         {% endif %}
         <p class="govuk-body govuk-!-margin-bottom-6"
