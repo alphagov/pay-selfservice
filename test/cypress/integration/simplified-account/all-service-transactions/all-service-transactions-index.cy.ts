@@ -2,10 +2,11 @@ import userStubs from '@test/cypress/stubs/user-stubs'
 import gatewayAccountStubs, { getCardTypesSuccess } from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { LIVE, TEST } from '@models/gateway-account/gateway-account-type'
-import { getTransactionForGatewayAccount } from '@test/cypress/stubs/simplified-account/transaction-stubs'
-import transactionStubs from '@test/cypress/stubs/transaction-stubs'
+import {
+  getTransactionForGatewayAccount,
+  getTransactionsForGatewayAccount,
+} from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { DateTime } from 'luxon'
-import { TimeConstants } from '@utils/time/time-constants'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
 const TRANSACTION = new TransactionFixture({ createdDate: TRANSACTION_CREATED_TIMESTAMP })
@@ -42,27 +43,9 @@ describe('All service transactions index', () => {
   })
 
   describe('Live page content', () => {
-    beforeEach(() => {
-      cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
-      ])
-    })
-
     it('accessibility check', () => {
       cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
+        getTransactionsForGatewayAccount(LIVE_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE],
@@ -75,13 +58,7 @@ describe('All service transactions index', () => {
 
     it('should display correct page title and heading', () => {
       cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
+        getTransactionsForGatewayAccount(LIVE_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE],
@@ -98,13 +75,7 @@ describe('All service transactions index', () => {
 
     it('should not show link to test mode if no test accounts exist', () => {
       cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
+        getTransactionsForGatewayAccount(LIVE_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE],
@@ -118,13 +89,8 @@ describe('All service transactions index', () => {
 
     it('should navigate to test transactions', () => {
       cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
+        getTransactionsForGatewayAccount(LIVE_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
+        getTransactionsForGatewayAccount(TEST_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           type: TEST,
@@ -154,13 +120,7 @@ describe('All service transactions index', () => {
           gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
           serviceName: SERVICE_NAME,
         }),
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
+        getTransactionsForGatewayAccount(TEST_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           type: TEST,
@@ -212,13 +172,7 @@ describe('All service transactions index', () => {
 
     it('should navigate to live transactions', () => {
       cy.task('setupStubs', [
-        transactionStubs.getLedgerTransactionsSuccess({
-          gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
-          transactions: [TRANSACTION],
-          filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
-          displaySize: 20,
-          transactionLength: 1,
-        }),
+        getTransactionsForGatewayAccount(LIVE_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
           types: [LIVE, TEST],
