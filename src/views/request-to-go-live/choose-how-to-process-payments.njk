@@ -25,26 +25,16 @@
     >
       <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
       {%
-        set govUkPayProviderItem = {
+        set govUkPayProviderAdyen = {
           value: "adyen",
-          text: 'GOV.UK Pay’s provider',
+          text: 'GOV.UK Pay’s provider Adyen',
           label: {
             classes: "govuk-label--s"
           },
           hint: {
             text: 'For local authorities, police and government-owned charitable groups. GOV.UK Pay has a contract with Adyen to process payments. Using Adyen means that you do not need your own contract with a payment service provider.'
           }
-        } if EnvironmentFeatures.isAdyenEnabledInGoLiveRequest() else
-          {
-              value: 'stripe',
-              text: 'GOV.UK Pay’s provider',
-              label: {
-                classes: "govuk-label--s"
-              },
-              hint: {
-                text: 'For local authorities, police and government-owned charitable groups. GOV.UK Pay has a contract with Stripe to process payments. Using Stripe means that you do not need your own contract with a payment service provider.'
-           }
-        }
+        } if EnvironmentFeatures.isAdyenEnabledInGoLiveRequest()
       %}
       {{
         govukRadios({
@@ -59,7 +49,17 @@
         },
         errorMessage: { text: errors['choose-how-to-process-payments-mode'] } if errors['choose-how-to-process-payments-mode'] else false,
         items: [
-          govUkPayProviderItem,
+         {
+            value: 'stripe',
+            text: 'GOV.UK Pay’s provider',
+            label: {
+              classes: "govuk-label--s"
+              },
+            hint: {
+               text: 'For local authorities, police and government-owned charitable groups. GOV.UK Pay has a contract with Stripe to process payments. Using Stripe means that you do not need your own contract with a payment service provider.'
+               }
+          },
+          govUkPayProviderAdyen,
           {
             value: 'gov_banking',
             text: "Government Banking’s provider",
