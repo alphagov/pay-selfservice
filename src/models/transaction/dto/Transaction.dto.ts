@@ -8,7 +8,7 @@ import { PaymentDetailsData } from '@models/transaction/dto/PaymentDetails.dto'
 
 export interface TransactionData {
   gateway_account_id: string
-  service_id: string
+  service_id?: string
   credential_external_id: string
   amount: number
   net_amount?: number
