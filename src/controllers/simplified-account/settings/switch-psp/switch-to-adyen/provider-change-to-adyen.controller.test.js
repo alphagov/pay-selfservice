@@ -2,7 +2,7 @@ const sinon = require('sinon')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const paths = require('@root/paths')
 const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
-const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
+const { GatewayAccountType } = require('@models/gateway-account/gateway-account-type')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 
 const mockResponse = sinon.stub()

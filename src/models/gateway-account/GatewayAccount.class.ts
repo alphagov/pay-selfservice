@@ -2,9 +2,9 @@ import Worldpay3dsFlexCredential from '@models/gateway-account-credential/Worldp
 import { InvalidConfigurationError, NotFoundError } from '@root/errors'
 import CredentialState from '@models/constants/credential-state'
 import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
-import { EmailNotificationsData } from '@models/gateway-account/dto/EmailNotifications.dto'
 import GatewayAccountCredential from '@models/gateway-account-credential/GatewayAccountCredential.class'
 import PaymentProvider from '@models/constants/payment-providers'
+import { EmailNotifications } from '@models/gateway-account/EmailNotifications.class'
 
 const pendingCredentialStates = [CredentialState.CREATED, CredentialState.ENTERED, CredentialState.VERIFIED]
 
@@ -35,6 +35,7 @@ class GatewayAccount {
   readonly sendPayerEmailToGateway: boolean
   readonly sendPayerIPAddressToGateway: boolean
   readonly serviceId?: string
+  readonly serviceName: string
 
   constructor(gatewayAccountData: GatewayAccountData) {
     this.id = gatewayAccountData.gateway_account_id
@@ -69,6 +70,7 @@ class GatewayAccount {
     /** @deprecated you should add any rawResponse data as part of the constructor */
     this.rawResponse = gatewayAccountData
     this.serviceId = gatewayAccountData.service_id
+    this.serviceName = gatewayAccountData.service_name
   }
 
   getCurrentCredential() {
@@ -119,28 +121,6 @@ class GatewayAccount {
     } catch {
       return false
     }
-  }
-}
-
-class EmailNotificationSetting {
-  readonly enabled: boolean
-  readonly templateBody: string
-  readonly version: number
-
-  constructor(data: EmailNotificationsData) {
-    this.enabled = data?.enabled
-    this.templateBody = data?.template_body
-    this.version = data?.version
-  }
-}
-
-class EmailNotifications {
-  readonly paymentConfirmed: EmailNotificationSetting
-  readonly refundIssued: EmailNotificationSetting
-
-  constructor(data: { PAYMENT_CONFIRMED: EmailNotificationsData; REFUND_ISSUED: EmailNotificationsData }) {
-    this.paymentConfirmed = new EmailNotificationSetting(data?.PAYMENT_CONFIRMED)
-    this.refundIssued = new EmailNotificationSetting(data?.REFUND_ISSUED)
   }
 }
 

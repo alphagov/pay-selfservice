@@ -5,7 +5,7 @@ const gatewayAccountStubs = require('../../stubs/gateway-account-stubs')
 const transactionsSummaryStubs = require('../../stubs/transaction-summary-stubs')
 const GoLiveStage = require('@models/constants/go-live-stage')
 const PaymentProviders = require('@models/constants/payment-providers')
-const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
+const { GatewayAccountType } = require('@models/gateway-account/gateway-account-type')
 
 const userExternalId = 'cd0fa54cf3b7408a80ae2f1b93e7c16e'
 const gatewayAccountId = '42'

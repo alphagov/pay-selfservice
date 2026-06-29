@@ -1,6 +1,6 @@
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { response } from '@utils/response'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { NotFoundError } from '@root/errors'

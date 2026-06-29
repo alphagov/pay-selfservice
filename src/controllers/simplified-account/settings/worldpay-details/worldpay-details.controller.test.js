@@ -8,7 +8,7 @@ const PaymentProviders = require('@models/constants/payment-providers')
 const CredentialState = require('@models/constants/credential-state')
 const WorldpayTaskIdentifiers = require('@models/task-workflows/task-identifiers/worldpay-task-identifiers')
 const TaskStatus = require('@models/constants/task-status')
-const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
+const { GatewayAccountType } = require('@models/gateway-account/gateway-account-type')
 
 const mockResponse = sinon.stub()
 
@@ -16,28 +16,33 @@ const ACCOUNT_TYPE = GatewayAccountType.LIVE
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const CREDENTIAL_EXTERNAL_ID = 'credential456def'
 
-const { req, res, call, nextRequest } = new ControllerTestBuilder('@controllers/simplified-account/settings/worldpay-details/worldpay-details.controller')
+const { req, res, call, nextRequest } = new ControllerTestBuilder(
+  '@controllers/simplified-account/settings/worldpay-details/worldpay-details.controller'
+)
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
-  .withAccount(new GatewayAccount({
-    type: ACCOUNT_TYPE,
-    allow_moto: false,
-    gateway_account_id: 1,
-    gateway_account_credentials: [{
-      external_id: CREDENTIAL_EXTERNAL_ID,
-      payment_provider: PaymentProviders.WORLDPAY,
-      state: CredentialState.CREATED,
-      created_date: '2024-11-29T11:58:36.214Z',
+  .withAccount(
+    new GatewayAccount({
+      type: ACCOUNT_TYPE,
+      allow_moto: false,
       gateway_account_id: 1,
-      credentials: {}
-    }]
-  }))
+      gateway_account_credentials: [
+        {
+          external_id: CREDENTIAL_EXTERNAL_ID,
+          payment_provider: PaymentProviders.WORLDPAY,
+          state: CredentialState.CREATED,
+          created_date: '2024-11-29T11:58:36.214Z',
+          gateway_account_id: 1,
+          credentials: {},
+        },
+      ],
+    })
+  )
   .withStubs({
-    '@utils/response': { response: mockResponse }
+    '@utils/response': { response: mockResponse },
   })
   .build()
 
 describe('Controller: settings/worldpay-details', () => {
-
   describe('get', () => {
     describe('for one-off card payments gateway account', () => {
       it('should call the response method', async () => {
@@ -54,19 +59,29 @@ describe('Controller: settings/worldpay-details', () => {
 
       it('should pass context data to the response method', async () => {
         await call('get')
-        const tasks = [{
-          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
-            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, CREDENTIAL_EXTERNAL_ID),
-          id: WorldpayTaskIdentifiers.CRED,
-          linkText: 'Link your Worldpay account with GOV.UK Pay',
-          status: TaskStatus.NOT_STARTED
-        }, {
-          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
-            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
-          id: WorldpayTaskIdentifiers.FLEX,
-          linkText: 'Configure 3DS',
-          status: TaskStatus.NOT_STARTED
-        }]
+        const tasks = [
+          {
+            href: formatSimplifiedAccountPathsFor(
+              paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
+              SERVICE_EXTERNAL_ID,
+              ACCOUNT_TYPE,
+              CREDENTIAL_EXTERNAL_ID
+            ),
+            id: WorldpayTaskIdentifiers.CRED,
+            linkText: 'Link your Worldpay account with GOV.UK Pay',
+            status: TaskStatus.NOT_STARTED,
+          },
+          {
+            href: formatSimplifiedAccountPathsFor(
+              paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
+              SERVICE_EXTERNAL_ID,
+              ACCOUNT_TYPE
+            ),
+            id: WorldpayTaskIdentifiers.FLEX,
+            linkText: 'Configure 3DS',
+            status: TaskStatus.NOT_STARTED,
+          },
+        ]
         expect(mockResponse.args[0][3]).to.have.property('tasks').to.deep.equal(tasks)
         expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(true)
       })
@@ -76,8 +91,8 @@ describe('Controller: settings/worldpay-details', () => {
       beforeEach(async () => {
         nextRequest({
           account: {
-            allowMoto: true
-          }
+            allowMoto: true,
+          },
         })
       })
       it('should call the response method', async () => {
@@ -94,13 +109,19 @@ describe('Controller: settings/worldpay-details', () => {
 
       it('should pass context data to the response method', async () => {
         await call('get')
-        const tasks = [{
-          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
-            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, CREDENTIAL_EXTERNAL_ID),
-          id: WorldpayTaskIdentifiers.CRED,
-          linkText: 'Link your Worldpay account with GOV.UK Pay',
-          status: TaskStatus.NOT_STARTED
-        }]
+        const tasks = [
+          {
+            href: formatSimplifiedAccountPathsFor(
+              paths.simplifiedAccount.settings.worldpayDetails.oneOffCustomerInitiated,
+              SERVICE_EXTERNAL_ID,
+              ACCOUNT_TYPE,
+              CREDENTIAL_EXTERNAL_ID
+            ),
+            id: WorldpayTaskIdentifiers.CRED,
+            linkText: 'Link your Worldpay account with GOV.UK Pay',
+            status: TaskStatus.NOT_STARTED,
+          },
+        ]
         expect(mockResponse.args[0][3]).to.have.property('tasks').to.deep.equal(tasks)
         expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(true)
       })
@@ -111,8 +132,8 @@ describe('Controller: settings/worldpay-details', () => {
         nextRequest({
           account: {
             recurringEnabled: true,
-            allowMoto: false
-          }
+            allowMoto: false,
+          },
         })
       })
       it('should call the response method', async () => {
@@ -129,25 +150,40 @@ describe('Controller: settings/worldpay-details', () => {
 
       it('should pass context data to the response method', async () => {
         await call('get')
-        const tasks = [{
-          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
-            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, CREDENTIAL_EXTERNAL_ID),
-          id: WorldpayTaskIdentifiers.CIT,
-          linkText: 'Recurring customer initiated transaction (CIT) credentials',
-          status: TaskStatus.NOT_STARTED
-        }, {
-          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated,
-            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, CREDENTIAL_EXTERNAL_ID),
-          id: WorldpayTaskIdentifiers.MIT,
-          linkText: 'Recurring merchant initiated transaction (MIT) credentials',
-          status: TaskStatus.NOT_STARTED
-        }, {
-          href: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
-            SERVICE_EXTERNAL_ID, ACCOUNT_TYPE),
-          id: WorldpayTaskIdentifiers.FLEX,
-          linkText: 'Configure 3DS',
-          status: TaskStatus.NOT_STARTED
-        }]
+        const tasks = [
+          {
+            href: formatSimplifiedAccountPathsFor(
+              paths.simplifiedAccount.settings.worldpayDetails.recurringCustomerInitiated,
+              SERVICE_EXTERNAL_ID,
+              ACCOUNT_TYPE,
+              CREDENTIAL_EXTERNAL_ID
+            ),
+            id: WorldpayTaskIdentifiers.CIT,
+            linkText: 'Recurring customer initiated transaction (CIT) credentials',
+            status: TaskStatus.NOT_STARTED,
+          },
+          {
+            href: formatSimplifiedAccountPathsFor(
+              paths.simplifiedAccount.settings.worldpayDetails.recurringMerchantInitiated,
+              SERVICE_EXTERNAL_ID,
+              ACCOUNT_TYPE,
+              CREDENTIAL_EXTERNAL_ID
+            ),
+            id: WorldpayTaskIdentifiers.MIT,
+            linkText: 'Recurring merchant initiated transaction (MIT) credentials',
+            status: TaskStatus.NOT_STARTED,
+          },
+          {
+            href: formatSimplifiedAccountPathsFor(
+              paths.simplifiedAccount.settings.worldpayDetails.flexCredentials,
+              SERVICE_EXTERNAL_ID,
+              ACCOUNT_TYPE
+            ),
+            id: WorldpayTaskIdentifiers.FLEX,
+            linkText: 'Configure 3DS',
+            status: TaskStatus.NOT_STARTED,
+          },
+        ]
         expect(mockResponse.args[0][3]).to.have.property('tasks').to.deep.equal(tasks)
         expect(mockResponse.args[0][3]).to.have.property('incompleteTasks').to.equal(true)
       })

@@ -1,7 +1,7 @@
 import sinon from 'sinon'
 
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 

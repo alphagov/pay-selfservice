@@ -1,17 +1,13 @@
 import { beforeEach } from 'mocha'
-import {
-  checkServiceNavigation,
-} from '@test/cypress/integration/simplified-account/common/assertions'
-import {
-  buildPaymentLinkOptions
-} from '@test/cypress/integration/simplified-account/payment-links/helpers/product-builder'
+import { checkServiceNavigation } from '@test/cypress/integration/simplified-account/common/assertions'
+import { buildPaymentLinkOptions } from '@test/cypress/integration/simplified-account/payment-links/helpers/product-builder'
 import userStubs from '@test/cypress/stubs/user-stubs'
 import ROLES from '@test/fixtures/roles.fixtures'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import productStubs from '@test/cypress/stubs/products-stubs'
 import { SANDBOX } from '@models/constants/payment-providers'
 import { ProductData } from '@models/products/dto/Product.dto'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -24,14 +20,14 @@ const SERVICE_NAME = {
 const ENGLISH_PAYMENT_LINK = buildPaymentLinkOptions({
   name: 'Gold coin polishing',
   href: 'pay.me/product/gold-coin-polishing',
-  description: 'blah'
+  description: 'blah',
 })
 
 const WELSH_PAYMENT_LINK = buildPaymentLinkOptions({
   name: 'Gloywi darn arian aur',
   href: 'pay.me/cynnyrch/gloywi-darn-arian-aur',
   description: 'blah',
-  language: 'cy'
+  language: 'cy',
 })
 
 const PAYMENT_LINKS_URL = (serviceMode = 'test') =>
@@ -40,7 +36,7 @@ const PAYMENT_LINKS_URL = (serviceMode = 'test') =>
 const EDIT_PAYMENT_LINK_INFO_URL = (serviceMode = 'test', paymentLink: Partial<ProductData>) =>
   `/service/${SERVICE_EXTERNAL_ID}/account/${serviceMode}/payment-links/${paymentLink.external_id}/edit/information`
 
-const setupStubs = (role = 'admin', gatewayAccountType = 'test', product = {} ) => {
+const setupStubs = (role = 'admin', gatewayAccountType = 'test', product = {}) => {
   cy.task('setupStubs', [
     userStubs.getUserSuccess({
       userExternalId: USER_EXTERNAL_ID,
@@ -58,8 +54,8 @@ const setupStubs = (role = 'admin', gatewayAccountType = 'test', product = {} ) 
     productStubs.patchUpdateProductSuccess({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       productExternalId: 'product123abc',
-      name: 'new payment link name'
-    })
+      name: 'new payment link name',
+    }),
   ])
 }
 
@@ -103,11 +99,12 @@ describe('Edit payment link information', () => {
         cy.get('.govuk-hint').should('contain.text', 'Good: Pay for your registration')
         cy.get('.govuk-hint').should('contain.text', 'Give your users more information.')
         cy.get('#service-content').find('.govuk-heading-s').should('contain.text', 'Example of what users will see')
-        cy.get('#service-content').find('img')
-          .should('have.attr', 'src')
-          .should('include','start-page.svg')
+        cy.get('#service-content').find('img').should('have.attr', 'src').should('include', 'start-page.svg')
         cy.get('#service-content').find('form').get('#name').should('have.value', ENGLISH_PAYMENT_LINK.name)
-        cy.get('#service-content').find('form').get('#description').should('have.value', ENGLISH_PAYMENT_LINK.description)
+        cy.get('#service-content')
+          .find('form')
+          .get('#description')
+          .should('have.value', ENGLISH_PAYMENT_LINK.description)
       })
     })
 
@@ -148,10 +145,8 @@ describe('Edit payment link information', () => {
       })
 
       it('should validate form inputs', () => {
-        cy.get('#service-content').find('form').find('#name')
-          .click().focused().clear()
-        cy.get('#service-content').find('form').find('#description')
-          .click().focused().clear()
+        cy.get('#service-content').find('form').find('#name').click().focused().clear()
+        cy.get('#service-content').find('form').find('#description').click().focused().clear()
 
         cy.get('#service-content').find('form').find('button').click()
         cy.get('.govuk-error-summary').should('exist').should('contain.text', 'Enter a title')
@@ -163,11 +158,13 @@ describe('Edit payment link information', () => {
           .find('#name-hint')
           .find('.govuk-inset-text')
           .should('contain.text', 'Editing the payment link title does not change the web address.')
-        cy.get('#service-content').find('form').find('#name')
-          .click().focused().clear()
-          .type('new payment link name')
-        cy.get('#service-content').find('form').find('#description')
-          .click().focused().clear()
+        cy.get('#service-content').find('form').find('#name').click().focused().clear().type('new payment link name')
+        cy.get('#service-content')
+          .find('form')
+          .find('#description')
+          .click()
+          .focused()
+          .clear()
           .type('new payment link details')
         cy.get('#service-content').find('form').find('button').click()
         cy.get('#service-content').find('h1').should('contain.text', 'Payment link details')

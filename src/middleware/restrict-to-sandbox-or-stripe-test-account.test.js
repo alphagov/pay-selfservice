@@ -5,17 +5,17 @@ const { NotFoundError } = require('../errors')
 
 const restrictToSandboxOrStripeTestAccount = require('./restrict-to-sandbox-or-stripe-test-account')
 const PaymentProviders = require('@models/constants/payment-providers')
-const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
+const { GatewayAccountType } = require('@models/gateway-account/gateway-account-type')
 
 describe('restrict-to-sandbox middleware', () => {
   describe('when a user is using a sandbox account', () => {
     let req, res, next
-    beforeEach(done => {
+    beforeEach((done) => {
       req = {
         account: {
           paymentProvider: PaymentProviders.SANDBOX,
-          type: GatewayAccountType.TEST
-        }
+          type: GatewayAccountType.TEST,
+        },
       }
       res = {}
       next = sinon.spy(done)
@@ -31,12 +31,12 @@ describe('restrict-to-sandbox middleware', () => {
 
   describe('when a user is using a Stripe test account', () => {
     let req, res, next
-    beforeEach(done => {
+    beforeEach((done) => {
       req = {
         account: {
           paymentProvider: PaymentProviders.STRIPE,
-          type: GatewayAccountType.TEST
-        }
+          type: GatewayAccountType.TEST,
+        },
       }
       res = {}
       next = sinon.spy(done)
@@ -55,8 +55,8 @@ describe('restrict-to-sandbox middleware', () => {
       req = {
         account: {
           paymentProvider: PaymentProviders.WORLDPAY,
-          type: GatewayAccountType.LIVE
-        }
+          type: GatewayAccountType.LIVE,
+        },
       }
       res = {}
       next = sinon.spy()
@@ -64,7 +64,8 @@ describe('restrict-to-sandbox middleware', () => {
 
     it('should throw error with correct message', () => {
       restrictToSandboxOrStripeTestAccount(req, res, next)
-      const expectedError = sinon.match.instanceOf(NotFoundError)
+      const expectedError = sinon.match
+        .instanceOf(NotFoundError)
         .and(sinon.match.has('message', 'This page is only available for Sandbox or Stripe test accounts'))
       sinon.assert.calledWith(next, expectedError)
     })
@@ -76,8 +77,8 @@ describe('restrict-to-sandbox middleware', () => {
       req = {
         account: {
           paymentProvider: PaymentProviders.WORLDPAY,
-          type: GatewayAccountType.LIVE
-        }
+          type: GatewayAccountType.LIVE,
+        },
       }
       res = {}
       next = sinon.spy()
@@ -85,7 +86,8 @@ describe('restrict-to-sandbox middleware', () => {
 
     it('should throw error with correct message', () => {
       restrictToSandboxOrStripeTestAccount(req, res, next)
-      const expectedError = sinon.match.instanceOf(NotFoundError)
+      const expectedError = sinon.match
+        .instanceOf(NotFoundError)
         .and(sinon.match.has('message', 'This page is only available for Sandbox or Stripe test accounts'))
       sinon.assert.calledWith(next, expectedError)
     })

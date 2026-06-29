@@ -2,7 +2,7 @@ import userStubs from '@test/cypress/stubs/user-stubs'
 import ROLES from '@test/fixtures/roles.fixtures'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import { SANDBOX, WORLDPAY } from '@models/constants/payment-providers'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'

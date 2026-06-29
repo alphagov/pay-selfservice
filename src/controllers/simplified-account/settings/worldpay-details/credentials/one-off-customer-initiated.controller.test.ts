@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 
 const CREDENTIAL_EXTERNAL_ID = 'credential123'
 const ACCOUNT_TYPE = GatewayAccountType.LIVE
@@ -126,21 +126,15 @@ describe('Controller: settings/worldpay-details/credentials/one-off-customer-ini
             })
             await call('post')
 
-            sinon.assert.calledWith(
-              mockResponse,
-              sinon.match.any,
-              sinon.match.any,
-              sinon.match.any,
-              {
-                errors: sinon.match.any,
-                credentials: sinon.match.any,
-                backLink: formatServiceAndAccountPathsFor(
-                  paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
-                  SERVICE_EXTERNAL_ID,
-                  ACCOUNT_TYPE
-                ),
-              }
-            )
+            sinon.assert.calledWith(mockResponse, sinon.match.any, sinon.match.any, sinon.match.any, {
+              errors: sinon.match.any,
+              credentials: sinon.match.any,
+              backLink: formatServiceAndAccountPathsFor(
+                paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
+                SERVICE_EXTERNAL_ID,
+                ACCOUNT_TYPE
+              ),
+            })
           })
         })
 

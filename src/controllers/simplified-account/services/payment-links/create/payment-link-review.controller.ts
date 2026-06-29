@@ -1,7 +1,7 @@
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { response } from '@utils/response'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import paths from '@root/paths'
 import { FROM_REVIEW_QUERY_PARAM, PaymentLinkCreationSession } from './constants'
 import { createProduct } from '@services/products.service'

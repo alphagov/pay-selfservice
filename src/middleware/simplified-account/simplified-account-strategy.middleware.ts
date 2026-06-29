@@ -10,7 +10,7 @@ import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import Service from '@models/service/Service.class'
 import { getGatewayAccountByServiceExternalIdAndType } from '@services/gateway-accounts.service'
 import { ServiceView } from '@models/service-view/ServiceView.class'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, GATEWAY_ACCOUNT_EXTERNAL_ID } = keys
 
 const logger = createLogger(__filename)
@@ -123,7 +123,11 @@ async function getSimplifiedAccount(req: Request, _: Response, next: NextFunctio
   }
 
   function invalidParams(serviceExternalId: string, accountType: string) {
-    return !serviceExternalId || !accountType || !Object.values(GatewayAccountType).includes(accountType.toLowerCase())
+    return (
+      !serviceExternalId ||
+      !accountType ||
+      !(Object.values(GatewayAccountType) as string[]).includes(accountType.toLowerCase())
+    )
   }
 }
 

@@ -1,6 +1,6 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import { ProductUpdateRequestBuilder } from '@models/products/ProductUpdateRequest.class'
 import Product from '@models/products/Product.class'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
@@ -83,12 +83,15 @@ describe('controller: services/payment-links/edit/info/edit-link-info', () => {
 
       it('should set back link in context', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.backLink, formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.paymentLinks.edit.index,
-          SERVICE_EXTERNAL_ID,
-          GatewayAccountType.TEST,
-          PRODUCT_EXTERNAL_ID
-        ))
+        sinon.assert.match(
+          context.backLink,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.edit.index,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST,
+            PRODUCT_EXTERNAL_ID
+          )
+        )
       })
 
       it('should set service mode in context', () => {

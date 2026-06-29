@@ -1,6 +1,6 @@
 import sinon from 'sinon'
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import { beforeEach } from 'mocha'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'

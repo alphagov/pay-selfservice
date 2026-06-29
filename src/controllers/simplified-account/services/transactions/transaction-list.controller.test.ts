@@ -1,6 +1,6 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import { DateTime } from 'luxon'
 import { expect } from 'chai'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'

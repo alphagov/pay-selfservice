@@ -1,6 +1,6 @@
 import GoLiveStage from '@models/constants/go-live-stage'
 import PaymentProviders from '@models/constants/payment-providers'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import ServiceRole from '@models/service/ServiceRole.class'
 import paths from '@root/paths'

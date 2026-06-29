@@ -1,6 +1,6 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import { PaymentLinkCreationSession, FROM_REVIEW_QUERY_PARAM } from './constants'
 import { validGatewayAccount } from '@test/fixtures/gateway-account.fixtures'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'

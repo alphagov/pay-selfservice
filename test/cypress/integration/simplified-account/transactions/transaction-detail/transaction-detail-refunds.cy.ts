@@ -6,7 +6,7 @@ import {
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { RefundSummaryStatus } from '@models/common/refund-summary/RefundSummaryStatus'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
-import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import userStubs from '@test/cypress/stubs/user-stubs'
 import ROLES from '@test/fixtures/roles.fixtures'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
@@ -37,7 +37,7 @@ const SERVICE_NAME = {
   cy: 'Mentrau McDuck',
 }
 
-const TRANSACTION_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}`
+const TRANSACTION_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION.externalId}`
 
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({
@@ -136,7 +136,7 @@ describe('Transaction details page', () => {
       cy.visit(TRANSACTION_URL)
       cy.contains('a.govuk-button', 'Refund payment').should('be.visible').click()
 
-      const refundUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}/refund`
+      const refundUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION.externalId}/refund`
 
       cy.url().should('include', refundUrl)
     })

@@ -7,7 +7,7 @@ import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import productStubs from '@test/cypress/stubs/products-stubs'
 import { SANDBOX } from '@models/constants/payment-providers'
 import { ProductData } from '@models/products/dto/Product.dto'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -56,7 +56,7 @@ const setupStubs = (role = 'admin', gatewayAccountType = 'test', product = {}) =
       productExternalId: 'product123abc',
       name: 'Gold coin polishing',
       reference_enabled: true,
-      reference_label: 'enter your reference'
+      reference_label: 'enter your reference',
     }),
   ])
 }
@@ -70,7 +70,9 @@ describe('Edit payment link reference', () => {
     const USER_ROLE = 'view-only'
     beforeEach(() => {
       setupStubs(USER_ROLE)
-      cy.visit(EDIT_PAYMENT_LINK_REFERENCE_URL(GatewayAccountType.TEST, ENGLISH_PAYMENT_LINK), { failOnStatusCode: false })
+      cy.visit(EDIT_PAYMENT_LINK_REFERENCE_URL(GatewayAccountType.TEST, ENGLISH_PAYMENT_LINK), {
+        failOnStatusCode: false,
+      })
     })
 
     it('should show admin only error', () => {
@@ -94,7 +96,7 @@ describe('Edit payment link reference', () => {
 
       it('accessibility check', () => {
         cy.a11yCheck({
-          exclude: ['.govuk-skip-link', '.govuk-radios__input'] // https://accessibility.blog.gov.uk/2021/09/21/an-update-on-the-accessibility-of-conditionally-revealed-questions/
+          exclude: ['.govuk-skip-link', '.govuk-radios__input'], // https://accessibility.blog.gov.uk/2021/09/21/an-update-on-the-accessibility-of-conditionally-revealed-questions/
         })
       })
 
@@ -102,19 +104,21 @@ describe('Edit payment link reference', () => {
         cy.get('.govuk-caption-l').should('contain.text', 'Edit live payment link')
         cy.get('#reference-type-custom').click()
         cy.get('#reference-label-hint').should('contain.text', 'For example, “invoice number”')
-        cy.get('#reference-hint-hint').should('contain.text', 'Tell users what the payment reference looks like and where they can find it')
+        cy.get('#reference-hint-hint').should(
+          'contain.text',
+          'Tell users what the payment reference looks like and where they can find it'
+        )
         cy.get('#service-content').find('.govuk-heading-s').should('contain.text', 'Example of what users will see')
-        cy.get('#service-content')
-          .find('img')
-          .should('have.attr', 'src')
-          .should('include', 'reference-page.svg')
+        cy.get('#service-content').find('img').should('have.attr', 'src').should('include', 'reference-page.svg')
       })
     })
 
     describe('Welsh payment link', () => {
       beforeEach(() => {
         setupStubs(USER_ROLE, GatewayAccountType.LIVE, WELSH_PAYMENT_LINK)
-        cy.visit(EDIT_PAYMENT_LINK_REFERENCE_URL(GatewayAccountType.LIVE, WELSH_PAYMENT_LINK), { failOnStatusCode: false })
+        cy.visit(EDIT_PAYMENT_LINK_REFERENCE_URL(GatewayAccountType.LIVE, WELSH_PAYMENT_LINK), {
+          failOnStatusCode: false,
+        })
       })
 
       it('should show the payment links navigation item in the side bar in an active state', () => {
@@ -123,7 +127,7 @@ describe('Edit payment link reference', () => {
 
       it('accessibility check', () => {
         cy.a11yCheck({
-          exclude: ['.govuk-skip-link', '.govuk-radios__input'] // https://accessibility.blog.gov.uk/2021/09/21/an-update-on-the-accessibility-of-conditionally-revealed-questions/
+          exclude: ['.govuk-skip-link', '.govuk-radios__input'], // https://accessibility.blog.gov.uk/2021/09/21/an-update-on-the-accessibility-of-conditionally-revealed-questions/
         })
       })
 
@@ -160,7 +164,13 @@ describe('Edit payment link reference', () => {
 
       it('should update payment link information', () => {
         cy.get('#reference-type-custom').click()
-        cy.get('#service-content').find('form').find('#reference-label').click().focused().clear().type('enter your reference')
+        cy.get('#service-content')
+          .find('form')
+          .find('#reference-label')
+          .click()
+          .focused()
+          .clear()
+          .type('enter your reference')
         cy.get('#service-content').find('form').find('button').click()
         cy.get('#service-content').find('h1').should('contain.text', 'Payment link details')
       })

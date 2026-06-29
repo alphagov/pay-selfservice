@@ -22,7 +22,7 @@ import {
 import createLogger from '@utils/logger'
 import type { DateTime } from 'luxon'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 
 const logger = createLogger(__filename)
 

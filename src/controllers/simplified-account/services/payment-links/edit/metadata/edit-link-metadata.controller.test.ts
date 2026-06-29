@@ -1,6 +1,6 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
-import GatewayAccountType from '@models/gateway-account/gateway-account-type'
+import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import Product from '@models/products/Product.class'
@@ -60,18 +60,14 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
         nextRequest({
           params: {
             productExternalId: PRODUCT_EXTERNAL_ID,
-            metadataKey: METADATA_KEY
+            metadataKey: METADATA_KEY,
           },
         })
         await call('get')
       })
 
       it('should call getProductByGatewayAccountIdAndExternalId with correct parameters', () => {
-        sinon.assert.calledWith(
-          mockGetProductByGatewayAccountIdAndExternalId,
-          GATEWAY_ACCOUNT_ID,
-          PRODUCT_EXTERNAL_ID
-        )
+        sinon.assert.calledWith(mockGetProductByGatewayAccountIdAndExternalId, GATEWAY_ACCOUNT_ID, PRODUCT_EXTERNAL_ID)
       })
 
       it('should call the response method', () => {
@@ -96,12 +92,15 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
 
       it('should set back link in context', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(context.backLink, formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.paymentLinks.edit.index,
-          SERVICE_EXTERNAL_ID,
-          GatewayAccountType.TEST,
-          PRODUCT_EXTERNAL_ID
-        ))
+        sinon.assert.match(
+          context.backLink,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.edit.index,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST,
+            PRODUCT_EXTERNAL_ID
+          )
+        )
       })
 
       it('should set service mode in context', () => {
@@ -123,7 +122,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
         nextRequest({
           params: {
             productExternalId: PRODUCT_EXTERNAL_ID,
-            metadataKey: 'non_existent_key'
+            metadataKey: 'non_existent_key',
           },
         })
         await call('get')
@@ -147,7 +146,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
         nextRequest({
           params: {
             productExternalId: PRODUCT_EXTERNAL_ID,
-            metadataKey: METADATA_KEY
+            metadataKey: METADATA_KEY,
           },
         })
         await call('get')
@@ -171,7 +170,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
         nextRequest({
           params: {
             productExternalId: PRODUCT_EXTERNAL_ID,
-            metadataKey: METADATA_KEY
+            metadataKey: METADATA_KEY,
           },
           body: {
             action: 'edit',
@@ -188,7 +187,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
         const expectedProductUpdateRequest = ProductUpdateRequestBuilder.fromProduct(mockProduct)
           .setMetadata({
             updated_column: 'updated_value',
-            another_column: 'another_value'
+            another_column: 'another_value',
           })
           .build()
 
@@ -214,12 +213,15 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
 
       it('should redirect to edit overview page', () => {
         sinon.assert.calledOnce(res.redirect)
-        sinon.assert.calledWith(res.redirect, formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.paymentLinks.edit.index,
-          SERVICE_EXTERNAL_ID,
-          GatewayAccountType.TEST,
-          PRODUCT_EXTERNAL_ID
-        ))
+        sinon.assert.calledWith(
+          res.redirect,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.paymentLinks.edit.index,
+            SERVICE_EXTERNAL_ID,
+            GatewayAccountType.TEST,
+            PRODUCT_EXTERNAL_ID
+          )
+        )
       })
     })
 
@@ -233,7 +235,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
         nextRequest({
           params: {
             productExternalId: PRODUCT_EXTERNAL_ID,
-            metadataKey: METADATA_KEY
+            metadataKey: METADATA_KEY,
           },
           body: {
             action: 'delete',
@@ -249,7 +251,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
       it('should call updateProduct with metadata key removed', () => {
         const expectedProductUpdateRequest = ProductUpdateRequestBuilder.fromProduct(mockProduct)
           .setMetadata({
-            another_column: 'another_value'
+            another_column: 'another_value',
           })
           .build()
 
@@ -289,7 +291,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
         nextRequest({
           params: {
             productExternalId: PRODUCT_EXTERNAL_ID,
-            metadataKey: 'non_existent_key'
+            metadataKey: 'non_existent_key',
           },
           body: {
             action: 'edit',
@@ -315,7 +317,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
         nextRequest({
           params: {
             productExternalId: PRODUCT_EXTERNAL_ID,
-            metadataKey: METADATA_KEY
+            metadataKey: METADATA_KEY,
           },
           body: {
             action: 'edit',
@@ -363,7 +365,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
         nextRequest({
           params: {
             productExternalId: PRODUCT_EXTERNAL_ID,
-            metadataKey: METADATA_KEY
+            metadataKey: METADATA_KEY,
           },
           body: {
             action: 'edit',
@@ -400,7 +402,7 @@ describe('controller: services/payment-links/edit/metadata/edit-link-metadata', 
         nextRequest({
           params: {
             productExternalId: PRODUCT_EXTERNAL_ID,
-            metadataKey: METADATA_KEY
+            metadataKey: METADATA_KEY,
           },
           body: {
             action: 'edit',
