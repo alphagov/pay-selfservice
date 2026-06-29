@@ -13,7 +13,6 @@ import {
   WorldpayStatusFilters,
 } from '@utils/simplified-account/services/transactions/status-filters'
 import { LEDGER_TRANSACTION_COUNT_LIMIT, MAX_TRANSACTIONS_PER_PAGE } from './constants'
-import UserPermissions from '@models/user/permissions'
 
 const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
   const getPath = (pageNumber: number) => {
