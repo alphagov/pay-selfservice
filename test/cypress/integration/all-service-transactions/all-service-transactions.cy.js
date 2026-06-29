@@ -150,7 +150,7 @@ describe('All service transactions', () => {
       })
     })
 
-    it.only('should redirect to the new details page', () => {
+    it('should redirect to the new details page', () => {
       cy.task('setupStubs', [
         userStub,
         gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccount3]),
