@@ -23,6 +23,10 @@ const permission = require('./middleware/permission')
 const inviteCookieIsPresent = require('./middleware/invite-cookie-is-present')
 const validateStatusFilter = require('@middleware/validate-status-filter')
 const { validateModeFilter, viewModeStrategy } = require('@middleware/view-mode-strategy.middleware')
+const {
+  transactionRedirect,
+  allServiceTransactionRedirect,
+} = require('@middleware/simplified-account/transaction-redirect.middleware')
 
 // Controllers
 const staticController = require('./controllers/static.controller')
@@ -65,6 +69,7 @@ const formatServiceAndAccountPathsFor = require('@utils/simplified-account/forma
 import { serviceViewShim, setServiceView } from '@middleware/simplified-account/service-view-shim.middleware'
 import { Features } from '@root/config/features'
 import { ServiceView } from '@models/service-view/ServiceView.class'
+import { allServiceTransactionDetailRedirect } from '@middleware/simplified-account/transaction-redirect.middleware'
 
 // Assignments
 const {
@@ -171,27 +176,45 @@ module.exports.bind = function (app) {
   app.get(services.create.selectOrgType, userIsAuthorised, selectOrgTypeController.get)
 
   // All service transactions
-  app.get(allServiceTransactions.index, userIsAuthorised, allTransactionsController.getController)
+  app.get(
+    allServiceTransactions.index,
+    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.index),
+    userIsAuthorised,
+    allTransactionsController.getController
+  )
   app.get(
     allServiceTransactions.indexStatusFilter,
     validateStatusFilter,
+    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.index),
     userIsAuthorised,
     allTransactionsController.getController
   )
   app.get(
     allServiceTransactions.indexStatusFilterWithoutSearch,
     validateStatusFilter,
+    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.nosearch),
     userIsAuthorised,
     allTransactionsController.noAutosearchTransactions
   )
-  app.get(allServiceTransactions.download, userIsAuthorised, allTransactionsController.downloadTransactions)
   app.get(
-    allServiceTransactions.downloadStatusFilter,
-    validateStatusFilter,
+    allServiceTransactions.download,
+    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.download),
     userIsAuthorised,
     allTransactionsController.downloadTransactions
   )
-  app.get(allServiceTransactions.redirectDetail, userIsAuthorised, transactionDetailRedirectController)
+  app.get(
+    allServiceTransactions.downloadStatusFilter,
+    validateStatusFilter,
+    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.download),
+    userIsAuthorised,
+    allTransactionsController.downloadTransactions
+  )
+  app.get(
+    allServiceTransactions.redirectDetail,
+    userIsAuthorised,
+    allServiceTransactionDetailRedirect(paths.simplifiedAccount.allServiceTransactions.detail),
+    transactionDetailRedirectController
+  )
 
   // all service transactions - simplified account
   app.get(
@@ -331,15 +354,33 @@ module.exports.bind = function (app) {
   })
 
   // Transactions
-  account.get(transactions.index, permission('transactions:read'), serviceViewShim, transactionsListController)
-  account.get(transactions.download, permission('transactions-download:read'), transactionsDownloadController)
+  account.get(
+    transactions.index,
+    permission('transactions:read'),
+    transactionRedirect(paths.simplifiedAccount.transactions.index),
+    serviceViewShim,
+    transactionsListController
+  )
+  account.get(
+    transactions.download,
+    permission('transactions-download:read'),
+    transactionRedirect(paths.simplifiedAccount.transactions.downloadCsv),
+    transactionsDownloadController
+  )
   account.get(
     transactions.detail,
     permission('transactions-details:read'),
+    transactionRedirect(paths.simplifiedAccount.transactions.detail),
     serviceViewShim,
     transactionDetailController
   )
-  account.post(transactions.refund, permission('refunds:create'), serviceViewShim, transactionRefundController)
+  account.post(
+    transactions.refund,
+    permission('refunds:create'),
+    transactionRedirect(paths.simplifiedAccount.transactions.index),
+    serviceViewShim,
+    transactionRefundController
+  )
 
   // Settings
   app.use(paths.simplifiedAccount.root, simplifiedAccountRoutes)
