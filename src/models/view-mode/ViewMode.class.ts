@@ -2,6 +2,7 @@ import PaymentProviders from '@models/constants/payment-providers'
 import User from '@models/user/User.class'
 import { findGatewayAccountsByService } from '@services/gateway-accounts.service'
 import { ViewModeLinksGenerator } from '@models/view-mode/ViewModeLinksGenerator.class'
+import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 
 export type ViewModeName = 'test' | 'live'
 
@@ -15,6 +16,7 @@ export class ViewMode {
   readonly oppositeModeName: ViewModeName
   readonly hasServicesInOppositeMode: boolean
   readonly gatewayAccountIds: number[]
+  readonly gatewayAccounts: Map<string, GatewayAccount>
   readonly paymentProviders: string[]
   readonly permission?: string
 
@@ -28,6 +30,7 @@ export class ViewMode {
     oppositeModeName: ViewModeName,
     hasServicesInOppositeMode: boolean,
     gatewayAccountIds: number[],
+    gatewayAccounts: Map<string, GatewayAccount>,
     paymentProviders: string[],
     permission?: string
   ) {
@@ -37,6 +40,7 @@ export class ViewMode {
     this.hasServicesInOppositeMode = hasServicesInOppositeMode
 
     this.gatewayAccountIds = gatewayAccountIds
+    this.gatewayAccounts = gatewayAccounts
     this.paymentProviders = paymentProviders
     this.permission = permission
 
@@ -56,12 +60,14 @@ export class ViewMode {
       .map((serviceRole) => serviceRole.service)
       .map((service) => service.externalId)
     if (!userServiceExternalIds.length) {
-      return new ViewMode(modeFilter, false, oppositeModeNames[modeFilter], false, [], [], permission)
+      return new ViewMode(modeFilter, false, oppositeModeNames[modeFilter], false, [], new Map(), [], permission)
     }
 
     const allGatewayAccounts = await findGatewayAccountsByService(userServiceExternalIds)
     const gatewayAccountsForMode = allGatewayAccounts.filter((gatewayAccount) => gatewayAccount.type === modeFilter)
     const gatewayAccountIdsForMode = gatewayAccountsForMode.map((gatewayAccountData) => gatewayAccountData.id)
+
+    const gatewayAccounts = new Map(allGatewayAccounts.map((account) => [`${account.id}`, account]))
 
     const hasServicesInMode = gatewayAccountIdsForMode.length !== 0
     const hasServicesInOppositeMode = allGatewayAccounts.length > gatewayAccountsForMode.length
@@ -76,6 +82,7 @@ export class ViewMode {
       oppositeModeNames[modeFilter],
       hasServicesInOppositeMode,
       gatewayAccountIdsForMode,
+      gatewayAccounts,
       paymentProviders,
       permission
     )

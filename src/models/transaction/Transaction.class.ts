@@ -22,7 +22,7 @@ import { PaymentDetails } from '@models/transaction/PaymentDetails.class'
 class Transaction {
   // INFO: this is not a complete class yet, see TransactionData interface
   readonly gatewayAccountId: string
-  readonly serviceExternalId: string
+  readonly serviceExternalId?: string
   readonly externalId: string
   readonly gatewayTransactionId: string
   readonly reference: string

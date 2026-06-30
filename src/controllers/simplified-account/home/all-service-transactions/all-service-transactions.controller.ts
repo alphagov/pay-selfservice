@@ -66,7 +66,10 @@ async function get(
   }
 
   results.transactions.forEach((transaction) => {
-    transaction._locals.links.bind(transaction.serviceExternalId, req.viewMode.modeName)
+    transaction._locals.links.bind(
+      transaction.serviceExternalId ?? serviceIdPolyfill(transaction.gatewayAccountId, req.viewMode),
+      req.viewMode.modeName
+    )
     transaction._locals.links.bindToAllServices()
   })
 
@@ -124,6 +127,17 @@ async function get(
     transactionCountWithinRange,
     maxTransactions: LEDGER_TRANSACTION_COUNT_LIMIT,
   })
+}
+
+// some old transactions have no `service_id` field - this attempts to polyfill it from the gateway account
+function serviceIdPolyfill(accountId: string, viewMode: ViewMode): string {
+  const gatewayAccount = viewMode.gatewayAccounts.get(`${accountId}`)
+  if (!gatewayAccount) {
+    throw new Error(
+      `Unable to determine service external ID from gateway account [${accountId}]. Gateway account is not attached to request.`
+    )
+  }
+  return gatewayAccount.serviceId!
 }
 
 const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
