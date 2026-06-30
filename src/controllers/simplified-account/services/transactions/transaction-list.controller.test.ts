@@ -7,6 +7,9 @@ import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixtu
 import { TransactionStateFixture } from '@test/fixtures/transaction/transaction-state.fixture'
 import { CardDetailsFixture } from '@test/fixtures/card-details/card-details.fixture'
 import { PaginationResult } from '@utils/simplified-account/pagination'
+import { UserFixture } from '@test/fixtures/user/user.fixture'
+import { ServiceRoleFixture } from '@test/fixtures/user/service-role.fixture'
+import { ServiceFixture } from '@test/fixtures/service/service.fixture'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const TRANSACTION_EXTERNAL_ID = 'transaction123abc'
@@ -18,6 +21,14 @@ const METADATA_VALUE = 'order-5678'
 const CARD_BRAND = 'visa'
 const REFERENCE = 'REF 123'
 const NOW_DATE_TIME = '2025-11-02T11:47:32.980Z'
+
+const user = new UserFixture({
+  serviceRoles: [
+    new ServiceRoleFixture({
+      service: new ServiceFixture({ externalId: SERVICE_EXTERNAL_ID }),
+    }),
+  ],
+}).toUser()
 
 const transaction = new TransactionFixture({
   gatewayAccountId: GATEWAY_ACCOUNT_ID,
@@ -64,6 +75,7 @@ const { nextRequest, call } = new ControllerTestBuilder(
     '@services/transactions.service': mockLedgerService,
     '@services/card-types.service': mockCardTypesService,
   })
+  .withUser(user)
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount({
     id: GATEWAY_ACCOUNT_ID,

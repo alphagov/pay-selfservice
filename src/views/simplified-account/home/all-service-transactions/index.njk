@@ -83,24 +83,8 @@
           </div>
         </details>
       {% endif %}
+      {% include "simplified-account/transactions/list.njk" %}
     </div>
-
-    {% if (hasResults) %}
-      {% if (showCsvDownload) %}
-        <p id="csv-download" class="govuk-body">
-          <a
-            href="{{ downloadTransactionLink }}"
-            id="download-transactions-link"
-            class="govuk-link govuk-link--no-visited-state govuk-!-font-size-16"
-          >
-            Download all transaction details as a CSV file
-          </a>
-        </p>
-      {% else %}
-        <p id="csv-download" class="govuk-body">Filter results to download a CSV of transactions</p>
-      {% endif %}
-    {% endif %}
-    {% include "simplified-account/transactions/list.njk" %}
   </div>
 {% endblock %}
 

@@ -76,7 +76,9 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
   const transactionCountWithinRange = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT
 
-  const showCsvDownload = transactionCountWithinRange || transactionSearchParams.isRefinedSearch()
+  const showCsvDownload =
+    req.user.hasPermission(req.service.externalId, 'transactions-download:read') &&
+    (transactionCountWithinRange || transactionSearchParams.isRefinedSearch())
 
   req.session.transactionFilters = req.url.split('?')[1] || ''
 
