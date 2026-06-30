@@ -12,29 +12,29 @@ const gatewayAccountStripe = {
   gatewayAccountExternalId: 'a-valid-external-id-1',
   type: 'live',
   paymentProvider: 'stripe',
-  recurringEnabled: true
+  recurringEnabled: true,
 }
 const gatewayAccount2 = {
   gatewayAccountId: 43,
   gatewayAccountExternalId: 'a-valid-external-id-2',
   type: 'live',
-  recurringEnabled: true
+  recurringEnabled: true,
 }
 const gatewayAccount3 = {
   gatewayAccountId: 44,
   gatewayAccountExternalId: 'a-valid-external-id-3',
   type: 'test',
-  recurringEnabled: true
+  recurringEnabled: true,
 }
 const userStub = userStubs.getUserSuccessWithMultipleServices(userExternalId, [
   {
     gatewayAccountId: gatewayAccountStripe.gatewayAccountId,
-    serviceName: 'Service 1'
+    serviceName: 'Service 1',
   },
   {
     gatewayAccountIds: [gatewayAccount2.gatewayAccountId, gatewayAccount3.gatewayAccountId],
-    serviceName: 'Service 2'
-  }
+    serviceName: 'Service 2',
+  },
 ])
 
 const testTransactions = [
@@ -47,56 +47,112 @@ const testTransactions = [
     state: { finished: true, status: 'success' },
     refund_summary_status: 'available',
     refund_summary_available: 5000,
-    refund_summary_submitted: 0
+    refund_summary_submitted: 0,
   },
   {
     gateway_account_id: String(gatewayAccount3.gatewayAccountId),
     reference: 'ref4',
     transaction_id: 'transaction-id-4',
-    live: false
-  }
+    live: false,
+  },
 ]
 
 describe('All service transactions without automatic search', () => {
-  beforeEach(() => {
-    cy.setEncryptedCookies(userExternalId)
+  describe('redirect', () => {
+    it('should redirect to the new pages for /test', () => {
+      cy.task('setupStubs', [
+        userStub,
+        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([
+          gatewayAccountStripe,
+          gatewayAccount2,
+          gatewayAccount3,
+        ]),
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountIds: [gatewayAccount3.gatewayAccountId],
+          transactions: testTransactions,
+        }),
+        gatewayAccountStubs.getCardTypesSuccess(),
+      ])
+
+      cy.request({
+        url: '/all-service-transactions/nosearch/test',
+        followRedirect: false,
+      }).then((response) => {
+        expect(response.status).to.eq(302)
+        expect(response.headers.location).to.eq('/transactions/test/nosearch')
+      })
+    })
+
+    it('should redirect to the new pages for /live', () => {
+      cy.task('setupStubs', [
+        userStub,
+        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([
+          gatewayAccountStripe,
+          gatewayAccount2,
+          gatewayAccount3,
+        ]),
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountIds: [gatewayAccount3.gatewayAccountId],
+          transactions: testTransactions,
+        }),
+        gatewayAccountStubs.getCardTypesSuccess(),
+      ])
+
+      cy.request({
+        url: '/all-service-transactions/nosearch/live',
+        followRedirect: false,
+      }).then((response) => {
+        expect(response.status).to.eq(302)
+        expect(response.headers.location).to.eq('/transactions/live/nosearch')
+      })
+    })
   })
 
-  it('should display All Service Transactions list page with no live transactions and ability to view test transactions', () => {
-    cy.task('setupStubs', [
-      userStub,
-      gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([gatewayAccountStripe, gatewayAccount2, gatewayAccount3]),
-      transactionStubs.getLedgerTransactionsSuccess({
-        gatewayAccountIds: [gatewayAccount3.gatewayAccountId],
-        transactions: testTransactions
-      }),
-      gatewayAccountStubs.getCardTypesSuccess()
-    ])
-
-    cy.visit(liveTransactionsUrl)
-    cy.title().should('eq', 'Transactions for all services')
-
-    cy.get('.govuk-breadcrumbs').within(() => {
-      cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Live')
+  describe.skip('skipping old tests', () => {
+    beforeEach(() => {
+      cy.setEncryptedCookies(userExternalId)
     })
 
-    cy.get('.transactions-list--row').should('have.length', 0)
-    cy.get('#update-filters-after-timeout').should('have.text', 'Update the filters and select the Filter button.')
+    it('should display All Service Transactions list page with no live transactions and ability to view test transactions', () => {
+      cy.task('setupStubs', [
+        userStub,
+        gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([
+          gatewayAccountStripe,
+          gatewayAccount2,
+          gatewayAccount3,
+        ]),
+        transactionStubs.getLedgerTransactionsSuccess({
+          gatewayAccountIds: [gatewayAccount3.gatewayAccountId],
+          transactions: testTransactions,
+        }),
+        gatewayAccountStubs.getCardTypesSuccess(),
+      ])
 
-    cy.visit(liveTransactionsUrl)
-    cy.log('Switch to view test transactions')
-    cy.get('a').contains('Switch to test accounts').click()
+      cy.visit(liveTransactionsUrl)
+      cy.title().should('eq', 'Transactions for all services')
 
-    cy.get('.govuk-breadcrumbs').within(() => {
-      cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
-      cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Test')
+      cy.get('.govuk-breadcrumbs').within(() => {
+        cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
+        cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
+        cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Live')
+      })
+
+      cy.get('.transactions-list--row').should('have.length', 0)
+      cy.get('#update-filters-after-timeout').should('have.text', 'Update the filters and select the Filter button.')
+
+      cy.visit(liveTransactionsUrl)
+      cy.log('Switch to view test transactions')
+      cy.get('a').contains('Switch to test accounts').click()
+
+      cy.get('.govuk-breadcrumbs').within(() => {
+        cy.get('.govuk-breadcrumbs__list-item').should('have.length', 2)
+        cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Transactions for all services')
+        cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Test')
+      })
+
+      cy.get('.transactions-list--row').should('have.length', 2)
+      cy.get('#charge-id-transaction-id-3').should('exist')
+      cy.get('#charge-id-transaction-id-4').should('exist')
     })
-
-    cy.get('.transactions-list--row').should('have.length', 2)
-    cy.get('#charge-id-transaction-id-3').should('exist')
-    cy.get('#charge-id-transaction-id-4').should('exist')
   })
 })
