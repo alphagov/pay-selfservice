@@ -137,7 +137,7 @@ function serviceIdPolyfill(accountId: string, viewMode: ViewMode): string {
       `Unable to determine service external ID from gateway account [${accountId}]. Gateway account is not attached to request.`
     )
   }
-  return gatewayAccount.serviceId!
+  return gatewayAccount.serviceId
 }
 
 const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
