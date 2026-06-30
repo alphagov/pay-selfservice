@@ -9,6 +9,7 @@ import { RoleFixture } from '@test/fixtures/service/role.fixture'
 import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { searchByServiceExternalIds } from '@test/cypress/stubs/simplified-account/gateway-account-stubs'
+import PaymentProviders from '@models/constants/payment-providers'
 
 const USER_EXTERNAL_ID = 'user123abc'
 const USER_EMAIL = 's.mcduck@example.com'
@@ -52,16 +53,19 @@ const STRIPE_TRANSACTION = new TransactionFixture({
   fee: 100,
   netAmount: 900,
   reference: 'Stripe transaction',
+  paymentProvider: PaymentProviders.STRIPE,
 })
 const SANDBOX_TRANSACTION = new TransactionFixture({
   gatewayAccountId: `${TEST_SANDBOX_ACCOUNT.id}`,
   amount: 1000,
   reference: 'Sandbox transaction',
+  paymentProvider: PaymentProviders.SANDBOX,
 })
 const WORLDPAY_TRANSACTION = new TransactionFixture({
   gatewayAccountId: `${TEST_WORLDPAY_ACCOUNT.id}`,
   amount: 1000,
   reference: 'Worldpay transaction',
+  paymentProvider: PaymentProviders.WORLDPAY,
 })
 
 describe('All Service Transactions list', () => {
