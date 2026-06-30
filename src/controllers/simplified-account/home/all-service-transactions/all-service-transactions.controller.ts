@@ -42,8 +42,6 @@ async function get(
     )
   }
 
-  console.log(req.viewMode)
-
   const isStripe = req.viewMode.paymentProviders.includes(PaymentProviders.STRIPE)
 
   const transactionSearchParams = TransactionSearchParams.fromSearchQuery(

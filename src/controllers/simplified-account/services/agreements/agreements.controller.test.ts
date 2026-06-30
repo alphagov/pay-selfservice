@@ -2,7 +2,7 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import AgreementStatus from '@models/agreements/agreement-status'
 import { DateTime } from 'luxon'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const AGREEMENT_EXTERNAL_ID = 'agreement123abc'
@@ -13,18 +13,16 @@ const mockAgreementsService = {
     total: 1,
     count: 1,
     page: 1,
-    agreements: [
-      {
-        externalId: AGREEMENT_EXTERNAL_ID,
-        reference: 'blah',
-        status: AgreementStatus.ACTIVE,
-        paymentInstrument: {
-          cardBrand: 'visa',
-          lastDigitsCardNumber: '4242',
-          expiryDate: DateTime.now(),
-        },
-      },
-    ],
+    agreements: [{
+      externalId: AGREEMENT_EXTERNAL_ID,
+      reference: 'blah',
+      status: AgreementStatus.ACTIVE,
+      paymentInstrument: {
+        cardBrand: 'visa',
+        lastDigitsCardNumber: '4242',
+        expiryDate: DateTime.now(),
+      }
+    }],
   }),
 }
 
@@ -38,12 +36,11 @@ const { nextRequest, call } = new ControllerTestBuilder(
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount({
     id: GATEWAY_ACCOUNT_ID,
-    type: GatewayAccountType.TEST,
+    type: GatewayAccountType.TEST
   })
-  .withUrl(
-    `https://wwww.compuglobalhypermeganet.example.com/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/agreements`
-  )
+  .withUrl(`https://wwww.compuglobalhypermeganet.example.com/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/agreements`)
   .build()
+
 
 describe('controller: services/agreements', () => {
   describe('get', () => {
@@ -94,7 +91,7 @@ describe('controller: services/agreements', () => {
     describe('with valid status filter', () => {
       it('should pass status filter to searchAgreements service', async () => {
         nextRequest({
-          query: { status: AgreementStatus.ACTIVE },
+          query: { status: AgreementStatus.ACTIVE }
         })
 
         await call('get')
@@ -111,7 +108,7 @@ describe('controller: services/agreements', () => {
 
       it('should include filters in context', async () => {
         nextRequest({
-          query: { status: AgreementStatus.CANCELLED },
+          query: { status: AgreementStatus.CANCELLED }
         })
 
         await call('get')
@@ -124,7 +121,7 @@ describe('controller: services/agreements', () => {
     describe('with invalid status filter', () => {
       it('should ignore invalid status and not pass filter', async () => {
         nextRequest({
-          query: { status: 'INVALID_STATUS' },
+          query: { status: 'INVALID_STATUS' }
         })
 
         await call('get')
@@ -143,7 +140,7 @@ describe('controller: services/agreements', () => {
     describe('with valid reference filter', () => {
       it('should pass reference filter to searchAgreements service', async () => {
         nextRequest({
-          query: { reference: 'REF-123' },
+          query: { reference: 'REF-123' }
         })
 
         await call('get')
@@ -160,7 +157,7 @@ describe('controller: services/agreements', () => {
 
       it('should trim whitespace from reference', async () => {
         nextRequest({
-          query: { reference: '  REF-123  ' },
+          query: { reference: '  REF-123  ' }
         })
 
         await call('get')
@@ -177,7 +174,7 @@ describe('controller: services/agreements', () => {
 
       it('should accept alphanumeric characters with spaces, hyphens, and underscores', async () => {
         nextRequest({
-          query: { reference: 'ABC 123-test_ref' },
+          query: { reference: 'ABC 123-test_ref' }
         })
 
         await call('get')
@@ -196,7 +193,7 @@ describe('controller: services/agreements', () => {
     describe('with invalid reference filter', () => {
       it('should return validation errors for invalid characters', async () => {
         nextRequest({
-          query: { reference: 'REF@123!' },
+          query: { reference: 'REF@123!' }
         })
 
         await call('get')
@@ -213,8 +210,8 @@ describe('controller: services/agreements', () => {
         nextRequest({
           query: {
             status: AgreementStatus.ACTIVE,
-            reference: 'REF-123',
-          },
+            reference: 'REF-123'
+          }
         })
 
         await call('get')
@@ -227,7 +224,7 @@ describe('controller: services/agreements', () => {
           1,
           {
             status: AgreementStatus.ACTIVE,
-            reference: 'REF-123',
+            reference: 'REF-123'
           }
         )
       })
@@ -236,8 +233,8 @@ describe('controller: services/agreements', () => {
         nextRequest({
           query: {
             status: AgreementStatus.INACTIVE,
-            reference: 'TEST-456',
-          },
+            reference: 'TEST-456'
+          }
         })
 
         await call('get')
@@ -245,7 +242,7 @@ describe('controller: services/agreements', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
         sinon.assert.match(context.filters, {
           status: AgreementStatus.INACTIVE,
-          reference: 'TEST-456',
+          reference: 'TEST-456'
         })
       })
     })
@@ -253,7 +250,7 @@ describe('controller: services/agreements', () => {
     describe('with page parameter', () => {
       it('should pass valid page number to searchAgreements service', async () => {
         nextRequest({
-          query: { page: '2' },
+          query: { page: '2' }
         })
 
         await call('get')
@@ -270,7 +267,7 @@ describe('controller: services/agreements', () => {
 
       it('should default to page 1 for invalid page parameter', async () => {
         nextRequest({
-          query: { page: 'invalid' },
+          query: { page: 'invalid' }
         })
 
         await call('get')
@@ -287,7 +284,7 @@ describe('controller: services/agreements', () => {
 
       it('should default to page 1 for negative page number', async () => {
         nextRequest({
-          query: { page: '-1' },
+          query: { page: '-1' }
         })
 
         await call('get')
@@ -306,7 +303,7 @@ describe('controller: services/agreements', () => {
     describe('with empty reference filter', () => {
       it('should not include empty reference in filters', async () => {
         nextRequest({
-          query: { reference: '' },
+          query: { reference: '' }
         })
 
         await call('get')
@@ -323,7 +320,7 @@ describe('controller: services/agreements', () => {
 
       it('should not include whitespace-only reference in filters', async () => {
         nextRequest({
-          query: { reference: '   ' },
+          query: { reference: '   ' }
         })
 
         await call('get')
@@ -345,18 +342,16 @@ describe('controller: services/agreements', () => {
           total: 50,
           count: 20,
           page: 1,
-          agreements: Array(20)
-            .fill(null)
-            .map((_, i) => ({
-              externalId: `agreement${i}`,
-              reference: `ref${i}`,
-              status: AgreementStatus.ACTIVE,
-              paymentInstrument: {
-                cardBrand: 'visa',
-                lastDigitsCardNumber: '4242',
-                expiryDate: DateTime.now(),
-              },
-            })),
+          agreements: Array(20).fill(null).map((_, i) => ({
+            externalId: `agreement${i}`,
+            reference: `ref${i}`,
+            status: AgreementStatus.ACTIVE,
+            paymentInstrument: {
+              cardBrand: 'visa',
+              lastDigitsCardNumber: '4242',
+              expiryDate: DateTime.now(),
+            }
+          }))
         })
       })
 
@@ -365,18 +360,16 @@ describe('controller: services/agreements', () => {
           total: 1,
           count: 1,
           page: 1,
-          agreements: [
-            {
-              externalId: AGREEMENT_EXTERNAL_ID,
-              reference: 'blah',
-              status: AgreementStatus.ACTIVE,
-              paymentInstrument: {
-                cardBrand: 'visa',
-                lastDigitsCardNumber: '4242',
-                expiryDate: DateTime.now(),
-              },
-            },
-          ],
+          agreements: [{
+            externalId: AGREEMENT_EXTERNAL_ID,
+            reference: 'blah',
+            status: AgreementStatus.ACTIVE,
+            paymentInstrument: {
+              cardBrand: 'visa',
+              lastDigitsCardNumber: '4242',
+              expiryDate: DateTime.now(),
+            }
+          }],
         })
       })
 
@@ -384,8 +377,8 @@ describe('controller: services/agreements', () => {
         nextRequest({
           query: {
             status: AgreementStatus.ACTIVE,
-            reference: 'REF-123',
-          },
+            reference: 'REF-123'
+          }
         })
 
         await call('get')
@@ -403,3 +396,4 @@ describe('controller: services/agreements', () => {
     })
   })
 })
+

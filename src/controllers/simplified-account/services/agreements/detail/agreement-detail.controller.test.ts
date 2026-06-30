@@ -2,7 +2,7 @@ import ControllerTestBuilder from '@test/test-helpers/simplified-account/control
 import sinon from 'sinon'
 import AgreementStatus from '@models/agreements/agreement-status'
 import { DateTime } from 'luxon'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const AGREEMENT_EXTERNAL_ID = 'agreement123abc'

@@ -3,13 +3,12 @@ import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import { GatewayAccountCredentialFixture } from '@test/fixtures/gateway-account/gateway-account-credential.fixture'
 import { Worldpay3dsFlexCredentialFixture } from '@test/fixtures/gateway-account/worldpay-3ds-flex-credential.fixture'
 import { EmailNotificationFixture } from '@test/fixtures/gateway-account/email-notification.fixture'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import PaymentProviders from '@models/constants/payment-providers'
 
 export class GatewayAccountFixture {
   readonly id: number
   readonly externalId: string
-  readonly type: GatewayAccountType
+  readonly type: string
   readonly disabled: boolean
   readonly allowApplePay: boolean
   readonly allowGooglePay: boolean

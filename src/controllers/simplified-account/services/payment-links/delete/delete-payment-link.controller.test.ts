@@ -1,6 +1,6 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import Product from '@models/products/Product.class'
 import { validProductResponse } from '@test/fixtures/product.fixtures'
 import { ProductData } from '@models/products/dto/Product.dto'

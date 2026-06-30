@@ -1,6 +1,6 @@
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import sinon from 'sinon'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import Product from '@models/products/Product.class'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
@@ -61,7 +61,11 @@ describe('controller: services/payment-links/edit/reference/edit-link-reference'
       })
 
       it('should call getProductByGatewayAccountIdAndExternalId with correct parameters', () => {
-        sinon.assert.calledWith(mockGetProductByGatewayAccountIdAndExternalId, GATEWAY_ACCOUNT_ID, PRODUCT_EXTERNAL_ID)
+        sinon.assert.calledWith(
+          mockGetProductByGatewayAccountIdAndExternalId,
+          GATEWAY_ACCOUNT_ID,
+          PRODUCT_EXTERNAL_ID
+        )
       })
 
       it('should call the response method', () => {
@@ -87,15 +91,12 @@ describe('controller: services/payment-links/edit/reference/edit-link-reference'
 
       it('should set back link in context', () => {
         const context = mockResponse.args[0][3] as Record<string, unknown>
-        sinon.assert.match(
-          context.backLink,
-          formatServiceAndAccountPathsFor(
-            paths.simplifiedAccount.paymentLinks.edit.index,
-            SERVICE_EXTERNAL_ID,
-            GatewayAccountType.TEST,
-            PRODUCT_EXTERNAL_ID
-          )
-        )
+        sinon.assert.match(context.backLink, formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.paymentLinks.edit.index,
+          SERVICE_EXTERNAL_ID,
+          GatewayAccountType.TEST,
+          PRODUCT_EXTERNAL_ID
+        ))
       })
 
       it('should set service mode in context', () => {
@@ -193,15 +194,12 @@ describe('controller: services/payment-links/edit/reference/edit-link-reference'
 
       it('should redirect to edit overview page', () => {
         sinon.assert.calledOnce(res.redirect)
-        sinon.assert.calledWith(
-          res.redirect,
-          formatServiceAndAccountPathsFor(
-            paths.simplifiedAccount.paymentLinks.edit.index,
-            SERVICE_EXTERNAL_ID,
-            GatewayAccountType.TEST,
-            PRODUCT_EXTERNAL_ID
-          )
-        )
+        sinon.assert.calledWith(res.redirect, formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.paymentLinks.edit.index,
+          SERVICE_EXTERNAL_ID,
+          GatewayAccountType.TEST,
+          PRODUCT_EXTERNAL_ID
+        ))
       })
     })
 
@@ -242,15 +240,12 @@ describe('controller: services/payment-links/edit/reference/edit-link-reference'
 
       it('should redirect to edit overview page', () => {
         sinon.assert.calledOnce(res.redirect)
-        sinon.assert.calledWith(
-          res.redirect,
-          formatServiceAndAccountPathsFor(
-            paths.simplifiedAccount.paymentLinks.edit.index,
-            SERVICE_EXTERNAL_ID,
-            GatewayAccountType.TEST,
-            PRODUCT_EXTERNAL_ID
-          )
-        )
+        sinon.assert.calledWith(res.redirect, formatServiceAndAccountPathsFor(
+          paths.simplifiedAccount.paymentLinks.edit.index,
+          SERVICE_EXTERNAL_ID,
+          GatewayAccountType.TEST,
+          PRODUCT_EXTERNAL_ID
+        ))
       })
     })
 

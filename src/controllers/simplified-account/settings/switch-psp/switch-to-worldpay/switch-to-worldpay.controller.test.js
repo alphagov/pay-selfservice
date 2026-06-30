@@ -14,12 +14,12 @@ const WorldpayCredential = require('@models/gateway-account-credential/WorldpayC
 const WorldpayTaskIdentifiers = require('@models/task-workflows/task-identifiers/worldpay-task-identifiers')
 const GenericTaskIdentifiers = require('@models/task-workflows/task-identifiers/generic-task-identifiers')
 const TaskStatus = require('@models/constants/task-status')
-const { GatewayAccountType } = require('@models/gateway-account/gateway-account-type')
+const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 
 const mockResponse = sinon.stub()
 
 const mockGatewayAccountsService = {
-  completePaymentServiceProviderSwitch: sinon.stub().resolves(),
+  completePaymentServiceProviderSwitch: sinon.stub().resolves()
 }
 
 const ACCOUNT_TYPE = GatewayAccountType.LIVE
@@ -29,9 +29,14 @@ const SWITCHING_CREDENTIAL_EXTERNAL_ID = 'credential789ghi'
 const SWITCHING_CREDENTIAL_PAYMENT_PROVIDER = WORLDPAY
 const SERVICE_EXTERNAL_ID = 'service123abc'
 
-const { req, res, next, nextRequest, nextResponse, call } = new ControllerTestBuilder(
-  '@controllers/simplified-account/settings/switch-psp/switch-to-worldpay/switch-to-worldpay.controller'
-)
+const {
+  req,
+  res,
+  next,
+  nextRequest,
+  nextResponse,
+  call
+} = new ControllerTestBuilder('@controllers/simplified-account/settings/switch-psp/switch-to-worldpay/switch-to-worldpay.controller')
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount({
     externalId: ACCOUNT_EXTERNAL_ID,
@@ -47,14 +52,14 @@ const { req, res, next, nextRequest, nextResponse, call } = new ControllerTestBu
     },
     isSwitchingToProvider: () => {
       return false
-    },
+    }
   })
   .withUser({
-    externalId: USER_EXTERNAL_ID,
+    externalId: USER_EXTERNAL_ID
   })
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/gateway-accounts.service': mockGatewayAccountsService,
+    '@services/gateway-accounts.service': mockGatewayAccountsService
   })
   .build()
 
@@ -67,7 +72,11 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
 
     it('should pass req, res and template path to the response method', async () => {
       await call('get')
-      sinon.assert.calledWith(mockResponse, req, res, 'simplified-account/settings/switch-psp/switch-to-worldpay/index')
+      sinon.assert.calledWith(mockResponse,
+        req,
+        res,
+        'simplified-account/settings/switch-psp/switch-to-worldpay/index'
+      )
     })
 
     it('should pass the context data to the response method', async () => {
@@ -83,16 +92,16 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
             linkText: 'Link your Worldpay account with GOV.UK Pay',
             href: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/switch-psp/switch-to-worldpay/one-off-customer-initiated/${SWITCHING_CREDENTIAL_EXTERNAL_ID}`,
             id: WorldpayTaskIdentifiers.CRED,
-            status: TaskStatus.NOT_STARTED,
+            status: TaskStatus.NOT_STARTED
           }),
           sinon.match({
             linkText: 'Make a live payment to test your Worldpay PSP',
             href: `/service/${SERVICE_EXTERNAL_ID}/account/${ACCOUNT_TYPE}/settings/switch-psp/make-a-payment`,
             id: GenericTaskIdentifiers.PAY,
-            status: TaskStatus.CANNOT_START,
-          }),
+            status: TaskStatus.CANNOT_START
+          })
         ],
-        transactionsUrl: formatAccountPathsFor(paths.account.transactions.index, ACCOUNT_EXTERNAL_ID),
+        transactionsUrl: formatAccountPathsFor(paths.account.transactions.index, ACCOUNT_EXTERNAL_ID)
       })
     })
 
@@ -101,9 +110,9 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
         nextResponse({
           locals: {
             flash: {
-              messages: 'blah',
-            },
-          },
+              messages: 'blah'
+            }
+          }
         })
         await call('get')
       })
@@ -124,9 +133,10 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
                 .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
                 .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
                 .withState(CredentialState.VERIFIED)
-                .withCredentials(new Credential().withOneOffCustomerInitiated(new WorldpayCredential()))
-            },
-          },
+                .withCredentials(new Credential()
+                  .withOneOffCustomerInitiated(new WorldpayCredential()))
+            }
+          }
         })
         await call('post')
       })
@@ -135,8 +145,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
         const expectedRequest = new GatewayAccountSwitchPaymentProviderRequest()
           .withUserExternalId(USER_EXTERNAL_ID)
           .withGatewayAccountCredentialExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
-        sinon.assert.calledOnceWithExactly(
-          mockGatewayAccountsService.completePaymentServiceProviderSwitch,
+        sinon.assert.calledOnceWithExactly(mockGatewayAccountsService.completePaymentServiceProviderSwitch,
           SERVICE_EXTERNAL_ID,
           ACCOUNT_TYPE,
           expectedRequest
@@ -144,22 +153,19 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
       })
 
       it('should set success message', () => {
-        sinon.assert.calledOnceWithExactly(req.flash, 'messages', {
-          state: 'success',
-          icon: '&check;',
-          heading: `Service connected to ${formatPSPName(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)}`,
-          body: 'This service can now take payments',
-        })
+        sinon.assert.calledOnceWithExactly(req.flash,
+          'messages', {
+            state: 'success',
+            icon: '&check;',
+            heading: `Service connected to ${formatPSPName(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)}`,
+            body: 'This service can now take payments'
+          }
+        )
       })
 
       it('should redirect to worldpay settings index', () => {
-        sinon.assert.calledOnceWithExactly(
-          res.redirect,
-          formatSimplifiedAccountPathsFor(
-            paths.simplifiedAccount.settings.worldpayDetails.index,
-            SERVICE_EXTERNAL_ID,
-            ACCOUNT_TYPE
-          )
+        sinon.assert.calledOnceWithExactly(res.redirect,
+          formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.worldpayDetails.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
         )
       })
     })
@@ -170,21 +176,18 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
       })
 
       it('should set error message', () => {
-        sinon.assert.calledOnceWithExactly(req.flash, 'messages', {
-          state: 'error',
-          heading: 'There is a problem',
-          body: 'You cannot switch providers until all required tasks are completed',
-        })
+        sinon.assert.calledOnceWithExactly(req.flash,
+          'messages', {
+            state: 'error',
+            heading: 'There is a problem',
+            body: 'You cannot switch providers until all required tasks are completed'
+          }
+        )
       })
 
       it('should redirect to switch to worldpay tasks index', () => {
-        sinon.assert.calledOnceWithExactly(
-          res.redirect,
-          formatSimplifiedAccountPathsFor(
-            paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
-            SERVICE_EXTERNAL_ID,
-            ACCOUNT_TYPE
-          )
+        sinon.assert.calledOnceWithExactly(res.redirect,
+          formatSimplifiedAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index, SERVICE_EXTERNAL_ID, ACCOUNT_TYPE)
         )
       })
     })
@@ -198,9 +201,10 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
                 .withExternalId(SWITCHING_CREDENTIAL_EXTERNAL_ID)
                 .withPaymentProvider(SWITCHING_CREDENTIAL_PAYMENT_PROVIDER)
                 .withState(CredentialState.VERIFIED)
-                .withCredentials(new Credential().withOneOffCustomerInitiated(new WorldpayCredential()))
-            },
-          },
+                .withCredentials(new Credential()
+                  .withOneOffCustomerInitiated(new WorldpayCredential()))
+            }
+          }
         })
         const error = new RESTClientError('whoops')
         mockGatewayAccountsService.completePaymentServiceProviderSwitch.rejects(error)
@@ -208,9 +212,9 @@ describe('Controller: settings/switch-psp/switch-to-worldpay', () => {
       })
 
       it('should call next with error', () => {
-        sinon.assert.calledOnceWithMatch(
-          next,
-          sinon.match.instanceOf(RESTClientError).and(sinon.match.has('message', 'whoops'))
+        sinon.assert.calledOnceWithMatch(next,
+          sinon.match.instanceOf(RESTClientError)
+            .and(sinon.match.has('message', 'whoops'))
         )
       })
     })

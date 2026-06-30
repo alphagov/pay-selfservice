@@ -7,7 +7,7 @@ const paths = require('@root/paths')
 const WorldpayCredential = require('@models/gateway-account-credential/WorldpayCredential.class')
 const PaymentProviders = require('@models/constants/payment-providers')
 const CredentialState = require('@models/constants/credential-state')
-const { GatewayAccountType } = require('@models/gateway-account/gateway-account-type')
+const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
 const mockResponse = sinon.stub()
 
@@ -177,17 +177,23 @@ describe('Controller: settings/worldpay-details/recurring-merchant-initiated-cre
       })
 
       it('should call the response method with the switch PSP backlink when rendering form errors', () => {
-        mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, sinon.match.any, {
-          errors: sinon.match.any,
-          credentials: sinon.match.any,
-          backLink: formatSimplifiedAccountPathsFor(
-            paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
-            SERVICE_EXTERNAL_ID,
-            ACCOUNT_TYPE
-          ),
-        })
+        mockResponse.should.have.been.calledWith(
+          sinon.match.any,
+          sinon.match.any,
+          sinon.match.any,
+          {
+            errors: sinon.match.any,
+            credentials: sinon.match.any,
+            backLink: formatSimplifiedAccountPathsFor(
+              paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
+              SERVICE_EXTERNAL_ID,
+              ACCOUNT_TYPE
+            ),
+          }
+        )
       })
     })
+
 
     describe('add details journey', () => {
       beforeEach(async () => {

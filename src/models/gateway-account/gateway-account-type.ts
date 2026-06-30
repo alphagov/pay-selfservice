@@ -1,6 +1,6 @@
-export const GatewayAccountType = {
+const GatewayAccountType = {
   TEST: 'test',
-  LIVE: 'live',
-} as const
+  LIVE: 'live'
+}
 
-export type GatewayAccountType = (typeof GatewayAccountType)[keyof typeof GatewayAccountType]
+export = GatewayAccountType

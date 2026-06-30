@@ -7,7 +7,7 @@ import paths from '@root/paths'
 import { PaymentLinkCreationSession, FROM_REVIEW_QUERY_PARAM } from './constants'
 import { slugifyString } from '@utils/simplified-account/format/slugify-string'
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { getProductByServiceAndProductPath } from '@services/products.service'
 
 const PRODUCTS_FRIENDLY_BASE_URI = process.env.PRODUCTS_FRIENDLY_BASE_URI!
