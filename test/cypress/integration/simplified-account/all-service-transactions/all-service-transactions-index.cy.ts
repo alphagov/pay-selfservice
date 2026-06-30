@@ -1,11 +1,11 @@
 import userStubs from '@test/cypress/stubs/user-stubs'
 import gatewayAccountStubs, { getCardTypesSuccess } from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
+import { LIVE, TEST } from '@models/gateway-account/gateway-account-type'
 import {
   getTransactionForGatewayAccount,
   getTransactionsForGatewayAccount,
 } from '@test/cypress/stubs/simplified-account/transaction-stubs'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
 import { DateTime } from 'luxon'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
@@ -21,8 +21,8 @@ const SERVICE_NAME = {
 }
 const USER_EMAIL = 's.mcduck@example.com'
 
-const TEST_TRANSACTIONS_LIST_URL = `/transactions/${GatewayAccountType.TEST}`
-const LIVE_TRANSACTIONS_LIST_URL = `/transactions/${GatewayAccountType.LIVE}`
+const TEST_TRANSACTIONS_LIST_URL = `/transactions/${TEST}`
+const LIVE_TRANSACTIONS_LIST_URL = `/transactions/${LIVE}`
 
 const HEADING_SUFFIX = 'transactions: all services'
 
@@ -48,7 +48,7 @@ describe('All service transactions index', () => {
         getTransactionsForGatewayAccount(LIVE_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
-          types: [GatewayAccountType.LIVE],
+          types: [LIVE],
           gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID],
         }),
       ])
@@ -61,7 +61,7 @@ describe('All service transactions index', () => {
         getTransactionsForGatewayAccount(LIVE_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
-          types: [GatewayAccountType.LIVE],
+          types: [LIVE],
           gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID],
         }),
       ])
@@ -78,7 +78,7 @@ describe('All service transactions index', () => {
         getTransactionsForGatewayAccount(LIVE_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
-          types: [GatewayAccountType.LIVE],
+          types: [LIVE],
           gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID],
         }),
       ])
@@ -93,12 +93,12 @@ describe('All service transactions index', () => {
         getTransactionsForGatewayAccount(TEST_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
-          type: GatewayAccountType.TEST,
+          type: TEST,
           gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
         }),
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
-          types: [GatewayAccountType.LIVE, GatewayAccountType.TEST],
+          types: [LIVE, TEST],
           gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID, TEST_GATEWAY_ACCOUNT_ID],
         }),
       ])
@@ -123,7 +123,7 @@ describe('All service transactions index', () => {
         getTransactionsForGatewayAccount(TEST_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
-          type: GatewayAccountType.TEST,
+          type: TEST,
           gatewayAccountId: TEST_GATEWAY_ACCOUNT_ID,
         }),
       ])
@@ -133,7 +133,7 @@ describe('All service transactions index', () => {
       cy.task('setupStubs', [
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
-          types: [GatewayAccountType.TEST],
+          types: [TEST],
           gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID],
         }),
       ])
@@ -145,7 +145,7 @@ describe('All service transactions index', () => {
       cy.task('setupStubs', [
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
-          types: [GatewayAccountType.TEST],
+          types: [TEST],
           gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID],
         }),
       ])
@@ -160,7 +160,7 @@ describe('All service transactions index', () => {
       cy.task('setupStubs', [
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
-          types: [GatewayAccountType.TEST],
+          types: [TEST],
           gatewayAccountIds: [TEST_GATEWAY_ACCOUNT_ID],
         }),
       ])
@@ -175,12 +175,12 @@ describe('All service transactions index', () => {
         getTransactionsForGatewayAccount(LIVE_GATEWAY_ACCOUNT_ID).success([TRANSACTION.toTransactionData()]),
         gatewayAccountStubs.getGatewayAccountsByServiceIdAndTypeSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
-          types: [GatewayAccountType.LIVE, GatewayAccountType.TEST],
+          types: [LIVE, TEST],
           gatewayAccountIds: [LIVE_GATEWAY_ACCOUNT_ID, TEST_GATEWAY_ACCOUNT_ID],
         }),
         gatewayAccountStubs.getGatewayAccountByServiceIdsSuccess({
           serviceExternalId: SERVICE_EXTERNAL_ID,
-          type: GatewayAccountType.LIVE,
+          type: LIVE,
           gatewayAccountId: LIVE_GATEWAY_ACCOUNT_ID,
         }),
       ])

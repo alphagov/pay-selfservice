@@ -1,12 +1,6 @@
 import { getUser } from '@test/cypress/stubs/simplified-account/user-stubs'
-import transactionStubs from '@test/cypress/stubs/transaction-stubs'
-import { TimeConstants } from '@utils/time/time-constants'
-import gatewayAccountStubs, { getCardTypesSuccess } from '@test/cypress/stubs/gateway-account-stubs'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
-import {
-  getTransactionForGatewayAccount,
-  searchTransactions,
-} from '@test/cypress/stubs/simplified-account/transaction-stubs'
+import { getCardTypesSuccess } from '@test/cypress/stubs/gateway-account-stubs'
+import { searchTransactions } from '@test/cypress/stubs/simplified-account/transaction-stubs'
 import { GatewayAccountFixture } from '@test/fixtures/gateway-account/gateway-account.fixture'
 import { ServiceFixture } from '@test/fixtures/service/service.fixture'
 import { UserFixture } from '@test/fixtures/user/user.fixture'

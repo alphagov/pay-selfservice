@@ -2,13 +2,12 @@
 
 const utils = require('../../utils/request-to-go-live-utils')
 const transactionStubs = require('../../stubs/transaction-stubs')
-const { GatewayAccountType } = require('@models/gateway-account/gateway-account-type')
+const GatewayAccountType = require('@models/gateway-account/gateway-account-type')
 const GoLiveStage = require('@models/constants/go-live-stage')
 const PaymentProviders = require('@models/constants/payment-providers')
 const { userExternalId, gatewayAccountExternalId, serviceExternalId } = utils.variables
 
-const dashboardUrl = (gatewayAccountType = GatewayAccountType.TEST) =>
-  `/service/${serviceExternalId}/account/${gatewayAccountType}/dashboard`
+const dashboardUrl = (gatewayAccountType = GatewayAccountType.TEST) => `/service/${serviceExternalId}/account/${gatewayAccountType}/dashboard`
 
 describe('Go live link on dashboard', () => {
   beforeEach(() => {
@@ -25,11 +24,7 @@ describe('Go live link on dashboard', () => {
       it('should show request to go live link when go-live stage is NOT_STARTED', () => {
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Request a live account')
-        cy.get('#request-to-go-live-link a').should(
-          'have.attr',
-          'href',
-          `/service/${serviceExternalId}/request-to-go-live`
-        )
+        cy.get('#request-to-go-live-link a').should('have.attr', 'href', `/service/${serviceExternalId}/request-to-go-live`)
       })
     })
 
@@ -40,11 +35,7 @@ describe('Go live link on dashboard', () => {
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
-        cy.get('#request-to-go-live-link a').should(
-          'have.attr',
-          'href',
-          `/service/${serviceExternalId}/request-to-go-live`
-        )
+        cy.get('#request-to-go-live-link a').should('have.attr', 'href', `/service/${serviceExternalId}/request-to-go-live`)
       })
 
       it('should show continue link when go-live stage is CHOSEN_PSP_STRIPE', () => {
@@ -53,11 +44,7 @@ describe('Go live link on dashboard', () => {
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
-        cy.get('#request-to-go-live-link a').should(
-          'have.attr',
-          'href',
-          `/service/${serviceExternalId}/request-to-go-live`
-        )
+        cy.get('#request-to-go-live-link a').should('have.attr', 'href', `/service/${serviceExternalId}/request-to-go-live`)
       })
 
       it('should show continue link when go-live stage is CHOSEN_PSP_GOV_BANKING_WORLDPAY', () => {
@@ -66,11 +53,7 @@ describe('Go live link on dashboard', () => {
 
         cy.get('#request-to-go-live-link').should('exist')
         cy.get('#request-to-go-live-link h2').should('contain', 'Setting up your live account')
-        cy.get('#request-to-go-live-link a').should(
-          'have.attr',
-          'href',
-          `/service/${serviceExternalId}/request-to-go-live`
-        )
+        cy.get('#request-to-go-live-link a').should('have.attr', 'href', `/service/${serviceExternalId}/request-to-go-live`)
       })
     })
 
@@ -117,7 +100,7 @@ describe('Go live link on dashboard', () => {
       it('should not show request to go live link when user is not an admin', () => {
         const serviceRole = utils.buildServiceRoleForGoLiveStage(GoLiveStage.NOT_STARTED)
         serviceRole.role = {
-          permissions: [],
+          permissions: []
         }
         utils.setupGetUserAndGatewayAccountByExternalIdStubs(serviceRole)
 
@@ -126,13 +109,10 @@ describe('Go live link on dashboard', () => {
     })
   })
 
-  function setupStubs(goLiveStage, paymentProvider) {
+  function setupStubs (goLiveStage, paymentProvider) {
     cy.task('setupStubs', [
-      ...utils.getUserAndGatewayAccountByExternalIdStubs(
-        utils.buildServiceRoleForGoLiveStage(goLiveStage),
-        paymentProvider
-      ),
-      transactionStubs.getTransactionsSummarySuccess(),
+      ...utils.getUserAndGatewayAccountByExternalIdStubs(utils.buildServiceRoleForGoLiveStage(goLiveStage), paymentProvider),
+      transactionStubs.getTransactionsSummarySuccess()
     ])
   }
 })

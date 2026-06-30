@@ -1,5 +1,5 @@
 import userStubs from '@test/cypress/stubs/user-stubs'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-account-type'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import {
@@ -38,8 +38,8 @@ const TRANSACTION_EVENTS = [
   }),
 ]
 
-const TRANSACTION_DETAIL_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION.externalId}`
-const TRANSACTION_REFUND_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION.externalId}/refund`
+const TRANSACTION_DETAIL_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}`
+const TRANSACTION_REFUND_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}/refund`
 
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({
@@ -78,7 +78,7 @@ describe('Refund page', () => {
 
     cy.visit(TRANSACTION_REFUND_URL)
 
-    const transactionListUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions`
+    const transactionListUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
 
     checkServiceNavigation('Transactions', transactionListUrl)
     cy.title().should(

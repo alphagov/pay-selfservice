@@ -1,5 +1,5 @@
 import userStubs from '@test/cypress/stubs/user-stubs'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-account-type'
 import gatewayAccountStubs, { getCardTypesSuccess } from '@test/cypress/stubs/gateway-account-stubs'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
@@ -40,8 +40,8 @@ const SERVICE_NAME = {
   cy: 'Mentrau McDuck',
 }
 
-const ALL_SERVICES_TRANSACTION_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/all-services/transactions/${TRANSACTION.externalId}`
-const ALL_SERVICES_TRANSACTIONS_LIST_URL = `/transactions/${GatewayAccountType.TEST}`
+const ALL_SERVICES_TRANSACTION_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/all-services/transactions/${TRANSACTION.externalId}`
+const ALL_SERVICES_TRANSACTIONS_LIST_URL = `/transactions/${TEST}`
 
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({
@@ -129,7 +129,7 @@ describe('All services transaction details page', () => {
 
     cy.contains('a.govuk-button', 'Refund payment').should('be.visible').click()
 
-    const refundUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/all-services/transactions/${TRANSACTION.externalId}/refund`
+    const refundUrl = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/all-services/transactions/${TRANSACTION.externalId}/refund`
 
     cy.url().should('include', refundUrl)
   })

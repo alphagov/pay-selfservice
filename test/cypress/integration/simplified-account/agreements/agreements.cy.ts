@@ -2,7 +2,7 @@ import userStubs from '@test/cypress/stubs/user-stubs'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import agreementStubs from '@test/cypress/stubs/agreement-stubs'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import {
   checkServiceNavigation,
   checkTitleAndHeading,

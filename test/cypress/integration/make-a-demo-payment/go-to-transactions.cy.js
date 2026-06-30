@@ -1,4 +1,4 @@
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { TimeConstants } from '@utils/time/time-constants'
 
 const userStubs = require('@test/cypress/stubs/user-stubs')

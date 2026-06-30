@@ -2,7 +2,7 @@ import userStubs from '@test/cypress/stubs/user-stubs'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { checkServiceNavigation, checkTitleAndHeading } from '../common/assertions'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import { TEST } from '@models/gateway-account/gateway-account-type'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
 import { Status } from '@models/transaction/types/status'
@@ -31,9 +31,9 @@ const SERVICE_NAME = {
   cy: 'Mentrau McDuck',
 }
 
-const TRANSACTIONS_LIST_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions`
+const TRANSACTIONS_LIST_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
 const TRANSACTION_URL = (transactionId: string) =>
-  `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${transactionId}`
+  `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${transactionId}`
 
 const sharedStubs = (gatewayAccountType = 'test', paymentProvider = 'worldpay') => {
   cy.task('setupStubs', [

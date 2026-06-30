@@ -10,7 +10,7 @@ import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import CredentialState from '@models/constants/credential-state'
 import { getConnectorStripeAccountSetup, getStripeAccountCapabilities } from '@services/stripe-details.service'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { ProductType } from '@models/products/product-type'
 import { Features } from '@root/config/features'
 

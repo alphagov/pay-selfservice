@@ -7,7 +7,7 @@ import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import productStubs from '@test/cypress/stubs/products-stubs'
 import { SANDBOX } from '@models/constants/payment-providers'
 import { ProductData } from '@models/products/dto/Product.dto'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'

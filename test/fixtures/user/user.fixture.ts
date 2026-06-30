@@ -23,7 +23,7 @@ export class UserFixture {
     this.otpKey = 'OTPKEY'
     this.telephoneNumber = '+15559393226'
     this.disabled = false
-    this.sessionVersion = 0
+    this.sessionVersion = 1
     this.features = []
     this.secondFactor = 'APP'
     this.provisionalOtpKey = ''

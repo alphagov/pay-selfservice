@@ -6,7 +6,7 @@ import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import Service from '@models/service/Service.class'
 import { LIVE } from '@models/constants/go-live-stage'
 import UserPermissions from '@models/user/permissions'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { Features } from '@root/config/features'
 
 export = (account: GatewayAccount, service: Service, currentUrl: string, permissions: Record<string, boolean>) => {

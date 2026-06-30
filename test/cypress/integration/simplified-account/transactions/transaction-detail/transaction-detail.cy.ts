@@ -1,5 +1,5 @@
 import userStubs from '@test/cypress/stubs/user-stubs'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-account-type'
 import gatewayAccountStubs, { getCardTypesSuccess } from '@test/cypress/stubs/gateway-account-stubs'
 import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
@@ -48,8 +48,8 @@ const SERVICE_NAME = {
   cy: 'Mentrau McDuck',
 }
 
-const TRANSACTION_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions/${TRANSACTION.externalId}`
-const TRANSACTIONS_LIST_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions`
+const TRANSACTION_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions/${TRANSACTION.externalId}`
+const TRANSACTIONS_LIST_URL = `/service/${SERVICE_EXTERNAL_ID}/account/${TEST}/transactions`
 
 const userAndGatewayAccountStubs = [
   userStubs.getUserSuccess({

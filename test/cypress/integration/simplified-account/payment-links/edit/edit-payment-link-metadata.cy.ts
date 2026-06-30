@@ -7,7 +7,7 @@ import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import productStubs from '@test/cypress/stubs/products-stubs'
 import { SANDBOX } from '@models/constants/payment-providers'
 import { ProductData } from '@models/products/dto/Product.dto'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 
 const USER_EXTERNAL_ID = 'user123abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -22,8 +22,8 @@ const ENGLISH_PAYMENT_LINK = buildPaymentLinkOptions({
   href: 'pay.me/product/gold-coin-polishing',
   description: 'blah',
   metadata: {
-    alpha: 'beta',
-  },
+    alpha: 'beta'
+  }
 })
 
 const WELSH_PAYMENT_LINK = buildPaymentLinkOptions({
@@ -32,8 +32,8 @@ const WELSH_PAYMENT_LINK = buildPaymentLinkOptions({
   description: 'blah',
   language: 'cy',
   metadata: {
-    gamma: 'theta',
-  },
+    gamma: 'theta'
+  }
 })
 
 const PAYMENT_LINKS_URL = (serviceMode = 'test') =>
@@ -57,22 +57,19 @@ const setupStubs = (role = 'admin', gatewayAccountType = 'test', product = {}) =
       payment_provider: SANDBOX,
     }),
     productStubs.getProductByExternalIdAndGatewayAccountIdStub(product, GATEWAY_ACCOUNT_ID),
-    productStubs.patchUpdateProductSuccess(
-      {
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        productExternalId: 'product123abc',
-        name: 'Gold coin polishing',
-        description: 'blah',
-        price: 1337,
-        reference_enabled: false,
-        metadata: {
-          upsilon: 'zeta',
-        },
-      },
-      {
-        deepMatch: true,
+    productStubs.patchUpdateProductSuccess({
+      gatewayAccountId: GATEWAY_ACCOUNT_ID,
+      productExternalId: 'product123abc',
+      name: 'Gold coin polishing',
+      description: 'blah',
+      price: 1337,
+      reference_enabled: false,
+      metadata: {
+        upsilon: 'zeta'
       }
-    ),
+    }, {
+      deepMatch: true
+    }),
   ])
 }
 
@@ -85,9 +82,7 @@ describe('Edit payment link reference', () => {
     const USER_ROLE = 'view-only'
     beforeEach(() => {
       setupStubs(USER_ROLE)
-      cy.visit(EDIT_PAYMENT_LINK_METADATA_URL(GatewayAccountType.TEST, ENGLISH_PAYMENT_LINK, 'alpha'), {
-        failOnStatusCode: false,
-      })
+      cy.visit(EDIT_PAYMENT_LINK_METADATA_URL(GatewayAccountType.TEST, ENGLISH_PAYMENT_LINK, 'alpha'), { failOnStatusCode: false })
     })
 
     it('should show admin only error', () => {
@@ -111,7 +106,7 @@ describe('Edit payment link reference', () => {
 
       it('accessibility check', () => {
         cy.a11yCheck({
-          exclude: ['.govuk-skip-link'],
+          exclude: ['.govuk-skip-link']
         })
       })
 
@@ -123,9 +118,7 @@ describe('Edit payment link reference', () => {
     describe('Welsh payment link', () => {
       beforeEach(() => {
         setupStubs(USER_ROLE, GatewayAccountType.LIVE, WELSH_PAYMENT_LINK)
-        cy.visit(EDIT_PAYMENT_LINK_METADATA_URL(GatewayAccountType.LIVE, WELSH_PAYMENT_LINK, 'gamma'), {
-          failOnStatusCode: false,
-        })
+        cy.visit(EDIT_PAYMENT_LINK_METADATA_URL(GatewayAccountType.LIVE, WELSH_PAYMENT_LINK, 'gamma'), { failOnStatusCode: false })
       })
 
       it('should show the payment links navigation item in the side bar in an active state', () => {
@@ -134,7 +127,7 @@ describe('Edit payment link reference', () => {
 
       it('accessibility check', () => {
         cy.a11yCheck({
-          exclude: ['.govuk-skip-link'],
+          exclude: ['.govuk-skip-link']
         })
       })
 

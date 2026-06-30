@@ -1,7 +1,7 @@
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import userStubs from '@test/cypress/stubs/user-stubs'
 import payoutStubs from '@test/cypress/stubs/payout-stubs'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import PaymentProviders from '@models/constants/payment-providers'
 import GoLiveStage from '@models/constants/go-live-stage'
 

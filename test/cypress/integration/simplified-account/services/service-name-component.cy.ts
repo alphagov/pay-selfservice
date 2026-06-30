@@ -2,7 +2,7 @@ import userStubs from '@test/cypress/stubs/user-stubs'
 import ROLES from '@test/fixtures/roles.fixtures'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import PaymentProviders from '@models/constants/payment-providers'
-import { GatewayAccountType } from '@models/gateway-account/gateway-account-type'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import GoLiveStage from '@models/constants/go-live-stage'
 import CredentialState from '@models/constants/credential-state'
 
@@ -83,7 +83,7 @@ describe('Service Name Component', () => {
         .eq(1)
         .should(
           'contain.text',
-          'You’re in sandbox mode. Some settings are not available. Only test payment data is shown.'
+          "You’re in sandbox mode. Some settings are not available. Only test payment data is shown."
         )
         .find('a')
         .should('contain.text', 'Exit sandbox mode')
@@ -111,7 +111,7 @@ describe('Service Name Component', () => {
         .eq(1)
         .should(
           'contain.text',
-          'You’re in sandbox mode. Some settings are not available. Only test payment data is shown.'
+          "You’re in sandbox mode. Some settings are not available. Only test payment data is shown."
         )
         .find('a')
         .should('contain.text', 'Exit sandbox mode')
@@ -214,7 +214,7 @@ describe('Service Name Component', () => {
       cy.get('#service-name')
         .find('p')
         .eq(1)
-        .should('contain.text', 'Your service is not live. You’ve requested a live account from the GOV.UK Pay team.')
+        .should('contain.text', "Your service is not live. You’ve requested a live account from the GOV.UK Pay team.")
         .find('a')
         .should('not.exist')
     })
@@ -309,7 +309,7 @@ describe('Service Name Component', () => {
         .eq(1)
         .should(
           'contain.text',
-          'You’re not taking payments at the moment and you cannot make refunds. To start taking payments, email'
+          "You’re not taking payments at the moment and you cannot make refunds. To start taking payments, email"
         )
         .find('a')
         .should('contain.text', 'govuk-pay-support@digital.cabinet-office.gov.uk')
