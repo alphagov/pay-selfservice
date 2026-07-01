@@ -12,6 +12,7 @@ import { ServiceData } from '@models/service/dto/Service.dto'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
 import createLogger from '@utils/logger'
+import { AuthenticatedRequest } from '@utils/types/express'
 
 const logger = createLogger('transaction-redirect.middleware.ts')
 
@@ -22,7 +23,11 @@ export function transactionRedirect(path: string) {
     }
   }
 
-  return (req: Request & { service?: unknown; account?: unknown }, res: Response) => {
+  interface Params {
+    chargeId: string
+  }
+
+  return (req: AuthenticatedRequest<Params> & { service?: unknown; account?: unknown }, res: Response) => {
     logger.info(`Transactions redirect called for path [${path}]`)
 
     const service = req.service instanceof Service ? req.service : new Service(req.service as ServiceData)
@@ -48,7 +53,11 @@ export function allServiceTransactionRedirect(path: string) {
     }
   }
 
-  return (req: Request, res: Response) => {
+  interface Params {
+    statusFilter: string
+  }
+
+  return (req: AuthenticatedRequest<Params>, res: Response) => {
     logger.info(`All service transactions redirect called for path [${path}]`)
     if (!req.params.statusFilter) {
       return res.redirect(formatPathFor(path, 'live'))
@@ -67,7 +76,11 @@ export function allServiceTransactionDetailRedirect(path: string) {
     }
   }
 
-  return async (req: Request, res: Response, next: NextFunction) => {
+  interface Params {
+    chargeId: string
+  }
+
+  return async (req: AuthenticatedRequest<Params>, res: Response, next: NextFunction) => {
     logger.info(`All service transactions detail redirect called for path [${path}]`)
 
     if (!req.params.chargeId) {

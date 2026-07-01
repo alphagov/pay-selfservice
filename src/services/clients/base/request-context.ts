@@ -16,7 +16,7 @@ interface RequestContext {
 const asyncLocalStorage = new AsyncLocalStorage<RequestContext>()
 
 function requestContextMiddleware(req: Request, _: Response, next: NextFunction): void {
-  asyncLocalStorage.run({} as RequestContext, () => {
+  asyncLocalStorage.run({}, () => {
     const store = asyncLocalStorage.getStore()
     if (store) {
       store[CORRELATION_ID] =

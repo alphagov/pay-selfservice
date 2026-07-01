@@ -5,8 +5,13 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 import formatAccountPathsFor from '@utils/format-account-paths-for'
 import { Features } from '@root/config/features'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get(req: ServiceRequest, res: ServiceResponse) {
+interface Params extends ServiceRequestParams {
+  agreementExternalId: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const agreementsFilter = req.session.agreementsFilter as string
   const agreement = await getAgreement(req.params.agreementExternalId, req.service.externalId)
   const agreementTxs = await getLatestTransactionsForAgreement(req.account.id, agreement.externalId)

@@ -1,6 +1,5 @@
 import type { Request, Response, NextFunction } from 'express'
 import { NotFoundError, NotAuthenticatedError } from '@root/errors'
-import { keys } from '@root/paths'
 import * as LoggingKeys from '@govuk-pay/pay-js-commons/lib/logging/keys'
 import createLogger from '@utils/logger'
 import User from '@models/user/User.class'
@@ -12,7 +11,6 @@ import Service from '@models/service/Service.class'
 import { getGatewayAccountByServiceExternalIdAndType } from '@services/gateway-accounts.service'
 import { ServiceView } from '@models/service-view/ServiceView.class'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
-const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE } = keys
 
 const GATEWAY_ACCOUNT_EXTERNAL_ID_LOGGING_KEY = 'gateway_account_external_id'
 
@@ -79,18 +77,22 @@ async function getGatewayAccount(serviceExternalId: string, accountType: string)
   }
 }
 
-interface AuthenticatedRequest extends Request {
+interface AuthenticatedRequest<P = never> extends Request<P> {
   user: User
   account?: GatewayAccount
   service?: Service
   serviceView?: ServiceView
 }
 
-async function getSimplifiedAccount(req: Request, _: Response, next: NextFunction) {
-  const request = req as AuthenticatedRequest
+interface Params {
+  serviceExternalId: string
+  accountType: string
+}
+
+async function getSimplifiedAccount(req: AuthenticatedRequest<Params>, _: Response, next: NextFunction) {
   try {
-    const serviceExternalId = request.params[SERVICE_EXTERNAL_ID]
-    const accountType = request.params[ACCOUNT_TYPE]
+    const serviceExternalId = req.params.serviceExternalId
+    const accountType = req.params.accountType
 
     if (invalidParams(serviceExternalId, accountType)) {
       return next(
@@ -98,28 +100,28 @@ async function getSimplifiedAccount(req: Request, _: Response, next: NextFunctio
       )
     }
 
-    if (!request.user) {
+    if (!req.user) {
       return next(new NotAuthenticatedError('User not found on request'))
     }
 
     const gatewayAccount = await getGatewayAccount(serviceExternalId, accountType)
     if (gatewayAccount) {
-      request.account = gatewayAccount
+      req.account = gatewayAccount
       addField(GATEWAY_ACCOUNT_EXTERNAL_ID_LOGGING_KEY, gatewayAccount.externalId)
       addField(LoggingKeys.GATEWAY_ACCOUNT_TYPE, gatewayAccount.type)
     } else {
       return next(new NotFoundError('Could not retrieve gateway account with provided parameters'))
     }
-    const service = getService(request.user, serviceExternalId, gatewayAccount.id)
+    const service = getService(req.user, serviceExternalId, gatewayAccount.id)
     if (service) {
-      request.service = service
+      req.service = service
       addField(LoggingKeys.SERVICE_EXTERNAL_ID, service.externalId)
     } else {
       return next(new NotFoundError('Could not find role for user on service'))
     }
 
-    request.serviceView = ServiceView.determineFor(service, gatewayAccount)
-    request.serviceView.showHeader = true
+    req.serviceView = ServiceView.determineFor(service, gatewayAccount)
+    req.serviceView.showHeader = true
     next()
   } catch (err) {
     next(err)

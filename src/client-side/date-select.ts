@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon'
 import {
-  Period,
   getPeriodUKDateTimeRange,
   dateRangeAsPeriod,
 } from '@utils/simplified-account/services/dashboard/datetime-utils'
@@ -29,7 +28,7 @@ function bindDateFilterChangeListener() {
       return
     }
 
-    const dates = getPeriodUKDateTimeRange(event.target.value as Period)
+    const dates = getPeriodUKDateTimeRange(event.target.value)
     setFromDate(dates.start)
     setEndDate(dates.end)
   })

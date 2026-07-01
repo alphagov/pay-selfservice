@@ -141,7 +141,7 @@ class Transaction {
   }
 
   isFullyRefunded() {
-    return (this.refundSummary && this.refundSummary.amountAvailable === 0) ?? false
+    return this.refundSummary?.amountAvailable === 0
   }
 
   isRefundable() {

@@ -9,8 +9,13 @@ import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { SESSION_KEY } from '@controllers/simplified-account/settings/worldpay-details/constants'
 import _ from 'lodash'
 import { Errors } from '@utils/simplified-account/format/format-validation-errors-types'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-function get(req: ServiceRequest, res: ServiceResponse) {
+interface Params extends ServiceRequestParams {
+  credentialExternalId: string
+}
+
+function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId)
 
   return response(req, res, 'simplified-account/settings/worldpay-details/recurring-merchant-initiated-credentials', {
@@ -37,7 +42,7 @@ interface RecurringMerchantInitiatedBody {
   password: string
 }
 
-async function post(req: ServiceRequest<RecurringMerchantInitiatedBody>, res: ServiceResponse) {
+async function post(req: ServiceRequest<RecurringMerchantInitiatedBody, Params>, res: ServiceResponse) {
   const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId)
 
   await Promise.all(credentialsValidations.map((validation) => validation.run(req)))
