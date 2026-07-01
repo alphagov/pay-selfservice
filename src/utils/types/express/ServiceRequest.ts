@@ -7,7 +7,7 @@ import ClientSessionsCookie from '@utils/types/client-sessions/ClientSessionsCoo
 import { Message } from '@utils/types/express/Message'
 import { ServiceView } from '@models/service-view/ServiceView.class'
 
-export default interface ServiceRequest<T = never> extends express.Request {
+export default interface ServiceRequest<T = never, P = never> extends express.Request<P> {
   user: User
   service: Service
   account: GatewayAccount
