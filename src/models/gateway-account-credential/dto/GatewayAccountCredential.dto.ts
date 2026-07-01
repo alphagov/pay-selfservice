@@ -6,7 +6,7 @@ export interface GatewayAccountCredentialData {
   credentials: CredentialData
   state: string
   created_date: string
-  active_start_date: string
-  active_end_date: string
+  active_start_date?: string
+  active_end_date?: string
   gateway_account_id: number
 }

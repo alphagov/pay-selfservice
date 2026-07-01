@@ -38,12 +38,12 @@ class GatewayAccountCredential {
     return this
   }
 
-  withActiveStartDate(activeStartDate: string) {
+  withActiveStartDate(activeStartDate?: string) {
     this.activeStartDate = activeStartDate
     return this
   }
 
-  withActiveEndDate(activeEndDate: string) {
+  withActiveEndDate(activeEndDate?: string) {
     this.activeEndDate = activeEndDate
     return this
   }

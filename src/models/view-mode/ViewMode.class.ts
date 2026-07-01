@@ -73,7 +73,7 @@ export class ViewMode {
     const hasServicesInOppositeMode = allGatewayAccounts.length > gatewayAccountsForMode.length
 
     const paymentProviders = Object.values(PaymentProviders).filter((pspName) => {
-      gatewayAccountsForMode.some((gatewayAccount) => gatewayAccount.paymentProvider === pspName)
+      return gatewayAccountsForMode.some((gatewayAccount) => gatewayAccount.paymentProvider === pspName)
     })
 
     return new ViewMode(

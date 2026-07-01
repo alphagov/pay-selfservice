@@ -15,10 +15,7 @@ export interface GatewayAccountData {
   payment_provider: string
   gateway_account_credentials?: GatewayAccountCredentialData[]
   email_collection_mode: string
-  email_notifications: {
-    PAYMENT_CONFIRMED: EmailNotificationsData
-    REFUND_ISSUED: EmailNotificationsData
-  }
+  email_notifications: EmailNotificationsData
   moto_mask_card_number_input: boolean
   moto_mask_card_security_code_input: boolean
   service_name: string
