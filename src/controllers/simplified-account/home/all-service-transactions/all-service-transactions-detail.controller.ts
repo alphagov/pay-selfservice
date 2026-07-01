@@ -4,9 +4,9 @@ import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { Transaction } from '@models/transaction/Transaction.class'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
-import { ParamsDictionary } from 'express-serve-static-core'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-interface Params extends ParamsDictionary {
+interface Params extends ServiceRequestParams {
   transactionExternalId: string
 }
 

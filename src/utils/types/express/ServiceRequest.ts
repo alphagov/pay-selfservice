@@ -6,8 +6,14 @@ import type StripeAccountSetup from '@models/StripeAccountSetup.class'
 import ClientSessionsCookie from '@utils/types/client-sessions/ClientSessionsCookie'
 import { Message } from '@utils/types/express/Message'
 import { ServiceView } from '@models/service-view/ServiceView.class'
+import { ParamsDictionary } from 'express-serve-static-core'
 
-export default interface ServiceRequest<T = never, P = never> extends express.Request<P> {
+export interface ServiceRequestParams extends ParamsDictionary {
+  serviceExternalId: string
+  accountType: string
+}
+
+export default interface ServiceRequest<T = never, P = ServiceRequestParams> extends express.Request<P> {
   user: User
   service: Service
   account: GatewayAccount
