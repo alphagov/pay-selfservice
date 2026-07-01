@@ -42,6 +42,8 @@ async function get(
     )
   }
 
+  const isStripe = req.viewMode.paymentProviders.includes(PaymentProviders.STRIPE)
+
   const transactionSearchParams = TransactionSearchParams.fromSearchQuery(
     req.viewMode.gatewayAccountIds,
     req.query,
@@ -62,11 +64,6 @@ async function get(
       throw err
     }
   }
-
-  // services could have switched from Stripe to Worldpay and have old Stripe transactions
-  const isStripe =
-    req.viewMode.paymentProviders.includes(PaymentProviders.STRIPE) ||
-    results.transactions.some((transaction) => transaction.paymentProvider === PaymentProviders.STRIPE)
 
   results.transactions.forEach((transaction) => {
     transaction._locals.links.bind(
