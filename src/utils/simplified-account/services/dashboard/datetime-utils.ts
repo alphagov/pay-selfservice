@@ -76,7 +76,7 @@ export function getPeriodUKDateTimeRange(period: Period | undefined): DateTimeRa
     case 'last-12-months': {
       return {
         start: TimeConstants.TWELVE_MONTHS_AGO,
-        end: now,
+        end: TimeConstants.END_OF_TODAY,
       }
     }
 
@@ -90,8 +90,8 @@ export function getPeriodUKDateTimeRange(period: Period | undefined): DateTimeRa
     default:
       // today
       return {
-        start: now.startOf('day'),
-        end: now,
+        start: TimeConstants.TODAY,
+        end: TimeConstants.END_OF_TODAY,
       }
   }
 }

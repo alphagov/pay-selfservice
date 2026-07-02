@@ -65,6 +65,11 @@ export class TransactionSearchParams {
   constructor(gatewayAccountIds: number[] | string[], withPagintion: boolean) {
     this.accountIds = gatewayAccountIds
     this.withPagination = withPagintion
+
+    if (withPagintion) {
+      this.limitTotal = true
+      this.limitTotalSize = 5001
+    }
   }
 
   toJson() {
@@ -107,6 +112,17 @@ export class TransactionSearchParams {
     filters.delete('page')
     filters.delete('jsEnabled')
     return filters.size === 1 && filters.get('dateFilter') === Period.ALL_TIME
+  }
+
+  withDefaultDateFilter(dateFilter: Period) {
+    if (!this.dateFilter && !this.fromDate && !this.toDate) {
+      const dateRange = getPeriodUKDateTimeRange(dateFilter)
+      this.dateFilter = dateFilter
+      this.fromDate = dateRange.start
+      this.toDate = dateRange.end
+      this.includeTime = false
+    }
+    return this
   }
 
   static forAgreement(gatewayAccountId: number, agreementExternalId: string, currentPage: number, displaySize: number) {

@@ -22,6 +22,7 @@ import {
   LEDGER_TRANSACTION_COUNT_LIMIT,
   MAX_TRANSACTIONS_PER_PAGE,
 } from '@controllers/simplified-account/services/transactions/constants'
+import { Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 
 async function get(
   req: AuthenticatedRequest & { viewMode: ViewMode },
@@ -49,7 +50,7 @@ async function get(
     req.query,
     true,
     MAX_TRANSACTIONS_PER_PAGE
-  )
+  ).withDefaultDateFilter(Period.LAST_12_MONTHS)
 
   let cardTypes: CardType[]
   let results: TransactionSearchResults
