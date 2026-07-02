@@ -4,6 +4,9 @@ const { response } = require('../../utils/response')
 const permissions = require('../../utils/permissions')
 const payoutService = require('./payouts.service')
 const { NoServicesWithPermissionError } = require('../../errors')
+const { Features } = require('@root/config/features')
+const paths = require('@root/paths')
+const formatPathFor = require('@utils/replace-params-in-path')
 
 const listAllServicesPayouts = async function listAllServicesPayouts(req, res, next) {
   const { page } = req.query
@@ -52,6 +55,9 @@ const listAllServicesPayouts = async function listAllServicesPayouts(req, res, n
       filterLiveAccounts,
       hasLiveAccounts: userPermittedAccountsSummary.hasLiveAccounts,
       hasTestStripeAccount: userPermittedAccountsSummary.hasTestStripeAccount,
+      transactionsDownloadPath: Features.isEnabled(Features.TRANSACTIONS)
+        ? formatPathFor(paths.allServiceTransactions.simplifiedAccount.download, filterLiveAccounts ? 'live' : 'test')
+        : formatPathFor(paths.allServiceTransactions.downloadStatusFilter, filterLiveAccounts ? 'live' : 'test'),
     })
   } catch (error) {
     return next(new Error('Failed to fetch payouts'))
