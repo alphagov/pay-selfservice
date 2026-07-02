@@ -1,6 +1,8 @@
 import UserData from '@models/user/dto/User.dto'
 import User from '@models/user/User.class'
 import { ServiceRoleFixture } from '@test/fixtures/user/service-role.fixture'
+import { ServiceFixture } from '@test/fixtures/service/service.fixture'
+import { RoleFixture } from '@test/fixtures/service/role.fixture'
 
 export class UserFixture {
   readonly externalId: string
@@ -16,7 +18,7 @@ export class UserFixture {
   readonly internalUser: boolean
   readonly numberOfLiveServices: number
 
-  constructor(overrides?: Partial<UserFixture>) {
+  constructor(...overrides: Partial<UserFixture>[]) {
     this.externalId = 'user-123-external-id'
     this.email = 'homer.simpson@example.com'
     this.serviceRoles = [new ServiceRoleFixture()]
@@ -30,9 +32,18 @@ export class UserFixture {
     this.internalUser = false
     this.numberOfLiveServices = 0
 
-    if (overrides) {
-      Object.assign(this, overrides)
-    }
+    overrides?.forEach((override) => {
+      Object.assign(this, override)
+    })
+  }
+
+  static asServiceAdmin(services: ServiceFixture[], ...overrides: Partial<UserFixture>[]) {
+    return new UserFixture(
+      {
+        serviceRoles: services.map((service) => new ServiceRoleFixture({ service, role: RoleFixture.Admin() })),
+      },
+      ...overrides
+    )
   }
 
   toUserData(): UserData {

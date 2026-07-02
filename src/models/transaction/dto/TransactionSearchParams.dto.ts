@@ -21,6 +21,8 @@ export class TransactionSearchParamsData {
   readonly refund_states?: string
   readonly dispute_states?: string
   readonly gateway_payout_id?: string
+  readonly fee_headers?: boolean
+  readonly moto_header?: boolean
 
   constructor(params: TransactionSearchParams) {
     this.account_id = params.accountIds.join(',')
@@ -42,6 +44,8 @@ export class TransactionSearchParamsData {
     this.refund_states = params.refundStates?.map(toLower).join(',')
     this.dispute_states = params.disputeStates?.map(toLower).join(',')
     this.gateway_payout_id = params.gatewayPayoutId
+    this.fee_headers = params.feeHeaders
+    this.moto_header = params.motoHeader
   }
 
   asQueryString(): string {

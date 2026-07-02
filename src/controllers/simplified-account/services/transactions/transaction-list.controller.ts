@@ -28,12 +28,10 @@ const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: strin
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const isStripe = req.account.paymentProvider === 'stripe'
   const gatewayAccountId = req.account.id
-  const transactionSearchParams = TransactionSearchParams.fromSearchQuery(
-    gatewayAccountId,
-    req.query,
-    true,
-    MAX_TRANSACTIONS_PER_PAGE
-  ).withDefaultDateFilter(Period.LAST_12_MONTHS)
+  const transactionSearchParams = TransactionSearchParams.Builder(gatewayAccountId)
+    .withDefaultDateFilter(Period.LAST_12_MONTHS)
+    .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+    .withSearchQuery(req.query)
 
   const transactionsUrl = formatServiceAndAccountPathsFor(
     paths.simplifiedAccount.transactions.index,

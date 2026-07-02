@@ -60,16 +60,84 @@ export class TransactionSearchParams {
   feeHeaders?: boolean
   baseQuery?: TransactionSearchQuery
   includeTime?: boolean
-  withPagination: boolean
+  hasPagination?: boolean
 
-  constructor(gatewayAccountIds: number[] | string[], withPagintion: boolean) {
+  constructor(gatewayAccountIds: number[] | string[]) {
     this.accountIds = gatewayAccountIds
-    this.withPagination = withPagintion
+  }
 
-    if (withPagintion) {
-      this.limitTotal = true
-      this.limitTotalSize = 5001
+  static Builder(gatewayAccountIds: number | number[] | string | string[]) {
+    // @ts-expect-error while `number[] | string[]` and `(number | string)[]` are not interchangeable
+    // this is valid because we are constructing an array of length 1, so every element of the array is the same type
+    return new TransactionSearchParams(Array.isArray(gatewayAccountIds) ? gatewayAccountIds : [gatewayAccountIds])
+  }
+
+  static forAgreement(gatewayAccountId: number, agreementExternalId: string, currentPage: number, displaySize: number) {
+    const searchParams = TransactionSearchParams.Builder(gatewayAccountId).withPagination(displaySize)
+    searchParams.page = currentPage
+    searchParams.agreementId = agreementExternalId
+    return searchParams
+  }
+
+  withDefaultDateFilter(dateFilter: Period) {
+    if (!this.dateFilter && !this.fromDate && !this.toDate) {
+      const dateRange = getPeriodUKDateTimeRange(dateFilter)
+      this.dateFilter = dateFilter
+      this.fromDate = dateRange.start
+      this.toDate = dateRange.end
+      this.includeTime = false
     }
+    return this
+  }
+
+  withPagination(displaySize: number) {
+    this.hasPagination = true
+    this.limitTotal = true
+    this.limitTotalSize = 5001
+    this.displaySize = displaySize
+    return this
+  }
+
+  withSearchQuery(queryParams: TransactionSearchQuery) {
+    if (this.hasPagination) {
+      this.page = parsePageNumber(typeof queryParams.page === 'string' ? queryParams.page : `${queryParams.page}`)
+    }
+
+    this.baseQuery = queryParams
+    this.cardholderName = nonEmpty(queryParams.cardholderName)
+    this.lastDigitsCardNumber = nonEmpty(queryParams.lastDigitsCardNumber)
+    this.metadataValue = nonEmpty(queryParams.metadataValue)
+    this.reference = nonEmpty(queryParams.reference)
+    this.email = nonEmpty(queryParams.email)
+    this.brand = parseAsArray(queryParams.brand)
+
+    Object.assign(this, processDateAndTime(queryParams))
+
+    const selectedStateFilters = parseAsArray(queryParams.state)
+    if (selectedStateFilters) {
+      const stateFilters = convertStateFilter(selectedStateFilters)
+
+      this.state = selectedStateFilters
+      this.paymentStates = stateFilters.paymentStates
+      this.refundStates = stateFilters.refundStates
+      this.disputeStates = stateFilters.disputeStates
+    }
+
+    if (queryParams.gatewayPayoutId) {
+      this.gatewayPayoutId = queryParams.gatewayPayoutId
+    }
+
+    return this
+  }
+
+  withFeeHeaders(includeFeeHeaders?: boolean) {
+    this.feeHeaders = includeFeeHeaders
+    return this
+  }
+
+  withMotoHeader(includeMotoHeader?: boolean) {
+    this.motoHeader = includeMotoHeader
+    return this
   }
 
   toJson() {
@@ -112,72 +180,6 @@ export class TransactionSearchParams {
     filters.delete('page')
     filters.delete('jsEnabled')
     return filters.size === 1 && filters.get('dateFilter') === Period.ALL_TIME
-  }
-
-  withDefaultDateFilter(dateFilter: Period) {
-    if (!this.dateFilter && !this.fromDate && !this.toDate) {
-      const dateRange = getPeriodUKDateTimeRange(dateFilter)
-      this.dateFilter = dateFilter
-      this.fromDate = dateRange.start
-      this.toDate = dateRange.end
-      this.includeTime = false
-    }
-    return this
-  }
-
-  static forAgreement(gatewayAccountId: number, agreementExternalId: string, currentPage: number, displaySize: number) {
-    const searchParams = new TransactionSearchParams([gatewayAccountId], true)
-    searchParams.page = currentPage
-    searchParams.displaySize = displaySize
-    searchParams.agreementId = agreementExternalId
-    return searchParams
-  }
-
-  static fromSearchQuery(
-    gatewayAccountIds: number | number[] | string | string[],
-    queryParams: TransactionSearchQuery,
-    withPagination: boolean,
-    pageSize?: number
-  ) {
-    // @ts-expect-error while `number[] | string[]` and `(number | string)[]` are not interchangeable
-    // this is valid because we are constructing an array of length 1, so every element of the array is the same type
-    const accountIds: number[] | string[] = Array.isArray(gatewayAccountIds) ? gatewayAccountIds : [gatewayAccountIds]
-    const searchParams = new TransactionSearchParams(accountIds, withPagination)
-
-    if (withPagination) {
-      searchParams.page = parsePageNumber(
-        typeof queryParams.page === 'string' ? queryParams.page : `${queryParams.page}`
-      )
-      searchParams.displaySize = pageSize
-    }
-
-    searchParams.baseQuery = queryParams
-
-    searchParams.cardholderName = nonEmpty(queryParams.cardholderName)
-    searchParams.lastDigitsCardNumber = nonEmpty(queryParams.lastDigitsCardNumber)
-    searchParams.metadataValue = nonEmpty(queryParams.metadataValue)
-    searchParams.reference = nonEmpty(queryParams.reference)
-    searchParams.email = nonEmpty(queryParams.email)
-
-    searchParams.brand = parseAsArray(queryParams.brand)
-
-    Object.assign(searchParams, processDateAndTime(queryParams))
-
-    const selectedStateFilters = parseAsArray(queryParams.state)
-    if (selectedStateFilters) {
-      const stateFilters = convertStateFilter(selectedStateFilters)
-
-      searchParams.state = selectedStateFilters
-      searchParams.paymentStates = stateFilters.paymentStates
-      searchParams.refundStates = stateFilters.refundStates
-      searchParams.disputeStates = stateFilters.disputeStates
-    }
-
-    if (queryParams.gatewayPayoutId) {
-      searchParams.gatewayPayoutId = queryParams.gatewayPayoutId
-    }
-
-    return searchParams
   }
 }
 

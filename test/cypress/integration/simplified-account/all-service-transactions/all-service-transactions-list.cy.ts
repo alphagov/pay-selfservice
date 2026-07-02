@@ -79,7 +79,10 @@ describe('All Service Transactions list', () => {
       cy.task('setupStubs', [
         getUser(USER_EXTERNAL_ID).success(userWithStripeService),
         searchTransactions(
-          TransactionSearchParams.fromSearchQuery(accountIds, {}, true, 20).withDefaultDateFilter('last-12-months')
+          TransactionSearchParams.Builder(accountIds)
+            .withPagination(20)
+            .withDefaultDateFilter('last-12-months')
+            .withSearchQuery({})
         ).success([STRIPE_TRANSACTION, WORLDPAY_TRANSACTION, SANDBOX_TRANSACTION]),
         searchByServiceExternalIds([
           SANDBOX_SERVICE.externalId,
@@ -150,7 +153,10 @@ describe('All Service Transactions list', () => {
       cy.task('setupStubs', [
         getUser(USER_EXTERNAL_ID).success(userWithoutStripeService),
         searchTransactions(
-          TransactionSearchParams.fromSearchQuery(accountIds, {}, true, 20).withDefaultDateFilter('last-12-months')
+          TransactionSearchParams.Builder(accountIds)
+            .withPagination(20)
+            .withDefaultDateFilter('last-12-months')
+            .withSearchQuery({})
         ).success([WORLDPAY_TRANSACTION, SANDBOX_TRANSACTION]),
         searchByServiceExternalIds([SANDBOX_SERVICE.externalId, WORLDPAY_SERVICE.externalId]).success([
           TEST_SANDBOX_ACCOUNT,

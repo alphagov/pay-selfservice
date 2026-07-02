@@ -81,6 +81,20 @@ function searchTransactions(query: TransactionSearchParams) {
   }
 }
 
+function searchTransactionsDefault(accountIds: number | number[] | string | string[]) {
+  const query = TransactionSearchParams.Builder(accountIds)
+    .withPagination(20)
+    .withDefaultDateFilter('last-12-months')
+    .withSearchQuery({})
+  const searchStub = searchTransactions(query)
+
+  return {
+    success: function (transactions: TransactionFixture[]) {
+      return searchStub.success(transactions)
+    },
+  }
+}
+
 function getTransactionEvents(gatewayAccountId: string, transactionExternalId: string) {
   const path = `/v1/transaction/${transactionExternalId}/event`
 
@@ -147,5 +161,6 @@ export {
   getTransactionEvents,
   getTransactionDisputes,
   searchTransactions,
+  searchTransactionsDefault,
   postRefund,
 }
