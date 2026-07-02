@@ -45,8 +45,6 @@ export const DT_FULL = {
 } as DateTimeFormatOptions
 
 export function getPeriodUKDateTimeRange(period: Period | undefined): DateTimeRange {
-  const now = DateTime.now().setLocale('en-GB').setZone('Europe/London') as DateTime<true>
-
   switch (period) {
     case 'yesterday':
       return {

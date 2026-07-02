@@ -1,6 +1,5 @@
 import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
 import { toLower } from 'lodash'
-import { TimeConstants } from '@utils/time/time-constants'
 
 export class TransactionSearchParamsData {
   readonly account_id: string
