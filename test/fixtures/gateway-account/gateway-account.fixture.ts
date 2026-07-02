@@ -30,7 +30,7 @@ export class GatewayAccountFixture {
   readonly worldpay3dsFlex?: Worldpay3dsFlexCredentialFixture
   readonly sendPayerEmailToGateway: boolean
   readonly sendPayerIPAddressToGateway: boolean
-  readonly serviceId?: string
+  readonly serviceId: string
   readonly serviceName: string
 
   constructor(...overrides: Partial<GatewayAccountFixture>[]) {
@@ -56,7 +56,8 @@ export class GatewayAccountFixture {
     this.supports3ds = false
     this.sendPayerEmailToGateway = false
     this.sendPayerIPAddressToGateway = false
-    this.serviceName = 'A test service'
+    this.serviceId = 'service-external-id-123-abc'
+    this.serviceName = 'Power Plant Safety Inspection'
 
     overrides.forEach((override) => {
       Object.assign(this, override)
