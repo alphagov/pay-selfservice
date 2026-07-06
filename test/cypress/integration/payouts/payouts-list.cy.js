@@ -32,7 +32,7 @@ describe('Payout list page', () => {
     cy.setEncryptedCookies(userExternalId)
   })
 
-  it.only('should correctly display payouts given a successful response from Ledger', () => {
+  it('should correctly display payouts given a successful response from Ledger', () => {
     const payouts = [
       {
         gatewayAccountId: liveGatewayAccountId,
