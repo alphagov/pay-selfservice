@@ -11,20 +11,20 @@ const userAndGatewayAccountStubs = [
     userExternalId,
     gatewayAccountIds: [liveGatewayAccountId, testGatewayAccountId],
     serviceName: 'some-service-name',
-    email: 'some-user@email.com'
+    email: 'some-user@email.com',
   }),
   gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([
     {
       gatewayAccountId: liveGatewayAccountId,
       paymentProvider: 'stripe',
-      type: 'live'
+      type: 'live',
     },
     {
       gatewayAccountId: testGatewayAccountId,
       paymentProvider: 'stripe',
-      type: 'test'
-    }
-  ])
+      type: 'test',
+    },
+  ]),
 ]
 
 describe('Payout list page', () => {
@@ -34,11 +34,15 @@ describe('Payout list page', () => {
 
   it('should correctly display payouts given a successful response from Ledger', () => {
     const payouts = [
-      { gatewayAccountId: liveGatewayAccountId, paidOutDate: '2024-12-31T15:34:00.000000Z' }
+      {
+        gatewayAccountId: liveGatewayAccountId,
+        paidOutDate: '2024-12-31T15:34:00.000000Z',
+        gatewayPayoutId: 'payout-id-abc-123',
+      },
     ]
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: liveGatewayAccountId, payouts })
+      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: liveGatewayAccountId, payouts }),
     ])
 
     cy.visit('/payments-to-your-bank-account')
@@ -52,17 +56,41 @@ describe('Payout list page', () => {
       cy.get('.govuk-breadcrumbs__list-item').eq(1).contains('Payments to your bank account')
       cy.get('.govuk-breadcrumbs__list-item').eq(1).find('.govuk-tag').should('have.text', 'Live')
     })
+
+    cy.get('table#payout-list').within(() => {
+      cy.get('thead > tr').within(() => {
+        cy.get('th').eq(0).should('contain.text', 'Service')
+        cy.get('th').eq(1).should('contain.text', 'Amount')
+        cy.get('th').eq(2).should('contain.text', 'View transactions')
+      })
+
+      cy.get('tbody > tr')
+        .eq(0)
+        .within(() => {
+          cy.get('td').eq(0).should('contain.text', 'some-service-name')
+          cy.get('td').eq(1).should('contain.text', '£100.00')
+          cy.get('td')
+            .eq(2)
+            .should('contain.text', 'Download CSV')
+            .get('a')
+            .should('have.attr', 'href', `/transactions/live/download?gatewayPayoutId=payout-id-abc-123`)
+        })
+    })
   })
 
   it('pagination component should correctly link for a large set', () => {
     const payouts = [
       { gatewayAccountId: liveGatewayAccountId, paidOutDate: '2019-01-28T08:00:00.000000Z' },
-      { gatewayAccountId: liveGatewayAccountId, paidOutDate: '2019-01-28T08:00:00.000000Z' }
+      { gatewayAccountId: liveGatewayAccountId, paidOutDate: '2019-01-28T08:00:00.000000Z' },
     ]
     const page = 2
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: liveGatewayAccountId, payouts, payoutOpts: { total: 80, page } })
+      payoutStubs.getLedgerPayoutSuccess({
+        gatewayAccountId: liveGatewayAccountId,
+        payouts,
+        payoutOpts: { total: 80, page },
+      }),
     ])
 
     cy.visit(`/payments-to-your-bank-account?page=${page}`)
@@ -75,13 +103,11 @@ describe('Payout list page', () => {
   })
 
   it('should show test payouts when Switch to test is clicked', () => {
-    const testPayouts = [
-      { gatewayAccountId: testGatewayAccountId, paidOutDate: '2019-01-29T08:00:00.000000Z' }
-    ]
+    const testPayouts = [{ gatewayAccountId: testGatewayAccountId, paidOutDate: '2019-01-29T08:00:00.000000Z' }]
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
       payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: liveGatewayAccountId, payouts: [] }),
-      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: testGatewayAccountId, payouts: testPayouts })
+      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: testGatewayAccountId, payouts: testPayouts }),
     ])
     cy.visit('/payments-to-your-bank-account')
 
@@ -101,7 +127,7 @@ describe('Payout list page', () => {
   it('should show sample report for test account account if the test account has no payouts', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: testGatewayAccountId })
+      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: testGatewayAccountId }),
     ])
 
     cy.visit('/payments-to-your-bank-account/test')
@@ -119,14 +145,16 @@ describe('Payout list page', () => {
   it('should show no payouts for live account if the live account has no payouts', () => {
     cy.task('setupStubs', [
       ...userAndGatewayAccountStubs,
-      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: liveGatewayAccountId })
+      payoutStubs.getLedgerPayoutSuccess({ gatewayAccountId: liveGatewayAccountId }),
     ])
 
     cy.visit('/payments-to-your-bank-account')
     cy.get('h1').find('.govuk-tag').should('have.text', 'Live')
     cy.get('#pagination').should('not.exist')
     cy.get('#payout-list').should('not.exist')
-    cy.get('.govuk-section-break.govuk-section-break--l.govuk-section-break--visible').next('p').contains('No payments to your bank account found on or after 22 May 2020')
+    cy.get('.govuk-section-break.govuk-section-break--l.govuk-section-break--visible')
+      .next('p')
+      .contains('No payments to your bank account found on or after 22 May 2020')
   })
 
   it('should show no permissions to access this page if the user has no stripe test accounts', () => {
@@ -135,18 +163,21 @@ describe('Payout list page', () => {
         userExternalId,
         gatewayAccountIds: [testGatewayAccountId],
         serviceName: 'some-service-name',
-        email: 'some-user@email.com'
+        email: 'some-user@email.com',
       }),
       gatewayAccountStubs.getGatewayAccountsSuccessForMultipleAccounts([
         {
           gatewayAccountId: testGatewayAccountId,
           paymentProvider: 'sandbox',
-          type: 'test'
-        }
-      ])
+          type: 'test',
+        },
+      ]),
     ])
 
     cy.visit('/payments-to-your-bank-account/test', { failOnStatusCode: false })
-    cy.get('#errorMsg').should('have.text', 'You do not have any associated services with rights to view payments to bank accounts.')
+    cy.get('#errorMsg').should(
+      'have.text',
+      'You do not have any associated services with rights to view payments to bank accounts.'
+    )
   })
 })

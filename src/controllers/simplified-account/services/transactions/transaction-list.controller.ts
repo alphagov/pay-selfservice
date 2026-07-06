@@ -13,6 +13,7 @@ import {
   WorldpayStatusFilters,
 } from '@utils/simplified-account/services/transactions/status-filters'
 import { LEDGER_TRANSACTION_COUNT_LIMIT, MAX_TRANSACTIONS_PER_PAGE } from './constants'
+import { Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 
 const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
   const getPath = (pageNumber: number) => {
@@ -32,7 +33,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     req.query,
     true,
     MAX_TRANSACTIONS_PER_PAGE
-  )
+  ).withDefaultDateFilter(Period.LAST_12_MONTHS)
 
   const transactionsUrl = formatServiceAndAccountPathsFor(
     paths.simplifiedAccount.transactions.index,

@@ -1,12 +1,11 @@
 import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
 import { toLower } from 'lodash'
-import { TimeConstants } from '@utils/time/time-constants'
 
 export class TransactionSearchParamsData {
   readonly account_id: string
   readonly agreement_id?: string
-  readonly limit_total: string
-  readonly limit_total_size: string
+  readonly limit_total?: boolean
+  readonly limit_total_size?: string
   readonly display_size?: string
   readonly page?: string
   readonly cardholder_name?: string
@@ -26,8 +25,8 @@ export class TransactionSearchParamsData {
   constructor(params: TransactionSearchParams) {
     this.account_id = params.accountIds.join(',')
     this.agreement_id = params.agreementId?.toString() ?? undefined
-    this.limit_total = params.limitTotal ? params.limitTotal.toString() : 'true'
-    this.limit_total_size = params.limitTotalSize?.toString() ?? '5001'
+    this.limit_total = params.limitTotal ?? undefined
+    this.limit_total_size = params.limitTotalSize?.toString() ?? undefined
     this.display_size = params.displaySize?.toString() ?? undefined
     this.page = params.page?.toString()
     this.cardholder_name = params.cardholderName?.toString() ?? undefined
@@ -37,22 +36,12 @@ export class TransactionSearchParamsData {
     this.transaction_type = params.type ?? undefined
     this.reference = params.reference ?? undefined
     this.email = params.email ?? undefined
-    this.from_date = this.setFromDate(params) ?? undefined
+    this.from_date = params.fromDate?.isValid ? params.fromDate.toUTC().toISO() : undefined
     this.to_date = params.toDate?.isValid ? params.toDate.toUTC().toISO() : undefined
     this.payment_states = params.paymentStates?.map(toLower).join(',')
     this.refund_states = params.refundStates?.map(toLower).join(',')
     this.dispute_states = params.disputeStates?.map(toLower).join(',')
     this.gateway_payout_id = params.gatewayPayoutId
-  }
-
-  setFromDate(params: TransactionSearchParams) {
-    if (params.dateFilter === 'all-time') {
-      return undefined
-    } else if (params.fromDate?.isValid) {
-      return params.fromDate.toUTC().toISO()
-    } else {
-      return TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO()
-    }
   }
 
   asQueryString(): string {

@@ -34,11 +34,11 @@ describe('DateTime Utility', () => {
 
   describe('getPeriodUKDateTimeRange', () => {
     describe('when period is "today"', () => {
-      it('should return range from start of today to current time', () => {
+      it('should return range from start of today to the end of the day', () => {
         const result = getPeriodUKDateTimeRange('today')
 
         const expectedStart = DateTime.fromISO('2025-01-15T00:00:00.000', { zone: 'Europe/London' })
-        const expectedEnd = DateTime.fromISO('2025-01-15T14:30:00.000', { zone: 'Europe/London' })
+        const expectedEnd = DateTime.fromISO('2025-01-15T23:59:59.999', { zone: 'Europe/London' })
 
         expect(result.start!.toISO()).to.equal(expectedStart.toISO())
         expect(result.end!.toISO()).to.equal(expectedEnd.toISO())
@@ -107,11 +107,11 @@ describe('DateTime Utility', () => {
     })
 
     describe('when period is "last-12-months"', () => {
-      it('should return range for 12 months ending now', () => {
+      it('should return range for 12 months ending at the end of the day', () => {
         const result = getPeriodUKDateTimeRange('last-12-months')
 
         const expectedStart = DateTime.fromISO('2024-01-15T00:00:00.000', { zone: 'Europe/London' })
-        const expectedEnd = DateTime.fromISO('2025-01-15T14:30:00.000Z', { zone: 'Europe/London' })
+        const expectedEnd = DateTime.fromISO('2025-01-15T23:59:59.999Z', { zone: 'Europe/London' })
 
         expect(result.start!.toISO()).to.equal(expectedStart.toISO())
         expect(result.end!.toISO()).to.equal(expectedEnd.toISO())
