@@ -99,7 +99,7 @@ async function get(
   const pagination = getPagination(currentPage, MAX_TRANSACTIONS_PER_PAGE, results.total, path)
 
   const downloadUrl = formattedPathFor(paths.allServiceTransactions.simplifiedAccount.download, req.viewMode.modeName)
-  const downloadQueryString = transactionSearchParams.getQueryParams().toString()
+  const downloadQueryString = transactionSearchParams.toQueryRecreationPrams().toString()
   const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
   const transactionCountWithinRange = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT
 

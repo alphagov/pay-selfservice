@@ -12,10 +12,11 @@ import {
 } from '@utils/simplified-account/services/transactions/status-filters'
 import { parseTransactionSearchDateTime } from '@utils/time/parse-date-time'
 import type { DateTime } from 'luxon'
-import { TRANSACTION_SEARCH_DATE_FORMAT } from '@utils/time/time-formats'
+import { TRANSACTION_SEARCH_DATE_FORMAT, TRANSACTION_SEARCH_TIME_FORMAT } from '@utils/time/time-formats'
 import { TimeConstants } from '@utils/time/time-constants'
+import { omit } from 'lodash'
 
-interface TransactionSearchQuery {
+export interface TransactionSearchQuery {
   cardholderName?: string
   lastDigitsCardNumber?: string
   metadataValue?: string
@@ -58,9 +59,11 @@ export class TransactionSearchParams {
   gatewayPayoutId?: string
   motoHeader?: boolean
   feeHeaders?: boolean
-  baseQuery?: TransactionSearchQuery
-  includeTime?: boolean
-  hasPagination?: boolean
+
+  private includeTime?: boolean
+  private baseQuery?: TransactionSearchQuery
+  private hasPagination?: boolean
+  private filterCount?: number
 
   constructor(gatewayAccountIds: number[] | string[]) {
     this.accountIds = gatewayAccountIds
@@ -99,6 +102,7 @@ export class TransactionSearchParams {
   }
 
   withSearchQuery(queryParams: TransactionSearchQuery) {
+    this.filterCount = countFilters(queryParams)
     if (this.hasPagination) {
       this.page = parsePageNumber(typeof queryParams.page === 'string' ? queryParams.page : `${queryParams.page}`)
     }
@@ -144,10 +148,29 @@ export class TransactionSearchParams {
     return new TransactionSearchParamsData(this)
   }
 
-  getQueryParams() {
+  // query params to recreate the same search
+  toQueryRecreationPrams() {
+    const params: Record<string, string | undefined> = {
+      cardholderName: this.cardholderName,
+      lastDigitsCardNumber: this.lastDigitsCardNumber,
+      metadataValue: this.metadataValue,
+      brand: this.brand?.join(','),
+      reference: this.reference,
+      email: this.email,
+      dateFilter: this.dateFilter,
+      state: this.state?.join(','),
+      page: this.page?.toString(),
+      fromDate: this.fromDate?.toFormat(TRANSACTION_SEARCH_DATE_FORMAT),
+      toDate: this.toDate?.toFormat(TRANSACTION_SEARCH_DATE_FORMAT),
+      fromTime: this.includeTime ? this.fromDate?.toFormat(TRANSACTION_SEARCH_TIME_FORMAT) : undefined,
+      toTime: this.includeTime ? this.toDate?.toFormat(TRANSACTION_SEARCH_TIME_FORMAT) : undefined,
+      includeTime: this.includeTime ? 'include' : undefined,
+      gatewayPayoutId: this.gatewayPayoutId,
+    }
+
     const urlParams = new URLSearchParams()
 
-    Object.entries(this.baseQuery as Record<string, string>).forEach(([key, value]: [string, string]) => {
+    Object.entries(params as Record<string, string>).forEach(([key, value]: [string, string]) => {
       if (value !== undefined && value !== null) {
         urlParams.set(key, value)
       }
@@ -169,17 +192,13 @@ export class TransactionSearchParams {
   }
 
   hasUserSelectedFilters() {
-    const filters = this.getQueryParams()
-    filters.delete('page')
-    filters.delete('jsEnabled')
-    return filters.size > 0
+    return this.filterCount === undefined ? false : this.filterCount > 0
   }
 
   isUnfilteredAllTimeSearch() {
-    const filters = this.getQueryParams()
-    filters.delete('page')
-    filters.delete('jsEnabled')
-    return filters.size === 1 && filters.get('dateFilter') === Period.ALL_TIME
+    return this.filterCount === undefined
+      ? false
+      : this.filterCount === 1 && this.baseQuery?.dateFilter === Period.ALL_TIME
   }
 }
 
@@ -290,4 +309,10 @@ function parseAsArray(queryParam: string[] | string | undefined): string[] | und
   } else {
     return queryParam.split(',')
   }
+}
+
+function countFilters(query: TransactionSearchQuery): number {
+  return Object.values(omit(query, ['page', 'jsEnabled'])).filter(
+    (queryParam) => !(queryParam === '' || queryParam === null || queryParam === undefined)
+  ).length
 }
