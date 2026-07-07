@@ -63,10 +63,11 @@ export class TransactionSearchParams {
   private includeTime?: boolean
   private baseQuery?: TransactionSearchQuery
   private hasPagination?: boolean
-  private filterCount?: number
+  private filterCount: number
 
   constructor(gatewayAccountIds: number[] | string[]) {
     this.accountIds = gatewayAccountIds
+    this.filterCount = 0
   }
 
   static Builder(gatewayAccountIds: number | number[] | string | string[]) {
@@ -192,13 +193,11 @@ export class TransactionSearchParams {
   }
 
   hasUserSelectedFilters() {
-    return this.filterCount === undefined ? false : this.filterCount > 0
+    return this.filterCount > 0
   }
 
   isUnfilteredAllTimeSearch() {
-    return this.filterCount === undefined
-      ? false
-      : this.filterCount === 1 && this.baseQuery?.dateFilter === Period.ALL_TIME
+    return this.filterCount === 1 && this.baseQuery?.dateFilter === Period.ALL_TIME
   }
 }
 
