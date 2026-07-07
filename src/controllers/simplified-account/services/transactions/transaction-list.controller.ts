@@ -71,7 +71,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     req.service.externalId,
     req.account.type
   )
-  const downloadQueryString = transactionSearchParams.getQueryParams().toString()
+  const downloadQueryString = transactionSearchParams.toQueryRecreationPrams().toString()
   const downloadLink = downloadQueryString.length ? `${downloadUrl}?${downloadQueryString}` : downloadUrl
   const transactionCountWithinRange = results.total > 0 && results.total <= LEDGER_TRANSACTION_COUNT_LIMIT
 

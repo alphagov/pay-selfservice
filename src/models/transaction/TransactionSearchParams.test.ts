@@ -1,8 +1,10 @@
-import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
+import { TransactionSearchParams, TransactionSearchQuery } from '@models/transaction/TransactionSearchParams.class'
 import sinon from 'sinon'
 import { afterEach, beforeEach } from 'mocha'
 import { Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 import { expect } from 'chai'
+import { MAX_TRANSACTIONS_PER_PAGE } from '@controllers/simplified-account/services/transactions/constants'
+import * as querystring from 'node:querystring'
 
 describe('Transaction search params tests', () => {
   let clock: sinon.SinonFakeTimers
@@ -222,6 +224,252 @@ describe('Transaction search params tests', () => {
 
       const queryString = ledgerQuery.asQueryString()
       queryString.should.eq(`account_id=1&payment_states=cancelled&dispute_states=${encodeURIComponent('won,lost')}`)
+    })
+  })
+
+  describe('search query recreation tests', () => {
+    it('should successfully recreate an empty search query', () => {
+      const testGatewayAccountId = 1
+      const searchParams = TransactionSearchParams.Builder(testGatewayAccountId).withSearchQuery({})
+
+      const recreationQuery = querystring.parse(
+        searchParams.toQueryRecreationPrams().toString()
+      ) as TransactionSearchQuery
+
+      const recreatedParams = TransactionSearchParams.Builder(testGatewayAccountId).withSearchQuery(recreationQuery)
+
+      const ledgerQuery = searchParams.toJson()
+      const recreatedLedgerQuery = recreatedParams.toJson()
+
+      ledgerQuery.should.deep.eq(recreatedLedgerQuery)
+      ledgerQuery.asQueryString().should.eq(recreatedLedgerQuery.asQueryString())
+    })
+
+    it('should successfully recreate the default search query', () => {
+      const testGatewayAccountId = 1
+      const searchParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withDefaultDateFilter(Period.LAST_12_MONTHS)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery({})
+
+      const recreationQuery = querystring.parse(
+        searchParams.toQueryRecreationPrams().toString()
+      ) as TransactionSearchQuery
+
+      const recreatedParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery(recreationQuery)
+
+      const ledgerQuery = searchParams.toJson()
+      const recreatedLedgerQuery = recreatedParams.toJson()
+
+      ledgerQuery.should.deep.eq(recreatedLedgerQuery)
+      ledgerQuery.asQueryString().should.eq(recreatedLedgerQuery.asQueryString())
+    })
+
+    it('should successfully recreate a complex search query', () => {
+      const testGatewayAccountId = 1
+      const searchParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withDefaultDateFilter(Period.LAST_12_MONTHS)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery({
+          cardholderName: 'Homer J Simpson',
+          lastDigitsCardNumber: '1234',
+          metadataValue: 'some metadata',
+          brand: 'visa,mastercard',
+          reference: 'DONUTS1234',
+          email: 'homer.simpson@example.com',
+          state: 'success,timed_out,error',
+          page: '3',
+        })
+
+      const recreationQuery = querystring.parse(
+        searchParams.toQueryRecreationPrams().toString()
+      ) as TransactionSearchQuery
+
+      const recreatedParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery(recreationQuery)
+
+      const ledgerQuery = searchParams.toJson()
+      const recreatedLedgerQuery = recreatedParams.toJson()
+
+      ledgerQuery.should.deep.eq(recreatedLedgerQuery)
+      ledgerQuery.asQueryString().should.eq(recreatedLedgerQuery.asQueryString())
+    })
+
+    it('should successfully recreate a query with a date filter', () => {
+      const testGatewayAccountId = 1
+      const searchParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withDefaultDateFilter(Period.LAST_12_MONTHS)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery({
+          dateFilter: 'yesterday',
+        })
+
+      const recreationQuery = querystring.parse(
+        searchParams.toQueryRecreationPrams().toString()
+      ) as TransactionSearchQuery
+
+      const recreatedParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery(recreationQuery)
+
+      const ledgerQuery = searchParams.toJson()
+      const recreatedLedgerQuery = recreatedParams.toJson()
+
+      ledgerQuery.should.deep.eq(recreatedLedgerQuery)
+      ledgerQuery.asQueryString().should.eq(recreatedLedgerQuery.asQueryString())
+    })
+
+    it('should successfully recreate a query with a date range', () => {
+      const testGatewayAccountId = 1
+      const searchParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withDefaultDateFilter(Period.LAST_12_MONTHS)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery({
+          dateFilter: 'yesterday',
+          fromDate: '14/01/2025',
+          toDate: '14/01/2025',
+        })
+
+      const recreationQuery = querystring.parse(
+        searchParams.toQueryRecreationPrams().toString()
+      ) as TransactionSearchQuery
+
+      const recreatedParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery(recreationQuery)
+
+      const ledgerQuery = searchParams.toJson()
+      const recreatedLedgerQuery = recreatedParams.toJson()
+
+      ledgerQuery.should.deep.eq(recreatedLedgerQuery)
+      ledgerQuery.asQueryString().should.eq(recreatedLedgerQuery.asQueryString())
+    })
+
+    it('should successfully recreate a query with a date range where JS is disabled', () => {
+      const testGatewayAccountId = 1
+      const searchParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withDefaultDateFilter(Period.LAST_12_MONTHS)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery({
+          dateFilter: 'last-12-months', // deliberately different to the entered dates
+          fromDate: '14/01/2025',
+          toDate: '14/01/2025',
+          jsEnabled: 'false',
+        })
+
+      const recreationQuery = querystring.parse(
+        searchParams.toQueryRecreationPrams().toString()
+      ) as TransactionSearchQuery
+
+      const recreatedParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery(recreationQuery)
+
+      const ledgerQuery = searchParams.toJson()
+      const recreatedLedgerQuery = recreatedParams.toJson()
+
+      ledgerQuery.should.deep.eq(recreatedLedgerQuery)
+      ledgerQuery.asQueryString().should.eq(recreatedLedgerQuery.asQueryString())
+    })
+
+    it('should successfully recreate a query with a time range included', () => {
+      const testGatewayAccountId = 1
+      const searchParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withDefaultDateFilter(Period.LAST_12_MONTHS)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery({
+          dateFilter: 'custom-range',
+          fromDate: '14/09/2024',
+          toDate: '07/01/2025',
+          fromTime: '2:30:00',
+          toTime: '11:45:00',
+        })
+
+      const recreationQuery = querystring.parse(
+        searchParams.toQueryRecreationPrams().toString()
+      ) as TransactionSearchQuery
+
+      const recreatedParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery(recreationQuery)
+
+      const ledgerQuery = searchParams.toJson()
+      const recreatedLedgerQuery = recreatedParams.toJson()
+
+      ledgerQuery.should.deep.eq(recreatedLedgerQuery)
+      ledgerQuery.asQueryString().should.eq(recreatedLedgerQuery.asQueryString())
+    })
+
+    it('should allow for query recreation without pagination', () => {
+      const searchQuery = {
+        cardholderName: 'Homer J Simpson',
+        lastDigitsCardNumber: '1234',
+        metadataValue: 'some metadata',
+        brand: 'visa,mastercard',
+        reference: 'DONUTS1234',
+        email: 'homer.simpson@example.com',
+        state: 'success,timed_out,error',
+      }
+
+      const testGatewayAccountId = 1
+      const searchParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withDefaultDateFilter(Period.LAST_12_MONTHS)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery(searchQuery)
+
+      const noPaginationSearchParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withDefaultDateFilter(Period.LAST_12_MONTHS)
+        .withSearchQuery(searchQuery)
+
+      const recreationQuery = querystring.parse(
+        searchParams.toQueryRecreationPrams().toString()
+      ) as TransactionSearchQuery
+
+      const recreatedParams = TransactionSearchParams.Builder(testGatewayAccountId).withSearchQuery(recreationQuery)
+
+      const noPaginationLedgerQuery = noPaginationSearchParams.toJson()
+      const recreatedLedgerQuery = recreatedParams.toJson()
+
+      noPaginationLedgerQuery.should.deep.eq(recreatedLedgerQuery)
+      expect(recreatedLedgerQuery.page).to.be.undefined
+      expect(recreatedLedgerQuery.limit_total).to.be.undefined
+      expect(recreatedLedgerQuery.limit_total_size).to.be.undefined
+
+      noPaginationLedgerQuery.asQueryString().should.eq(recreatedLedgerQuery.asQueryString())
+    })
+
+    it('should allow for query recreation without a default date filter', () => {
+      const testGatewayAccountId = 1
+      const query = {
+        dateFilter: 'yesterday',
+        fromDate: '14/01/2025',
+        toDate: '14/01/2025',
+      }
+      const searchParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withDefaultDateFilter(Period.LAST_12_MONTHS)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery(query)
+
+      const noDefaultDateFilterSearchParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery(query)
+
+      const recreationQuery = querystring.parse(
+        searchParams.toQueryRecreationPrams().toString()
+      ) as TransactionSearchQuery
+
+      const recreatedParams = TransactionSearchParams.Builder(testGatewayAccountId)
+        .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+        .withSearchQuery(recreationQuery)
+
+      const noDefaultDateFilterLedgerQuery = noDefaultDateFilterSearchParams.toJson()
+      const recreatedLedgerQuery = recreatedParams.toJson()
+
+      noDefaultDateFilterLedgerQuery.should.deep.eq(recreatedLedgerQuery)
+      noDefaultDateFilterLedgerQuery.asQueryString().should.eq(recreatedLedgerQuery.asQueryString())
     })
   })
 })
