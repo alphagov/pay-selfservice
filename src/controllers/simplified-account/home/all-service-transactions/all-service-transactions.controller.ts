@@ -44,13 +44,10 @@ async function get(
   }
 
   const isStripe = req.viewMode.paymentProviders.includes(PaymentProviders.STRIPE)
-
-  const transactionSearchParams = TransactionSearchParams.fromSearchQuery(
-    req.viewMode.gatewayAccountIds,
-    req.query,
-    true,
-    MAX_TRANSACTIONS_PER_PAGE
-  ).withDefaultDateFilter(Period.LAST_12_MONTHS)
+  const transactionSearchParams = TransactionSearchParams.Builder(req.viewMode.gatewayAccountIds)
+    .withDefaultDateFilter(Period.LAST_12_MONTHS)
+    .withPagination(MAX_TRANSACTIONS_PER_PAGE)
+    .withSearchQuery(req.query)
 
   let cardTypes: CardType[]
   let results: TransactionSearchResults

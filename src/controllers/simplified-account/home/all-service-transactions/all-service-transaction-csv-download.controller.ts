@@ -5,25 +5,15 @@ import { downloadCsv } from '@services/transactions.service'
 import logger from '@utils/logger'
 import PaymentProviders from '@models/constants/payment-providers'
 import date from '@utils/dates'
-import { findGatewayAccountsByService } from '@services/gateway-accounts.service'
+import { ViewMode } from '@models/view-mode/ViewMode.class'
 const LOGGER = logger(__filename)
 
-async function get(req: AuthenticatedRequest, res: express.Response<unknown, { flash?: Record<string, string[]> }>) {
-  const modeFilter = req.params.modeFilter === 'test' ? 'test' : 'live'
-
-  const userServiceExternalIds = req.user.serviceRoles
-    .filter((serviceRole) => serviceRole.hasPermission('transactions-download:read'))
-    .map((serviceRole) => serviceRole.service)
-    .map((service) => service.externalId)
-
-  const gatewayAccounts = await findGatewayAccountsByService(userServiceExternalIds, modeFilter)
-  const gatewayAccountIds = gatewayAccounts.map((gatewayAccountData) => gatewayAccountData.id)
-  const transactionSearchParams = TransactionSearchParams.fromSearchQuery(gatewayAccountIds, req.query, false)
-
-  if (gatewayAccounts.some((gatewayAccount) => gatewayAccount.paymentProvider === PaymentProviders.STRIPE)) {
-    transactionSearchParams.feeHeaders = true
-  }
-  transactionSearchParams.motoHeader = gatewayAccounts.some((gatewayAccount) => gatewayAccount.allowMoto)
+async function get(req: AuthenticatedRequest & { viewMode: ViewMode }, res: express.Response) {
+  const isMoto = Array.from(req.viewMode.gatewayAccounts.values()).some((gatewayAccount) => gatewayAccount.allowMoto)
+  const transactionSearchParams = TransactionSearchParams.Builder(req.viewMode.gatewayAccountIds)
+    .withSearchQuery(req.query)
+    .withMotoHeader(isMoto)
+    .withFeeHeaders(req.viewMode.paymentProviders.includes(PaymentProviders.STRIPE))
 
   const filename = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
   const [downloadStartTime, downloadEndTime] = await downloadCsv(transactionSearchParams, filename, res)
@@ -41,7 +31,7 @@ async function get(req: AuthenticatedRequest, res: express.Response<unknown, { f
     multiple_accounts: false,
     all_service_transactions: false,
     user_number_of_live_services: req.user.numberOfLiveServices,
-    is_live: modeFilter === 'live',
+    is_live: req.viewMode.modeName === 'live',
     filters: transactionSearchParams.getFilterKeys().join(', '),
   })
 

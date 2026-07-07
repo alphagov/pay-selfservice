@@ -7,12 +7,11 @@ import date from '@utils/dates'
 const LOGGER = logger(__filename)
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
-  const gatewayAccountId = req.account.id
-  const transactionSearchParams = TransactionSearchParams.fromSearchQuery(gatewayAccountId, req.query, false)
-  if (req.account && req.account.paymentProvider === PaymentProviders.STRIPE) {
-    transactionSearchParams.feeHeaders = true
-  }
-  transactionSearchParams.motoHeader = req.account.allowMoto
+  const transactionSearchParams = TransactionSearchParams.Builder(req.account.id)
+    .withSearchQuery(req.query)
+    .withMotoHeader(req.account.allowMoto)
+    .withFeeHeaders(req.account.paymentProvider === PaymentProviders.STRIPE)
+
   const filename = `GOVUK_Pay_${date.dateToDefaultFormat(new Date()).replace(' ', '_')}.csv`
   const [downloadStartTime, downloadEndTime] = await downloadCsv(transactionSearchParams, filename, res)
 

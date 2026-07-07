@@ -17,3 +17,15 @@ export function searchByServiceExternalIds(serviceExternalIds: string[]) {
     },
   }
 }
+
+export function getByServiceExternalIdAndAccountType(serviceExternalId: string, accountType: string) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}`
+
+  return {
+    success: function (gatewayAccount: GatewayAccountFixture) {
+      return stubBuilder('GET', path, 200, {
+        response: gatewayAccount.toGatewayAccountData(),
+      })
+    },
+  }
+}
