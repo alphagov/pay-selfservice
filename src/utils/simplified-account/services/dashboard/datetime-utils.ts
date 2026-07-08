@@ -11,6 +11,12 @@ export const Period: Record<string, Period> = {
   ALL_TIME: 'all-time',
 }
 
+const VALID_PERIODS = new Set(Object.values(Period))
+
+function isValidPeriod(period: unknown): period is Period {
+  return VALID_PERIODS.has(period as Period)
+}
+
 export type Period =
   | 'today'
   | 'yesterday'
@@ -31,6 +37,8 @@ export const TRANSACTION_FILTER_PERIODS: Set<Period> = new Set<Period>([
 interface DateTimeRange {
   start: DateTime<true> | undefined
   end: DateTime<true> | undefined
+  valid: boolean
+  period: Period
 }
 
 export const DT_FULL = {
@@ -44,30 +52,56 @@ export const DT_FULL = {
   hour12: true,
 } as DateTimeFormatOptions
 
-export function getPeriodUKDateTimeRange(period: Period | undefined): DateTimeRange {
+export function getPeriodUKDateTimeRange(period: unknown): DateTimeRange {
+  if (!isValidPeriod(period)) {
+    // today
+    return {
+      start: TimeConstants.TODAY,
+      end: TimeConstants.END_OF_TODAY,
+      valid: false,
+      period: Period.TODAY,
+    }
+  }
+
   switch (period) {
+    case 'today':
+      return {
+        start: TimeConstants.TODAY,
+        end: TimeConstants.END_OF_TODAY,
+        valid: true,
+        period: Period.TODAY,
+      }
+
     case 'yesterday':
       return {
         start: TimeConstants.YESTERDAY,
         end: TimeConstants.YESTERDAY.endOf('day'),
+        valid: true,
+        period: Period.YESTERDAY,
       }
 
     case 'previous-seven-days':
       return {
         start: TimeConstants.SEVEN_DAYS_AGO,
         end: TimeConstants.END_OF_YESTERDAY,
+        valid: true,
+        period: Period.PREVIOUS_SEVEN_DAYS,
       }
 
     case 'previous-thirty-days':
       return {
         start: TimeConstants.THIRTY_DAYS_AGO,
         end: TimeConstants.END_OF_YESTERDAY,
+        valid: true,
+        period: Period.PREVIOUS_THIRTY_DAYS,
       }
 
     case 'previous-month': {
       return {
         start: TimeConstants.START_OF_LAST_MONTH,
         end: TimeConstants.END_OF_LAST_MONTH,
+        valid: true,
+        period: Period.PREVIOUS_MONTH,
       }
     }
 
@@ -75,6 +109,8 @@ export function getPeriodUKDateTimeRange(period: Period | undefined): DateTimeRa
       return {
         start: TimeConstants.TWELVE_MONTHS_AGO,
         end: TimeConstants.END_OF_TODAY,
+        valid: true,
+        period: Period.LAST_12_MONTHS,
       }
     }
 
@@ -82,15 +118,10 @@ export function getPeriodUKDateTimeRange(period: Period | undefined): DateTimeRa
       return {
         start: undefined,
         end: undefined,
+        valid: true,
+        period: Period.ALL_TIME,
       }
     }
-
-    default:
-      // today
-      return {
-        start: TimeConstants.TODAY,
-        end: TimeConstants.END_OF_TODAY,
-      }
   }
 }
 

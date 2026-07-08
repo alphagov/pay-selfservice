@@ -26,14 +26,14 @@ export class TransactionSearchParamsData {
 
   constructor(params: TransactionSearchParams) {
     this.account_id = params.accountIds.join(',')
-    this.agreement_id = params.agreementId?.toString() ?? undefined
+    this.agreement_id = params.agreementId ?? undefined
     this.limit_total = params.limitTotal ?? undefined
     this.limit_total_size = params.limitTotalSize?.toString() ?? undefined
     this.display_size = params.displaySize?.toString() ?? undefined
     this.page = params.page?.toString()
-    this.cardholder_name = params.cardholderName?.toString() ?? undefined
+    this.cardholder_name = params.cardholderName ?? undefined
     this.last_digits_card_number = params.lastDigitsCardNumber?.toString() ?? undefined
-    this.metadata_value = params.metadataValue?.toString() ?? undefined
+    this.metadata_value = params.metadataValue ?? undefined
     this.card_brands = params.brand?.join(',') ?? undefined
     this.transaction_type = params.type ?? undefined
     this.reference = params.reference ?? undefined

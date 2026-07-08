@@ -23,6 +23,7 @@ import {
   MAX_TRANSACTIONS_PER_PAGE,
 } from '@controllers/simplified-account/services/transactions/constants'
 import { Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import { NonEmptyString } from '@utils/types/non-empty-string'
 
 async function get(
   req: AuthenticatedRequest & { viewMode: ViewMode },
@@ -84,7 +85,7 @@ async function get(
     return {
       value: card.brand,
       text: card.label === 'Jcb' ? card.label.toUpperCase() : card.label,
-      selected: transactionSearchParams.brand?.includes(card.brand),
+      selected: transactionSearchParams.brand?.includes(card.brand as NonEmptyString),
     }
   })
 

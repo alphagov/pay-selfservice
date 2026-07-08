@@ -14,6 +14,7 @@ import {
 } from '@utils/simplified-account/services/transactions/status-filters'
 import { LEDGER_TRANSACTION_COUNT_LIMIT, MAX_TRANSACTIONS_PER_PAGE } from './constants'
 import { Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
+import { NonEmptyString } from '@utils/types/non-empty-string'
 
 const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: string) => {
   const getPath = (pageNumber: number) => {
@@ -56,7 +57,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     return {
       value: card.brand,
       text: card.label === 'Jcb' ? card.label.toUpperCase() : card.label,
-      selected: transactionSearchParams.brand?.includes(card.brand),
+      selected: transactionSearchParams.brand?.includes(card.brand as NonEmptyString),
     }
   })
 
