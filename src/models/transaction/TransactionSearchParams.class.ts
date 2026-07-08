@@ -15,48 +15,50 @@ import type { DateTime } from 'luxon'
 import { TRANSACTION_SEARCH_DATE_FORMAT, TRANSACTION_SEARCH_TIME_FORMAT } from '@utils/time/time-formats'
 import { TimeConstants } from '@utils/time/time-constants'
 import { omit } from 'lodash'
+import { nonEmpty, NonEmptyString, nonEmptyStringArray } from '@utils/types/non-empty-string'
 
 export interface TransactionSearchQuery {
-  cardholderName?: string
-  lastDigitsCardNumber?: string
-  metadataValue?: string
-  brand?: string | string[]
-  reference?: string
-  email?: string
-  dateFilter?: string
-  state?: string | string[]
-  page?: string | number
-  fromDate?: string
-  toDate?: string
-  fromTime?: string
-  toTime?: string
-  includeTime?: string
-  gatewayPayoutId?: string
-  jsEnabled?: string
+  cardholderName?: unknown
+  lastDigitsCardNumber?: unknown
+  metadataValue?: unknown
+  brand?: unknown
+  reference?: unknown
+  email?: unknown
+  dateFilter?: unknown
+  state?: unknown
+  page?: unknown
+  fromDate?: unknown
+  toDate?: unknown
+  fromTime?: unknown
+  toTime?: unknown
+  includeTime?: unknown
+  gatewayPayoutId?: unknown
+  agreementId?: unknown
+  jsEnabled?: unknown
 }
 
 export class TransactionSearchParams {
   accountIds: number[] | string[]
-  agreementId?: string
+  agreementId?: NonEmptyString
   displaySize?: number
   page?: number
   limitTotal?: boolean
   limitTotalSize?: number
-  cardholderName?: string
-  lastDigitsCardNumber?: string
-  metadataValue?: string
-  brand?: string[]
-  reference?: string
-  email?: string
-  type?: string
-  dateFilter?: string
+  cardholderName?: NonEmptyString
+  lastDigitsCardNumber?: NonEmptyString
+  metadataValue?: NonEmptyString
+  brand?: NonEmptyString[]
+  reference?: NonEmptyString
+  email?: NonEmptyString
+  type?: NonEmptyString
+  dateFilter?: Period | 'custom-range'
   fromDate?: DateTime<true>
   toDate?: DateTime<true>
   state?: string[]
   paymentStates?: string[]
   refundStates?: string[]
   disputeStates?: string[]
-  gatewayPayoutId?: string
+  gatewayPayoutId?: NonEmptyString
   motoHeader?: boolean
   feeHeaders?: boolean
 
@@ -79,7 +81,7 @@ export class TransactionSearchParams {
   static forAgreement(gatewayAccountId: number, agreementExternalId: string, currentPage: number, displaySize: number) {
     const searchParams = TransactionSearchParams.Builder(gatewayAccountId).withPagination(displaySize)
     searchParams.page = currentPage
-    searchParams.agreementId = agreementExternalId
+    searchParams.agreementId = agreementExternalId as NonEmptyString
     return searchParams
   }
 
@@ -105,7 +107,7 @@ export class TransactionSearchParams {
   withSearchQuery(queryParams: TransactionSearchQuery) {
     this.filterCount = countFilters(queryParams)
     if (this.hasPagination) {
-      this.page = parsePageNumber(typeof queryParams.page === 'string' ? queryParams.page : `${queryParams.page}`)
+      this.page = parsePageNumber(queryParams.page)
     }
 
     this.baseQuery = queryParams
@@ -128,9 +130,9 @@ export class TransactionSearchParams {
       this.disputeStates = stateFilters.disputeStates
     }
 
-    if (queryParams.gatewayPayoutId) {
-      this.gatewayPayoutId = queryParams.gatewayPayoutId
-    }
+    // not from search, linked to from other pages
+    this.gatewayPayoutId = nonEmpty(queryParams.gatewayPayoutId)
+    this.agreementId = nonEmpty(queryParams.agreementId)
 
     return this
   }
@@ -151,7 +153,7 @@ export class TransactionSearchParams {
 
   // query params to recreate the same search
   toQueryRecreationPrams() {
-    const params: Record<string, string | undefined> = {
+    const params: TransactionSearchQuery = {
       cardholderName: this.cardholderName,
       lastDigitsCardNumber: this.lastDigitsCardNumber,
       metadataValue: this.metadataValue,
@@ -167,6 +169,7 @@ export class TransactionSearchParams {
       toTime: this.includeTime ? this.toDate?.toFormat(TRANSACTION_SEARCH_TIME_FORMAT) : undefined,
       includeTime: this.includeTime ? 'include' : undefined,
       gatewayPayoutId: this.gatewayPayoutId,
+      agreementId: this.agreementId,
     }
 
     const urlParams = new URLSearchParams()
@@ -219,8 +222,12 @@ function convertStateFilter(selected: string[]): ConnectorStates {
   }
 }
 
-function parsePageNumber(pageNumber?: string) {
-  if (!pageNumber) {
+function parsePageNumber(pageNumber: unknown) {
+  if (typeof pageNumber === 'number') {
+    return pageNumber
+  }
+
+  if (typeof pageNumber !== 'string' || pageNumber === '') {
     return 1
   }
 
@@ -232,23 +239,19 @@ function parsePageNumber(pageNumber?: string) {
   return parsedPageNumber
 }
 
-const nonEmpty = (value: string | undefined) => {
-  return value === '' ? undefined : value
-}
-
-interface DateTimeSearchParams {
-  dateFilter?: string
-  fromDate?: DateTime<true>
-  toDate?: DateTime<true>
-  fromTime?: string
-  toTime?: string
+type DateTimeSearchParams = Pick<TransactionSearchParams, 'dateFilter' | 'fromDate' | 'toDate'> & {
   includeTime?: boolean
 }
 
 const processDateAndTime = (queryParams: TransactionSearchQuery): DateTimeSearchParams => {
+  const fromDate = asString(queryParams.fromDate)
+  const toDate = asString(queryParams.toDate)
+  const fromTime = asString(queryParams.fromTime)
+  const toTime = asString(queryParams.toTime)
+
   const searchParams: DateTimeSearchParams = {}
 
-  const dateRange = getPeriodUKDateTimeRange(queryParams.dateFilter as Period)
+  const dateRange = getPeriodUKDateTimeRange(queryParams.dateFilter)
   const isJsEnabled = queryParams.jsEnabled !== 'false'
   const isDateFilterValidPeriod = TRANSACTION_FILTER_PERIODS.has(queryParams.dateFilter as Period)
 
@@ -258,7 +261,7 @@ const processDateAndTime = (queryParams: TransactionSearchQuery): DateTimeSearch
   const isNoJsDateFilterSearch = !isJsEnabled && isDateFilterValidPeriod
 
   if (isJsDateFilterSearch || isNoJsDateFilterSearch) {
-    searchParams.dateFilter = queryParams.dateFilter
+    searchParams.dateFilter = dateRange.period
     searchParams.fromDate = dateRange.start
     searchParams.toDate = dateRange.end
     searchParams.includeTime = false
@@ -268,27 +271,25 @@ const processDateAndTime = (queryParams: TransactionSearchQuery): DateTimeSearch
 
   if (queryParams.fromDate || queryParams.toDate) {
     searchParams.fromDate = parseTransactionSearchDateTime(
-      queryParams.fromDate ?? '',
-      queryParams.fromTime ?? '',
+      fromDate,
+      fromTime,
       queryParams.includeTime === 'include',
       TimeConstants.TWELVE_MONTHS_AGO
     )
 
     // parse end date/time, clamp to end of day if not including time
-    const toDate = parseTransactionSearchDateTime(
-      queryParams.toDate ?? '',
-      queryParams.toTime ?? '',
+    const parsedToDate = parseTransactionSearchDateTime(
+      toDate,
+      toTime,
       queryParams.includeTime === 'include',
       TimeConstants.END_OF_TODAY
     )
-    searchParams.toDate = queryParams.includeTime === 'include' ? toDate : toDate.endOf('day')
+    searchParams.toDate = queryParams.includeTime === 'include' ? parsedToDate : parsedToDate.endOf('day')
 
     // if the selected dates match the filter, persist the filter, otherwise set to custom-range
     // this ensures the correct filter is displayed to the user
     searchParams.dateFilter =
-      isSameDate(queryParams.fromDate, dateRange.start) && isSameDate(queryParams.toDate, dateRange.end)
-        ? queryParams.dateFilter
-        : 'custom-range'
+      isSameDate(fromDate, dateRange.start) && isSameDate(toDate, dateRange.end) ? dateRange.period : 'custom-range'
 
     searchParams.includeTime = queryParams.includeTime === 'include'
   }
@@ -300,13 +301,20 @@ function isSameDate(dateString: string | undefined, date: DateTime | undefined) 
   return dateString === date?.toFormat(TRANSACTION_SEARCH_DATE_FORMAT)
 }
 
-function parseAsArray(queryParam: string[] | string | undefined): string[] | undefined {
-  if (queryParam === undefined || queryParam === '' || queryParam.length === 0) {
+function parseAsArray(queryParam: unknown): NonEmptyString[] | undefined {
+  if (
+    queryParam === undefined ||
+    queryParam === null ||
+    queryParam === '' ||
+    (Array.isArray(queryParam) && queryParam.length === 0)
+  ) {
     return undefined
   } else if (Array.isArray(queryParam)) {
-    return queryParam
+    return nonEmptyStringArray(queryParam)
+  } else if (typeof queryParam !== 'string') {
+    return undefined
   } else {
-    return queryParam.split(',')
+    return nonEmptyStringArray(queryParam.split(','))
   }
 }
 
@@ -314,4 +322,11 @@ function countFilters(query: TransactionSearchQuery): number {
   return Object.values(omit(query, ['page', 'jsEnabled'])).filter(
     (queryParam) => !(queryParam === '' || queryParam === null || queryParam === undefined)
   ).length
+}
+
+function asString(value: unknown): string {
+  if (typeof value !== 'string') {
+    return ''
+  }
+  return value
 }

@@ -205,6 +205,11 @@ describe('Agreements', () => {
     cy.get('[data-cy="transaction-list-title"]').should('contain', 'Transactions')
     cy.get('#transactions-list').should('exist')
     cy.get('[data-cy="all-payment-link"]').should('exist')
+    cy.get('[data-cy="all-payment-link"] > a').should(
+      'have.attr',
+      'href',
+      `/service/${SERVICE_EXTERNAL_ID}/account/${GatewayAccountType.TEST}/transactions?agreementId=a-valid-agreement-id`
+    )
 
     cy.log('Navigate back using back link and verify filters are persisted')
     cy.get('.govuk-back-link').click()
