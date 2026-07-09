@@ -61,6 +61,20 @@ describe('Transaction search params tests', () => {
     )
   })
 
+  it('should allow setting default date params to today', () => {
+    const testGatewayAccountId = 1
+    const searchParams = TransactionSearchParams.Builder(testGatewayAccountId).withDefaultDateFilter(Period.TODAY)
+
+    const ledgerQuery = searchParams.toJson()
+    ledgerQuery.from_date!.should.eq('2025-01-15T00:00:00.000Z')
+    ledgerQuery.to_date!.should.eq('2025-01-15T23:59:59.999Z')
+
+    const queryString = ledgerQuery.asQueryString()
+    queryString.should.eq(
+      `account_id=1&from_date=${encodeURIComponent('2025-01-15T00:00:00.000Z')}&to_date=${encodeURIComponent('2025-01-15T23:59:59.999Z')}`
+    )
+  })
+
   it('should allow setting pagination', () => {
     const testGatewayAccountId = 1
     const searchParams = TransactionSearchParams.Builder(testGatewayAccountId).withPagination(20).withSearchQuery({})
@@ -248,7 +262,7 @@ describe('Transaction search params tests', () => {
     it('should successfully recreate the default search query', () => {
       const testGatewayAccountId = 1
       const searchParams = TransactionSearchParams.Builder(testGatewayAccountId)
-        .withDefaultDateFilter(Period.LAST_12_MONTHS)
+        .withDefaultDateFilter(Period.TODAY)
         .withPagination(MAX_TRANSACTIONS_PER_PAGE)
         .withSearchQuery({})
 

@@ -55,7 +55,7 @@ function getTransactionsForGatewayAccount(gatewayAccountId: string) {
           display_size: 20,
           limit_total: true,
           limit_total_size: 5001,
-          from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+          from_date: TimeConstants.TODAY.toUTC().toISO(),
           to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
         },
       })

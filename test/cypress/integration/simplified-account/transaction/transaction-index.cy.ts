@@ -137,7 +137,7 @@ describe('Transactions index', () => {
           transactions: [TRANSACTION],
           transactionLength: 6000,
           filters: {
-            from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+            from_date: TimeConstants.TODAY.toUTC().toISO(),
             to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
           },
           displaySize: 20,
@@ -160,7 +160,7 @@ describe('Transactions index', () => {
           transactionLength: 6000,
           filters: {
             reference: 'unfiltered',
-            from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+            from_date: TimeConstants.TODAY.toUTC().toISO(),
             to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
           },
           displaySize: 20,
@@ -618,7 +618,7 @@ describe('Transactions index', () => {
             gatewayAccountId: GATEWAY_ACCOUNT_ID,
             transactions: [TRANSACTION],
             filters: {
-              from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+              from_date: TimeConstants.TODAY.toUTC().toISO(),
               to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
             },
             displaySize: 20,
@@ -649,7 +649,7 @@ describe('Transactions index', () => {
             gatewayAccountId: GATEWAY_ACCOUNT_ID,
             transactions: [TRANSACTION],
             filters: {
-              from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+              from_date: TimeConstants.TODAY.toUTC().toISO(),
               to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
             },
             displaySize: 20,
@@ -680,7 +680,7 @@ describe('Transactions index', () => {
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
           filters: {
-            from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+            from_date: TimeConstants.TODAY.toUTC().toISO(),
             to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
           },
           displaySize: 20,
@@ -734,7 +734,7 @@ describe('Transactions index', () => {
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
           filters: {
-            from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+            from_date: TimeConstants.TODAY.toUTC().toISO(),
             to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
           },
           displaySize: 20,
@@ -776,7 +776,7 @@ describe('Transactions index', () => {
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
           filters: {
-            from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+            from_date: TimeConstants.TODAY.toUTC().toISO(),
             to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
           },
           displaySize: 20,
@@ -809,7 +809,7 @@ describe('Transactions index', () => {
           gatewayAccountId: GATEWAY_ACCOUNT_ID,
           transactions: [TRANSACTION],
           filters: {
-            from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+            from_date: TimeConstants.TODAY.toUTC().toISO(),
             to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
           },
           displaySize: 20,
@@ -839,7 +839,7 @@ describe('Transactions index', () => {
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactions: [TRANSACTION],
         filters: {
-          from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+          from_date: TimeConstants.TODAY.toUTC().toISO(),
           to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
           reference,
           email,
@@ -882,7 +882,7 @@ describe('Transactions index', () => {
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactions: [TRANSACTION],
         filters: {
-          from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+          from_date: TimeConstants.TODAY.toUTC().toISO(),
           to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
         },
         displaySize: 20,
@@ -930,7 +930,7 @@ describe('Transactions index', () => {
         gatewayAccountId: GATEWAY_ACCOUNT_ID,
         transactions: [TRANSACTION],
         filters: {
-          from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
+          from_date: TimeConstants.TODAY.toUTC().toISO(),
           to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
           reference,
           email,

@@ -10,6 +10,7 @@ import { TransactionSearchParams } from '@models/transaction/TransactionSearchPa
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import { searchByServiceExternalIds } from '@test/cypress/stubs/simplified-account/gateway-account-stubs'
 import PaymentProviders from '@models/constants/payment-providers'
+import { Period } from '@utils/simplified-account/services/dashboard/datetime-utils'
 
 const USER_EXTERNAL_ID = 'user123abc'
 const USER_EMAIL = 's.mcduck@example.com'
@@ -81,7 +82,7 @@ describe('All Service Transactions list', () => {
         searchTransactions(
           TransactionSearchParams.Builder(accountIds)
             .withPagination(20)
-            .withDefaultDateFilter('last-12-months')
+            .withDefaultDateFilter(Period.TODAY)
             .withSearchQuery({})
         ).success([STRIPE_TRANSACTION, WORLDPAY_TRANSACTION, SANDBOX_TRANSACTION]),
         searchByServiceExternalIds([
@@ -155,7 +156,7 @@ describe('All Service Transactions list', () => {
         searchTransactions(
           TransactionSearchParams.Builder(accountIds)
             .withPagination(20)
-            .withDefaultDateFilter('last-12-months')
+            .withDefaultDateFilter(Period.TODAY)
             .withSearchQuery({})
         ).success([WORLDPAY_TRANSACTION, SANDBOX_TRANSACTION]),
         searchByServiceExternalIds([SANDBOX_SERVICE.externalId, WORLDPAY_SERVICE.externalId]).success([
