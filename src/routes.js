@@ -178,35 +178,35 @@ module.exports.bind = function (app) {
   // All service transactions
   app.get(
     allServiceTransactions.index,
-    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.index),
     userIsAuthorised,
+    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.index),
     allTransactionsController.getController
   )
   app.get(
     allServiceTransactions.indexStatusFilter,
     validateStatusFilter,
-    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.index),
     userIsAuthorised,
+    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.index),
     allTransactionsController.getController
   )
   app.get(
     allServiceTransactions.indexStatusFilterWithoutSearch,
     validateStatusFilter,
-    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.nosearch),
     userIsAuthorised,
+    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.nosearch),
     allTransactionsController.noAutosearchTransactions
   )
   app.get(
     allServiceTransactions.download,
-    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.download),
     userIsAuthorised,
+    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.download),
     allTransactionsController.downloadTransactions
   )
   app.get(
     allServiceTransactions.downloadStatusFilter,
     validateStatusFilter,
-    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.download),
     userIsAuthorised,
+    allServiceTransactionRedirect(paths.allServiceTransactions.simplifiedAccount.download),
     allTransactionsController.downloadTransactions
   )
   app.get(

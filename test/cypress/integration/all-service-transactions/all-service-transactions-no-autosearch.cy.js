@@ -58,6 +58,10 @@ const testTransactions = [
 ]
 
 describe('All service transactions without automatic search', () => {
+  beforeEach(() => {
+    cy.setEncryptedCookies(userExternalId)
+  })
+
   describe('redirect', () => {
     it('should redirect to the new pages for /test', () => {
       cy.task('setupStubs', [
@@ -109,10 +113,6 @@ describe('All service transactions without automatic search', () => {
   })
 
   describe.skip('skipping old tests', () => {
-    beforeEach(() => {
-      cy.setEncryptedCookies(userExternalId)
-    })
-
     it('should display All Service Transactions list page with no live transactions and ability to view test transactions', () => {
       cy.task('setupStubs', [
         userStub,
