@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import { Features } from '@root/config/features'
 import formatPathFor from '@utils/replace-params-in-path'
 import { NotFoundError } from '@root/errors'
 import Ledger from '@services/clients/ledger.client'
@@ -16,12 +15,6 @@ import createLogger from '@utils/logger'
 const logger = createLogger('transaction-redirect.middleware.ts')
 
 export function transactionRedirect(path: string) {
-  if (!Features.isEnabled(Features.TRANSACTIONS)) {
-    return (req: Request, res: Response, next: NextFunction) => {
-      return next()
-    }
-  }
-
   return (req: Request & { service?: unknown; account?: unknown }, res: Response) => {
     logger.info(`Transactions redirect called for path [${path}]`)
 
@@ -42,12 +35,6 @@ export function transactionRedirect(path: string) {
 }
 
 export function allServiceTransactionRedirect(path: string) {
-  if (!Features.isEnabled(Features.TRANSACTIONS)) {
-    return (req: Request, res: Response, next: NextFunction) => {
-      return next()
-    }
-  }
-
   return (req: Request, res: Response) => {
     logger.info(`All service transactions redirect called for path [${path}]`)
     if (!req.params.statusFilter) {
@@ -61,12 +48,6 @@ export function allServiceTransactionRedirect(path: string) {
 }
 
 export function allServiceTransactionDetailRedirect(path: string) {
-  if (!Features.isEnabled(Features.TRANSACTIONS)) {
-    return (req: Request, res: Response, next: NextFunction) => {
-      return next()
-    }
-  }
-
   return async (req: Request, res: Response, next: NextFunction) => {
     logger.info(`All service transactions detail redirect called for path [${path}]`)
 

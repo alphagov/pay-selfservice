@@ -3,8 +3,6 @@ import { getAgreement, getLatestTransactionsForAgreement } from '@services/agree
 import { response } from '@utils/response'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
-import formatAccountPathsFor from '@utils/format-account-paths-for'
-import { Features } from '@root/config/features'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const agreementsFilter = req.session.agreementsFilter as string
@@ -26,9 +24,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
       req.account.type,
       agreement.externalId
     ),
-    allAgreementTransactionsLink: Features.isEnabled(Features.TRANSACTIONS)
-      ? `${formatServiceAndAccountPathsFor(paths.simplifiedAccount.transactions.index, req.service.externalId, req.account.type)}?agreementId=${agreement.externalId}`
-      : `${formatAccountPathsFor(paths.account.transactions.index, req.account.externalId)}?agreementId=${agreement.externalId}`, // todo move me to service model when transactions are updated
+    allAgreementTransactionsLink: `${formatServiceAndAccountPathsFor(paths.simplifiedAccount.transactions.index, req.service.externalId, req.account.type)}?agreementId=${agreement.externalId}`,
   })
 }
 

@@ -51,7 +51,7 @@
         <h2 class="dashboard-total-group__title">
           <a
             class="govuk-link"
-            href="{{ serviceView.links.transactions.defaultSearches.successfulPayments if EnvironmentFeatures.isEnabled('transactions') else links.activity.payments }}"
+            href="{{ serviceView.links.transactions.defaultSearches.successfulPayments }}"
             title="View successful payment transactions for chosen time period"
           >
             Successful payments
@@ -72,7 +72,7 @@
         <h2 class="dashboard-total-group__title">
           <a
             class="govuk-link"
-            href="{{ serviceView.links.transactions.defaultSearches.successfulRefunds if EnvironmentFeatures.isEnabled('transactions') else links.activity.refunds }}"
+            href="{{ serviceView.links.transactions.defaultSearches.successfulRefunds }}"
             title="View refunded transactions for chosen time period"
           >
             Successful refunds
@@ -93,7 +93,7 @@
         <h2 class="dashboard-total-group__title">
           <a
             class="govuk-link"
-            href="{{ serviceView.links.transactions.defaultSearches.netIncome if EnvironmentFeatures.isEnabled('transactions') else links.activity.net }}"
+            href="{{ serviceView.links.transactions.defaultSearches.netIncome }}"
             title="View successful payments and refunded transactions for chosen time period"
           >
             Net income

@@ -36,9 +36,7 @@ const serviceNavigationItems = (currentPath, permissions, type, currentUrl, serv
     navigationItems.push({
       id: 'navigation-menu-transactions',
       name: 'Transactions',
-      url: Features.isEnabled(Features.TRANSACTIONS)
-        ? formatSimplifiedAccountPathsFor(paths.simplifiedAccount.transactions.index, serviceExternalId, account.type)
-        : formatAccountPathsFor(paths.account.transactions.index, gatewayAccountExternalId),
+      url: formatSimplifiedAccountPathsFor(paths.simplifiedAccount.transactions.index, serviceExternalId, account.type),
       current: pathLookup(currentPath, paths.account.transactions.index),
       permissions: permissions.transactions_read,
     })
