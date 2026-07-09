@@ -4,7 +4,6 @@ import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixtu
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import refundFixtures from '@test/fixtures/refund.fixtures'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'
-import { TimeConstants } from '@utils/time/time-constants'
 import { TransactionSearchParams } from '@models/transaction/TransactionSearchParams.class'
 
 function getTransaction(transactionExternalId: string) {
@@ -55,8 +54,6 @@ function getTransactionsForGatewayAccount(gatewayAccountId: string) {
           display_size: 20,
           limit_total: true,
           limit_total_size: 5001,
-          from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
-          to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
         },
       })
     },

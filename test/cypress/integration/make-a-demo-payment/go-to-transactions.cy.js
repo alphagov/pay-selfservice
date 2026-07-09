@@ -42,10 +42,7 @@ const setupStubs = (options = {}) => {
     transactionStubs.getLedgerTransactionsSuccess({
       gatewayAccountId: GATEWAY_ACCOUNT_ID,
       displaySize: 20,
-      filters: {
-        from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO(),
-        to_date: TimeConstants.END_OF_TODAY.toUTC().toISO(),
-      },
+      filters: {},
       transactionLength: 1,
     }),
     gatewayAccountStubs.getCardTypesSuccess(),

@@ -1,7 +1,6 @@
 import userStubs from '@test/cypress/stubs/user-stubs'
 import GatewayAccountType, { TEST } from '@models/gateway-account/gateway-account-type'
 import gatewayAccountStubs, { getCardTypesSuccess } from '@test/cypress/stubs/gateway-account-stubs'
-import transactionStubs from '@test/cypress/stubs/transaction-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
 import {
   getTransactionEvents,
@@ -10,7 +9,6 @@ import {
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
 import ROLES from '@test/fixtures/roles.fixtures'
 import { DateTime } from 'luxon'
-import { TimeConstants } from '@utils/time/time-constants'
 
 const TRANSACTION_CREATED_TIMESTAMP = DateTime.fromISO('2025-07-22T03:14:15.926+01:00')
 const TRANSACTION = new TransactionFixture({
@@ -65,13 +63,6 @@ describe('All services transaction details page', () => {
       getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION),
       getTransactionEvents(GATEWAY_ACCOUNT_ID, TRANSACTION.externalId).success(TRANSACTION_EVENTS),
       getCardTypesSuccess(),
-      transactionStubs.getLedgerTransactionsSuccess({
-        gatewayAccountId: GATEWAY_ACCOUNT_ID,
-        transactions: [TRANSACTION],
-        filters: { from_date: TimeConstants.TWELVE_MONTHS_AGO.toUTC().toISO() },
-        displaySize: 20,
-        transactionLength: 1,
-      }),
     ])
   })
 
