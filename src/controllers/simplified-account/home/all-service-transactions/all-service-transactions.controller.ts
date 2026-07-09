@@ -46,7 +46,7 @@ async function get(
 
   const isStripe = req.viewMode.paymentProviders.includes(PaymentProviders.STRIPE)
   const transactionSearchParams = TransactionSearchParams.Builder(req.viewMode.gatewayAccountIds)
-    .withDefaultDateFilter(Period.LAST_12_MONTHS)
+    .withDefaultDateFilter(Period.ALL_TIME)
     .withPagination(MAX_TRANSACTIONS_PER_PAGE)
     .withSearchQuery(req.query)
 

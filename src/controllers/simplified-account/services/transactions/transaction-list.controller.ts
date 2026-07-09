@@ -30,7 +30,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   const isStripe = req.account.paymentProvider === 'stripe'
   const gatewayAccountId = req.account.id
   const transactionSearchParams = TransactionSearchParams.Builder(gatewayAccountId)
-    .withDefaultDateFilter(Period.LAST_12_MONTHS)
+    .withDefaultDateFilter(Period.ALL_TIME)
     .withPagination(MAX_TRANSACTIONS_PER_PAGE)
     .withSearchQuery(req.query)
 

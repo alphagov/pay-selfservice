@@ -61,6 +61,18 @@ describe('Transaction search params tests', () => {
     )
   })
 
+  it('allow setting the default date params to all time', () => {
+    const testGatewayAccountId = 1
+    const searchParams = TransactionSearchParams.Builder(testGatewayAccountId).withDefaultDateFilter(Period.ALL_TIME)
+
+    const ledgerQuery = searchParams.toJson()
+    expect(ledgerQuery.from_date).to.be.undefined
+    expect(ledgerQuery.to_date).to.be.undefined
+
+    const queryString = ledgerQuery.asQueryString()
+    queryString.should.eq(`account_id=1`)
+  })
+
   it('should allow setting pagination', () => {
     const testGatewayAccountId = 1
     const searchParams = TransactionSearchParams.Builder(testGatewayAccountId).withPagination(20).withSearchQuery({})
