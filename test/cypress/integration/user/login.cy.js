@@ -23,14 +23,14 @@ describe('Login Page', () => {
       userStubs.postUserAuthenticateInvalidPassword(validEmail, invalidPassword),
       userStubs.postSecondFactorSuccess(userExternalId),
       userStubs.postAuthenticateSecondFactorInvalidCode(userExternalId, invalidCode),
-      userStubs.postAuthenticateSecondFactorSuccess(userExternalId, validCode)
+      userStubs.postAuthenticateSecondFactorSuccess(userExternalId, validCode),
     ])
 
     cy.visit('/')
   })
 
   describe('Page content', () => {
-    it('should have the page title \'Sign in to GOV.UK Pay\'', () => {
+    it("should have the page title 'Sign in to GOV.UK Pay'", () => {
       cy.title().should('eq', 'Sign in to GOV.UK Pay')
     })
 
@@ -47,14 +47,14 @@ describe('Login Page', () => {
     })
 
     it('should display the footer correctly when logged out', () => {
-      cy.log('should display the About section with 6 links')
+      cy.log('should display the About section with 5 links')
 
       cy.get('[data-cy=footer]')
         .find('.govuk-footer__section')
         .contains('About')
         .parent()
         .find('a')
-        .should('have.length', 6)
+        .should('have.length', 5)
 
       cy.log('should display the Support section with 4 links')
 
@@ -64,12 +64,10 @@ describe('Login Page', () => {
         .parent()
         .find('a')
         .should('have.length', 4)
-    
+
       cy.log('should not display Legal terms when logged out')
-      
-      cy.get('[data-cy=footer]')
-        .find('.govuk-footer__section')
-        .should('not.contain', 'Legal Terms')
+
+      cy.get('[data-cy=footer]').find('.govuk-footer__section').should('not.contain', 'Legal Terms')
     })
   })
 
@@ -93,10 +91,13 @@ describe('Login Page', () => {
 
       cy.contains('There is a problem')
       cy.get('.govuk-error-summary__list>li').should('have.length', 1)
-      cy.get('.govuk-error-summary__list>li').first()
+      cy.get('.govuk-error-summary__list>li')
+        .first()
         .contains('The security code you’ve used is incorrect or has expired')
         .should('have.attr', 'href', '#sms_code')
-      cy.get('#sms_code').parent().get('.govuk-error-message')
+      cy.get('#sms_code')
+        .parent()
+        .get('.govuk-error-message')
         .contains('The security code you’ve used is incorrect or has expired')
 
       // enter a valid code and submit
@@ -114,11 +115,11 @@ describe('Login Page', () => {
       cy.contains('Continue').click()
       cy.contains('There is a problem')
       cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
-      cy.get('[data-cy=error-summary-list-item]').first()
+      cy.get('[data-cy=error-summary-list-item]')
+        .first()
         .contains('Enter a password')
         .should('have.attr', 'href', '#password')
-      cy.get('.govuk-error-message')
-        .contains('Enter a password')
+      cy.get('.govuk-error-message').contains('Enter a password')
     })
 
     it('should show inline errors if no email address is supplied', () => {
@@ -126,11 +127,11 @@ describe('Login Page', () => {
       cy.contains('Continue').click()
       cy.contains('There is a problem')
       cy.get('[data-cy=error-summary-list-item]').should('have.length', 1)
-      cy.get('[data-cy=error-summary-list-item]').first()
+      cy.get('[data-cy=error-summary-list-item]')
+        .first()
         .contains('Enter an email address')
         .should('have.attr', 'href', '#username')
-      cy.get('.govuk-error-message')
-        .contains('Enter an email address')
+      cy.get('.govuk-error-message').contains('Enter an email address')
     })
 
     it('should deny access to selfservice if the password is incorrect', () => {
