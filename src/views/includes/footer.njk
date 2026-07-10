@@ -1,105 +1,107 @@
-{% set footerNavigation = [
-  {
-    title: "About",
-    width: "one-third",
-    items: [
+{%
+  set footerNavigation = [
     {
-      href: "https://www.payments.service.gov.uk/",
-      text: "About"
-    },
-    {
-      href: "https://www.payments.service.gov.uk/getstarted/",
-      text: "Get started"
-    },
-    {
-      href: "https://www.payments.service.gov.uk/features/",
-      text: "Features"
-    },
-    {
-      href: "https://www.payments.service.gov.uk/roadmap/",
-      text: "Roadmap"
-    },
-    {
-      href: "https://www.payments.service.gov.uk/performance/",
-      text: "Performance"
-    },
-    {
-      href: "https://docs.google.com/forms/d/e/1FAIpQLSdJRj0asGOu3VJZ-0UPmx0T6w7FMsdduRAS51k18TS2XlNC7w/viewform",
-      text: "Newsletter"
-    }
-  ]
-  },
-  {
-    title: "Support",
-    width: "one-third",
-    items: [
-    {
-      href: "https://ukgovernmentdigital.slack.com/messages/C0L3AB342/",
-      text: "Chat with GOV.UK Pay on Slack"
-    },
-    {
-      href: "https://docs.payments.service.gov.uk",
-      text: "Documentation"
-    },
-    {
-      href: "https://payments.statuspage.io/",
-      text: "System status"
-    },
-    {
-      href: "https://www.payments.service.gov.uk/support/",
-      text: "Support"
-    }
-  ]
-  }
-] %}
-
-{% if loggedIn %}
-  {% set footerNavigation = footerNavigation.concat([
-    {
-      title: "Legal Terms",
+      title: "About",
       width: "one-third",
       items: [
-      {
-        href: "/policy/memorandum-of-understanding-for-crown-bodies",
-        text: "Memorandum of understanding for Crown bodies"
-      },
-      {
-        href: "/policy/contract-for-non-crown-bodies",
-        text: "Contract for non-Crown bodies"
-      },
-      {
-        href: "/policy/stripe-connected-account-agreement",
-        text: "Stripe Connected Account Agreement"
-      },
-      {
-        href: "/policy/pci-dss-attestation-of-compliance",
-        text: "Attestation of Compliance for PCI"
-      }
-    ]
+        {
+          href: "https://www.payments.service.gov.uk/",
+          text: "About"
+        },
+        {
+          href: "https://www.payments.service.gov.uk/getstarted/",
+          text: "Get started"
+        },
+        {
+          href: "https://www.payments.service.gov.uk/features/",
+          text: "Features"
+        },
+        {
+          href: "https://www.payments.service.gov.uk/roadmap/",
+          text: "Roadmap"
+        },
+        {
+          href: "https://www.payments.service.gov.uk/performance/",
+          text: "Performance"
+        }
+      ]
+    },
+    {
+      title: "Support",
+      width: "one-third",
+      items: [
+        {
+          href: "https://ukgovernmentdigital.slack.com/messages/C0L3AB342/",
+          text: "Chat with GOV.UK Pay on Slack"
+        },
+        {
+          href: "https://docs.payments.service.gov.uk",
+          text: "Documentation"
+        },
+        {
+          href: "https://payments.statuspage.io/",
+          text: "System status"
+        },
+        {
+          href: "https://www.payments.service.gov.uk/support/",
+          text: "Support"
+        }
+      ]
     }
-  ]) %}
+  ]
+%}
+
+{% if loggedIn %}
+  {%
+    set footerNavigation = footerNavigation.concat([
+      {
+        title: "Legal Terms",
+        width: "one-third",
+        items: [
+          {
+            href: "/policy/memorandum-of-understanding-for-crown-bodies",
+            text: "Memorandum of understanding for Crown bodies"
+          },
+          {
+            href: "/policy/contract-for-non-crown-bodies",
+            text: "Contract for non-Crown bodies"
+          },
+          {
+            href: "/policy/stripe-connected-account-agreement",
+            text: "Stripe Connected Account Agreement"
+          },
+          {
+            href: "/policy/pci-dss-attestation-of-compliance",
+            text: "Attestation of Compliance for PCI"
+          }
+        ]
+      }
+    ])
+  %}
 {% endif %}
 
-{{ govukFooter({
-  navigation: footerNavigation,
-  meta: {
-    items: [
-      {
-        href: "/privacy",
-        text: "Privacy notice"
-      },
-      {
-        href: "//www.payments.service.gov.uk/cookies/",
-        text: "Cookies"
-      },
-      {
-        href: "//www.payments.service.gov.uk/accessibility-statement/",
-        text: "Accessibility statement"
-      }
-    ],
-    html: 'Built by the <a class="govuk-footer__link" href="#">Government Digital Service</a>'
-  },
-  attributes : {
-      'data-cy': 'footer'
-  }
-}) }}
+{{
+  govukFooter({
+    navigation: footerNavigation,
+    meta: {
+      items: [
+        {
+          href: "/privacy",
+          text: "Privacy notice"
+        },
+        {
+          href: "//www.payments.service.gov.uk/cookies/",
+          text: "Cookies"
+        },
+        {
+          href: "//www.payments.service.gov.uk/accessibility-statement/",
+          text: "Accessibility statement"
+        }
+      ],
+      html: 'Built by the <a class="govuk-footer__link" href="#">Government Digital Service</a>'
+    },
+    attributes : {
+        'data-cy': 'footer'
+    }
+  })
+}}
