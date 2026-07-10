@@ -107,7 +107,12 @@ describe('controller: services/ledger', () => {
       })
 
       it('should pass correct template path to the response method', () => {
-        sinon.assert.calledWith(mockResponse, sinon.match.any, sinon.match.any, 'simplified-account/transactions/index')
+        sinon.assert.calledWith(
+          mockResponse,
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/services/transactions/list/transaction-index'
+        )
       })
 
       it('should set results on the context', () => {

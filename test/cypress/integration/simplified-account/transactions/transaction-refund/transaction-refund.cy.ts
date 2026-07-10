@@ -10,7 +10,7 @@ import {
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { LedgerRefundSummaryFixture } from '@test/fixtures/transaction/ledger-refund-summary.fixture'
 import { TransactionEventFixture } from '@test/fixtures/transaction/transaction-event.fixture'
-import { checkServiceNavigation } from '../common/assertions'
+import { checkServiceNavigation } from '../../common/assertions'
 import ROLES from '@test/fixtures/roles.fixtures'
 import { DateTime } from 'luxon'
 

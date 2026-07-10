@@ -1,7 +1,7 @@
 import * as list from './all-service-transactions.controller'
-import * as detail from './all-service-transactions-detail.controller'
-import * as refund from './all-service-transactions-refund.controller'
-import * as downloadCSV from './all-service-transaction-csv-download.controller'
+import * as detail from './detail/all-service-transactions-detail.controller'
+import * as refund from './refund/all-service-transactions-refund.controller'
+import * as downloadCSV from './csv-download/all-service-transaction-csv-download.controller'
 import * as timeout from './timeout/all-service-transactions-search-timeout.controller'
 import * as nosearch from './nosearch/all-service-transactions-search-nosearch.controller'
 
