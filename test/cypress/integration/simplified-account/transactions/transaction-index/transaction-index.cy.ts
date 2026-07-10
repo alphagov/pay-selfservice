@@ -1,7 +1,7 @@
 import userStubs from '@test/cypress/stubs/user-stubs'
 import gatewayAccountStubs from '@test/cypress/stubs/gateway-account-stubs'
 import { TransactionFixture } from '@test/fixtures/transaction/transaction.fixture'
-import { checkServiceNavigation, checkTitleAndHeading } from '../common/assertions'
+import { checkServiceNavigation, checkTitleAndHeading } from '../../common/assertions'
 import { TEST } from '@models/gateway-account/gateway-account-type'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 import { TransactionData } from '@models/transaction/dto/Transaction.dto'

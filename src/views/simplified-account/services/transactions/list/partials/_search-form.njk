@@ -1,0 +1,35 @@
+<form method="GET" novalidate autocomplete="off">
+  {% include "./_filter.njk" %}
+
+
+  {% set advancedFilters %}
+    {% include "./_advanced-filter.njk" %}
+  {% endset %}
+
+  {{
+    govukAccordion({
+      id: "accordion-default",
+      classes: "disable-accordion-controls",
+      items: [
+        {
+          heading: {
+          text: "Advanced search"
+        },
+          content: {
+          html: advancedFilters
+        }
+        }
+      ]
+    })
+  }}
+
+  <div class="govuk-button-group">
+    {{
+      govukButton({
+        text: "Search transactions"
+      })
+    }}
+
+    <a class="govuk-link govuk-link--no-visited-state" href="{{ clearRedirect }}">Clear filters</a>
+  </div>
+</form>

@@ -40,7 +40,7 @@ const getTransactionStub = sinon.stub().resolves(transactionFixture.toTransactio
 const submitRefundStub = sinon.stub()
 
 const { req, res, nextRequest, call } = new ControllerTestBuilder(
-  '@controllers/simplified-account/services/transactions/transaction-refund.controller'
+  '@controllers/simplified-account/services/transactions/refund/transaction-refund.controller'
 )
   .withStubs({
     '@utils/response': { response: mockResponse },
@@ -81,7 +81,11 @@ describe('transaction refund controller', () => {
         await call('get')
 
         mockResponse.should.have.been.calledOnce
-        mockResponse.should.have.been.calledWith(req, res, 'simplified-account/services/transactions/refund')
+        mockResponse.should.have.been.calledWith(
+          req,
+          res,
+          'simplified-account/services/transactions/refund/transaction-refund'
+        )
       })
 
       it('should call the response method with the context object', async () => {
@@ -133,7 +137,11 @@ describe('transaction refund controller', () => {
           const thisCall = await call('post')
 
           mockResponse.should.have.been.calledOnce
-          mockResponse.should.have.been.calledWith(thisCall.req, res, 'simplified-account/services/transactions/refund')
+          mockResponse.should.have.been.calledWith(
+            thisCall.req,
+            res,
+            'simplified-account/services/transactions/refund/transaction-refund'
+          )
         })
 
         it('should pass the context to the response method with the errors', async () => {
@@ -181,7 +189,11 @@ describe('transaction refund controller', () => {
           const thisCall = await call('post')
 
           mockResponse.should.have.been.calledOnce
-          mockResponse.should.have.been.calledWith(thisCall.req, res, 'simplified-account/services/transactions/refund')
+          mockResponse.should.have.been.calledWith(
+            thisCall.req,
+            res,
+            'simplified-account/services/transactions/refund/transaction-refund'
+          )
         })
 
         it('should pass the context to the response method with the errors', async () => {
@@ -228,7 +240,11 @@ describe('transaction refund controller', () => {
           const thisCall = await call('post')
 
           mockResponse.should.have.been.calledOnce
-          mockResponse.should.have.been.calledWith(thisCall.req, res, 'simplified-account/services/transactions/refund')
+          mockResponse.should.have.been.calledWith(
+            thisCall.req,
+            res,
+            'simplified-account/services/transactions/refund/transaction-refund'
+          )
         })
 
         it('should pass the context to the response method with the errors', async () => {
@@ -275,7 +291,11 @@ describe('transaction refund controller', () => {
           const thisCall = await call('post')
 
           mockResponse.should.have.been.calledOnce
-          mockResponse.should.have.been.calledWith(thisCall.req, res, 'simplified-account/services/transactions/refund')
+          mockResponse.should.have.been.calledWith(
+            thisCall.req,
+            res,
+            'simplified-account/services/transactions/refund/transaction-refund'
+          )
         })
 
         it('should pass the context to the response method with the errors', async () => {

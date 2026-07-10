@@ -25,7 +25,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     )
   }
 
-  return response(req, res, 'simplified-account/services/transactions/refund', {
+  return response(req, res, 'simplified-account/services/transactions/refund/transaction-refund', {
     transaction,
     pageID: `${transaction.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${transaction.reference}`,
     backLink: formatServiceAndAccountPathsFor(
@@ -64,7 +64,7 @@ async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResp
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     const formattedErrors = formatValidationErrors(errors)
-    return response(req, res, 'simplified-account/services/transactions/refund', {
+    return response(req, res, 'simplified-account/services/transactions/refund/transaction-refund', {
       transaction,
       errors: {
         summary: formattedErrors.errorSummary,

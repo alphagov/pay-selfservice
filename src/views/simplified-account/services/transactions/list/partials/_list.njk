@@ -1,5 +1,5 @@
-{% from './macro/_stripe-transaction-row.njk' import stripeTransactionRow %}
-{% from './macro/_worldpay-transaction-row.njk' import worldpayTransactionRow %}
+{% from '../macro/_stripe-transaction-row.njk' import stripeTransactionRow %}
+{% from '../macro/_worldpay-transaction-row.njk' import worldpayTransactionRow %}
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 
 {% if results.transactions.length %}

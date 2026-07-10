@@ -26,70 +26,16 @@
     {% endif %}
 
     <h1 class="govuk-heading-l"> Transactions </h1>
+    {% include './partials/_search-form.njk' %}
 
-    <form method="GET" novalidate autocomplete="off">
-      {% include "./filter.njk" %}
-
-
-      {% set advancedFilters %}
-        {% include "./advanced-filter.njk" %}
-      {% endset %}
-
-      {{
-        govukAccordion({
-          id: "accordion-default",
-          classes: "disable-accordion-controls",
-          items: [
-            {
-              heading: {
-                text: "Advanced search"
-              },
-              content: {
-                html: advancedFilters
-              }
-            }
-          ]
-        })
-      }}
-
-      <div class="govuk-button-group">
-        {{
-          govukButton({
-            text: "Search transactions"
-          })
-        }}
-
-        <a class="govuk-link govuk-link--no-visited-state" href="{{ clearRedirect }}">Clear filters</a>
-      </div>
-    </form>
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 
-    {% if (showCsvDownload) %}
-      {{
-        govukButton({
-          text: "Download CSV",
-          classes: "govuk-button--secondary",
-          href: downloadLink
-        })
-      }}
-    {% elif (results.transactions.length) %}
-      <p id="csv-download" class="govuk-body">Filter results to download a CSV of transactions</p>
-    {% endif %}
+    {% include './partials/_csv-link.njk' %}
 
     {% if isBST %}
-      <details class="govuk-details">
-        <summary class="govuk-details__summary">
-          <span class="govuk-details__summary-text"> How times work in CSV downloads </span>
-        </summary>
-        <div class="govuk-details__text govuk-grid-column-two-thirds" style="margin-bottom: 20px">
-          The UK is on British Summertime (BST) but CSV downloads are in UTC (Coordinated Universal Time), which is the
-          same as GMT (Greenwich Mean Time).<br /><br />
-          If you want to download a day’s transactions, you can change your filters so it’s one hour ahead, for example
-          01:00:00 to 01:00:00 instead of 00:00:00 to 00:00:00.
-        </div>
-      </details>
+      {% include './partials/_bst-details.njk' %}
     {% endif %}
-    {% include "./list.njk" %}
+    {% include "./partials/_list.njk" %}
   </div>
 {% endblock %}
 

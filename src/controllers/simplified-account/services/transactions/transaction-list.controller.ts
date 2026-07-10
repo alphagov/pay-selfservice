@@ -82,7 +82,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   req.session.transactionFilters = req.url.split('?')[1] || ''
 
-  return response(req, res, 'simplified-account/transactions/index', {
+  return response(req, res, 'simplified-account/services/transactions/list/transaction-index', {
     results,
     isBST: isBritishSummerTime(),
     pagination,

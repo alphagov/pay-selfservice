@@ -27,7 +27,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 
   const transactionFilters = req.session.transactionFilters as string
 
-  return response(req, res, 'simplified-account/services/transactions/detail/index', {
+  return response(req, res, 'simplified-account/services/transactions/detail/transaction-detail', {
     backLink: `${formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.transactions.index,
       req.service.externalId,
