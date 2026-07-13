@@ -12,8 +12,6 @@ import sessionValidator from '@services/session-validator.js'
 import paths from '@root/paths.js'
 import userService from '@services/user.service'
 import { addField } from '@services/clients/base/request-context'
-// @ts-expect-error js commons is not updated for typescript support yet
-import { logging } from '@govuk-pay/pay-js-commons'
 import { validationErrors } from '@utils/validation/field-validation-checks'
 import { validateOtp } from '@utils/validation/server-side-form-validations'
 import { sanitiseSecurityCode } from '@utils/security-code-utils'
@@ -21,8 +19,7 @@ import { RESTClientError } from '@govuk-pay/pay-js-commons/lib/utils/axios-base-
 
 const logger = createLogger(__filename)
 const CustomStrategy = passportCustom.Strategy
-// TODO remove type assertion once js commons is typescript compatible
-const { USER_EXTERNAL_ID } = (logging as { keys: Record<string, string> }).keys
+import * as LoggingKeys from '@govuk-pay/pay-js-commons/lib/logging/keys'
 
 interface ClientSessionsExpressRequest extends Request {
   session: ClientSessionsCookie
@@ -150,7 +147,7 @@ function hasValidSession(req: PassportExpressRequest) {
 function addUserFieldsToLogContext(req: Request, _: Response, next: NextFunction) {
   const user = req.user as User
   if (user) {
-    addField(USER_EXTERNAL_ID, user.externalId)
+    addField(LoggingKeys.USER_EXTERNAL_ID, user.externalId)
     addField('internal_user', `${user.internalUser}`)
   }
   next()
