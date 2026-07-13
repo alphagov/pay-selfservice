@@ -18,6 +18,8 @@ import { UpdateAcceptedCardTypesRequest } from '@models/card-type/UpdateAccepted
 import { ChargeRefundRequest } from '@models/charge/ChargeRefundRequest.class'
 import { ChargeRefundRequestData } from '@models/charge/dto/ChargeRefundRequest.dto'
 import { GatewayAccountSearchParams } from '@models/gateway-account/GatewayAccountSearchParams.class'
+import { AdyenAccountSetupData } from '@models/gateway-account/dto/AdyenAccountSetup.dto'
+import { AdyenAccountSetup } from '@models/gateway-account/AdyenAccountSetup.class'
 
 const SERVICE_NAME = 'connector'
 const SERVICE_BASE_URL = process.env.CONNECTOR_URL!
@@ -167,6 +169,18 @@ class ConnectorClient extends BaseClient {
           }[],
           void
         >(path, body, 'set stripe account onboarding step to done')
+      },
+
+      adyenSetup: {
+        get: async (serviceExternalId: string, accountType: string, credentialExternalId: string) => {
+          const path = '/v1/api/service/{serviceExternalId}/account/{accountType}/adyen-setup/{credentialExternalId}'
+            .replace('{serviceExternalId}', encodeURIComponent(serviceExternalId))
+            .replace('{accountType}', encodeURIComponent(accountType))
+            .replace('{credentialExternalId}', encodeURIComponent(credentialExternalId))
+
+          const response = await this.get<AdyenAccountSetupData>(path, 'get stripe account onboarding progress')
+          return new AdyenAccountSetup(response.data)
+        },
       },
 
       switchPSPByServiceExternalIdAndAccountType: async (
