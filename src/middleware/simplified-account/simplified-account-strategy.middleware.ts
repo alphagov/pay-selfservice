@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express'
 import { NotFoundError, NotAuthenticatedError } from '@root/errors'
 import { keys } from '@root/paths'
+import * as LoggingKeys from '@govuk-pay/pay-js-commons/lib/logging/keys'
 import createLogger from '@utils/logger'
 import User from '@models/user/User.class'
 import { addField } from '@services/clients/base/request-context'
@@ -11,7 +12,9 @@ import Service from '@models/service/Service.class'
 import { getGatewayAccountByServiceExternalIdAndType } from '@services/gateway-accounts.service'
 import { ServiceView } from '@models/service-view/ServiceView.class'
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
-const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE, GATEWAY_ACCOUNT_EXTERNAL_ID } = keys
+const { SERVICE_EXTERNAL_ID, ACCOUNT_TYPE } = keys
+
+const GATEWAY_ACCOUNT_EXTERNAL_ID_LOGGING_KEY = 'gateway_account_external_id'
 
 const logger = createLogger(__filename)
 
@@ -102,15 +105,15 @@ async function getSimplifiedAccount(req: Request, _: Response, next: NextFunctio
     const gatewayAccount = await getGatewayAccount(serviceExternalId, accountType)
     if (gatewayAccount) {
       request.account = gatewayAccount
-      addField(GATEWAY_ACCOUNT_EXTERNAL_ID, gatewayAccount.externalId)
-      addField(ACCOUNT_TYPE, gatewayAccount.type)
+      addField(GATEWAY_ACCOUNT_EXTERNAL_ID_LOGGING_KEY, gatewayAccount.externalId)
+      addField(LoggingKeys.GATEWAY_ACCOUNT_TYPE, gatewayAccount.type)
     } else {
       return next(new NotFoundError('Could not retrieve gateway account with provided parameters'))
     }
     const service = getService(request.user, serviceExternalId, gatewayAccount.id)
     if (service) {
       request.service = service
-      addField(SERVICE_EXTERNAL_ID, service.externalId)
+      addField(LoggingKeys.SERVICE_EXTERNAL_ID, service.externalId)
     } else {
       return next(new NotFoundError('Could not find role for user on service'))
     }
