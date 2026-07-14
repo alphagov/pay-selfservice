@@ -51,9 +51,7 @@ describe('connector client - get adyen account setup', () => {
           .should.be.fulfilled.then((adyenSetup: AdyenAccountSetup) => {
             expect(adyenSetup.serviceExternalId).to.equal(SERVICE_EXTERNAL_ID)
             expect(adyenSetup.credentialExternalId).to.equal(CREDENTIAL_EXTERNAL_ID)
-            expect(adyenSetup.tasks).to.deep.equal({
-              unknownTask: 'NOT_STARTED',
-            })
+            expect(adyenSetup.tasks).to.deep.equal({})
           })
       })
   })
