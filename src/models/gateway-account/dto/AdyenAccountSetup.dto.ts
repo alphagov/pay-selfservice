@@ -1,7 +1,10 @@
+// TODO update when we know the Adyen KYC tasks
+type AdyenAccountSetupTaskNames = never
+
 export interface AdyenAccountSetupData {
   service_id: string
   credential_external_id: string
-  tasks: Record<string, AdyenAccountSetupStatus>
+  tasks: Record<AdyenAccountSetupTaskNames, AdyenAccountSetupStatus>
 }
 
-export type AdyenAccountSetupStatus = 'COMPLETED' | 'NOT_STARTED'
+type AdyenAccountSetupStatus = 'COMPLETED' | 'NOT_STARTED'

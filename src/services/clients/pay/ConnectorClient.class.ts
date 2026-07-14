@@ -29,8 +29,8 @@ class ConnectorClient extends BaseClient {
   public gatewayAccounts
   public agreements
   public cardTypes
-  constructor() {
-    super(SERVICE_BASE_URL, SERVICE_NAME)
+  constructor(baseUrl?: string) {
+    super(baseUrl ?? SERVICE_BASE_URL, SERVICE_NAME)
     this.charges = this.chargesClient
     this.gatewayAccounts = this.gatewayAccountsClient
     this.agreements = this.agreementClient

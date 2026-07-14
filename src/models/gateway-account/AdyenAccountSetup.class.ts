@@ -12,11 +12,11 @@ export class AdyenAccountSetup {
   }
 }
 
-export type AdyenAccountSetupTask = 'unknown_task'
+export type AdyenAccountSetupTask = string
 
 export const AdyenAccountSetupTaskStatus = {
   COMPLETED: 'COMPLETED',
   NOT_STARTED: 'NOT_STARTED',
-}
+} as const
 
 export type AdyenAccountSetupTaskStatus = 'COMPLETED' | 'NOT_STARTED'
