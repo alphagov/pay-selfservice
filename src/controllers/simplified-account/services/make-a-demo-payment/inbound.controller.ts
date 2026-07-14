@@ -5,8 +5,6 @@ import paths from '@root/paths'
 import { getProductByExternalId } from '@services/products.service'
 import { getGatewayAccountById } from '@services/gateway-accounts.service'
 import formatSimplifiedAccountPathsFor from '@utils/simplified-account/format/format-simplified-account-paths-for'
-import { Features } from '@root/config/features'
-import formatAccountPathsFor from '@utils/format-account-paths-for'
 
 const logger = createLogger(__filename)
 
@@ -16,9 +14,11 @@ async function get(req: Request, res: Response, next: NextFunction) {
     const product = await getProductByExternalId(productExternalId)
     const account = await getGatewayAccountById(product.gatewayAccountId)
 
-    const transactionsIndex = Features.isEnabled(Features.TRANSACTIONS)
-      ? formatSimplifiedAccountPathsFor(paths.simplifiedAccount.transactions.index, account.serviceId, account.type)
-      : formatAccountPathsFor(paths.account.transactions.index, account.externalId)
+    const transactionsIndex = formatSimplifiedAccountPathsFor(
+      paths.simplifiedAccount.transactions.index,
+      account.serviceId,
+      account.type
+    )
 
     res.redirect(302, transactionsIndex)
   } catch (err) {

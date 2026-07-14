@@ -55,9 +55,10 @@ const listAllServicesPayouts = async function listAllServicesPayouts(req, res, n
       filterLiveAccounts,
       hasLiveAccounts: userPermittedAccountsSummary.hasLiveAccounts,
       hasTestStripeAccount: userPermittedAccountsSummary.hasTestStripeAccount,
-      transactionsDownloadPath: Features.isEnabled(Features.TRANSACTIONS)
-        ? formatPathFor(paths.allServiceTransactions.simplifiedAccount.download, filterLiveAccounts ? 'live' : 'test')
-        : formatPathFor(paths.allServiceTransactions.downloadStatusFilter, filterLiveAccounts ? 'live' : 'test'),
+      transactionsDownloadPath: formatPathFor(
+        paths.allServiceTransactions.simplifiedAccount.download,
+        filterLiveAccounts ? 'live' : 'test'
+      ),
     })
   } catch (error) {
     return next(new Error('Failed to fetch payouts'))
