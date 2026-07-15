@@ -32,7 +32,7 @@
     "cypress:test": "cypress run",
     "cypress:test-headed": "cypress open",
     "cypress:test-percy": "percy exec -- cypress run",
-    "publish-pacts": "find ./pacts -name '*.json' ! -name '*to-be*' | xargs pact-broker publish --consumer-app-version=$PACT_CONSUMER_VERSION --broker-base-url=$PACT_BROKER_URL --broker-username=$PACT_BROKER_USERNAME --broker-password=$PACT_BROKER_PASSWORD"
+    "publish-pacts": "find ./pacts -name '*.json' ! -name '*to-be*' | xargs pact-broker publish --consumer-app-version=$PACT_CONSUMER_VERSION --broker-base-url=$PACT_BROKER_URL --broker-username=$PACT_BROKER_USERNAME --broker-password=$PACT_BROKER_PASSWORD --tag=$PACT_CONSUMER_TAG"
   },
   "lint-staged": {
     "*.js": [
