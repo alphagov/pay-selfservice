@@ -59,7 +59,7 @@ describe('connector client - get adyen account setup', () => {
   it('should return 404 if the gateway account is not found', async () => {
     await provider
       .addInteraction()
-      .uponReceiving('a valid adyen account setup request')
+      .uponReceiving('an adyen account setup request for a non-existent gateway account')
       .pending()
       .withRequest(
         'GET',
@@ -82,7 +82,7 @@ describe('connector client - get adyen account setup', () => {
     await provider
       .addInteraction()
       .given('an adyen gateway account exists')
-      .uponReceiving('a valid adyen account setup request')
+      .uponReceiving('an adyen account setup request for a non-existent credential')
       .pending()
       .withRequest(
         'GET',
@@ -105,7 +105,7 @@ describe('connector client - get adyen account setup', () => {
     await provider
       .addInteraction()
       .given('a stripe gateway account with external id 42 exists in the database')
-      .uponReceiving('a valid adyen account setup request')
+      .uponReceiving('an adyen account setup request for the stripe gateway account')
       .pending()
       .withRequest(
         'GET',
