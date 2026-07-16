@@ -178,7 +178,7 @@ class ConnectorClient extends BaseClient {
             .replace('{accountType}', encodeURIComponent(accountType))
             .replace('{credentialExternalId}', encodeURIComponent(credentialExternalId))
 
-          const response = await this.get<AdyenAccountSetupData>(path, 'get stripe account onboarding progress')
+          const response = await this.get<AdyenAccountSetupData>(path, 'get adyen account onboarding progress')
           return new AdyenAccountSetup(response.data)
         },
       },
