@@ -1,4 +1,4 @@
-<form method="GET" novalidate autocomplete="off">
+<form method="GET" novalidate autocomplete="off" {% if searchLink %}action="{{ searchLink }}"{% endif %}>
   {% include "./_filter.njk" %}
 
 
