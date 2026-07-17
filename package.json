@@ -25,14 +25,14 @@
     "lint-fix": "eslint --fix",
     "lint-sass": "stylelint 'src/assets/sass/**/*.scss'",
     "test": "rm -rf ./pacts && NODE_ENV=test mocha '!(node_modules)/**/*.test'.[jt]s",
-    "test:no-pact": "rm -rf ./pacts && NODE_ENV=test mocha --exclude **/*.pact.test.js '!(node_modules)/**/*.test'.js",
-    "test:pact": "rm -rf ./pacts && NODE_ENV=test mocha **/*.pact.test.js",
+    "test:no-pact": "rm -rf ./pacts && NODE_ENV=test mocha --exclude **/*.pact.test.[jt]s '!(node_modules)/**/*.test'.[jt]s",
+    "test:pact": "rm -rf ./pacts && NODE_ENV=test mocha **/*.pact.test.[jt]s",
     "cypress:server": "run-amock --port=8000 | node -r dotenv/config dist/application.js dotenv_config_path=test/cypress/test.env",
     "cypress:dev-server": "run-amock --port=8000 | NODE_ENV=test node dev-server.mjs",
     "cypress:test": "cypress run",
     "cypress:test-headed": "cypress open",
     "cypress:test-percy": "percy exec -- cypress run",
-    "publish-pacts": "find ./pacts -name '*.json' ! -name '*to-be*' | xargs pact-broker publish --consumer-app-version=$PACT_CONSUMER_VERSION --broker-base-url=$PACT_BROKER_URL --broker-username=$PACT_BROKER_USERNAME --broker-password=$PACT_BROKER_PASSWORD"
+    "publish-pacts": "find ./pacts -name '*.json' ! -name '*to-be*' | xargs pact-broker publish --consumer-app-version=$PACT_CONSUMER_VERSION --broker-base-url=$PACT_BROKER_URL --broker-username=$PACT_BROKER_USERNAME --broker-password=$PACT_BROKER_PASSWORD --tag=$PACT_CONSUMER_TAG"
   },
   "lint-staged": {
     "*.js": [
