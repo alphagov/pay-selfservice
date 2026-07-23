@@ -6,8 +6,13 @@ import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get(req: ServiceRequest, res: ServiceResponse) {
+interface Params extends ServiceRequestParams {
+  agreementExternalId: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const agreement = await getAgreement(req.params.agreementExternalId, req.service.externalId)
   return response(req, res, 'simplified-account/services/agreements/cancel', {
     backLink: formatServiceAndAccountPathsFor(

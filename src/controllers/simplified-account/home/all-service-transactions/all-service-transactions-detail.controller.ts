@@ -4,8 +4,13 @@ import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { Transaction } from '@models/transaction/Transaction.class'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get(req: ServiceRequest, res: ServiceResponse) {
+interface Params extends ServiceRequestParams {
+  transactionExternalId: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   req.serviceView.showHeader = false
 
   const [transaction, events] = await Promise.all([

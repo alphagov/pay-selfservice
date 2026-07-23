@@ -7,10 +7,17 @@ import { getGatewayAccountById } from '@services/gateway-accounts.service'
 import formatSimplifiedAccountPathsFor from '@utils/simplified-account/format/format-simplified-account-paths-for'
 import { Features } from '@root/config/features'
 import formatAccountPathsFor from '@utils/format-account-paths-for'
+import { ServiceRequest, ServiceResponse } from '@utils/types/express'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
+
+interface Params extends ServiceRequestParams {
+  productExternalId: string
+}
+
 
 const logger = createLogger(__filename)
 
-async function get(req: Request, res: Response, next: NextFunction) {
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse, next: NextFunction) {
   const productExternalId = req.params.productExternalId
   try {
     const product = await getProductByExternalId(productExternalId)

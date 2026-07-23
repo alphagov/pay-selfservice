@@ -11,8 +11,13 @@ import { ChargeRefundRequest } from '@models/charge/ChargeRefundRequest.class'
 import { safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 import { Message } from '@utils/types/express/Message'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get(req: ServiceRequest, res: ServiceResponse) {
+interface Params extends ServiceRequestParams {
+  transactionExternalId: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   req.serviceView.showHeader = false
 
   const transaction = await getTransaction(req.params.transactionExternalId, req.account.id)
