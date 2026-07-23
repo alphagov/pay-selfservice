@@ -49,7 +49,7 @@ interface TransactionRefundBody {
   partialRefundAmount: string
 }
 
-async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResponse) {
+async function post(req: ServiceRequest<TransactionRefundBody, Params>, res: ServiceResponse) {
   const transaction = await getTransaction(req.params.transactionExternalId, req.account.id)
   if (transaction.isFullyRefunded() || !transaction.isRefundable()) {
     return res.redirect(
