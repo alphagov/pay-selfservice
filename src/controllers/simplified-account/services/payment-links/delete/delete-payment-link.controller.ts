@@ -7,12 +7,17 @@ import paths from '@root/paths'
 import { body, validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { NextFunction } from 'client-sessions'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
+
+interface Params extends ServiceRequestParams {
+  productExternalId: string
+}
 
 interface DeletePaymentLinkBody {
   confirmDelete?: 'yes' | 'no'
 }
 
-async function get(req: ServiceRequest, res: ServiceResponse) {
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const { productExternalId } = req.params
   const { service, account } = req
 
@@ -36,7 +41,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
   })
 }
 
-async function post(req: ServiceRequest<DeletePaymentLinkBody>, res: ServiceResponse, next: NextFunction) {
+async function post(req: ServiceRequest<DeletePaymentLinkBody, Params>, res: ServiceResponse, next: NextFunction) {
   const { productExternalId } = req.params
   const { service, account } = req
 
