@@ -10,9 +10,14 @@ import worldpayDetailsService from "@services/worldpay-details.service";
 import _ from "lodash";
 import {SESSION_KEY} from "@controllers/simplified-account/settings/worldpay-details/constants";
 import { Errors } from '@utils/simplified-account/format/format-validation-errors-types'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
+
+interface Params extends ServiceRequestParams {
+  credentialExternalId: string
+}
 
 
-function get(req: ServiceRequest, res: ServiceResponse) {
+function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId).credentials.oneOffCustomerInitiated ?? {}
 
   return response(req, res, 'simplified-account/settings/worldpay-details/one-off-customer-initiated-credentials', {
@@ -38,7 +43,7 @@ interface OneOffCustomerInitiatedBody {
   password: string
 }
 
-async function post (req: ServiceRequest<OneOffCustomerInitiatedBody>, res: ServiceResponse) {
+async function post (req: ServiceRequest<OneOffCustomerInitiatedBody, Params>, res: ServiceResponse) {
   await Promise.all(worldpayCredentialsValidations.map(validation => validation.run(req)))
   const validationErrors = validationResult(req)
   if (!validationErrors.isEmpty()) {
