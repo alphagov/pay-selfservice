@@ -14,10 +14,11 @@ import lodash from 'lodash'
 import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
 interface Params extends ServiceRequestParams {
-  productExternalId: string
+  productExternalId: string,
+  metadataKey: string
 }
 
-async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse, next: NextFunction) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
   try {
     checkKeyExistsOnProductMetadata(product, req)
@@ -127,7 +128,7 @@ async function post(req: ServiceRequest<EditLinkMetadataBody, Params>, res: Serv
 
 function checkKeyExistsOnProductMetadata(
   product: Product,
-  req: ServiceRequest<EditLinkMetadataBody>
+  req: ServiceRequest<EditLinkMetadataBody, Params>
 ): asserts product is Product & {
   metadata: NonNullable<Record<string, string>>
 } {
