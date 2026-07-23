@@ -8,8 +8,13 @@ import { getProductByGatewayAccountIdAndExternalId } from '@services/products.se
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get(req: ServiceRequest, res: ServiceResponse) {
+interface Params extends ServiceRequestParams {
+  productExternalId: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
   return response(req, res, 'simplified-account/services/payment-links/edit/overview', {
     messages: res.locals.flash?.messages ?? [],

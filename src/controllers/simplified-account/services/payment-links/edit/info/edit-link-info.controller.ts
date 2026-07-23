@@ -7,8 +7,13 @@ import { ProductUpdateRequestBuilder } from '@models/products/ProductUpdateReque
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get (req: ServiceRequest, res: ServiceResponse) {
+interface Params extends ServiceRequestParams {
+  productExternalId: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
   return response(req, res, 'simplified-account/services/payment-links/edit/info', {
     backLink: formatServiceAndAccountPathsFor(
@@ -31,7 +36,7 @@ interface EditLinkDetailsBody {
   description: string
 }
 
-async function post (req: ServiceRequest<EditLinkDetailsBody>, res: ServiceResponse) {
+async function post (req: ServiceRequest<EditLinkDetailsBody, Params>, res: ServiceResponse) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
 
   const validations = [
