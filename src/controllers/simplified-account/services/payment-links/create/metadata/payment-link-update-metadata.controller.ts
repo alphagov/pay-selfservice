@@ -9,8 +9,13 @@ import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { NotFoundError } from '@root/errors'
 import { NextFunction } from 'express'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
+interface Params extends ServiceRequestParams {
+  metadataKey: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse, next: NextFunction) {
   const { service, account } = req
   const currentSession = PaymentLinkCreationSession.extract(req)
 
@@ -53,7 +58,7 @@ interface UpdateLinkMetadataBody {
   cellContent: string
 }
 
-async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceResponse) {
+async function post(req: ServiceRequest<UpdateLinkMetadataBody, Params>, res: ServiceResponse) {
   const { service, account } = req
   const currentSession = PaymentLinkCreationSession.extract(req)
 
@@ -128,7 +133,7 @@ async function post(req: ServiceRequest<UpdateLinkMetadataBody>, res: ServiceRes
 
 function checkKeyExistsOnSessionMetadata(
   session: PaymentLinkCreationSession,
-  req: ServiceRequest<UpdateLinkMetadataBody>
+  req: ServiceRequest<UpdateLinkMetadataBody, Params>
 ): asserts session is PaymentLinkCreationSession & {
   metadata: NonNullable<Record<string, string>>
 } {

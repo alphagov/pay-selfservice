@@ -29,7 +29,7 @@ interface CancelAgreementBody {
   cancelAgreement: string
 }
 
-async function post(req: ServiceRequest<CancelAgreementBody>, res: ServiceResponse) {
+async function post(req: ServiceRequest<CancelAgreementBody, Params>, res: ServiceResponse) {
   const agreement = await getAgreement(req.params.agreementExternalId, req.service.externalId)
   const validations = [validateYesNoAnswer('cancelAgreement')]
   await Promise.all(validations.map((validation) => validation.run(req)))
