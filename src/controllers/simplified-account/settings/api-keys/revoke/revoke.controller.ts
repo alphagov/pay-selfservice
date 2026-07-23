@@ -6,8 +6,14 @@ import { body, validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { getTokenByTokenLink } from '@services/tokens.service'
 import { revokeKey } from '@services/api-keys.service'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get(req: ServiceRequest, res: ServiceResponse) {
+
+interface Params extends ServiceRequestParams {
+  tokenLink: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const tokenLink = req.params.tokenLink
   const token = await getTokenByTokenLink(req.account.id, tokenLink)
   return response(req, res, 'simplified-account/settings/api-keys/revoke/index', {
@@ -24,7 +30,7 @@ interface RevokeTokenBody {
   revokeKey: string
 }
 
-async function post(req: ServiceRequest<RevokeTokenBody>, res: ServiceResponse) {
+async function post(req: ServiceRequest<RevokeTokenBody, Params>, res: ServiceResponse) {
   const tokenLink = req.params.tokenLink
   const apiKey = await getTokenByTokenLink(req.account.id, tokenLink)
   const validation = body('revokeKey')

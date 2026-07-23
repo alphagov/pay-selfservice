@@ -6,8 +6,13 @@ import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { changeTokenName, getTokenByTokenLink } from '@services/tokens.service'
 import { apiKeySchema } from '@utils/simplified-account/validation/api-key.schema'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get(req: ServiceRequest, res: ServiceResponse) {
+interface Params extends ServiceRequestParams {
+  tokenLink: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const tokenLink = req.params.tokenLink
   const apiToken = await getTokenByTokenLink(req.account.id, tokenLink)
   return response(req, res, 'simplified-account/settings/api-keys/edit/change-name', {
@@ -24,7 +29,7 @@ interface ChangeNameBody {
   keyName: string
 }
 
-async function post(req: ServiceRequest<ChangeNameBody>, res: ServiceResponse) {
+async function post(req: ServiceRequest<ChangeNameBody, Params>, res: ServiceResponse) {
   await apiKeySchema.keyName.validate.run(req)
   const errors = validationResult(req)
   if (!errors.isEmpty()) {

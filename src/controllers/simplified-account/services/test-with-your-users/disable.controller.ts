@@ -4,10 +4,15 @@ import { disableProduct } from '@services/products.service'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { Message } from '@utils/types/express/Message'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
+
+interface Params extends ServiceRequestParams {
+  productExternalId: string
+}
 
 const logger = createLogger(__filename)
 
-async function post(req: ServiceRequest, res: ServiceResponse) {
+async function post(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   try {
     await disableProduct(req.account.id, req.params.productExternalId)
   } catch (err) {
