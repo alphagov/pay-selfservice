@@ -21,12 +21,12 @@ describe('connector client - get adyen account setup', () => {
     // see https://github.com/pact-foundation/pact-js/issues/954
     log: path.resolve(process.cwd(), 'logs', 'mockserver-integration.log'),
     dir: path.resolve(process.cwd(), 'pacts'),
-    spec: SpecificationVersion.SPECIFICATION_VERSION_V4,
+    spec: SpecificationVersion.SPECIFICATION_VERSION_V2,
     pactfileWriteMode: 'merge',
   })
 
   it('should successfully return the adyen account setup', async () => {
-    const adyenAccountSetup = AdyenAccountSetupFixture.Completed({
+    const adyenAccountSetup = AdyenAccountSetupFixture.NotStarted({
       serviceExternalId: SERVICE_EXTERNAL_ID,
       credentialExternalId: CREDENTIAL_EXTERNAL_ID,
     })
@@ -53,25 +53,25 @@ describe('connector client - get adyen account setup', () => {
             expect(adyenSetup.credentialExternalId).to.equal(CREDENTIAL_EXTERNAL_ID)
             expect(adyenSetup.tasks).to.deep.equal({
               bankAccount: {
-                status: 'COMPLETED',
+                status: 'NOT_STARTED',
               },
               responsiblePerson: {
-                status: 'COMPLETED',
+                status: 'NOT_STARTED',
               },
               vatNumber: {
-                status: 'COMPLETED',
+                status: 'NOT_STARTED',
               },
               companyNumber: {
-                status: 'COMPLETED',
+                status: 'NOT_STARTED',
               },
               director: {
-                status: 'COMPLETED',
+                status: 'NOT_STARTED',
               },
               governmentEntityDocument: {
-                status: 'COMPLETED',
+                status: 'NOT_STARTED',
               },
               organisationDetails: {
-                status: 'COMPLETED',
+                status: 'NOT_STARTED',
               },
             })
           })
