@@ -26,7 +26,7 @@ describe('connector client - get adyen account setup', () => {
   })
 
   it('should successfully return the adyen account setup', async () => {
-    const adyenAccountSetup = new AdyenAccountSetupFixture({
+    const adyenAccountSetup = AdyenAccountSetupFixture.Completed({
       serviceExternalId: SERVICE_EXTERNAL_ID,
       credentialExternalId: CREDENTIAL_EXTERNAL_ID,
     })
@@ -53,25 +53,25 @@ describe('connector client - get adyen account setup', () => {
             expect(adyenSetup.credentialExternalId).to.equal(CREDENTIAL_EXTERNAL_ID)
             expect(adyenSetup.tasks).to.deep.equal({
               bankAccount: {
-                status: 'NOT_STARTED',
+                status: 'COMPLETED',
               },
               responsiblePerson: {
-                status: 'NOT_STARTED',
+                status: 'COMPLETED',
               },
               vatNumber: {
-                status: 'NOT_STARTED',
+                status: 'COMPLETED',
               },
               companyNumber: {
-                status: 'NOT_STARTED',
+                status: 'COMPLETED',
               },
               director: {
-                status: 'NOT_STARTED',
+                status: 'COMPLETED',
               },
               governmentEntityDocument: {
-                status: 'NOT_STARTED',
+                status: 'COMPLETED',
               },
               organisationDetails: {
-                status: 'NOT_STARTED',
+                status: 'COMPLETED',
               },
             })
           })
