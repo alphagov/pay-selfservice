@@ -11,6 +11,7 @@ import { ChargeRefundRequest } from '@models/charge/ChargeRefundRequest.class'
 import { safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 import { Message } from '@utils/types/express/Message'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
+import { InvalidRefundAmountAvailableError } from '@root/errors'
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   req.serviceView.showHeader = false
@@ -42,6 +43,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
 interface TransactionRefundBody {
   refundPayment: string
   partialRefundAmount: string
+  refundAmountAvailable: string
 }
 
 async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResponse) {
@@ -83,14 +85,21 @@ async function post(req: ServiceRequest<TransactionRefundBody>, res: ServiceResp
     })
   }
 
+  // this is provided from the refund form as an idempotency check
+  const refundAmountAvailable = parseInt(req.body.refundAmountAvailable)
+  if (isNaN(refundAmountAvailable)) {
+    throw new InvalidRefundAmountAvailableError(
+      `Unable to parse refund amount available value ${req.body.refundAmountAvailable} in refund form submission`
+    )
+  }
+
   const refundAmount =
     req.body.refundPayment === 'full'
-      ? transaction.refundSummary!.amountAvailable
+      ? refundAmountAvailable
       : safeConvertPoundsStringToPence(req.body.partialRefundAmount)
   if (refundAmount === undefined || refundAmount === null) {
     throw new Error(`Attempting to issue ${req.body.refundPayment} refund with undefined or null value`)
   }
-  const refundAmountAvailable = transaction.refundSummary!.amountAvailable
 
   await submitRefund(
     req.service.externalId,

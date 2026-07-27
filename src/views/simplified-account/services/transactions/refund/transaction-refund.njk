@@ -36,6 +36,12 @@
 {% block serviceContent %}
   <form method="post">
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+    <input
+      id="refund-amount-available"
+      name="refundAmountAvailable"
+      type="hidden"
+      value="{{ transaction.getRefundableAmountRemaining() }}"
+    />
 
     {{
       govukRadios({
@@ -74,7 +80,8 @@
 
     {{
       govukButton({
-        text: "Confirm refund"
+        text: "Confirm refund",
+        preventDoubleClick: true
       })
     }}
   </form>
