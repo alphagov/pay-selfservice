@@ -334,6 +334,7 @@ describe('transaction refund controller', () => {
             body: {
               refundPayment: 'full',
               partialRefundAmount: '',
+              refundAmountAvailable: '1000',
             },
           })
           getTransactionStub.resolves(transactionFixture.toTransaction())
@@ -377,6 +378,7 @@ describe('transaction refund controller', () => {
             body: {
               refundPayment: 'full',
               partialRefundAmount: '',
+              refundAmountAvailable: '300',
             },
           })
           getTransactionStub.resolves(partiallyRefundedTransaction.toTransaction())
@@ -404,6 +406,7 @@ describe('transaction refund controller', () => {
             body: {
               refundPayment: 'partial',
               partialRefundAmount: '2.50',
+              refundAmountAvailable: '300',
             },
           })
           getTransactionStub.resolves(partiallyRefundedTransaction.toTransaction())

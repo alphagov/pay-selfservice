@@ -279,4 +279,71 @@ describe('Refund page', () => {
       .should('contain.text', errorMessage)
     cy.get('.govuk-error-message').should('exist').should('contain.text', errorMessage)
   })
+
+  it('should call the submit refund endpoint with the value of the refundAmountAvailable hidden field, not the value on the transaction', () => {
+    const baseTransaction = new TransactionFixture({
+      createdDate: TRANSACTION_CREATED_TIMESTAMP,
+      amount: 1000,
+      externalId: 'this-is-the-same-transaction-in-both-cases',
+      refundSummary: new LedgerRefundSummaryFixture({
+        amountAvailable: 1000,
+        status: 'available',
+        amountRefunded: 0,
+        amountSubmitted: 0,
+        userExternalId: null,
+      }),
+    })
+
+    const partiallyRefundedTransaction = new TransactionFixture({
+      createdDate: TRANSACTION_CREATED_TIMESTAMP,
+      amount: 1000,
+      externalId: 'this-is-the-same-transaction-in-both-cases',
+      refundSummary: new LedgerRefundSummaryFixture({
+        amountAvailable: 700,
+        status: 'available',
+        amountRefunded: 300,
+        amountSubmitted: 0,
+        userExternalId: USER_EXTERNAL_ID,
+      }),
+    })
+
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, baseTransaction.externalId).success(baseTransaction),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, baseTransaction.externalId).success([]),
+    ])
+
+    cy.visit(
+      `/service/${SERVICE_EXTERNAL_ID}/account/test/transactions/this-is-the-same-transaction-in-both-cases/refund`
+    )
+
+    // simulate a partial refund being issued on the Transaction while the user is on the refund page
+    // the Transaction retrieved from Ledger updates, but the controller should use the refund_amount_available value
+    // from the original unrefunded Transaction when attempting to submit the refund
+    cy.task('clearStubs')
+    cy.task('setupStubs', [
+      getTransactionForGatewayAccount(GATEWAY_ACCOUNT_ID, partiallyRefundedTransaction.externalId).success(
+        partiallyRefundedTransaction
+      ),
+      postRefund(SERVICE_EXTERNAL_ID, baseTransaction.externalId).success(
+        1000,
+        baseTransaction,
+        USER_EXTERNAL_ID,
+        USER_EMAIL
+      ),
+      getTransactionEvents(GATEWAY_ACCOUNT_ID, partiallyRefundedTransaction.externalId).success([]),
+      ...userAndGatewayAccountStubs,
+    ])
+
+    cy.get('#refund-payment').check()
+    cy.contains('Confirm refund').click()
+
+    cy.get('.govuk-notification-banner--success')
+      .should('be.visible')
+      .and('contain', 'Refund successful')
+      .and('contain', 'It may take up to six days to process')
+    cy.url().should(
+      'include',
+      `/service/${SERVICE_EXTERNAL_ID}/account/test/transactions/this-is-the-same-transaction-in-both-cases`
+    )
+  })
 })

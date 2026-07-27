@@ -105,6 +105,8 @@ class TaskAccessedOutOfSequenceError extends DomainError {
   }
 }
 
+class InvalidRefundAmountAvailableError extends DomainError {}
+
 export {
   NotAuthenticatedError,
   UserAccountDisabledError,
@@ -120,4 +122,5 @@ export {
   GatewayTimeoutForAllServicesSearchError,
   TaskAlreadyCompletedError,
   TaskAccessedOutOfSequenceError,
+  InvalidRefundAmountAvailableError,
 }
