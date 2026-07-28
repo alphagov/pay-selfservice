@@ -304,31 +304,26 @@ simplifiedAccount.get(
 // transactions
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.index,
-  experimentalFeature(Features.TRANSACTIONS),
   permission('transactions:read'),
   servicesController.transactions.list.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.downloadCsv,
-  experimentalFeature(Features.TRANSACTIONS),
   permission('transactions-download:read'),
   servicesController.transactions.downloadCsv.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.detail,
-  experimentalFeature(Features.TRANSACTIONS),
   permission('transactions-details:read'),
   servicesController.transactions.detail.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.transactions.refund,
-  experimentalFeature(Features.TRANSACTIONS),
   permission('refunds:create'),
   servicesController.transactions.refund.get
 )
 simplifiedAccount.post(
   paths.simplifiedAccount.transactions.refund,
-  experimentalFeature(Features.TRANSACTIONS),
   permission('refunds:create'),
   servicesController.transactions.refund.post
 )
@@ -336,21 +331,18 @@ simplifiedAccount.post(
 // all service transactions
 simplifiedAccount.get(
   paths.simplifiedAccount.allServiceTransactions.detail,
-  experimentalFeature(Features.TRANSACTIONS),
   permission('transactions:read'),
   servicesController.allServiceTransactions.detail.get
 )
 
 simplifiedAccount.get(
   paths.simplifiedAccount.allServiceTransactions.refund,
-  experimentalFeature(Features.TRANSACTIONS),
   permission('transactions:read'),
   servicesController.allServiceTransactions.refund.get
 )
 
 simplifiedAccount.post(
   paths.simplifiedAccount.allServiceTransactions.refund,
-  experimentalFeature(Features.TRANSACTIONS),
   permission('transactions:read'),
   servicesController.allServiceTransactions.refund.post
 )

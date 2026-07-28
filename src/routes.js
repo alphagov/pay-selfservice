@@ -219,7 +219,6 @@ module.exports.bind = function (app) {
   // all service transactions - simplified account
   app.get(
     allServiceTransactions.simplifiedAccount.index,
-    experimentalFeature(Features.TRANSACTIONS),
     userIsAuthorised,
     viewModeStrategy('transactions:read'),
     homeController.allServiceTransactions.list.get
@@ -227,7 +226,6 @@ module.exports.bind = function (app) {
 
   app.get(
     allServiceTransactions.simplifiedAccount.download,
-    experimentalFeature(Features.TRANSACTIONS),
     userIsAuthorised,
     viewModeStrategy('transactions-download:read'),
     homeController.allServiceTransactions.downloadCSV.get
@@ -235,7 +233,6 @@ module.exports.bind = function (app) {
 
   app.get(
     allServiceTransactions.simplifiedAccount.timeout,
-    experimentalFeature(Features.TRANSACTIONS),
     userIsAuthorised,
     viewModeStrategy('transactions:read'),
     servicesController.allServiceTransactions.timeout.get
@@ -243,7 +240,6 @@ module.exports.bind = function (app) {
 
   app.get(
     allServiceTransactions.simplifiedAccount.nosearch,
-    experimentalFeature(Features.TRANSACTIONS),
     userIsAuthorised,
     viewModeStrategy('transactions:read'),
     servicesController.allServiceTransactions.nosearch.get
