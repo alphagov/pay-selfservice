@@ -7,8 +7,13 @@ import { ProductUpdateRequestBuilder } from '@models/products/ProductUpdateReque
 import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-link.schema'
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get (req: ServiceRequest, res: ServiceResponse) {
+interface Params extends ServiceRequestParams {
+  productExternalId: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
   return response(req, res, 'simplified-account/services/payment-links/edit/info', {
     backLink: formatServiceAndAccountPathsFor(
@@ -31,13 +36,10 @@ interface EditLinkDetailsBody {
   description: string
 }
 
-async function post (req: ServiceRequest<EditLinkDetailsBody>, res: ServiceResponse) {
+async function post(req: ServiceRequest<EditLinkDetailsBody, Params>, res: ServiceResponse) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
 
-  const validations = [
-    paymentLinkSchema.info.name.validate,
-    paymentLinkSchema.info.description.validate,
-  ]
+  const validations = [paymentLinkSchema.info.name.validate, paymentLinkSchema.info.description.validate]
 
   await Promise.all(validations.map((validation) => validation.run(req)))
   const errors = validationResult(req)
@@ -64,23 +66,21 @@ async function post (req: ServiceRequest<EditLinkDetailsBody>, res: ServiceRespo
     })
   }
 
-  const productUpdateRequest = ProductUpdateRequestBuilder
-    .fromProduct(product)
+  const productUpdateRequest = ProductUpdateRequestBuilder.fromProduct(product)
     .setName(req.body.name)
     .setDescription(req.body.description)
     .build()
 
   await updateProduct(req.account.id, product.externalId, productUpdateRequest)
 
-  res.redirect(formatServiceAndAccountPathsFor(
-    paths.simplifiedAccount.paymentLinks.edit.index,
-    req.service.externalId,
-    req.account.type,
-    product.externalId
-  ))
+  res.redirect(
+    formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.paymentLinks.edit.index,
+      req.service.externalId,
+      req.account.type,
+      product.externalId
+    )
+  )
 }
 
-export {
-  get,
-  post
-}
+export { get, post }

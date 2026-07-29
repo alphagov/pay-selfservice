@@ -2,11 +2,14 @@ import express from 'express'
 import { NotFoundError } from '@root/errors'
 import { ViewMode } from '@models/view-mode/ViewMode.class'
 import { AuthenticatedRequest } from '@utils/types/express'
+interface Params {
+  modeFilter: string
+}
 
 // for use on routes where determining if the user has services in the given mode is not required
 // but it is required that the view mode is valid (test or live)
 function validateModeFilter(
-  req: AuthenticatedRequest & { viewMode: ViewMode },
+  req: AuthenticatedRequest<Params> & { viewMode: ViewMode },
   res: express.Response,
   next: express.NextFunction
 ) {
@@ -20,7 +23,7 @@ function validateModeFilter(
 // for use on routes where it is required that the user has services in the given mode
 function viewModeStrategy(permission?: string) {
   return async function (
-    req: AuthenticatedRequest & { viewMode: ViewMode },
+    req: AuthenticatedRequest<Params> & { viewMode: ViewMode },
     res: express.Response,
     next: express.NextFunction
   ) {

@@ -1,36 +1,42 @@
-import {ServiceRequest, ServiceResponse} from "@utils/types/express"
-import paths from "@root/paths"
-import {response} from "@utils/response"
+import { ServiceRequest, ServiceResponse } from '@utils/types/express'
+import paths from '@root/paths'
+import { response } from '@utils/response'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
-import {ONE_OFF_CUSTOMER_INITIATED_SCHEMA} from "@utils/simplified-account/validation/worldpay/validations.schema";
-import {validationResult} from "express-validator";
-import formatValidationErrors from "@utils/simplified-account/format/format-validation-errors";
-import WorldpayCredential from "@models/gateway-account-credential/WorldpayCredential.class";
-import worldpayDetailsService from "@services/worldpay-details.service";
-import _ from "lodash";
-import {SESSION_KEY} from "@controllers/simplified-account/settings/worldpay-details/constants";
+import { ONE_OFF_CUSTOMER_INITIATED_SCHEMA } from '@utils/simplified-account/validation/worldpay/validations.schema'
+import { validationResult } from 'express-validator'
+import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
+import WorldpayCredential from '@models/gateway-account-credential/WorldpayCredential.class'
+import worldpayDetailsService from '@services/worldpay-details.service'
+import _ from 'lodash'
+import { SESSION_KEY } from '@controllers/simplified-account/settings/worldpay-details/constants'
 import { Errors } from '@utils/simplified-account/format/format-validation-errors-types'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
+interface Params extends ServiceRequestParams {
+  credentialExternalId: string
+}
 
-function get(req: ServiceRequest, res: ServiceResponse) {
-  const credential = req.account.findCredentialByExternalId(req.params.credentialExternalId).credentials.oneOffCustomerInitiated ?? {}
+function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
+  const credential =
+    req.account.findCredentialByExternalId(req.params.credentialExternalId).credentials.oneOffCustomerInitiated ?? {}
 
   return response(req, res, 'simplified-account/settings/worldpay-details/one-off-customer-initiated-credentials', {
     backLink: formatServiceAndAccountPathsFor(
       req.url.includes('switch-psp')
         ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
         : paths.simplifiedAccount.settings.worldpayDetails.index,
-      req.service.externalId, req.account.type),
-    credentials: credential
+      req.service.externalId,
+      req.account.type
+    ),
+    credentials: credential,
   })
 }
 
 const worldpayCredentialsValidations = [
   ONE_OFF_CUSTOMER_INITIATED_SCHEMA.merchantCode.validate,
   ONE_OFF_CUSTOMER_INITIATED_SCHEMA.username.validate,
-  ONE_OFF_CUSTOMER_INITIATED_SCHEMA.password.validate
+  ONE_OFF_CUSTOMER_INITIATED_SCHEMA.password.validate,
 ]
-
 
 interface OneOffCustomerInitiatedBody {
   merchantCode: string
@@ -38,14 +44,14 @@ interface OneOffCustomerInitiatedBody {
   password: string
 }
 
-async function post (req: ServiceRequest<OneOffCustomerInitiatedBody>, res: ServiceResponse) {
-  await Promise.all(worldpayCredentialsValidations.map(validation => validation.run(req)))
+async function post(req: ServiceRequest<OneOffCustomerInitiatedBody, Params>, res: ServiceResponse) {
+  await Promise.all(worldpayCredentialsValidations.map((validation) => validation.run(req)))
   const validationErrors = validationResult(req)
   if (!validationErrors.isEmpty()) {
     const formattedErrors = formatValidationErrors(validationErrors)
     return errorResponse(req, res, {
       summary: formattedErrors.errorSummary,
-      formErrors: formattedErrors.formErrors
+      formErrors: formattedErrors.formErrors,
     })
   }
 
@@ -60,9 +66,9 @@ async function post (req: ServiceRequest<OneOffCustomerInitiatedBody>, res: Serv
       summary: [
         {
           text: 'Check your Worldpay credentials, failed to link your account to Worldpay with credentials provided',
-          href: '#merchant-code'
-        }
-      ]
+          href: '#merchant-code',
+        },
+      ],
     })
   }
 
@@ -78,11 +84,15 @@ async function post (req: ServiceRequest<OneOffCustomerInitiatedBody>, res: Serv
     TASK_COMPLETED: true,
   })
 
-  return res.redirect(formatServiceAndAccountPathsFor(
-    req.url.includes('switch-psp')
-      ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
-      : paths.simplifiedAccount.settings.worldpayDetails.index,
-    req.service.externalId, req.account.type))
+  return res.redirect(
+    formatServiceAndAccountPathsFor(
+      req.url.includes('switch-psp')
+        ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
+        : paths.simplifiedAccount.settings.worldpayDetails.index,
+      req.service.externalId,
+      req.account.type
+    )
+  )
 }
 
 const errorResponse = (req: ServiceRequest<OneOffCustomerInitiatedBody>, res: ServiceResponse, errors: Errors) => {
@@ -91,17 +101,16 @@ const errorResponse = (req: ServiceRequest<OneOffCustomerInitiatedBody>, res: Se
     credentials: {
       merchantCode: req.body.merchantCode,
       username: req.body.username,
-      password: req.body.password
+      password: req.body.password,
     },
     backLink: formatServiceAndAccountPathsFor(
       req.url.includes('switch-psp')
         ? paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index
         : paths.simplifiedAccount.settings.worldpayDetails.index,
-      req.service.externalId, req.account.type),
+      req.service.externalId,
+      req.account.type
+    ),
   })
 }
 
-export {
-  get,
-  post
-}
+export { get, post }

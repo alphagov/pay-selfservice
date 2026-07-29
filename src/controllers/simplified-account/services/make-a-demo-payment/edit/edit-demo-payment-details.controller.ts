@@ -5,11 +5,7 @@ import paths from '@root/paths'
 import lodash from 'lodash'
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
-import {
-  DemoPaymentSessionData,
-  PAYMENT_DEFAULTS,
-  SESSION_KEY,
-} from '@controllers/simplified-account/services/make-a-demo-payment/constants'
+import { PAYMENT_DEFAULTS, SESSION_KEY } from '@controllers/simplified-account/services/make-a-demo-payment/constants'
 import { demoPaymentSchema } from '@utils/simplified-account/validation/demo-payment.schema'
 import { penceToPounds, safeConvertPoundsStringToPence } from '@utils/currency-formatter'
 
@@ -54,7 +50,7 @@ async function post(req: ServiceRequest<EditPaymentDetailsBody>, res: ServiceRes
   lodash.set(req, SESSION_KEY, {
     description: req.body.paymentDescription,
     amount: safeConvertPoundsStringToPence(req.body.paymentAmount),
-  } as DemoPaymentSessionData)
+  })
 
   res.redirect(formatServiceAndAccountPathsFor(DEMO_PAYMENT_INDEX, req.service.externalId, req.account.type))
 }

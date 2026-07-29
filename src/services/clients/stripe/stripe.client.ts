@@ -20,6 +20,7 @@ const stripeConfig: Stripe.StripeConfig = {
 }
 
 if (process.env.http_proxy) {
+  // @ts-expect-error this api version is not directly compatible with the stripe type defs
   stripeConfig.httpAgent = createHttpsProxyAgent(process.env.http_proxy)
 }
 

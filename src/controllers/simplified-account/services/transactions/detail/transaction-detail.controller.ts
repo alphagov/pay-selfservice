@@ -6,8 +6,13 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import { Transaction } from '@models/transaction/Transaction.class'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 import { TimeConstants } from '@utils/time/time-constants'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get(req: ServiceRequest, res: ServiceResponse) {
+interface Params extends ServiceRequestParams {
+  transactionExternalId: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const [transaction, events] = await Promise.all([
     getTransaction(req.params.transactionExternalId, req.account.id),
     getEvents(req.params.transactionExternalId, req.account.id),

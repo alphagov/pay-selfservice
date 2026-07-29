@@ -24,9 +24,9 @@ describe('restrictToSwitchingAccount middleware', () => {
           ],
         })
       ),
-    } as Partial<ServiceRequest>
+    }
 
-    res = {} as Partial<ServiceResponse>
+    res = {}
     next = sinon.spy()
   })
 
@@ -56,7 +56,7 @@ describe('restrictToSwitchingAccount middleware', () => {
         {
           account: new GatewayAccount(
             gatewayAccountFixtures.validGatewayAccount({
-              provider_switch_enabled: false
+              provider_switch_enabled: false,
             })
           ),
         } as ServiceRequest,

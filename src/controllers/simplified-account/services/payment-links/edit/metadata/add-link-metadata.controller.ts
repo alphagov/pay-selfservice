@@ -7,8 +7,13 @@ import { paymentLinkSchema } from '@utils/simplified-account/validation/payment-
 import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { ProductUpdateRequestBuilder } from '@models/products/ProductUpdateRequest.class'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get(req: ServiceRequest, res: ServiceResponse) {
+interface Params extends ServiceRequestParams {
+  productExternalId: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
   return response(req, res, 'simplified-account/services/payment-links/edit/metadata', {
     backLink: formatServiceAndAccountPathsFor(
@@ -29,7 +34,7 @@ interface AddLinkMetadataBody {
   cellContent: string
 }
 
-async function post(req: ServiceRequest<AddLinkMetadataBody>, res: ServiceResponse) {
+async function post(req: ServiceRequest<AddLinkMetadataBody, Params>, res: ServiceResponse) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
 
   const validations = [

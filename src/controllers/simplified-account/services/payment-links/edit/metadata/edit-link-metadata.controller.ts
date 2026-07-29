@@ -11,8 +11,14 @@ import { validationResult } from 'express-validator'
 import formatValidationErrors from '@utils/simplified-account/format/format-validation-errors'
 import { ProductUpdateRequestBuilder } from '@models/products/ProductUpdateRequest.class'
 import lodash from 'lodash'
+import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
 
-async function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction) {
+interface Params extends ServiceRequestParams {
+  productExternalId: string
+  metadataKey: string
+}
+
+async function get(req: ServiceRequest<never, Params>, res: ServiceResponse, next: NextFunction) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
   try {
     checkKeyExistsOnProductMetadata(product, req)
@@ -42,7 +48,7 @@ interface EditLinkMetadataBody {
   cellContent: string
 }
 
-async function post(req: ServiceRequest<EditLinkMetadataBody>, res: ServiceResponse, next: NextFunction) {
+async function post(req: ServiceRequest<EditLinkMetadataBody, Params>, res: ServiceResponse, next: NextFunction) {
   const product = await getProductByGatewayAccountIdAndExternalId(req.account.id, req.params.productExternalId)
 
   try {
@@ -122,7 +128,7 @@ async function post(req: ServiceRequest<EditLinkMetadataBody>, res: ServiceRespo
 
 function checkKeyExistsOnProductMetadata(
   product: Product,
-  req: ServiceRequest<EditLinkMetadataBody>
+  req: ServiceRequest<EditLinkMetadataBody, Params>
 ): asserts product is Product & {
   metadata: NonNullable<Record<string, string>>
 } {
