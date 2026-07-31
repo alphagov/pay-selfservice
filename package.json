@@ -57,7 +57,25 @@
     "staticify": {
       "send": "0.19.0"
     },
-    "cross-spawn": "^7.0.5",
+    "mocha": {
+      "serialize-javascript": "^7.0.3",
+      "brace-expansion": "^2.1.4"
+    },
+    "@percy/cli": {
+      "fast-uri": "^3.1.4"
+    },
+    "eslint": {
+      "brace-expansion": "^1.1.6"
+    },
+    "stylelint": {
+      "brace-expansion": "^1.1.6",
+      "fast-uri": "^3.1.4",
+      "postcss": "8.5.25"
+    },
+    "stylelint-order": {
+      "postcss": "8.5.25"
+    },
+    "cross-spawn": "^7.0.6",
     "axios": "1.18.0",
     "qs": "6.15.0"
   },
