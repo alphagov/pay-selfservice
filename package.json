@@ -43,10 +43,10 @@
   "overrides": {
     "minimist": "1.2.6",
     "qrcode": {
-      "ansi-regex": "3.0.1"
+      "ansi-regex": "5.0.1"
     },
     "cli-color": {
-      "ansi-regex": "3.0.1"
+      "ansi-regex": "5.0.1"
     },
     "csurf": {
       "cookie": "0.7.2"
@@ -57,7 +57,19 @@
     "staticify": {
       "send": "0.19.0"
     },
-    "cross-spawn": "^7.0.5",
+    "mocha": {
+      "serialize-javascript": "^7.0.3",
+      "brace-expansion": "^2.1.4"
+    },
+    "eslint": {
+      "brace-expansion": "^1.1.6"
+    },
+    "stylelint": {
+      "brace-expansion": "^1.1.6",
+      "fast-uri": "^3.1.4",
+      "postcss": "8.5.25"
+    },
+    "cross-spawn": "^7.0.6",
     "axios": "1.18.0",
     "qs": "6.15.0"
   },
