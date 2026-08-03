@@ -60,12 +60,12 @@ export class AdyenAccountSetupFixture {
       credential_external_id: this.credentialExternalId,
       tasks: {
         bank_account: this.tasks.bankAccount.toTaskData(),
-        responsible_person: this.tasks.bankAccount.toTaskData(),
-        vat_number: this.tasks.bankAccount.toTaskData(),
-        company_number: this.tasks.bankAccount.toTaskData(),
-        director: this.tasks.bankAccount.toTaskData(),
-        government_entity_document: this.tasks.bankAccount.toTaskData(),
-        organisation_details: this.tasks.bankAccount.toTaskData(),
+        responsible_person: this.tasks.responsiblePerson.toTaskData(),
+        vat_number: this.tasks.vatNumber.toTaskData(),
+        company_number: this.tasks.companyNumber.toTaskData(),
+        director: this.tasks.director.toTaskData(),
+        government_entity_document: this.tasks.governmentEntityDocument.toTaskData(),
+        organisation_details: this.tasks.organisationDetails.toTaskData(),
       },
     }
   }
