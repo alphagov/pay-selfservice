@@ -30,4 +30,5 @@ export interface ServiceData {
   agent_initiated_moto_enabled: boolean
   default_billing_address_country?: string
   takes_payments_over_phone: boolean
+  features?: string[]
 }

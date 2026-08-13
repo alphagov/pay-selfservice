@@ -30,7 +30,7 @@
         </legend>
         <p class="govuk-body"
           >To use GOV.UK Pay your organisation must accept our legal terms.
-          {% if displayAdyenPspAgreement and EnvironmentFeatures.isAdyenEnabledInGoLiveRequest() %}
+          {% if displayAdyenPspAgreement %}
             These include the legal terms of Adyen, GOV.UK Pay’s payment service provider.
           {% elif displayStripePspAgreement %}
             These include the legal terms of Stripe, GOV.UK Pay’s payment service provider.
@@ -47,7 +47,7 @@
           <li><a href="/policy/contract-for-non-crown-bodies" class="govuk-link">Non-Crown body contract</a></li>
         </ul>
 
-        {% if displayAdyenPspAgreement and EnvironmentFeatures.isAdyenEnabledInGoLiveRequest() %}
+        {% if displayAdyenPspAgreement %}
           {% include './partials/_adyen-legal-terms.njk' %}
         {% elif displayStripePspAgreement %}
           {% include './partials/_stripe-legal-terms.njk' %}

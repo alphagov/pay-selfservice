@@ -1,5 +1,7 @@
 'use strict'
 
+import { Features } from '@root/config/features'
+
 const goLiveStage = require('@models/constants/go-live-stage')
 const paths = require('../../../paths')
 const response = require('../../../utils/response')
@@ -13,5 +15,8 @@ module.exports = (req, res) => {
       formatServicePathsFor(paths.service.requestToGoLive.index, req.service.externalId)
     )
   }
-  return response.response(req, res, 'request-to-go-live/choose-how-to-process-payments')
+  const isAdyenEnabled = Features.isAdyenEnabledInGoLiveRequest() || 
+  Boolean(req?.service?.features?.includes('govuk_psp_is_adyen'))
+
+  return response.response(req, res, 'request-to-go-live/choose-how-to-process-payments', {isAdyenEnabled})
 }

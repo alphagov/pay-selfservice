@@ -119,7 +119,8 @@ module.exports = {
       current_psp_test_account_stage: 'NOT_STARTED',
       agent_initiated_moto_enabled: false,
       takes_payments_over_phone: false,
-      created_date: '2024-08-30'
+      created_date: '2024-08-30',
+      features: []
     })
 
     const service = {
@@ -135,7 +136,8 @@ module.exports = {
       current_psp_test_account_stage: opts.current_psp_test_account_stage,
       agent_initiated_moto_enabled: opts.agent_initiated_moto_enabled,
       takes_payments_over_phone: opts.takes_payments_over_phone,
-      created_date: opts.created_date
+      created_date: opts.created_date,
+      features: opts.features
     }
 
     if (opts.merchant_details) {

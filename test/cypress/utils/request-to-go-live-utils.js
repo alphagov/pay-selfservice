@@ -11,12 +11,13 @@ const variables = {
   serviceExternalId: 'afe452323dd04d1898672bfaba25e3a6'
 }
 
-function buildServiceRoleForGoLiveStage (goLiveStage) {
+function buildServiceRoleForGoLiveStage (goLiveStage, features) {
   return {
     service: {
       external_id: variables.serviceExternalId,
       current_go_live_stage: goLiveStage,
-      gateway_account_ids: [`${variables.gatewayAccountId}`]
+      gateway_account_ids: [`${variables.gatewayAccountId}`],
+      features: [features]
     }
   }
 }
