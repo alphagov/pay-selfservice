@@ -73,7 +73,4 @@ async function post(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
     .catch((err) => next(err))
 }
 
-export = {
-  get,
-  post,
-}
+export { get, post }

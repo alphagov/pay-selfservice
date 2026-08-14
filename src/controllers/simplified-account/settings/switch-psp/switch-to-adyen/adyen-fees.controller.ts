@@ -23,6 +23,4 @@ async function get(req: ServiceRequest, res: ServiceResponse, next: NextFunction
   }
 }
 
-export = {
-  get,
-}
+export { get }

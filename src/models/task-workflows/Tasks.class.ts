@@ -15,11 +15,12 @@ abstract class Task {
 
   setStatus(status: string) {
     this.status = status
+    return this
   }
 }
 
 abstract class Tasks<T extends Task> {
-  public tasks: T[];
+  public tasks: T[]
 
   protected constructor(tasks: T[]) {
     this.tasks = tasks

@@ -1,7 +1,7 @@
 import paths from '@root/paths'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import { NavigationBuilder, NavigationCategories } from '@utils/simplified-account/navigation/NavigationBuilder.class'
-import { WORLDPAY, STRIPE } from '@models/constants/payment-providers'
+import { WORLDPAY, STRIPE, ADYEN } from '@models/constants/payment-providers'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import Service from '@models/service/Service.class'
 import { LIVE } from '@models/constants/go-live-stage'
@@ -115,6 +115,18 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
         account.paymentProvider === STRIPE &&
         account.type === GatewayAccountType.LIVE &&
         Features.isProviderChangeToAdyenLinkEnabled(),
+    })
+    .add({
+      id: 'switch-psp', // sits under settings/switch-psp/switch-to-adyen
+      altId: 'adyen-details', // when switching psp to Adyen, adyen-details pages should show `Switch provider to Adyen now` in the nav
+      name: 'Switch provider to Adyen now',
+      path: formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+        service.externalId,
+        account.type
+      ),
+      hasPermission: UserPermissions.settings.gatewayCredentials.gatewayCredentialsUpdate,
+      conditions: account.isSwitchingToProvider(ADYEN),
     })
     .category('payments', { collapsible: true })
     .add({
