@@ -77,7 +77,17 @@ This command will run all [mocha](https://mochajs.org/) test suites matching the
 To run Cypress tests start the server in a separate terminal
 
 ```bash
+npm run compile
+```
+
+```bash
 npm run cypress:server
+```
+
+If you are making changes to the codebase then the dev-server command will watch for any changes made and rebuild the app 
+
+```bash
+npm run cypress:dev-server
 ```
 
 _This runs both the Cypress server and @govuk-pay/run-amock which is the mock server used for stubbing out external API
