@@ -1,4 +1,4 @@
-import { ServiceData } from '@models/service/dto/Service.dto'
+import { ServiceData, ServiceFeature, ServiceFeatures } from '@models/service/dto/Service.dto'
 import Service from '@models/service/Service.class'
 import { MerchantDetailsFixture } from '@test/fixtures/service/merchant-details.fixture'
 
@@ -17,6 +17,7 @@ export class ServiceFixture {
   readonly agentInitiatedMotoEnabled: boolean
   readonly defaultBillingAddressCountry?: string
   readonly takesPaymentsOverPhone: boolean
+  readonly serviceFeatures: ServiceFeatures
 
   constructor(...overrides: Partial<ServiceFixture>[]) {
     this.id = 1
@@ -33,6 +34,11 @@ export class ServiceFixture {
     this.currentPspTestAccountStage = ''
     this.agentInitiatedMotoEnabled = false
     this.takesPaymentsOverPhone = false
+    this.serviceFeatures = {
+        govuk_psp_is_adyen: {
+          enabled: false,
+        },
+      }
 
     overrides?.forEach((overrideValues) => {
       Object.assign(this, overrideValues)
@@ -55,6 +61,7 @@ export class ServiceFixture {
       agent_initiated_moto_enabled: this.agentInitiatedMotoEnabled,
       default_billing_address_country: this.defaultBillingAddressCountry,
       takes_payments_over_phone: this.takesPaymentsOverPhone,
+      service_features: this.serviceFeatures
     }
   }
 
