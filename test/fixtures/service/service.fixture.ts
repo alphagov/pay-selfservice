@@ -35,10 +35,10 @@ export class ServiceFixture {
     this.agentInitiatedMotoEnabled = false
     this.takesPaymentsOverPhone = false
     this.serviceFeatures = {
-        govuk_psp_is_adyen: {
-          enabled: false,
-        },
-      }
+      govuk_psp_is_adyen: {
+        enabled: false,
+      },
+    }
 
     overrides?.forEach((overrideValues) => {
       Object.assign(this, overrideValues)
@@ -61,7 +61,7 @@ export class ServiceFixture {
       agent_initiated_moto_enabled: this.agentInitiatedMotoEnabled,
       default_billing_address_country: this.defaultBillingAddressCountry,
       takes_payments_over_phone: this.takesPaymentsOverPhone,
-      service_features: this.serviceFeatures
+      service_features: this.serviceFeatures,
     }
   }
 
