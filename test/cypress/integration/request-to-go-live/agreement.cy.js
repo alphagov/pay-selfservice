@@ -124,7 +124,9 @@ describe('Request to go live: agreement', () => {
 
   describe('Adyen has been chosen as the PSP and service feature is enabled', () => {
     it('should display "Read and accept our legal terms" page when in CHOSEN_PSP_ADYEN', () => {
-      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_ADYEN', 'govuk_psp_is_adyen'))
+      utils.setupGetUserAndGatewayAccountStubs(
+        utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_ADYEN', 'govuk_psp_is_adyen')
+      )
 
       cy.visit(requestToGoLiveAgreementUrl)
 

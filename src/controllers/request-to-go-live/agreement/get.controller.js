@@ -16,11 +16,11 @@ module.exports = (req, res) => {
   if (chosenOptions.includes(req.service.currentGoLiveStage)) {
     let currentGoLiveStage = lodash.get(req, 'service.currentGoLiveStage', '')
 
-    const isAdyenEnabled = Features.isAdyenEnabledInGoLiveRequest() ||
-    Boolean(req?.service?.features?.includes('govuk_psp_is_adyen'))
+    const isAdyenEnabled =
+      Features.isAdyenEnabledInGoLiveRequest() || Boolean(req?.service?.features?.includes('govuk_psp_is_adyen'))
 
     return response(req, res, 'request-to-go-live/agreement', {
-      displayAdyenPspAgreement: (currentGoLiveStage === goLiveStage.CHOSEN_PSP_ADYEN) && isAdyenEnabled,
+      displayAdyenPspAgreement: currentGoLiveStage === goLiveStage.CHOSEN_PSP_ADYEN && isAdyenEnabled,
       displayStripePspAgreement: currentGoLiveStage === goLiveStage.CHOSEN_PSP_STRIPE,
     })
   }
