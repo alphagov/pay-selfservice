@@ -11,13 +11,17 @@ const variables = {
   serviceExternalId: 'afe452323dd04d1898672bfaba25e3a6',
 }
 
-function buildServiceRoleForGoLiveStage(goLiveStage, features) {
+function buildServiceRoleForGoLiveStage(goLiveStage, isAdyenEnabled) {
   return {
     service: {
       external_id: variables.serviceExternalId,
       current_go_live_stage: goLiveStage,
       gateway_account_ids: [`${variables.gatewayAccountId}`],
-      features: [features],
+      service_features: {
+        govuk_psp_is_adyen: {
+          enabled: isAdyenEnabled,
+        },
+      },
     },
   }
 }

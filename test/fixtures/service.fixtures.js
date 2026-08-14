@@ -120,7 +120,11 @@ module.exports = {
       agent_initiated_moto_enabled: false,
       takes_payments_over_phone: false,
       created_date: '2024-08-30',
-      features: [],
+      serviceFeatures: {
+        govuk_psp_is_adyen: {
+          enabled: true,
+        },
+      },
     })
 
     const service = {
@@ -137,7 +141,11 @@ module.exports = {
       agent_initiated_moto_enabled: opts.agent_initiated_moto_enabled,
       takes_payments_over_phone: opts.takes_payments_over_phone,
       created_date: opts.created_date,
-      features: opts.features,
+      service_features: {
+        govuk_psp_is_adyen: {
+          enabled: Boolean(opts.service_features?.govuk_psp_is_adyen?.enabled || opts.govuk_psp_is_adyen_enabled),
+        },
+      },
     }
 
     if (opts.merchant_details) {

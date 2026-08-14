@@ -13,7 +13,7 @@ module.exports = (req, res) => {
     return res.redirect(303, formatServicePathsFor(paths.service.requestToGoLive.index, req.service.externalId))
   }
   const isAdyenEnabled =
-    Features.isAdyenEnabledInGoLiveRequest() || Boolean(req?.service?.features?.includes('govuk_psp_is_adyen'))
+    Features.isAdyenEnabledInGoLiveRequest() || req?.service?.serviceFeatures?.govuk_psp_is_adyen?.enabled
 
   return response.response(req, res, 'request-to-go-live/choose-how-to-process-payments', { isAdyenEnabled })
 }

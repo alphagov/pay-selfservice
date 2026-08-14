@@ -17,7 +17,7 @@ module.exports = (req, res) => {
     let currentGoLiveStage = lodash.get(req, 'service.currentGoLiveStage', '')
 
     const isAdyenEnabled =
-      Features.isAdyenEnabledInGoLiveRequest() || Boolean(req?.service?.features?.includes('govuk_psp_is_adyen'))
+      Features.isAdyenEnabledInGoLiveRequest() || req?.service?.serviceFeatures?.govuk_psp_is_adyen?.enabled
 
     return response(req, res, 'request-to-go-live/agreement', {
       displayAdyenPspAgreement: currentGoLiveStage === goLiveStage.CHOSEN_PSP_ADYEN && isAdyenEnabled,

@@ -59,7 +59,7 @@ describe('Request to go live: choose how to process payments', () => {
   describe('Service has correct go live stage and service feature is enabled', () => {
     it('should allow user to select Adyen', () => {
       utils.setupGetUserAndGatewayAccountStubs(
-        utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS', 'govuk_psp_is_adyen')
+        utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS', true)
       )
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
