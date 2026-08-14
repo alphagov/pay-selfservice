@@ -1,4 +1,4 @@
-import { ServiceData, ServiceFeature, ServiceFeatures } from '@models/service/dto/Service.dto'
+import { ServiceData, ServiceFeatures } from '@models/service/dto/Service.dto'
 import Service from '@models/service/Service.class'
 import { MerchantDetailsFixture } from '@test/fixtures/service/merchant-details.fixture'
 
