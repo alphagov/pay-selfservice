@@ -25,7 +25,7 @@ class Service {
   readonly agentInitiatedMotoEnabled: boolean
   readonly defaultBillingAddressCountry?: string
   readonly takesPaymentsOverPhone: boolean
-  readonly serviceFeatures?: ServiceFeatures
+  readonly serviceFeatures: ServiceFeatures
 
   constructor(serviceData: ServiceData) {
     this.id = serviceData.id
