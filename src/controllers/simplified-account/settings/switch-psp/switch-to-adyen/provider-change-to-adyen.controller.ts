@@ -13,6 +13,4 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/settings/switch-psp/switch-to-adyen/provider-change', { feesPath })
 }
 
-export = {
-  get,
-}
+export { get }

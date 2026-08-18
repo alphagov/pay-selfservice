@@ -22,7 +22,7 @@ const permission = require('@middleware/permission')
 const paths = require('./paths')
 const serviceSettingsController = require('@controllers/simplified-account/settings')
 const servicesController = require('@controllers/simplified-account/services')
-const { STRIPE, WORLDPAY } = require('@models/constants/payment-providers')
+const { STRIPE, WORLDPAY, ADYEN } = require('@models/constants/payment-providers')
 const {
   GOV_ENTITY_DOC_FORM_FIELD_NAME,
 } = require('@controllers/simplified-account/settings/stripe-details/government-entity-document/constants')
@@ -801,12 +801,20 @@ simplifiedAccount.post(
 
 // switch psp
 simplifiedAccount.get(
+  paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.switchPsp.switchToAdyen.index.get
+)
+
+simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToAdyen.providerChangeToAdyen,
   experimentalFeature(Features.PROVIDER_CHANGE_TO_ADYEN_LINK),
   enforceLiveAccountOnly,
   enforcePaymentProviderType(STRIPE),
   permission('stripe-account-details:update'),
-  serviceSettingsController.switchPsp.providerChangeToAdyen.get
+  serviceSettingsController.switchPsp.switchToAdyen.providerChangeToAdyenInfo.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToAdyen.adyenFees,
@@ -814,7 +822,7 @@ simplifiedAccount.get(
   enforceLiveAccountOnly,
   enforcePaymentProviderType(STRIPE),
   permission('stripe-account-details:update'),
-  serviceSettingsController.switchPsp.adyenFees.get
+  serviceSettingsController.switchPsp.switchToAdyen.adyenFees.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
