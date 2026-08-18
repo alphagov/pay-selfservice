@@ -3,6 +3,6 @@ const PaymentProviders = {
   WORLDPAY: 'worldpay',
   SANDBOX: 'sandbox',
   ADYEN: 'adyen',
-}
+} as const
 
 export = PaymentProviders

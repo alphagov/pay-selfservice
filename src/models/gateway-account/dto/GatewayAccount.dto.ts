@@ -1,6 +1,7 @@
 import { EmailNotificationsData } from '@models/gateway-account/dto/EmailNotifications.dto'
 import { GatewayAccountCredentialData } from '@models/gateway-account-credential/dto/GatewayAccountCredential.dto'
 import { Worldpay3dsFlexCredentialData } from '@models/gateway-account-credential/dto/Worldpay3dsFlexCredential.dto'
+import { PaymentProvider } from '@models/constants/payment-provider'
 
 export interface GatewayAccountData {
   gateway_account_id: number
@@ -12,7 +13,7 @@ export interface GatewayAccountData {
   allow_moto: boolean
   analytics_id?: string
   description?: string
-  payment_provider: string
+  payment_provider: PaymentProvider
   gateway_account_credentials?: GatewayAccountCredentialData[]
   email_collection_mode: string
   email_notifications: EmailNotificationsData

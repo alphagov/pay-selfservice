@@ -3,10 +3,11 @@ import { InvalidConfigurationError, NotFoundError } from '@root/errors'
 import CredentialState from '@models/constants/credential-state'
 import { GatewayAccountData } from '@models/gateway-account/dto/GatewayAccount.dto'
 import GatewayAccountCredential from '@models/gateway-account-credential/GatewayAccountCredential.class'
-import PaymentProvider from '@models/constants/payment-providers'
+import { PaymentProvider } from '@models/constants/payment-provider'
 import { EmailNotifications } from '@models/gateway-account/EmailNotifications.class'
 
 const pendingCredentialStates = [CredentialState.CREATED, CredentialState.ENTERED, CredentialState.VERIFIED]
+const PAYMENT_PROVIDERS_WHICH_SUPPORT_3DS: string[] = [PaymentProvider.WORLDPAY, PaymentProvider.STRIPE]
 
 class GatewayAccount {
   readonly id: number
@@ -25,7 +26,7 @@ class GatewayAccount {
   readonly motoMaskCardNumber: boolean
   readonly motoMaskCardSecurityCode: boolean
   readonly name: string
-  readonly paymentProvider: string
+  readonly paymentProvider: PaymentProvider
   readonly providerSwitchEnabled: boolean
   readonly recurringEnabled: boolean
   readonly requires3ds: boolean
@@ -61,7 +62,7 @@ class GatewayAccount {
     this.providerSwitchEnabled = gatewayAccountData.provider_switch_enabled
     this.recurringEnabled = gatewayAccountData.recurring_enabled
     this.requires3ds = gatewayAccountData.requires3ds
-    this.supports3ds = [PaymentProvider.WORLDPAY, PaymentProvider.STRIPE].includes(gatewayAccountData.payment_provider)
+    this.supports3ds = PAYMENT_PROVIDERS_WHICH_SUPPORT_3DS.includes(gatewayAccountData.payment_provider)
     this.worldpay3dsFlex = gatewayAccountData.worldpay_3ds_flex
       ? Worldpay3dsFlexCredential.fromJson(gatewayAccountData.worldpay_3ds_flex)
       : undefined
