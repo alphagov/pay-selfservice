@@ -34,7 +34,7 @@
           hint: {
             text: 'For local authorities, police and government-owned charitable groups. GOV.UK Pay has a contract with Adyen to process payments. Using Adyen means that you do not need your own contract with a payment service provider.'
           }
-        } if EnvironmentFeatures.isAdyenEnabledInGoLiveRequest()
+        } if isAdyenEnabled
       %}
       {{
         govukRadios({

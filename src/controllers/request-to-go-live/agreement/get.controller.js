@@ -1,5 +1,7 @@
 'use strict'
 
+import { Features } from '@root/config/features'
+
 const lodash = require('lodash')
 
 const goLiveStage = require('@models/constants/go-live-stage')
@@ -13,8 +15,12 @@ const chosenOptions = [CHOSEN_PSP_ADYEN, CHOSEN_PSP_STRIPE, GOV_BANKING_MOTO_OPT
 module.exports = (req, res) => {
   if (chosenOptions.includes(req.service.currentGoLiveStage)) {
     let currentGoLiveStage = lodash.get(req, 'service.currentGoLiveStage', '')
+
+    const isAdyenEnabled =
+      Features.isAdyenEnabledInGoLiveRequest() || req?.service?.serviceFeatures?.govuk_psp_is_adyen?.enabled
+
     return response(req, res, 'request-to-go-live/agreement', {
-      displayAdyenPspAgreement: currentGoLiveStage === goLiveStage.CHOSEN_PSP_ADYEN,
+      displayAdyenPspAgreement: currentGoLiveStage === goLiveStage.CHOSEN_PSP_ADYEN && isAdyenEnabled,
       displayStripePspAgreement: currentGoLiveStage === goLiveStage.CHOSEN_PSP_STRIPE,
     })
   }

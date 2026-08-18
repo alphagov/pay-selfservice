@@ -30,4 +30,14 @@ export interface ServiceData {
   agent_initiated_moto_enabled: boolean
   default_billing_address_country?: string
   takes_payments_over_phone: boolean
+  service_features: ServiceFeatures
+}
+
+export interface ServiceFeature {
+  enabled: boolean
+}
+
+export interface ServiceFeatures {
+  [key: string]: ServiceFeature | undefined
+  govuk_psp_is_adyen?: ServiceFeature
 }

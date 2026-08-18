@@ -8,104 +8,108 @@ const variables = {
   userExternalId: 'userExternalId',
   gatewayAccountId: 42,
   gatewayAccountExternalId: 'a-gateway-account-external-id',
-  serviceExternalId: 'afe452323dd04d1898672bfaba25e3a6'
+  serviceExternalId: 'afe452323dd04d1898672bfaba25e3a6',
 }
 
-function buildServiceRoleForGoLiveStage (goLiveStage) {
+function buildServiceRoleForGoLiveStage(goLiveStage, isAdyenEnabled) {
   return {
     service: {
       external_id: variables.serviceExternalId,
       current_go_live_stage: goLiveStage,
-      gateway_account_ids: [`${variables.gatewayAccountId}`]
-    }
+      gateway_account_ids: [`${variables.gatewayAccountId}`],
+      service_features: {
+        govuk_psp_is_adyen: {
+          enabled: isAdyenEnabled,
+        },
+      },
+    },
   }
 }
 
-function buildServiceRoleWithMerchantDetails (merchantDetails, goLiveStage) {
+function buildServiceRoleWithMerchantDetails(merchantDetails, goLiveStage) {
   return {
     service: {
       external_id: variables.serviceExternalId,
       gateway_account_ids: [variables.gatewayAccountId],
       merchant_details: merchantDetails,
-      current_go_live_stage: goLiveStage
-    }
+      current_go_live_stage: goLiveStage,
+    },
   }
 }
 
-function getUserAndGatewayAccountStubs (serviceRole) {
+function getUserAndGatewayAccountStubs(serviceRole) {
   return [
     userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
     gatewayAccountStubs.getGatewayAccountSuccess({
       gatewayAccountId: variables.gatewayAccountId,
-      gatewayAccountExternalId: variables.gatewayAccountExternalId
-    })
+      gatewayAccountExternalId: variables.gatewayAccountExternalId,
+    }),
   ]
 }
 
-function getUserAndGatewayAccountsStubs (serviceRole) {
+function getUserAndGatewayAccountsStubs(serviceRole) {
   return [
     userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
     gatewayAccountStubs.getGatewayAccountSuccess({
       gatewayAccountId: variables.gatewayAccountId,
-      gatewayAccountExternalId: variables.gatewayAccountExternalId
-    })
+      gatewayAccountExternalId: variables.gatewayAccountExternalId,
+    }),
   ]
 }
 
-function getUserAndGatewayAccountByExternalIdStubs (serviceRole, paymentProvider, accountType) {
+function getUserAndGatewayAccountByExternalIdStubs(serviceRole, paymentProvider, accountType) {
   return [
     userStubs.getUserSuccessWithServiceRole({ userExternalId: variables.userExternalId, serviceRole }),
     gatewayAccountStubs.getAccountByServiceIdAndAccountType(variables.serviceExternalId, accountType, {
       gateway_account_id: variables.gatewayAccountId,
       external_id: variables.gatewayAccountExternalId,
-      payment_provider: paymentProvider || 'sandbox'
+      payment_provider: paymentProvider || 'sandbox',
     }),
     gatewayAccountStubs.getGatewayAccountByExternalIdSuccess({
       gatewayAccountId: variables.gatewayAccountId,
       gatewayAccountExternalId: variables.gatewayAccountExternalId,
-      paymentProvider: paymentProvider || 'sandbox'
+      paymentProvider: paymentProvider || 'sandbox',
     }),
-    gatewayAccountStubs.getGatewayAccountsSuccess(
-      {
-        gatewayAccountId: variables.gatewayAccountId,
-        paymentProvider: paymentProvider || 'sandbox',
-        type: accountType || 'test'
-      })
+    gatewayAccountStubs.getGatewayAccountsSuccess({
+      gatewayAccountId: variables.gatewayAccountId,
+      paymentProvider: paymentProvider || 'sandbox',
+      type: accountType || 'test',
+    }),
   ]
 }
 
-function patchUpdateGoLiveStageSuccessStub (currentGoLiveStage) {
+function patchUpdateGoLiveStageSuccessStub(currentGoLiveStage) {
   return serviceStubs.patchUpdateServiceGoLiveStageSuccess({
     serviceExternalId: variables.serviceExternalId,
     gatewayAccountId: variables.gatewayAccountId,
-    currentGoLiveStage
+    currentGoLiveStage,
   })
 }
 
-function patchUpdateGoLiveStageErrorStub (currentGoLiveStage) {
+function patchUpdateGoLiveStageErrorStub(currentGoLiveStage) {
   return serviceStubs.patchGoLiveStageFailure({
     serviceExternalId: variables.serviceExternalId,
     gatewayAccountId: variables.gatewayAccountId,
-    currentGoLiveStage
+    currentGoLiveStage,
   })
 }
 
-function patchUpdateServiceSuccessCatchAllStub (currentGoLiveStage) {
+function patchUpdateServiceSuccessCatchAllStub(currentGoLiveStage) {
   return serviceStubs.patchUpdateServiceSuccessCatchAll({
     serviceExternalId: variables.serviceExternalId,
-    currentGoLiveStage
+    currentGoLiveStage,
   })
 }
 
-function setupGetUserAndGatewayAccountStubs (serviceRole) {
+function setupGetUserAndGatewayAccountStubs(serviceRole) {
   cy.task('setupStubs', getUserAndGatewayAccountStubs(serviceRole))
 }
 
-function setupGetUserAndGatewayAccountsStubs (serviceRole) {
+function setupGetUserAndGatewayAccountsStubs(serviceRole) {
   cy.task('setupStubs', getUserAndGatewayAccountsStubs(serviceRole))
 }
 
-function setupGetUserAndGatewayAccountByExternalIdStubs (serviceRole) {
+function setupGetUserAndGatewayAccountByExternalIdStubs(serviceRole) {
   cy.task('setupStubs', getUserAndGatewayAccountByExternalIdStubs(serviceRole))
 }
 
@@ -120,5 +124,5 @@ module.exports = {
   patchUpdateServiceSuccessCatchAllStub,
   setupGetUserAndGatewayAccountStubs,
   setupGetUserAndGatewayAccountsStubs,
-  setupGetUserAndGatewayAccountByExternalIdStubs
+  setupGetUserAndGatewayAccountByExternalIdStubs,
 }

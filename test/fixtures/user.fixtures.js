@@ -10,246 +10,246 @@ const secondFactorMethod = require('@models/constants/second-factor-method')
 const defaultPermissions = [
   {
     name: 'users-service:read',
-    description: 'Viewusersinservice'
+    description: 'Viewusersinservice',
   },
   {
     name: 'users-service:create',
-    description: 'Createuserinthisservice'
+    description: 'Createuserinthisservice',
   },
   {
     name: 'tokens-active:read',
-    description: 'Viewactivekeys'
+    description: 'Viewactivekeys',
   },
   {
     name: 'tokens-revoked:read',
-    description: 'Viewrevokedkeys'
+    description: 'Viewrevokedkeys',
   },
   {
     name: 'tokens:create',
-    description: 'Generatekey'
+    description: 'Generatekey',
   },
   {
     name: 'tokens:update',
-    description: 'Generatekey'
+    description: 'Generatekey',
   },
   {
     name: 'tokens:delete',
-    description: 'Revokekey'
+    description: 'Revokekey',
   },
   {
     name: 'transactions:read',
-    description: 'Viewtransactionslist'
+    description: 'Viewtransactionslist',
   },
   {
     name: 'transactions-by-date:read',
-    description: 'Searchtransactionsbydate'
+    description: 'Searchtransactionsbydate',
   },
   {
     name: 'transactions-by-fields:read',
-    description: 'Searchtransactionsbypaymentfields'
+    description: 'Searchtransactionsbypaymentfields',
   },
   {
     name: 'transactions-download:read',
-    description: 'Downloadtransactions'
+    description: 'Downloadtransactions',
   },
   {
     name: 'transactions-details:read',
-    description: 'Viewtransactiondetails'
+    description: 'Viewtransactiondetails',
   },
   {
     name: 'transactions-events:read',
-    description: 'Viewtransactionevents'
+    description: 'Viewtransactionevents',
   },
   {
     name: 'refunds:create',
-    description: 'Issuerefund'
+    description: 'Issuerefund',
   },
   {
     name: 'transactions-amount:read',
-    description: 'Viewtransactionamounts'
+    description: 'Viewtransactionamounts',
   },
   {
     name: 'transactions-description:read',
-    description: 'Viewtransactiondescription'
+    description: 'Viewtransactiondescription',
   },
   {
     name: 'transactions-email:read',
-    description: 'Viewtransactionemail'
+    description: 'Viewtransactionemail',
   },
   {
     name: 'transactions-card-type:read',
-    description: 'Viewtransactioncardtype'
+    description: 'Viewtransactioncardtype',
   },
   {
     name: 'gateway-credentials:read',
-    description: 'Viewgatewayaccountcredentials'
+    description: 'Viewgatewayaccountcredentials',
   },
   {
     name: 'gateway-credentials:update',
-    description: 'Editgatewayaccountcredentials'
+    description: 'Editgatewayaccountcredentials',
   },
   {
     name: 'service-name:read',
-    description: 'Viewservicename'
+    description: 'Viewservicename',
   },
   {
     name: 'service-name:update',
-    description: 'Editservicename'
+    description: 'Editservicename',
   },
   {
     name: 'payment-types:read',
-    description: 'Viewpaymenttypes'
+    description: 'Viewpaymenttypes',
   },
   {
     name: 'payment-types:update',
-    description: 'Editpaymenttypes'
+    description: 'Editpaymenttypes',
   },
   {
     name: 'email-notification-template:read',
-    description: 'Viewemailnotificationstemplate'
+    description: 'Viewemailnotificationstemplate',
   },
   {
     name: 'email-notification-paragraph:update',
-    description: 'Editemailnotificationsparagraph'
+    description: 'Editemailnotificationsparagraph',
   },
   {
     name: 'email-notification-toggle:update',
-    description: 'Turnemailnotificationson/off'
+    description: 'Turnemailnotificationson/off',
   },
   {
     name: 'tokens:read',
-    description: 'View keys'
+    description: 'View keys',
   },
   {
     name: 'toggle-3ds:read',
-    description: 'View 3D Secure setting'
+    description: 'View 3D Secure setting',
   },
   {
     name: 'toggle-3ds:update',
-    description: 'Edit 3D Secure setting'
+    description: 'Edit 3D Secure setting',
   },
   {
     name: 'users-service:delete',
-    description: 'Remove user from a service'
+    description: 'Remove user from a service',
   },
   {
     name: 'merchant-details:read',
-    description: 'View Merchant Details setting'
+    description: 'View Merchant Details setting',
   },
   {
     name: 'merchant-details:update',
-    description: 'Edit Merchant Details setting'
+    description: 'Edit Merchant Details setting',
   },
   {
     name: 'toggle-billing-address:read',
-    description: 'View Billing Address setting'
+    description: 'View Billing Address setting',
   },
   {
     name: 'toggle-billing-address:update',
-    description: 'Edit Billing Address setting'
+    description: 'Edit Billing Address setting',
   },
   {
     name: 'go-live-stage:update',
-    description: 'Update Go Live stage'
+    description: 'Update Go Live stage',
   },
   {
     name: 'go-live-stage:read',
-    description: 'View Go Live stage'
+    description: 'View Go Live stage',
   },
   {
     name: 'stripe-account-details:update',
-    description: 'Update any Stripe account onboarding details'
+    description: 'Update any Stripe account onboarding details',
   },
   {
     name: 'stripe-bank-details:update',
-    description: 'Update Stripe bank details'
+    description: 'Update Stripe bank details',
   },
   {
     name: 'stripe-bank-details:read',
-    description: 'View Stripe bank details'
+    description: 'View Stripe bank details',
   },
   {
     name: 'stripe-responsible-person:update',
-    description: 'Update Stripe responsible person'
+    description: 'Update Stripe responsible person',
   },
   {
     name: 'stripe-responsible-person:read',
-    description: 'View Stripe responsible person'
+    description: 'View Stripe responsible person',
   },
   {
     name: 'stripe-director:update',
-    description: 'Update Stripe director'
+    description: 'Update Stripe director',
   },
   {
     name: 'stripe-director:read',
-    description: 'View Stripe director'
+    description: 'View Stripe director',
   },
   {
     name: 'stripe-vat-number-company-number:update',
-    description: 'Update Stripe VAT number company number'
+    description: 'Update Stripe VAT number company number',
   },
   {
     name: 'stripe-vat-number-company-number:read',
-    description: 'View Stripe VAT number company number'
+    description: 'View Stripe VAT number company number',
   },
   {
     name: 'stripe-government-entity-document:update',
-    description: 'Upload Government entity document'
+    description: 'Upload Government entity document',
   },
   {
     name: 'stripe-organisation-details:update',
-    description: 'Check organisation details with Government entity document'
+    description: 'Check organisation details with Government entity document',
   },
   {
     name: 'connected-gocardless-account:read',
-    description: 'View connected go cardless account'
+    description: 'View connected go cardless account',
   },
   {
     name: 'connected-gocardless-account:update',
-    description: 'Update connected go cardless account'
+    description: 'Update connected go cardless account',
   },
   {
     name: 'payouts:read',
-    description: 'View payouts'
+    description: 'View payouts',
   },
   {
     name: 'moto-mask-input:update',
-    description: 'Update moto mask for card number and security code'
+    description: 'Update moto mask for card number and security code',
   },
   {
     name: 'moto-mask-input:read',
-    description: 'View moto mask for card number and security code'
+    description: 'View moto mask for card number and security code',
   },
   {
     name: 'psp-test-account-stage:update',
-    description: 'Update PSP Test Account stage'
+    description: 'Update PSP Test Account stage',
   },
   {
     name: 'webhooks:read',
-    description: 'View webhooks'
+    description: 'View webhooks',
   },
   {
     name: 'webhooks:update',
-    description: 'Update webhooks'
+    description: 'Update webhooks',
   },
   {
     name: 'agreements:read',
-    description: 'View agreements'
+    description: 'View agreements',
   },
   {
     name: 'agreements:update',
-    description: 'Update agreements'
+    description: 'Update agreements',
   },
   {
     name: 'agent-initiated-moto:create',
-    description: 'Create agent initiated moto payments'
-  }
+    description: 'Create agent initiated moto payments',
+  },
 ]
 
 const buildServiceRole = (opts = {}) => {
   return {
     service: serviceFixtures.validServiceResponse(opts.service),
-    role: buildRoleWithDefaults(opts.role)
+    role: buildRoleWithDefaults(opts.role),
   }
 }
 
@@ -257,11 +257,11 @@ const buildRoleWithDefaults = (opts = {}) => {
   return {
     name: opts.name || 'admin',
     description: opts.role_description || 'Administrator',
-    permissions: opts.permissions || defaultPermissions
+    permissions: opts.permissions || defaultPermissions,
   }
 }
 
-function buildUserWithDefaults (opts) {
+function buildUserWithDefaults(opts) {
   lodash.defaults(opts, {
     external_id: '7d19aff33f8948deb97ed16b2912dcd3',
     email: 'some-user@example.com',
@@ -274,11 +274,13 @@ function buildUserWithDefaults (opts) {
     login_counter: 0,
     session_version: 0,
     features: null,
-    _links: [{
-      rel: 'self',
-      method: 'GET',
-      href: 'http://127.0.0.1:8080/v1/api/users/09283568e105442da3928d1fa99fb0eb'
-    }]
+    _links: [
+      {
+        rel: 'self',
+        method: 'GET',
+        href: 'http://127.0.0.1:8080/v1/api/users/09283568e105442da3928d1fa99fb0eb',
+      },
+    ],
   })
 
   const serviceRoles = opts.service_roles ? lodash.flatMap(opts.service_roles, buildServiceRole) : [buildServiceRole()]
@@ -294,8 +296,7 @@ function buildUserWithDefaults (opts) {
     disabled: opts.disabled,
     login_counter: opts.login_counter,
     session_version: opts.session_version,
-    features: opts.features,
-    _links: opts._links
+    _links: opts._links,
   }
 }
 
@@ -307,7 +308,7 @@ module.exports = {
     const newExternalId = opts.external_id || '121391373c1844dd99cb3416b70785c8'
     const defaultServiceId = opts.default_service_id || '193'
     const gatewayAccountIds = opts.gateway_account_ids || ['540']
-    const collectBillingAddress = (opts.collect_billing_address && opts.collect_billing_address === true)
+    const collectBillingAddress = opts.collect_billing_address && opts.collect_billing_address === true
     const currentGoLiveStage = opts.current_go_live_stage || goLiveStage.NOT_STARTED
     const currentPspTestAccountStage = opts.current_psp_test_account_stage || stripeTestAccountStage.NOT_STARTED
     const agentInitiatedMotoEnabled = opts.agent_initiated_moto_enabled || false
@@ -315,29 +316,31 @@ module.exports = {
     const userOpts = {
       external_id: opts.external_id || newExternalId,
       email: opts.email || 'user@example.com',
-      service_roles: opts.service_roles || [{
-        service: {
-          name: 'System Generated',
-          external_id: defaultServiceId,
-          gateway_account_ids: gatewayAccountIds,
-          collect_billing_address: collectBillingAddress,
-          current_go_live_stage: currentGoLiveStage,
-          current_psp_test_account_stage: currentPspTestAccountStage,
-          agent_initiated_moto_enabled: agentInitiatedMotoEnabled
+      service_roles: opts.service_roles || [
+        {
+          service: {
+            name: 'System Generated',
+            external_id: defaultServiceId,
+            gateway_account_ids: gatewayAccountIds,
+            collect_billing_address: collectBillingAddress,
+            current_go_live_stage: currentGoLiveStage,
+            current_psp_test_account_stage: currentPspTestAccountStage,
+            agent_initiated_moto_enabled: agentInitiatedMotoEnabled,
+          },
+          role: opts.role || {
+            name: 'admin',
+            description: 'Administrator',
+            permissions: opts.permissions || [{ name: 'perm-1' }],
+          },
         },
-        role: opts.role || {
-          name: 'admin',
-          description: 'Administrator',
-          permissions: opts.permissions || [{ name: 'perm-1' }]
-        }
-      }],
+      ],
       telephone_number: opts.telephone_number || '940583',
       otp_key: opts.otp_key || '2994',
       disabled: opts.disabled || false,
       login_counter: opts.login_counter || 0,
       session_version: opts.session_version || 0,
       second_factor: opts.second_factor || secondFactorMethod.SMS,
-      provisional_otp_key: opts.provisional_otp_key || '60400'
+      provisional_otp_key: opts.provisional_otp_key || '60400',
     }
 
     // pass this through the known valid structure builder to ensure structure is correct
@@ -347,19 +350,19 @@ module.exports = {
   validAuthenticateRequest: (options) => {
     return {
       email: options.email || 'username@example.com',
-      password: options.password || 'password'
+      password: options.password || 'password',
     }
   },
 
   unauthorizedUserResponse: () => {
     return {
-      errors: ['invalid email and/or password']
+      errors: ['invalid email and/or password'],
     }
   },
 
   badAuthenticateResponse: () => {
     return {
-      errors: ['Field [email] is required', 'Field [password] is required']
+      errors: ['Field [email] is required', 'Field [password] is required'],
     }
   },
 
@@ -367,40 +370,40 @@ module.exports = {
     return {
       op: 'append',
       path: 'sessionVersion',
-      value: 1
+      value: 1,
     }
   },
 
   validAuthenticateSecondFactorRequest: (code) => {
     return {
-      code: code || '123456'
+      code: code || '123456',
     }
   },
 
   validUpdatePasswordRequest: (token, newPassword) => {
     return {
       forgotten_password_code: token || '5ylaem',
-      new_password: newPassword || 'G0VUkPay2017Rocks'
+      new_password: newPassword || 'G0VUkPay2017Rocks',
     }
   },
 
   validUpdateServiceRoleRequest: (role) => {
     return {
-      role_name: role || 'admin'
+      role_name: role || 'admin',
     }
   },
 
   validAssignServiceRoleRequest: (opts = {}) => {
     return {
       service_external_id: opts.service_external_id || '9en17v',
-      role_name: opts.role_name || 'admin'
+      role_name: opts.role_name || 'admin',
     }
   },
 
   validPasswordAuthenticateRequest: (opts = {}) => {
     return {
       email: opts.email || 'valid-email@example.com',
-      password: opts.password || 'validpassword'
+      password: opts.password || 'validpassword',
     }
   },
 
@@ -414,13 +417,13 @@ module.exports = {
 
   invalidPasswordAuthenticateResponse: () => {
     return {
-      errors: ['invalid email and/or password']
+      errors: ['invalid email and/or password'],
     }
   },
 
   validForgottenPasswordCreateRequest: (username) => {
     return {
-      username: username || 'username@email.com'
+      username: username || 'username@email.com',
     }
   },
 
@@ -431,17 +434,19 @@ module.exports = {
       user_external_id: request.userExternalId || 'userExternalId',
       code: request.code || code,
       date: '2010-12-31T22:59:59.132Z',
-      _links: [{
-        href: `http://127.0.0.1:8080/v1/api/forgotten-passwords/${code}`,
-        rel: 'self',
-        method: 'GET'
-      }]
+      _links: [
+        {
+          href: `http://127.0.0.1:8080/v1/api/forgotten-passwords/${code}`,
+          rel: 'self',
+          method: 'GET',
+        },
+      ],
     }
   },
 
   badForgottenPasswordResponse: () => {
     return {
-      errors: ['Field [username] is required']
+      errors: ['Field [username] is required'],
     }
   },
 
@@ -449,7 +454,7 @@ module.exports = {
     return {
       op: 'replace',
       path: 'telephone_number',
-      value: telephoneNumber
+      value: telephoneNumber,
     }
   },
 
@@ -457,7 +462,7 @@ module.exports = {
     return {
       op: 'replace',
       path: 'features',
-      value: featuresString
+      value: featuresString,
     }
-  }
+  },
 }

@@ -27,8 +27,8 @@ describe('Request to go live: choose how to process payments', () => {
     cy.setEncryptedCookies(userExternalId)
   })
 
-  describe('Service has correct go live stage and user selects Stripe account', () => {
-    it('should allow user to select Stripe', () => {
+  describe('Service has correct go live stage and service feature is disabled', () => {
+    it('should allow user to select Stripe but not Adyen', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
@@ -36,7 +36,7 @@ describe('Request to go live: choose how to process payments', () => {
       cy.get('#request-to-go-live-current-step').should('exist')
       cy.get('#request-to-go-live-choose-how-to-process-payments-form').should('exist')
       cy.get('#choose-how-to-process-payments-mode').should('exist')
-      cy.get('#choose-how-to-process-payments-mode-2').should('exist')
+      cy.get('#choose-how-to-process-payments-mode-2').should('not.exist')
       cy.get('#choose-how-to-process-payments-mode-3').should('exist')
 
       // set up new stubs where the first time we get the service it returns the go_live_stage as ENTERED_ORGANISATION_ADDRESS,
@@ -56,9 +56,11 @@ describe('Request to go live: choose how to process payments', () => {
     })
   })
 
-  describe('Service has correct go live stage and user selects Adyen account', () => {
+  describe('Service has correct go live stage and service feature is enabled', () => {
     it('should allow user to select Adyen', () => {
-      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS'))
+      utils.setupGetUserAndGatewayAccountStubs(
+        utils.buildServiceRoleForGoLiveStage('ENTERED_ORGANISATION_ADDRESS', true)
+      )
 
       cy.visit(requestToGoLiveChooseHowToProcessPaymentUrl)
 

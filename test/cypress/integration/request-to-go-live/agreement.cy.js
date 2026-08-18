@@ -61,7 +61,7 @@ describe('Request to go live: agreement', () => {
     })
   })
 
-  describe('Stripe has been chosen as the PSP', () => {
+  describe('Stripe has been chosen as the PSP and service feature is disabled', () => {
     it('should display "Read and accept our legal terms" page when in CHOSEN_PSP_STRIPE', () => {
       utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_STRIPE'))
 
@@ -122,10 +122,9 @@ describe('Request to go live: agreement', () => {
     })
   })
 
-  describe('Adyen has been chosen as the PSP', () => {
+  describe('Adyen has been chosen as the PSP and service feature is enabled', () => {
     it('should display "Read and accept our legal terms" page when in CHOSEN_PSP_ADYEN', () => {
-      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_ADYEN'))
-
+      utils.setupGetUserAndGatewayAccountStubs(utils.buildServiceRoleForGoLiveStage('CHOSEN_PSP_ADYEN', true))
       cy.visit(requestToGoLiveAgreementUrl)
 
       cy.get('h1').should('contain', 'Read and accept our legal terms')
