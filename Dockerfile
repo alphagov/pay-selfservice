@@ -25,5 +25,6 @@ WORKDIR /app
 COPY --from=builder /build-stage/dist ./
 ENV PORT=9000
 EXPOSE 9000
+USER 1000
 ENTRYPOINT ["tini", "--"]
 CMD ["node", "application.js"]
