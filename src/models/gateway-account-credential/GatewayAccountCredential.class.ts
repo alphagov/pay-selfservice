@@ -1,9 +1,10 @@
 import Credential from '@models/gateway-account-credential/Credential.class'
 import { GatewayAccountCredentialData } from '@models/gateway-account-credential/dto/GatewayAccountCredential.dto'
+import { PaymentProvider } from '@models/constants/payment-provider'
 
 class GatewayAccountCredential {
   public externalId!: string
-  public paymentProvider!: string
+  public paymentProvider!: PaymentProvider
   public credentials!: Credential
   public state!: string
   public createdDate?: string
@@ -16,7 +17,7 @@ class GatewayAccountCredential {
     return this
   }
 
-  withPaymentProvider(paymentProvider: string) {
+  withPaymentProvider(paymentProvider: PaymentProvider) {
     this.paymentProvider = paymentProvider
     return this
   }

@@ -10,7 +10,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import Service from '@models/service/Service.class'
 
 const logger = createLogger(__filename)
-const SUPPORTED_ACCOUNT_PROVIDERS = [
+const SUPPORTED_ACCOUNT_PROVIDERS: string[] = [
   PaymentProviders.STRIPE,
   PaymentProviders.SANDBOX,
   PaymentProviders.WORLDPAY,

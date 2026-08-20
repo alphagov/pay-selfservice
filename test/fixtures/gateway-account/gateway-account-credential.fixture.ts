@@ -2,10 +2,11 @@ import { GatewayAccountCredentialData } from '@models/gateway-account-credential
 import GatewayAccountCredential from '@models/gateway-account-credential/GatewayAccountCredential.class'
 import { CredentialFixture } from '@test/fixtures/gateway-account/credential.fixture'
 import PaymentProviders from '@models/constants/payment-providers'
+import { PaymentProvider } from '@models/constants/payment-provider'
 
 export class GatewayAccountCredentialFixture {
   public externalId: string
-  public paymentProvider: string
+  public paymentProvider: PaymentProvider
   public credentials: CredentialFixture
   public state: string
   public createdDate: string
@@ -55,6 +56,29 @@ export class GatewayAccountCredentialFixture {
       },
       ...overrides
     )
+  }
+
+  static forAdyen(...overrides: Partial<GatewayAccountCredentialFixture>[]) {
+    return new GatewayAccountCredentialFixture(
+      {
+        paymentProvider: PaymentProviders.ADYEN,
+        credentials: CredentialFixture.forAdyen(),
+      },
+      ...overrides
+    )
+  }
+
+  static forProvider(provider: PaymentProvider, ...overrides: Partial<GatewayAccountCredentialFixture>[]) {
+    switch (provider) {
+      case 'stripe':
+        return GatewayAccountCredentialFixture.forStripe(...overrides)
+      case 'worldpay':
+        return GatewayAccountCredentialFixture.forWorldpay(...overrides)
+      case 'adyen':
+        return GatewayAccountCredentialFixture.forAdyen(...overrides)
+      case 'sandbox':
+        return GatewayAccountCredentialFixture.forSandbox(...overrides)
+    }
   }
 
   toGatewayAccountCredentialData(): GatewayAccountCredentialData {

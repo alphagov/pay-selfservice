@@ -4,6 +4,7 @@ import { GatewayAccountCredentialFixture } from '@test/fixtures/gateway-account/
 import { Worldpay3dsFlexCredentialFixture } from '@test/fixtures/gateway-account/worldpay-3ds-flex-credential.fixture'
 import { EmailNotificationFixture } from '@test/fixtures/gateway-account/email-notification.fixture'
 import PaymentProviders from '@models/constants/payment-providers'
+import { PaymentProvider } from '@models/constants/payment-provider'
 
 export class GatewayAccountFixture {
   readonly id: number
@@ -22,7 +23,7 @@ export class GatewayAccountFixture {
   readonly motoMaskCardNumber: boolean
   readonly motoMaskCardSecurityCode: boolean
   readonly name: string
-  readonly paymentProvider: string
+  readonly paymentProvider: PaymentProvider
   readonly providerSwitchEnabled: boolean
   readonly recurringEnabled: boolean
   readonly requires3ds: boolean
@@ -86,6 +87,25 @@ export class GatewayAccountFixture {
 
   static forSandbox(...overrides: Partial<GatewayAccountFixture>[]) {
     return new GatewayAccountFixture(...overrides)
+  }
+
+  static forSwitchingPsp(from: PaymentProvider, to: PaymentProvider, ...overrides: Partial<GatewayAccountFixture>[]) {
+    return new GatewayAccountFixture(
+      {
+        paymentProvider: from,
+        gatewayAccountCredentials: [
+          GatewayAccountCredentialFixture.forProvider(from),
+          GatewayAccountCredentialFixture.forProvider(to, {
+            state: 'CREATED',
+            externalId: 'gateway-account-credential-def-456',
+            createdDate: '2026-01-01T00:00:00.000Z',
+            activeStartDate: undefined,
+          }),
+        ],
+        providerSwitchEnabled: true,
+      },
+      ...overrides
+    )
   }
 
   toGatewayAccountData(): GatewayAccountData {
