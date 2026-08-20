@@ -9,6 +9,7 @@ FROM base AS builder
 RUN npm install -g npm@11.18.0
 
 WORKDIR /build-stage
+COPY package.json package-lock.json .npmrc ./
 RUN npm ci --quiet
 COPY . ./
 RUN npm run compile
