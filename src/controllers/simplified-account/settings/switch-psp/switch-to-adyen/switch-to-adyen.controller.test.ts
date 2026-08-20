@@ -20,7 +20,7 @@ const { req, res, call } = new ControllerTestBuilder(
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount(
-    GatewayAccountFixture.forSwitchingPsp(PaymentProvider.STRIPE, PaymentProvider.ADYEN, {
+    GatewayAccountFixture.forSwitchingPsp(PaymentProvider.STRIPE, PaymentProvider.ADYEN, [], [], {
       type: 'live',
     }).toGatewayAccount()
   )
