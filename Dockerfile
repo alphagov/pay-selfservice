@@ -5,6 +5,10 @@ RUN apk upgrade --no-cache \
 
 FROM base AS builder
 
+# Upgrade npm — if updating the Node.js version, check if this
+# is still necessary and make sure it never downgrades npm
+RUN npm install -g npm@11.18.0
+
 WORKDIR /build-stage
 COPY . ./
 RUN npm ci --quiet
