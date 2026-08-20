@@ -8,6 +8,10 @@ export class CredentialFixture {
   public recurringCustomerInitiated?: WorldpayCredentialFixture
   public recurringMerchantInitiated?: WorldpayCredentialFixture
   public googlePayMerchantId?: string
+  public legalEntityId?: string | null
+  public storeId?: string | null
+  public accountHolderId?: string | null
+  public balanceAccountId?: string | null
 
   constructor(...overrides: Partial<CredentialFixture>[]) {
     overrides.forEach((override) => {
@@ -35,6 +39,18 @@ export class CredentialFixture {
 
   static forSandbox() {
     return new CredentialFixture()
+  }
+
+  static forAdyen(...overrides: Partial<CredentialFixture>[]) {
+    return new CredentialFixture(
+      {
+        legalEntityId: null,
+        storeId: null,
+        accountHolderId: null,
+        balanceAccountId: null,
+      },
+      ...overrides
+    )
   }
 
   toCredentialData(): CredentialData {

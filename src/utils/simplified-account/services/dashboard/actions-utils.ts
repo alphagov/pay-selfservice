@@ -2,7 +2,6 @@ import Service from '@models/service/Service.class'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import User from '@models/user/User.class'
 import GoLiveStage from '@models/constants/go-live-stage'
-import PaymentProviders, { STRIPE, WORLDPAY } from '@models/constants/payment-providers'
 import PspTestAccountStage from '@models/constants/psp-test-account-stage'
 import { getProducts } from '@services/products.service'
 import createLogger from '@utils/logger'
@@ -13,6 +12,7 @@ import { getConnectorStripeAccountSetup, getStripeAccountCapabilities } from '@s
 import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 import { ProductType } from '@models/products/product-type'
 import { Features } from '@root/config/features'
+import { PaymentProvider } from '@models/constants/payment-provider'
 
 const logger = createLogger(__filename)
 
@@ -44,13 +44,19 @@ const goLiveRequestedStages = [
 
 const goLiveLinkNotDisplayedStages = [GoLiveStage.LIVE, GoLiveStage.DENIED]
 
+const PAYMENT_PROVIDERS_THAT_CAN_GO_LIVE: PaymentProvider[] = [
+  PaymentProvider.STRIPE,
+  PaymentProvider.WORLDPAY,
+  PaymentProvider.ADYEN,
+]
+
 const displayRequestTestStripeAccountLink = (service: Service, account: GatewayAccount, user: User) => {
   // Since 29/08/2024, services that identified as local govt were automatically allocated Stripe test accounts
   // Services created after that date don't need a link to create a Stripe test account
   // this change was deployed in PR #4256 at approx. 10:08 UTC so this time is used as the cutoff
   const serviceCreatedBeforeOrgTypeCaptured = new Date(service.createdDate) <= new Date('2024-08-29T10:08:00Z')
   return (
-    account.paymentProvider === PaymentProviders.SANDBOX &&
+    account.paymentProvider === PaymentProvider.SANDBOX &&
     service.currentGoLiveStage !== GoLiveStage.LIVE &&
     serviceCreatedBeforeOrgTypeCaptured &&
     service.currentPspTestAccountStage !== PspTestAccountStage.CREATED &&
@@ -68,8 +74,8 @@ const displayGoLiveLink = (service: Service, account: GatewayAccount, user: User
 
 const displayDemoAndTestPaymentLinks = (account: GatewayAccount) => {
   return (
-    account.paymentProvider === PaymentProviders.SANDBOX ||
-    (account.paymentProvider === PaymentProviders.STRIPE && account.type === GatewayAccountType.TEST)
+    account.paymentProvider === PaymentProvider.SANDBOX ||
+    (account.paymentProvider === PaymentProvider.STRIPE && account.type === GatewayAccountType.TEST)
   )
 }
 
@@ -102,7 +108,7 @@ const getTelephonePaymentLink = async (user: User, service: Service, gatewayAcco
 function isALiveStripeServiceAndAdminUser(service: Service, account: GatewayAccount, user: User) {
   return (
     account.type === GatewayAccountType.LIVE &&
-    account.paymentProvider === PaymentProviders.STRIPE &&
+    account.paymentProvider === PaymentProvider.STRIPE &&
     user.hasPermission(service.externalId, 'stripe-account-details:update')
   )
 }
@@ -165,14 +171,14 @@ const getConfigurePSPAccountLink = (service: Service, account: GatewayAccount) =
   const credential = account.getCurrentCredential()
   const paymentProvider = credential?.paymentProvider
 
-  if (!paymentProvider || ![WORLDPAY, STRIPE, PaymentProviders.ADYEN].includes(paymentProvider)) {
+  if (!paymentProvider || !PAYMENT_PROVIDERS_THAT_CAN_GO_LIVE.includes(paymentProvider)) {
     return undefined
   }
 
-  const simplifiedPaths = {
-    [WORLDPAY]: paths.simplifiedAccount.settings.worldpayDetails.index,
-    [STRIPE]: paths.simplifiedAccount.settings.stripeDetails.index,
-    [PaymentProviders.ADYEN]: paths.simplifiedAccount.settings.stripeDetails.index,
+  const simplifiedPaths: Record<string, string> = {
+    [PaymentProvider.WORLDPAY]: paths.simplifiedAccount.settings.worldpayDetails.index,
+    [PaymentProvider.STRIPE]: paths.simplifiedAccount.settings.stripeDetails.index,
+    [PaymentProvider.ADYEN]: paths.simplifiedAccount.settings.stripeDetails.index, // todo update this to Adyen when adyen-details routes are added
   }
 
   return formatServiceAndAccountPathsFor(simplifiedPaths[paymentProvider], service.externalId, account.type)
@@ -190,7 +196,7 @@ const getAccountStatus = async (account: GatewayAccount, service: Service) => {
     ...(account.providerSwitchEnabled && {
       targetPaymentProvider: account.getSwitchingCredential().paymentProvider,
     }),
-    ...(currentCredential?.paymentProvider === PaymentProviders.STRIPE &&
+    ...(currentCredential?.paymentProvider === PaymentProvider.STRIPE &&
       (await getStripeAccountStatus(account, service))),
   }
 }
@@ -214,7 +220,7 @@ const isWorldpayTestService = (service: Service, account: GatewayAccount) => {
     service.gatewayAccountIds.length === 1 &&
     account.id === parseInt(service.gatewayAccountIds[0]) &&
     account.type === GatewayAccountType.TEST &&
-    account.paymentProvider === PaymentProviders.WORLDPAY
+    account.paymentProvider === PaymentProvider.WORLDPAY
   )
 }
 

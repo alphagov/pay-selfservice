@@ -106,8 +106,12 @@ export class ServiceView {
   }
 }
 
-const PaymentProvidersThatCanGoLive = [PaymentProviders.SANDBOX, PaymentProviders.STRIPE, PaymentProviders.ADYEN]
-const ValidLivePaymentProviders = [PaymentProviders.WORLDPAY, PaymentProviders.STRIPE]
+const PaymentProvidersThatCanGoLive: string[] = [
+  PaymentProviders.SANDBOX,
+  PaymentProviders.STRIPE,
+  PaymentProviders.ADYEN,
+]
+const ValidLivePaymentProviders: string[] = [PaymentProviders.WORLDPAY, PaymentProviders.STRIPE]
 
 const GoLiveInProgressStages = [
   GoLiveStage.CHOSEN_PSP_GOV_BANKING_WORLDPAY,
