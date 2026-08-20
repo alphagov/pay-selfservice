@@ -89,18 +89,28 @@ export class GatewayAccountFixture {
     return new GatewayAccountFixture(...overrides)
   }
 
-  static forSwitchingPsp(from: PaymentProvider, to: PaymentProvider, ...overrides: Partial<GatewayAccountFixture>[]) {
+  static forSwitchingPsp(
+    from: PaymentProvider,
+    to: PaymentProvider,
+    fromCredentialOverrides: Partial<GatewayAccountCredentialFixture>[] = [],
+    toCredentialOverrides: Partial<GatewayAccountCredentialFixture>[] = [],
+    ...overrides: Partial<GatewayAccountFixture>[]
+  ) {
     return new GatewayAccountFixture(
       {
         paymentProvider: from,
         gatewayAccountCredentials: [
-          GatewayAccountCredentialFixture.forProvider(from),
-          GatewayAccountCredentialFixture.forProvider(to, {
-            state: 'CREATED',
-            externalId: 'gateway-account-credential-def-456',
-            createdDate: '2026-01-01T00:00:00.000Z',
-            activeStartDate: undefined,
-          }),
+          GatewayAccountCredentialFixture.forProvider(from, ...fromCredentialOverrides),
+          GatewayAccountCredentialFixture.forProvider(
+            to,
+            {
+              state: 'CREATED',
+              externalId: 'gateway-account-credential-def-456',
+              createdDate: '2026-01-01T00:00:00.000Z',
+              activeStartDate: undefined,
+            },
+            ...toCredentialOverrides
+          ),
         ],
         providerSwitchEnabled: true,
       },
