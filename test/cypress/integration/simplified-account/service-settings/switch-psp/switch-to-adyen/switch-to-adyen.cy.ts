@@ -154,5 +154,4 @@ describe('switch to adyen task list', () => {
         })
     })
   })
-  // describe('page ')
 })
