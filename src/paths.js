@@ -269,7 +269,7 @@ module.exports = {
           index: '/settings/switch-psp/switch-to-adyen',
           providerChangeToAdyen: '/settings/switch-psp/switch-to-adyen/provider-change-to-adyen',
           adyenFees: '/settings/switch-psp/switch-to-adyen/adyen-fees',
-          bankDetails: '/settings/switch-psp/switch-to-adyen/bank-details'
+          bankDetails: '/settings/switch-psp/switch-to-adyen/bank-details',
         },
         switchToStripe: {
           index: '/settings/switch-psp/switch-to-stripe',
