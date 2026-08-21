@@ -1,0 +1,72 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+
+{% set settingsPageTitle = 'Organisation’s bank details' %}
+
+{% block settingsContent %}
+  <form id="bank-details-form" autocomplete="off" method="post" class="govuk-!-margin-top-3">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+    {%
+      call govukFieldset({
+        legend: {
+          text: "Organisation’s bank details",
+          classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+          isPageHeading: true
+        }
+      })
+    %}
+      <p class="govuk-body govuk-!-margin-bottom-6">
+        Adyen will use these details to pay money from GOV.UK Pay transactions into your organisation's bank account.</p
+      >
+
+      <p class="govuk-body govuk-!-margin-bottom-6"> The account must be held in your organisation's name.</p>
+
+      {{
+        govukInput({
+          label: {
+            text: "Sort code"
+          },
+          classes: "govuk-!-width-one-quarter",
+          id: "sort-code",
+          name: "sortCode",
+          inputmode: "numeric",
+          value: sortCode,
+          errorMessage: { text: errors.formErrors['sortCode'] } if errors.formErrors['sortCode'] else false,
+          hint: {
+            text: "Must be 6 digits long"
+          },
+          attributes: {
+            maxlength: "8"
+          }
+        })
+      }}
+
+      {{
+        govukInput({
+          label: {
+            text: "Account number"
+          },
+          classes: "govuk-!-width-one-quarter",
+          id: "account-number",
+          name: "accountNumber",
+          inputmode: "numeric",
+          value: accountNumber,
+          errorMessage: { text: errors.formErrors['accountNumber'] } if errors.formErrors['accountNumber'] else false,
+          hint: {
+            text: "Must be between 6 and 8 digits long"
+          },
+          attributes: {
+            maxlength: "8"
+          }
+        })
+      }}
+
+      {{
+        govukButton({
+          id: "bank-details-submit",
+          text: "Continue",
+          preventDoubleClick: true
+        })
+      }}
+    {% endcall %}
+  </form>
+{% endblock %}

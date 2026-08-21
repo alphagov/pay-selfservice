@@ -31,7 +31,11 @@ class AdyenTask extends Task {
     return new AdyenTask(
       'Organisation’s bank details',
       AdyenTaskIdentifier.BANK_DETAILS,
-      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.index, service.externalId, gatewayAccount.type)
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.switchPsp.switchToAdyen.bankDetails,
+        service.externalId,
+        gatewayAccount.type
+      )
     ).setStatus(TaskStatus.NOT_STARTED)
   }
 
