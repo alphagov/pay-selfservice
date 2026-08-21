@@ -10,11 +10,6 @@ function get(req: ServiceRequest, res: ServiceResponse) {
       req.service.externalId,
       req.account.type
     ),
-    submitLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.settings.switchPsp.switchToAdyen.bankDetails,
-      req.service.externalId,
-      req.account.type
-    ),
   })
 }
 

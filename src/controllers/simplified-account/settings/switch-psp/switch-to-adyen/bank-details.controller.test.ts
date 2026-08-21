@@ -4,10 +4,11 @@ import { PaymentProvider } from '@models/constants/payment-provider'
 import { UserFixture } from '@test/fixtures/user/user.fixture'
 import { ServiceFixture } from '@test/fixtures/service/service.fixture'
 import sinon from 'sinon'
-const formatServiceAndAccountPathsFor = require('@utils/simplified-account/format/format-service-and-account-paths-for')
-const paths = require('@root/paths')
+import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
+import paths from '@root/paths'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
+const SERVICE_TYPE = 'live'
 const serviceFixture = new ServiceFixture({
   externalId: SERVICE_EXTERNAL_ID,
 })
@@ -46,17 +47,12 @@ describe('Controller: settings/switch-psp/switch-to-adyen/bank-details', () => {
       await call('get')
 
       mockResponse.should.have.been.calledOnce
-      const context = mockResponse.args[0][3]
+      const context = mockResponse.firstCall.lastArg as { backLink: string }
       sinon.assert.match(context, {
         backLink: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
-          req.service.externalId,
-          req.account.type
-        ),
-        submitLink: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.bankDetails,
-          req.service.externalId,
-          req.account.type
+          SERVICE_EXTERNAL_ID,
+          SERVICE_TYPE
         ),
       })
     })
@@ -68,8 +64,8 @@ describe('Controller: settings/switch-psp/switch-to-adyen/bank-details', () => {
         res.redirect,
         formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
-          req.service.externalId,
-          req.account.type
+          SERVICE_EXTERNAL_ID,
+          SERVICE_TYPE
         )
       )
     })

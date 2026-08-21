@@ -3,7 +3,7 @@
 {% set settingsPageTitle = 'Organisation’s bank details' %}
 
 {% block settingsContent %}
-  <form id="bank-details-form" autocomplete="off" method="post" action="{{ submitLink }}" class="govuk-!-margin-top-3">
+  <form id="bank-details-form" autocomplete="off" method="post" class="govuk-!-margin-top-3">
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
     {%
       call govukFieldset({
