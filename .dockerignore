@@ -9,6 +9,7 @@
 !package.json
 !package-lock.json
 !types
+!.npmrc
 # exclude tests
 **/*.test.ts
 **/*.test.js

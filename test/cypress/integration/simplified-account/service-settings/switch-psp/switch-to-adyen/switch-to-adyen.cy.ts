@@ -23,13 +23,13 @@ const gatewayAccountFixture = GatewayAccountFixture.forSwitchingPsp(
   ],
   {
     id: GATEWAY_ACCOUNT_ID,
-    type: LIVE_ACCOUNT_TYPE,
     serviceId: SERVICE_EXTERNAL_ID,
   }
 )
 const serviceFixture = new ServiceFixture({
   externalId: SERVICE_EXTERNAL_ID,
   gatewayAccountIds: [`${gatewayAccountFixture.id}`],
+  currentGoLiveStage: 'LIVE',
 })
 const userFixture = UserFixture.asServiceAdmin([serviceFixture], { externalId: USER_EXTERNAL_ID })
 
@@ -156,6 +156,84 @@ describe('switch to adyen task list', () => {
               cy.get('.govuk-task-list__status').should('contain.text', 'Not yet started')
             })
         })
+    })
+  })
+
+  describe('for a service not migrating to Adyen', () => {
+    describe('where the service is switching to a different PSP', () => {
+      const WORLDPAY_CREDENTIAL_EXTERNAL_ID = 'worldpay-credential-123-abc'
+
+      beforeEach(() => {
+        cy.task('clearStubs')
+
+        const gatewayAccountSwitchingToWorldpay = GatewayAccountFixture.forSwitchingPsp(
+          PaymentProvider.STRIPE,
+          PaymentProvider.WORLDPAY,
+          [],
+          [
+            {
+              externalId: WORLDPAY_CREDENTIAL_EXTERNAL_ID,
+            },
+          ],
+          {
+            id: GATEWAY_ACCOUNT_ID,
+            serviceId: SERVICE_EXTERNAL_ID,
+          }
+        )
+        const serviceFixture = new ServiceFixture({
+          externalId: SERVICE_EXTERNAL_ID,
+          gatewayAccountIds: [`${gatewayAccountSwitchingToWorldpay.id}`],
+          currentGoLiveStage: 'LIVE',
+        })
+        const userFixture = UserFixture.asServiceAdmin([serviceFixture], { externalId: USER_EXTERNAL_ID })
+        cy.task('setupStubs', [
+          getUser(USER_EXTERNAL_ID).success(userFixture),
+          GatewayAccountStubs.getByServiceExternalIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE).success(
+            gatewayAccountSwitchingToWorldpay
+          ),
+        ])
+      })
+
+      it('should return a 404 when attempting to view the task list', () => {
+        cy.request({
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/live/settings/switch-psp/switch-to-adyen`,
+          failOnStatusCode: false,
+        }).then((response) => {
+          expect(response.status).to.eq(404)
+        })
+      })
+    })
+
+    describe('where the service is not switching PSP', () => {
+      beforeEach(() => {
+        cy.task('clearStubs')
+        const adyenGatewayAccount = GatewayAccountFixture.forAdyen({
+          type: LIVE_ACCOUNT_TYPE,
+        })
+
+        const serviceFixture = new ServiceFixture({
+          externalId: SERVICE_EXTERNAL_ID,
+          gatewayAccountIds: [`${adyenGatewayAccount.id}`],
+          currentGoLiveStage: 'LIVE',
+        })
+        const userFixture = UserFixture.asServiceAdmin([serviceFixture], { externalId: USER_EXTERNAL_ID })
+
+        cy.task('setupStubs', [
+          getUser(USER_EXTERNAL_ID).success(userFixture),
+          GatewayAccountStubs.getByServiceExternalIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE).success(
+            adyenGatewayAccount
+          ),
+        ])
+      })
+
+      it('should return a 404 when attempting to view the task list', () => {
+        cy.request({
+          url: `/service/${SERVICE_EXTERNAL_ID}/account/live/settings/switch-psp/switch-to-adyen`,
+          failOnStatusCode: false,
+        }).then((response) => {
+          expect(response.status).to.eq(404)
+        })
+      })
     })
   })
 })
