@@ -46,7 +46,7 @@ const setStubs = (additionalStubs = []) => {
   ])
 }
 
-describe('switch to adyen task list', () => {
+describe(`Organisation's bank details`, () => {
   beforeEach(() => {
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
@@ -67,32 +67,112 @@ describe('switch to adyen task list', () => {
     cy.get('h1').should('contain.text', `Organisation’s bank details`)
   })
 
-  it('should display a back link to the switch-to-adyen task list', () => {
-    setStubs()
+  describe('for a service that is migrating to adyen', () => {
+    it('should display a back link to the switch-to-adyen task list', () => {
+      setStubs()
 
-    cy.visit(BANK_DETAILS_PATH)
+      cy.visit(BANK_DETAILS_PATH)
 
-    cy.get('.govuk-back-link').should('have.attr', 'href', TASK_LIST_PATH)
+      cy.get('.govuk-back-link').should('have.attr', 'href', TASK_LIST_PATH)
+    })
+
+    it('should display sort code and account number inputs', () => {
+      setStubs()
+
+      cy.visit(BANK_DETAILS_PATH)
+
+      cy.get('#sort-code').should('exist')
+      cy.get('#account-number').should('exist')
+    })
+
+    it('should redirect to the task list when continue is pressed', () => {
+      setStubs()
+
+      cy.visit(BANK_DETAILS_PATH)
+
+      cy.get('#sort-code').type('123456')
+      cy.get('#account-number').type('12345678')
+      cy.get('#bank-details-submit').click()
+
+      cy.location('pathname').should('eq', TASK_LIST_PATH)
+    })
   })
 
-  it('should display sort code and account number inputs', () => {
-    setStubs()
+  describe('for a service not migrating to Adyen', () => {
+    describe('where the service is switching to a different PSP', () => {
+      const WORLDPAY_CREDENTIAL_EXTERNAL_ID = 'worldpay-credential-123-abc'
 
-    cy.visit(BANK_DETAILS_PATH)
+      beforeEach(() => {
+        cy.task('clearStubs')
 
-    cy.get('#sort-code').should('exist')
-    cy.get('#account-number').should('exist')
-  })
+        const gatewayAccountSwitchingToWorldpay = GatewayAccountFixture.forSwitchingPsp(
+          PaymentProvider.STRIPE,
+          PaymentProvider.WORLDPAY,
+          [],
+          [
+            {
+              externalId: WORLDPAY_CREDENTIAL_EXTERNAL_ID,
+            },
+          ],
+          {
+            id: GATEWAY_ACCOUNT_ID,
+            serviceId: SERVICE_EXTERNAL_ID,
+          }
+        )
+        const serviceFixture = new ServiceFixture({
+          externalId: SERVICE_EXTERNAL_ID,
+          gatewayAccountIds: [`${gatewayAccountSwitchingToWorldpay.id}`],
+          currentGoLiveStage: 'LIVE',
+        })
+        const userFixture = UserFixture.asServiceAdmin([serviceFixture], { externalId: USER_EXTERNAL_ID })
+        cy.task('setupStubs', [
+          getUser(USER_EXTERNAL_ID).success(userFixture),
+          GatewayAccountStubs.getByServiceExternalIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE).success(
+            gatewayAccountSwitchingToWorldpay
+          ),
+        ])
+      })
 
-  it('should redirect to the task list when continue is pressed', () => {
-    setStubs()
+      it('should return a 404 when attempting to view bank details', () => {
+        cy.request({
+          url: BANK_DETAILS_PATH,
+          failOnStatusCode: false,
+        }).then((response) => {
+          expect(response.status).to.eq(404)
+        })
+      })
+    })
 
-    cy.visit(BANK_DETAILS_PATH)
+    describe('where the service is not switching PSP', () => {
+      beforeEach(() => {
+        cy.task('clearStubs')
+        const adyenGatewayAccount = GatewayAccountFixture.forAdyen({
+          type: LIVE_ACCOUNT_TYPE,
+        })
 
-    cy.get('#sort-code').type('123456')
-    cy.get('#account-number').type('12345678')
-    cy.get('#bank-details-submit').click()
+        const serviceFixture = new ServiceFixture({
+          externalId: SERVICE_EXTERNAL_ID,
+          gatewayAccountIds: [`${adyenGatewayAccount.id}`],
+          currentGoLiveStage: 'LIVE',
+        })
+        const userFixture = UserFixture.asServiceAdmin([serviceFixture], { externalId: USER_EXTERNAL_ID })
 
-    cy.location('pathname').should('eq', TASK_LIST_PATH)
+        cy.task('setupStubs', [
+          getUser(USER_EXTERNAL_ID).success(userFixture),
+          GatewayAccountStubs.getByServiceExternalIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE).success(
+            adyenGatewayAccount
+          ),
+        ])
+      })
+
+      it('should return a 404 when attempting to view bank details', () => {
+        cy.request({
+          url: BANK_DETAILS_PATH,
+          failOnStatusCode: false,
+        }).then((response) => {
+          expect(response.status).to.eq(404)
+        })
+      })
+    })
   })
 })
