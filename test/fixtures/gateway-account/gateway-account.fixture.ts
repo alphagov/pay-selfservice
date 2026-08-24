@@ -3,8 +3,8 @@ import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import { GatewayAccountCredentialFixture } from '@test/fixtures/gateway-account/gateway-account-credential.fixture'
 import { Worldpay3dsFlexCredentialFixture } from '@test/fixtures/gateway-account/worldpay-3ds-flex-credential.fixture'
 import { EmailNotificationFixture } from '@test/fixtures/gateway-account/email-notification.fixture'
-import PaymentProviders from '@models/constants/payment-providers'
 import { PaymentProvider } from '@models/constants/payment-provider'
+import GatewayAccountType from '@models/gateway-account/gateway-account-type'
 
 export class GatewayAccountFixture {
   readonly id: number
@@ -50,7 +50,7 @@ export class GatewayAccountFixture {
     this.motoMaskCardNumber = false
     this.motoMaskCardSecurityCode = false
     this.name = 'Test Account'
-    this.paymentProvider = PaymentProviders.SANDBOX
+    this.paymentProvider = PaymentProvider.SANDBOX
     this.providerSwitchEnabled = false
     this.recurringEnabled = false
     this.requires3ds = false
@@ -68,7 +68,7 @@ export class GatewayAccountFixture {
   static forStripe(...overrides: Partial<GatewayAccountFixture>[]) {
     return new GatewayAccountFixture(
       {
-        paymentProvider: PaymentProviders.STRIPE,
+        paymentProvider: PaymentProvider.STRIPE,
         gatewayAccountCredentials: [GatewayAccountCredentialFixture.forStripe()],
       },
       ...overrides
@@ -78,7 +78,7 @@ export class GatewayAccountFixture {
   static forWorldpay(...overrides: Partial<GatewayAccountFixture>[]) {
     return new GatewayAccountFixture(
       {
-        paymentProvider: PaymentProviders.WORLDPAY,
+        paymentProvider: PaymentProvider.WORLDPAY,
         gatewayAccountCredentials: [GatewayAccountCredentialFixture.forWorldpay()],
       },
       ...overrides
@@ -87,6 +87,16 @@ export class GatewayAccountFixture {
 
   static forSandbox(...overrides: Partial<GatewayAccountFixture>[]) {
     return new GatewayAccountFixture(...overrides)
+  }
+
+  static forAdyen(...overrides: Partial<GatewayAccountFixture>[]) {
+    return new GatewayAccountFixture(
+      {
+        paymentProvider: PaymentProvider.ADYEN,
+        gatewayAccountCredentials: [GatewayAccountCredentialFixture.forAdyen()],
+      },
+      ...overrides
+    )
   }
 
   static forSwitchingPsp(
@@ -113,6 +123,7 @@ export class GatewayAccountFixture {
           ),
         ],
         providerSwitchEnabled: true,
+        type: GatewayAccountType.LIVE,
       },
       ...overrides
     )
