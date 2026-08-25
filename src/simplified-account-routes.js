@@ -839,11 +839,25 @@ simplifiedAccount.post(
   serviceSettingsController.switchPsp.switchToAdyen.bankDetails.post
 )
 simplifiedAccount.get(
-  paths.simplifiedAccount.settings.adyenSetup.responsiblePerson,
+  paths.simplifiedAccount.settings.adyenSetup.responsiblePerson.index,
   enforceLiveAccountOnly,
   restrictToSwitchingAccount(ADYEN),
   permission('stripe-account-details:update'),
-  serviceSettingsController.adyenSetup.responsiblePerson.get
+  serviceSettingsController.adyenSetup.responsiblePerson.index.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenSetup.responsiblePerson.index,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenSetup.responsiblePerson.index.post
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.settings.adyenSetup.responsiblePerson.address,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenSetup.responsiblePerson.address.get
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,

@@ -45,7 +45,7 @@ class AdyenTask extends Task {
     return new AdyenTask(
       'Responsible person',
       AdyenTaskIdentifier.RESPONSIBLE_PERSON,
-      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.adyenSetup.responsiblePerson, service.externalId, gatewayAccount.type, switchingCredentialId)
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.adyenSetup.responsiblePerson.index, service.externalId, gatewayAccount.type, switchingCredentialId)
     ).setStatus(TaskStatus.NOT_STARTED)
   }
 

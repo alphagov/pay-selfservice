@@ -305,7 +305,10 @@ module.exports = {
         },
       },
       adyenSetup: {
-        responsiblePerson: '/settings/adyen-setup/:credentialId/responsible-person/details'
+        responsiblePerson: {
+          index: '/settings/adyen-setup/:credentialId/responsible-person/details',
+          address: '/settings/adyen-setup/:credentialId/responsible-person/address',
+        }
       }
     },
   },

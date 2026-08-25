@@ -1,3 +1,3 @@
-import * as responsiblePerson from './responsible-person.controller'
+import * as responsiblePerson from './responsible-person'
 
 export { responsiblePerson }
