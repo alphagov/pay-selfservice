@@ -4,25 +4,25 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
-  const { account } = req
-  const switchingCredentialId = account.getSwitchingCredential().externalId
-
-  return response(req, res, 'simplified-account/settings/adyen-setup/responsible-person/address', {
+  return response(req, res, 'simplified-account/settings/adyen-details/responsible-person/index', {
     backLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.settings.adyenSetup.responsiblePerson.index,
+      paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
       req.service.externalId,
-      req.account.type,
-      switchingCredentialId
+      req.account.type
     ),
   })
 }
 
 function post(req: ServiceRequest, res: ServiceResponse) {
+  const { account } = req
+  const switchingCredentialId = account.getSwitchingCredential().externalId
+
   return res.redirect(
     formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+      paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
       req.service.externalId,
-      req.account.type
+      req.account.type,
+      switchingCredentialId
     )
   )
 }

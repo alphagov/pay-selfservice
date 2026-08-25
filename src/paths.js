@@ -304,10 +304,10 @@ module.exports = {
           inbound: '/settings/switch-psp/make-a-payment/verify',
         },
       },
-      adyenSetup: {
+      adyenDetails: {
         responsiblePerson: {
-          index: '/settings/adyen-setup/:credentialId/responsible-person/details',
-          address: '/settings/adyen-setup/:credentialId/responsible-person/address',
+          index: '/settings/adyen-details/:credentialId/responsible-person/details',
+          address: '/settings/adyen-details/:credentialId/responsible-person/address',
         }
       }
     },
