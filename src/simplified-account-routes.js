@@ -825,18 +825,18 @@ simplifiedAccount.get(
   serviceSettingsController.switchPsp.switchToAdyen.adyenFees.get
 )
 simplifiedAccount.get(
-  paths.simplifiedAccount.settings.switchPsp.switchToAdyen.bankDetails,
+  paths.simplifiedAccount.settings.adyenSetup.bankDetails,
   enforceLiveAccountOnly,
   restrictToSwitchingAccount(ADYEN),
   permission('stripe-account-details:update'),
-  serviceSettingsController.switchPsp.switchToAdyen.bankDetails.get
+  serviceSettingsController.adyenSetup.bankDetails.get
 )
 simplifiedAccount.post(
-  paths.simplifiedAccount.settings.switchPsp.switchToAdyen.bankDetails,
+  paths.simplifiedAccount.settings.adyenSetup.bankDetails,
   enforceLiveAccountOnly,
   restrictToSwitchingAccount(ADYEN),
   permission('stripe-account-details:update'),
-  serviceSettingsController.switchPsp.switchToAdyen.bankDetails.post
+  serviceSettingsController.adyenSetup.bankDetails.post
 )
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,

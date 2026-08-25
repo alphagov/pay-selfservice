@@ -118,7 +118,7 @@ export = (account: GatewayAccount, service: Service, currentUrl: string, permiss
     })
     .add({
       id: 'switch-psp', // sits under settings/switch-psp/switch-to-adyen
-      altId: 'adyen-details', // when switching psp to Adyen, adyen-details pages should show `Switch provider to Adyen now` in the nav
+      altId: 'adyen-setup', // when switching psp to Adyen, adyen-setup pages should show `Switch provider to Adyen now` in the nav
       name: 'Switch provider to Adyen now',
       path: formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,

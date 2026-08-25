@@ -28,13 +28,16 @@ class AdyenTask extends Task {
   }
 
   static bankDetailsTask(service: Service, gatewayAccount: GatewayAccount) {
+    const switchingCredentialId = gatewayAccount.getSwitchingCredential().externalId
+
     return new AdyenTask(
       'Organisation’s bank details',
       AdyenTaskIdentifier.BANK_DETAILS,
       formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.settings.switchPsp.switchToAdyen.bankDetails,
+        paths.simplifiedAccount.settings.adyenSetup.bankDetails,
         service.externalId,
-        gatewayAccount.type
+        gatewayAccount.type,
+        switchingCredentialId
       )
     ).setStatus(TaskStatus.NOT_STARTED)
   }
