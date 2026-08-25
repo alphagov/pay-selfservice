@@ -64,7 +64,7 @@ describe(`Adyen's Legal Terms`, () => {
     cy.visit(LEGAL_TERMS_PATH)
 
     checkServiceNavigation('Switch provider to Adyen now', TASK_LIST_PATH)
-    cy.get('h1').should('contain.text', `Organisation’s bank details`)
+    cy.get('h1').should('contain.text', `Read and accept Adyen’s legal terms`)
   })
 
   describe('for a service that is migrating to adyen', () => {
