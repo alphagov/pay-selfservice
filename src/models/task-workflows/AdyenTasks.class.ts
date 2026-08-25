@@ -40,10 +40,12 @@ class AdyenTask extends Task {
   }
 
   static responsiblePersonTask(service: Service, gatewayAccount: GatewayAccount) {
+    const switchingCredentialId = gatewayAccount.getSwitchingCredential().externalId
+
     return new AdyenTask(
       'Responsible person',
       AdyenTaskIdentifier.RESPONSIBLE_PERSON,
-      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.index, service.externalId, gatewayAccount.type)
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.adyenSetup.responsiblePerson, service.externalId, gatewayAccount.type, switchingCredentialId)
     ).setStatus(TaskStatus.NOT_STARTED)
   }
 

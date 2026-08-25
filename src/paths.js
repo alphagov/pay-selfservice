@@ -304,6 +304,9 @@ module.exports = {
           inbound: '/settings/switch-psp/make-a-payment/verify',
         },
       },
+      adyenSetup: {
+        responsiblePerson: '/settings/adyen-setup/:credentialId/responsible-person/details'
+      }
     },
   },
   service: {
