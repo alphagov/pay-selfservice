@@ -23,7 +23,7 @@ class AdyenTask extends Task {
     return new AdyenTask(
       'Read and accept Adyen’s legal terms',
       AdyenTaskIdentifier.LEGAL_TERMS,
-      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.index, service.externalId, gatewayAccount.type)
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToAdyen.legalTerms, service.externalId, gatewayAccount.type)
     ).setStatus(TaskStatus.NOT_STARTED)
   }
 
