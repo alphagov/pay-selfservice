@@ -34,7 +34,7 @@ class AdyenTask extends Task {
       'Organisation’s bank details',
       AdyenTaskIdentifier.BANK_DETAILS,
       formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.settings.adyenSetup.bankDetails,
+        paths.simplifiedAccount.settings.adyenDetails.bankDetails,
         service.externalId,
         gatewayAccount.type,
         switchingCredentialId

@@ -825,20 +825,6 @@ simplifiedAccount.get(
   serviceSettingsController.switchPsp.switchToAdyen.adyenFees.get
 )
 simplifiedAccount.get(
-  paths.simplifiedAccount.settings.adyenSetup.bankDetails,
-  enforceLiveAccountOnly,
-  restrictToSwitchingAccount(ADYEN),
-  permission('stripe-account-details:update'),
-  serviceSettingsController.adyenSetup.bankDetails.get
-)
-simplifiedAccount.post(
-  paths.simplifiedAccount.settings.adyenSetup.bankDetails,
-  enforceLiveAccountOnly,
-  restrictToSwitchingAccount(ADYEN),
-  permission('stripe-account-details:update'),
-  serviceSettingsController.adyenSetup.bankDetails.post
-)
-simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
   restrictToSwitchingAccount(WORLDPAY),
   permission('gateway-credentials:update'),
@@ -936,6 +922,22 @@ simplifiedAccount.get(
   canStartPspPaymentVerificationTask,
   serviceSettingsController.switchPsp.makeTestPayment.getInbound,
   pspSwitchRedirect
+)
+
+// adyen details
+simplifiedAccount.get(
+  paths.simplifiedAccount.settings.adyenDetails.bankDetails,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.bankDetails.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenDetails.bankDetails,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.bankDetails.post
 )
 
 // stripe details

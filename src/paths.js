@@ -303,8 +303,8 @@ module.exports = {
           inbound: '/settings/switch-psp/make-a-payment/verify',
         },
       },
-      adyenSetup: {
-        bankDetails: '/settings/adyen-setup/:credentialId/bank-details',
+      adyenDetails: {
+        bankDetails: '/settings/adyen-details/:credentialId/bank-details',
       },
     },
   },
