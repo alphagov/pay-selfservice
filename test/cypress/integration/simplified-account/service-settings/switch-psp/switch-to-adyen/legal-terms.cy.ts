@@ -97,7 +97,6 @@ describe(`Adyen's Legal Terms`, () => {
 
       cy.location('pathname').should('eq', TASK_LIST_PATH)
     })
-
   })
 
   describe('for a service not migrating to Adyen', () => {
