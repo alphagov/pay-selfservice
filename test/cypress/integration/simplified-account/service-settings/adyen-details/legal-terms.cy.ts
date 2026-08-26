@@ -4,10 +4,7 @@ import { GatewayAccountFixture } from '@test/fixtures/gateway-account/gateway-ac
 import { PaymentProvider } from '@models/constants/payment-provider'
 import { getUser } from '@test/cypress/stubs/simplified-account/user-stubs'
 import * as GatewayAccountStubs from '@test/cypress/stubs/simplified-account/gateway-account-stubs'
-import {
-  checkServiceNavigation,
-  checkTitleAndHeading,
-} from '@test/cypress/integration/simplified-account/common/assertions'
+import { checkServiceNavigation } from '@test/cypress/integration/simplified-account/common/assertions'
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
