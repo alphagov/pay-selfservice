@@ -6,7 +6,7 @@ import paths from '@root/paths'
 function get(req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/settings/adyen-details/legal-terms', {
     backLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.settings.adyenDetails.legalTerms,
+      paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
       req.service.externalId,
       req.account.type
     ),

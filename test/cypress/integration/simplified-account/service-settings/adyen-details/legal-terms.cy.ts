@@ -4,7 +4,10 @@ import { GatewayAccountFixture } from '@test/fixtures/gateway-account/gateway-ac
 import { PaymentProvider } from '@models/constants/payment-provider'
 import { getUser } from '@test/cypress/stubs/simplified-account/user-stubs'
 import * as GatewayAccountStubs from '@test/cypress/stubs/simplified-account/gateway-account-stubs'
-import { checkTitleAndHeading } from '@test/cypress/integration/simplified-account/common/assertions'
+import {
+  checkServiceNavigation,
+  checkTitleAndHeading,
+} from '@test/cypress/integration/simplified-account/common/assertions'
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -63,7 +66,8 @@ describe(`Adyen's Legal Terms`, () => {
 
     cy.visit(LEGAL_TERMS_PATH)
 
-    checkTitleAndHeading('Read and accept Adyen’s legal terms', TASK_LIST_PATH)
+    checkServiceNavigation('Switch provider to Adyen now', TASK_LIST_PATH)
+    cy.get('h1').should('contain.text', `Read and accept Adyen’s legal terms`)
   })
 
   describe('for a service that is migrating to adyen', () => {
