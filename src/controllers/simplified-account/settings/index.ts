@@ -9,7 +9,7 @@ import * as worldpayDetails from './worldpay-details/worldpay-details.controller
 import * as apiKeys from './api-keys/api-keys.controller'
 import * as webhooks from './webhooks/webhooks.controller'
 import * as switchPsp from './switch-psp'
-import * as legalTerms from './adyen-details/legal-terms.controller'
+import * as adyenDetails from './adyen-details'
 
 export = {
   emailNotifications,
@@ -23,5 +23,5 @@ export = {
   apiKeys,
   webhooks,
   switchPsp,
-  legalTerms,
+  adyenDetails,
 }

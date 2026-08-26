@@ -16,7 +16,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 function post(req: ServiceRequest, res: ServiceResponse) {
   return res.redirect(
     formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.settings.adyenDetails.legalTerms,
+      paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
       req.service.externalId,
       req.account.type
     )

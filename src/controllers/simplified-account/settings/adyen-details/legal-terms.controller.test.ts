@@ -59,7 +59,7 @@ describe('Controller: settings/adyen-details/legal-terms', () => {
       sinon.assert.calledOnceWithExactly(
         res.redirect,
         formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.adyenDetails.legalTerms,
+          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
           SERVICE_EXTERNAL_ID,
           SERVICE_TYPE
         )
