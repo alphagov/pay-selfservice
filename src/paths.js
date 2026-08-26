@@ -269,7 +269,6 @@ module.exports = {
           index: '/settings/switch-psp/switch-to-adyen',
           providerChangeToAdyen: '/settings/switch-psp/switch-to-adyen/provider-change-to-adyen',
           adyenFees: '/settings/switch-psp/switch-to-adyen/adyen-fees',
-          bankDetails: '/settings/switch-psp/switch-to-adyen/bank-details',
         },
         switchToStripe: {
           index: '/settings/switch-psp/switch-to-stripe',
@@ -308,9 +307,10 @@ module.exports = {
         responsiblePerson: {
           index: '/settings/adyen-details/:credentialId/responsible-person/details',
           address: '/settings/adyen-details/:credentialId/responsible-person/address',
-          contactDetails: '/settings/adyen-details/:credentialId/responsible-person/contact-details'
-        }
-      }
+          contactDetails: '/settings/adyen-details/:credentialId/responsible-person/contact-details',
+        },
+        bankDetails: '/settings/adyen-details/:credentialId/bank-details',
+      },
     },
   },
   service: {
