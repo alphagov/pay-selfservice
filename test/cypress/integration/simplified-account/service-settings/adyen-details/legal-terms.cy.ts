@@ -13,7 +13,7 @@ const GATEWAY_ACCOUNT_ID = 12
 const ADYEN_CREDENTIAL_EXTERNAL_ID = 'adyen-credential-123-abc'
 
 const LEGAL_TERMS_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/adyen-details/${ADYEN_CREDENTIAL_EXTERNAL_ID}/legal-terms`
-const TASK_LIST_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/adyen-details/legal-terms`
+const TASK_LIST_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-adyen`
 
 const gatewayAccountFixture = GatewayAccountFixture.forSwitchingPsp(
   PaymentProvider.STRIPE,
@@ -63,7 +63,7 @@ describe(`Adyen's Legal Terms`, () => {
 
     cy.visit(LEGAL_TERMS_PATH)
 
-    checkTitleAndHeading('Read and accept Adyen’s legal terms', 'Power Plant Safety Inspection')
+    checkTitleAndHeading('Read and accept Adyen’s legal terms', TASK_LIST_PATH)
   })
 
   describe('for a service that is migrating to adyen', () => {
