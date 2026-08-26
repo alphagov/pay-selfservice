@@ -16,7 +16,7 @@ const serviceFixture = new ServiceFixture({
 const mockResponse = sinon.stub()
 
 const { req, res, call } = new ControllerTestBuilder(
-  '@controllers/simplified-account/settings/switch-psp/switch-to-adyen/legal-terms.controller'
+  '@controllers/simplified-account/settings/adyen-details/legal-terms.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount(
@@ -30,17 +30,13 @@ const { req, res, call } = new ControllerTestBuilder(
   })
   .build()
 
-describe('Controller: settings/switch-psp/switch-to-adyen/legal-terms', () => {
+describe('Controller: settings/adyen-details/legal-terms', () => {
   describe('get', () => {
     it('should call the response function with req, res, and the template path', async () => {
       await call('get')
 
       mockResponse.should.have.been.calledOnce
-      mockResponse.should.have.been.calledWith(
-        req,
-        res,
-        'simplified-account/settings/switch-psp/switch-to-adyen/legal-terms'
-      )
+      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/adyen-details/legal-terms')
     })
 
     it('should call the response method with the backLink and submitLink', async () => {
@@ -50,7 +46,7 @@ describe('Controller: settings/switch-psp/switch-to-adyen/legal-terms', () => {
       const context = mockResponse.firstCall.lastArg as { backLink: string }
       sinon.assert.match(context, {
         backLink: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+          paths.simplifiedAccount.settings.adyenDetails.legalTerms,
           SERVICE_EXTERNAL_ID,
           SERVICE_TYPE
         ),
@@ -63,7 +59,7 @@ describe('Controller: settings/switch-psp/switch-to-adyen/legal-terms', () => {
       sinon.assert.calledOnceWithExactly(
         res.redirect,
         formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+          paths.simplifiedAccount.settings.adyenDetails.legalTerms,
           SERVICE_EXTERNAL_ID,
           SERVICE_TYPE
         )

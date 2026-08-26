@@ -24,13 +24,13 @@ class AdyenTask extends Task {
       'Read and accept Adyen’s legal terms',
       AdyenTaskIdentifier.LEGAL_TERMS,
       formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.settings.switchPsp.switchToAdyen.legalTerms,
+        paths.simplifiedAccount.settings.adyenDetails.legalTerms,
         service.externalId,
-        gatewayAccount.type
+        gatewayAccount.type,
+        gatewayAccount.getSwitchingCredential().externalId
       )
     ).setStatus(TaskStatus.NOT_STARTED)
   }
-
   static bankDetailsTask(service: Service, gatewayAccount: GatewayAccount) {
     return new AdyenTask(
       'Organisation’s bank details',

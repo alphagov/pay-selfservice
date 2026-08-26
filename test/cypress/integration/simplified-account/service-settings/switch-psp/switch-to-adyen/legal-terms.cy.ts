@@ -4,7 +4,7 @@ import { GatewayAccountFixture } from '@test/fixtures/gateway-account/gateway-ac
 import { PaymentProvider } from '@models/constants/payment-provider'
 import { getUser } from '@test/cypress/stubs/simplified-account/user-stubs'
 import * as GatewayAccountStubs from '@test/cypress/stubs/simplified-account/gateway-account-stubs'
-import { checkServiceNavigation } from '@test/cypress/integration/simplified-account/common/assertions'
+import { checkTitleAndHeading } from '@test/cypress/integration/simplified-account/common/assertions'
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -12,7 +12,7 @@ const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 12
 const ADYEN_CREDENTIAL_EXTERNAL_ID = 'adyen-credential-123-abc'
 
-const LEGAL_TERMS_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-adyen/legal-terms`
+const LEGAL_TERMS_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/adyen-setup/${ADYEN_CREDENTIAL_EXTERNAL_ID}/legal-terms`
 const TASK_LIST_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-adyen`
 
 const gatewayAccountFixture = GatewayAccountFixture.forSwitchingPsp(
@@ -63,8 +63,7 @@ describe(`Adyen's Legal Terms`, () => {
 
     cy.visit(LEGAL_TERMS_PATH)
 
-    checkServiceNavigation('Switch provider to Adyen now', TASK_LIST_PATH)
-    cy.get('h1').should('contain.text', `Read and accept Adyen’s legal terms`)
+    checkTitleAndHeading('Read and accept Adyen’s legal terms', 'Power Plant Safety Inspection')
   })
 
   describe('for a service that is migrating to adyen', () => {

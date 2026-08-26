@@ -4,9 +4,9 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
-  return response(req, res, 'simplified-account/settings/switch-psp/switch-to-adyen/legal-terms', {
+  return response(req, res, 'simplified-account/settings/adyen-details/legal-terms', {
     backLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+      paths.simplifiedAccount.settings.adyenDetails.legalTerms,
       req.service.externalId,
       req.account.type
     ),
@@ -16,7 +16,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 function post(req: ServiceRequest, res: ServiceResponse) {
   return res.redirect(
     formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+      paths.simplifiedAccount.settings.adyenDetails.legalTerms,
       req.service.externalId,
       req.account.type
     )
