@@ -306,6 +306,7 @@ module.exports = {
       adyenDetails: {
         bankDetails: '/settings/adyen-details/:credentialId/bank-details',
         legalTerms: '/settings/adyen-details/:credentialId/legal-terms',
+        reasonForTakingPayments: '/settings/adyen-details/:credentialId/reason-for-taking-payments',
       },
     },
   },

@@ -63,10 +63,17 @@ class AdyenTask extends Task {
   }
 
   static reasonForTakingPaymentsTask(service: Service, gatewayAccount: GatewayAccount) {
+    const switchingCredentialId = gatewayAccount.getSwitchingCredential().externalId
+
     return new AdyenTask(
       'Tell us why your service takes payments',
       AdyenTaskIdentifier.REASON_FOR_TAKING_PAYMENTS,
-      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.index, service.externalId, gatewayAccount.type)
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.adyenDetails.reasonForTakingPayments,
+        service.externalId,
+        gatewayAccount.type,
+        switchingCredentialId
+      )
     ).setStatus(TaskStatus.NOT_STARTED)
   }
 }
