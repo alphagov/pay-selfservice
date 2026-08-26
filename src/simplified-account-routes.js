@@ -859,6 +859,27 @@ simplifiedAccount.get(
   permission('stripe-account-details:update'),
   serviceSettingsController.adyenDetails.responsiblePerson.address.get
 )
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.address.post
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.contactDetails,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.contactDetails.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.contactDetails,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.contactDetails.post
+)
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToWorldpay.index,
   restrictToSwitchingAccount(WORLDPAY),

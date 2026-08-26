@@ -1,0 +1,44 @@
+{% extends "../../settings-layout.njk" %}
+
+{% set settingsPageTitle = "Responsible person's contact details" %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+
+  <form id="responsible-person-contact-details-form" method="post" class="govuk-!-margin-top-4" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {{ govukInput({
+      label: {
+        text: "Telephone number"
+      },
+      hint: {
+        text: "This can be a landline or mobile number. For international numbers include the country code"
+      },
+      id: "telephone-number",
+      name: "telephoneNumber",
+      value: contact.telephoneNumber,
+      type: "tel",
+      autocomplete: "tel",
+      errorMessage: { text: errors.formErrors['telephoneNumber'] } if errors.formErrors['telephoneNumber'] else false,
+      classes: "govuk-!-full-width"
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "Email address"
+      },
+      id: "email",
+      name: "email",
+      value: contact.email,
+      type: "email",
+      autocomplete: "email",
+      spellcheck: false,
+      errorMessage: { text: errors.formErrors['email'] } if errors.formErrors['email'] else false,
+      classes: "govuk-!-full-width"
+    }) }}
+
+    {{ govukButton({ text: "Continue" }) }}
+
+  </form>
+{% endblock %}

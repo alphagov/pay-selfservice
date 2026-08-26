@@ -308,6 +308,7 @@ module.exports = {
         responsiblePerson: {
           index: '/settings/adyen-details/:credentialId/responsible-person/details',
           address: '/settings/adyen-details/:credentialId/responsible-person/address',
+          contactDetails: '/settings/adyen-details/:credentialId/responsible-person/contact-details'
         }
       }
     },

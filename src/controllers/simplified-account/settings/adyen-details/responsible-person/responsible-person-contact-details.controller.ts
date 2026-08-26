@@ -7,9 +7,9 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   const { account } = req
   const switchingCredentialId = account.getSwitchingCredential().externalId
 
-  return response(req, res, 'simplified-account/settings/adyen-details/responsible-person/address', {
+  return response(req, res, 'simplified-account/settings/adyen-details/responsible-person/contact-details', {
     backLink: formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.index,
+      paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
       req.service.externalId,
       req.account.type,
       switchingCredentialId
@@ -18,15 +18,11 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 }
 
 function post(req: ServiceRequest, res: ServiceResponse) {
-  const { account } = req
-  const switchingCredentialId = account.getSwitchingCredential().externalId
-
   return res.redirect(
     formatServiceAndAccountPathsFor(
-      paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.contactDetails,
+      paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
       req.service.externalId,
-      req.account.type,
-      switchingCredentialId
+      req.account.type
     )
   )
 }
