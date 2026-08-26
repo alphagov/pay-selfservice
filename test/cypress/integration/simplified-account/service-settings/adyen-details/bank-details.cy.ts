@@ -12,7 +12,7 @@ const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 12
 const ADYEN_CREDENTIAL_EXTERNAL_ID = 'adyen-credential-123-abc'
 
-const BANK_DETAILS_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-adyen/bank-details`
+const BANK_DETAILS_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/adyen-details/${ADYEN_CREDENTIAL_EXTERNAL_ID}/bank-details`
 const TASK_LIST_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-adyen`
 
 const gatewayAccountFixture = GatewayAccountFixture.forSwitchingPsp(
