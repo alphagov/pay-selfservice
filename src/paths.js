@@ -308,6 +308,7 @@ module.exports = {
           index: '/settings/adyen-details/:credentialId/responsible-person/details',
           address: '/settings/adyen-details/:credentialId/responsible-person/address',
           contactDetails: '/settings/adyen-details/:credentialId/responsible-person/contact-details',
+          checkYourAnswers: '/settings/adyen-details/:credentialId/responsible-person/check-your-answers'
         },
         bankDetails: '/settings/adyen-details/:credentialId/bank-details',
       },

@@ -981,6 +981,20 @@ simplifiedAccount.post(
   permission('stripe-account-details:update'),
   serviceSettingsController.adyenDetails.responsiblePerson.contactDetails.post
 )
+simplifiedAccount.get(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.checkYourAnswers,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.checkYourAnswers.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.checkYourAnswers,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.checkYourAnswers.post
+)
 
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails

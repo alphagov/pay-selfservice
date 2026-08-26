@@ -1,0 +1,144 @@
+{% extends "../../settings-layout.njk" %}
+
+{% set settingsPageTitle = "Check your answers" %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+
+  {{ govukSummaryList({
+  card: {
+    title: {
+      text: "Responsible person’s personal details"
+    },
+    actions: {
+      items: [
+        {
+          href: "#",
+          text: "Change"
+        }
+      ]
+    }
+  },
+  rows: [
+    {
+      key: {
+        text: "First name"
+      },
+      value: {
+        html: "Sam"
+      }
+    },
+    {
+      key: {
+        text: "Last name"
+      },
+      value: {
+        html: "Person"
+      }
+    },
+    {
+      key: {
+        text: "Date of birth"
+      },
+      value: {
+        html: "01 January 1970"
+      }
+    }
+  ]
+}) }}
+
+{{ govukSummaryList({
+  card: {
+    title: {
+      text: "Responsible person’s address"
+    },
+    actions: {
+      items: [
+        {
+          href: "#",
+          text: "Change"
+        }
+      ]
+    }
+  },
+  rows: [
+    {
+      key: {
+        text: "Address line 1"
+      },
+      value: {
+        html: "29 Acacia Road"
+      }
+    },
+    {
+      key: { 
+        text: "Address line 2" 
+      },
+      value: { 
+        html: "Mitcham" 
+      }
+    } if hasAddressLine2,
+    {
+      key: {
+        text: "Town or city"
+      },
+      value: {
+        html: "London"
+      }
+    },
+    {
+      key: {
+        text: "Postcode"
+      },
+      value: {
+        html: "SW16 1AB"
+      }
+    }
+  ]
+}) }}
+
+{{ govukSummaryList({
+  card: {
+    title: {
+      text: "Responsible person’s contact details"
+    },
+    actions: {
+      items: [
+        {
+          href: "#",
+          text: "Change"
+        }
+      ]
+    }
+  },
+  rows: [
+    {
+      key: {
+        text: "Telephone number"
+      },
+      value: {
+        html: "07700 700900"
+      }
+    },
+    {
+      key: {
+        text: "Email address"
+      },
+      value: {
+        html: "sam@example.com"
+      }
+    }
+  ]
+}) }}
+
+
+  <form id="responsible-person-check-your-answers-form" method="post" class="govuk-!-margin-top-4" novalidate>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+
+    {{ govukButton({
+      text: "Confirm and continue",
+      id: "responsible-person-confirm"
+    }) }}
+  </form>
+
+{% endblock %}
