@@ -305,6 +305,7 @@ module.exports = {
       },
       adyenDetails: {
         bankDetails: '/settings/adyen-details/:credentialId/bank-details',
+        legalTerms: '/settings/adyen-details/:credentialId/legal-terms',
       },
     },
   },

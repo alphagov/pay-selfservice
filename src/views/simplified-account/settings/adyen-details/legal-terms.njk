@@ -1,0 +1,65 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+
+{% set settingsPageTitle = 'Read and accept Adyen’s legal terms' %}
+
+{% block settingsContent %}
+  <form id="adyen-terms-form" method="post" class="govuk-!-margin-top-3">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+
+    <h1 class="govuk-heading-l">Read and accept Adyen’s legal terms</h1>
+
+    <p class="govuk-body">
+      Your organisation must accept Adyen’s legal terms before it can use Adyen to process payments through GOV.UK Pay.
+    </p>
+
+    <p class="govuk-body">Read:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>
+        <a class="govuk-link" href="{{ govUkPayTermsLink }}" target="_blank" rel="noopener noreferrer">
+          GOV.UK Pay’s terms for non-Crown bodies (opens in new tab)
+        </a>
+      </li>
+      <li>
+        <a class="govuk-link" href="{{ adyenAgreementLink }}" target="_blank" rel="noopener noreferrer">
+          Adyen Connected Account Agreement (opens in new tab)
+        </a>
+      </li>
+    </ul>
+
+    <p class="govuk-body">You can open or download both documents before continuing.</p>
+
+    <p class="govuk-body">
+      You may need someone in your organisation’s legal, commercial or finance team to review the terms.
+    </p>
+
+    <p class="govuk-body">
+      If you are not authorised to accept the agreement, ask an authorised person to complete this task.
+    </p>
+
+    <h2 class="govuk-heading-m">Accept Adyen’s legal terms</h2>
+
+    {{
+      govukCheckboxes({
+        idPrefix: "accept-terms",
+        name: "acceptTerms",
+        errorMessage: { text: errors.formErrors['acceptTerms'] } if errors.formErrors['acceptTerms'] else false,
+        items: [
+          {
+            value: "true",
+            text: "I confirm that I am authorised to accept the Adyen Connected Account Agreement on behalf of my organisation.",
+            checked: acceptTerms === "true"
+          }
+        ]
+      })
+    }}
+
+    {{
+      govukButton({
+        id: "accept-terms-submit",
+        text: "Accept and continue",
+        preventDoubleClick: true
+      })
+    }}
+  </form>
+{% endblock %}
