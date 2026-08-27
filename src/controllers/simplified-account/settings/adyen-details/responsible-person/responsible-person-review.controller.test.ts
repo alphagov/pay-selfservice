@@ -35,7 +35,11 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
       await call('get')
 
       mockResponse.should.have.been.calledOnce
-      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/adyen-details/responsible-person/check-your-answers')
+      mockResponse.should.have.been.calledWith(
+        req,
+        res,
+        'simplified-account/settings/adyen-details/responsible-person/check-your-answers'
+      )
     })
 
     it('should call the response method with the backLink and submitLink', async () => {

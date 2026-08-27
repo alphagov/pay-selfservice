@@ -4,10 +4,16 @@
 
 {% block settingsContent %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
-  <p class="govuk-body">We need details of a <a class="govuk-link"
-                                                href="https://www.payments.service.gov.uk/required-responsible-person-and-director-information/">responsible
-      person</a> so that Stripe can run anti-money laundering checks. Liability stays at an organisational and not
-    individual level.</p>
+  <p class="govuk-body"
+    >We need details of a
+    <a
+      class="govuk-link"
+      href="https://www.payments.service.gov.uk/required-responsible-person-and-director-information/"
+      >responsible person</a
+    >
+    so that Stripe can run anti-money laundering checks. Liability stays at an organisational and not individual
+    level.</p
+  >
   <p class="govuk-body">The responsible person can be:</p>
   <ul class="govuk-list govuk-list--bullet">
     <li>someone in your organisation authorised to sign contracts</li>
@@ -18,45 +24,49 @@
   <p class="govuk-body">Stripe will store the responsible person’s details, not GOV.UK Pay.</p>
 
   <form id="responsible-person-form" method="post" class="govuk-!-margin-top-4" novalidate>
-    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}"/>
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
-    {% call govukFieldset({
-      legend: {
-        text: "Name",
-        classes: "govuk-fieldset__legend--m",
-        isPageHeading: false
-      }
-    }) %}
-      {{ govukInput({
-        label: {
-          text: "First name"
-        },
-        id: "first-name",
-        name: "firstName",
-        value: name.firstName,
-        type: "text",
-        autocomplete: "given-name",
-        spellcheck: false,
-        errorMessage: { text: errors.formErrors['firstName'] } if errors.formErrors['firstName'] else false,
-        classes: "govuk-!-width-three-quarters"
-      }) }}
+    {%
+      call govukFieldset({
+        legend: {
+          text: "Name",
+          classes: "govuk-fieldset__legend--m",
+          isPageHeading: false
+        }
+      })
+    %}
+      {{
+        govukInput({
+          label: {
+            text: "First name"
+          },
+          id: "first-name",
+          name: "firstName",
+          value: name.firstName,
+          type: "text",
+          autocomplete: "given-name",
+          spellcheck: false,
+          errorMessage: { text: errors.formErrors['firstName'] } if errors.formErrors['firstName'] else false,
+          classes: "govuk-!-width-three-quarters"
+        })
+      }}
 
-      {{ govukInput({
-        label: {
-          text: "Last name"
-        },
-        id: "last-name",
-        name: "lastName",
-        value: name.lastName,
-        type: "text",
-        autocomplete: "family-name",
-        spellcheck: false,
-        errorMessage: { text: errors.formErrors['lastName'] } if errors.formErrors['lastName'] else false,
-        classes: "govuk-!-width-three-quarters"
-      }) }}
-
+      {{
+        govukInput({
+          label: {
+            text: "Last name"
+          },
+          id: "last-name",
+          name: "lastName",
+          value: name.lastName,
+          type: "text",
+          autocomplete: "family-name",
+          spellcheck: false,
+          errorMessage: { text: errors.formErrors['lastName'] } if errors.formErrors['lastName'] else false,
+          classes: "govuk-!-width-three-quarters"
+        })
+      }}
     {% endcall %}
-
     {% include "simplified-account/settings/partials/_dob.njk" %}
 
     {{ govukButton({ text: "Save and continue" }) }}
@@ -64,8 +74,12 @@
 
   <script>
     // progressively enhance dob input to only accept digits
-    const elementIds = [{ id: 'dob-day', length: 2 }, { id: 'dob-month', length: 2 }, { id: 'dob-year', length: 4 }]
-    elementIds.forEach(element => {
+    const elementIds = [
+      { id: 'dob-day', length: 2 },
+      { id: 'dob-month', length: 2 },
+      { id: 'dob-year', length: 4 },
+    ]
+    elementIds.forEach((element) => {
       document.getElementById(element.id).addEventListener('input', function (e) {
         let value = e.target.value
         e.target.value = value.replace(/\D/g, '').slice(0, element.length)
