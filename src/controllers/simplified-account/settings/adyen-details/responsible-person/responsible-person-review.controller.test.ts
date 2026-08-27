@@ -58,7 +58,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
     })
   })
   describe('post', () => {
-    it('should redirect to the responsible person contact details page', async () => {
+    it('should redirect to the Adyen migration task list', async () => {
       await call('post')
       sinon.assert.calledOnceWithExactly(
         res.redirect,
