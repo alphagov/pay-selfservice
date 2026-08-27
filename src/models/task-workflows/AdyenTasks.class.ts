@@ -23,10 +23,14 @@ class AdyenTask extends Task {
     return new AdyenTask(
       'Read and accept Adyen’s legal terms',
       AdyenTaskIdentifier.LEGAL_TERMS,
-      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.index, service.externalId, gatewayAccount.type)
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.adyenDetails.legalTerms,
+        service.externalId,
+        gatewayAccount.type,
+        gatewayAccount.getSwitchingCredential().externalId
+      )
     ).setStatus(TaskStatus.NOT_STARTED)
   }
-
   static bankDetailsTask(service: Service, gatewayAccount: GatewayAccount) {
     const switchingCredentialId = gatewayAccount.getSwitchingCredential().externalId
 

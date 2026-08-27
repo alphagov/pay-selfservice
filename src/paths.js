@@ -311,6 +311,7 @@ module.exports = {
           checkYourAnswers: '/settings/adyen-details/:credentialId/responsible-person/check-your-answers'
         },
         bankDetails: '/settings/adyen-details/:credentialId/bank-details',
+        legalTerms: '/settings/adyen-details/:credentialId/legal-terms',
       },
     },
   },
