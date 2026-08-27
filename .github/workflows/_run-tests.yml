@@ -20,11 +20,11 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Detect secrets
-        uses: alphagov/pay-ci/actions/detect-secrets@master
+        uses: govuk-pay/pay-ci/actions/detect-secrets@master
 
   install-and-compile:
     name: 'Install and compile'
-    uses: alphagov/pay-ci/.github/workflows/_run-node-install-and-compile.yml@master
+    uses: govuk-pay/pay-ci/.github/workflows/_run-node-install-and-compile.yml@master
     with:
       has_cypress_tests: true
 
@@ -77,7 +77,7 @@ jobs:
   tests:
     name: 'Unit tests and pacts'
     needs: [install-and-compile]
-    uses: alphagov/pay-ci/.github/workflows/_run-node-unit-tests-and-publish-pacts.yml@master
+    uses: govuk-pay/pay-ci/.github/workflows/_run-node-unit-tests-and-publish-pacts.yml@master
     with:
       publish_pacts: true
     secrets:
@@ -87,7 +87,7 @@ jobs:
   cypress-percy-tests:
     name: 'Cypress'
     needs: [install-and-compile]
-    uses: alphagov/pay-ci/.github/workflows/_run-node-cypress-percy-tests.yml@master
+    uses: govuk-pay/pay-ci/.github/workflows/_run-node-cypress-percy-tests.yml@master
     with:
       LIBGL_ALWAYS_SOFTWARE: '1'
     secrets:
@@ -96,7 +96,7 @@ jobs:
   pact-providers-contract-tests:
     name: 'Provider tests'
     needs: tests
-    uses: alphagov/pay-ci/.github/workflows/_run-provider-pact-tests-for-consumer.yml@master
+    uses: govuk-pay/pay-ci/.github/workflows/_run-provider-pact-tests-for-consumer.yml@master
     strategy:
       matrix:
         provider: ['adminusers', 'connector', 'ledger', 'products']
@@ -108,4 +108,4 @@ jobs:
       pact_broker_password: ${{ secrets.pact_broker_password }}
 
   check-docker-base-images-are-manifests:
-    uses: alphagov/pay-ci/.github/workflows/_validate_docker_image_is_manifest.yml@master
+    uses: govuk-pay/pay-ci/.github/workflows/_validate_docker_image_is_manifest.yml@master
