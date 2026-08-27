@@ -19,7 +19,7 @@ const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.ST
 const mockResponse = sinon.stub()
 
 const { req, res, call } = new ControllerTestBuilder(
-  '@controllers/simplified-account/settings/adyen-details/responsible-person/responsible-person.controller'
+  '@controllers/simplified-account/settings/adyen-details/responsible-person/responsible-person-address.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount(GATEWAY_ACCOUNT)
@@ -29,13 +29,13 @@ const { req, res, call } = new ControllerTestBuilder(
   })
   .build()
 
-describe('Controller: settings/adyen-details/responsible-person/responsible-person', () => {
+describe('Controller: settings/adyen-details/responsible-person/responsible-person-address', () => {
   describe('get', () => {
     it('should call the response function with req, res, and the template path', async () => {
       await call('get')
 
       mockResponse.should.have.been.calledOnce
-      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/adyen-details/responsible-person/index')
+      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/adyen-details/responsible-person/address')
     })
 
     it('should call the response method with the backLink and submitLink', async () => {
@@ -45,20 +45,21 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
       const context = mockResponse.firstCall.lastArg as { backLink: string }
       sinon.assert.match(context, {
         backLink: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+          paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.index,
           SERVICE_EXTERNAL_ID,
-          SERVICE_TYPE
+          SERVICE_TYPE,
+          GATEWAY_ACCOUNT.getSwitchingCredential().externalId
         ),
       })
     })
   })
   describe('post', () => {
-    it('should redirect to the responsible person address', async () => {
+    it('should redirect to the responsible person contact details page', async () => {
       await call('post')
       sinon.assert.calledOnceWithExactly(
         res.redirect,
         formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
+          paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.contactDetails,
           SERVICE_EXTERNAL_ID,
           SERVICE_TYPE,
           GATEWAY_ACCOUNT.getSwitchingCredential().externalId
