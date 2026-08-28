@@ -1,5 +1,7 @@
 // https://getbem.com/naming/
 
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .service-nav {
   margin-bottom: govuk-spacing(3);
 }
@@ -7,7 +9,7 @@
 .nav__h3 {
   padding: govuk-spacing(2) govuk-spacing(3) govuk-spacing(2) govuk-spacing(1);
   margin: 0;
-  color: govuk-colour('dark-grey');
+  color: govuk-colour("black", $variant: "tint-25");
   @include govuk-font(19);
   @include govuk-typography-weight-regular;
 }
@@ -87,7 +89,7 @@
 }
 
 .service-settings-inset-text--grey {
-  background-color: govuk-colour('light-grey');
+  background-color: govuk-colour("black", $variant: "tint-95");
 }
 
 .team-member-email-list {
@@ -107,7 +109,7 @@
   }
 
   a:hover {
-    color: govuk-colour('dark-blue');
+    color: govuk-colour("blue", $variant: "shade-50");
   }
 
   a:active,
@@ -118,12 +120,12 @@
 
 .card-types {
   .govuk-checkboxes__item {
-    border-bottom: 1px solid govuk-colour('mid-grey');
+    border-bottom: 1px solid govuk-colour("black", $variant: "tint-80");
     padding-bottom: govuk-spacing(2);
   }
 
   .govuk-summary-list__row:first-of-type {
-    border-top: 1px solid govuk-colour('mid-grey');
+    border-top: 1px solid govuk-colour("black", $variant: "tint-80");
   }
 }
 

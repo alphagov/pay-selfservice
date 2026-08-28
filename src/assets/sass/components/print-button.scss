@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .print-button-wrapper {
   display: none;
 }
@@ -10,19 +12,19 @@
 
 .print-button-wrapper__button {
   background: url("/assets/images/icon-print.png") no-repeat 10px 50%;
-  border: 1px solid $govuk-border-colour;
-  color: $govuk-link-colour;
+  border: 1px solid govuk-functional-colour(border);
+  color: govuk-functional-colour(link);
   cursor: pointer;
   margin: 0;
   padding: .5em .5em .5em 38px;
   text-decoration: none;
 
   &:hover {
-    background-color: govuk-colour("light-grey");
+    background-color: govuk-colour("black", $variant: "tint-95");
   }
 
   &:focus {
-    background-color: $govuk-focus-colour;
+    background-color: govuk-functional-colour(focus);
     border-color: transparent;
   }
 }

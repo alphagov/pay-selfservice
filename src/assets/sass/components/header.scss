@@ -1,5 +1,7 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .govuk-header__container {
   &--test {
-    border-color:  govuk-colour("mid-grey");
+    border-color:  govuk-colour("black", $variant: "tint-80");
   }
 }

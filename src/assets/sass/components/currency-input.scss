@@ -1,4 +1,6 @@
 // One day `.currency-input` will be part of the design system - https://github.com/alphagov/temporary-event-notice-prototype/blob/master/app/assets/sass/patterns/currency-input.scss
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .currency-input {
   &__inner {
     position: relative;

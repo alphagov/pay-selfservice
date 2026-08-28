@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .sub-navigation-container {
   position: sticky;
   top: 0;
@@ -14,7 +16,7 @@
   }
 
   &__item {
-    border-bottom: 1px $govuk-border-colour solid;
+    border-bottom: 1px govuk-functional-colour(border) solid;
     display: block;
     padding: govuk-spacing(2) 0;
     @include govuk-font($size: 16);
@@ -38,7 +40,7 @@
 
     a:link,
     a:visited {
-      color: $govuk-text-colour;
+      color: govuk-functional-colour(text);
     }
   }
 

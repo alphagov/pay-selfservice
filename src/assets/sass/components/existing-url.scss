@@ -1,8 +1,10 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .payment-link-existing-url {
   .payment-link-existing-url__url-first-part {
-    background-color: govuk-colour('light-grey');
-    color: $govuk-text-colour;
-    border: 1px solid $govuk-border-colour;
+    background-color: govuk-colour("black", $variant: "tint-95");
+    color: govuk-functional-colour(text);
+    border: 1px solid govuk-functional-colour(border);
     padding: 5px;
     display: inline;
     max-width: 100%;

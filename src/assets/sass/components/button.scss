@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .pay-button {
   &--as-link {
     display: inline;
@@ -5,7 +7,7 @@
     border: 0;
     background-color: transparent;
     text-decoration: underline;
-    color: $govuk-link-colour;
+    color: govuk-functional-colour(link);
     text-align: left;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -14,7 +16,7 @@
     @include govuk-font($size: 16);
 
     &:hover {
-    color: $govuk-link-hover-colour;
+    color: govuk-functional-colour(link-hover);
     }
   }
 }

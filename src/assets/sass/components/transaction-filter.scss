@@ -1,12 +1,14 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .transactions-filter {
   form {
     margin: 0 govuk-spacing(3);
     padding: govuk-spacing(3) 0;
-    background: govuk-colour('light-grey');
+    background: govuk-colour("black", $variant: "tint-95");
   }
 
   .govuk-hint {
-    color: $govuk-text-colour;
+    color: govuk-functional-colour(text);
   }
 }
 
@@ -17,7 +19,7 @@
   }
 
   .govuk-hint {
-    color: $govuk-text-colour;
+    color: govuk-functional-colour(text);
   }
 }
 
@@ -72,7 +74,7 @@
   @include govuk-font($size: 16);
 
   @include govuk-media-query(tablet) {
-    @include govuk-font($size: 14);
+    @include govuk-font($size: 16);
     position: absolute;
     left: -8px;
     margin-top: govuk-spacing(7);
@@ -94,11 +96,11 @@
 
 // bootstrap datepicker overides
 .datepicker .datepicker-days table {
-  @include govuk-font($size: 14);
+  @include govuk-font($size: 16);
 }
 
 .ui-timepicker-list {
-  @include govuk-font($size: 14);
+  @include govuk-font($size: 16);
 }
 
 .datepicker .datepicker-days table tr td.day.focused,

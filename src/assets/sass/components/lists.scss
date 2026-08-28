@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .list__marker--bold {
   li {
     margin-bottom: govuk-spacing(5);

@@ -1,10 +1,12 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .system-messages {
   margin-bottom: 30px;
 }
 
 .govuk-notification-banner--error {
-  border-color: $govuk-error-colour;
-  background-color: $govuk-error-colour;
+  border-color: govuk-functional-colour(error);
+  background-color: govuk-functional-colour(error);
 }
 
 .system-message__container {
@@ -25,11 +27,11 @@
 }
 
 .system-message__icon--success {
-  color: $govuk-success-colour;
+  color: govuk-functional-colour(success);
 }
 .system-message__icon--info {
-  color: $govuk-brand-colour;
+  color: govuk-functional-colour(brand);
 }
 .system-message__icon--error {
-  color: $govuk-error-colour;
+  color: govuk-functional-colour(error);
 }

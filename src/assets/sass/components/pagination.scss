@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .pagination {
   margin-bottom: govuk-spacing(3);
 
@@ -6,17 +8,17 @@
 
     button {
       background: inherit;
-      border: 1px solid $govuk-border-colour;
+      border: 1px solid govuk-functional-colour(border);
       border-right: none;
       padding: govuk-spacing(1) govuk-spacing(2);
       vertical-align: middle;
-      color: $govuk-link-colour;
+      color: govuk-functional-colour(link);
       cursor: pointer;
-      @include govuk-font($size: 14);
+      @include govuk-font($size: 16);
 
       &:hover {
-        color: $govuk-text-colour;
-        background-color: $govuk-focus-colour;
+        color: govuk-functional-colour(text);
+        background-color: govuk-functional-colour(focus);
       }
 
       &.active {
@@ -31,7 +33,7 @@
     }
 
     &:last-child button {
-      border: 1px solid $govuk-border-colour;
+      border: 1px solid govuk-functional-colour(border);
     }
 
     /* Buttons for the next or previous set or either end of the whole lot */

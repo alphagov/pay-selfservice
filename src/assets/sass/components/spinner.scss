@@ -1,10 +1,12 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .spinner {
   margin: 20px auto;
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  border: 16px solid govuk-colour("light-grey");
-  border-bottom-color: govuk-colour("light-blue"); /* Annulus sector colour */
+  border: 16px solid govuk-colour("black", $variant: "tint-95");
+  border-bottom-color: govuk-colour("blue", $variant: "tint-25"); /* Annulus sector colour */
   animation: rotate 3s linear infinite;
   will-change: transform;
 }

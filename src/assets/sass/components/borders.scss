@@ -1,17 +1,19 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .pay-\!-border-top {
-  border-top: 1px solid $govuk-border-colour;
+  border-top: 1px solid govuk-functional-colour(border);
 }
 
 .pay-\!-border-right {
-  border-right: 1px solid $govuk-border-colour;
+  border-right: 1px solid govuk-functional-colour(border);
 }
 
 .pay-\!-border-bottom {
-  border-bottom: 1px solid $govuk-border-colour;
+  border-bottom: 1px solid govuk-functional-colour(border);
 }
 
 .pay-\!-border-left {
-  border-left: 1px solid $govuk-border-colour;
+  border-left: 1px solid govuk-functional-colour(border);
 }
 
 .with-border .govuk-checkboxes__item::after {
@@ -22,7 +24,7 @@
   display: block;
   margin: govuk-spacing(3) 0;
   padding-left: govuk-spacing(7);
-  border-top: 1px solid $govuk-border-colour;
+  border-top: 1px solid govuk-functional-colour(border);
 }
 
 .pay-\!-border-bottom-0 {

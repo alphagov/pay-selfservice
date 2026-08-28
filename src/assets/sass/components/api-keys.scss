@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .key-list-item-meta {
   margin-bottom: 1em;
   @include govuk-font($size: 16);
@@ -22,7 +24,7 @@
 }
 
 .key-list-item {
-  border-top: 1px solid $govuk-border-colour;
+  border-top: 1px solid govuk-functional-colour(border);
   padding: govuk-spacing(6) 0;
 }
 

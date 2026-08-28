@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .govuk-label--l {
   .govuk-error-message {
     margin-top: govuk-spacing(3);

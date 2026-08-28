@@ -110,7 +110,6 @@ function initialiseTemplateEngine(app) {
   // if it's not production we want to re-evaluate the assets on each file change
   nunjucksEnvironment.addGlobal('css_path', staticify.getVersionedPath('/assets/stylesheets/application.css'))
   nunjucksEnvironment.addGlobal('js_path', staticify.getVersionedPath('/assets/js/client.js'))
-  nunjucksEnvironment.addGlobal('govukRebrand', true)
 
   // Load custom Nunjucks filters
   for (const name in nunjucksFilters) {

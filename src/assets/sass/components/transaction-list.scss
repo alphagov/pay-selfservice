@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .transactions-list-table {
   background-color: govuk-colour('white');
   table-layout: fixed;

@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .dashboard-date-range-container{
   display: block;
 
@@ -25,9 +27,9 @@
       margin: 0;
       padding: govuk-spacing(3);
       padding-left: govuk-spacing(5);
-      border: 2px solid $govuk-border-colour;
+      border: 2px solid govuk-functional-colour(border);
       border-left: 0;
-      background-color: govuk-colour("light-grey");
+      background-color: govuk-colour("black", $variant: "tint-95");
       flex-direction: row;
       justify-content: space-between;
       align-items: baseline;

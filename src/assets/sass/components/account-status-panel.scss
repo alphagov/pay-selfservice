@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .account-status-panel {
   border: 5px solid govuk-colour("blue");
   padding: 20px;

@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .flash-container {
   @extend .govuk-error-summary;
     &--good {

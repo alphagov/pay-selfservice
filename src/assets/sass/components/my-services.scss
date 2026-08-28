@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .reports {
   margin-top: govuk-spacing(2);
   margin-bottom: govuk-spacing(4);
@@ -11,7 +13,7 @@
   margin-top: govuk-spacing(1);
   hr {
     border: none;
-    border-top: 1px solid $govuk-border-colour;
+    border-top: 1px solid govuk-functional-colour(border);
     margin-top: 0;
     margin-bottom: govuk-spacing(3);
   }
@@ -58,7 +60,7 @@
 
 #service-links__container {
   margin-bottom: govuk-spacing(5);
-  border-bottom: 1px solid govuk-colour('mid-grey');
+  border-bottom: 1px solid govuk-colour("black", $variant: "tint-80");
   max-width: 620px;
 }
 
@@ -88,7 +90,7 @@
       line-height: 30px;
       font-weight: bold;
       &:focus {
-        outline: 3px solid $govuk-focus-colour;
+        outline: 3px solid govuk-functional-colour(focus);
       }
     }
   }
@@ -103,7 +105,7 @@
   align-items: center;
   column-gap: 10px;
   row-gap: 10px;
-  border-top: 1px solid govuk-colour('mid-grey');
+  border-top: 1px solid govuk-colour("black", $variant: "tint-80");
   padding-top: 15px;
   padding-bottom: 15px;
 

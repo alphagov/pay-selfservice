@@ -1,18 +1,20 @@
 
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .reporting-columns{
   margin: 1rem 0;
 }
 
 .reporting-columns__keypair{
   display: inline-block;
-  border: 2px solid $govuk-border-colour;
+  border: 2px solid govuk-functional-colour(border);
   margin: 1rem 10px 0 0;
 }
 
 .reporting-columns__key{
-  background: govuk-colour("light-grey");
+  background: govuk-colour("black", $variant: "tint-95");
   padding: 10px 5px;
-  border-bottom: 2px solid $govuk-border-colour;
+  border-bottom: 2px solid govuk-functional-colour(border);
 }
 
 .reporting-columns__value{

@@ -1,7 +1,8 @@
 // Section: Request to go live
+@use 'govuk-frontend/dist/govuk' as * ;
 
 .intro {
-  color: $govuk-secondary-text-colour;
+  color: govuk-functional-colour(secondary-text);
 }
 
 .request-to-go-live-list {
@@ -19,12 +20,12 @@
     width: 30px;
   }
   .waiting {
-    background-color: govuk-colour("dark-grey");
+    background-color: govuk-colour("black", $variant: "tint-25");
   }
 }
 
 .next-steps-panel {
   padding: 30px 30px 20px 30px;
-  border: 5px solid $govuk-link-colour;
+  border: 5px solid govuk-functional-colour(link);
   margin-bottom: 30px;
 }

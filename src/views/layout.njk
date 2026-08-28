@@ -35,7 +35,7 @@
   {% include "includes/cookie-message.njk" %}
 {% endblock %}
 
-{% block header %}
+{% block govukHeader %}
   {% include "includes/header.njk" %}
   {% include "includes/service-navigation.njk" %}
   {% if serviceView and serviceView.showHeader %}
@@ -43,7 +43,7 @@
   {% endif %}
 {% endblock %}
 
-{% block beforeContent %}
+{% block containerStart %}
   {% if loggedIn %}
     {% include "includes/phase-banner.njk" %}
   {% endif %}
@@ -58,7 +58,7 @@
   </div>
 {% endblock %}
 
-{% block footer %}
+{% block govukFooter %}
   {% include "includes/footer.njk" %}
 {% endblock %}
 

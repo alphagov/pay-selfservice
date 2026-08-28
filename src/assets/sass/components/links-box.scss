@@ -1,3 +1,5 @@
+@use 'govuk-frontend/dist/govuk' as * ;
+
 .links__box {
   position: relative;
 
@@ -8,29 +10,29 @@
 
   a:link {
     h2 {
-      color: $govuk-link-colour;
+      color: govuk-functional-colour(link);
       text-decoration: underline;
     }
   }
 
   a:visited {
     h2 {
-      color: $govuk-link-colour;
+      color: govuk-functional-colour(link);
     }
   }
 
   a:hover {
     h2 {
-      color: $govuk-link-hover-colour;
+      color: govuk-functional-colour(link-hover);
     }
   }
 
   a:focus {
-    background-color: $govuk-focus-colour;
-    outline: 3px solid $govuk-focus-colour;
+    background-color: govuk-functional-colour(focus);
+    outline: 3px solid govuk-functional-colour(focus);
 
     h2 {
-      color: $govuk-text-colour;
+      color: govuk-functional-colour(text);
     }
   }
 }
