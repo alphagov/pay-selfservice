@@ -1,0 +1,107 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+
+{% set settingsPageTitle = 'Service director details' %}
+
+{% block settingsContent %}
+  <form id="bank-details-form" autocomplete="off" method="post" class="govuk-!-margin-top-3">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+    {%
+      call govukFieldset({
+        legend: {
+          text: settingsPageTitle,
+          classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+          isPageHeading: true
+        }
+      })
+    %}
+      <p class="govuk-body govuk-!-margin-bottom-6">
+        Adyen needs details of the director of the service or someone at director level in your organisation.</p
+      >
+      <p class="govuk-body govuk-!-margin-bottom-6">
+        <a
+          class="govuk-link"
+          href="https://www.payments.service.gov.uk/required-responsible-person-and-director-information/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Check who can be a service director (opens in new tab)
+        </a>
+      </p>
+
+      <p class="govuk-body govuk-!-margin-bottom-6">
+        If your organisation does not have someone in one of these roles, email
+        <a
+          class="govuk-link govuk-link--no-visited-state"
+          href="mailto:govuk-pay-support@digital.cabinet-office.gov.uk"
+        >
+          govuk-pay-support@digital.cabinet-office.gov.uk </a
+        >. Adyen may accept another senior person who is authorised to transfer funds for the organisation.
+      </p>
+
+      <p class="govuk-body govuk-!-margin-bottom-6">
+        The service director must be different from the responsible person.
+      </p>
+
+      <p class="govuk-body govuk-!-margin-bottom-6">
+        This information will be held securely and will not be shared with anyone unnecessarily.
+      </p>
+
+      {{
+        govukInput({
+          label: {
+            text: "First name"
+          },
+          id: "first-name",
+          name: "firstName",
+          value: name.firstName,
+          type: "text",
+          autocomplete: "given-name",
+          spellcheck: false,
+          errorMessage: { text: errors.formErrors['firstName'] } if errors.formErrors['firstName'] else false,
+          classes: "govuk-!-width-three-quarters"
+        })
+      }}
+
+      {{
+        govukInput({
+          label: {
+            text: "Last name"
+          },
+          id: "last-name",
+          name: "lastName",
+          value: name.lastName,
+          type: "text",
+          autocomplete: "family-name",
+          spellcheck: false,
+          errorMessage: { text: errors.formErrors['lastName'] } if errors.formErrors['lastName'] else false,
+          classes: "govuk-!-width-three-quarters"
+        })
+      }}
+      {% include "simplified-account/settings/partials/_dob.njk" %}
+
+      {{
+        govukInput({
+          label: {
+            text: "Email address"
+          },
+          id: "email",
+          name: "email",
+          value: contact.email,
+          type: "email",
+          autocomplete: "email",
+          spellcheck: false,
+          errorMessage: { text: errors.formErrors['email'] } if errors.formErrors['email'] else false,
+          classes: "govuk-!-full-width"
+        })
+      }}
+
+      {{
+        govukButton({
+          id: "service-director-details-submit",
+          text: "Continue",
+          preventDoubleClick: true
+        })
+      }}
+    {% endcall %}
+  </form>
+{% endblock %}
