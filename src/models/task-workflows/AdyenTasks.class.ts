@@ -62,10 +62,16 @@ class AdyenTask extends Task {
   }
 
   static serviceDirectorTask(service: Service, gatewayAccount: GatewayAccount) {
+    const switchingCredentialId = gatewayAccount.getSwitchingCredential().externalId
     return new AdyenTask(
       'Service director',
       AdyenTaskIdentifier.SERVICE_DIRECTOR,
-      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.index, service.externalId, gatewayAccount.type)
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.adyenDetails.serviceDirector.details,
+        service.externalId,
+        gatewayAccount.type,
+        switchingCredentialId
+      )
     ).setStatus(TaskStatus.NOT_STARTED)
   }
 

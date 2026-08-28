@@ -16,7 +16,7 @@ const serviceFixture = new ServiceFixture({
 const mockResponse = sinon.stub()
 
 const { req, res, call } = new ControllerTestBuilder(
-  '@controllers/simplified-account/settings/adyen-details/bank-details.controller'
+  '@controllers/simplified-account/settings/adyen-details/service-director/service-director-details.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount(
@@ -30,13 +30,17 @@ const { req, res, call } = new ControllerTestBuilder(
   })
   .build()
 
-describe('Controller: settings/adyen-details/bank-details', () => {
+describe('Controller: settings/adyen-details/service-director/service-director-details', () => {
   describe('get', () => {
     it('should call the response function with req, res, and the template path', async () => {
       await call('get')
 
       mockResponse.should.have.been.calledOnce
-      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/adyen-details/bank-details')
+      mockResponse.should.have.been.calledWith(
+        req,
+        res,
+        'simplified-account/settings/adyen-details/service-director/details'
+      )
     })
 
     it('should call the response method with the backLink', async () => {
@@ -51,19 +55,6 @@ describe('Controller: settings/adyen-details/bank-details', () => {
           SERVICE_TYPE
         ),
       })
-    })
-  })
-  describe('post', () => {
-    it('should redirect to the switch to adyen task list', async () => {
-      await call('post')
-      sinon.assert.calledOnceWithExactly(
-        res.redirect,
-        formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
-          SERVICE_EXTERNAL_ID,
-          SERVICE_TYPE
-        )
-      )
     })
   })
 })
