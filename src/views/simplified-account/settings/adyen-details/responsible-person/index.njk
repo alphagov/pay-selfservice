@@ -1,0 +1,89 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+
+{% set settingsPageTitle = 'Responsible person’s personal details' %}
+
+{% block settingsContent %}
+  <form id="responsible-person-details-form" method="post" class="govuk-!-margin-top-3">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+    {%
+      call govukFieldset({
+        legend: {
+          text: "Responsible person’s personal details",
+          classes: "govuk-fieldset__legend--l govuk-!-margin-bottom-6",
+          isPageHeading: true
+        }
+      })
+    %}
+      <p class="govuk-body govuk-!-margin-bottom-6">
+        Adyen needs details of a responsible person in your organisation to carry out anti-money laundering checks.
+      </p>
+      <p class="govuk-body govuk-!-margin-bottom-6">
+        The responsible person must be different from the service director.</p
+      >
+
+      <p class="govuk-body govuk-!-margin-bottom-6">
+        <a
+          href="https://www.payments.service.gov.uk/required-responsible-person-and-director-information/"
+          target="_blank"
+          >Check who can be a responsible person, what details you will need and what the checks involve (opens in new
+          tab)</a
+        ></p
+      >
+
+      <p class="govuk-body govuk-!-margin-bottom-6">
+        This information will be held securely and will not be shared with anyone unnecessarily.</p
+      >
+
+      {%
+        call govukFieldset({
+          legend: {
+            text: "Name",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: false
+          }
+        })
+      %}
+        {{
+          govukInput({
+            label: {
+              text: "First name"
+            },
+            id: "first-name",
+            name: "firstName",
+            value: name.firstName,
+            type: "text",
+            autocomplete: "given-name",
+            spellcheck: false,
+            errorMessage: { text: errors.formErrors['firstName'] } if errors.formErrors['firstName'] else false,
+            classes: "govuk-!-width-three-quarters"
+          })
+        }}
+
+        {{
+          govukInput({
+            label: {
+              text: "Last name"
+            },
+            id: "last-name",
+            name: "lastName",
+            value: name.lastName,
+            type: "text",
+            autocomplete: "family-name",
+            spellcheck: false,
+            errorMessage: { text: errors.formErrors['lastName'] } if errors.formErrors['lastName'] else false,
+            classes: "govuk-!-width-three-quarters"
+          })
+        }}
+      {% endcall %}
+      {% include "simplified-account/settings/partials/_dob.njk" %}
+
+      {{
+        govukButton({
+          id: "responsible-person-details-submit",
+          text: "Continue",
+          preventDoubleClick: true
+        })
+      }}
+    {% endcall %}
+  </form>
+{% endblock %}

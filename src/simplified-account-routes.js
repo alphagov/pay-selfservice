@@ -939,6 +939,62 @@ simplifiedAccount.post(
   permission('stripe-account-details:update'),
   serviceSettingsController.adyenDetails.bankDetails.post
 )
+simplifiedAccount.get(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.index,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.index.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.index,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.index.post
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.address.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.address.post
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.contactDetails,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.contactDetails.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.contactDetails,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.contactDetails.post
+)
+simplifiedAccount.get(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.checkYourAnswers,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.checkYourAnswers.get
+)
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.checkYourAnswers,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.responsiblePerson.checkYourAnswers.post
+)
 
 simplifiedAccount.get(
   paths.simplifiedAccount.settings.adyenDetails.legalTerms,
