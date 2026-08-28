@@ -16,7 +16,7 @@ const serviceFixture = new ServiceFixture({
 const mockResponse = sinon.stub()
 
 const { req, res, call } = new ControllerTestBuilder(
-  '@controllers/simplified-account/settings/switch-psp/switch-to-adyen/reason-for-taking-payments.controller'
+  '@controllers/simplified-account/settings/adyen-details/reason-for-taking-payments.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount(
@@ -30,7 +30,7 @@ const { req, res, call } = new ControllerTestBuilder(
   })
   .build()
 
-describe('Controller: settings/switch-psp/switch-to-adyen/reason-for-taking-payments', () => {
+describe('Controller: settings/adyen-details/reason-for-taking-payments', () => {
   describe('get', () => {
     it('should call the response function with req, res, and the template path', async () => {
       await call('get')
@@ -39,7 +39,7 @@ describe('Controller: settings/switch-psp/switch-to-adyen/reason-for-taking-paym
       mockResponse.should.have.been.calledWith(
         req,
         res,
-        'simplified-account/settings/switch-psp/switch-to-adyen/reason-for-taking-payments'
+        'simplified-account/settings/adyen-details/reason-for-taking-payments'
       )
     })
 
