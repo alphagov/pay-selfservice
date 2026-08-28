@@ -156,7 +156,11 @@ describe('switch to adyen task list', () => {
             .within(() => {
               cy.get('.govuk-task-list__link')
                 .should('contain.text', 'Tell us why your service takes payments')
-                .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings`)
+                .should(
+                  'have.attr',
+                  'href',
+                  `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/adyen-details/${ADYEN_CREDENTIAL_EXTERNAL_ID}/reason-for-taking-payments`
+                )
               cy.get('.govuk-task-list__status').should('contain.text', 'Not yet started')
             })
         })

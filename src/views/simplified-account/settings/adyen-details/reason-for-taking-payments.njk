@@ -1,0 +1,30 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+
+{% set settingsPageTitle = 'What will your service be taking payments for?' %}
+
+{% block settingsContent %}
+  <form id="reason-for-taking-payments-form" autocomplete="off" method="post" class="govuk-!-margin-top-3">
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+
+    {{
+      govukCharacterCount({
+        id: "reason-for-taking-payments-textarea",
+        name: "address",
+        maxlength: 140,
+        label: {
+          text: "What will your service be taking payments for?",
+          classes: "govuk-label--l",
+          isPageHeading: true
+        }
+      })
+    }}
+
+    {{
+      govukButton({
+        id: "reason-for-taking-payments-submit",
+        text: "Confirm and submit",
+        preventDoubleClick: true
+      })
+    }}
+  </form>
+{% endblock %}
