@@ -39,7 +39,7 @@ describe('Controller: settings/adyen-details/bank-details', () => {
       mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/adyen-details/bank-details')
     })
 
-    it('should call the response method with the backLink and submitLink', async () => {
+    it('should call the response method with the backLink', async () => {
       await call('get')
 
       mockResponse.should.have.been.calledOnce
