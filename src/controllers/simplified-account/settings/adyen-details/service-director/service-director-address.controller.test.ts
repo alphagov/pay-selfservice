@@ -19,7 +19,7 @@ const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.ST
 const mockResponse = sinon.stub()
 
 const { req, res, call } = new ControllerTestBuilder(
-  '@controllers/simplified-account/settings/adyen-details/service-director/service-director-details.controller'
+  '@controllers/simplified-account/settings/adyen-details/service-director/service-director-address.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount(GATEWAY_ACCOUNT)
@@ -29,7 +29,7 @@ const { req, res, call } = new ControllerTestBuilder(
   })
   .build()
 
-describe('Controller: settings/adyen-details/service-director/service-director-details', () => {
+describe('Controller: settings/adyen-details/service-director/service-director-address', () => {
   describe('get', () => {
     it('should call the response function with req, res, and the template path', async () => {
       await call('get')
@@ -38,7 +38,7 @@ describe('Controller: settings/adyen-details/service-director/service-director-d
       mockResponse.should.have.been.calledWith(
         req,
         res,
-        'simplified-account/settings/adyen-details/service-director/details'
+        'simplified-account/settings/adyen-details/service-director/address'
       )
     })
 
@@ -49,25 +49,11 @@ describe('Controller: settings/adyen-details/service-director/service-director-d
       const context = mockResponse.firstCall.lastArg as { backLink: string }
       sinon.assert.match(context, {
         backLink: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+          paths.simplifiedAccount.settings.adyenDetails.serviceDirector.details,
           SERVICE_EXTERNAL_ID,
           SERVICE_TYPE
         ),
       })
-    })
-  })
-  describe('post', () => {
-    it('should redirect to the service director address', async () => {
-      await call('post')
-      sinon.assert.calledOnceWithExactly(
-        res.redirect,
-        formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.adyenDetails.serviceDirector.address,
-          SERVICE_EXTERNAL_ID,
-          SERVICE_TYPE,
-          GATEWAY_ACCOUNT.getSwitchingCredential().externalId
-        )
-      )
     })
   })
 })
