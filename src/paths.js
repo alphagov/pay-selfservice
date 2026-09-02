@@ -312,6 +312,7 @@ module.exports = {
         },
         serviceDirector: {
           details: '/settings/adyen-details/:credentialId/service-director/details',
+          address: '/settings/adyen-details/:credentialId/service-director/address',
         },
         bankDetails: '/settings/adyen-details/:credentialId/bank-details',
         legalTerms: '/settings/adyen-details/:credentialId/legal-terms',

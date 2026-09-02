@@ -13,4 +13,18 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   })
 }
 
-export { get }
+function post(req: ServiceRequest, res: ServiceResponse) {
+  const { account } = req
+  const switchingCredentialId = account.getSwitchingCredential().externalId
+
+  return res.redirect(
+    formatServiceAndAccountPathsFor(
+      paths.simplifiedAccount.settings.adyenDetails.serviceDirector.address,
+      req.service.externalId,
+      req.account.type,
+      switchingCredentialId
+    )
+  )
+}
+
+export { get, post }
