@@ -1,0 +1,59 @@
+{{
+  govukInput({
+    label: {
+      html: 'Address line 1'
+    },
+    id: "address-line1",
+    name: "addressLine1",
+    value: address.homeAddressLine1,
+    type: "text",
+    autocomplete: "address-line1",
+    errorMessage: { text: errors.formErrors['addressLine1'] } if errors.formErrors['addressLine1'] else false,
+    classes: "govuk-!-width-two-thirds"
+  })
+}}
+{{
+  govukInput({
+    label: {
+      html: 'Address line 2 (optional)'
+    },
+    id: "address-line2",
+    name: "addressLine2",
+    value: address.addressLine2,
+    type: "text",
+    autocomplete: "address-line2",
+    errorMessage: { text: errors.formErrors['addressLine2'] } if errors.formErrors['addressLine2'] else false,
+    attributes: {
+      "aria-label": "Enter address line 2"
+    },
+    classes: "govuk-!-width-three-quarters"
+  })
+}}
+{{
+  govukInput({
+    label: {
+      text: "Town or city"
+    },
+    id: "address-city",
+    name: "addressCity",
+    value: address.addressCity,
+    type: "text",
+    autocomplete: "address-level2",
+    errorMessage: { text: errors.formErrors['addressCity'] } if errors.formErrors['addressCity'] else false,
+    classes: "govuk-!-width-one-half"
+  })
+}}
+{{
+  govukInput({
+    label: {
+      text: "Postcode"
+    },
+    id: "address-postcode",
+    name: "addressPostcode",
+    value: address.addressPostcode,
+    type: "text",
+    autocomplete: "postal-code",
+    classes: "govuk-!-width-one-third",
+    errorMessage: { text: errors.formErrors['addressPostcode'] } if errors.formErrors['addressPostcode'] else false
+  })
+}}
