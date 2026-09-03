@@ -2,29 +2,30 @@ import type { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { response } from '@utils/response'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
-import { ResponsiblePersonSession } from './constants'
+import { FROM_REVIEW_QUERY_PARAM, ResponsiblePersonSession } from './constants'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { account } = req
   const switchingCredentialId = account.getSwitchingCredential().externalId
   const currentSession = ResponsiblePersonSession.extract(req)
+  const fromReviewQueryString = FROM_REVIEW_QUERY_PARAM + '=true'
 
   const detailsLink = formatServiceAndAccountPathsFor(
-    paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.index,
+    paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.index + '?' + fromReviewQueryString,
     req.service.externalId,
     req.account.type,
     switchingCredentialId
   )
 
   const addressLink = formatServiceAndAccountPathsFor(
-    paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
+    paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address + '?' + fromReviewQueryString,
     req.service.externalId,
     req.account.type,
     switchingCredentialId
   )
 
   const contactDetailsLink = formatServiceAndAccountPathsFor(
-    paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.contactDetails,
+    paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.contactDetails + '?' + fromReviewQueryString,
     req.service.externalId,
     req.account.type,
     switchingCredentialId
