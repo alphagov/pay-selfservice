@@ -30,18 +30,22 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     switchingCredentialId
   )
 
-  const backLink =
-    req.query[FROM_REVIEW_QUERY_PARAM] === 'true'
-      ? reviewLink
-      : indexLink
+  const backLink = req.query[FROM_REVIEW_QUERY_PARAM] === 'true' ? reviewLink : indexLink
 
   return response(req, res, 'simplified-account/settings/adyen-details/responsible-person/address', {
     backLink,
-    address
+    address,
   })
 }
 
-function post(req: ServiceRequest, res: ServiceResponse) {
+interface ResponsiblePersonAddressBody {
+  addressLine1: string
+  addressLine2: string
+  addressCity: string
+  addressPostcode: string
+}
+
+function post(req: ServiceRequest<ResponsiblePersonAddressBody>, res: ServiceResponse) {
   const { account } = req
   const switchingCredentialId = account.getSwitchingCredential().externalId
   const currentSession = ResponsiblePersonSession.extract(req)

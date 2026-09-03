@@ -11,7 +11,7 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 
   const contact = {
     telephoneNumber: currentSession.telephoneNumber ?? '',
-    email: currentSession.email ?? ''
+    email: currentSession.email ?? '',
   }
 
   const addressLink = formatServiceAndAccountPathsFor(
@@ -28,18 +28,20 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     switchingCredentialId
   )
 
-  const backLink =
-    req.query[FROM_REVIEW_QUERY_PARAM] === 'true'
-      ? reviewLink
-      : addressLink
+  const backLink = req.query[FROM_REVIEW_QUERY_PARAM] === 'true' ? reviewLink : addressLink
 
   return response(req, res, 'simplified-account/settings/adyen-details/responsible-person/contact-details', {
     backLink,
-    contact
+    contact,
   })
 }
 
-function post(req: ServiceRequest, res: ServiceResponse) {
+interface ResponsiblePersonContactDetailsBody {
+  telephoneNumber: string
+  email: string
+}
+
+function post(req: ServiceRequest<ResponsiblePersonContactDetailsBody>, res: ServiceResponse) {
   const { account } = req
   const switchingCredentialId = account.getSwitchingCredential().externalId
   const currentSession = ResponsiblePersonSession.extract(req)
