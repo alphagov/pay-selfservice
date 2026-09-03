@@ -19,7 +19,7 @@ const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.ST
 const mockResponse = sinon.stub()
 
 const { req, res, call } = new ControllerTestBuilder(
-  '@controllers/simplified-account/settings/adyen-details/service-director/service-director-address.controller'
+  '@controllers/simplified-account/settings/adyen-details/service-director/service-director-check-your-answers.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
   .withAccount(GATEWAY_ACCOUNT)
@@ -29,7 +29,7 @@ const { req, res, call } = new ControllerTestBuilder(
   })
   .build()
 
-describe('Controller: settings/adyen-details/service-director/service-director-address', () => {
+describe('Controller: settings/adyen-details/service-director/service-director-check-your-answers', () => {
   describe('get', () => {
     it('should call the response function with req, res, and the template path', async () => {
       await call('get')
@@ -38,7 +38,7 @@ describe('Controller: settings/adyen-details/service-director/service-director-a
       mockResponse.should.have.been.calledWith(
         req,
         res,
-        'simplified-account/settings/adyen-details/service-director/address'
+        'simplified-account/settings/adyen-details/service-director/check-your-answers'
       )
     })
 
@@ -49,9 +49,10 @@ describe('Controller: settings/adyen-details/service-director/service-director-a
       const context = mockResponse.firstCall.lastArg as { backLink: string }
       sinon.assert.match(context, {
         backLink: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.adyenDetails.serviceDirector.details,
+          paths.simplifiedAccount.settings.adyenDetails.serviceDirector.address,
           SERVICE_EXTERNAL_ID,
-          SERVICE_TYPE
+          SERVICE_TYPE,
+          GATEWAY_ACCOUNT.getSwitchingCredential().externalId
         ),
       })
     })
@@ -62,7 +63,7 @@ describe('Controller: settings/adyen-details/service-director/service-director-a
       sinon.assert.calledOnceWithExactly(
         res.redirect,
         formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.adyenDetails.serviceDirector.checkYourAnswers,
+          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
           SERVICE_EXTERNAL_ID,
           SERVICE_TYPE,
           GATEWAY_ACCOUNT.getSwitchingCredential().externalId
