@@ -74,7 +74,7 @@
     },
     "cross-spawn": "^7.0.6",
     "axios": "1.18.0",
-    "qs": "6.15.2"
+    "qs": "6.16.0"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1030.0",
@@ -112,7 +112,7 @@
     "passport-custom": "^1.1.1",
     "passport-local": "^1.0.0",
     "qrcode": "1.5.3",
-    "qs": "6.15.2",
+    "qs": "6.16.0",
     "rfc822-validate": "1.0.0",
     "staticify": "5.0.0",
     "stripe": "^10.12.0",
