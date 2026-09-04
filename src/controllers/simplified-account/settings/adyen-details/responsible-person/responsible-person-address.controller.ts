@@ -11,9 +11,11 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 
   if (currentSession.isEmpty()) {
     return res.redirect(
-      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
         req.service.externalId,
-        req.account.type)
+        req.account.type
+      )
     )
   }
 

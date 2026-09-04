@@ -35,8 +35,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
     describe('with empty session data', () => {
       beforeEach(async () => {
         nextRequest({
-          session: {
-          },
+          session: {},
         })
 
         await call('get')
@@ -57,7 +56,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
           dobYear: '1970',
           addressLine1: '29 Acacia Road',
           addressCity: 'London',
-          addressPostcode: 'W1 2AB'
+          addressPostcode: 'W1 2AB',
         }
 
         nextRequest({
@@ -71,13 +70,12 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
         await call('get')
       })
 
-
       it('should call the response function with the template path', () => {
         mockResponse.should.have.been.calledOnce
         mockResponse.should.have.been.calledWith(
           sinon.match.any,
           sinon.match.any,
-          'simplified-account/settings/adyen-details/responsible-person/address',
+          'simplified-account/settings/adyen-details/responsible-person/address'
         )
       })
 
@@ -115,7 +113,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
           addressCity: 'London',
           addressPostcode: 'W1 2AB',
           telephoneNumber: '07700 700900',
-          email: 'sam@example.com'
+          email: 'sam@example.com',
         }
 
         nextRequest({
@@ -130,7 +128,6 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
         await call('get')
       })
       it('should call the response method with the backLink set to the check your answers page', () => {
-
         mockResponse.should.have.been.calledOnce
         const context = mockResponse.firstCall.lastArg as { backLink: string }
         sinon.assert.match(context, {
@@ -147,7 +144,6 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
 
   describe('post', () => {
     beforeEach(async () => {
-
       res.redirect.resetHistory()
 
       nextRequest({
@@ -159,7 +155,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
         body: {
           addressLine1: '29 Acacia Road',
           addressCity: 'London',
-          addressPostcode: 'W1 2AB'
+          addressPostcode: 'W1 2AB',
         },
       })
 
@@ -179,4 +175,3 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
     })
   })
 })
-

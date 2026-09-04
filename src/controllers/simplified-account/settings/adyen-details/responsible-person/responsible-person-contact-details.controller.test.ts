@@ -6,6 +6,7 @@ import { ServiceFixture } from '@test/fixtures/service/service.fixture'
 import sinon from 'sinon'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
+import { FROM_REVIEW_QUERY_PARAM, ResponsiblePersonSession } from './constants'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const SERVICE_TYPE = 'live'
@@ -18,7 +19,7 @@ const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.ST
 
 const mockResponse = sinon.stub()
 
-const { req, res, call } = new ControllerTestBuilder(
+const { nextRequest, call, res } = new ControllerTestBuilder(
   '@controllers/simplified-account/settings/adyen-details/responsible-person/responsible-person-contact-details.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
@@ -31,35 +32,139 @@ const { req, res, call } = new ControllerTestBuilder(
 
 describe('Controller: settings/adyen-details/responsible-person/responsible-person-contact-details', () => {
   describe('get', () => {
-    it('should call the response function with req, res, and the template path', async () => {
-      await call('get')
+    describe('with empty session data', () => {
+      beforeEach(async () => {
+        nextRequest({
+          session: {
+          },
+        })
 
-      mockResponse.should.have.been.calledOnce
-      mockResponse.should.have.been.calledWith(
-        req,
-        res,
-        'simplified-account/settings/adyen-details/responsible-person/contact-details'
-      )
+        await call('get')
+      })
+      it('should redirect to switch to Adyen page', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/switch-to-adyen/))
+      })
     })
 
-    it('should call the response method with the backLink and submitLink', async () => {
-      await call('get')
+    describe('with valid session data', () => {
+      beforeEach(async () => {
+        const currentSession: Partial<ResponsiblePersonSession> = {
+          firstName: 'Sam',
+          lastName: 'Person',
+          dobDay: '25',
+          dobMonth: '12',
+          dobYear: '1970',
+          addressLine1: '29 Acacia Road',
+          addressCity: 'London',
+          telephoneNumber: '07700 700900',
+          email: 'sam@example.com'
+        }
 
-      mockResponse.should.have.been.calledOnce
-      const context = mockResponse.firstCall.lastArg as { backLink: string }
-      sinon.assert.match(context, {
-        backLink: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
-          SERVICE_EXTERNAL_ID,
-          SERVICE_TYPE,
-          GATEWAY_ACCOUNT.getSwitchingCredential().externalId
-        ),
+        nextRequest({
+          session: {
+            pageData: {
+              responsiblePerson: currentSession,
+            },
+          },
+        })
+
+        await call('get')
+      })
+
+      it('should call the response function with the template path', () => {
+        mockResponse.should.have.been.calledOnce
+        mockResponse.should.have.been.calledWith(
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/settings/adyen-details/responsible-person/contact-details',
+        )
+      })
+
+      it('should set form values from session in context', () => {
+        const context = mockResponse.args[0][3] as Record<string, unknown>
+        const contactDetailsValues = context.contact as Record<string, unknown>
+        sinon.assert.match(contactDetailsValues.telephoneNumber, '07700 700900')
+        sinon.assert.match(contactDetailsValues.email, 'sam@example.com')
+      })
+
+      it('should call the response method with the backLink set to the address page', () => {
+        mockResponse.should.have.been.calledOnce
+        const context = mockResponse.firstCall.lastArg as { backLink: string }
+        sinon.assert.match(context, {
+          backLink: formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
+            SERVICE_EXTERNAL_ID,
+            SERVICE_TYPE,
+            GATEWAY_ACCOUNT.getSwitchingCredential().externalId
+          ),
+        })
+      })
+    })
+
+    describe('when user is coming from check your answers page', () => {
+      beforeEach(async () => {
+        const currentSession: Partial<ResponsiblePersonSession> = {
+          firstName: 'Sam',
+          lastName: 'Person',
+          dobDay: '25',
+          dobMonth: '12',
+          dobYear: '1970',
+          addressLine1: '29 Acacia Road',
+          addressCity: 'London',
+          addressPostcode: 'W1 2AB',
+          telephoneNumber: '07700 700900',
+          email: 'sam@example.com'
+        }
+
+        nextRequest({
+          query: { [FROM_REVIEW_QUERY_PARAM]: 'true' },
+          session: {
+            pageData: {
+              responsiblePerson: currentSession,
+            },
+          },
+        })
+
+        await call('get')
+      })
+
+      it('should call the response method with the backLink set to the check your answers page', () => {
+        mockResponse.should.have.been.calledOnce
+        const context = mockResponse.firstCall.lastArg as { backLink: string }
+        sinon.assert.match(context, {
+          backLink: formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.checkYourAnswers,
+            SERVICE_EXTERNAL_ID,
+            SERVICE_TYPE,
+            GATEWAY_ACCOUNT.getSwitchingCredential().externalId
+          ),
+        })
       })
     })
   })
+
   describe('post', () => {
-    it('should redirect to the responsible person check your answers page', async () => {
+    beforeEach(async () => {
+
+      res.redirect.resetHistory()
+
+      nextRequest({
+        session: {
+          pageData: {
+            responsiblePerson: {},
+          },
+        },
+        body: {
+          telephoneNumber: '07700 700900',
+          email: 'sam@example.com'
+        },
+      })
+
       await call('post')
+    })
+
+    it('should redirect to the check your answers page', () => {
       sinon.assert.calledOnceWithExactly(
         res.redirect,
         formatServiceAndAccountPathsFor(
