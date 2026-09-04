@@ -6,6 +6,7 @@ import { ServiceFixture } from '@test/fixtures/service/service.fixture'
 import sinon from 'sinon'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
+import { ResponsiblePersonSession } from './constants'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const SERVICE_TYPE = 'live'
@@ -18,7 +19,7 @@ const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.ST
 
 const mockResponse = sinon.stub()
 
-const { req, res, call } = new ControllerTestBuilder(
+const { nextRequest, res, call } = new ControllerTestBuilder(
   '@controllers/simplified-account/settings/adyen-details/responsible-person/responsible-person.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
@@ -31,43 +32,81 @@ const { req, res, call } = new ControllerTestBuilder(
 
 describe('Controller: settings/adyen-details/responsible-person/responsible-person', () => {
   describe('get', () => {
-    it('should call the response function with req, res, and the template path', async () => {
-      await call('get')
+    describe('with valid session data', () => {
+      beforeEach(async () => {
+        const currentSession: Partial<ResponsiblePersonSession> = {
+          firstName: 'Sam',
+          lastName: 'Person',
+          dobDay: '25',
+          dobMonth: '12',
+          dobYear: '1970',
+        }
 
-      mockResponse.should.have.been.calledOnce
-      mockResponse.should.have.been.calledWith(
-        req,
-        res,
-        'simplified-account/settings/adyen-details/responsible-person/index'
-      )
-    })
+        nextRequest({
+          session: {
+            pageData: {
+              responsiblePerson: currentSession,
+            },
+          },
+        })
 
-    it('should call the response method with the backLink and submitLink', async () => {
-      await call('get')
+        await call('get')
+      })
 
-      mockResponse.should.have.been.calledOnce
-      const context = mockResponse.firstCall.lastArg as { backLink: string }
-      sinon.assert.match(context, {
-        backLink: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
-          SERVICE_EXTERNAL_ID,
-          SERVICE_TYPE
-        ),
+      it('should call the response function with the template path', () => {
+        mockResponse.should.have.been.calledOnce
+        mockResponse.should.have.been.calledWith(
+          sinon.match.any,
+          sinon.match.any,
+          'simplified-account/settings/adyen-details/responsible-person/index'
+        )
+      })
+
+      it('should call the response method with the backLink', () => {
+        mockResponse.should.have.been.calledOnce
+        const context = mockResponse.firstCall.lastArg as { backLink: string }
+        sinon.assert.match(context, {
+          backLink: formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+            SERVICE_EXTERNAL_ID,
+            SERVICE_TYPE
+          ),
+        })
       })
     })
-  })
-  describe('post', () => {
-    it('should redirect to the responsible person address', async () => {
-      await call('post')
-      sinon.assert.calledOnceWithExactly(
-        res.redirect,
-        formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
-          SERVICE_EXTERNAL_ID,
-          SERVICE_TYPE,
-          GATEWAY_ACCOUNT.getSwitchingCredential().externalId
+    describe('post', () => {
+      beforeEach(async () => {
+        res.redirect.resetHistory()
+
+        nextRequest({
+          session: {
+            pageData: {
+              responsiblePerson: {},
+            },
+          },
+          body: {
+            firstName: 'Sam',
+            lastName: 'Person',
+            dobDay: '25',
+            dobMonth: '12',
+            dobYear: '1970',
+          },
+        })
+
+        await call('post')
+      })
+
+      it('should redirect to the responsible person address', () => {
+        sinon.assert.calledOnceWithExactly(
+          res.redirect,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
+            SERVICE_EXTERNAL_ID,
+            SERVICE_TYPE,
+            GATEWAY_ACCOUNT.getSwitchingCredential().externalId
+          )
         )
-      )
+      })
     })
   })
 })

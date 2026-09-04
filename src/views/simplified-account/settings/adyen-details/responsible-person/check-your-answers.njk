@@ -26,7 +26,7 @@
             text: "First name"
           },
           value: {
-            html: "Sam"
+            html: currentSession.firstName
           }
         },
         {
@@ -34,7 +34,7 @@
             text: "Last name"
           },
           value: {
-            html: "Person"
+            html: currentSession.lastName
           }
         },
         {
@@ -70,7 +70,7 @@
             text: "Address line 1"
           },
           value: {
-            html: "29 Acacia Road"
+            html: currentSession.addressLine1
           }
         },
         {
@@ -78,7 +78,7 @@
             text: "Address line 2"
           },
           value: {
-            html: "Mitcham"
+            html: currentSession.addressLine2
           }
         } if hasAddressLine2,
         {
@@ -86,7 +86,7 @@
             text: "Town or city"
           },
           value: {
-            html: "London"
+            html: currentSession.addressCity
           }
         },
         {
@@ -94,7 +94,7 @@
             text: "Postcode"
           },
           value: {
-            html: "SW16 1AB"
+            html: currentSession.addressPostcode
           }
         }
       ]
@@ -122,15 +122,15 @@
             text: "Telephone number"
           },
           value: {
-            html: "07700 700900"
+            html: currentSession.telephoneNumber
           }
         },
         {
           key: {
-            text: "Email address"
+            text: "Work email address"
           },
           value: {
-            html: "sam@example.com"
+            html: currentSession.email
           }
         }
       ]
