@@ -75,7 +75,6 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
       })
     })
     describe('post', () => {
-
       beforeEach(async () => {
         res.redirect.resetHistory()
 
