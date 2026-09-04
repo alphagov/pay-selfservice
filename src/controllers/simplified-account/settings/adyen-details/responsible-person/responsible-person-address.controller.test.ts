@@ -34,19 +34,15 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
   describe('get', () => {
     describe('with empty session data', () => {
       beforeEach(async () => {
-        describe('with empty session data', () => {
-          beforeEach(async () => {
-            nextRequest({
-              session: {},
-            })
-
-            await call('get')
-          })
-          it('should redirect to the Adyen migration task list', () => {
-            sinon.assert.calledOnce(res.redirect)
-            sinon.assert.calledWith(res.redirect, sinon.match(/switch-to-adyen/))
-          })
+        nextRequest({
+          session: {},
         })
+
+        await call('get')
+      })
+      it('should redirect to the Adyen migration task list', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/switch-to-adyen/))
       })
     })
 
@@ -131,6 +127,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
 
         await call('get')
       })
+
       it('should call the response method with the backLink set to the check your answers page', () => {
         mockResponse.should.have.been.calledOnce
         const context = mockResponse.firstCall.lastArg as { backLink: string }
@@ -145,37 +142,37 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
       })
     })
   })
+})
 
-  describe('post', () => {
-    beforeEach(async () => {
-      res.redirect.resetHistory()
+describe('post', () => {
+  beforeEach(async () => {
+    res.redirect.resetHistory()
 
-      nextRequest({
-        session: {
-          pageData: {
-            responsiblePerson: {},
-          },
+    nextRequest({
+      session: {
+        pageData: {
+          responsiblePerson: {},
         },
-        body: {
-          addressLine1: '29 Acacia Road',
-          addressCity: 'London',
-          addressPostcode: 'W1 2AB',
-        },
-      })
-
-      await call('post')
+      },
+      body: {
+        addressLine1: '29 Acacia Road',
+        addressCity: 'London',
+        addressPostcode: 'W1 2AB',
+      },
     })
 
-    it('should redirect to the responsible person contact details page', () => {
-      sinon.assert.calledOnceWithExactly(
-        res.redirect,
-        formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.contactDetails,
-          SERVICE_EXTERNAL_ID,
-          SERVICE_TYPE,
-          GATEWAY_ACCOUNT.getSwitchingCredential().externalId
-        )
+    await call('post')
+  })
+
+  it('should redirect to the responsible person contact details page', () => {
+    sinon.assert.calledOnceWithExactly(
+      res.redirect,
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.contactDetails,
+        SERVICE_EXTERNAL_ID,
+        SERVICE_TYPE,
+        GATEWAY_ACCOUNT.getSwitchingCredential().externalId
       )
-    })
+    )
   })
 })

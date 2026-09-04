@@ -58,7 +58,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
           addressCity: 'London',
           addressPostcode: 'W1 2AB',
           telephoneNumber: '07700 700900',
-          email: 'sam@example.com'
+          email: 'sam@example.com',
         }
 
         nextRequest({
@@ -109,19 +109,21 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
 
         sinon.assert.match(context, {
           backLink: contactDetailsLink + fromReviewParam,
-          detailsLink: formatServiceAndAccountPathsFor(
-            paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.index,
-            SERVICE_EXTERNAL_ID,
-            SERVICE_TYPE,
-            GATEWAY_ACCOUNT.getSwitchingCredential().externalId
-          ) + fromReviewParam,
+          detailsLink:
+            formatServiceAndAccountPathsFor(
+              paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.index,
+              SERVICE_EXTERNAL_ID,
+              SERVICE_TYPE,
+              GATEWAY_ACCOUNT.getSwitchingCredential().externalId
+            ) + fromReviewParam,
           contactDetailsLink: contactDetailsLink + fromReviewParam,
-          addressLink: formatServiceAndAccountPathsFor(
-            paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
-            SERVICE_EXTERNAL_ID,
-            SERVICE_TYPE,
-            GATEWAY_ACCOUNT.getSwitchingCredential().externalId
-          ) + fromReviewParam,
+          addressLink:
+            formatServiceAndAccountPathsFor(
+              paths.simplifiedAccount.settings.adyenDetails.responsiblePerson.address,
+              SERVICE_EXTERNAL_ID,
+              SERVICE_TYPE,
+              GATEWAY_ACCOUNT.getSwitchingCredential().externalId
+            ) + fromReviewParam,
         })
       })
     })
