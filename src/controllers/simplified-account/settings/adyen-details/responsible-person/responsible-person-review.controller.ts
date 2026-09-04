@@ -8,6 +8,16 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   const { account } = req
   const switchingCredentialId = account.getSwitchingCredential().externalId
   const currentSession = ResponsiblePersonSession.extract(req)
+  if (currentSession.isEmpty()) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+        req.service.externalId,
+        req.account.type
+      )
+    )
+  }
+
   const fromReviewQueryString = FROM_REVIEW_QUERY_PARAM + '=true'
 
   const detailsLink = formatServiceAndAccountPathsFor(

@@ -34,15 +34,19 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
   describe('get', () => {
     describe('with empty session data', () => {
       beforeEach(async () => {
-        nextRequest({
-          session: {},
-        })
+        describe('with empty session data', () => {
+          beforeEach(async () => {
+            nextRequest({
+              session: {},
+            })
 
-        await call('get')
-      })
-      it('should redirect to switch to Adyen page', () => {
-        sinon.assert.calledOnce(res.redirect)
-        sinon.assert.calledWith(res.redirect, sinon.match(/switch-to-adyen/))
+            await call('get')
+          })
+          it('should redirect to the Adyen migration task list', () => {
+            sinon.assert.calledOnce(res.redirect)
+            sinon.assert.calledWith(res.redirect, sinon.match(/switch-to-adyen/))
+          })
+        })
       })
     })
 

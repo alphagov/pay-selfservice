@@ -35,13 +35,12 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
     describe('with empty session data', () => {
       beforeEach(async () => {
         nextRequest({
-          session: {
-          },
+          session: {},
         })
 
         await call('get')
       })
-      it('should redirect to switch to Adyen page', () => {
+      it('should redirect to the Adyen migration task list', () => {
         sinon.assert.calledOnce(res.redirect)
         sinon.assert.calledWith(res.redirect, sinon.match(/switch-to-adyen/))
       })
@@ -58,7 +57,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
           addressLine1: '29 Acacia Road',
           addressCity: 'London',
           telephoneNumber: '07700 700900',
-          email: 'sam@example.com'
+          email: 'sam@example.com',
         }
 
         nextRequest({
@@ -77,7 +76,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
         mockResponse.should.have.been.calledWith(
           sinon.match.any,
           sinon.match.any,
-          'simplified-account/settings/adyen-details/responsible-person/contact-details',
+          'simplified-account/settings/adyen-details/responsible-person/contact-details'
         )
       })
 
@@ -114,7 +113,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
           addressCity: 'London',
           addressPostcode: 'W1 2AB',
           telephoneNumber: '07700 700900',
-          email: 'sam@example.com'
+          email: 'sam@example.com',
         }
 
         nextRequest({
@@ -146,7 +145,6 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
 
   describe('post', () => {
     beforeEach(async () => {
-
       res.redirect.resetHistory()
 
       nextRequest({
@@ -157,7 +155,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
         },
         body: {
           telephoneNumber: '07700 700900',
-          email: 'sam@example.com'
+          email: 'sam@example.com',
         },
       })
 
