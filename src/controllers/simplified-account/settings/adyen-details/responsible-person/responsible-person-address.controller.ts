@@ -9,6 +9,14 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   const switchingCredentialId = account.getSwitchingCredential().externalId
   const currentSession = ResponsiblePersonSession.extract(req)
 
+  if (currentSession.isEmpty()) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+        req.service.externalId,
+        req.account.type)
+    )
+  }
+
   const address = {
     addressLine1: currentSession.addressLine1 ?? '',
     addressLine2: currentSession.addressLine2 ?? '',
