@@ -12,31 +12,34 @@ const SERVICE_TYPE = 'live'
 const serviceFixture = new ServiceFixture({
   externalId: SERVICE_EXTERNAL_ID,
 })
+const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.STRIPE, PaymentProvider.ADYEN, [], [], {
+  type: 'live',
+}).toGatewayAccount()
 
 const mockResponse = sinon.stub()
 
 const { req, res, call } = new ControllerTestBuilder(
-  '@controllers/simplified-account/settings/adyen-details/bank-details.controller'
+  '@controllers/simplified-account/settings/adyen-details/service-director/service-director-address.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
-  .withAccount(
-    GatewayAccountFixture.forSwitchingPsp(PaymentProvider.STRIPE, PaymentProvider.ADYEN, [], [], {
-      type: 'live',
-    }).toGatewayAccount()
-  )
+  .withAccount(GATEWAY_ACCOUNT)
   .withUser(UserFixture.asServiceAdmin([serviceFixture]).toUser())
   .withStubs({
     '@utils/response': { response: mockResponse },
   })
   .build()
 
-describe('Controller: settings/adyen-details/bank-details', () => {
+describe('Controller: settings/adyen-details/service-director/service-director-address', () => {
   describe('get', () => {
     it('should call the response function with req, res, and the template path', async () => {
       await call('get')
 
       mockResponse.should.have.been.calledOnce
-      mockResponse.should.have.been.calledWith(req, res, 'simplified-account/settings/adyen-details/bank-details')
+      mockResponse.should.have.been.calledWith(
+        req,
+        res,
+        'simplified-account/settings/adyen-details/service-director/address'
+      )
     })
 
     it('should call the response method with the backLink', async () => {
@@ -46,7 +49,7 @@ describe('Controller: settings/adyen-details/bank-details', () => {
       const context = mockResponse.firstCall.lastArg as { backLink: string }
       sinon.assert.match(context, {
         backLink: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+          paths.simplifiedAccount.settings.adyenDetails.serviceDirector.details,
           SERVICE_EXTERNAL_ID,
           SERVICE_TYPE
         ),
@@ -54,14 +57,15 @@ describe('Controller: settings/adyen-details/bank-details', () => {
     })
   })
   describe('post', () => {
-    it('should redirect to the switch to adyen task list', async () => {
+    it('should redirect to service director check your answers', async () => {
       await call('post')
       sinon.assert.calledOnceWithExactly(
         res.redirect,
         formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+          paths.simplifiedAccount.settings.adyenDetails.serviceDirector.checkYourAnswers,
           SERVICE_EXTERNAL_ID,
-          SERVICE_TYPE
+          SERVICE_TYPE,
+          GATEWAY_ACCOUNT.getSwitchingCredential().externalId
         )
       )
     })

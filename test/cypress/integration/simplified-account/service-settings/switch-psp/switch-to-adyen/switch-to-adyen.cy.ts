@@ -151,7 +151,11 @@ describe('switch to adyen task list', () => {
             .within(() => {
               cy.get('.govuk-task-list__link')
                 .should('contain.text', 'Service director')
-                .should('have.attr', 'href', `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings`)
+                .should(
+                  'have.attr',
+                  'href',
+                  `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/adyen-details/${ADYEN_CREDENTIAL_EXTERNAL_ID}/service-director/details`
+                )
               cy.get('.govuk-task-list__status').should('contain.text', 'Not yet started')
             })
 

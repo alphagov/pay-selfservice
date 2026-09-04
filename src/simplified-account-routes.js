@@ -1028,6 +1028,54 @@ simplifiedAccount.post(
   serviceSettingsController.adyenDetails.reasonForTakingPayments.post
 )
 
+simplifiedAccount.get(
+  paths.simplifiedAccount.settings.adyenDetails.serviceDirector.details,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.serviceDirector.details.get
+)
+
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenDetails.serviceDirector.details,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.serviceDirector.details.post
+)
+
+simplifiedAccount.get(
+  paths.simplifiedAccount.settings.adyenDetails.serviceDirector.address,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.serviceDirector.address.get
+)
+
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenDetails.serviceDirector.address,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.serviceDirector.address.post
+)
+
+simplifiedAccount.get(
+  paths.simplifiedAccount.settings.adyenDetails.serviceDirector.checkYourAnswers,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.serviceDirector.checkYourAnswers.get
+)
+
+simplifiedAccount.post(
+  paths.simplifiedAccount.settings.adyenDetails.serviceDirector.checkYourAnswers,
+  enforceLiveAccountOnly,
+  restrictToSwitchingAccount(ADYEN),
+  permission('stripe-account-details:update'),
+  serviceSettingsController.adyenDetails.serviceDirector.checkYourAnswers.post
+)
+
 // stripe details
 const stripeDetailsPath = paths.simplifiedAccount.settings.stripeDetails
 const stripeDetailsRouter = new Router({ mergeParams: true }).use(

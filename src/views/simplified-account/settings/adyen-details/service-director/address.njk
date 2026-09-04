@@ -1,6 +1,6 @@
 {% extends "../../settings-layout.njk" %}
 
-{% set settingsPageTitle = "Responsible person's address" %}
+{% set settingsPageTitle = "Service director's address" %}
 
 {% block settingsContent %}
   <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
@@ -8,8 +8,9 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
     {% call govukFieldset({}) %}
       <p class="govuk-body"
-        >Do not use a work address. Adyen needs the responsible person’s home address to check their identity.</p
+        >Do not use a work address. Adyen needs the service director’s home address to check their identity.</p
       >
+
       {% include "simplified-account/settings/partials/_address.njk" %}
     {% endcall %}
     {{ govukButton({ text: "Continue" }) }}
