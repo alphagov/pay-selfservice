@@ -51,7 +51,8 @@ describe('Controller: settings/adyen-details/service-director/service-director-a
         backLink: formatServiceAndAccountPathsFor(
           paths.simplifiedAccount.settings.adyenDetails.serviceDirector.details,
           SERVICE_EXTERNAL_ID,
-          SERVICE_TYPE
+          SERVICE_TYPE,
+          GATEWAY_ACCOUNT.getSwitchingCredential().externalId
         ),
       })
     })

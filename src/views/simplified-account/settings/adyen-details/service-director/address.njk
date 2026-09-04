@@ -13,6 +13,10 @@
 
       {% include "simplified-account/settings/partials/_address.njk" %}
     {% endcall %}
-    {{ govukButton({ text: "Continue" }) }}
+    {{
+      govukButton({ id: "service-director-address-submit",
+      text: "Continue",
+      preventDoubleClick: true })
+    }}
   </form>
 {% endblock %}
