@@ -6,6 +6,8 @@ import { markTaskAsComplete } from '@services/adyen-setup.service'
 import { adyenDetailsSchema } from '@utils/simplified-account/validation/adyen-details.schema'
 import { validationResult } from 'express-validator'
 import { formatValidationErrors } from '@utils/simplified-account/format'
+import { OrganisationDetailsSession } from './constants'
+import { createOrganisation } from '@services/adyen-details.service'
 
 function getBackLink(req: ServiceRequest) {
   return formatServiceAndAccountPathsFor(
@@ -17,6 +19,18 @@ function getBackLink(req: ServiceRequest) {
 }
 
 function get(req: ServiceRequest, res: ServiceResponse) {
+  const currentSession = OrganisationDetailsSession.extract(req)
+
+  if (currentSession.isEmpty()) {
+    return res.redirect(
+      formatServiceAndAccountPathsFor(
+        paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+        req.service.externalId,
+        req.account.type
+      )
+    )
+  }
+
   return response(req, res, 'simplified-account/settings/adyen-details/reason-for-taking-payments', {
     backLink: getBackLink(req),
   })
@@ -24,6 +38,8 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 
 async function post(req: ServiceRequest, res: ServiceResponse) {
   const { account } = req
+  const switchingCredentialId = account.getSwitchingCredential().externalId
+  const currentSession = OrganisationDetailsSession.extract(req)
 
   const validations = [adyenDetailsSchema.selectTakingPaymentsFor.validate]
 
@@ -41,9 +57,14 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
       backLink: getBackLink(req),
     })
   }
-  const switchingCredentialId = account.getSwitchingCredential().externalId
 
+  const completeSession = new OrganisationDetailsSession({
+    ...currentSession,
+  } as OrganisationDetailsSession)
+
+  await createOrganisation(completeSession)
   await markTaskAsComplete(req.service.externalId, req.account.type, switchingCredentialId, 'organisationDetails')
+
   return res.redirect(
     formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,

@@ -16,9 +16,11 @@ const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.ST
   type: 'live',
 }).toGatewayAccount()
 
+const TEMPLATE_PATH = 'simplified-account/settings/adyen-details/company-registration-number'
+
 const mockResponse = sinon.stub()
 
-const { req, res, call } = new ControllerTestBuilder(
+const { res, call, nextRequest } = new ControllerTestBuilder(
   '@controllers/simplified-account/settings/adyen-details/organisation-details/company-registration.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
@@ -31,33 +33,68 @@ const { req, res, call } = new ControllerTestBuilder(
 
 describe('Controller: settings/adyen-details/organisation-details/company-registration', () => {
   describe('get', () => {
-    it('should call the response function with req, res, and the template path', async () => {
-      await call('get')
+    describe('with no organisation details in session', () => {
+      beforeEach(async () => {
+        nextRequest({ session: {} })
+        await call('get')
+      })
 
-      mockResponse.should.have.been.calledOnce
-      mockResponse.should.have.been.calledWith(
-        req,
-        res,
-        'simplified-account/settings/adyen-details/company-registration-number'
-      )
+      it('should redirect to the switch to adyen task list', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/switch-to-adyen/))
+      })
     })
 
-    it('should call the response method with the backLink', async () => {
-      await call('get')
+    describe('with organisation details already in session', () => {
+      beforeEach(async () => {
+        nextRequest({
+          session: {
+            pageData: {
+              organisationDetails: {
+                organisationName: 'Test Organisation',
+                companyRegistrationNumber: '01234567',
+              },
+            },
+          },
+        })
+        await call('get')
+      })
 
-      mockResponse.should.have.been.calledOnce
-      const context = mockResponse.firstCall.lastArg as { backLink: string }
-      sinon.assert.match(context, {
-        backLink: formatServiceAndAccountPathsFor(
-          paths.simplifiedAccount.settings.adyenDetails.organisationDetails.index,
-          SERVICE_EXTERNAL_ID,
-          SERVICE_TYPE,
-          GATEWAY_ACCOUNT.getSwitchingCredential().externalId
-        ),
+      it('should call the response function with the template path', () => {
+        mockResponse.should.have.been.calledOnce
+        mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, TEMPLATE_PATH)
+      })
+
+      it('should call the response method with the companyRegistrationNumber and backLink', () => {
+        mockResponse.should.have.been.calledOnce
+        const context = mockResponse.firstCall.lastArg as { companyRegistrationNumber: string; backLink: string }
+        sinon.assert.match(context, {
+          companyRegistrationNumber: '01234567',
+          backLink: formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.adyenDetails.organisationDetails.index,
+            SERVICE_EXTERNAL_ID,
+            SERVICE_TYPE,
+            GATEWAY_ACCOUNT.getSwitchingCredential().externalId
+          ),
+        })
       })
     })
   })
+
   describe('post', () => {
+    beforeEach(() => {
+      nextRequest({
+        body: { companyRegistrationNumber: '01234567' },
+        session: {
+          pageData: {
+            organisationDetails: {
+              organisationName: 'Test Organisation',
+            },
+          },
+        },
+      })
+    })
+
     it('should redirect to the VAT registration number page', async () => {
       await call('post')
       sinon.assert.calledOnceWithExactly(
