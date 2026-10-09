@@ -45,6 +45,8 @@ async function get(
   }
 
   const isStripe = req.viewMode.paymentProviders.includes(PaymentProviders.STRIPE)
+  const isStripeOrAdyen = isStripe || req.viewMode.paymentProviders.includes(PaymentProviders.ADYEN)
+
   const transactionSearchParams = TransactionSearchParams.Builder(req.viewMode.gatewayAccountIds)
     .withDefaultDateFilter(Period.ALL_TIME)
     .withPagination(MAX_TRANSACTIONS_PER_PAGE)
@@ -116,7 +118,7 @@ async function get(
     pagination,
     filters: transactionSearchParams,
     clearRedirect: transactionsUrl,
-    isStripe,
+    isStripeOrAdyen,
     cardBrands: [{ value: '', text: 'Any' }, ...cardBrands],
     statuses: eventStates,
     downloadLink,

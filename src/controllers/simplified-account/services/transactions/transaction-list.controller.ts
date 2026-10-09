@@ -28,6 +28,7 @@ const getUrlGenerator = (filters: Record<string, string>, transactionsUrl: strin
 
 async function get(req: ServiceRequest, res: ServiceResponse) {
   const isStripe = req.account.paymentProvider === 'stripe'
+  const isStripeOrAdyen = isStripe || req.account.paymentProvider === 'adyen'
   const gatewayAccountId = req.account.id
   const transactionSearchParams = TransactionSearchParams.Builder(gatewayAccountId)
     .withDefaultDateFilter(Period.ALL_TIME)
@@ -88,7 +89,7 @@ async function get(req: ServiceRequest, res: ServiceResponse) {
     pagination,
     filters: transactionSearchParams,
     clearRedirect: transactionsUrl,
-    isStripe,
+    isStripeOrAdyen,
     cardBrands: [{ value: '', text: 'Any' }, ...cardBrands],
     statuses: eventStates,
     downloadLink,

@@ -18,6 +18,7 @@ const USER_EMAIL = 's.mcduck@example.com'
 const TEST_STRIPE_ACCOUNT = GatewayAccountFixture.forStripe({ type: 'test', id: 10 })
 const TEST_SANDBOX_ACCOUNT = GatewayAccountFixture.forSandbox({ type: 'test', id: 20 })
 const TEST_WORLDPAY_ACCOUNT = GatewayAccountFixture.forWorldpay({ type: 'test', id: 30 })
+const TEST_ADYEN_ACCOUNT = GatewayAccountFixture.forAdyen({ type: 'test', id: 40 })
 
 const STRIPE_SERVICE = new ServiceFixture({
   gatewayAccountIds: [`${TEST_STRIPE_ACCOUNT.id}`],
@@ -32,10 +33,23 @@ const WORLDPAY_SERVICE = new ServiceFixture({
   externalId: 'worldpay-service',
 })
 
+const ADYEN_SERVICE = new ServiceFixture({
+  gatewayAccountIds: [`${TEST_ADYEN_ACCOUNT.id}`],
+  externalId: 'adyen-service',
+})
+
 const userWithStripeService = new UserFixture({
   externalId: USER_EXTERNAL_ID,
   email: USER_EMAIL,
   serviceRoles: [SANDBOX_SERVICE, WORLDPAY_SERVICE, STRIPE_SERVICE].map(
+    (service) => new ServiceRoleFixture({ service, role: RoleFixture.Admin() })
+  ),
+})
+
+const userWithAdyenService = new UserFixture({
+  externalId: USER_EXTERNAL_ID,
+  email: USER_EMAIL,
+  serviceRoles: [SANDBOX_SERVICE, WORLDPAY_SERVICE, ADYEN_SERVICE].map(
     (service) => new ServiceRoleFixture({ service, role: RoleFixture.Admin() })
   ),
 })
@@ -67,6 +81,14 @@ const WORLDPAY_TRANSACTION = new TransactionFixture({
   amount: 1000,
   reference: 'Worldpay transaction',
   paymentProvider: PaymentProviders.WORLDPAY,
+})
+const ADYEN_TRANSACTION = new TransactionFixture({
+  gatewayAccountId: `${TEST_ADYEN_ACCOUNT.id}`,
+  amount: 1000,
+  fee: 100,
+  netAmount: 900,
+  reference: 'Adyen transaction',
+  paymentProvider: PaymentProviders.ADYEN,
 })
 
 describe('All Service Transactions list', () => {
@@ -141,6 +163,80 @@ describe('All Service Transactions list', () => {
             cy.get('td').eq(1).should('contain.text', '£10.00')
             cy.get('td').eq(2).should('not.contain.text')
             cy.get('td').eq(3).should('not.contain.text')
+            cy.get('td').eq(4).should('contain.text', 'Visa')
+            cy.get('td').eq(5).should('contain.text', 'Success')
+          })
+      })
+    })
+  })
+
+  describe('if user has an adyen service', () => {
+    beforeEach(() => {
+      const accountIds = [TEST_SANDBOX_ACCOUNT, TEST_WORLDPAY_ACCOUNT, TEST_ADYEN_ACCOUNT].map((account) => account.id)
+      cy.task('setupStubs', [
+        getUser(USER_EXTERNAL_ID).success(userWithAdyenService),
+        searchTransactions(
+          TransactionSearchParams.Builder(accountIds)
+            .withPagination(20)
+            .withDefaultDateFilter(Period.ALL_TIME)
+            .withSearchQuery({})
+        ).success([WORLDPAY_TRANSACTION, SANDBOX_TRANSACTION, ADYEN_TRANSACTION]),
+        searchByServiceExternalIds([
+          SANDBOX_SERVICE.externalId,
+          WORLDPAY_SERVICE.externalId,
+          ADYEN_SERVICE.externalId,
+        ]).success([TEST_SANDBOX_ACCOUNT, TEST_WORLDPAY_ACCOUNT, TEST_ADYEN_ACCOUNT]),
+        getCardTypesSuccess(),
+      ])
+    })
+
+    it('should show the provider fee and net amount columns', () => {
+      cy.visit('/transactions/test')
+
+      cy.get('table#transactions-list').within(() => {
+        cy.get('thead > tr').within(() => {
+          cy.get('th').eq(0).should('contain.text', 'Reference number')
+          cy.get('th').eq(1).should('contain.text', 'Email')
+          cy.get('th').eq(2).should('contain.text', 'Amount')
+          cy.get('th').eq(3).should('contain.text', 'Provider fee')
+          cy.get('th').eq(4).should('contain.text', 'Net')
+          cy.get('th').eq(5).should('contain.text', 'Card brand')
+          cy.get('th').eq(6).should('contain.text', 'Payment Status')
+          cy.get('th').eq(7).should('contain.text', 'Date created')
+        })
+
+        cy.get('tbody > tr')
+          .eq(0)
+          .within(() => {
+            cy.get('th').eq(0).should('contain.text', 'Worldpay transaction')
+            cy.get('td').eq(0).should('contain.text', WORLDPAY_TRANSACTION.email)
+            cy.get('td').eq(1).should('contain.text', '£10.00')
+            cy.get('td').eq(2).should('not.contain.text')
+            cy.get('td').eq(3).should('not.contain.text')
+            cy.get('td').eq(4).should('contain.text', 'Visa')
+            cy.get('td').eq(5).should('contain.text', 'Success')
+          })
+
+        cy.get('tbody > tr')
+          .eq(1)
+          .within(() => {
+            cy.get('th').eq(0).should('contain.text', 'Sandbox transaction')
+            cy.get('td').eq(0).should('contain.text', SANDBOX_TRANSACTION.email)
+            cy.get('td').eq(1).should('contain.text', '£10.00')
+            cy.get('td').eq(2).should('not.contain.text')
+            cy.get('td').eq(3).should('not.contain.text')
+            cy.get('td').eq(4).should('contain.text', 'Visa')
+            cy.get('td').eq(5).should('contain.text', 'Success')
+          })
+
+        cy.get('tbody > tr')
+          .eq(2)
+          .within(() => {
+            cy.get('th').eq(0).should('contain.text', 'Adyen transaction')
+            cy.get('td').eq(0).should('contain.text', ADYEN_TRANSACTION.email)
+            cy.get('td').eq(1).should('contain.text', '£10.00')
+            cy.get('td').eq(2).should('contain.text', '£1.00')
+            cy.get('td').eq(3).should('contain.text', '£9.00')
             cy.get('td').eq(4).should('contain.text', 'Visa')
             cy.get('td').eq(5).should('contain.text', 'Success')
           })
