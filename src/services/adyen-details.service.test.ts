@@ -2,24 +2,42 @@ import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 import { expect } from 'chai'
 import type { OrganisationDetailsSession } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
-import { Types } from '@adyen/api-library'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 
-type LegalEntity = Types.legalEntityManagement.LegalEntity
-type CreateOrganisation = (session: OrganisationDetailsSession) => Promise<LegalEntity>
-type CreateResonsiblePerson = (session: ResponsiblePersonSession, id: string) => Promise<LegalEntity>
-
-interface AdyenDetailsService {
-  createOrganisation: CreateOrganisation
-  createResponsiblePerson: CreateResonsiblePerson
-}
+type AdyenDetailsService = typeof import('./adyen-details.service')
 
 describe('Adyen details service', () => {
-  let createLegalEntityStub: sinon.SinonStub
-  let getLegalEntityStub: sinon.SinonStub
-  let updateLegalEntityStub: sinon.SinonStub
-  let createOrganisation: CreateOrganisation
-  let createResponsiblePerson: CreateResonsiblePerson
+  let service: AdyenDetailsService
+
+  const legalEntityClientMock = {
+    createLegalEntity: sinon.stub(),
+    getLegalEntity: sinon.stub(),
+    updateLegalEntity: sinon.stub(),
+  }
+
+  const connectorClientMock = {
+    gatewayAccounts: {
+      patchCredentialsByServiceExternalIdAndAccountType: sinon.stub().resolves({}),
+    },
+  }
+
+  class ConnectorClientStub {
+    gatewayAccounts = connectorClientMock.gatewayAccounts
+  }
+
+  before(() => {
+    service = proxyquire<AdyenDetailsService>('./adyen-details.service', {
+      '@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class': {
+        GatewayAccountCredentialUpdateRequest: class {},
+      },
+      '@services/clients/pay/ConnectorClient.class': ConnectorClientStub,
+      '@services/clients/adyen/adyen-legal-entity-management.client': legalEntityClientMock,
+    })
+  })
+
+  afterEach(() => {
+    sinon.resetHistory()
+  })
 
   const ORGANISATION_TYPE = 'organization'
   const ORGANISATION_LEGAL_ENTITY_ID = 'LE_ORG_123'
@@ -57,49 +75,16 @@ describe('Adyen details service', () => {
     type: 'signatory',
   }
 
-  beforeEach(() => {
-    createLegalEntityStub = sinon.stub()
-    getLegalEntityStub = sinon.stub()
-    updateLegalEntityStub = sinon.stub()
-
-    class ConnectorClientStub {
-      gatewayAccounts = {
-        patchCredentialsByServiceExternalIdAndAccountType: sinon.stub().resolves({}),
-      }
-    }
-
-    const adyenDetailsService = proxyquire('./adyen-details.service', {
-      '@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class': {
-        GatewayAccountCredentialUpdateRequest: class {},
-      },
-      '@services/clients/pay/ConnectorClient.class': ConnectorClientStub,
-      '@services/clients/adyen/adyen-legal-entity-management.client': {
-        createLegalEntity: createLegalEntityStub,
-        getLegalEntity: getLegalEntityStub,
-        updateLegalEntity: updateLegalEntityStub,
-      },
-    }) as AdyenDetailsService
-
-    createOrganisation = adyenDetailsService.createOrganisation
-    createResponsiblePerson = adyenDetailsService.createResponsiblePerson
-  })
-
-  afterEach(() => {
-    createLegalEntityStub.resetHistory()
-    getLegalEntityStub.resetHistory()
-    updateLegalEntityStub.resetHistory()
-  })
-
   describe('createLegalEntity', () => {
     it('should create Adyen legal entity for an organisation', async () => {
       const legalEntity = { id: 'LE123', type: ORGANISATION_TYPE }
-      createLegalEntityStub.resolves(legalEntity)
+      legalEntityClientMock.createLegalEntity.resolves(legalEntity)
 
-      const result = await createOrganisation(fullOrganisationSession)
+      const result = await service.createOrganisation(fullOrganisationSession)
 
-      sinon.assert.calledOnce(createLegalEntityStub)
+      sinon.assert.calledOnce(legalEntityClientMock.createLegalEntity)
 
-      expect(createLegalEntityStub.firstCall.args[0]).to.deep.equal({
+      expect(legalEntityClientMock.createLegalEntity.firstCall.args[0]).to.deep.equal({
         type: ORGANISATION_TYPE,
         organization: {
           legalName: 'Test Org Ltd',
@@ -120,16 +105,16 @@ describe('Adyen details service', () => {
   })
   describe('createResponsiblePerson', () => {
     beforeEach(() => {
-      createLegalEntityStub.resolves({ id: PERSON_LEGAL_ENTITY_ID, type: 'individual' })
-      getLegalEntityStub.resolves({ id: ORGANISATION_LEGAL_ENTITY_ID, type: 'organization' })
-      updateLegalEntityStub.resolves({ id: ORGANISATION_LEGAL_ENTITY_ID, type: 'organization' })
+      legalEntityClientMock.createLegalEntity.resolves({ id: PERSON_LEGAL_ENTITY_ID, type: 'individual' })
+      legalEntityClientMock.getLegalEntity.resolves({ id: ORGANISATION_LEGAL_ENTITY_ID, type: 'organization' })
+      legalEntityClientMock.updateLegalEntity.resolves({ id: ORGANISATION_LEGAL_ENTITY_ID, type: 'organization' })
     })
 
     it('should create responsible person legal entry without any entity associations', async () => {
-      await createResponsiblePerson(fullResponsiblePersonSession, ORGANISATION_LEGAL_ENTITY_ID)
+      await service.createResponsiblePerson(fullResponsiblePersonSession, ORGANISATION_LEGAL_ENTITY_ID)
 
-      sinon.assert.calledOnce(createLegalEntityStub)
-      expect(createLegalEntityStub.firstCall.args[0]).to.deep.equal({
+      sinon.assert.calledOnce(legalEntityClientMock.createLegalEntity)
+      expect(legalEntityClientMock.createLegalEntity.firstCall.args[0]).to.deep.equal({
         type: 'individual',
         individual: {
           name: { firstName: 'John', lastName: 'Johnson' },
@@ -147,10 +132,10 @@ describe('Adyen details service', () => {
       })
     })
     it('should add the responsible person as a signatory on the organisation', async () => {
-      await createResponsiblePerson(fullResponsiblePersonSession, ORGANISATION_LEGAL_ENTITY_ID)
+      await service.createResponsiblePerson(fullResponsiblePersonSession, ORGANISATION_LEGAL_ENTITY_ID)
 
-      sinon.assert.calledOnceWithExactly(getLegalEntityStub, ORGANISATION_LEGAL_ENTITY_ID)
-      sinon.assert.calledOnceWithExactly(updateLegalEntityStub, ORGANISATION_LEGAL_ENTITY_ID, {
+      sinon.assert.calledOnceWithExactly(legalEntityClientMock.getLegalEntity, ORGANISATION_LEGAL_ENTITY_ID)
+      sinon.assert.calledOnceWithExactly(legalEntityClientMock.updateLegalEntity, ORGANISATION_LEGAL_ENTITY_ID, {
         entityAssociations: [signatoryAssociation],
       })
     })
