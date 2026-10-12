@@ -52,7 +52,7 @@ const supportedPolicyDocuments = [
     key: 'agreement-schedule-7-adyen',
     title: 'Agreement: Schedule 7 (Adyen)',
     template: 'policy/document/v2/agreement-schedule-7-adyen',
-  }
+  },
 ]
 
 const supportedPolicyDocumentsKeyIndex = supportedPolicyDocuments.reduce((index, policyDocument) => {

@@ -55,11 +55,11 @@ describe('Controller: settings/adyen-details/legal-terms', () => {
       await call('get')
 
       mockResponse.should.have.been.calledOnce
-      const context = mockResponse.firstCall.lastArg as { backLink: string, govUkPayTermsLink: string }
+      const context = mockResponse.firstCall.lastArg as { backLink: string; govUkPayTermsLink: string }
       sinon.assert.match(context, {
         backLink: BACK_LINK,
         govUkPayTermsLink: '/policy/agreement-for-crown-and-non-crown-bodies',
-        adyenAgreementLink: '/policy/agreement-schedule-7-adyen'
+        adyenAgreementLink: '/policy/agreement-schedule-7-adyen',
       })
     })
     describe('post', () => {
