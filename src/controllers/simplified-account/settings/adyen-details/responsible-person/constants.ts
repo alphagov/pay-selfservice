@@ -13,7 +13,9 @@ export class ResponsiblePersonSession {
   addressLine2?: string
   addressCity?: string
   addressPostcode?: string
+  addressCountry?: string
   telephoneNumber?: string
+  numberCountryCode?: string
   email?: string
 
   constructor(data: ResponsiblePersonSession) {
