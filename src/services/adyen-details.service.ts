@@ -1,8 +1,14 @@
 import { GatewayAccountCredentialUpdateRequest } from '@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class'
 import ConnectorClient from '@services/clients/pay/ConnectorClient.class'
-import { createLegalEntity } from '@services/clients/adyen/adyen-legal-entity-management.client'
+import {
+  createLegalEntity,
+  getLegalEntity,
+  updateLegalEntity,
+} from '@services/clients/adyen/adyen-legal-entity-management.client'
 import { OrganisationDetailsSession } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 import { Types } from '@adyen/api-library'
+import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
+import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManagement/individual'
 
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 type Organization = Types.legalEntityManagement.Organization
@@ -91,4 +97,60 @@ const createOrganisation = async (session: OrganisationDetailsSession) => {
   return createLegalEntity(legalEntityInfo)
 }
 
-export { setAdyenLegalEntityId, setAdyenStoreId, setAdyenAccountHolderId, setAdyenBalanceAccountId, createOrganisation }
+const createResponsiblePerson = async (session: ResponsiblePersonSession, organisationLegalEntityId: string) => {
+  const individual: Individual = {
+    name: {
+      firstName: session.firstName ?? '',
+      lastName: session.lastName ?? '',
+    },
+    birthData: {
+      dateOfBirth: `${session.dobYear}-${session.dobMonth}-${session.dobDay}`,
+    },
+    residentialAddress: {
+      street: session.addressLine1,
+      street2: session.addressLine2,
+      city: session.addressCity,
+      postalCode: session.addressPostcode,
+      country: session.addressCountry ?? '',
+    },
+    email: session.email,
+    phone: {
+      number: session.telephoneNumber ?? '',
+      phoneCountryCode: session.numberCountryCode ?? 'GB',
+    },
+  }
+
+  const individualLegalEntityInfo: LegalEntityInfoRequiredType = {
+    type: Types.legalEntityManagement.LegalEntityInfoRequiredType.TypeEnum.Individual,
+    individual,
+  }
+
+  const responsiblePerson = await createLegalEntity(individualLegalEntityInfo)
+
+  const organisation = await getLegalEntity(organisationLegalEntityId)
+
+  const existingAssociations = organisation.entityAssociations ?? []
+
+  const entityAssociationsPayload = {
+    entityAssociations: [
+      ...existingAssociations,
+      {
+        legalEntityId: responsiblePerson.id,
+        type: Types.legalEntityManagement.LegalEntityAssociation.TypeEnum.Signatory,
+      },
+    ],
+  }
+
+  await updateLegalEntity(organisationLegalEntityId, entityAssociationsPayload)
+
+  return responsiblePerson
+}
+
+export {
+  setAdyenLegalEntityId,
+  setAdyenStoreId,
+  setAdyenAccountHolderId,
+  setAdyenBalanceAccountId,
+  createOrganisation,
+  createResponsiblePerson,
+}
