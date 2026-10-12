@@ -47,6 +47,11 @@ const supportedPolicyDocuments = [
     key: 'agreement-for-crown-and-non-crown-bodies',
     title: 'Agreement for Crown and non-Crown Bodies (Adyen only)',
     template: 'policy/document/v2/agreement-for-crown-and-non-crown-bodies',
+  },
+  {
+    key: 'agreement-schedule-7-adyen',
+    title: 'Agreement: Schedule 7 (Adyen)',
+    template: 'policy/document/v2/agreement-schedule-7-adyen',
   }
 ]
 

@@ -19,7 +19,8 @@ function getBackLink(req: ServiceRequest) {
 function get(req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/settings/adyen-details/legal-terms', {
     backLink: getBackLink(req),
-    govUkPayTermsLink: formatPathFor(paths.policyPage, 'agreement-for-crown-and-non-crown-bodies')
+    govUkPayTermsLink: formatPathFor(paths.policyPage, 'agreement-for-crown-and-non-crown-bodies'),
+    adyenAgreementLink: formatPathFor(paths.policyPage, 'agreement-schedule-7-adyen')
   })
 }
 
