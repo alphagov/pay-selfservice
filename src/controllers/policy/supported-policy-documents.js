@@ -43,6 +43,11 @@ const supportedPolicyDocuments = [
     title: 'Adyen card fees',
     template: 'settings/switch-psp/switch-to-adyen/adyen-fees',
   },
+  {
+    key: 'agreement-for-crown-and-non-crown-bodies',
+    title: 'Agreement for Crown and non-Crown Bodies (Adyen only)',
+    template: 'policy/document/v2/agreement-for-crown-and-non-crown-bodies',
+  }
 ]
 
 const supportedPolicyDocumentsKeyIndex = supportedPolicyDocuments.reduce((index, policyDocument) => {

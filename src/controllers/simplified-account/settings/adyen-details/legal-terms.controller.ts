@@ -6,6 +6,7 @@ import { markTaskAsComplete } from '@services/adyen-setup.service'
 import { adyenDetailsSchema } from '@utils/simplified-account/validation/adyen-details.schema'
 import { validationResult } from 'express-validator'
 import { formatValidationErrors } from '@utils/simplified-account/format'
+import formatPathFor from '@utils/replace-params-in-path'
 
 function getBackLink(req: ServiceRequest) {
   return formatServiceAndAccountPathsFor(
@@ -18,6 +19,7 @@ function getBackLink(req: ServiceRequest) {
 function get(req: ServiceRequest, res: ServiceResponse) {
   return response(req, res, 'simplified-account/settings/adyen-details/legal-terms', {
     backLink: getBackLink(req),
+    govUkPayTermsLink: formatPathFor(paths.policyPage, 'agreement-for-crown-and-non-crown-bodies')
   })
 }
 

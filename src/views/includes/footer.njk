@@ -52,7 +52,7 @@
 %}
 
 {% if loggedIn %}
-  {%
+{%
     set footerNavigation = footerNavigation.concat([
       {
         title: "Legal Terms",
@@ -73,6 +73,10 @@
           {
             href: "/policy/pci-dss-attestation-of-compliance",
             text: "Attestation of Compliance for PCI"
+          },
+          {
+            href: "/policy/agreement-for-crown-and-non-crown-bodies",
+            text: "Agreement for Crown and non-Crown Bodies (Adyen only)"
           }
         ]
       }
