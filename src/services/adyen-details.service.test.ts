@@ -53,6 +53,7 @@ describe('Adyen details service', () => {
 
   const signatoryAssociation = {
     legalEntityId: PERSON_LEGAL_ENTITY_ID,
+    jobTitle: 'Responsible Person',
     type: 'signatory',
   }
 

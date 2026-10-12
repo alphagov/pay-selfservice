@@ -111,7 +111,7 @@ const createResponsiblePerson = async (session: ResponsiblePersonSession, organi
       street2: session.addressLine2,
       city: session.addressCity,
       postalCode: session.addressPostcode,
-      country: session.addressCountry ?? '',
+      country: session.addressCountry ?? 'GB',
     },
     email: session.email,
     phone: {
@@ -136,6 +136,7 @@ const createResponsiblePerson = async (session: ResponsiblePersonSession, organi
       ...existingAssociations,
       {
         legalEntityId: responsiblePerson.id,
+        jobTitle: 'Responsible Person',
         type: Types.legalEntityManagement.LegalEntityAssociation.TypeEnum.Signatory,
       },
     ],
