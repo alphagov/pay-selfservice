@@ -39,43 +39,20 @@ describe('Adyen details service', () => {
     sinon.resetHistory()
   })
 
-  const ORGANISATION_TYPE = 'organization'
-  const ORGANISATION_LEGAL_ENTITY_ID = 'LE_ORG_123'
-  const PERSON_LEGAL_ENTITY_ID = 'LE_PERSON_456'
-
-  const fullOrganisationSession = {
-    organisationName: 'Test Org Ltd',
-    addressLine1: '1 Test Street',
-    addressLine2: 'Test Building',
-    addressCity: 'London',
-    addressPostcode: 'SW1A 1AA',
-    addressCountry: 'GB',
-    companyRegistrationNumber: '12345678',
-    vatRegistrationNumber: 'GB123456789',
-  } as OrganisationDetailsSession
-
-  const fullResponsiblePersonSession = {
-    firstName: 'John',
-    lastName: 'Johnson',
-    dobYear: '1960',
-    dobMonth: '04',
-    dobDay: '04',
-    addressLine1: '4 John Street',
-    addressLine2: 'Test Building',
-    addressCity: 'Johncity',
-    addressCountry: 'GB',
-    addressPostcode: 'J011JO',
-    email: 'John@gov.uk',
-    telephoneNumber: '0161789789',
-  } as ResponsiblePersonSession
-
-  const signatoryAssociation = {
-    legalEntityId: PERSON_LEGAL_ENTITY_ID,
-    jobTitle: 'Responsible Person',
-    type: 'signatory',
-  }
-
   describe('createLegalEntity', () => {
+    const ORGANISATION_TYPE = 'organization'
+
+    const fullOrganisationSession = {
+      organisationName: 'Test Org Ltd',
+      addressLine1: '1 Test Street',
+      addressLine2: 'Test Building',
+      addressCity: 'London',
+      addressPostcode: 'SW1A 1AA',
+      addressCountry: 'GB',
+      companyRegistrationNumber: '12345678',
+      vatRegistrationNumber: 'GB123456789',
+    } as OrganisationDetailsSession
+
     it('should create Adyen legal entity for an organisation', async () => {
       const legalEntity = { id: 'LE123', type: ORGANISATION_TYPE }
       legalEntityClientMock.createLegalEntity.resolves(legalEntity)
@@ -103,7 +80,32 @@ describe('Adyen details service', () => {
       expect(result).to.equal(legalEntity)
     })
   })
+
   describe('createResponsiblePerson', () => {
+    const ORGANISATION_LEGAL_ENTITY_ID = 'LE_ORG_123'
+    const PERSON_LEGAL_ENTITY_ID = 'LE_PERSON_456'
+
+    const fullResponsiblePersonSession = {
+      firstName: 'John',
+      lastName: 'Johnson',
+      dobYear: '1960',
+      dobMonth: '04',
+      dobDay: '04',
+      addressLine1: '4 John Street',
+      addressLine2: 'Test Building',
+      addressCity: 'Johncity',
+      addressCountry: 'GB',
+      addressPostcode: 'J011JO',
+      email: 'John@gov.uk',
+      telephoneNumber: '0161789789',
+    } as ResponsiblePersonSession
+
+    const signatoryAssociation = {
+      legalEntityId: PERSON_LEGAL_ENTITY_ID,
+      jobTitle: 'Responsible Person',
+      type: 'signatory',
+    }
+
     beforeEach(() => {
       legalEntityClientMock.createLegalEntity.resolves({ id: PERSON_LEGAL_ENTITY_ID, type: 'individual' })
       legalEntityClientMock.getLegalEntity.resolves({ id: ORGANISATION_LEGAL_ENTITY_ID, type: 'organization' })
