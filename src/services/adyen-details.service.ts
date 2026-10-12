@@ -115,7 +115,7 @@ const createResponsiblePerson = async (session: ResponsiblePersonSession, organi
     },
     email: session.email,
     phone: {
-      number: session.telephoneNumber ?? '',
+      number: toUkInternationalNumber(session.telephoneNumber ?? ''),
       phoneCountryCode: session.numberCountryCode ?? 'GB',
     },
   }
@@ -144,6 +144,11 @@ const createResponsiblePerson = async (session: ResponsiblePersonSession, organi
   await updateLegalEntity(organisationLegalEntityId, entityAssociationsPayload)
 
   return responsiblePerson
+}
+
+const toUkInternationalNumber = (input: string): string => {
+  const cleaned = input.replace(/[\s().-]/g, '')
+  return cleaned.startsWith('+') ? cleaned : `+44${cleaned.replace(/^0/, '')}`
 }
 
 export {

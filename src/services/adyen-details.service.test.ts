@@ -141,7 +141,7 @@ describe('Adyen details service', () => {
             country: 'GB',
           },
           email: 'John@gov.uk',
-          phone: { number: '0161789789', phoneCountryCode: 'GB' },
+          phone: { number: '+44161789789', phoneCountryCode: 'GB' },
         },
       })
     })
