@@ -7,7 +7,6 @@ import { CreateBankDetailsBody } from '@controllers/simplified-account/settings/
 import { BankAccountAccountIdentification } from '@adyen/api-library/lib/src/typings/balancePlatform/bankAccountAccountIdentification'
 import { UKLocalAccountIdentification } from '@adyen/api-library/lib/src/typings/balancePlatform/uKLocalAccountIdentification'
 import { TransferInstrumentInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/transferInstrumentInfo'
-import { BankAccountInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/bankAccountInfo'
 import createLogger from '@utils/logger'
 
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
@@ -99,30 +98,28 @@ const createOrganisation = async (session: OrganisationDetailsSession) => {
 }
 
 const createBankDetails = async (details: CreateBankDetailsBody, serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
+  const gatewayAccount = await connectorClient.gatewayAccounts.getByServiceExternalIdAndAccountType(serviceExternalId, accountType)
+  const adyenCredential = gatewayAccount.gatewayAccountCredentials.find(credential => credential.externalId === switchingCredentialId)
+  const legalEntityId = adyenCredential!.credentials.legalEntityId!
+
   const accountIdentification: BankAccountAccountIdentification = {
     sortCode: details.sortCode,
     accountNumber: details.accountNumber,
     type: UKLocalAccountIdentification.TypeEnum.UkLocal
   }
 
-  const bankAccount: BankAccountInfo = {
-    accountIdentification
-  }
-
-  const gatewayAccount = await connectorClient.gatewayAccounts.getByServiceExternalIdAndAccountType(serviceExternalId, accountType)
-  const adyenCredential = gatewayAccount.gatewayAccountCredentials.find(credential => credential.externalId === switchingCredentialId)
-  const legalEntityId = adyenCredential!.credentials.legalEntityId!
-
   const transferInstrumentInfo: TransferInstrumentInfo = {
     // legalEntityId,
-    legalEntityId: '',
+    legalEntityId: 'LE123',
     type: TransferInstrumentInfo.TypeEnum.BankAccount,
-    bankAccount
+    bankAccount: {
+      accountIdentification,
+    },
   }
 
-  const transferInstrument = await createTransferInstrument(transferInstrumentInfo)
+  await createTransferInstrument(transferInstrumentInfo)
 
-  logger.info(`Transfer instrument ${transferInstrument.id} created for legal entity`, {
+  logger.info(`Transfer instrument created for legal entity`, {
     legal_entity_id: legalEntityId,
   })
 
