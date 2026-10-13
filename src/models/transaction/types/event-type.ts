@@ -31,7 +31,7 @@ export const EventTypeFriendlyNames: Record<EventType, string> = {
   REFUND_SUCCEEDED: 'Refund successful',
   QUEUED_FOR_CAPTURE: 'Successful',
   CANCELLED_BY_USER: 'Cancelled',
-  CANCELLED_BY_EXPIRATION: 'Cancelled by expiration',
+  CANCELLED_BY_EXPIRATION: 'Cancelled',
   AUTHORISATION_REJECTED: 'Declined',
   DISPUTE_CREATED: 'Dispute awaiting evidence',
   DISPUTE_EVIDENCE_SUBMITTED: 'Dispute under review',
