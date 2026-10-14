@@ -15,6 +15,11 @@ describe('Adyen details service', () => {
     updateLegalEntity: sinon.stub(),
   }
 
+  const configurationClientMock = {
+    createAccountHolder: sinon.stub(),
+    createBalanceAccount: sinon.stub(),
+  }
+
   const connectorClientMock = {
     gatewayAccounts: {
       patchCredentialsByServiceExternalIdAndAccountType: sinon.stub().resolves({}),
@@ -32,6 +37,7 @@ describe('Adyen details service', () => {
       },
       '@services/clients/pay/ConnectorClient.class': ConnectorClientStub,
       '@services/clients/adyen/adyen-legal-entity-management.client': legalEntityClientMock,
+      '@services/clients/adyen/adyen-configuration.client': configurationClientMock,
     })
   })
 
@@ -140,6 +146,25 @@ describe('Adyen details service', () => {
       sinon.assert.calledOnceWithExactly(legalEntityClientMock.updateLegalEntity, ORGANISATION_LEGAL_ENTITY_ID, {
         entityAssociations: [signatoryAssociation],
       })
+    })
+  })
+
+  describe('createBalanceAccount', () => {
+    const ACCOUNT_HOLDER_ID = 'ABC123'
+    const SERVICE_NAME = 'Test Service'
+
+    it('should create Adyen balance account for the given account holder', async () => {
+      const balanceAccount = { id: 'BA123', accountHolderId: ACCOUNT_HOLDER_ID }
+      configurationClientMock.createBalanceAccount.resolves(balanceAccount)
+
+      const result = await service.createBalanceAccount(ACCOUNT_HOLDER_ID, SERVICE_NAME)
+
+      sinon.assert.calledOnceWithExactly(configurationClientMock.createBalanceAccount, {
+        accountHolderId: ACCOUNT_HOLDER_ID,
+        defaultCurrencyCode: 'GBP',
+        description: SERVICE_NAME,
+      })
+      expect(result).to.equal(balanceAccount)
     })
   })
 })

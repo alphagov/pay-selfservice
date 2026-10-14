@@ -5,7 +5,9 @@ import {
   getLegalEntity,
   updateLegalEntity,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
-import { createAccountHolder as createAdyenAccountHolder } from '@services/clients/adyen/adyen-configuration.client'
+import {
+  createBalanceAccount as createAdyenBalanceAccount,
+} from '@services/clients/adyen/adyen-configuration.client'
 import { OrganisationDetailsSession } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 import { Types } from '@adyen/api-library'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
@@ -13,10 +15,7 @@ import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManage
 
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 type Organization = Types.legalEntityManagement.Organization
-type AccountHolderInfo = Types.balancePlatform.AccountHolderInfo
-
-const ADYEN_BALANCE_PLATFORM_ID = process.env.ADYEN_BALANCE_PLATFORM_ID
-
+type BalanceAccountInfo = Types.balancePlatform.BalanceAccountInfo
 const connectorClient = new ConnectorClient()
 
 const setAdyenLegalEntityId = async (
@@ -151,14 +150,14 @@ const createResponsiblePerson = async (session: ResponsiblePersonSession, organi
   return responsiblePerson
 }
 
-const createAccountHolder = async (organisationLegalEntityId: string, serviceName: string) => {
-  const accountHolderInfo: AccountHolderInfo = {
-    legalEntityId: organisationLegalEntityId,
-    balancePlatform: ADYEN_BALANCE_PLATFORM_ID,
+const createBalanceAccount = async (accountHolderId: string, serviceName: string) => {
+  const balanceAccountInfo: BalanceAccountInfo = {
+    accountHolderId,
+    defaultCurrencyCode: 'GBP',
     description: serviceName,
   }
 
-  return createAdyenAccountHolder(accountHolderInfo)
+  return createAdyenBalanceAccount(balanceAccountInfo)
 }
 
 const toUkInternationalNumber = (input: string): string => {
@@ -173,5 +172,5 @@ export {
   setAdyenBalanceAccountId,
   createOrganisation,
   createResponsiblePerson,
-  createAccountHolder,
+  createBalanceAccount,
 }
