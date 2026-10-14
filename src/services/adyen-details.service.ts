@@ -122,8 +122,7 @@ const createBankDetails = async (details: CreateBankDetailsBody, serviceExternal
   }
 
   const transferInstrumentInfo: TransferInstrumentInfo = {
-    // legalEntityId,
-    legalEntityId: 'LE123',
+    legalEntityId,
     type: TransferInstrumentInfo.TypeEnum.BankAccount,
     bankAccount: {
       accountIdentification,

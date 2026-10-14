@@ -16,17 +16,16 @@ export async function createLegalEntity(legalEntityInfo: LegalEntityInfoRequired
   return legalEntityManagementAPI.LegalEntitiesApi.createLegalEntity(legalEntityInfo)
 }
 
-export async function createTransferInstrument(transferInstrumentInfo: TransferInstrumentInfo) {
-  return legalEntityManagementAPI.TransferInstrumentsApi.createTransferInstrument(transferInstrumentInfo)
-}
-
 export async function getLegalEntity(legalEntityId: string): Promise<LegalEntity> {
   return legalEntityManagementAPI.LegalEntitiesApi.getLegalEntity(legalEntityId)
 }
-
 export async function updateLegalEntity(
   organizationId: string,
   legalEntityInfo: LegalEntityInfo
 ): Promise<LegalEntity> {
   return legalEntityManagementAPI.LegalEntitiesApi.updateLegalEntity(organizationId, legalEntityInfo)
+}
+
+export async function createTransferInstrument(transferInstrumentInfo: TransferInstrumentInfo) {
+  return legalEntityManagementAPI.TransferInstrumentsApi.createTransferInstrument(transferInstrumentInfo)
 }

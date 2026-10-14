@@ -24,8 +24,8 @@ async function post(req: ServiceRequest<CreateBankDetailsBody>, res: ServiceResp
   const { account } = req
   const switchingCredentialId = account.getSwitchingCredential().externalId
 
-  await markTaskAsComplete(req.service.externalId, req.account.type, switchingCredentialId, 'bankDetails')
   await createBankDetails(req.body, req.service.externalId, req.account.type, switchingCredentialId)
+  await markTaskAsComplete(req.service.externalId, req.account.type, switchingCredentialId, 'bankDetails')
 
   return res.redirect(
     formatServiceAndAccountPathsFor(
