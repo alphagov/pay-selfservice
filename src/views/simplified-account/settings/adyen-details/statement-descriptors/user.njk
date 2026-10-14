@@ -3,7 +3,13 @@
 {% set settingsPageTitle = 'Add a descriptor for what your paying users will see on their bank statements - GOV.UK Pay' %}
 
 {% block settingsContent %}
-  <form id="user-descriptor-form" autocomplete="off" method="post" class="govuk-!-margin-top-3">
+  <form
+    id="user-descriptor-form"
+    autocomplete="off"
+    action="{{ formActionPath }}"
+    method="post"
+    class="govuk-!-margin-top-3"
+  >
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
     {{

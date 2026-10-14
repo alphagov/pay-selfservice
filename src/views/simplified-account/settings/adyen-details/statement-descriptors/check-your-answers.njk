@@ -1,0 +1,65 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+
+{% set settingsPageTitle = "Check your answers - GOV.UK Pay " %}
+
+{% block settingsContent %}
+  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+
+  {{
+    govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: "Descriptor for what your paying users will see on their bank statements"
+          },
+          value: {
+            text: currentSession.userDescriptor
+          },
+          actions: {
+            items: [
+              {
+                href: userDescriptorLink,
+                text: "Change",
+                visuallyHiddenText: "what your paying users will see on their bank statements"
+              }
+            ]
+          }
+        },
+        {
+          key: {
+            text: "Descriptor for payouts to your organisation"
+          },
+          value: {
+            text: currentSession.payoutDescriptor
+          },
+          actions: {
+            items: [
+              {
+                href: payoutDescriptorLink,
+                text: "Change",
+                visuallyHiddenText: "the descriptor for payouts to your organisation"
+              }
+            ]
+          }
+        }
+      ]
+    })
+  }}
+
+  <form
+    id="statement-descriptors-check-your-answers-form"
+    action="{{ formActionPath }}"
+    method="post"
+    class="govuk-!-margin-top-4"
+    novalidate
+  >
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+
+    {{
+      govukButton({
+        text: "Confirm and continue",
+        id: "statement-descriptors-confirm"
+      })
+    }}
+  </form>
+{% endblock %}

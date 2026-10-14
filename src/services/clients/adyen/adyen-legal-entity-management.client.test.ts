@@ -8,11 +8,14 @@ import { UKLocalAccountIdentification } from '@adyen/api-library/lib/src/typings
 import { BankAccountAccountIdentification } from '@adyen/api-library/lib/src/typings/balancePlatform/bankAccountAccountIdentification'
 
 type LegalEntity = Types.legalEntityManagement.LegalEntity
+type LegalEntityInfo = Types.legalEntityManagement.LegalEntityInfo
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 
 interface LegalEntityManagementClient {
   createLegalEntity: (legalEntityInfo: LegalEntityInfoRequiredType) => Promise<LegalEntity>,
   createTransferInstrument: (transferInstrumentInfo: TransferInstrumentInfo) => Promise<TransferInstrument>
+  getLegalEntity: (id: string) => Promise<LegalEntity>
+  updateLegalEntity: (id: string, legalEntityInfo: LegalEntityInfo) => Promise<LegalEntity>
 }
 
 interface ClientConfig {
@@ -22,11 +25,15 @@ interface ClientConfig {
 
 let createLegalEntityStub: sinon.SinonStub
 let createTransferInstrumentStub: sinon.SinonStub
+let getLegalEntityStub: sinon.SinonStub
+let updateLegalEntityStub: sinon.SinonStub
 
 describe('Adyen legal entity management client', () => {
   function loadModule(): LegalEntityManagementClient {
     createLegalEntityStub = sinon.stub()
     createTransferInstrumentStub = sinon.stub()
+    getLegalEntityStub = sinon.stub()
+    updateLegalEntityStub = sinon.stub()
 
     class MockAdyenClient {
       config: ClientConfig
@@ -37,11 +44,22 @@ describe('Adyen legal entity management client', () => {
 
     class MockAdyenLegalEntityManagementAPI {
       client: MockAdyenClient
-      LegalEntitiesApi: { createLegalEntity: sinon.SinonStub }
+
+      LegalEntitiesApi: {
+        createLegalEntity: sinon.SinonStub
+        getLegalEntity: sinon.SinonStub
+        updateLegalEntity: sinon.SinonStub
+      }
       TransferInstrumentsApi: { createTransferInstrument: sinon.SinonStub }
+
       constructor(client: MockAdyenClient) {
         this.client = client
-        this.LegalEntitiesApi = { createLegalEntity: createLegalEntityStub }
+        this.LegalEntitiesApi = {
+          createLegalEntity: createLegalEntityStub,
+          getLegalEntity: getLegalEntityStub,
+          updateLegalEntity: updateLegalEntityStub,
+
+        }
         this.TransferInstrumentsApi = { createTransferInstrument: createTransferInstrumentStub }
       }
     }
@@ -62,6 +80,8 @@ describe('Adyen legal entity management client', () => {
   afterEach(() => {
     delete process.env.ADYEN_LEGAL_ENTITY_MANAGEMENT_API_KEY
     createLegalEntityStub.resetHistory()
+    getLegalEntityStub.resetHistory()
+    updateLegalEntityStub.resetHistory()
   })
 
   const legalEntityInfo: LegalEntityInfoRequiredType = {
@@ -92,7 +112,7 @@ describe('Adyen legal entity management client', () => {
     },
   }
 
-  it('calls the Adyen API to create a legal entity', async () => {
+  it('calls the Adyen API to CREATE a legal entity', async () => {
     const { createLegalEntity } = loadModule()
     const apiResponse = { id: 'LE123', type: 'organization' } as LegalEntity
     createLegalEntityStub.resolves(apiResponse)
@@ -104,6 +124,38 @@ describe('Adyen legal entity management client', () => {
 
     expect(result).to.equal(apiResponse)
   })
+
+  it('calls the Adyen API to GET a legal entity', async () => {
+    const { getLegalEntity } = loadModule()
+    const apiResponse = { id: 'LE123', type: 'organization' } as LegalEntity
+    getLegalEntityStub.resolves(apiResponse)
+
+    const result = await getLegalEntity('LE123')
+
+    sinon.assert.calledOnceWithExactly(getLegalEntityStub, 'LE123')
+    expect(result).to.equal(apiResponse)
+  })
+
+  it('calls the Adyen API to UPDATE a legal entity', async () => {
+    const { updateLegalEntity } = loadModule()
+    const apiResponse = { id: 'LE123', type: 'organization' } as LegalEntity
+    const update: LegalEntityInfo = {
+      entityAssociations: [
+        {
+          legalEntityId: 'LE456',
+          type: Types.legalEntityManagement.LegalEntityAssociation.TypeEnum.Signatory,
+        },
+      ],
+    }
+    updateLegalEntityStub.resolves(apiResponse)
+
+    const result = await updateLegalEntity('LE123', update)
+
+    sinon.assert.calledOnceWithExactly(updateLegalEntityStub, 'LE123', update)
+
+    expect(result).to.equal(apiResponse)
+  })
+
 
   it('calls the Adyen API to create a transfer instrument', async () => {
     const { createTransferInstrument } = loadModule()

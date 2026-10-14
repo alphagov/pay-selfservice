@@ -5,6 +5,7 @@ const ADYEN_LEGAL_ENTITY_MANAGEMENT_API_KEY = process.env.ADYEN_LEGAL_ENTITY_MAN
 const ADYEN_ENVIRONMENT = process.env.ADYEN_ENVIRONMENT === 'LIVE' ? EnvironmentEnum.LIVE : EnvironmentEnum.TEST
 
 type LegalEntity = Types.legalEntityManagement.LegalEntity
+type LegalEntityInfo = Types.legalEntityManagement.LegalEntityInfo
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 
 const client = new Client({ apiKey: ADYEN_LEGAL_ENTITY_MANAGEMENT_API_KEY, environment: ADYEN_ENVIRONMENT })
@@ -17,4 +18,15 @@ export async function createLegalEntity(legalEntityInfo: LegalEntityInfoRequired
 
 export async function createTransferInstrument(transferInstrumentInfo: TransferInstrumentInfo) {
   return legalEntityManagementAPI.TransferInstrumentsApi.createTransferInstrument(transferInstrumentInfo)
+}
+
+export async function getLegalEntity(legalEntityId: string): Promise<LegalEntity> {
+  return legalEntityManagementAPI.LegalEntitiesApi.getLegalEntity(legalEntityId)
+}
+
+export async function updateLegalEntity(
+  organizationId: string,
+  legalEntityInfo: LegalEntityInfo
+): Promise<LegalEntity> {
+  return legalEntityManagementAPI.LegalEntitiesApi.updateLegalEntity(organizationId, legalEntityInfo)
 }

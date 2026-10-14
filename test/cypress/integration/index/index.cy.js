@@ -61,14 +61,14 @@ describe('The index page', () => {
         .find('a')
         .should('have.length', 4)
 
-      cy.log('should display the Legal Terms section with 5 links when logged in')
+      cy.log('should display the Legal Terms section with 6 links when logged in')
 
       cy.get('[data-cy=footer]')
         .find('.govuk-footer__section')
         .contains('Legal Terms')
         .parent()
         .find('a')
-        .should('have.length', 4)
+        .should('have.length', 6)
     })
   })
 })

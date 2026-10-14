@@ -1,0 +1,42 @@
+{% extends "simplified-account/settings/settings-layout.njk" %}
+
+{% set settingsPageTitle = "Add a descriptor for payouts to your organisation’s bank account - GOV.UK Pay" %}
+
+{% block settingsContent %}
+  <form
+    id="payout-descriptor-form"
+    autocomplete="off"
+    action="{{ formActionPath }}"
+    method="post"
+    class="govuk-!-margin-top-3"
+  >
+    <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
+
+    {{
+      govukCharacterCount({
+        label: {
+          text: "Add a descriptor for payouts to your organisation’s bank account",
+          classes: "govuk-label--l",
+          isPageHeading: true
+        },
+        hint: {
+          text: "This will appear on your organisation’s bank statement when you get payouts."
+        },
+      id: "payout-descriptor",
+      name: "payoutDescriptor",
+      rows: 1,
+      value: payoutDescriptor,
+      errorMessage: { text: errors.formErrors['payoutDescriptor'] } if errors.formErrors['payoutDescriptor'] else false,
+      maxlength: 22
+      })
+    }}
+
+    {{
+      govukButton({
+        id: "payout-descriptor-submit",
+        text: "Continue",
+        preventDoubleClick: true
+      })
+    }}
+  </form>
+{% endblock %}
