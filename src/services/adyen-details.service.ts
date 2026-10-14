@@ -11,7 +11,7 @@ import {
   createLegalEntity,
   getLegalEntity,
   updateLegalEntity,
-  createTransferInstrument
+  createTransferInstrument,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
 
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
@@ -106,19 +106,29 @@ const createOrganisation = async (session: OrganisationDetailsSession) => {
 }
 
 const getLegalEntityId = async (serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
-  const gatewayAccount = await connectorClient.gatewayAccounts.getByServiceExternalIdAndAccountType(serviceExternalId, accountType)
-  const adyenCredential = gatewayAccount.gatewayAccountCredentials.find(credential => credential.externalId === switchingCredentialId)
+  const gatewayAccount = await connectorClient.gatewayAccounts.getByServiceExternalIdAndAccountType(
+    serviceExternalId,
+    accountType
+  )
+  const adyenCredential = gatewayAccount.gatewayAccountCredentials.find(
+    (credential) => credential.externalId === switchingCredentialId
+  )
   const legalEntityId = adyenCredential!.credentials.legalEntityId!
   return legalEntityId
 }
 
-const createBankDetails = async (details: CreateBankDetailsBody, serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
+const createBankDetails = async (
+  details: CreateBankDetailsBody,
+  serviceExternalId: string,
+  accountType: string,
+  switchingCredentialId: string
+) => {
   const legalEntityId = await getLegalEntityId(serviceExternalId, accountType, switchingCredentialId)
 
   const accountIdentification: BankAccountAccountIdentification = {
     sortCode: details.sortCode,
     accountNumber: details.accountNumber,
-    type: UKLocalAccountIdentification.TypeEnum.UkLocal
+    type: UKLocalAccountIdentification.TypeEnum.UkLocal,
   }
 
   const transferInstrumentInfo: TransferInstrumentInfo = {
@@ -200,5 +210,5 @@ export {
   setAdyenBalanceAccountId,
   createOrganisation,
   createResponsiblePerson,
-  createBankDetails
+  createBankDetails,
 }

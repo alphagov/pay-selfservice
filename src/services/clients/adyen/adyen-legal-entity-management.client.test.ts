@@ -12,7 +12,7 @@ type LegalEntityInfo = Types.legalEntityManagement.LegalEntityInfo
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 
 interface LegalEntityManagementClient {
-  createLegalEntity: (legalEntityInfo: LegalEntityInfoRequiredType) => Promise<LegalEntity>,
+  createLegalEntity: (legalEntityInfo: LegalEntityInfoRequiredType) => Promise<LegalEntity>
   createTransferInstrument: (transferInstrumentInfo: TransferInstrumentInfo) => Promise<TransferInstrument>
   getLegalEntity: (id: string) => Promise<LegalEntity>
   updateLegalEntity: (id: string, legalEntityInfo: LegalEntityInfo) => Promise<LegalEntity>
@@ -58,7 +58,6 @@ describe('Adyen legal entity management client', () => {
           createLegalEntity: createLegalEntityStub,
           getLegalEntity: getLegalEntityStub,
           updateLegalEntity: updateLegalEntityStub,
-
         }
         this.TransferInstrumentsApi = { createTransferInstrument: createTransferInstrumentStub }
       }
@@ -155,7 +154,6 @@ describe('Adyen legal entity management client', () => {
 
     expect(result).to.equal(apiResponse)
   })
-
 
   it('calls the Adyen API to create a transfer instrument', async () => {
     const { createTransferInstrument } = loadModule()

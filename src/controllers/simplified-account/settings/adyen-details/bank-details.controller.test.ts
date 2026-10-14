@@ -33,7 +33,7 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder(
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/adyen-setup.service': { markTaskAsComplete },
-    '@services/adyen-details.service': { createBankDetails }
+    '@services/adyen-details.service': { createBankDetails },
   })
   .build()
 
@@ -62,7 +62,6 @@ describe('Controller: settings/adyen-details/bank-details', () => {
   })
   describe('post', () => {
     it('should complete the bank details task and redirect to the switch to adyen task list', async () => {
-
       nextRequest({
         body: {
           sortCode: '090102',
