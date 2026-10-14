@@ -6,6 +6,7 @@ import { ServiceFixture } from '@test/fixtures/service/service.fixture'
 import sinon from 'sinon'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
+import { OrganisationDetailsSession } from './constants'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const SERVICE_TYPE = 'live'
@@ -18,6 +19,7 @@ const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.ST
 }).toGatewayAccount()
 
 const mockResponse = sinon.stub()
+const createOrganisation = sinon.stub().resolves()
 const markTaskAsComplete = sinon.stub().resolves()
 
 const TEMPLATE = 'simplified-account/settings/adyen-details/reason-for-taking-payments'
@@ -40,26 +42,55 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder(
   .withUser(UserFixture.asServiceAdmin([serviceFixture]).toUser())
   .withStubs({
     '@utils/response': { response: mockResponse },
+    '@services/adyen-details.service': { createOrganisation },
     '@services/adyen-setup.service': { markTaskAsComplete },
   })
   .build()
 
 describe('Controller: settings/adyen-details/reason-for-taking-payments', () => {
   describe('get', () => {
-    it('should call the response function with req, res, and the template path', async () => {
-      await call('get')
+    describe('with no organisation details in session', () => {
+      beforeEach(async () => {
+        nextRequest({ session: {} })
+        await call('get')
+      })
 
-      mockResponse.should.have.been.calledOnce
-      mockResponse.should.have.been.calledWith(req, res, TEMPLATE)
+      it('should redirect to the switch to adyen task list', () => {
+        sinon.assert.calledOnce(res.redirect)
+        sinon.assert.calledWith(res.redirect, sinon.match(/switch-to-adyen/))
+      })
     })
 
-    it('should call the response method with the backLink', async () => {
-      await call('get')
+    describe('with organisation details already in session', () => {
+      beforeEach(async () => {
+        nextRequest({
+          session: {
+            pageData: {
+              organisationDetails: {
+                organisationName: 'Test Organisation',
+                addressLine1: '1 Test Street',
+                addressCity: 'swansea',
+                addressPostcode: 'T3 5TT',
+                addressCountry: 'GB',
+                companyRegistrationNumber: '01234567',
+                vatRegistrationNumber: 'GB123456789',
+              },
+            },
+          },
+        })
+        await call('get')
+      })
 
-      mockResponse.should.have.been.calledOnce
-      const context = mockResponse.firstCall.lastArg as { backLink: string }
-      sinon.assert.match(context, {
-        backLink: BACK_LINK,
+      it('should call the response function with the template path', () => {
+        mockResponse.should.have.been.calledOnce
+        mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, TEMPLATE)
+      })
+
+      it('should call the response method with the backLink', () => {
+        const context = mockResponse.firstCall.lastArg as { backLink: string }
+        sinon.assert.match(context, {
+          backLink: BACK_LINK,
+        })
       })
     })
   })
@@ -67,14 +98,44 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
     describe('when a selection is made', () => {
       beforeEach(() => {
         res.redirect.resetHistory()
+        createOrganisation.resetHistory()
+        markTaskAsComplete.resetHistory()
+
         nextRequest({
           body: {
             takingPaymentsFor: 'government-activities',
           },
+          session: {
+            pageData: {
+              organisationDetails: {
+                organisationName: 'Test Organisation',
+                addressLine1: '1 Test Street',
+                addressCity: 'swansea',
+                addressPostcode: 'T3 5TT',
+                addressCountry: 'GB',
+                companyRegistrationNumber: '01234567',
+                vatRegistrationNumber: 'GB123456789',
+              },
+            },
+          },
         })
       })
-      it('should mark organisation details task as complete and redirect to the switch to adyen task list', async () => {
+      it('should create Adyen legal entity and mark organisation details task as complete and redirect to the switch to adyen task list', async () => {
         await call('post')
+
+        sinon.assert.calledOnceWithExactly(
+          createOrganisation,
+          new OrganisationDetailsSession({
+            organisationName: 'Test Organisation',
+            addressLine1: '1 Test Street',
+            addressCity: 'swansea',
+            addressPostcode: 'T3 5TT',
+            addressCountry: 'GB',
+            companyRegistrationNumber: '01234567',
+            vatRegistrationNumber: 'GB123456789',
+          } as OrganisationDetailsSession)
+        )
+
         sinon.assert.calledOnceWithExactly(
           markTaskAsComplete,
           SERVICE_EXTERNAL_ID,
@@ -82,6 +143,9 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
           GATEWAY_ACCOUNT.getSwitchingCredential().externalId,
           'organisationDetails'
         )
+
+        sinon.assert.callOrder(createOrganisation, markTaskAsComplete)
+
         sinon.assert.calledOnceWithExactly(
           res.redirect,
           formatServiceAndAccountPathsFor(
