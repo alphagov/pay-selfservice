@@ -99,8 +99,8 @@ describe(`Adyen's Legal Terms`, () => {
 
       cy.visit(LEGAL_TERMS_PATH)
 
-      cy.get('.govuk-list--bullet a').eq(0).should('contain.text', 'GOV.UK Pay’s terms for non-Crown bodies')
-      cy.get('.govuk-list--bullet a').eq(1).should('contain.text', 'Adyen Connected Account Agreement')
+      cy.get('.govuk-list--bullet a').eq(0).should('contain.text', 'GOV.UK Pay’s terms for Crown and non-Crown bodies')
+      cy.get('.govuk-list--bullet a').eq(1).should('contain.text', 'GOV.UK Pay Agreement: Schedule 7 (Adyen)')
       cy.get('#accept-terms').should('exist')
       cy.get('#accept-terms-submit').should('contain.text', 'Accept and continue')
     })
