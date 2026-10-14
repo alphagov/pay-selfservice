@@ -97,10 +97,15 @@ const createOrganisation = async (session: OrganisationDetailsSession) => {
   return createLegalEntity(legalEntityInfo)
 }
 
-const createBankDetails = async (details: CreateBankDetailsBody, serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
+const getLegalEntityId = async (serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
   const gatewayAccount = await connectorClient.gatewayAccounts.getByServiceExternalIdAndAccountType(serviceExternalId, accountType)
   const adyenCredential = gatewayAccount.gatewayAccountCredentials.find(credential => credential.externalId === switchingCredentialId)
   const legalEntityId = adyenCredential!.credentials.legalEntityId!
+  return legalEntityId
+}
+
+const createBankDetails = async (details: CreateBankDetailsBody, serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
+  const legalEntityId = await getLegalEntityId(serviceExternalId, accountType, switchingCredentialId)
 
   const accountIdentification: BankAccountAccountIdentification = {
     sortCode: details.sortCode,
@@ -124,8 +129,6 @@ const createBankDetails = async (details: CreateBankDetailsBody, serviceExternal
   })
 
   return
-
 }
 
 export { setAdyenLegalEntityId, setAdyenStoreId, setAdyenAccountHolderId, setAdyenBalanceAccountId, createOrganisation, createBankDetails }
-
