@@ -111,7 +111,11 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
         sinon.assert.calledOnceWithExactly(
           createOrganisation,
           new OrganisationDetailsSession(VALID_SESSION as OrganisationDetailsSession),
-          serviceFixture.name
+          serviceFixture.name,
+          SERVICE_EXTERNAL_ID,
+          GATEWAY_ACCOUNT.type,
+          GATEWAY_ACCOUNT.getSwitchingCredential().externalId,
+          USER.externalId
         )
 
         sinon.assert.calledOnceWithExactly(
