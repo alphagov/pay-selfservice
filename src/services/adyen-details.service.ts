@@ -96,10 +96,10 @@ const createOrganisation = async (session: OrganisationDetailsSession, serviceNa
     type: Types.legalEntityManagement.LegalEntityInfoRequiredType.TypeEnum.Organization,
     organization,
   }
-    const legalEntity = await createLegalEntity(legalEntityInfo)
-    const accountHolder = await createAccountHolder(legalEntity.id, serviceName)
+  const legalEntity = await createLegalEntity(legalEntityInfo)
+  const accountHolder = await createAccountHolder(legalEntity.id, serviceName)
 
-    return { legalEntity, accountHolder }
+  return { legalEntity, accountHolder }
 }
 
 const createResponsiblePerson = async (session: ResponsiblePersonSession, organisationLegalEntityId: string) => {
