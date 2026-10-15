@@ -3,6 +3,7 @@ import proxyquire from 'proxyquire'
 import { expect } from 'chai'
 import type { OrganisationDetailsSession } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
+import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
 
 type AdyenDetailsService = typeof import('./adyen-details.service')
 
@@ -13,6 +14,10 @@ describe('Adyen details service', () => {
     createLegalEntity: sinon.stub(),
     getLegalEntity: sinon.stub(),
     updateLegalEntity: sinon.stub(),
+  }
+
+  const configurationClientMock = {
+    createAccountHolder: sinon.stub(),
   }
 
   const connectorClientMock = {
@@ -32,11 +37,8 @@ describe('Adyen details service', () => {
       },
       '@services/clients/pay/ConnectorClient.class': ConnectorClientStub,
       '@services/clients/adyen/adyen-legal-entity-management.client': legalEntityClientMock,
+      '@services/clients/adyen/adyen-configuration.client': configurationClientMock,
     })
-  })
-
-  afterEach(() => {
-    sinon.resetHistory()
   })
 
   describe('createLegalEntity', () => {
@@ -53,11 +55,24 @@ describe('Adyen details service', () => {
       vatRegistrationNumber: 'GB123456789',
     } as OrganisationDetailsSession
 
-    it('should create Adyen legal entity for an organisation', async () => {
-      const legalEntity = { id: 'LE123', type: ORGANISATION_TYPE }
-      legalEntityClientMock.createLegalEntity.resolves(legalEntity)
+    const SERVICE_NAME = 'Test Service'
+    const BALANCE_PLATFORM_ID = 'BP123'
 
-      const result = await service.createOrganisation(fullOrganisationSession)
+    const legalEntity = { id: 'LE123', type: ORGANISATION_TYPE }
+    const accountHolder = { id: 'AH123', legalEntityId: 'LE123' }
+
+    beforeEach(() => {
+      process.env.ADYEN_BALANCE_PLATFORM_ID = BALANCE_PLATFORM_ID
+      legalEntityClientMock.createLegalEntity.resolves(legalEntity)
+      configurationClientMock.createAccountHolder.resolves(accountHolder)
+    })
+
+    afterEach(() => {
+      delete process.env.ADYEN_BALANCE_PLATFORM_ID
+    })
+
+    it('should create Adyen legal entity for an organisation', async () => {
+      const result = await service.createOrganisation(fullOrganisationSession, SERVICE_NAME)
 
       sinon.assert.calledOnce(legalEntityClientMock.createLegalEntity)
 
@@ -77,7 +92,28 @@ describe('Adyen details service', () => {
         },
       })
 
-      expect(result).to.equal(legalEntity)
+      expect(result.legalEntity).to.equal(legalEntity)
+    })
+
+    it('should create Adyen account holder for the organisation legal entity', async () => {
+      const result = await service.createOrganisation(fullOrganisationSession, SERVICE_NAME)
+
+      sinon.assert.calledOnceWithExactly(configurationClientMock.createAccountHolder, {
+        legalEntityId: 'LE123',
+        balancePlatform: BALANCE_PLATFORM_ID,
+        description: SERVICE_NAME,
+      })
+      sinon.assert.callOrder(legalEntityClientMock.createLegalEntity, configurationClientMock.createAccountHolder)
+      expect(result.accountHolder).to.equal(accountHolder)
+    })
+
+    it('should not create account holder when ADYEN_BALANCE_PLATFORM_ID is not set', async () => {
+      delete process.env.ADYEN_BALANCE_PLATFORM_ID
+
+      await expect(service.createOrganisation(fullOrganisationSession, SERVICE_NAME)).to.be.rejectedWith(
+        'ADYEN_BALANCE_PLATFORM_ID is not set'
+      )
+      sinon.assert.notCalled(configurationClientMock.createAccountHolder)
     })
   })
 
@@ -139,6 +175,132 @@ describe('Adyen details service', () => {
       sinon.assert.calledOnceWithExactly(legalEntityClientMock.getLegalEntity, ORGANISATION_LEGAL_ENTITY_ID)
       sinon.assert.calledOnceWithExactly(legalEntityClientMock.updateLegalEntity, ORGANISATION_LEGAL_ENTITY_ID, {
         entityAssociations: [signatoryAssociation],
+      })
+    })
+  })
+
+  describe('createServiceDirector', () => {
+    const serviceDirectorSession = {
+      firstName: 'John',
+      lastName: 'Johnson',
+      dobYear: '1960',
+      dobMonth: '4',
+      dobDay: '4',
+      email: 'John@gov.uk',
+      addressLine1: '4 John Street',
+      addressLine2: 'Test Building',
+      addressCity: 'Johncity',
+      addressPostcode: 'J011JO',
+    } as ServiceDirectorSession
+
+    context('when the organisation legalEntityId is found', () => {
+      const ORGANISATION_LEGAL_ENTITY_ID = 'LE_ORG_123'
+      const PERSON_LEGAL_ENTITY_ID = 'LE_PERSON_456'
+
+      beforeEach(() => {
+        legalEntityClientMock.getLegalEntity.resolves({
+          id: ORGANISATION_LEGAL_ENTITY_ID,
+          type: 'organization',
+          entityAssociations: [
+            { legalEntityId: 'OTHER_DIRECTOR_LEGAL_ENTITY_ID', type: 'director' },
+            { legalEntityId: 'OTHER_SIGNATORY_LEGAL_ENTITY_ID', type: 'signatory', jobTitle: 'responsible person' },
+          ],
+        })
+        legalEntityClientMock.createLegalEntity.resolves({ id: PERSON_LEGAL_ENTITY_ID, type: 'individual' })
+        legalEntityClientMock.updateLegalEntity.resolves({ id: ORGANISATION_LEGAL_ENTITY_ID })
+      })
+
+      it('should create serviceDirector legal entry and add the entity association', async () => {
+        await service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)
+
+        expect(legalEntityClientMock.createLegalEntity.firstCall.args[0]).to.deep.equal({
+          type: 'individual',
+          individual: {
+            name: { firstName: 'John', lastName: 'Johnson' },
+            birthData: { dateOfBirth: '1960-04-04' },
+            residentialAddress: {
+              street: '4 John Street',
+              street2: 'Test Building',
+              city: 'Johncity',
+              postalCode: 'J011JO',
+              country: 'GB',
+            },
+            email: 'John@gov.uk',
+          },
+        })
+      })
+
+      it('should add the director and keep the existing associations', async () => {
+        await service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)
+
+        expect(legalEntityClientMock.updateLegalEntity.firstCall.args[0]).to.equal(ORGANISATION_LEGAL_ENTITY_ID)
+        expect(legalEntityClientMock.updateLegalEntity.firstCall.args[1]).to.deep.equal({
+          entityAssociations: [
+            { legalEntityId: 'OTHER_DIRECTOR_LEGAL_ENTITY_ID', type: 'director' },
+            { legalEntityId: 'OTHER_SIGNATORY_LEGAL_ENTITY_ID', type: 'signatory', jobTitle: 'responsible person' },
+            {
+              legalEntityId: PERSON_LEGAL_ENTITY_ID,
+              type: 'director',
+            },
+          ],
+        })
+      })
+
+      it('should return the result of creating the serviceDirector', async () => {
+        const result = await service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)
+        expect(result).to.deep.equal({
+          id: PERSON_LEGAL_ENTITY_ID,
+          type: 'individual',
+        })
+      })
+
+      context('when the organisation is not found', () => {
+        beforeEach(() => {
+          legalEntityClientMock.getLegalEntity.rejects(
+            new Error('Organisation legal entity with ID LE_ORG_123 not found')
+          )
+        })
+
+        it('should throw an error', async () => {
+          await expect(
+            service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)
+          ).to.be.rejectedWith('Organisation legal entity with ID LE_ORG_123 not found')
+        })
+
+        it('should not create a serviceDirector', async () => {
+          await expect(service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)).to.be
+            .rejected
+          sinon.assert.notCalled(legalEntityClientMock.createLegalEntity)
+        })
+      })
+
+      context('when the serviceDirector cannot be created', () => {
+        beforeEach(() => {
+          legalEntityClientMock.createLegalEntity.rejects(new Error('Service director creation failed'))
+        })
+
+        it('should throw an error and not change the organisation legalentity', async () => {
+          await expect(
+            service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)
+          ).to.be.rejectedWith('Service director legal entity creation failed: Service director creation failed')
+
+          sinon.assert.notCalled(legalEntityClientMock.updateLegalEntity)
+        })
+      })
+
+      context('when the serviceDirector cannot be linked to the organisation', () => {
+        beforeEach(() => {
+          legalEntityClientMock.createLegalEntity.resolves({ id: PERSON_LEGAL_ENTITY_ID, type: 'individual' })
+          legalEntityClientMock.updateLegalEntity.rejects(new Error('adyen error linking'))
+        })
+
+        it('should throw an error with the serviceDirector ID included for debugging', async () => {
+          await expect(
+            service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)
+          ).to.be.rejectedWith(
+            "Couldn't link director (LE_PERSON_456) to organisation (LE_ORG_123): adyen error linking"
+          )
+        })
       })
     })
   })

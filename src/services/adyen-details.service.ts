@@ -7,6 +7,7 @@ import {
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
 import { createAccountHolder as createAdyenAccountHolder } from '@services/clients/adyen/adyen-configuration.client'
 import { OrganisationDetailsSession } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
+import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
 import { Types } from '@adyen/api-library'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManagement/individual'
@@ -14,8 +15,6 @@ import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManage
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 type Organization = Types.legalEntityManagement.Organization
 type AccountHolderInfo = Types.balancePlatform.AccountHolderInfo
-
-const ADYEN_BALANCE_PLATFORM_ID = process.env.ADYEN_BALANCE_PLATFORM_ID
 
 const connectorClient = new ConnectorClient()
 
@@ -79,7 +78,7 @@ const setAdyenBalanceAccountId = async (
   )
 }
 
-const createOrganisation = async (session: OrganisationDetailsSession) => {
+const createOrganisation = async (session: OrganisationDetailsSession, serviceName: string) => {
   const organization: Organization = {
     legalName: session.organisationName ?? '',
     registeredAddress: {
@@ -97,8 +96,10 @@ const createOrganisation = async (session: OrganisationDetailsSession) => {
     type: Types.legalEntityManagement.LegalEntityInfoRequiredType.TypeEnum.Organization,
     organization,
   }
+    const legalEntity = await createLegalEntity(legalEntityInfo)
+    const accountHolder = await createAccountHolder(legalEntity.id, serviceName)
 
-  return createLegalEntity(legalEntityInfo)
+    return { legalEntity, accountHolder }
 }
 
 const createResponsiblePerson = async (session: ResponsiblePersonSession, organisationLegalEntityId: string) => {
@@ -152,9 +153,14 @@ const createResponsiblePerson = async (session: ResponsiblePersonSession, organi
 }
 
 const createAccountHolder = async (organisationLegalEntityId: string, serviceName: string) => {
+  const balancePlatformId = process.env.ADYEN_BALANCE_PLATFORM_ID
+  if (!balancePlatformId) {
+    throw new Error('ADYEN_BALANCE_PLATFORM_ID is not set')
+  }
+
   const accountHolderInfo: AccountHolderInfo = {
     legalEntityId: organisationLegalEntityId,
-    balancePlatform: ADYEN_BALANCE_PLATFORM_ID,
+    balancePlatform: balancePlatformId,
     description: serviceName,
   }
 
@@ -166,6 +172,76 @@ const toUkInternationalNumber = (input: string): string => {
   return cleaned.startsWith('+') ? cleaned : `+44${cleaned.replace(/^0/, '')}`
 }
 
+const createServiceDirector = async (
+  serviceDirectorSession: ServiceDirectorSession,
+  organisationLegalEntityId: string
+) => {
+  let organisationLegalEntity
+  try {
+    organisationLegalEntity = await getLegalEntity(organisationLegalEntityId)
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    throw new Error(`Organisation legal entity with ID ${organisationLegalEntityId} not found: ${errorMessage}`)
+  }
+
+  if (!serviceDirectorSession.firstName || !serviceDirectorSession.lastName) {
+    throw new Error('Service director first name and last name are required')
+  }
+
+  const serviceDirectorLegalEntity: LegalEntityInfoRequiredType = {
+    type: Types.legalEntityManagement.LegalEntityInfoRequiredType.TypeEnum.Individual,
+    individual: {
+      birthData: {
+        // Expected format yyyy-MM-dd
+        dateOfBirth: `${serviceDirectorSession.dobYear}-${serviceDirectorSession.dobMonth?.padStart(2, '0')}-${serviceDirectorSession.dobDay?.padStart(2, '0')}`,
+      },
+      email: serviceDirectorSession.email,
+      name: {
+        firstName: serviceDirectorSession.firstName,
+        lastName: serviceDirectorSession.lastName,
+      },
+      residentialAddress: {
+        street: serviceDirectorSession.addressLine1,
+        ...(serviceDirectorSession.addressLine2 ? { street2: serviceDirectorSession.addressLine2 } : {}),
+        city: serviceDirectorSession.addressCity,
+        // Allowed formats: L(L)N(O)NLL or L(L)N(O) NLL
+        postalCode: serviceDirectorSession.addressPostcode?.toUpperCase().replaceAll(/\s/g, ''),
+        country: 'GB',
+      },
+    },
+  }
+
+  let serviceDirector
+  try {
+    serviceDirector = await createLegalEntity(serviceDirectorLegalEntity)
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    throw new Error(`Service director legal entity creation failed: ${errorMessage}`)
+  }
+
+  const currentAssociations = organisationLegalEntity.entityAssociations ?? []
+
+  // update the organisation with the person
+  try {
+    await updateLegalEntity(organisationLegalEntityId, {
+      entityAssociations: [
+        ...currentAssociations,
+        {
+          legalEntityId: serviceDirector.id,
+          type: Types.legalEntityManagement.LegalEntityAssociation.TypeEnum.Director,
+        },
+      ],
+    })
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    throw new Error(
+      `Couldn't link director (${serviceDirector.id}) to organisation (${organisationLegalEntityId}): ${errorMessage}`
+    )
+  }
+
+  return serviceDirector
+}
+
 export {
   setAdyenLegalEntityId,
   setAdyenStoreId,
@@ -173,5 +249,6 @@ export {
   setAdyenBalanceAccountId,
   createOrganisation,
   createResponsiblePerson,
+  createServiceDirector,
   createAccountHolder,
 }
