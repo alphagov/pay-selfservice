@@ -6,7 +6,7 @@ import { Types } from '@adyen/api-library'
 type AccountHolder = Types.balancePlatform.AccountHolder
 type AccountHolderInfo = Types.balancePlatform.AccountHolderInfo
 
-interface ConfigurationClient {
+interface BalancePlatformClient {
   createAccountHolder: (accountHolderInfo: AccountHolderInfo) => Promise<AccountHolder>
 }
 
@@ -17,8 +17,8 @@ interface ClientConfig {
 
 let createAccountHolderStub: sinon.SinonStub
 
-describe('Adyen configuration client', () => {
-  function loadModule(): ConfigurationClient {
+describe('Adyen balance platform client', () => {
+  function loadModule(): BalancePlatformClient {
     createAccountHolderStub = sinon.stub()
 
     class MockAdyenClient {
@@ -41,13 +41,13 @@ describe('Adyen configuration client', () => {
       }
     }
 
-    return proxyquire('./adyen-configuration.client', {
+    return proxyquire('./adyen-balance-platform.client', {
       '@adyen/api-library': {
         Client: MockAdyenClient,
         BalancePlatformAPI: MockAdyenBalancePlatformAPI,
         EnvironmentEnum: { TEST: 'TEST' },
       },
-    }) as ConfigurationClient
+    }) as BalancePlatformClient
   }
 
   afterEach(() => {

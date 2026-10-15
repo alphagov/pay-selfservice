@@ -5,7 +5,7 @@ import {
   getLegalEntity,
   updateLegalEntity,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
-import { createAccountHolder as createAdyenAccountHolder } from '@services/clients/adyen/adyen-configuration.client'
+import { createAccountHolder as createAdyenAccountHolder } from '@services/clients/adyen/adyen-balance-platform.client'
 import { OrganisationDetailsSession } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
 import { Types } from '@adyen/api-library'
