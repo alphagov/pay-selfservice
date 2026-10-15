@@ -4,6 +4,7 @@ import { PaymentProvider } from '@models/constants/payment-provider'
 import { UserFixture } from '@test/fixtures/user/user.fixture'
 import { ServiceFixture } from '@test/fixtures/service/service.fixture'
 import sinon from 'sinon'
+import { expect } from 'chai'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { OrganisationDetailsSession } from './constants'
@@ -99,6 +100,7 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
             takingPaymentsFor: 'government-activities',
           },
           session: {
+            otherSessionData: 'keep',
             pageData: {
               organisationDetails: VALID_SESSION,
             },
@@ -137,7 +139,13 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
           )
         )
       })
+
+      it('should clear the session organisation details', async () => {
+        const thisCall = await call('post')
+        expect(thisCall.req.session).to.deep.include({ otherSessionData: 'keep', pageData: {} })
+      })
     })
+
     describe('when no selection is made', () => {
       beforeEach(() => {
         nextRequest({
@@ -166,6 +174,11 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
           errors: { summary: [{ text: 'You must make a selection', href: '#taking-payments-for' }] },
         }
         sinon.assert.calledOnceWithMatch(mockResponse, req, res, TEMPLATE, expectedContext)
+      })
+
+      it('should not clear the session organisation details', async () => {
+        const thisCall = await call('post')
+        expect(thisCall.req.session).to.deep.include({ pageData: { organisationDetails: VALID_SESSION } })
       })
     })
   })
