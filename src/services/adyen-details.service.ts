@@ -83,7 +83,13 @@ const setAdyenBalanceAccountId = async (
   )
 }
 
-const createOrganisation = async (session: OrganisationDetailsSession) => {
+const createOrganisation = async (
+  session: OrganisationDetailsSession,
+  serviceExternalId: string,
+  accountType: string,
+  switchingCredentialId: string,
+  userExternalId: string
+) => {
   const organization: Organization = {
     legalName: session.organisationName ?? '',
     registeredAddress: {
@@ -102,7 +108,21 @@ const createOrganisation = async (session: OrganisationDetailsSession) => {
     organization,
   }
 
-  return createLegalEntity(legalEntityInfo)
+  const organisationLegalEntity = await createLegalEntity(legalEntityInfo)
+
+  if (!organisationLegalEntity) {
+    throw new Error('Organisation legal entity creation failed')
+  }
+
+  await setAdyenLegalEntityId(
+    serviceExternalId,
+    accountType,
+    switchingCredentialId,
+    userExternalId,
+    organisationLegalEntity.id
+  )
+
+  return organisationLegalEntity
 }
 
 const getLegalEntityId = async (serviceExternalId: string, accountType: string, switchingCredentialId: string) => {

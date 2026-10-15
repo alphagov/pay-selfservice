@@ -4,6 +4,7 @@ import { expect } from 'chai'
 import type { OrganisationDetailsSession } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
+import { GatewayAccountCredentialUpdateRequest } from '@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class'
 
 type AdyenDetailsService = typeof import('./adyen-details.service')
 
@@ -28,15 +29,12 @@ describe('Adyen details service', () => {
 
   before(() => {
     service = proxyquire<AdyenDetailsService>('./adyen-details.service', {
-      '@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class': {
-        GatewayAccountCredentialUpdateRequest: class {},
-      },
       '@services/clients/pay/ConnectorClient.class': ConnectorClientStub,
       '@services/clients/adyen/adyen-legal-entity-management.client': legalEntityClientMock,
     })
   })
 
-  describe('createLegalEntity', () => {
+  describe('createOrganisation', () => {
     const ORGANISATION_TYPE = 'organization'
 
     const fullOrganisationSession = {
@@ -53,12 +51,17 @@ describe('Adyen details service', () => {
     it('should create Adyen legal entity for an organisation', async () => {
       const legalEntity = { id: 'LE123', type: ORGANISATION_TYPE }
       legalEntityClientMock.createLegalEntity.resolves(legalEntity)
+      connectorClientMock.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType.resolves({})
 
-      const result = await service.createOrganisation(fullOrganisationSession)
+      const result = await service.createOrganisation(
+        fullOrganisationSession,
+        'service_id',
+        'live',
+        'credential_id',
+        'user_id'
+      )
 
-      sinon.assert.calledOnce(legalEntityClientMock.createLegalEntity)
-
-      expect(legalEntityClientMock.createLegalEntity.firstCall.args[0]).to.deep.equal({
+      sinon.assert.calledOnceWithExactly(legalEntityClientMock.createLegalEntity, {
         type: ORGANISATION_TYPE,
         organization: {
           legalName: 'Test Org Ltd',
@@ -73,6 +76,14 @@ describe('Adyen details service', () => {
           vatNumber: 'GB123456789',
         },
       })
+
+      sinon.assert.calledOnceWithExactly(
+        connectorClientMock.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType,
+        'service_id',
+        'live',
+        'credential_id',
+        new GatewayAccountCredentialUpdateRequest('user_id').replace().credentials().legalEntityId('LE123')
+      )
 
       expect(result).to.equal(legalEntity)
     })
