@@ -1,4 +1,5 @@
 import { Client, EnvironmentEnum, LegalEntityManagementAPI, Types } from '@adyen/api-library'
+import { TransferInstrumentInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/transferInstrumentInfo'
 import { AdyenMockServerHttpClient } from '@services/clients/adyen/adyen-mock-server-http-client'
 
 const ADYEN_LEGAL_ENTITY_MANAGEMENT_API_KEY = process.env.ADYEN_LEGAL_ENTITY_MANAGEMENT_API_KEY
@@ -23,10 +24,13 @@ export async function createLegalEntity(legalEntityInfo: LegalEntityInfoRequired
 export async function getLegalEntity(legalEntityId: string): Promise<LegalEntity> {
   return legalEntityManagementAPI.LegalEntitiesApi.getLegalEntity(legalEntityId)
 }
-
 export async function updateLegalEntity(
   organizationId: string,
   legalEntityInfo: LegalEntityInfo
 ): Promise<LegalEntity> {
   return legalEntityManagementAPI.LegalEntitiesApi.updateLegalEntity(organizationId, legalEntityInfo)
+}
+
+export async function createTransferInstrument(transferInstrumentInfo: TransferInstrumentInfo) {
+  return legalEntityManagementAPI.TransferInstrumentsApi.createTransferInstrument(transferInstrumentInfo)
 }

@@ -6,6 +6,7 @@ import { getUser } from '@test/cypress/stubs/simplified-account/user-stubs'
 import * as GatewayAccountStubs from '@test/cypress/stubs/simplified-account/gateway-account-stubs'
 import { checkServiceNavigation } from '@test/cypress/integration/simplified-account/common/assertions'
 import { AdyenAccountSetupFixture } from '@test/fixtures/gateway-account/adyen-account-setup.fixture'
+import * as AdyenStubs from '@test/cypress/stubs/simplified-account/adyen-psp-stubs'
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -60,6 +61,7 @@ const setStubs = (additionalStubs = []) => {
       ADYEN_CREDENTIAL_EXTERNAL_ID,
       'bank_details'
     ).success(),
+    AdyenStubs.createTransferInstrument().success({ id: 'transfer-123' }),
     ...additionalStubs,
   ])
 }
