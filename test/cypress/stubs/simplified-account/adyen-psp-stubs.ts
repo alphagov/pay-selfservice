@@ -11,3 +11,15 @@ export function createLegalEntity() {
     },
   }
 }
+
+export function createTransferInstrument() {
+  const path = `/lem/v4/transferInstruments`
+
+  return {
+    success: function (transferInstrument: { id: string }) {
+      return stubBuilder('POST', path, 200, {
+        response: transferInstrument,
+      })
+    },
+  }
+}
