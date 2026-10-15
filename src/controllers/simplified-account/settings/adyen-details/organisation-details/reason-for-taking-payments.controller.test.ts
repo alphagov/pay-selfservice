@@ -108,7 +108,14 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
       it('should create Adyen legal entity and mark organisation details task as complete and redirect to the switch to adyen task list', async () => {
         await call('post')
 
-        sinon.assert.calledOnceWithExactly(createOrganisation, VALID_SESSION)
+        sinon.assert.calledOnceWithExactly(
+          createOrganisation,
+          new OrganisationDetailsSession(VALID_SESSION as OrganisationDetailsSession),
+          SERVICE_EXTERNAL_ID,
+          GATEWAY_ACCOUNT.type,
+          GATEWAY_ACCOUNT.getSwitchingCredential().externalId,
+          USER.externalId
+        )
 
         sinon.assert.calledOnceWithExactly(
           markTaskAsComplete,
