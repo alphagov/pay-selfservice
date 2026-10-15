@@ -17,6 +17,7 @@ const serviceFixture = new ServiceFixture({
 const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.STRIPE, PaymentProvider.ADYEN, [], [], {
   type: 'live',
 }).toGatewayAccount()
+const USER = UserFixture.asServiceAdmin([serviceFixture], { externalId: 'user123abc' }).toUser()
 
 const mockResponse = sinon.stub()
 const createOrganisation = sinon.stub().resolves()
@@ -34,18 +35,24 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder(
   '@controllers/simplified-account/settings/adyen-details/organisation-details/reason-for-taking-payments.controller.ts'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
-  .withAccount(
-    GatewayAccountFixture.forSwitchingPsp(PaymentProvider.STRIPE, PaymentProvider.ADYEN, [], [], {
-      type: 'live',
-    }).toGatewayAccount()
-  )
-  .withUser(UserFixture.asServiceAdmin([serviceFixture]).toUser())
+  .withAccount(GATEWAY_ACCOUNT)
+  .withUser(USER)
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/adyen-details.service': { createOrganisation },
     '@services/adyen-setup.service': { markTaskAsComplete },
   })
   .build()
+
+const VALID_SESSION: Partial<OrganisationDetailsSession> = {
+  organisationName: 'Test Organisation',
+  addressLine1: '1 Test Street',
+  addressCity: 'swansea',
+  addressPostcode: 'T3 5TT',
+  addressCountry: 'GB',
+  companyRegistrationNumber: '01234567',
+  vatRegistrationNumber: 'GB123456789',
+}
 
 describe('Controller: settings/adyen-details/reason-for-taking-payments', () => {
   describe('get', () => {
@@ -56,8 +63,7 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
       })
 
       it('should redirect to the switch to adyen task list', () => {
-        sinon.assert.calledOnce(res.redirect)
-        sinon.assert.calledWith(res.redirect, sinon.match(/switch-to-adyen/))
+        sinon.assert.calledOnceWithMatch(res.redirect, sinon.match(/switch-to-adyen/))
       })
     })
 
@@ -66,15 +72,7 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
         nextRequest({
           session: {
             pageData: {
-              organisationDetails: {
-                organisationName: 'Test Organisation',
-                addressLine1: '1 Test Street',
-                addressCity: 'swansea',
-                addressPostcode: 'T3 5TT',
-                addressCountry: 'GB',
-                companyRegistrationNumber: '01234567',
-                vatRegistrationNumber: 'GB123456789',
-              },
+              organisationDetails: VALID_SESSION,
             },
           },
         })
@@ -82,40 +80,27 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
       })
 
       it('should call the response function with the template path', () => {
-        mockResponse.should.have.been.calledOnce
-        mockResponse.should.have.been.calledWith(sinon.match.any, sinon.match.any, TEMPLATE)
+        sinon.assert.calledOnceWithMatch(mockResponse, sinon.match.any, sinon.match.any, TEMPLATE)
       })
 
       it('should call the response method with the backLink', () => {
-        const context = mockResponse.firstCall.lastArg as { backLink: string }
-        sinon.assert.match(context, {
+        const expectedContext = {
           backLink: BACK_LINK,
-        })
+        }
+        sinon.assert.calledOnceWithMatch(mockResponse, req, res, TEMPLATE, expectedContext)
       })
     })
   })
   describe('post', () => {
     describe('when a selection is made', () => {
       beforeEach(() => {
-        res.redirect.resetHistory()
-        createOrganisation.resetHistory()
-        markTaskAsComplete.resetHistory()
-
         nextRequest({
           body: {
             takingPaymentsFor: 'government-activities',
           },
           session: {
             pageData: {
-              organisationDetails: {
-                organisationName: 'Test Organisation',
-                addressLine1: '1 Test Street',
-                addressCity: 'swansea',
-                addressPostcode: 'T3 5TT',
-                addressCountry: 'GB',
-                companyRegistrationNumber: '01234567',
-                vatRegistrationNumber: 'GB123456789',
-              },
+              organisationDetails: VALID_SESSION,
             },
           },
         })
@@ -123,18 +108,7 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
       it('should create Adyen legal entity and mark organisation details task as complete and redirect to the switch to adyen task list', async () => {
         await call('post')
 
-        sinon.assert.calledOnceWithExactly(
-          createOrganisation,
-          new OrganisationDetailsSession({
-            organisationName: 'Test Organisation',
-            addressLine1: '1 Test Street',
-            addressCity: 'swansea',
-            addressPostcode: 'T3 5TT',
-            addressCountry: 'GB',
-            companyRegistrationNumber: '01234567',
-            vatRegistrationNumber: 'GB123456789',
-          } as OrganisationDetailsSession)
-        )
+        sinon.assert.calledOnceWithExactly(createOrganisation, VALID_SESSION)
 
         sinon.assert.calledOnceWithExactly(
           markTaskAsComplete,
@@ -157,35 +131,33 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
       })
     })
     describe('when no selection is made', () => {
-      beforeEach(async () => {
-        mockResponse.resetHistory()
-        res.redirect.resetHistory()
+      beforeEach(() => {
         nextRequest({
           body: {},
-        })
-
-        await call('post')
-      })
-      it('should not complete the task or redirect', () => {
-        sinon.assert.notCalled(markTaskAsComplete)
-        sinon.assert.notCalled(res.redirect as sinon.SinonStub)
-      })
-      it('should re-render the taking payments for page with the backLink', () => {
-        sinon.assert.calledOnce(mockResponse)
-        sinon.assert.calledWithMatch(mockResponse, req, res, TEMPLATE)
-        const context = mockResponse.firstCall.lastArg as { backLink: string }
-        sinon.assert.match(context, { backLink: BACK_LINK })
-      })
-      it('should show the summary error', () => {
-        const context = mockResponse.firstCall.lastArg as {
-          errors: { summary: { text: string; href: string }[] }
-        }
-        sinon.assert.match(context.errors.summary, [
-          {
-            text: 'You must make a selection',
-            href: '#taking-payments-for',
+          session: {
+            pageData: {
+              organisationDetails: VALID_SESSION,
+            },
           },
-        ])
+        })
+      })
+      it('should not complete the task, create an organisation or redirect', async () => {
+        await call('post')
+        sinon.assert.notCalled(markTaskAsComplete)
+        sinon.assert.notCalled(createOrganisation)
+        sinon.assert.notCalled(res.redirect)
+      })
+      it('should re-render the taking payments for page with the backLink', async () => {
+        await call('post')
+        const expectedContext = { backLink: BACK_LINK }
+        sinon.assert.calledOnceWithMatch(mockResponse, req, res, TEMPLATE, expectedContext)
+      })
+      it('should show the summary error', async () => {
+        await call('post')
+        const expectedContext = {
+          errors: { summary: [{ text: 'You must make a selection', href: '#taking-payments-for' }] },
+        }
+        sinon.assert.calledOnceWithMatch(mockResponse, req, res, TEMPLATE, expectedContext)
       })
     })
   })
