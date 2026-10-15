@@ -15,16 +15,16 @@
         text: 'Provider fee'
       },
       value: {
-        text: transaction._locals.formatted.fee
+        text: fee
       }
-    } if transaction.fee else null, {
+    } if fee else null, {
       key: {
         text: 'Net amount'
       },
       value: {
-        text: transaction._locals.formatted.netAmount
+        text: netAmount
       }
-    } if transaction.netAmount else null, {
+     } if netAmount else null, {
       key: {
         text: 'Refunded amount'
       },

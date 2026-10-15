@@ -1,10 +1,11 @@
 import paths, { formattedPathFor } from '@root/paths'
-import { getTransaction, getEvents, getDisputes } from '@services/transactions.service'
+import { getTransaction, getEvents, getDisputes, getRefunds } from '@services/transactions.service'
 import { response } from '@utils/response'
 import { ServiceRequest, ServiceResponse } from '@utils/types/express'
 import { Transaction } from '@models/transaction/Transaction.class'
 import { TITLE_FRIENDLY_DATE_TIME } from '@models/constants/time-formats'
 import { ServiceRequestParams } from '@utils/types/express/ServiceRequest'
+import { penceToPoundsWithCurrency } from '@utils/currency-formatter'
 
 interface Params extends ServiceRequestParams {
   transactionExternalId: string
@@ -17,6 +18,7 @@ async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
     getTransaction(req.params.transactionExternalId, req.account.id),
     getEvents(req.params.transactionExternalId, req.account.id),
   ])
+
   transaction._locals.links.bind(req.service.externalId, req.account.type)
   transaction._locals.links.bindToAllServices()
 
@@ -25,6 +27,15 @@ async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
     disputes = await getDisputes(req.params.transactionExternalId, req.account.id)
     disputes.forEach((dispute) => dispute._locals.links.bind(req.service.externalId, req.account.type))
   }
+
+  let fee = transaction.fee
+  let netAmount = transaction.netAmount
+
+    const refunds = await getRefunds(req.params.transactionExternalId, req.account.id)
+    if (refunds.length > 0 && refunds[0].fee && fee && refunds[0].netAmount && netAmount) {
+      fee += refunds[0].fee
+      netAmount += refunds[0].netAmount
+    }
 
   // sort by most recent first
   events.sort((eventA, eventB) => (eventA.timestamp > eventB.timestamp ? -1 : 1))
@@ -35,6 +46,8 @@ async function get(req: ServiceRequest<never, Params>, res: ServiceResponse) {
     backLink: `${formattedPathFor(paths.allServiceTransactions.simplifiedAccount.index, req.account.type)}${transactionFilters ? `?${transactionFilters}` : ''} `,
     events,
     transaction,
+    fee: fee ? penceToPoundsWithCurrency(fee) : false,
+    netAmount: netAmount ? penceToPoundsWithCurrency(netAmount) : false,
     dispute: disputes.length > 0 && disputes[0],
     pageID: `${transaction.createdDate.toFormat(TITLE_FRIENDLY_DATE_TIME)} - ${transaction.reference}`,
     messages: res.locals.flash?.messages ?? [],

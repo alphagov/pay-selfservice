@@ -83,12 +83,16 @@ const getEvents = async (transactionExternalId: string, gatewayAccountId: number
 const getDisputes = async (transactionExternalId: string, gatewayAccountId: number) =>
   await ledgerClient.transactions.disputes(transactionExternalId, gatewayAccountId)
 
+const getRefunds = async (parentTransactionExternalId: string, gatewayAccountId: number) =>
+  await ledgerClient.transactions.refunds(parentTransactionExternalId, gatewayAccountId)
+
 export {
   dashboardTransactionSummary,
   getTransaction,
   searchTransactions,
   getEvents,
   getDisputes,
+  getRefunds,
   downloadCsv,
   TransactionSearchResults,
 }
