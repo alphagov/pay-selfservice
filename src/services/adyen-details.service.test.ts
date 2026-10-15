@@ -107,7 +107,7 @@ describe('Adyen details service', () => {
       expect(result.accountHolder).to.equal(accountHolder)
     })
 
-    it('should not create account holder when ADYEN_BALANCE_PLATFORM_ID is not set', async () => {
+    it('should not create account holder when ADYEN_BALANCE_PLATFORM_ID is NOT set', async () => {
       delete process.env.ADYEN_BALANCE_PLATFORM_ID
 
       await expect(service.createOrganisation(fullOrganisationSession, SERVICE_NAME)).to.be.rejectedWith(
