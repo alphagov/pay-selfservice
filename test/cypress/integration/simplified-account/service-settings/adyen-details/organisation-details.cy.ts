@@ -13,6 +13,7 @@ const SERVICE_EXTERNAL_ID = 'service456def'
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 12
 const ADYEN_CREDENTIAL_EXTERNAL_ID = 'adyen-credential-123-abc'
+const ADYEN_LEGAL_ENTITY_ID = 'LE123'
 
 const ORGANISATION_DETAILS_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/adyen-details/${ADYEN_CREDENTIAL_EXTERNAL_ID}/organisation-details/details`
 const COMPANY_REGISTRATION_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/adyen-details/${ADYEN_CREDENTIAL_EXTERNAL_ID}/organisation-details/company-registration-number`
@@ -64,7 +65,17 @@ const setStubs = (additionalStubs = []) => {
       ADYEN_CREDENTIAL_EXTERNAL_ID,
       'organisation_details'
     ).success(),
-    AdyenStubs.createLegalEntity().success({ id: 'legal-entity-123' }),
+    AdyenStubs.createLegalEntity().success({ id: ADYEN_LEGAL_ENTITY_ID }),
+    GatewayAccountStubs.patchUpdateCredentialsSuccessByServiceExternalIdAndType(
+      SERVICE_EXTERNAL_ID,
+      LIVE_ACCOUNT_TYPE,
+      ADYEN_CREDENTIAL_EXTERNAL_ID,
+      {
+        path: 'credentials',
+        value: { legal_entity_id: ADYEN_LEGAL_ENTITY_ID },
+        userExternalId: USER_EXTERNAL_ID,
+      }
+    ),
     ...additionalStubs,
   ])
 }
