@@ -70,6 +70,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     req.user.externalId
   )
   await markTaskAsComplete(req.service.externalId, req.account.type, switchingCredentialId, 'organisationDetails')
+  OrganisationDetailsSession.clear(req)
 
   return res.redirect(
     formatServiceAndAccountPathsFor(
