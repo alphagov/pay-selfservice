@@ -1,13 +1,19 @@
 import { GatewayAccountCredentialUpdateRequest } from '@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class'
 import ConnectorClient from '@services/clients/pay/ConnectorClient.class'
+import { OrganisationDetailsSession } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
+import { Types } from '@adyen/api-library'
+import { CreateBankDetailsBody } from '@controllers/simplified-account/settings/adyen-details/bank-details.controller'
+import { BankAccountAccountIdentification } from '@adyen/api-library/lib/src/typings/balancePlatform/bankAccountAccountIdentification'
+import { UKLocalAccountIdentification } from '@adyen/api-library/lib/src/typings/balancePlatform/uKLocalAccountIdentification'
+import { TransferInstrumentInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/transferInstrumentInfo'
+import createLogger from '@utils/logger'
 import {
   createLegalEntity,
   getLegalEntity,
   updateLegalEntity,
+  createTransferInstrument,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
-import { OrganisationDetailsSession } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
-import { Types } from '@adyen/api-library'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManagement/individual'
 
@@ -15,6 +21,7 @@ type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRe
 type Organization = Types.legalEntityManagement.Organization
 
 const connectorClient = new ConnectorClient()
+const logger = createLogger(__filename)
 
 const setAdyenLegalEntityId = async (
   serviceExternalId: string,
@@ -96,6 +103,49 @@ const createOrganisation = async (session: OrganisationDetailsSession) => {
   }
 
   return createLegalEntity(legalEntityInfo)
+}
+
+const getLegalEntityId = async (serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
+  const gatewayAccount = await connectorClient.gatewayAccounts.getByServiceExternalIdAndAccountType(
+    serviceExternalId,
+    accountType
+  )
+  const adyenCredential = gatewayAccount.gatewayAccountCredentials.find(
+    (credential) => credential.externalId === switchingCredentialId
+  )
+  const legalEntityId = adyenCredential!.credentials.legalEntityId!
+  return legalEntityId
+}
+
+const createBankDetails = async (
+  details: CreateBankDetailsBody,
+  serviceExternalId: string,
+  accountType: string,
+  switchingCredentialId: string
+) => {
+  const legalEntityId = await getLegalEntityId(serviceExternalId, accountType, switchingCredentialId)
+
+  const accountIdentification: BankAccountAccountIdentification = {
+    sortCode: details.sortCode,
+    accountNumber: details.accountNumber,
+    type: UKLocalAccountIdentification.TypeEnum.UkLocal,
+  }
+
+  const transferInstrumentInfo: TransferInstrumentInfo = {
+    legalEntityId,
+    type: TransferInstrumentInfo.TypeEnum.BankAccount,
+    bankAccount: {
+      accountIdentification,
+    },
+  }
+
+  await createTransferInstrument(transferInstrumentInfo)
+
+  logger.info(`Transfer instrument created for legal entity`, {
+    legal_entity_id: legalEntityId,
+  })
+
+  return
 }
 
 const createResponsiblePerson = async (session: ResponsiblePersonSession, organisationLegalEntityId: string) => {
@@ -230,5 +280,6 @@ export {
   setAdyenBalanceAccountId,
   createOrganisation,
   createResponsiblePerson,
+  createBankDetails,
   createServiceDirector,
 }

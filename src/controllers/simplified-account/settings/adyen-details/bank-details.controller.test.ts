@@ -18,8 +18,9 @@ const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.ST
 
 const mockResponse = sinon.stub()
 const markTaskAsComplete = sinon.stub().resolves()
+const createBankDetails = sinon.stub().resolves()
 
-const { req, res, call } = new ControllerTestBuilder(
+const { req, res, call, nextRequest } = new ControllerTestBuilder(
   '@controllers/simplified-account/settings/adyen-details/bank-details.controller'
 )
   .withServiceExternalId(SERVICE_EXTERNAL_ID)
@@ -32,6 +33,7 @@ const { req, res, call } = new ControllerTestBuilder(
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/adyen-setup.service': { markTaskAsComplete },
+    '@services/adyen-details.service': { createBankDetails },
   })
   .build()
 
@@ -60,6 +62,13 @@ describe('Controller: settings/adyen-details/bank-details', () => {
   })
   describe('post', () => {
     it('should complete the bank details task and redirect to the switch to adyen task list', async () => {
+      nextRequest({
+        body: {
+          sortCode: '090102',
+          accountNumber: '00000123',
+        },
+      })
+
       await call('post')
       sinon.assert.calledOnceWithExactly(
         markTaskAsComplete,
