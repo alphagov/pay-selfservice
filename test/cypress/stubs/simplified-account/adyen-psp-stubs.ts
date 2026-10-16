@@ -23,3 +23,15 @@ export function createTransferInstrument() {
     },
   }
 }
+
+export function createAccountHolder() {
+  const path = `/bcl/v2/accountHolders`
+
+  return {
+    success: function (accountHolder: { id: string; legalEntityId: string }) {
+      return stubBuilder('POST', path, 200, {
+        response: accountHolder,
+      })
+    },
+  }
+}

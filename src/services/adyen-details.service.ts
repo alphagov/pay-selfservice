@@ -13,12 +13,14 @@ import {
   updateLegalEntity,
   createTransferInstrument,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
+import { createAccountHolder as createAdyenAccountHolder } from '@services/clients/adyen/adyen-balance-platform.client'
 import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManagement/individual'
 
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 type Organization = Types.legalEntityManagement.Organization
+type AccountHolderInfo = Types.balancePlatform.AccountHolderInfo
 
 const connectorClient = new ConnectorClient()
 const logger = createLogger(__filename)
@@ -83,7 +85,7 @@ const setAdyenBalanceAccountId = async (
   )
 }
 
-const createOrganisation = async (session: OrganisationDetailsSession) => {
+const createOrganisation = async (session: OrganisationDetailsSession, serviceName: string) => {
   const organization: Organization = {
     legalName: session.organisationName ?? '',
     registeredAddress: {
@@ -101,8 +103,10 @@ const createOrganisation = async (session: OrganisationDetailsSession) => {
     type: Types.legalEntityManagement.LegalEntityInfoRequiredType.TypeEnum.Organization,
     organization,
   }
+  const legalEntity = await createLegalEntity(legalEntityInfo)
+  const accountHolder = await createAccountHolder(legalEntity.id, serviceName)
 
-  return createLegalEntity(legalEntityInfo)
+  return { legalEntity, accountHolder }
 }
 
 const getLegalEntityId = async (serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
@@ -198,6 +202,21 @@ const createResponsiblePerson = async (session: ResponsiblePersonSession, organi
   return responsiblePerson
 }
 
+const createAccountHolder = async (organisationLegalEntityId: string, serviceName: string) => {
+  const balancePlatformId = process.env.ADYEN_BALANCE_PLATFORM_ID
+  if (!balancePlatformId) {
+    throw new Error('ADYEN_BALANCE_PLATFORM_ID is not set')
+  }
+
+  const accountHolderInfo: AccountHolderInfo = {
+    legalEntityId: organisationLegalEntityId,
+    balancePlatform: balancePlatformId,
+    description: serviceName,
+  }
+
+  return createAdyenAccountHolder(accountHolderInfo)
+}
+
 const toUkInternationalNumber = (input: string): string => {
   const cleaned = input.replace(/[\s().-]/g, '')
   return cleaned.startsWith('+') ? cleaned : `+44${cleaned.replace(/^0/, '')}`
@@ -282,4 +301,5 @@ export {
   createResponsiblePerson,
   createBankDetails,
   createServiceDirector,
+  createAccountHolder,
 }

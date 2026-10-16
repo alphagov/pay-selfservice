@@ -33,7 +33,7 @@ const BACK_LINK = formatServiceAndAccountPathsFor(
 const { req, res, call, nextRequest } = new ControllerTestBuilder(
   '@controllers/simplified-account/settings/adyen-details/organisation-details/reason-for-taking-payments.controller.ts'
 )
-  .withServiceExternalId(SERVICE_EXTERNAL_ID)
+  .withService(serviceFixture.toService())
   .withAccount(
     GatewayAccountFixture.forSwitchingPsp(PaymentProvider.STRIPE, PaymentProvider.ADYEN, [], [], {
       type: 'live',
@@ -133,7 +133,8 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
             addressCountry: 'GB',
             companyRegistrationNumber: '01234567',
             vatRegistrationNumber: 'GB123456789',
-          } as OrganisationDetailsSession)
+          } as OrganisationDetailsSession),
+          serviceFixture.name
         )
 
         sinon.assert.calledOnceWithExactly(

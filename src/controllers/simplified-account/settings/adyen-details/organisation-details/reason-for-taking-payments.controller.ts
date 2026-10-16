@@ -62,7 +62,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     ...currentSession,
   } as OrganisationDetailsSession)
 
-  await createOrganisation(completeSession)
+  await createOrganisation(completeSession, req.service.name)
   await markTaskAsComplete(req.service.externalId, req.account.type, switchingCredentialId, 'organisationDetails')
 
   return res.redirect(
