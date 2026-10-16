@@ -114,6 +114,16 @@ const createOrganisation = async (session: OrganisationDetailsSession, serviceNa
   const accountHolder = await createAccountHolder(legalEntity.id, serviceName)
   const balanceAccount = await createBalanceAccount(accountHolder.id, serviceName)
 
+  console.log("LE")
+  console.log(legalEntity.id)
+
+  console.log("AH")
+  console.log(accountHolder.id)
+
+  console.log("BA")
+  console.log(balanceAccount.id)
+
+
   return { legalEntity, accountHolder, balanceAccount }
 }
 
@@ -170,7 +180,7 @@ const createBankDetails = async (
 
   const createSweepConfiguration: CreateSweepConfigurationV2 = {
     schedule: sweepSchedule,
-    counterparty: { balanceAccountId },
+    counterparty: { transferInstrumentId: transferInstrument.id },
     currency: "GBP",
     category: CreateSweepConfigurationV2.CategoryEnum.Bank,
     type: CreateSweepConfigurationV2.TypeEnum.Push,
