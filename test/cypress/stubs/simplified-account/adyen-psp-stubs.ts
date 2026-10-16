@@ -34,7 +34,7 @@ export function updateLegalEntity(legalEntityId: string) {
       })
     },
   }
-}  
+}
 
 export function createTransferInstrument() {
   const path = `/lem/v4/transferInstruments`
