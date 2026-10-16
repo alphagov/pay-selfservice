@@ -66,6 +66,7 @@ describe('Adyen details service', () => {
       legalEntityClientMock.createLegalEntity.resolves(legalEntity)
       balancePlatformClientMock.createAccountHolder.resolves(accountHolder)
       balancePlatformClientMock.createBalanceAccount.resolves(balanceAccount)
+      connectorClientMock.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType.resolves({})
     })
 
     afterEach(() => {
@@ -73,7 +74,14 @@ describe('Adyen details service', () => {
     })
 
     it('should create Adyen legal entity for an organisation', async () => {
-      const result = await service.createOrganisation(fullOrganisationSession, SERVICE_NAME)
+      const result = await service.createOrganisation(
+        fullOrganisationSession,
+        SERVICE_NAME,
+        'service_id',
+        'live',
+        'credential_id',
+        'user_id'
+      )
 
       sinon.assert.calledOnceWithExactly(legalEntityClientMock.createLegalEntity, {
         type: ORGANISATION_TYPE,
@@ -95,7 +103,14 @@ describe('Adyen details service', () => {
     })
 
     it('should create Adyen account holder for the organisation legal entity', async () => {
-      const result = await service.createOrganisation(fullOrganisationSession, SERVICE_NAME)
+      const result = await service.createOrganisation(
+        fullOrganisationSession,
+        SERVICE_NAME,
+        'service_id',
+        'live',
+        'credential_id',
+        'user_id'
+      )
 
       sinon.assert.calledOnceWithExactly(balancePlatformClientMock.createAccountHolder, {
         legalEntityId: 'LE123',
@@ -107,7 +122,14 @@ describe('Adyen details service', () => {
     })
 
     it('should create Adyen balance account for the organisation account holder', async () => {
-      const result = await service.createOrganisation(fullOrganisationSession, SERVICE_NAME)
+      const result = await service.createOrganisation(
+        fullOrganisationSession,
+        SERVICE_NAME,
+        'service_id',
+        'live',
+        'credential_id',
+        'user_id'
+      )
 
       sinon.assert.calledOnceWithExactly(balancePlatformClientMock.createBalanceAccount, {
         accountHolderId: 'AH123',
@@ -124,17 +146,53 @@ describe('Adyen details service', () => {
     it('should not create balance account when account holder creation fails', async () => {
       balancePlatformClientMock.createAccountHolder.rejects(new Error('Adyen error'))
 
-      await expect(service.createOrganisation(fullOrganisationSession, SERVICE_NAME)).to.be.rejectedWith('Adyen error')
+      await expect(
+        service.createOrganisation(
+          fullOrganisationSession,
+          SERVICE_NAME,
+          'service_id',
+          'live',
+          'credential_id',
+          'user_id'
+        )
+      ).to.be.rejectedWith('Adyen error')
+
       sinon.assert.notCalled(balancePlatformClientMock.createBalanceAccount)
     })
 
     it('should not create account holder when ADYEN_BALANCE_PLATFORM_ID is NOT set', async () => {
       delete process.env.ADYEN_BALANCE_PLATFORM_ID
 
-      await expect(service.createOrganisation(fullOrganisationSession, SERVICE_NAME)).to.be.rejectedWith(
-        'ADYEN_BALANCE_PLATFORM_ID is not set'
-      )
+      await expect(
+        service.createOrganisation(
+          fullOrganisationSession,
+          SERVICE_NAME,
+          'service_id',
+          'live',
+          'credential_id',
+          'user_id'
+        )
+      ).to.be.rejectedWith('ADYEN_BALANCE_PLATFORM_ID is not set')
       sinon.assert.notCalled(balancePlatformClientMock.createAccountHolder)
+    })
+
+    it('should persist the legal entity id', async () => {
+      await service.createOrganisation(
+        fullOrganisationSession,
+        SERVICE_NAME,
+        'service_id',
+        'live',
+        'credential_id',
+        'user_id'
+      )
+
+      sinon.assert.calledOnceWithExactly(
+        connectorClientMock.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType,
+        'service_id',
+        'live',
+        'credential_id',
+        new GatewayAccountCredentialUpdateRequest('user_id').replace().credentials().legalEntityId('LE123')
+      )
     })
   })
 

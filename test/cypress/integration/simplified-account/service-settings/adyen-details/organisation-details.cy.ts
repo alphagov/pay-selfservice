@@ -65,6 +65,7 @@ const setStubs = (additionalStubs = []) => {
       ADYEN_CREDENTIAL_EXTERNAL_ID,
       'organisation_details'
     ).success(),
+    AdyenStubs.createAccountHolder().success({ id: 'account-holder-123', legalEntityId: ADYEN_LEGAL_ENTITY_ID }),
     AdyenStubs.createLegalEntity().success({ id: ADYEN_LEGAL_ENTITY_ID }),
     GatewayAccountStubs.patchUpdateCredentialsSuccessByServiceExternalIdAndType(
       SERVICE_EXTERNAL_ID,
@@ -76,8 +77,6 @@ const setStubs = (additionalStubs = []) => {
         userExternalId: USER_EXTERNAL_ID,
       }
     ),
-    AdyenStubs.createLegalEntity().success({ id: 'legal-entity-123' }),
-    AdyenStubs.createAccountHolder().success({ id: 'account-holder-123', legalEntityId: 'legal-entity-123' }),
     AdyenStubs.createBalanceAccount().success({ id: 'balance-account-123', accountHolderId: 'account-holder-123' }),
     ...additionalStubs,
   ])
