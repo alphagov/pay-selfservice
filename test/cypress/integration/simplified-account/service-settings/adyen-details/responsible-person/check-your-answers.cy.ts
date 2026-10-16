@@ -153,8 +153,14 @@ describe(`Responsible person - check your answers`, () => {
       })
 
       it('should redirect to the migration task page when confirm and continue is pressed', () => {
-        setStubs([AdyenPspStubs.createLegalEntity().success({ id: 'LE_PERSON_456' })])
-
+        setStubs([
+          AdyenPspStubs.createLegalEntity().success({ id: 'LE_PERSON_456' }),
+          AdyenPspStubs.getLegalEntity(ORGANISATION_LEGAL_ENTITY_ID).success({
+            id: ORGANISATION_LEGAL_ENTITY_ID,
+            entityAssociations: [],
+          }),
+          AdyenPspStubs.updateLegalEntity(ORGANISATION_LEGAL_ENTITY_ID).success({ id: ORGANISATION_LEGAL_ENTITY_ID }),
+        ])
         cy.get('#responsible-person-confirm').click()
 
         cy.location('pathname').should('eq', TASK_LIST_PATH)
