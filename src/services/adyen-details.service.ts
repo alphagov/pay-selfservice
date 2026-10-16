@@ -17,7 +17,6 @@ import { ServiceDirectorSession } from '@controllers/simplified-account/settings
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManagement/individual'
 import { SweepSchedule } from '@adyen/api-library/lib/src/typings/balancePlatform/sweepSchedule'
-import { SweepCounterparty } from '@adyen/api-library/lib/src/typings/balancePlatform/sweepCounterparty'
 import { CreateSweepConfigurationV2 } from '@adyen/api-library/lib/src/typings/balancePlatform/createSweepConfigurationV2'
 import { createSweep } from './clients/adyen/adyen-balance-platform.client'
 
@@ -147,8 +146,8 @@ const createBankDetails = async (
   switchingCredentialId: string
 ) => {
   const aydenCredentials = await getAdyenCredentials(serviceExternalId, accountType, switchingCredentialId)
-  const legalEntityId = aydenCredentials?.legalEntityId!
-  const balanceAccountId = aydenCredentials?.balanceAccountId!
+  const legalEntityId = aydenCredentials!.legalEntityId!
+  const balanceAccountId = aydenCredentials!.balanceAccountId!
 
   const accountIdentification: BankAccountAccountIdentification = {
     sortCode: details.sortCode,
@@ -164,11 +163,15 @@ const createBankDetails = async (
     },
   }
 
-  const transferInstrumentId = (await createTransferInstrument(transferInstrumentInfo)).id
+  const transferInstrument = await createTransferInstrument(transferInstrumentInfo)
+
+  if (!transferInstrument) {
+    throw new Error('Transfer instrument creation failed')
+  }
 
   logger.info(`Transfer instrument created for legal entity`, {
     legal_entity_id: aydenCredentials,
-    transfer_instrument_id: transferInstrumentId
+    transfer_instrument_id: transferInstrument.id
   })
 
   const sweepSchedule: SweepSchedule = {
@@ -185,10 +188,14 @@ const createBankDetails = async (
     priorities: [CreateSweepConfigurationV2.PrioritiesEnum.Fast, CreateSweepConfigurationV2.PrioritiesEnum.Regular]
   };
 
-  const sweepId = (await createSweep(balanceAccountId, createSweepConfiguration)).id
+  const sweep = await createSweep(balanceAccountId, createSweepConfiguration)
+
+  if (!sweep) {
+    throw new Error('Payout schedules sweep creation failed')
+  }
 
   logger.info(`Custom payout schedules sweep created`, {
-    sweep_id: sweepId
+    sweep_id: sweep.id
   })
 
   return
