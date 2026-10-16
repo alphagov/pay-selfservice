@@ -17,6 +17,11 @@ describe('Adyen details service', () => {
     updateLegalEntity: sinon.stub(),
   }
 
+  const balancePlatformClientMock = {
+    createAccountHolder: sinon.stub(),
+    createBalanceAccount: sinon.stub(),
+  }
+
   const connectorClientMock = {
     gatewayAccounts: {
       patchCredentialsByServiceExternalIdAndAccountType: sinon.stub().resolves({}),
@@ -31,6 +36,7 @@ describe('Adyen details service', () => {
     service = proxyquire<AdyenDetailsService>('./adyen-details.service', {
       '@services/clients/pay/ConnectorClient.class': ConnectorClientStub,
       '@services/clients/adyen/adyen-legal-entity-management.client': legalEntityClientMock,
+      '@services/clients/adyen/adyen-balance-platform.client': balancePlatformClientMock,
     })
   })
 
@@ -48,18 +54,26 @@ describe('Adyen details service', () => {
       vatRegistrationNumber: 'GB123456789',
     } as OrganisationDetailsSession
 
-    it('should create Adyen legal entity for an organisation', async () => {
-      const legalEntity = { id: 'LE123', type: ORGANISATION_TYPE }
-      legalEntityClientMock.createLegalEntity.resolves(legalEntity)
-      connectorClientMock.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType.resolves({})
+    const SERVICE_NAME = 'Test Service'
+    const BALANCE_PLATFORM_ID = 'BP123'
 
-      const result = await service.createOrganisation(
-        fullOrganisationSession,
-        'service_id',
-        'live',
-        'credential_id',
-        'user_id'
-      )
+    const legalEntity = { id: 'LE123', type: ORGANISATION_TYPE }
+    const accountHolder = { id: 'AH123', legalEntityId: 'LE123' }
+    const balanceAccount = { id: 'BA123', accountHolderId: 'AH123' }
+
+    beforeEach(() => {
+      process.env.ADYEN_BALANCE_PLATFORM_ID = BALANCE_PLATFORM_ID
+      legalEntityClientMock.createLegalEntity.resolves(legalEntity)
+      balancePlatformClientMock.createAccountHolder.resolves(accountHolder)
+      balancePlatformClientMock.createBalanceAccount.resolves(balanceAccount)
+    })
+
+    afterEach(() => {
+      delete process.env.ADYEN_BALANCE_PLATFORM_ID
+    })
+
+    it('should create Adyen legal entity for an organisation', async () => {
+      const result = await service.createOrganisation(fullOrganisationSession, SERVICE_NAME)
 
       sinon.assert.calledOnceWithExactly(legalEntityClientMock.createLegalEntity, {
         type: ORGANISATION_TYPE,
@@ -77,15 +91,50 @@ describe('Adyen details service', () => {
         },
       })
 
-      sinon.assert.calledOnceWithExactly(
-        connectorClientMock.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType,
-        'service_id',
-        'live',
-        'credential_id',
-        new GatewayAccountCredentialUpdateRequest('user_id').replace().credentials().legalEntityId('LE123')
-      )
+      expect(result.legalEntity).to.equal(legalEntity)
+    })
 
-      expect(result).to.equal(legalEntity)
+    it('should create Adyen account holder for the organisation legal entity', async () => {
+      const result = await service.createOrganisation(fullOrganisationSession, SERVICE_NAME)
+
+      sinon.assert.calledOnceWithExactly(balancePlatformClientMock.createAccountHolder, {
+        legalEntityId: 'LE123',
+        balancePlatform: BALANCE_PLATFORM_ID,
+        description: SERVICE_NAME,
+      })
+      sinon.assert.callOrder(legalEntityClientMock.createLegalEntity, balancePlatformClientMock.createAccountHolder)
+      expect(result.accountHolder).to.equal(accountHolder)
+    })
+
+    it('should create Adyen balance account for the organisation account holder', async () => {
+      const result = await service.createOrganisation(fullOrganisationSession, SERVICE_NAME)
+
+      sinon.assert.calledOnceWithExactly(balancePlatformClientMock.createBalanceAccount, {
+        accountHolderId: 'AH123',
+        defaultCurrencyCode: 'GBP',
+        description: SERVICE_NAME,
+      })
+      sinon.assert.callOrder(
+        balancePlatformClientMock.createAccountHolder,
+        balancePlatformClientMock.createBalanceAccount
+      )
+      expect(result.balanceAccount).to.equal(balanceAccount)
+    })
+
+    it('should not create balance account when account holder creation fails', async () => {
+      balancePlatformClientMock.createAccountHolder.rejects(new Error('Adyen error'))
+
+      await expect(service.createOrganisation(fullOrganisationSession, SERVICE_NAME)).to.be.rejectedWith('Adyen error')
+      sinon.assert.notCalled(balancePlatformClientMock.createBalanceAccount)
+    })
+
+    it('should not create account holder when ADYEN_BALANCE_PLATFORM_ID is NOT set', async () => {
+      delete process.env.ADYEN_BALANCE_PLATFORM_ID
+
+      await expect(service.createOrganisation(fullOrganisationSession, SERVICE_NAME)).to.be.rejectedWith(
+        'ADYEN_BALANCE_PLATFORM_ID is not set'
+      )
+      sinon.assert.notCalled(balancePlatformClientMock.createAccountHolder)
     })
   })
 
@@ -274,6 +323,25 @@ describe('Adyen details service', () => {
           )
         })
       })
+    })
+  })
+
+  describe('createBalanceAccount', () => {
+    const ACCOUNT_HOLDER_ID = 'ABC123'
+    const SERVICE_NAME = 'Test Service'
+
+    it('should create Adyen balance account for the given account holder', async () => {
+      const balanceAccount = { id: 'BA123', accountHolderId: ACCOUNT_HOLDER_ID }
+      balancePlatformClientMock.createBalanceAccount.resolves(balanceAccount)
+
+      const result = await service.createBalanceAccount(ACCOUNT_HOLDER_ID, SERVICE_NAME)
+
+      sinon.assert.calledOnceWithExactly(balancePlatformClientMock.createBalanceAccount, {
+        accountHolderId: ACCOUNT_HOLDER_ID,
+        defaultCurrencyCode: 'GBP',
+        description: SERVICE_NAME,
+      })
+      expect(result).to.equal(balanceAccount)
     })
   })
 })

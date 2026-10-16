@@ -18,7 +18,6 @@ const serviceFixture = new ServiceFixture({
 const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.STRIPE, PaymentProvider.ADYEN, [], [], {
   type: 'live',
 }).toGatewayAccount()
-const USER = UserFixture.asServiceAdmin([serviceFixture], { externalId: 'user123abc' }).toUser()
 
 const mockResponse = sinon.stub()
 const createOrganisation = sinon.stub().resolves()
@@ -35,9 +34,13 @@ const BACK_LINK = formatServiceAndAccountPathsFor(
 const { req, res, call, nextRequest } = new ControllerTestBuilder(
   '@controllers/simplified-account/settings/adyen-details/organisation-details/reason-for-taking-payments.controller.ts'
 )
-  .withServiceExternalId(SERVICE_EXTERNAL_ID)
-  .withAccount(GATEWAY_ACCOUNT)
-  .withUser(USER)
+  .withService(serviceFixture.toService())
+  .withAccount(
+    GatewayAccountFixture.forSwitchingPsp(PaymentProvider.STRIPE, PaymentProvider.ADYEN, [], [], {
+      type: 'live',
+    }).toGatewayAccount()
+  )
+  .withUser(UserFixture.asServiceAdmin([serviceFixture]).toUser())
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/adyen-details.service': { createOrganisation },
@@ -112,11 +115,16 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
 
         sinon.assert.calledOnceWithExactly(
           createOrganisation,
-          new OrganisationDetailsSession(VALID_SESSION as OrganisationDetailsSession),
-          SERVICE_EXTERNAL_ID,
-          GATEWAY_ACCOUNT.type,
-          GATEWAY_ACCOUNT.getSwitchingCredential().externalId,
-          USER.externalId
+          new OrganisationDetailsSession({
+            organisationName: 'Test Organisation',
+            addressLine1: '1 Test Street',
+            addressCity: 'swansea',
+            addressPostcode: 'T3 5TT',
+            addressCountry: 'GB',
+            companyRegistrationNumber: '01234567',
+            vatRegistrationNumber: 'GB123456789',
+          } as OrganisationDetailsSession),
+          serviceFixture.name
         )
 
         sinon.assert.calledOnceWithExactly(

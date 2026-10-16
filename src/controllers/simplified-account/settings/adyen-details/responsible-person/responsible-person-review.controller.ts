@@ -4,6 +4,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 import { FROM_REVIEW_QUERY_PARAM, ResponsiblePersonSession } from './constants'
 import { markTaskAsComplete } from '@services/adyen-setup.service'
+import { createResponsiblePerson } from '@services/adyen-details.service'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { account } = req
@@ -57,7 +58,20 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 
 async function post(req: ServiceRequest, res: ServiceResponse) {
   const { account } = req
-  const switchingCredentialId = account.getSwitchingCredential().externalId
+  const switchingCredential = account.getSwitchingCredential()
+  const switchingCredentialId = switchingCredential.externalId
+  const currentSession = ResponsiblePersonSession.extract(req)
+
+  const completeSession = new ResponsiblePersonSession({
+    ...currentSession,
+  } as ResponsiblePersonSession)
+
+  const organisationLegalEntityId = switchingCredential.credentials.legalEntityId
+  if (!organisationLegalEntityId) {
+    throw new Error('Cannot create responsible person: no Adyen legal entity ID on the switching credential')
+  }
+
+  await createResponsiblePerson(completeSession, organisationLegalEntityId)
 
   // call connector to mark the task as complete
   await markTaskAsComplete(req.service.externalId, req.account.type, switchingCredentialId, 'responsiblePerson')

@@ -62,13 +62,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     ...currentSession,
   } as OrganisationDetailsSession)
 
-  await createOrganisation(
-    completeSession,
-    req.service.externalId,
-    req.account.type,
-    switchingCredentialId,
-    req.user.externalId
-  )
+  await createOrganisation(completeSession, req.service.name)
   await markTaskAsComplete(req.service.externalId, req.account.type, switchingCredentialId, 'organisationDetails')
   OrganisationDetailsSession.clear(req)
 
