@@ -6,6 +6,7 @@ import { getUser } from '@test/cypress/stubs/simplified-account/user-stubs'
 import * as GatewayAccountStubs from '@test/cypress/stubs/simplified-account/gateway-account-stubs'
 import { checkServiceNavigation } from '@test/cypress/integration/simplified-account/common/assertions'
 import { AdyenAccountSetupFixture } from '@test/fixtures/gateway-account/adyen-account-setup.fixture'
+import * as AdyenStubs from '@test/cypress/stubs/simplified-account/adyen-psp-stubs'
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
@@ -63,6 +64,9 @@ const setStubs = (additionalStubs = []) => {
       ADYEN_CREDENTIAL_EXTERNAL_ID,
       'organisation_details'
     ).success(),
+    AdyenStubs.createLegalEntity().success({ id: 'legal-entity-123' }),
+    AdyenStubs.createAccountHolder().success({ id: 'account-holder-123', legalEntityId: 'legal-entity-123' }),
+    AdyenStubs.createBalanceAccount().success({ id: 'balance-account-123', accountHolderId: 'account-holder-123' }),
     ...additionalStubs,
   ])
 }
@@ -72,21 +76,14 @@ describe(`Organisation details, company registration and VAT registration`, () =
     cy.setEncryptedCookies(USER_EXTERNAL_ID)
   })
 
-  it('accessibility check', () => {
-    setStubs()
-
-    ;[ORGANISATION_DETAILS_PATH, COMPANY_REGISTRATION_PATH, VAT_REGISTRATION_PATH].forEach((path) => {
-      cy.visit(path)
-      cy.a11yCheck()
-    })
-  })
-
   describe('for a service that is migrating to adyen', () => {
     it('should walk through organisation details, company registration and VAT registration in sequence', () => {
       setStubs()
 
       // organisation details
       cy.visit(ORGANISATION_DETAILS_PATH)
+      cy.a11yCheck()
+
       checkServiceNavigation('Switch provider to Adyen now', TASK_LIST_PATH)
       cy.get('h1').should('contain.text', 'Organisation details')
       cy.get('.govuk-back-link').should('have.attr', 'href', TASK_LIST_PATH)
@@ -108,6 +105,8 @@ describe(`Organisation details, company registration and VAT registration`, () =
 
       // company registration number
       cy.location('pathname').should('eq', COMPANY_REGISTRATION_PATH)
+      cy.a11yCheck()
+
       cy.get('h1').should('contain.text', 'Tell us your company registration number')
       cy.get('.govuk-back-link').should('have.attr', 'href', ORGANISATION_DETAILS_PATH)
       cy.get('#company-registration-number').should('exist')
@@ -117,6 +116,7 @@ describe(`Organisation details, company registration and VAT registration`, () =
 
       // VAT registration number
       cy.location('pathname').should('eq', VAT_REGISTRATION_PATH)
+      cy.a11yCheck()
       cy.get('h1').should('contain.text', 'Tell us your VAT registration number')
       cy.get('.govuk-back-link').should('have.attr', 'href', COMPANY_REGISTRATION_PATH)
       cy.get('#vat-registration-number').should('exist')
@@ -124,13 +124,10 @@ describe(`Organisation details, company registration and VAT registration`, () =
       cy.get('#vat-registration-number').type('GB123456789')
       cy.get('#vat-registration-number-submit').click()
 
-      // reason for taking payments
-      cy.location('pathname').should('eq', TAKING_PAYMENTS_PATH)
-      cy.get('h1').should('contain.text', `What will your service be taking payments for?`)
-
       //// sad path
-      cy.get('#reason-for-taking-payments-submit').click()
       cy.location('pathname').should('eq', TAKING_PAYMENTS_PATH)
+      cy.a11yCheck()
+      cy.get('#reason-for-taking-payments-submit').click()
       cy.get('.govuk-error-summary')
         .should('be.visible')
         .and('contain', 'There is a problem')
