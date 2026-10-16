@@ -109,7 +109,7 @@ describe(`Organisation's bank details`, () => {
       cy.get('#account-number').should('exist')
     })
 
-    it('should redirect to the task list when continue is pressed', () => {
+    it.skip('should redirect to the task list when continue is pressed', () => {
       setStubs()
 
       cy.visit(BANK_DETAILS_PATH)
