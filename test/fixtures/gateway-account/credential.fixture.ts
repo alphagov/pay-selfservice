@@ -60,6 +60,7 @@ export class CredentialFixture {
       recurring_customer_initiated: this.recurringCustomerInitiated?.toWorldpayCredentialData(),
       recurring_merchant_initiated: this.recurringMerchantInitiated?.toWorldpayCredentialData(),
       gateway_merchant_id: this.googlePayMerchantId,
+      legal_entity_id: this.legalEntityId ?? undefined,
     }
   }
 
