@@ -7,12 +7,14 @@ import * as GatewayAccountStubs from '@test/cypress/stubs/simplified-account/gat
 import { checkServiceNavigation } from '@test/cypress/integration/simplified-account/common/assertions'
 import { AdyenAccountSetupFixture } from '@test/fixtures/gateway-account/adyen-account-setup.fixture'
 import * as AdyenStubs from '@test/cypress/stubs/simplified-account/adyen-psp-stubs'
+import { CredentialFixture } from '@test/fixtures/gateway-account/credential.fixture'
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 12
 const ADYEN_CREDENTIAL_EXTERNAL_ID = 'adyen-credential-123-abc'
+const BALANCE_ACCOUNT_ID = 'BA-456'
 
 const BANK_DETAILS_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/adyen-details/${ADYEN_CREDENTIAL_EXTERNAL_ID}/bank-details`
 const TASK_LIST_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-adyen`
@@ -24,6 +26,7 @@ const gatewayAccountFixture = GatewayAccountFixture.forSwitchingPsp(
   [
     {
       externalId: ADYEN_CREDENTIAL_EXTERNAL_ID,
+      credentials: CredentialFixture.forAdyen({ balanceAccountId: BALANCE_ACCOUNT_ID })
     },
   ],
   {
@@ -62,6 +65,7 @@ const setStubs = (additionalStubs = []) => {
       'bank_details'
     ).success(),
     AdyenStubs.createTransferInstrument().success({ id: 'transfer-123' }),
+    AdyenStubs.createSweep(BALANCE_ACCOUNT_ID).success({ id: 'sweep-456' }),
     ...additionalStubs,
   ])
 }
