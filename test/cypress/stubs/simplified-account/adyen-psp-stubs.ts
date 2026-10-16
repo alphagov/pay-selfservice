@@ -54,7 +54,7 @@ export function createSweep(balanceAccountId: string) {
   return {
     success: function (sweep: { id: string }) {
       return stubBuilder('POST', path, 200, {
-        response: sweep
+        response: sweep,
       })
     },
   }

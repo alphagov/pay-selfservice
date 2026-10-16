@@ -26,7 +26,7 @@ const gatewayAccountFixture = GatewayAccountFixture.forSwitchingPsp(
   [
     {
       externalId: ADYEN_CREDENTIAL_EXTERNAL_ID,
-      credentials: CredentialFixture.forAdyen({ balanceAccountId: BALANCE_ACCOUNT_ID })
+      credentials: CredentialFixture.forAdyen({ balanceAccountId: BALANCE_ACCOUNT_ID }),
     },
   ],
   {

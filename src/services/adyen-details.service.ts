@@ -178,22 +178,22 @@ const createBankDetails = async (
 
   logger.info(`Transfer instrument created for legal entity`, {
     legal_entity_id: aydenCredentials,
-    transfer_instrument_id: transferInstrument.id
+    transfer_instrument_id: transferInstrument.id,
   })
 
   const sweepSchedule: SweepSchedule = {
     type: SweepSchedule.TypeEnum.Cron,
-    cronExpression: '00 2 * * MON-FRI'
-  };
+    cronExpression: '00 2 * * MON-FRI',
+  }
 
   const createSweepConfiguration: CreateSweepConfigurationV2 = {
     schedule: sweepSchedule,
     counterparty: { transferInstrumentId: transferInstrument.id },
-    currency: "GBP",
+    currency: 'GBP',
     category: CreateSweepConfigurationV2.CategoryEnum.Bank,
     type: CreateSweepConfigurationV2.TypeEnum.Push,
-    priorities: [CreateSweepConfigurationV2.PrioritiesEnum.Fast, CreateSweepConfigurationV2.PrioritiesEnum.Regular]
-  };
+    priorities: [CreateSweepConfigurationV2.PrioritiesEnum.Fast, CreateSweepConfigurationV2.PrioritiesEnum.Regular],
+  }
 
   const sweep = await createSweep(balanceAccountId, createSweepConfiguration)
 
@@ -202,7 +202,7 @@ const createBankDetails = async (
   }
 
   logger.info(`Custom payout schedules sweep created`, {
-    sweep_id: sweep.id
+    sweep_id: sweep.id,
   })
 
   return
