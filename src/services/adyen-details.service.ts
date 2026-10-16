@@ -13,7 +13,10 @@ import {
   updateLegalEntity,
   createTransferInstrument,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
-import { createAccountHolder as createAdyenAccountHolder } from '@services/clients/adyen/adyen-balance-platform.client'
+import {
+  createAccountHolder as createAdyenAccountHolder,
+  createBalanceAccount as createAdyenBalanceAccount,
+} from '@services/clients/adyen/adyen-balance-platform.client'
 import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManagement/individual'
@@ -21,6 +24,7 @@ import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManage
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 type Organization = Types.legalEntityManagement.Organization
 type AccountHolderInfo = Types.balancePlatform.AccountHolderInfo
+type BalanceAccountInfo = Types.balancePlatform.BalanceAccountInfo
 
 const connectorClient = new ConnectorClient()
 const logger = createLogger(__filename)
@@ -105,8 +109,9 @@ const createOrganisation = async (session: OrganisationDetailsSession, serviceNa
   }
   const legalEntity = await createLegalEntity(legalEntityInfo)
   const accountHolder = await createAccountHolder(legalEntity.id, serviceName)
+  const balanceAccount = await createBalanceAccount(accountHolder.id, serviceName)
 
-  return { legalEntity, accountHolder }
+  return { legalEntity, accountHolder, balanceAccount }
 }
 
 const getLegalEntityId = async (serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
@@ -217,6 +222,16 @@ const createAccountHolder = async (organisationLegalEntityId: string, serviceNam
   return createAdyenAccountHolder(accountHolderInfo)
 }
 
+const createBalanceAccount = async (accountHolderId: string, serviceName: string) => {
+  const balanceAccountInfo: BalanceAccountInfo = {
+    accountHolderId,
+    defaultCurrencyCode: 'GBP',
+    description: serviceName,
+  }
+
+  return createAdyenBalanceAccount(balanceAccountInfo)
+}
+
 const toUkInternationalNumber = (input: string): string => {
   const cleaned = input.replace(/[\s().-]/g, '')
   return cleaned.startsWith('+') ? cleaned : `+44${cleaned.replace(/^0/, '')}`
@@ -302,4 +317,5 @@ export {
   createBankDetails,
   createServiceDirector,
   createAccountHolder,
+  createBalanceAccount,
 }

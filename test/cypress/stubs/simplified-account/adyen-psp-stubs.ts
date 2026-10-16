@@ -35,3 +35,15 @@ export function createAccountHolder() {
     },
   }
 }
+
+export function createBalanceAccount() {
+  const path = `/bcl/v2/balanceAccounts`
+
+  return {
+    success: function (balanceAccount: { id: string; accountHolderId: string }) {
+      return stubBuilder('POST', path, 200, {
+        response: balanceAccount,
+      })
+    },
+  }
+}

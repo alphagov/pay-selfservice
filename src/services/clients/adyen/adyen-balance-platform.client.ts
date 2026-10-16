@@ -7,6 +7,8 @@ const ADYEN_MOCK_SERVER_URL = process.env.ADYEN_MOCK_SERVER_URL
 
 type AccountHolder = Types.balancePlatform.AccountHolder
 type AccountHolderInfo = Types.balancePlatform.AccountHolderInfo
+type BalanceAccount = Types.balancePlatform.BalanceAccount
+type BalanceAccountInfo = Types.balancePlatform.BalanceAccountInfo
 
 const client = new Client(
   { apiKey: ADYEN_BALANCE_PLATFORM_API_KEY, environment: ADYEN_ENVIRONMENT },
@@ -17,4 +19,8 @@ const balancePlatformAPI = new BalancePlatformAPI(client)
 
 export async function createAccountHolder(accountHolderInfo: AccountHolderInfo): Promise<AccountHolder> {
   return balancePlatformAPI.AccountHoldersApi.createAccountHolder(accountHolderInfo)
+}
+
+export async function createBalanceAccount(balanceAccountInfo: BalanceAccountInfo): Promise<BalanceAccount> {
+  return balancePlatformAPI.BalanceAccountsApi.createBalanceAccount(balanceAccountInfo)
 }
