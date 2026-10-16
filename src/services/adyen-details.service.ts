@@ -177,7 +177,7 @@ const createBankDetails = async (
   }
 
   logger.info(`Transfer instrument created for legal entity`, {
-    legal_entity_id: aydenCredentials,
+    legal_entity_id: aydenCredentials?.legalEntityId,
     transfer_instrument_id: transferInstrument.id,
   })
 
