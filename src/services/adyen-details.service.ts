@@ -16,6 +16,10 @@ import {
 import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManagement/individual'
+import { SweepSchedule } from '@adyen/api-library/lib/src/typings/balancePlatform/sweepSchedule'
+import { SweepCounterparty } from '@adyen/api-library/lib/src/typings/balancePlatform/sweepCounterparty'
+import { CreateSweepConfigurationV2 } from '@adyen/api-library/lib/src/typings/balancePlatform/createSweepConfigurationV2'
+import { createSweep } from './clients/adyen/adyen-balance-platform.client'
 
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 type Organization = Types.legalEntityManagement.Organization
@@ -125,7 +129,7 @@ const createOrganisation = async (
   return organisationLegalEntity
 }
 
-const getLegalEntityId = async (serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
+const getAdyenCredentials = async (serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
   const gatewayAccount = await connectorClient.gatewayAccounts.getByServiceExternalIdAndAccountType(
     serviceExternalId,
     accountType
@@ -133,8 +137,7 @@ const getLegalEntityId = async (serviceExternalId: string, accountType: string, 
   const adyenCredential = gatewayAccount.gatewayAccountCredentials.find(
     (credential) => credential.externalId === switchingCredentialId
   )
-  const legalEntityId = adyenCredential!.credentials.legalEntityId!
-  return legalEntityId
+  return adyenCredential?.credentials
 }
 
 const createBankDetails = async (
@@ -143,7 +146,9 @@ const createBankDetails = async (
   accountType: string,
   switchingCredentialId: string
 ) => {
-  const legalEntityId = await getLegalEntityId(serviceExternalId, accountType, switchingCredentialId)
+  const aydenCredentials = await getAdyenCredentials(serviceExternalId, accountType, switchingCredentialId)
+  const legalEntityId = aydenCredentials?.legalEntityId!
+  const balanceAccountId = aydenCredentials?.balanceAccountId!
 
   const accountIdentification: BankAccountAccountIdentification = {
     sortCode: details.sortCode,
@@ -159,10 +164,31 @@ const createBankDetails = async (
     },
   }
 
-  await createTransferInstrument(transferInstrumentInfo)
+  const transferInstrumentId = (await createTransferInstrument(transferInstrumentInfo)).id
 
   logger.info(`Transfer instrument created for legal entity`, {
-    legal_entity_id: legalEntityId,
+    legal_entity_id: aydenCredentials,
+    transfer_instrument_id: transferInstrumentId
+  })
+
+  const sweepSchedule: SweepSchedule = {
+    type: SweepSchedule.TypeEnum.Cron,
+    cronExpression: '00 2 * * MON-FRI'
+  };
+
+  const createSweepConfiguration: CreateSweepConfigurationV2 = {
+    schedule: sweepSchedule,
+    counterparty: { balanceAccountId },
+    currency: "GBP",
+    category: CreateSweepConfigurationV2.CategoryEnum.Bank,
+    type: CreateSweepConfigurationV2.TypeEnum.Push,
+    priorities: [CreateSweepConfigurationV2.PrioritiesEnum.Fast, CreateSweepConfigurationV2.PrioritiesEnum.Regular]
+  };
+
+  const sweepId = (await createSweep(balanceAccountId, createSweepConfiguration)).id
+
+  logger.info(`Custom payout schedules sweep created`, {
+    sweep_id: sweepId
   })
 
   return
