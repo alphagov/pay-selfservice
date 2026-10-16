@@ -7,6 +7,8 @@ import {
 } from '@models/gateway-account/dto/AdyenAccountSetup.dto'
 import { AdyenAccountSetupTaskStatus } from '@models/gateway-account/AdyenAccountSetup.class'
 
+export { patchUpdateCredentialsSuccessByServiceExternalIdAndType } from '@test/cypress/stubs/gateway-account-stubs'
+
 export function searchByServiceExternalIds(serviceExternalIds: string[]) {
   const path = `/v1/api/accounts`
 

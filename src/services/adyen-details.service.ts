@@ -89,7 +89,14 @@ const setAdyenBalanceAccountId = async (
   )
 }
 
-const createOrganisation = async (session: OrganisationDetailsSession, serviceName: string) => {
+const createOrganisation = async (
+  session: OrganisationDetailsSession,
+  serviceName: string,
+  serviceExternalId: string,
+  accountType: string,
+  switchingCredentialId: string,
+  userExternalId: string
+) => {
   const organization: Organization = {
     legalName: session.organisationName ?? '',
     registeredAddress: {
@@ -107,9 +114,20 @@ const createOrganisation = async (session: OrganisationDetailsSession, serviceNa
     type: Types.legalEntityManagement.LegalEntityInfoRequiredType.TypeEnum.Organization,
     organization,
   }
+
   const legalEntity = await createLegalEntity(legalEntityInfo)
   const accountHolder = await createAccountHolder(legalEntity.id, serviceName)
   const balanceAccount = await createBalanceAccount(accountHolder.id, serviceName)
+
+  if (!legalEntity) {
+    throw new Error('Organisation legal entity creation failed')
+  }
+
+  if (!accountHolder) {
+    throw new Error('Account holder creation failed')
+  }
+
+  await setAdyenLegalEntityId(serviceExternalId, accountType, switchingCredentialId, userExternalId, legalEntity.id)
 
   return { legalEntity, accountHolder, balanceAccount }
 }
