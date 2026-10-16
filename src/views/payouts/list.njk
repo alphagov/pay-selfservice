@@ -19,6 +19,7 @@
 {% endblock %}
 
 {% block mainContent %}
+  {% set paymentProvider = "Adyen" if hasAdyenTestAccount else "Stripe" %}
   <div class="govuk-grid-column-full">
     <h1 class="govuk-heading-l">
       Payments to your bank account
@@ -26,12 +27,12 @@
     </h1>
   </div>
   <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-0">
-    <p class="govuk-body">Payments Stripe has made to your bank account.</p>
+    <p class="govuk-body">Payments {{ paymentProvider }} has made to your bank account.</p>
     {% if not filterLiveAccounts %}
       <div class="govuk-inset-text">
         <p class="govuk-body"
           >Test reports represent how payments to your bank account appear. They show the total amount received from
-          Stripe in each payment and detail all the transactions.</p
+          {{ paymentProvider }} in each payment and detail all the transactions.</p
         >
         <p class="govuk-body"
           >The reports are available the next working day after your test transactions. With test transactions, no
@@ -48,7 +49,7 @@
 
     <p class="govuk-body">
       {% if filterLiveAccounts %}
-        {% if hasTestStripeAccount %}
+        {% if hasTestStripeAccount or hasAdyenTestAccount %}
           <a
             class="govuk-link govuk-link--no-visited-state"
             href="{{ routes.formattedPathFor(routes.payouts.listStatusFilter, 'test') }}"
@@ -132,9 +133,18 @@
               <td scope="row" class="govuk-table__cell">Test Service</td>
               <td class="govuk-table__cell govuk-table__cell--numeric"> {{ 19402 | penceToPoundsWithCurrency }} </td>
               <td class="govuk-table__cell">
-                <a class="govuk-link govuk-link--no-visited-state" href="/assets/csv/sample_reporting_payout.csv">
-                  Download CSV
-                </a>
+                {% if hasAdyenTestAccount %}
+                  <a
+                    class="govuk-link govuk-link--no-visited-state"
+                    href="/assets/csv/sample_adyen_reporting_payout.csv"
+                  >
+                    Download CSV
+                  </a>
+                {% else %}
+                  <a class="govuk-link govuk-link--no-visited-state" href="/assets/csv/sample_reporting_payout.csv">
+                    Download CSV
+                  </a>
+                {% endif %}
               </td>
             </tr>
           </tbody>
