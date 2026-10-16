@@ -65,6 +65,7 @@ const setStubs = (additionalStubs = []) => {
       'organisation_details'
     ).success(),
     AdyenStubs.createLegalEntity().success({ id: 'legal-entity-123' }),
+    AdyenStubs.createAccountHolder().success({ id: 'account-holder-123', legalEntityId: 'legal-entity-123' }),
     ...additionalStubs,
   ])
 }
