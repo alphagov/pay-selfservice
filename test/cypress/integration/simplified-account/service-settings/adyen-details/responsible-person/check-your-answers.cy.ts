@@ -6,12 +6,15 @@ import { getUser } from '@test/cypress/stubs/simplified-account/user-stubs'
 import * as GatewayAccountStubs from '@test/cypress/stubs/simplified-account/gateway-account-stubs'
 import { checkServiceNavigation } from '@test/cypress/integration/simplified-account/common/assertions'
 import { AdyenAccountSetupFixture } from '@test/fixtures/gateway-account/adyen-account-setup.fixture'
+import { CredentialFixture } from '@test/fixtures/gateway-account/credential.fixture'
+import * as AdyenPspStubs from '@test/cypress/stubs/simplified-account/adyen-psp-stubs'
 
 const USER_EXTERNAL_ID = 'user-123-abc'
 const SERVICE_EXTERNAL_ID = 'service456def'
 const LIVE_ACCOUNT_TYPE = 'live'
 const GATEWAY_ACCOUNT_ID = 12
 const ADYEN_CREDENTIAL_EXTERNAL_ID = 'adyen-credential-123-abc'
+const ORGANISATION_LEGAL_ENTITY_ID = 'LE_ORG_123'
 
 const TASK_LIST_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/switch-psp/switch-to-adyen`
 const RESPONSIBLE_PERSON_DETAILS_PATH = `/service/${SERVICE_EXTERNAL_ID}/account/${LIVE_ACCOUNT_TYPE}/settings/adyen-details/${ADYEN_CREDENTIAL_EXTERNAL_ID}/responsible-person/details`
@@ -26,6 +29,7 @@ const gatewayAccountFixture = GatewayAccountFixture.forSwitchingPsp(
   [
     {
       externalId: ADYEN_CREDENTIAL_EXTERNAL_ID,
+      credentials: CredentialFixture.forAdyen({ legalEntityId: ORGANISATION_LEGAL_ENTITY_ID }),
     },
   ],
   {
@@ -45,7 +49,7 @@ const adyenAccountSetup = AdyenAccountSetupFixture.NotStarted({
   credentialExternalId: ADYEN_CREDENTIAL_EXTERNAL_ID,
 })
 
-const setStubs = (additionalStubs = []) => {
+const setStubs = (additionalStubs: object[] = []) => {
   cy.task('setupStubs', [
     getUser(USER_EXTERNAL_ID).success(userFixture),
     GatewayAccountStubs.getByServiceExternalIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE).success(
@@ -148,8 +152,8 @@ describe(`Responsible person - check your answers`, () => {
         )
       })
 
-      it('should redirect to the migration task page when confirm and = continue is pressed', () => {
-        setStubs()
+      it('should redirect to the migration task page when confirm and continue is pressed', () => {
+        setStubs([AdyenPspStubs.createLegalEntity().success({ id: 'LE_PERSON_456' })])
 
         cy.get('#responsible-person-confirm').click()
 

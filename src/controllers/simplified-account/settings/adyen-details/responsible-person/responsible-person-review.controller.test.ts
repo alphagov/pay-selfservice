@@ -181,7 +181,7 @@ describe('Controller: settings/adyen-details/responsible-person/responsible-pers
           ORGANISATION_LEGAL_ENTITY_ID
         )
       })
-      it('should complete the responsible person task and redirect to the Adyen migration task list', async () => {
+      it('should complete the responsible person task and redirect to the Adyen migration task list', () => {
         sinon.assert.calledOnceWithExactly(
           markTaskAsComplete,
           SERVICE_EXTERNAL_ID,
