@@ -26,7 +26,9 @@ const listAllServicesPayouts = async function listAllServicesPayouts(req, res, n
 
     if (
       (filterLiveAccounts && !userPermittedAccountsSummary.gatewayAccountIds.length) ||
-      (!filterLiveAccounts && !userPermittedAccountsSummary.hasTestStripeAccount)
+      (!filterLiveAccounts &&
+        !userPermittedAccountsSummary.hasTestStripeAccount &&
+        !userPermittedAccountsSummary.hasAdyenTestAccount)
     ) {
       return next(
         new NoServicesWithPermissionError(
@@ -55,6 +57,7 @@ const listAllServicesPayouts = async function listAllServicesPayouts(req, res, n
       filterLiveAccounts,
       hasLiveAccounts: userPermittedAccountsSummary.hasLiveAccounts,
       hasTestStripeAccount: userPermittedAccountsSummary.hasTestStripeAccount,
+      hasAdyenTestAccount: userPermittedAccountsSummary.hasAdyenTestAccount,
       transactionsDownloadPath: Features.isEnabled(Features.TRANSACTIONS)
         ? formatPathFor(paths.allServiceTransactions.simplifiedAccount.download, filterLiveAccounts ? 'live' : 'test')
         : formatPathFor(paths.allServiceTransactions.downloadStatusFilter, filterLiveAccounts ? 'live' : 'test'),

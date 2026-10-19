@@ -128,7 +128,7 @@ const mergeServicesWithGatewayAccounts = (
 
     const associatedGatewayAccounts = [...mappedLiveGatewayAccounts, ...mappedTestGatewayAccounts]
       .map((account): MappedGateway => {
-        if (account.paymentProvider === PaymentProviders.STRIPE) {
+        if (account.paymentProvider === PaymentProviders.STRIPE || account.paymentProvider === PaymentProviders.ADYEN) {
           flags.hasAccountWithPayouts = true
         }
         return {
