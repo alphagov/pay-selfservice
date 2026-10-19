@@ -20,6 +20,9 @@ import {
 import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManagement/individual'
+import { requestPaymentMethod } from './clients/adyen/adyen-management.client'
+import { PaymentMethodSetupInfo } from '@adyen/api-library/lib/src/typings/management/paymentMethodSetupInfo'
+import p from 'proxyquire'
 
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 type Organization = Types.legalEntityManagement.Organization
@@ -131,6 +134,113 @@ const createOrganisation = async (
 
   return { legalEntity, accountHolder, balanceAccount }
 }
+
+const addPaymentMethodsToStore = async (storeId: string) => {
+  const merchantId = ''
+
+  await addCardPaymentMethods(storeId, merchantId)
+  await addWalletPaymentMethods(storeId, merchantId)
+  await addPayByBankPaymentMethod(storeId, merchantId)
+
+  logger.info(`Required payment methods added to store`, {
+    store_id: storeId
+  })
+}
+
+async function addCardPaymentMethods(storeId: string, merchantId: string) {
+  const cardPaymentMethods = [
+    PaymentMethodSetupInfo.TypeEnum.Visa,
+    PaymentMethodSetupInfo.TypeEnum.Mc,
+    PaymentMethodSetupInfo.TypeEnum.Jcb,
+    PaymentMethodSetupInfo.TypeEnum.Maestro,
+    PaymentMethodSetupInfo.TypeEnum.Discover,
+    PaymentMethodSetupInfo.TypeEnum.Diners,
+    PaymentMethodSetupInfo.TypeEnum.Cup,
+  ]
+
+  for (const paymentMethod of cardPaymentMethods) {
+    const paymentMethodSetupInfo: PaymentMethodSetupInfo = {
+      type: paymentMethod,
+      storeIds: [storeId]
+    }
+
+    await requestPaymentMethod(
+      merchantId,
+      paymentMethodSetupInfo
+    )
+
+    logger.info(`Payment method added to store`, {
+      type: paymentMethodSetupInfo.type,
+      store_id: storeId
+    })
+  }
+
+  const amexSetupInfo: PaymentMethodSetupInfo = {
+    type: PaymentMethodSetupInfo.TypeEnum.Amex,
+    amex: {
+      serviceLevel: Types.management.AmexInfo.ServiceLevelEnum.PaymentDesignatorContract
+    },
+    storeIds: [storeId]
+  }
+
+  await requestPaymentMethod(merchantId, amexSetupInfo)
+  logger.info(`Payment method added to store`, {
+    type: PaymentMethodSetupInfo.TypeEnum.Amex,
+    store_id: storeId
+  })
+}
+
+async function addWalletPaymentMethods(storeId: string, merchantId: string) {
+  const applePayPaymentType = PaymentMethodSetupInfo.TypeEnum.Applepay
+  const googlePayPaymentType = PaymentMethodSetupInfo.TypeEnum.Googlepay
+
+  const applePaySetupInfo: PaymentMethodSetupInfo = {
+    type: applePayPaymentType,
+    applePay: {
+      domains: [process.env.FRONTEND_URL!]
+    },
+    storeIds: [storeId]
+  }
+
+  await requestPaymentMethod(merchantId, applePaySetupInfo)
+
+  logger.info(`Payment method added to store`, {
+    type: applePayPaymentType,
+    store_id: storeId
+  })
+
+  const googlePayPaySetupInfo: PaymentMethodSetupInfo = {
+    type: googlePayPaymentType,
+    googlePay: {
+      merchantId
+    },
+    storeIds: [storeId]
+  }
+
+  await requestPaymentMethod(merchantId, googlePayPaySetupInfo)
+
+  logger.info(`Payment method added to store`, {
+    type: googlePayPaymentType,
+    store_id: storeId
+  })
+}
+
+async function addPayByBankPaymentMethod(storeId: string, merchantId: string) {
+  const payByBankPaymentType = PaymentMethodSetupInfo.TypeEnum.Paybybank
+  const payByBankSetupInfo: PaymentMethodSetupInfo = {
+    type: payByBankPaymentType,
+    storeIds: [storeId]
+  }
+
+  await requestPaymentMethod(merchantId, payByBankSetupInfo)
+
+  logger.info(`Payment method added to store`, {
+    type: payByBankPaymentType,
+    store_id: storeId
+  })
+}
+
+
 
 const getLegalEntityId = async (serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
   const gatewayAccount = await connectorClient.gatewayAccounts.getByServiceExternalIdAndAccountType(
