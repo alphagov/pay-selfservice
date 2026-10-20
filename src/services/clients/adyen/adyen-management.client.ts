@@ -9,6 +9,9 @@ const client = new Client({ apiKey: ADYEN_COMPANY_ACCOUNT_API_KEY, environment: 
 
 const managementAPI = new ManagementAPI(client)
 
-export async function requestPaymentMethod(merchantId: string, paymentMethodSetupInfo: PaymentMethodSetupInfo): Promise<PaymentMethod> {
-    return managementAPI.PaymentMethodsMerchantLevelApi.requestPaymentMethod(merchantId, paymentMethodSetupInfo)
+export async function requestPaymentMethod(
+  merchantId: string,
+  paymentMethodSetupInfo: PaymentMethodSetupInfo
+): Promise<PaymentMethod> {
+  return managementAPI.PaymentMethodsMerchantLevelApi.requestPaymentMethod(merchantId, paymentMethodSetupInfo)
 }
