@@ -61,6 +61,9 @@ export class CredentialFixture {
       recurring_merchant_initiated: this.recurringMerchantInitiated?.toWorldpayCredentialData(),
       gateway_merchant_id: this.googlePayMerchantId,
       legal_entity_id: this.legalEntityId ?? undefined,
+      balance_account_id: this.balanceAccountId ?? undefined,
+      store_id: this.storeId ?? undefined,
+      account_holder_id: this.accountHolderId ?? undefined,
     }
   }
 

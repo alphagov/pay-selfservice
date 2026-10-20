@@ -1,4 +1,5 @@
-import { Client, EnvironmentEnum, BalancePlatformAPI, Types } from '@adyen/api-library'
+import { BalancePlatformAPI, Client, EnvironmentEnum, Types } from '@adyen/api-library'
+import { CreateSweepConfigurationV2 } from '@adyen/api-library/lib/src/typings/balancePlatform/createSweepConfigurationV2'
 import { AdyenMockServerHttpClient } from '@services/clients/adyen/adyen-mock-server-http-client'
 
 const ADYEN_BALANCE_PLATFORM_API_KEY = process.env.ADYEN_BALANCE_PLATFORM_API_KEY
@@ -16,6 +17,10 @@ const client = new Client(
 )
 
 const balancePlatformAPI = new BalancePlatformAPI(client)
+
+export async function createSweep(balanceAccountId: string, sweepConfiguration: CreateSweepConfigurationV2) {
+  return balancePlatformAPI.CustomPayoutSchedulesSweepsApi.createSweep(balanceAccountId, sweepConfiguration)
+}
 
 export async function createAccountHolder(accountHolderInfo: AccountHolderInfo): Promise<AccountHolder> {
   return balancePlatformAPI.AccountHoldersApi.createAccountHolder(accountHolderInfo)
