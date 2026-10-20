@@ -64,8 +64,6 @@ const setStubs = (additionalStubs: object[] = []) => {
       ADYEN_CREDENTIAL_EXTERNAL_ID,
       'bank_details'
     ).success(),
-    AdyenStubs.createLegalEntity().success({ id: 'LEG' }),
-    AdyenStubs.createBalanceAccount().success({ id: BALANCE_ACCOUNT_ID, accountHolderId: 'ac' }),
     AdyenStubs.createTransferInstrument().success({ id: 'transfer-123' }),
     AdyenStubs.createSweep(BALANCE_ACCOUNT_ID).success({ id: 'sweep-456' }),
     ...additionalStubs,
