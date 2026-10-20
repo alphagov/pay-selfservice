@@ -419,13 +419,28 @@ describe('Transactions index', () => {
         state,
       }).toTransactionData()
 
+      const refundTransactionWithFees = new TransactionFixture({
+        externalId: TRANSACTION.transaction_id + '2-refund',
+        parentTransactionExternalId: TRANSACTION.transaction_id,
+        paymentDetails,
+        transactionType: ResourceType.REFUND,
+        state,
+        netAmount: -1030,
+        fee: 30,
+        amount: 1000,
+      }).toTransactionData()
+
       cy.task('setupStubs', [
-        getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([transactionWithFees, refundTransaction]),
+        getTransactionsForGatewayAccount(GATEWAY_ACCOUNT_ID).success([
+          transactionWithFees,
+          refundTransaction,
+          refundTransactionWithFees,
+        ]),
       ])
 
       cy.visit(TRANSACTIONS_LIST_URL)
 
-      cy.get('.transactions-list--row').should('have.length', 2)
+      cy.get('.transactions-list--row').should('have.length', 3)
 
       assertTransactionRow(
         0,
@@ -447,6 +462,18 @@ describe('Transactions index', () => {
         'Refund successful',
         '',
         penceToPoundsWithCurrency(-refundTransaction.amount)
+      )
+
+      assertTransactionRow(
+        2,
+        refundTransaction.reference,
+        TRANSACTION_URL(transactionWithFees.transaction_id),
+        refundTransaction.email!,
+        penceToPoundsWithCurrency(refundTransactionWithFees.amount),
+        'Visa',
+        'Refund successful',
+        '30',
+        penceToPoundsWithCurrency(refundTransactionWithFees.net_amount!)
       )
     })
 
