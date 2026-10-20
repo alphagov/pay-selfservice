@@ -9,6 +9,9 @@ const ADYEN_MOCK_SERVER_URL = process.env.ADYEN_MOCK_SERVER_URL
 type LegalEntity = Types.legalEntityManagement.LegalEntity
 type LegalEntityInfo = Types.legalEntityManagement.LegalEntityInfo
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
+type GeneratePciDescriptionResponse = Types.legalEntityManagement.GeneratePciDescriptionResponse
+type PciSigningRequest = Types.legalEntityManagement.PciSigningRequest
+type PciSigningResponse = Types.legalEntityManagement.PciSigningResponse
 
 const client = new Client(
   { apiKey: ADYEN_LEGAL_ENTITY_MANAGEMENT_API_KEY, environment: ADYEN_ENVIRONMENT },
@@ -33,4 +36,19 @@ export async function updateLegalEntity(
 
 export async function createTransferInstrument(transferInstrumentInfo: TransferInstrumentInfo) {
   return legalEntityManagementAPI.TransferInstrumentsApi.createTransferInstrument(transferInstrumentInfo)
+}
+
+export async function generatePciQuestionnaire(legalEntityId: string): Promise<GeneratePciDescriptionResponse> {
+  return legalEntityManagementAPI.PCIQuestionnairesApi.generatePciQuestionnaire(legalEntityId, {
+    additionalSalesChannels: [
+      Types.legalEntityManagement.GeneratePciDescriptionRequest.AdditionalSalesChannelsEnum.ECommerce,
+    ],
+  })
+}
+
+export async function signPciQuestionnaire(
+  legalEntityId: string,
+  pciSigningRequest: PciSigningRequest
+): Promise<PciSigningResponse> {
+  return legalEntityManagementAPI.PCIQuestionnairesApi.signPciQuestionnaire(legalEntityId, pciSigningRequest)
 }
