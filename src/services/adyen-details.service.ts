@@ -135,19 +135,19 @@ const createOrganisation = async (
   return { legalEntity, accountHolder, balanceAccount }
 }
 
-const addPaymentMethodsToStore = async (storeId: string) => {
+const addPaymentMethodsToStore = async (storeId: string, businessLineId: string) => {
   const merchantId = ''
 
-  await addCardPaymentMethods(storeId, merchantId)
-  await addWalletPaymentMethods(storeId, merchantId)
-  await addPayByBankPaymentMethod(storeId, merchantId)
+  await addCardPaymentMethods(storeId, businessLineId, merchantId)
+  await addGooglePayPaymentMethods(storeId, businessLineId, merchantId)
+  await addPayByBankPaymentMethod(storeId, businessLineId, merchantId)
 
   logger.info(`Required payment methods added to store`, {
     store_id: storeId
   })
 }
 
-async function addCardPaymentMethods(storeId: string, merchantId: string) {
+async function addCardPaymentMethods(storeId: string, businessLineId: string, merchantId: string) {
   const cardPaymentMethods = [
     PaymentMethodSetupInfo.TypeEnum.Visa,
     PaymentMethodSetupInfo.TypeEnum.Mc,
@@ -161,7 +161,8 @@ async function addCardPaymentMethods(storeId: string, merchantId: string) {
   for (const paymentMethod of cardPaymentMethods) {
     const paymentMethodSetupInfo: PaymentMethodSetupInfo = {
       type: paymentMethod,
-      storeIds: [storeId]
+      storeIds: [storeId],
+      businessLineId: businessLineId
     }
 
     await requestPaymentMethod(
@@ -177,10 +178,10 @@ async function addCardPaymentMethods(storeId: string, merchantId: string) {
 
   const amexSetupInfo: PaymentMethodSetupInfo = {
     type: PaymentMethodSetupInfo.TypeEnum.Amex,
-    amex: {
-      serviceLevel: Types.management.AmexInfo.ServiceLevelEnum.PaymentDesignatorContract
-    },
-    storeIds: [storeId]
+    storeIds: [storeId],
+    countries: ['GB'],
+    currencies: ['GBP'],
+    businessLineId: businessLineId
   }
 
   await requestPaymentMethod(merchantId, amexSetupInfo)
@@ -190,31 +191,16 @@ async function addCardPaymentMethods(storeId: string, merchantId: string) {
   })
 }
 
-async function addWalletPaymentMethods(storeId: string, merchantId: string) {
-  const applePayPaymentType = PaymentMethodSetupInfo.TypeEnum.Applepay
+async function addGooglePayPaymentMethods(storeId: string, businessLineId: string, merchantId: string) {
   const googlePayPaymentType = PaymentMethodSetupInfo.TypeEnum.Googlepay
-
-  const applePaySetupInfo: PaymentMethodSetupInfo = {
-    type: applePayPaymentType,
-    applePay: {
-      domains: [process.env.FRONTEND_URL!]
-    },
-    storeIds: [storeId]
-  }
-
-  await requestPaymentMethod(merchantId, applePaySetupInfo)
-
-  logger.info(`Payment method added to store`, {
-    type: applePayPaymentType,
-    store_id: storeId
-  })
 
   const googlePayPaySetupInfo: PaymentMethodSetupInfo = {
     type: googlePayPaymentType,
     googlePay: {
       merchantId
     },
-    storeIds: [storeId]
+    storeIds: [storeId],
+    businessLineId: businessLineId
   }
 
   await requestPaymentMethod(merchantId, googlePayPaySetupInfo)
@@ -225,11 +211,14 @@ async function addWalletPaymentMethods(storeId: string, merchantId: string) {
   })
 }
 
-async function addPayByBankPaymentMethod(storeId: string, merchantId: string) {
+async function addPayByBankPaymentMethod(storeId: string, businessLineId: string, merchantId: string) {
   const payByBankPaymentType = PaymentMethodSetupInfo.TypeEnum.Paybybank
   const payByBankSetupInfo: PaymentMethodSetupInfo = {
     type: payByBankPaymentType,
-    storeIds: [storeId]
+    storeIds: [storeId],
+    businessLineId: businessLineId,
+    countries: ['GB'],
+    currencies: ['GBP']
   }
 
   await requestPaymentMethod(merchantId, payByBankSetupInfo)
@@ -239,8 +228,6 @@ async function addPayByBankPaymentMethod(storeId: string, merchantId: string) {
     store_id: storeId
   })
 }
-
-
 
 const getLegalEntityId = async (serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
   const gatewayAccount = await connectorClient.gatewayAccounts.getByServiceExternalIdAndAccountType(
