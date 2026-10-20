@@ -152,6 +152,7 @@ describe('Controller: settings/adyen-details/service-director/service-director-c
 
       nextRequest({
         session: {
+          otherSessionData: 'keep',
           pageData: {
             serviceDirector: VALID_SESSION,
           },
@@ -198,11 +199,18 @@ describe('Controller: settings/adyen-details/service-director/service-director-c
           )
         )
       })
+
+      it('should clear the session service director details', async () => {
+        const thisCall = await call('post')
+        expect(thisCall.req.session).to.deep.include({ otherSessionData: 'keep', pageData: {} })
+      })
     })
 
     context('when the service director cannot be created', () => {
-      it('should not complete task or redirect', async () => {
+      beforeEach(() => {
         createServiceDirector.rejects(new Error('Adyen error'))
+      })
+      it('should not complete task or redirect', async () => {
         await expect(call('post')).to.be.rejectedWith('Adyen error')
         sinon.assert.notCalled(markTaskAsComplete)
         sinon.assert.notCalled(res.redirect)

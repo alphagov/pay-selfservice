@@ -63,6 +63,7 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
 
   await createServiceDirector(currentSession, organisationLegalEntityId)
   await markTaskAsComplete(req.service.externalId, req.account.type, switchingCredentialId, 'director')
+  ServiceDirectorSession.clear(req)
 
   return res.redirect(
     formatServiceAndAccountPathsFor(
