@@ -12,6 +12,7 @@ import {
   getLegalEntity,
   updateLegalEntity,
   createTransferInstrument,
+  createBusinessLine,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
 import {
   createAccountHolder as createAdyenAccountHolder,
@@ -20,6 +21,11 @@ import {
 import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManagement/individual'
+import { BusinessLineInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/businessLineInfo'
+import {
+  INDUSTRY_CODE_MAP,
+  TakingPaymentsFor,
+} from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 type Organization = Types.legalEntityManagement.Organization
@@ -91,6 +97,7 @@ const setAdyenBalanceAccountId = async (
 
 const createOrganisation = async (
   session: OrganisationDetailsSession,
+  takingPaymentsFor: TakingPaymentsFor,
   serviceName: string,
   serviceExternalId: string,
   accountType: string,
@@ -116,6 +123,12 @@ const createOrganisation = async (
   }
 
   const legalEntity = await createLegalEntity(legalEntityInfo)
+  await createBusinessLine({
+    service: BusinessLineInfo.ServiceEnum.PaymentProcessing,
+    industryCode: INDUSTRY_CODE_MAP[takingPaymentsFor],
+    legalEntityId: legalEntity.id,
+    salesChannels: ['eCommerce'],
+  })
   const accountHolder = await createAccountHolder(legalEntity.id, serviceName)
   const balanceAccount = await createBalanceAccount(accountHolder.id, serviceName)
 

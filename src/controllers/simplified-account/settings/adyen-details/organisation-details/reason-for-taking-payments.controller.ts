@@ -6,7 +6,7 @@ import { markTaskAsComplete } from '@services/adyen-setup.service'
 import { adyenDetailsSchema } from '@utils/simplified-account/validation/adyen-details.schema'
 import { validationResult } from 'express-validator'
 import { formatValidationErrors } from '@utils/simplified-account/format'
-import { OrganisationDetailsSession } from './constants'
+import { OrganisationDetailsSession, TakingPaymentsFor } from './constants'
 import { createOrganisation } from '@services/adyen-details.service'
 
 function getBackLink(req: ServiceRequest) {
@@ -62,8 +62,11 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     ...currentSession,
   } as OrganisationDetailsSession)
 
+  const takingPaymentsFor = (req.body as { takingPaymentsFor: TakingPaymentsFor }).takingPaymentsFor
+
   await createOrganisation(
     completeSession,
+    takingPaymentsFor,
     req.service.name,
     req.service.externalId,
     req.account.type,

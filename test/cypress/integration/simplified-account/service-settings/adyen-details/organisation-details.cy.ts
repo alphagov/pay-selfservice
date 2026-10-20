@@ -78,6 +78,7 @@ const setStubs = (additionalStubs = []) => {
       }
     ),
     AdyenStubs.createBalanceAccount().success({ id: 'balance-account-123', accountHolderId: 'account-holder-123' }),
+    AdyenStubs.createBusinessLine().success({ id: 'BL123' }),
     ...additionalStubs,
   ])
 }

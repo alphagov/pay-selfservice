@@ -52,3 +52,11 @@ export class OrganisationDetailsSession {
     return lodash.isEmpty(lodash.omitBy(this, (v) => lodash.isUndefined(v)))
   }
 }
+
+export type TakingPaymentsFor = 'government-activities' | 'police-safety' | 'everything-else'
+
+export const INDUSTRY_CODE_MAP: Record<TakingPaymentsFor, string> = {
+  'government-activities': '921',
+  'police-safety': '92219',
+  'everything-else': '92B',
+}
