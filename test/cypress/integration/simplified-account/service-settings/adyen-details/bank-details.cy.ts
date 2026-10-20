@@ -46,7 +46,7 @@ const adyenAccountSetup = AdyenAccountSetupFixture.NotStarted({
   credentialExternalId: ADYEN_CREDENTIAL_EXTERNAL_ID,
 })
 
-const setStubs = (additionalStubs = []) => {
+const setStubs = (additionalStubs: object[] = []) => {
   cy.task('setupStubs', [
     getUser(USER_EXTERNAL_ID).success(userFixture),
     GatewayAccountStubs.getByServiceExternalIdAndAccountType(SERVICE_EXTERNAL_ID, LIVE_ACCOUNT_TYPE).success(
@@ -64,6 +64,8 @@ const setStubs = (additionalStubs = []) => {
       ADYEN_CREDENTIAL_EXTERNAL_ID,
       'bank_details'
     ).success(),
+    AdyenStubs.createLegalEntity().success({ id: 'LEG' }),
+    AdyenStubs.createBalanceAccount().success({ id: BALANCE_ACCOUNT_ID, accountHolderId: 'ac' }),
     AdyenStubs.createTransferInstrument().success({ id: 'transfer-123' }),
     AdyenStubs.createSweep(BALANCE_ACCOUNT_ID).success({ id: 'sweep-456' }),
     ...additionalStubs,
@@ -109,7 +111,7 @@ describe(`Organisation's bank details`, () => {
       cy.get('#account-number').should('exist')
     })
 
-    it.skip('should redirect to the task list when continue is pressed', () => {
+    it('should redirect to the task list when continue is pressed', () => {
       setStubs()
 
       cy.visit(BANK_DETAILS_PATH)

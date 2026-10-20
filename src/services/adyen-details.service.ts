@@ -152,9 +152,9 @@ const createBankDetails = async (
   accountType: string,
   switchingCredentialId: string
 ) => {
-  const aydenCredentials = await getAdyenCredentials(serviceExternalId, accountType, switchingCredentialId)
-  const legalEntityId = aydenCredentials!.legalEntityId!
-  const balanceAccountId = aydenCredentials!.balanceAccountId!
+  const adyenCredentials = await getAdyenCredentials(serviceExternalId, accountType, switchingCredentialId)
+  const legalEntityId = adyenCredentials!.legalEntityId!
+  const balanceAccountId = adyenCredentials!.balanceAccountId!
 
   const accountIdentification: BankAccountAccountIdentification = {
     sortCode: details.sortCode,
