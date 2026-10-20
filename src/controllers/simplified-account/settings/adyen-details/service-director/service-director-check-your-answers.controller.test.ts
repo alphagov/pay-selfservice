@@ -1,3 +1,4 @@
+import { expect } from 'chai'
 import ControllerTestBuilder from '@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class'
 import { GatewayAccountFixture } from '@test/fixtures/gateway-account/gateway-account.fixture'
 import { PaymentProvider } from '@models/constants/payment-provider'
@@ -7,18 +8,27 @@ import sinon from 'sinon'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import paths from '@root/paths'
 import { ServiceDirectorSession } from './constants'
+import { CredentialFixture } from '@test/fixtures/gateway-account/credential.fixture'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
+const ORGANISATION_LEGAL_ENTITY_ID = 'LE_ORG_123'
 const SERVICE_TYPE = 'live'
 const serviceFixture = new ServiceFixture({
   externalId: SERVICE_EXTERNAL_ID,
 })
-const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.STRIPE, PaymentProvider.ADYEN, [], [], {
-  type: 'live',
-}).toGatewayAccount()
+const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(
+  PaymentProvider.STRIPE,
+  PaymentProvider.ADYEN,
+  [],
+  [{ credentials: CredentialFixture.forAdyen({ legalEntityId: ORGANISATION_LEGAL_ENTITY_ID }) }],
+  {
+    type: 'live',
+  }
+).toGatewayAccount()
 
 const mockResponse = sinon.stub()
 const markTaskAsComplete = sinon.stub().resolves()
+const createServiceDirector = sinon.stub()
 
 const { nextRequest, res, call } = new ControllerTestBuilder(
   '@controllers/simplified-account/settings/adyen-details/service-director/service-director-check-your-answers.controller'
@@ -29,6 +39,7 @@ const { nextRequest, res, call } = new ControllerTestBuilder(
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/adyen-setup.service': { markTaskAsComplete },
+    '@services/adyen-details.service': { createServiceDirector },
   })
   .build()
 
@@ -123,15 +134,79 @@ describe('Controller: settings/adyen-details/service-director/service-director-c
   })
 
   describe('post', () => {
-    it('should redirect to Adyen migration task list', async () => {
-      await call('post')
-      sinon.assert.calledOnceWithExactly(
-        markTaskAsComplete,
-        SERVICE_EXTERNAL_ID,
-        SERVICE_TYPE,
-        GATEWAY_ACCOUNT.getSwitchingCredential().externalId,
-        'director'
-      )
+    const VALID_SESSION: Partial<ServiceDirectorSession> = {
+      firstName: 'Sam',
+      lastName: 'Person',
+      dobDay: '25',
+      dobMonth: '12',
+      dobYear: '1970',
+      email: 'sam.person@gov.example.com',
+      addressLine1: '29 Acacia Road',
+      addressCity: 'London',
+      addressPostcode: 'W1 2AB',
+    }
+
+    beforeEach(() => {
+      markTaskAsComplete.resolves()
+      createServiceDirector.resolves({ id: 'LE123', type: 'individual' })
+
+      nextRequest({
+        session: {
+          pageData: {
+            serviceDirector: VALID_SESSION,
+          },
+        },
+      })
+    })
+
+    context('when the service director is succesfully created', () => {
+      it('should create the service director', async () => {
+        await call('post')
+        sinon.assert.calledOnceWithExactly(
+          createServiceDirector,
+          new ServiceDirectorSession({
+            firstName: 'Sam',
+            lastName: 'Person',
+            dobMonth: '12',
+            dobDay: '25',
+            dobYear: '1970',
+            email: 'sam.person@gov.example.com',
+            addressLine1: '29 Acacia Road',
+            addressCity: 'London',
+            addressPostcode: 'W1 2AB',
+          } as ServiceDirectorSession),
+          ORGANISATION_LEGAL_ENTITY_ID
+        )
+      })
+
+      it('should complete the service director task and redirect to the Adyen migration task list', async () => {
+        await call('post')
+        sinon.assert.calledOnceWithExactly(
+          markTaskAsComplete,
+          SERVICE_EXTERNAL_ID,
+          SERVICE_TYPE,
+          GATEWAY_ACCOUNT.getSwitchingCredential().externalId,
+          'director'
+        )
+
+        sinon.assert.calledOnceWithExactly(
+          res.redirect,
+          formatServiceAndAccountPathsFor(
+            paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+            SERVICE_EXTERNAL_ID,
+            SERVICE_TYPE
+          )
+        )
+      })
+    })
+
+    context('when the service director cannot be created', () => {
+      it('should not complete task or redirect', async () => {
+        createServiceDirector.rejects(new Error('Adyen error'))
+        await expect(call('post')).to.be.rejectedWith('Adyen error')
+        sinon.assert.notCalled(markTaskAsComplete)
+        sinon.assert.notCalled(res.redirect)
+      })
     })
   })
 })

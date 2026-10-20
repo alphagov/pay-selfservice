@@ -4,6 +4,7 @@ import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/fo
 import paths from '@root/paths'
 import { FROM_REVIEW_QUERY_PARAM, ServiceDirectorSession } from './constants'
 import { markTaskAsComplete } from '@services/adyen-setup.service'
+import { createServiceDirector } from '@services/adyen-details.service'
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const { account } = req
@@ -50,8 +51,17 @@ function get(req: ServiceRequest, res: ServiceResponse) {
 
 async function post(req: ServiceRequest, res: ServiceResponse) {
   const { account } = req
-  const switchingCredentialId = account.getSwitchingCredential().externalId
 
+  const switchingCredential = account.getSwitchingCredential()
+  const switchingCredentialId = switchingCredential.externalId
+  const currentSession = ServiceDirectorSession.extract(req)
+
+  const organisationLegalEntityId = switchingCredential.credentials.legalEntityId
+  if (!organisationLegalEntityId) {
+    throw new Error('Cannot create service director: no Adyen legal entity ID on the switching credential')
+  }
+
+  await createServiceDirector(currentSession, organisationLegalEntityId)
   await markTaskAsComplete(req.service.externalId, req.account.type, switchingCredentialId, 'director')
 
   return res.redirect(
