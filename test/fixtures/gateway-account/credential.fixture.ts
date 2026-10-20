@@ -63,7 +63,7 @@ export class CredentialFixture {
       legal_entity_id: this.legalEntityId ?? undefined,
       balance_account_id: this.balanceAccountId ?? undefined,
       store_id: this.storeId ?? undefined,
-      account_holder_id: this.accountHolderId ?? undefined
+      account_holder_id: this.accountHolderId ?? undefined,
     }
   }
 
