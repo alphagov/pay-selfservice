@@ -6,10 +6,14 @@ import { markTaskAsComplete } from '@services/adyen-setup.service'
 import { adyenDetailsSchema } from '@utils/simplified-account/validation/adyen-details.schema'
 import { validationResult } from 'express-validator'
 import { formatValidationErrors } from '@utils/simplified-account/format'
-import { OrganisationDetailsSession, TakingPaymentsFor } from './constants'
+import { OrganisationDetailsSession, GovernmentActivity } from './constants'
 import { createOrganisation } from '@services/adyen-details.service'
 
-function getBackLink(req: ServiceRequest) {
+interface ReasonForTakingPaymentsBody {
+  governmentActivity: GovernmentActivity
+}
+
+function getBackLink(req: ServiceRequest<ReasonForTakingPaymentsBody>) {
   return formatServiceAndAccountPathsFor(
     paths.simplifiedAccount.settings.adyenDetails.organisationDetails.vatRegistration,
     req.service.externalId,
@@ -36,12 +40,12 @@ function get(req: ServiceRequest, res: ServiceResponse) {
   })
 }
 
-async function post(req: ServiceRequest, res: ServiceResponse) {
+async function post(req: ServiceRequest<ReasonForTakingPaymentsBody>, res: ServiceResponse) {
   const { account } = req
   const switchingCredentialId = account.getSwitchingCredential().externalId
   const currentSession = OrganisationDetailsSession.extract(req)
 
-  const validations = [adyenDetailsSchema.selectTakingPaymentsFor.validate]
+  const validations = [adyenDetailsSchema.selectGovernmentActivity.validate]
 
   await Promise.all(validations.map((validation) => validation.run(req)))
   const errors = validationResult(req)
@@ -62,11 +66,11 @@ async function post(req: ServiceRequest, res: ServiceResponse) {
     ...currentSession,
   } as OrganisationDetailsSession)
 
-  const takingPaymentsFor = (req.body as { takingPaymentsFor: TakingPaymentsFor }).takingPaymentsFor
+  const { governmentActivity } = req.body
 
   await createOrganisation(
     completeSession,
-    takingPaymentsFor,
+    governmentActivity,
     req.service.name,
     req.service.externalId,
     req.account.type,

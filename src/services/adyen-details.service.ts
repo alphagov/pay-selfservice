@@ -24,7 +24,7 @@ import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManage
 import { BusinessLineInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/businessLineInfo'
 import {
   INDUSTRY_CODE_MAP,
-  TakingPaymentsFor,
+  GovernmentActivity,
 } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
@@ -97,7 +97,7 @@ const setAdyenBalanceAccountId = async (
 
 const createOrganisation = async (
   session: OrganisationDetailsSession,
-  takingPaymentsFor: TakingPaymentsFor,
+  governmentActivity: GovernmentActivity,
   serviceName: string,
   serviceExternalId: string,
   accountType: string,
@@ -125,7 +125,7 @@ const createOrganisation = async (
   const legalEntity = await createLegalEntity(legalEntityInfo)
   await createBusinessLine({
     service: BusinessLineInfo.ServiceEnum.PaymentProcessing,
-    industryCode: INDUSTRY_CODE_MAP[takingPaymentsFor],
+    industryCode: INDUSTRY_CODE_MAP[governmentActivity],
     legalEntityId: legalEntity.id,
     salesChannels: ['eCommerce'],
   })

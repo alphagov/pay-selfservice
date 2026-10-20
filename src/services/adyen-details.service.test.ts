@@ -78,7 +78,7 @@ describe('Adyen details service', () => {
     it('should create Adyen legal entity for an organisation', async () => {
       const result = await service.createOrganisation(
         fullOrganisationSession,
-        'government-activities',
+        'general-local',
         SERVICE_NAME,
         'service_id',
         'live',
@@ -108,7 +108,7 @@ describe('Adyen details service', () => {
     it('should create Adyen account holder for the organisation legal entity', async () => {
       const result = await service.createOrganisation(
         fullOrganisationSession,
-        'government-activities',
+        'general-local',
         SERVICE_NAME,
         'service_id',
         'live',
@@ -128,7 +128,7 @@ describe('Adyen details service', () => {
     it('should create Adyen balance account for the organisation account holder', async () => {
       const result = await service.createOrganisation(
         fullOrganisationSession,
-        'government-activities',
+        'general-local',
         SERVICE_NAME,
         'service_id',
         'live',
@@ -154,7 +154,7 @@ describe('Adyen details service', () => {
       await expect(
         service.createOrganisation(
           fullOrganisationSession,
-          'government-activities',
+          'general-local',
           SERVICE_NAME,
           'service_id',
           'live',
@@ -172,7 +172,7 @@ describe('Adyen details service', () => {
       await expect(
         service.createOrganisation(
           fullOrganisationSession,
-          'government-activities',
+          'general-local',
           SERVICE_NAME,
           'service_id',
           'live',
@@ -186,7 +186,7 @@ describe('Adyen details service', () => {
     it('should persist the legal entity id', async () => {
       await service.createOrganisation(
         fullOrganisationSession,
-        'government-activities',
+        'general-local',
         SERVICE_NAME,
         'service_id',
         'live',
@@ -206,7 +206,7 @@ describe('Adyen details service', () => {
     it('should create Adyen business line for the organisation legal entity', async () => {
       await service.createOrganisation(
         fullOrganisationSession,
-        'government-activities',
+        'general-local',
         SERVICE_NAME,
         'service_id',
         'live',

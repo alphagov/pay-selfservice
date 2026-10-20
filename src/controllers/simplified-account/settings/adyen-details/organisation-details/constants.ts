@@ -53,10 +53,10 @@ export class OrganisationDetailsSession {
   }
 }
 
-export type TakingPaymentsFor = 'government-activities' | 'police-safety' | 'everything-else'
+export type GovernmentActivity = 'general-local' | 'police-safety' | 'everything-else'
 
-export const INDUSTRY_CODE_MAP: Record<TakingPaymentsFor, string> = {
-  'government-activities': '921',
+export const INDUSTRY_CODE_MAP: Record<GovernmentActivity, string> = {
+  'general-local': '921',
   'police-safety': '92219',
   'everything-else': '92B',
 }
