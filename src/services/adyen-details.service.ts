@@ -13,6 +13,7 @@ import {
   updateLegalEntity,
   createTransferInstrument,
   createBusinessLine,
+  getTermsOfService,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
 import {
   createAccountHolder as createAdyenAccountHolder,
@@ -279,6 +280,8 @@ const createResponsiblePerson = async (session: ResponsiblePersonSession, organi
 
   await updateLegalEntity(organisationLegalEntityId, entityAssociationsPayload)
 
+  const { termsOfServiceDocumentId } = await generateTermsOfService(organisationLegalEntityId)
+
   return responsiblePerson
 }
 
@@ -390,6 +393,16 @@ function ensureVatRegistrationPrefix(vatRegistrationNumber: string | undefined):
     return vatRegistrationNumber
   }
   return `GB${vatRegistrationNumber}`
+}
+
+const generateTermsOfService = async (legalEntityId: string) => {
+  const getTermsOfServiceDocumentRequest: Types.legalEntityManagement.GetTermsOfServiceDocumentRequest = {
+    language: 'en',
+    type: Types.legalEntityManagement.GetTermsOfServiceDocumentRequest.TypeEnum.AdyenForPlatformsAdvanced,
+    termsOfServiceDocumentFormat: 'TXT',
+  }
+
+  return getTermsOfService(legalEntityId, getTermsOfServiceDocumentRequest)
 }
 
 export {

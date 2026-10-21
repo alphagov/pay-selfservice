@@ -83,3 +83,19 @@ export async function signPciQuestionnaire(
     legalEntityManagementAPI.PCIQuestionnairesApi.signPciQuestionnaire(legalEntityId, pciSigningRequest)
   )
 }
+
+export async function getTermsOfService(
+  legalEntityId: string,
+  getTermsOfServiceDocumentRequest: Types.legalEntityManagement.GetTermsOfServiceDocumentRequest
+) {
+  return new AdyenRequest(AdyenAPI.LEGAL_ENTITY_MANAGEMENT, 'get terms of service').execute(() =>
+    legalEntityManagementAPI.TermsOfServiceApi.getTermsOfServiceDocument(
+      legalEntityId,
+      getTermsOfServiceDocumentRequest
+    )
+  return legalEntityManagementAPI.TermsOfServiceApi.getTermsOfServiceDocument(
+    legalEntityId,
+    getTermsOfServiceDocumentRequest
+  )
+}
+

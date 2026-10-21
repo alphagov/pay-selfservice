@@ -95,3 +95,16 @@ export function createBusinessLine() {
     },
   }
 }
+
+export function getTermsOfService(legalEntityId: string) {
+  const path = `/lem/v4/legalEntities/${legalEntityId}/termsOfService`
+
+  return {
+    success: function (termsOfService: { termsOfServiceDocumentId: string }) {
+      return stubBuilder('POST', path, 200, {
+        response: termsOfService,
+      })
+    },
+  }
+}
+
