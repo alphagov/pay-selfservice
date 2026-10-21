@@ -7,7 +7,29 @@ import {
 } from '@models/gateway-account/dto/AdyenAccountSetup.dto'
 import { AdyenAccountSetupTaskStatus } from '@models/gateway-account/AdyenAccountSetup.class'
 
-export { patchUpdateCredentialsSuccessByServiceExternalIdAndType } from '@test/cypress/stubs/gateway-account-stubs'
+export function patchUpdateCredentialsSuccessByServiceExternalIdAndType(
+  serviceExternalId: string,
+  accountType: string,
+  credentialId: string,
+  userExternalId: string,
+  patches: {
+    op: 'replace'
+    path: string
+    value: Record<string, string>
+  }[]
+) {
+  const path = `/v1/api/service/${serviceExternalId}/account/${accountType}/credentials/${credentialId}`
+  return stubBuilder('PATCH', path, 200, {
+    request: [
+      {
+        op: 'replace',
+        path: 'last_updated_by_user_external_id',
+        value: userExternalId,
+      },
+      ...patches,
+    ],
+  })
+}
 
 export function searchByServiceExternalIds(serviceExternalIds: string[]) {
   const path = `/v1/api/accounts`
