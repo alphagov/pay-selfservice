@@ -34,11 +34,14 @@ function get(req: ServiceRequest, res: ServiceResponse) {
     [ADYEN]: formatServiceAndAccountPathsFor(
       paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
       service.externalId,
-      account.type,
-    )
+      account.type
+    ),
   }
 
-  const template = paymentProvider === ADYEN ? 'simplified-account/settings/switch-psp/switch-to-adyen/payment-info' : 'simplified-account/settings/switch-psp/make-test-payment/index'
+  const template =
+    paymentProvider === ADYEN
+      ? 'simplified-account/settings/switch-psp/switch-to-adyen/payment-info'
+      : 'simplified-account/settings/switch-psp/make-test-payment/index'
 
   const context = {
     paymentProvider,

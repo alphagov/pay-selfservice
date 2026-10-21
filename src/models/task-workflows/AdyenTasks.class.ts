@@ -158,8 +158,7 @@ class AdyenTask extends Task {
       formatServiceAndAccountPathsFor(
         paths.simplifiedAccount.settings.switchPsp.makeTestPayment.outbound,
         service.externalId,
-        gatewayAccount.type,
-
+        gatewayAccount.type
       )
     ).setStatus(status)
   }
@@ -197,7 +196,12 @@ export class AdyenTasks extends Tasks<AdyenTask> {
     completeOrganisationDetailsTasks: AdyenTask[],
     completeFinalTasks: AdyenTask[]
   ) {
-    super([...confirmOrganisationTasks, ...acceptLegalTermsTasks, ...completeOrganisationDetailsTasks, ...completeFinalTasks])
+    super([
+      ...confirmOrganisationTasks,
+      ...acceptLegalTermsTasks,
+      ...completeOrganisationDetailsTasks,
+      ...completeFinalTasks,
+    ])
     this.confirmOrganisationTasks = confirmOrganisationTasks
     this.acceptLegalTermsTasks = acceptLegalTermsTasks
     this.completeOrganisationDetailsTasks = completeOrganisationDetailsTasks
