@@ -32,7 +32,7 @@ export class OrganisationDetailsSession {
   companyRegistrationNumber?: string
   vatRegistrationNumber?: string
 
-  constructor(data: OrganisationDetailsSession) {
+  constructor(data: Partial<OrganisationDetailsSession>) {
     Object.assign(this, data)
   }
 
