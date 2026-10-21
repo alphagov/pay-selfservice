@@ -156,7 +156,7 @@ class AdyenTask extends Task {
       'Make a £1 payment using a debit or credit card',
       AdyenTaskIdentifier.PAYMENT,
       formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+        paths.simplifiedAccount.settings.switchPsp.switchToAdyen.payment,
         service.externalId,
         gatewayAccount.type,
         switchingCredentialId
