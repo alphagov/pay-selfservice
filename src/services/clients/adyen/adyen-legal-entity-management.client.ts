@@ -46,5 +46,7 @@ export async function createTransferInstrument(transferInstrumentInfo: TransferI
 }
 
 export async function createBusinessLine(businessLineInfo: BusinessLineInfo) {
-  return legalEntityManagementAPI.BusinessLinesApi.createBusinessLine(businessLineInfo)
+  return new AdyenRequest(AdyenAPI.LEGAL_ENTITY_MANAGEMENT, 'create business line').execute(() =>
+    legalEntityManagementAPI.BusinessLinesApi.createBusinessLine(businessLineInfo)
+  )
 }
