@@ -199,7 +199,16 @@ describe('Adyen details service', () => {
         'service_id',
         'live',
         'credential_id',
-        new GatewayAccountCredentialUpdateRequest('user_id').replace().credentials().legalEntityId('LE123')
+        new GatewayAccountCredentialUpdateRequest('user_id')
+          .replace()
+          .credentials()
+          .legalEntityId('LE123')
+          .replace()
+          .credentials()
+          .balanceAccountId('BA123')
+          .replace()
+          .credentials()
+          .accountHolderId('AH123')
       )
     })
 

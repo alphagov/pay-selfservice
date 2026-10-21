@@ -98,15 +98,7 @@ const setAdyenBalanceAccountId = async (
   )
 }
 
-const createOrganisation = async (
-  session: OrganisationDetailsSession,
-  governmentActivity: GovernmentActivity,
-  serviceName: string,
-  serviceExternalId: string,
-  accountType: string,
-  switchingCredentialId: string,
-  userExternalId: string
-) => {
+const createOrganisationLegalEntity = (session: OrganisationDetailsSession) => {
   const organization: Organization = {
     legalName: session.organisationName ?? '',
     registeredAddress: {
@@ -125,7 +117,20 @@ const createOrganisation = async (
     organization,
   }
 
-  const legalEntity = await createLegalEntity(legalEntityInfo)
+  return createLegalEntity(legalEntityInfo)
+}
+
+const createOrganisation = async (
+  session: OrganisationDetailsSession,
+  governmentActivity: GovernmentActivity,
+  serviceName: string,
+  serviceExternalId: string,
+  accountType: string,
+  switchingCredentialId: string,
+  userExternalId: string
+) => {
+  const legalEntity = await createOrganisationLegalEntity(session)
+
   await createBusinessLine({
     service: BusinessLineInfo.ServiceEnum.PaymentProcessing,
     industryCode: INDUSTRY_CODE_MAP[governmentActivity],
@@ -135,15 +140,21 @@ const createOrganisation = async (
   const accountHolder = await createAccountHolder(legalEntity.id, serviceName)
   const balanceAccount = await createBalanceAccount(accountHolder.id, serviceName)
 
-  if (!legalEntity) {
-    throw new Error('Organisation legal entity creation failed')
-  }
-
-  if (!accountHolder) {
-    throw new Error('Account holder creation failed')
-  }
-
-  await setAdyenLegalEntityId(serviceExternalId, accountType, switchingCredentialId, userExternalId, legalEntity.id)
+  await connectorClient.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType(
+    serviceExternalId,
+    accountType,
+    switchingCredentialId,
+    new GatewayAccountCredentialUpdateRequest(userExternalId)
+      .replace()
+      .credentials()
+      .legalEntityId(legalEntity.id)
+      .replace()
+      .credentials()
+      .balanceAccountId(balanceAccount.id)
+      .replace()
+      .credentials()
+      .accountHolderId(accountHolder.id)
+  )
 
   return { legalEntity, accountHolder, balanceAccount }
 }
