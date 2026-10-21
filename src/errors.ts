@@ -107,6 +107,8 @@ class TaskAccessedOutOfSequenceError extends DomainError {
 
 class InvalidRefundAmountAvailableError extends DomainError {}
 
+class AdyenApiError extends DomainError {}
+
 export {
   NotAuthenticatedError,
   UserAccountDisabledError,
@@ -123,4 +125,5 @@ export {
   TaskAlreadyCompletedError,
   TaskAccessedOutOfSequenceError,
   InvalidRefundAmountAvailableError,
+  AdyenApiError,
 }
