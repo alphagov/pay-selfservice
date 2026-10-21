@@ -8,7 +8,7 @@
     <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
     {{
       govukRadios({
-        name: "takingPaymentsFor",
+        name: "governmentActivity",
         fieldset: {
           legend: {
             text: "What will your service be taking payments for?",
@@ -20,21 +20,21 @@
           text: "This helps the payment provider to categorise the service correctly."
         },
         errorMessage: {
-          text: errors.formErrors['takingPaymentsFor']
-          } if errors.formErrors['takingPaymentsFor'],
+          text: errors.formErrors['governmentActivity']
+          } if errors.formErrors['governmentActivity'],
         items: [
           {
-            value: "government-activities",
+            value: "general-local",
             text: "General local government activities",
             attributes: {
-              "data-cy": "radio-government-activities"
+              "data-cy": "radio-general-local"
             }
           },
           {
             value: "police-safety",
             text: "Police and public safety",
             attributes: {
-              "data-cy": "radio-government-activities"
+              "data-cy": "radio-police-safety"
             }
           },
           {

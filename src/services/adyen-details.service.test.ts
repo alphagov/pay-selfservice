@@ -15,6 +15,7 @@ describe('Adyen details service', () => {
     createLegalEntity: sinon.stub(),
     getLegalEntity: sinon.stub(),
     updateLegalEntity: sinon.stub(),
+    createBusinessLine: sinon.stub(),
   }
 
   const balancePlatformClientMock = {
@@ -67,6 +68,7 @@ describe('Adyen details service', () => {
       balancePlatformClientMock.createAccountHolder.resolves(accountHolder)
       balancePlatformClientMock.createBalanceAccount.resolves(balanceAccount)
       connectorClientMock.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType.resolves({})
+      legalEntityClientMock.createBusinessLine.resolves({ id: 'BL123' })
     })
 
     afterEach(() => {
@@ -76,6 +78,7 @@ describe('Adyen details service', () => {
     it('should create Adyen legal entity for an organisation', async () => {
       const result = await service.createOrganisation(
         fullOrganisationSession,
+        'general-local',
         SERVICE_NAME,
         'service_id',
         'live',
@@ -105,6 +108,7 @@ describe('Adyen details service', () => {
     it('should create Adyen account holder for the organisation legal entity', async () => {
       const result = await service.createOrganisation(
         fullOrganisationSession,
+        'general-local',
         SERVICE_NAME,
         'service_id',
         'live',
@@ -124,6 +128,7 @@ describe('Adyen details service', () => {
     it('should create Adyen balance account for the organisation account holder', async () => {
       const result = await service.createOrganisation(
         fullOrganisationSession,
+        'general-local',
         SERVICE_NAME,
         'service_id',
         'live',
@@ -149,6 +154,7 @@ describe('Adyen details service', () => {
       await expect(
         service.createOrganisation(
           fullOrganisationSession,
+          'general-local',
           SERVICE_NAME,
           'service_id',
           'live',
@@ -166,6 +172,7 @@ describe('Adyen details service', () => {
       await expect(
         service.createOrganisation(
           fullOrganisationSession,
+          'general-local',
           SERVICE_NAME,
           'service_id',
           'live',
@@ -179,6 +186,7 @@ describe('Adyen details service', () => {
     it('should persist the legal entity id', async () => {
       await service.createOrganisation(
         fullOrganisationSession,
+        'general-local',
         SERVICE_NAME,
         'service_id',
         'live',
@@ -193,6 +201,56 @@ describe('Adyen details service', () => {
         'credential_id',
         new GatewayAccountCredentialUpdateRequest('user_id').replace().credentials().legalEntityId('LE123')
       )
+    })
+
+    it('should create Adyen business line for the organisation legal entity', async () => {
+      await service.createOrganisation(
+        fullOrganisationSession,
+        'general-local',
+        SERVICE_NAME,
+        'service_id',
+        'live',
+        'credential_id',
+        'user_id'
+      )
+
+      sinon.assert.calledOnceWithExactly(legalEntityClientMock.createBusinessLine, {
+        service: 'paymentProcessing',
+        industryCode: '921',
+        legalEntityId: 'LE123',
+        salesChannels: ['eCommerce'],
+      })
+      sinon.assert.callOrder(
+        legalEntityClientMock.createLegalEntity,
+        legalEntityClientMock.createBusinessLine,
+        balancePlatformClientMock.createAccountHolder
+      )
+    })
+
+    it('should map police-safety to industry code 92219', async () => {
+      await service.createOrganisation(
+        fullOrganisationSession,
+        'police-safety',
+        SERVICE_NAME,
+        'service_id',
+        'live',
+        'credential_id',
+        'user_id'
+      )
+      expect(legalEntityClientMock.createBusinessLine.firstCall.args[0].industryCode).to.equal('92219')
+    })
+
+    it('should map everything-else to industry code 92B', async () => {
+      await service.createOrganisation(
+        fullOrganisationSession,
+        'everything-else',
+        SERVICE_NAME,
+        'service_id',
+        'live',
+        'credential_id',
+        'user_id'
+      )
+      expect(legalEntityClientMock.createBusinessLine.firstCall.args[0].industryCode).to.equal('92B')
     })
   })
 

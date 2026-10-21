@@ -29,20 +29,20 @@ describe('adyenDetailsSchema', () => {
       })
     })
   })
-  describe('takingPaymentsFor', () => {
-    it('should pass validation when takingPaymentsFor is provided', async () => {
-      const req = { body: { takingPaymentsFor: 'government-activities' } }
+  describe('governmentActivity', () => {
+    it('should pass validation when governmentActivity is provided', async () => {
+      const req = { body: { governmentActivity: 'general-local' } }
 
-      await adyenDetailsSchema.selectTakingPaymentsFor.validate.run(req)
+      await adyenDetailsSchema.selectGovernmentActivity.validate.run(req)
       const errors = validationResult(req)
 
       expect(errors.isEmpty()).to.be.true
     })
 
-    it('should fail validation when takingPaymentsFor is empty', async () => {
-      const req = { body: { takingPaymentsFor: '' } }
+    it('should fail validation when governmentActivity is empty', async () => {
+      const req = { body: { governmentActivity: '' } }
 
-      await adyenDetailsSchema.selectTakingPaymentsFor.validate.run(req)
+      await adyenDetailsSchema.selectGovernmentActivity.validate.run(req)
       const errors = validationResult(req)
 
       expect(errors.isEmpty()).to.be.false
@@ -50,7 +50,7 @@ describe('adyenDetailsSchema', () => {
         type: 'field',
         value: '',
         msg: 'You must make a selection',
-        path: 'takingPaymentsFor',
+        path: 'governmentActivity',
         location: 'body',
       })
     })

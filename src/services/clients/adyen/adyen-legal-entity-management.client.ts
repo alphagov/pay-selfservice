@@ -2,6 +2,7 @@ import { Client, EnvironmentEnum, HttpURLConnectionClient, LegalEntityManagement
 import { TransferInstrumentInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/transferInstrumentInfo'
 import { AdyenMockServerHttpClient } from '@services/clients/adyen/adyen-mock-server-http-client'
 import { AdyenAPI, AdyenRequest } from '@services/clients/adyen/adyen-request-wrapper'
+import { BusinessLineInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/businessLineInfo'
 
 const ADYEN_LEGAL_ENTITY_MANAGEMENT_API_KEY = process.env.ADYEN_LEGAL_ENTITY_MANAGEMENT_API_KEY
 const ADYEN_ENVIRONMENT = process.env.ADYEN_ENVIRONMENT === 'LIVE' ? EnvironmentEnum.LIVE : EnvironmentEnum.TEST
@@ -52,5 +53,11 @@ export async function updateLegalEntity(
 export async function createTransferInstrument(transferInstrumentInfo: TransferInstrumentInfo) {
   return new AdyenRequest(AdyenAPI.LEGAL_ENTITY_MANAGEMENT, 'create transfer instrument').execute(() =>
     legalEntityManagementAPI.TransferInstrumentsApi.createTransferInstrument(transferInstrumentInfo)
+  )
+}
+
+export async function createBusinessLine(businessLineInfo: BusinessLineInfo) {
+  return new AdyenRequest(AdyenAPI.LEGAL_ENTITY_MANAGEMENT, 'create business line').execute(() =>
+    legalEntityManagementAPI.BusinessLinesApi.createBusinessLine(businessLineInfo)
   )
 }

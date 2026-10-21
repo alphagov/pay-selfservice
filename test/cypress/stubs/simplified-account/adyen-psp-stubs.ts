@@ -83,3 +83,15 @@ export function createBalanceAccount() {
     },
   }
 }
+
+export function createBusinessLine() {
+  const path = `/lem/v4/businessLines`
+
+  return {
+    success: function (businessLine: { id: string }) {
+      return stubBuilder('POST', path, 200, {
+        response: businessLine,
+      })
+    },
+  }
+}

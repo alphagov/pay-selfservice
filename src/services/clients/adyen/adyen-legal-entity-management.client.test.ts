@@ -6,6 +6,8 @@ import { TransferInstrumentInfo } from '@adyen/api-library/lib/src/typings/legal
 import { TransferInstrument } from '@adyen/api-library/lib/src/typings/legalEntityManagement/transferInstrument'
 import { UKLocalAccountIdentification } from '@adyen/api-library/lib/src/typings/balancePlatform/uKLocalAccountIdentification'
 import { BankAccountAccountIdentification } from '@adyen/api-library/lib/src/typings/balancePlatform/bankAccountAccountIdentification'
+import { BusinessLineInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/businessLineInfo'
+import { BusinessLine } from '@adyen/api-library/lib/src/typings/legalEntityManagement/businessLine'
 
 type LegalEntity = Types.legalEntityManagement.LegalEntity
 type LegalEntityInfo = Types.legalEntityManagement.LegalEntityInfo
@@ -16,6 +18,7 @@ interface LegalEntityManagementClient {
   createTransferInstrument: (transferInstrumentInfo: TransferInstrumentInfo) => Promise<TransferInstrument>
   getLegalEntity: (id: string) => Promise<LegalEntity>
   updateLegalEntity: (id: string, legalEntityInfo: LegalEntityInfo) => Promise<LegalEntity>
+  createBusinessLine: (businessLineInfo: BusinessLineInfo) => Promise<BusinessLine>
 }
 
 interface ClientConfig {
@@ -27,6 +30,7 @@ let createLegalEntityStub: sinon.SinonStub
 let createTransferInstrumentStub: sinon.SinonStub
 let getLegalEntityStub: sinon.SinonStub
 let updateLegalEntityStub: sinon.SinonStub
+let createBusinessLineStub: sinon.SinonStub
 
 describe('Adyen legal entity management client', () => {
   function loadModule(): LegalEntityManagementClient {
@@ -34,6 +38,7 @@ describe('Adyen legal entity management client', () => {
     createTransferInstrumentStub = sinon.stub()
     getLegalEntityStub = sinon.stub()
     updateLegalEntityStub = sinon.stub()
+    createBusinessLineStub = sinon.stub()
 
     class MockAdyenClient {
       config: ClientConfig
@@ -51,6 +56,7 @@ describe('Adyen legal entity management client', () => {
         updateLegalEntity: sinon.SinonStub
       }
       TransferInstrumentsApi: { createTransferInstrument: sinon.SinonStub }
+      BusinessLinesApi: { createBusinessLine: sinon.SinonStub }
 
       constructor(client: MockAdyenClient) {
         this.client = client
@@ -60,6 +66,7 @@ describe('Adyen legal entity management client', () => {
           updateLegalEntity: updateLegalEntityStub,
         }
         this.TransferInstrumentsApi = { createTransferInstrument: createTransferInstrumentStub }
+        this.BusinessLinesApi = { createBusinessLine: createBusinessLineStub }
       }
     }
 
@@ -81,6 +88,7 @@ describe('Adyen legal entity management client', () => {
     createLegalEntityStub.resetHistory()
     getLegalEntityStub.resetHistory()
     updateLegalEntityStub.resetHistory()
+    createBusinessLineStub.resetHistory()
   })
 
   const legalEntityInfo: LegalEntityInfoRequiredType = {
@@ -165,6 +173,24 @@ describe('Adyen legal entity management client', () => {
     sinon.assert.calledOnce(createTransferInstrumentStub)
     sinon.assert.calledWithExactly(createTransferInstrumentStub, transferInstrumentInfo)
 
+    expect(result).to.equal(apiResponse)
+  })
+
+  it('calls the Adyen API to create a business line', async () => {
+    const { createBusinessLine } = loadModule()
+    const businessLineInfo: BusinessLineInfo = {
+      service: BusinessLineInfo.ServiceEnum.PaymentProcessing,
+      industryCode: '921',
+      legalEntityId: 'LE123',
+      salesChannels: ['eCommerce'],
+    }
+    const apiResponse = { id: 'BL123', ...businessLineInfo } as BusinessLine
+    createBusinessLineStub.resolves(apiResponse)
+
+    const result = await createBusinessLine(businessLineInfo)
+
+    sinon.assert.calledOnce(createBusinessLineStub)
+    sinon.assert.calledWithExactly(createBusinessLineStub, businessLineInfo)
     expect(result).to.equal(apiResponse)
   })
 })
