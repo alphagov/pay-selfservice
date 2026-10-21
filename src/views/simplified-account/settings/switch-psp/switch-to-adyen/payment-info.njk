@@ -1,28 +1,35 @@
 {% extends "simplified-account/settings/settings-layout.njk" %}
 
-
 {% set settingsPageTitle %}Make a £1 payment using a debit or credit card{% endset %}
 
 {% block settingsContent %}
-  <h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
+<h1 class="govuk-heading-l">{{ settingsPageTitle }}</h1>
 
-  <p class="govuk-body">
-    Make a payment of £1 using a real debit or credit card to check everything is working and finish switching to Adyen.
-    Test card details will not work. You can refund the payment after 2 full working days.
-  </p>
+<p class="govuk-body">
+  Make a payment of £1 using a real debit or credit card to check everything is working and finish switching to Adyen.
+  Test card details will not work. You can refund the payment after 2 full working days.
+</p>
 
-  <p class="govuk-body">
-    Then you’ll need to check the money has successfully arrived in your organisation’s bank account.
-  </p>
+<p class="govuk-body">
+  Then you’ll need to check the money has successfully arrived in your organisation’s bank account.
+</p>
 
-  <p class="govuk-body">
-    You can skip making a payment if you already have a service live with Adyen using the same bank account details. Do
-    not skip making a payment unless you’re sure everything works properly.
-  </p>
+<p class="govuk-body">
+  You can skip making a payment if you already have a service live with Adyen using the same bank account details. Do
+  not skip making a payment unless you’re sure everything works properly.
+</p>
+
+<form id="" method="post">
+  <input id="csrf" name="csrfToken" type="hidden" value="{{ csrf }}" />
 
   {{
     govukButton({
-      text: "Make a payment"
-    })
+      text: "Make a payment",
+      attributes: {
+          id: ""
+        },
+        preventDoubleClick: true
+      })
   }}
+</form>
 {% endblock %}

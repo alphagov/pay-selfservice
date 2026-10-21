@@ -808,13 +808,6 @@ simplifiedAccount.get(
   serviceSettingsController.switchPsp.switchToAdyen.index.get
 )
 simplifiedAccount.get(
-  paths.simplifiedAccount.settings.switchPsp.switchToAdyen.payment,
-  enforceLiveAccountOnly,
-  restrictToSwitchingAccount(ADYEN),
-  permission('stripe-account-details:update'),
-  serviceSettingsController.switchPsp.switchToAdyen.payment.get
-)
-simplifiedAccount.get(
   paths.simplifiedAccount.settings.switchPsp.switchToAdyen.providerChangeToAdyen,
   experimentalFeature(Features.PROVIDER_CHANGE_TO_ADYEN_LINK),
   enforceLiveAccountOnly,
