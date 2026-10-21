@@ -17,6 +17,7 @@ describe('Adyen details service', () => {
     updateLegalEntity: sinon.stub(),
     createBusinessLine: sinon.stub(),
     getTermsOfService: sinon.stub(),
+    acceptTermsOfService: sinon.stub(),
   }
 
   const balancePlatformClientMock = {
@@ -296,6 +297,7 @@ describe('Adyen details service', () => {
       legalEntityClientMock.getTermsOfService.resolves({
         termsOfServiceDocumentId: 'terms-of-service-document-id',
       })
+      legalEntityClientMock.acceptTermsOfService.resolves({})
     })
 
     it('should create responsible person legal entry without any entity associations', async () => {
@@ -336,6 +338,19 @@ describe('Adyen details service', () => {
         type: 'adyenForPlatformsAdvanced',
         termsOfServiceDocumentFormat: 'TXT',
       })
+    })
+
+    it('should sign the terms of service', async () => {
+      await service.createResponsiblePerson(fullResponsiblePersonSession, ORGANISATION_LEGAL_ENTITY_ID)
+
+      sinon.assert.calledOnceWithExactly(
+        legalEntityClientMock.acceptTermsOfService,
+        ORGANISATION_LEGAL_ENTITY_ID,
+        'terms-of-service-document-id',
+        {
+          acceptedBy: 'LE_PERSON_456',
+        }
+      )
     })
   })
 

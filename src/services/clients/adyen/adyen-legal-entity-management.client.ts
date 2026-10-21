@@ -93,9 +93,19 @@ export async function getTermsOfService(
       legalEntityId,
       getTermsOfServiceDocumentRequest
     )
-  return legalEntityManagementAPI.TermsOfServiceApi.getTermsOfServiceDocument(
-    legalEntityId,
-    getTermsOfServiceDocumentRequest
   )
 }
 
+export async function acceptTermsOfService(
+  legalEntityId: string,
+  termsOfServiceDocumentId: string,
+  acceptTermsOfServiceRequest: Types.legalEntityManagement.AcceptTermsOfServiceRequest
+) {
+  return new AdyenRequest(AdyenAPI.LEGAL_ENTITY_MANAGEMENT, 'accept terms of service').execute(() =>
+    legalEntityManagementAPI.TermsOfServiceApi.acceptTermsOfService(
+      legalEntityId,
+      termsOfServiceDocumentId,
+      acceptTermsOfServiceRequest
+    )
+  )
+}

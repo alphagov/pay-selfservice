@@ -108,3 +108,14 @@ export function getTermsOfService(legalEntityId: string) {
   }
 }
 
+export function acceptTermsOfService(legalEntityId: string, termsOfServiceDocumentId: string) {
+  const path = `/lem/v4/legalEntities/${legalEntityId}/termsOfService/${termsOfServiceDocumentId}`
+
+  return {
+    success: function (termsOfServiceAccepted: { id: string }) {
+      return stubBuilder('PATCH', path, 200, {
+        response: termsOfServiceAccepted,
+      })
+    },
+  }
+}

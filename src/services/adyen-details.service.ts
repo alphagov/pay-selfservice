@@ -14,6 +14,7 @@ import {
   createTransferInstrument,
   createBusinessLine,
   getTermsOfService,
+  acceptTermsOfService,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
 import {
   createAccountHolder as createAdyenAccountHolder,
@@ -282,6 +283,11 @@ const createResponsiblePerson = async (session: ResponsiblePersonSession, organi
 
   const { termsOfServiceDocumentId } = await generateTermsOfService(organisationLegalEntityId)
 
+  if (!termsOfServiceDocumentId) {
+    throw new Error('Terms of service document ID is not set')
+  }
+  await signTermsOfService(organisationLegalEntityId, termsOfServiceDocumentId, responsiblePerson.id)
+
   return responsiblePerson
 }
 
@@ -403,6 +409,14 @@ const generateTermsOfService = async (legalEntityId: string) => {
   }
 
   return getTermsOfService(legalEntityId, getTermsOfServiceDocumentRequest)
+}
+
+const signTermsOfService = async (legalEntityId: string, termsOfServiceDocumentId: string, acceptedBy: string) => {
+  const acceptTermsOfServiceRequest: Types.legalEntityManagement.AcceptTermsOfServiceRequest = {
+    acceptedBy,
+  }
+
+  return acceptTermsOfService(legalEntityId, termsOfServiceDocumentId, acceptTermsOfServiceRequest)
 }
 
 export {
