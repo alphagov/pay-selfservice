@@ -97,7 +97,7 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
       beforeEach(() => {
         nextRequest({
           body: {
-            takingPaymentsFor: 'government-activities',
+            governmentActivity: 'general-local',
           },
           session: {
             otherSessionData: 'keep',
@@ -113,6 +113,7 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
         sinon.assert.calledOnceWithExactly(
           createOrganisation,
           new OrganisationDetailsSession(VALID_SESSION as OrganisationDetailsSession),
+          'general-local',
           serviceFixture.name,
           SERVICE_EXTERNAL_ID,
           GATEWAY_ACCOUNT.type,
@@ -171,7 +172,7 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
       it('should show the summary error', async () => {
         await call('post')
         const expectedContext = {
-          errors: { summary: [{ text: 'You must make a selection', href: '#taking-payments-for' }] },
+          errors: { summary: [{ text: 'You must make a selection', href: '#government-activity' }] },
         }
         sinon.assert.calledOnceWithMatch(mockResponse, req, res, TEMPLATE, expectedContext)
       })
