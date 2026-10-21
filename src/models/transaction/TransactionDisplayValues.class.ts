@@ -24,7 +24,11 @@ export class TransactionDisplayValues {
 
   get netAmount(): string {
     if (this.isRefund && this.transaction.state.status === Status.SUCCESS) {
-      return penceToPoundsWithCurrency(-this.transaction.amount)
+      if (this.transaction.netAmount) {
+        return penceToPoundsWithCurrency(this.transaction.netAmount)
+      } else {
+        return penceToPoundsWithCurrency(-this.transaction.amount)
+      }
     }
 
     return this.transaction.netAmount ? penceToPoundsWithCurrency(this.transaction.netAmount) : ''

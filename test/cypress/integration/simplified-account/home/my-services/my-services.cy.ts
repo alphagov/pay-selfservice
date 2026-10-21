@@ -37,6 +37,53 @@ describe('My Services view', () => {
   })
 })
 
+describe('User has access to Adyen services', () => {
+  it('should display "Adyen test" status tag when service has only Adyen test account', () => {
+    cy.task('setupStubs', [
+      userStubs.getUserSuccessWithMultipleServices(authenticatedUserId, [
+        {
+          serviceName: { en: 'Adyen test service' },
+          gatewayAccountIds: ['99'],
+          goLiveStage: GoLiveStage.NOT_STARTED,
+        },
+      ]),
+      gatewayAccountStubs.getGatewayAccountsSuccess({
+        gatewayAccountId: '99',
+        type: GatewayAccountType.TEST,
+        paymentProvider: PaymentProviders.ADYEN,
+      }),
+    ])
+    cy.setEncryptedCookies(authenticatedUserId)
+
+    cy.visit('/my-services')
+    cy.get('#service-links__container')
+      .find('.service-link__status')
+      .find('strong')
+      .should('have.class', 'govuk-tag govuk-tag--grey')
+      .contains('Adyen test')
+  })
+
+  it('should not display any status tag for Adyen Live account', () => {
+    cy.task('setupStubs', [
+      userStubs.getUserSuccessWithMultipleServices(authenticatedUserId, [
+        { serviceName: { en: 'Live Adyen service' }, gatewayAccountIds: ['100'], goLiveStage: GoLiveStage.LIVE },
+      ]),
+      gatewayAccountStubs.getGatewayAccountsSuccess({
+        gatewayAccountId: '100',
+        type: GatewayAccountType.LIVE,
+        paymentProvider: PaymentProviders.ADYEN,
+      }),
+    ])
+    cy.setEncryptedCookies(authenticatedUserId)
+
+    cy.visit('/my-services')
+    cy.get('#service-links__container')
+      .find('.service-link__status')
+      .find('strong')
+      .should('have.length', 0)
+  })
+})
+
 describe('User has access to Worldpay services', () => {
   it('should display "Worldpay test" status tag for Worldpay test service', () => {
     cy.task('setupStubs', [

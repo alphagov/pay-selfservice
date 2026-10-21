@@ -68,6 +68,13 @@ const mapServiceStatus = (goLiveStage: string, serviceGateways: MappedGateway[])
           colour: 'govuk-tag--grey',
         },
       }
+    } else if (isAdyenTestService(serviceGateways)) {
+      return {
+        tag: {
+          text: 'Adyen test',
+          colour: 'govuk-tag--grey',
+        },
+      }
     } else {
       return {
         tag: {
@@ -93,6 +100,14 @@ const isWorldpayTestService = (gatewayAccounts: MappedGateway[]) => {
     gatewayAccounts.length === 1 &&
     gatewayAccounts[0].type === GatewayAccountType.TEST &&
     gatewayAccounts[0].paymentProvider === PaymentProviders.WORLDPAY
+  )
+}
+
+const isAdyenTestService = (gatewayAccounts: MappedGateway[]) => {
+  return (
+    gatewayAccounts.length === 1 &&
+    gatewayAccounts[0].type === GatewayAccountType.TEST &&
+    gatewayAccounts[0].paymentProvider === PaymentProviders.ADYEN
   )
 }
 
