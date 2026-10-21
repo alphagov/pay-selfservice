@@ -1,4 +1,4 @@
-import { BalancePlatformAPI, Client, EnvironmentEnum, Types } from '@adyen/api-library'
+import { BalancePlatformAPI, Client, EnvironmentEnum, HttpURLConnectionClient, Types } from '@adyen/api-library'
 import { CreateSweepConfigurationV2 } from '@adyen/api-library/lib/src/typings/balancePlatform/createSweepConfigurationV2'
 import { AdyenMockServerHttpClient } from '@services/clients/adyen/adyen-mock-server-http-client'
 import { AdyenAPI, AdyenRequest } from '@services/clients/adyen/adyen-request-wrapper'
@@ -16,6 +16,17 @@ const client = new Client(
   { apiKey: ADYEN_BALANCE_PLATFORM_API_KEY, environment: ADYEN_ENVIRONMENT },
   ADYEN_MOCK_SERVER_URL ? new AdyenMockServerHttpClient(ADYEN_MOCK_SERVER_URL) : undefined
 )
+
+if (
+  process.env.HTTPS_PROXY_HOST &&
+  process.env.HTTPS_PROXY_PORT &&
+  Number.isInteger(Number(process.env.HTTPS_PROXY_PORT))
+) {
+  const httpClient = new HttpURLConnectionClient()
+  httpClient.proxy = { host: process.env.HTTPS_PROXY_HOST, port: Number(process.env.HTTPS_PROXY_PORT) }
+
+  client.httpClient = httpClient
+}
 
 const balancePlatformAPI = new BalancePlatformAPI(client)
 
