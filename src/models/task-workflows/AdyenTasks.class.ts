@@ -197,7 +197,7 @@ export class AdyenTasks extends Tasks<AdyenTask> {
     completeOrganisationDetailsTasks: AdyenTask[],
     completeFinalTasks: AdyenTask[]
   ) {
-    super([...confirmOrganisationTasks, ...acceptLegalTermsTasks, ...completeOrganisationDetailsTasks])
+    super([...confirmOrganisationTasks, ...acceptLegalTermsTasks, ...completeOrganisationDetailsTasks, ...completeFinalTasks])
     this.confirmOrganisationTasks = confirmOrganisationTasks
     this.acceptLegalTermsTasks = acceptLegalTermsTasks
     this.completeOrganisationDetailsTasks = completeOrganisationDetailsTasks
