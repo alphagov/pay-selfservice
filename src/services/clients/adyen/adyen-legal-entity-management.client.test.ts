@@ -12,6 +12,9 @@ import { BusinessLine } from '@adyen/api-library/lib/src/typings/legalEntityMana
 type LegalEntity = Types.legalEntityManagement.LegalEntity
 type LegalEntityInfo = Types.legalEntityManagement.LegalEntityInfo
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
+type GeneratePciDescriptionResponse = Types.legalEntityManagement.GeneratePciDescriptionResponse
+type PciSigningRequest = Types.legalEntityManagement.PciSigningRequest
+type PciSigningResponse = Types.legalEntityManagement.PciSigningResponse
 
 interface LegalEntityManagementClient {
   createLegalEntity: (legalEntityInfo: LegalEntityInfoRequiredType) => Promise<LegalEntity>
@@ -19,6 +22,8 @@ interface LegalEntityManagementClient {
   getLegalEntity: (id: string) => Promise<LegalEntity>
   updateLegalEntity: (id: string, legalEntityInfo: LegalEntityInfo) => Promise<LegalEntity>
   createBusinessLine: (businessLineInfo: BusinessLineInfo) => Promise<BusinessLine>
+  generatePciQuestionnaire: (id: string) => Promise<GeneratePciDescriptionResponse>
+  signPciQuestionnaire: (id: string, request: PciSigningRequest) => Promise<PciSigningResponse>
 }
 
 interface ClientConfig {
@@ -31,6 +36,8 @@ let createTransferInstrumentStub: sinon.SinonStub
 let getLegalEntityStub: sinon.SinonStub
 let updateLegalEntityStub: sinon.SinonStub
 let createBusinessLineStub: sinon.SinonStub
+let generatePciQuestionnaireStub: sinon.SinonStub
+let signPciQuestionnaireStub: sinon.SinonStub
 
 describe('Adyen legal entity management client', () => {
   function loadModule(): LegalEntityManagementClient {
@@ -39,6 +46,8 @@ describe('Adyen legal entity management client', () => {
     getLegalEntityStub = sinon.stub()
     updateLegalEntityStub = sinon.stub()
     createBusinessLineStub = sinon.stub()
+    generatePciQuestionnaireStub = sinon.stub()
+    signPciQuestionnaireStub = sinon.stub()
 
     class MockAdyenClient {
       config: ClientConfig
@@ -57,6 +66,10 @@ describe('Adyen legal entity management client', () => {
       }
       TransferInstrumentsApi: { createTransferInstrument: sinon.SinonStub }
       BusinessLinesApi: { createBusinessLine: sinon.SinonStub }
+      PCIQuestionnairesApi: {
+        generatePciQuestionnaire: sinon.SinonStub
+        signPciQuestionnaire: sinon.SinonStub
+      }
 
       constructor(client: MockAdyenClient) {
         this.client = client
@@ -67,6 +80,10 @@ describe('Adyen legal entity management client', () => {
         }
         this.TransferInstrumentsApi = { createTransferInstrument: createTransferInstrumentStub }
         this.BusinessLinesApi = { createBusinessLine: createBusinessLineStub }
+        this.PCIQuestionnairesApi = {
+          generatePciQuestionnaire: generatePciQuestionnaireStub,
+          signPciQuestionnaire: signPciQuestionnaireStub,
+        }
       }
     }
 
@@ -89,6 +106,9 @@ describe('Adyen legal entity management client', () => {
     getLegalEntityStub.resetHistory()
     updateLegalEntityStub.resetHistory()
     createBusinessLineStub.resetHistory()
+    createTransferInstrumentStub.resetHistory()
+    generatePciQuestionnaireStub.resetHistory()
+    signPciQuestionnaireStub.resetHistory()
   })
 
   const legalEntityInfo: LegalEntityInfoRequiredType = {
@@ -191,6 +211,42 @@ describe('Adyen legal entity management client', () => {
 
     sinon.assert.calledOnce(createBusinessLineStub)
     sinon.assert.calledWithExactly(createBusinessLineStub, businessLineInfo)
+    expect(result).to.equal(apiResponse)
+  })
+
+  it('calls the Adyen API to generate a PCI questionnaire', async () => {
+    const { generatePciQuestionnaire } = loadModule()
+
+    const apiResponse: GeneratePciDescriptionResponse = {
+      content: 'ZmFrZS1wZGY=', // base64
+      language: 'en',
+      pciTemplateReferences: ['PCIT123'],
+    }
+    generatePciQuestionnaireStub.resolves(apiResponse)
+
+    const result = await generatePciQuestionnaire('LE123')
+
+    sinon.assert.calledOnceWithExactly(generatePciQuestionnaireStub, 'LE123', {
+      additionalSalesChannels: ['eCommerce'],
+    })
+    expect(result).to.equal(apiResponse)
+  })
+
+  it('calls the Adyen API to sign a PCI questionnaire', async () => {
+    const { signPciQuestionnaire } = loadModule()
+    const request: PciSigningRequest = {
+      pciTemplateReferences: ['PCIT123'],
+      signedBy: 'LE456',
+    }
+    const apiResponse: PciSigningResponse = {
+      pciQuestionnaireIds: ['PCID789'],
+      signedBy: 'LE456',
+    }
+    signPciQuestionnaireStub.resolves(apiResponse)
+
+    const result = await signPciQuestionnaire('LE123', request)
+
+    sinon.assert.calledOnceWithExactly(signPciQuestionnaireStub, 'LE123', request)
     expect(result).to.equal(apiResponse)
   })
 })
