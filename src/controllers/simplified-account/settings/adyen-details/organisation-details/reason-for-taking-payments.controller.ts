@@ -22,6 +22,20 @@ function getBackLink(req: ServiceRequest<ReasonForTakingPaymentsBody>) {
   )
 }
 
+async function getStoreDetailsForStripeMigration(req: ServiceRequest<ReasonForTakingPaymentsBody>) {
+  const telephoneNumber = req.service.merchantDetails?.telephoneNumber
+
+  if (!telephoneNumber) {
+    throw new InvalidConfigurationError(
+      `No telephone number set in merchant details [service_external_id: ${req.service.externalId}]`
+    )
+  }
+
+  const statementDescriptor = await getStripeStatementDescriptor(req.account)
+
+  return { telephoneNumber, statementDescriptor }
+}
+
 function get(req: ServiceRequest, res: ServiceResponse) {
   const currentSession = OrganisationDetailsSession.extract(req)
 
