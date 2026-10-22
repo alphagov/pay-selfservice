@@ -144,7 +144,14 @@ class AdyenTask extends Task {
     ).setStatus(status)
   }
 
-  static paymentTask(service: Service, gatewayAccount: GatewayAccount) {
+  static paymentTask(
+    service: Service,
+    gatewayAccount: GatewayAccount,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    accountSetup: AdyenAccountSetup,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    switchingCredentialId: string
+  ) {
     const status = TaskStatus.NOT_STARTED
 
     return new AdyenTask(
