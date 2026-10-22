@@ -64,7 +64,7 @@ async function post(req: ServiceRequest<ReasonForTakingPaymentsBody>, res: Servi
 
   const completeSession = new OrganisationDetailsSession({
     ...currentSession,
-  } as OrganisationDetailsSession)
+  })
 
   const { governmentActivity } = req.body
 

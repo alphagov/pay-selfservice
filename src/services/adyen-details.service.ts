@@ -109,7 +109,7 @@ const createOrganisationLegalEntity = (session: OrganisationDetailsSession) => {
       country: session.addressCountry ?? '',
     },
     registrationNumber: session.companyRegistrationNumber,
-    vatNumber: session.vatRegistrationNumber,
+    vatNumber: ensureVatRegistrationPrefix(session.vatRegistrationNumber),
   }
 
   const legalEntityInfo: LegalEntityInfoRequiredType = {
@@ -380,6 +380,16 @@ const createServiceDirector = async (
   }
 
   return serviceDirector
+}
+
+function ensureVatRegistrationPrefix(vatRegistrationNumber: string | undefined): string | undefined {
+  if (vatRegistrationNumber === undefined) {
+    return undefined
+  }
+  if (vatRegistrationNumber.startsWith('GB')) {
+    return vatRegistrationNumber
+  }
+  return `GB${vatRegistrationNumber}`
 }
 
 export {
