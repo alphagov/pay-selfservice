@@ -144,10 +144,7 @@ class AdyenTask extends Task {
     ).setStatus(status)
   }
 
-  static paymentTask(
-    service: Service,
-    gatewayAccount: GatewayAccount,
-  ) {
+  static paymentTask(service: Service, gatewayAccount: GatewayAccount) {
     const status = TaskStatus.NOT_STARTED
 
     return new AdyenTask(
