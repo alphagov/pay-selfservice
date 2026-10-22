@@ -160,6 +160,12 @@ describe(`Responsible person - check your answers`, () => {
             entityAssociations: [],
           }),
           AdyenPspStubs.updateLegalEntity(ORGANISATION_LEGAL_ENTITY_ID).success({ id: ORGANISATION_LEGAL_ENTITY_ID }),
+          AdyenPspStubs.getTermsOfService(ORGANISATION_LEGAL_ENTITY_ID).success({
+            termsOfServiceDocumentId: 'terms-of-service-document-id',
+          }),
+          AdyenPspStubs.acceptTermsOfService(ORGANISATION_LEGAL_ENTITY_ID, 'terms-of-service-document-id').success({
+            id: 'terms-of-service-document-id',
+          }),
         ])
         cy.get('#responsible-person-confirm').click()
 

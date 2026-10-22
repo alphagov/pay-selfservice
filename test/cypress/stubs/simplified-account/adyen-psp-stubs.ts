@@ -95,3 +95,27 @@ export function createBusinessLine() {
     },
   }
 }
+
+export function getTermsOfService(legalEntityId: string) {
+  const path = `/lem/v4/legalEntities/${legalEntityId}/termsOfService`
+
+  return {
+    success: function (termsOfService: { termsOfServiceDocumentId: string }) {
+      return stubBuilder('POST', path, 200, {
+        response: termsOfService,
+      })
+    },
+  }
+}
+
+export function acceptTermsOfService(legalEntityId: string, termsOfServiceDocumentId: string) {
+  const path = `/lem/v4/legalEntities/${legalEntityId}/termsOfService/${termsOfServiceDocumentId}`
+
+  return {
+    success: function (termsOfServiceAccepted: { id: string }) {
+      return stubBuilder('PATCH', path, 200, {
+        response: termsOfServiceAccepted,
+      })
+    },
+  }
+}
