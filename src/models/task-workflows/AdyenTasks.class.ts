@@ -6,6 +6,8 @@ import paths from '@root/paths'
 import Service from '@models/service/Service.class'
 import GatewayAccount from '@models/gateway-account/GatewayAccount.class'
 import { AdyenAccountSetup } from '@models/gateway-account/AdyenAccountSetup.class'
+import GatewayAccountCredential from '@models/gateway-account-credential/GatewayAccountCredential.class'
+import { PaymentProvider } from '@models/constants/payment-provider'
 
 class AdyenTask extends Task {
   constructor(linkText: string, id: AdyenTaskIdentifier, href: string) {
@@ -148,9 +150,18 @@ class AdyenTask extends Task {
     service: Service,
     gatewayAccount: GatewayAccount,
     accountSetup: AdyenAccountSetup,
-    switchingCredentialId: string
+    switchingCredential: GatewayAccountCredential,
+    requiredTasks: AdyenTask[]
   ) {
-    const status = TaskStatus.NOT_STARTED
+    const requiredTasksCompleted = !requiredTasks.some(
+      (task) => task.status === TaskStatus.NOT_STARTED || task.status === TaskStatus.CANNOT_START
+    )
+    const paymentCompleted = switchingCredential.state === 'VERIFIED_WITH_LIVE_PAYMENT'
+    const status = paymentCompleted
+      ? TaskStatus.COMPLETED_CANNOT_START
+      : requiredTasksCompleted
+        ? TaskStatus.NOT_STARTED
+        : TaskStatus.CANNOT_START
 
     return new AdyenTask(
       'Make a £1 payment using a debit or credit card',
@@ -159,7 +170,7 @@ class AdyenTask extends Task {
         paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
         service.externalId,
         gatewayAccount.type,
-        switchingCredentialId
+        switchingCredential.externalId
       )
     ).setStatus(status)
   }
@@ -168,9 +179,10 @@ class AdyenTask extends Task {
     service: Service,
     gatewayAccount: GatewayAccount,
     accountSetup: AdyenAccountSetup,
-    switchingCredentialId: string
+    switchingCredential: GatewayAccountCredential
   ) {
-    const status = TaskStatus.NOT_STARTED
+    const paymentCompleted = switchingCredential.state === 'VERIFIED_WITH_LIVE_PAYMENT'
+    const status = paymentCompleted ? TaskStatus.NOT_STARTED : TaskStatus.CANNOT_START
 
     return new AdyenTask(
       'Finish switching to Adyen',
@@ -179,7 +191,7 @@ class AdyenTask extends Task {
         paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
         service.externalId,
         gatewayAccount.type,
-        switchingCredentialId
+        switchingCredential.externalId
       )
     ).setStatus(status)
   }
@@ -205,23 +217,35 @@ export class AdyenTasks extends Tasks<AdyenTask> {
   }
 
   static forProviderSwitching(service: Service, gatewayAccount: GatewayAccount, accountSetup: AdyenAccountSetup) {
-    const switchingCredentialId = gatewayAccount.getSwitchingCredential().externalId
+    const switchingCredential = gatewayAccount.getSwitchingCredential()
 
     const confirmOrganisationTasks = [
-      AdyenTask.organisationDetailsTask(service, gatewayAccount, accountSetup, switchingCredentialId),
+      AdyenTask.organisationDetailsTask(service, gatewayAccount, accountSetup, switchingCredential.externalId),
     ]
     const acceptLegalTermsTasks = [
-      AdyenTask.acceptLegalTermsTask(service, gatewayAccount, accountSetup, switchingCredentialId),
+      AdyenTask.acceptLegalTermsTask(service, gatewayAccount, accountSetup, switchingCredential.externalId),
     ]
     const completeOrganisationDetailsTasks = [
-      AdyenTask.bankDetailsTask(service, gatewayAccount, accountSetup, switchingCredentialId),
-      AdyenTask.responsiblePersonTask(service, gatewayAccount, accountSetup, switchingCredentialId),
-      AdyenTask.serviceDirectorTask(service, gatewayAccount, accountSetup, switchingCredentialId),
-      AdyenTask.statementDescriptorsTask(service, gatewayAccount, accountSetup, switchingCredentialId),
+      AdyenTask.bankDetailsTask(service, gatewayAccount, accountSetup, switchingCredential.externalId),
+      AdyenTask.responsiblePersonTask(service, gatewayAccount, accountSetup, switchingCredential.externalId),
+      AdyenTask.serviceDirectorTask(service, gatewayAccount, accountSetup, switchingCredential.externalId),
     ]
+    // if the service is switching from Stripe, this task is not required
+    if (gatewayAccount.getActiveCredential()?.paymentProvider !== PaymentProvider.STRIPE) {
+      completeOrganisationDetailsTasks.push(
+        AdyenTask.statementDescriptorsTask(service, gatewayAccount, accountSetup, switchingCredential.externalId)
+      )
+    }
+
     const completeFinalTasks = [
-      AdyenTask.paymentTask(service, gatewayAccount, accountSetup, switchingCredentialId),
-      AdyenTask.finishSwitchingTask(service, gatewayAccount, accountSetup, switchingCredentialId),
+      AdyenTask.paymentTask(
+        service,
+        gatewayAccount,
+        accountSetup,
+        switchingCredential,
+        completeOrganisationDetailsTasks
+      ),
+      AdyenTask.finishSwitchingTask(service, gatewayAccount, accountSetup, switchingCredential),
     ]
     return new AdyenTasks(
       confirmOrganisationTasks,
