@@ -12,7 +12,9 @@ const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-b
 const { CREDENTIAL_STATE } = require('@utils/credentials')
 const Charge = require('@models/charge/Charge.class')
 const { validChargeResponse } = require('@test/fixtures/charge.fixtures')
-const { GatewayAccountCredentialUpdateRequest } = require('@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class')
+const {
+  GatewayAccountCredentialUpdateRequest,
+} = require('@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class')
 
 const ACCOUNT_TYPE = 'live'
 const SWITCHING_CREDENTIAL_EXTERNAL_ID = 'credential-id-123abc'
