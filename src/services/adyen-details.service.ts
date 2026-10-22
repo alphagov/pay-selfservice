@@ -1,36 +1,48 @@
-import { GatewayAccountCredentialUpdateRequest } from '@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class'
+import {
+  GatewayAccountCredentialUpdateRequest
+} from '@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class'
 import ConnectorClient from '@services/clients/pay/ConnectorClient.class'
-import { OrganisationDetailsSession } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
+import {
+  GovernmentActivity,
+  INDUSTRY_CODE_MAP,
+  OrganisationDetailsSession
+} from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 import { Types } from '@adyen/api-library'
 import { CreateBankDetailsBody } from '@controllers/simplified-account/settings/adyen-details/bank-details.controller'
-import { BankAccountAccountIdentification } from '@adyen/api-library/lib/src/typings/balancePlatform/bankAccountAccountIdentification'
-import { UKLocalAccountIdentification } from '@adyen/api-library/lib/src/typings/balancePlatform/uKLocalAccountIdentification'
+import {
+  BankAccountAccountIdentification
+} from '@adyen/api-library/lib/src/typings/balancePlatform/bankAccountAccountIdentification'
+import {
+  UKLocalAccountIdentification
+} from '@adyen/api-library/lib/src/typings/balancePlatform/uKLocalAccountIdentification'
 import { TransferInstrumentInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/transferInstrumentInfo'
 import createLogger from '@utils/logger'
 import {
-  createLegalEntity,
-  getLegalEntity,
-  updateLegalEntity,
-  createTransferInstrument,
-  createBusinessLine,
-  getTermsOfService,
   acceptTermsOfService,
+  createBusinessLine,
+  createLegalEntity,
+  createTransferInstrument,
+  getLegalEntity,
+  getTermsOfService,
+  updateLegalEntity,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
 import {
   createAccountHolder as createAdyenAccountHolder,
   createBalanceAccount as createAdyenBalanceAccount,
 } from '@services/clients/adyen/adyen-balance-platform.client'
 import { createStore as createAdyenStore } from '@services/clients/adyen/adyen-management.client'
-import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
-import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
+import {
+  ServiceDirectorSession
+} from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
+import {
+  ResponsiblePersonSession
+} from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManagement/individual'
 import { BusinessLineInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/businessLineInfo'
-import {
-  INDUSTRY_CODE_MAP,
-  GovernmentActivity,
-} from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 import { SweepSchedule } from '@adyen/api-library/lib/src/typings/balancePlatform/sweepSchedule'
-import { CreateSweepConfigurationV2 } from '@adyen/api-library/lib/src/typings/balancePlatform/createSweepConfigurationV2'
+import {
+  CreateSweepConfigurationV2
+} from '@adyen/api-library/lib/src/typings/balancePlatform/createSweepConfigurationV2'
 import { createSweep } from './clients/adyen/adyen-balance-platform.client'
 
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
@@ -466,10 +478,7 @@ const createStore = async ({
       splitConfigurationId,
     },
   }
-  console.log(`creating store....`)
-  const storeRes = await createAdyenStore(storeCreationRequest)
-  console.log(`store created ${storeRes.id}`)
-  return storeRes
+  return await createAdyenStore(storeCreationRequest)
 }
 
 export {
