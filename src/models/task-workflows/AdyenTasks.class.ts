@@ -147,8 +147,6 @@ class AdyenTask extends Task {
   static paymentTask(
     service: Service,
     gatewayAccount: GatewayAccount,
-    accountSetup: AdyenAccountSetup,
-    switchingCredentialId: string
   ) {
     const status = TaskStatus.NOT_STARTED
 

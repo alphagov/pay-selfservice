@@ -1,3 +1,5 @@
+import { VERIFIED } from '@models/constants/credential-state'
+
 const sinon = require('sinon')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const { expect } = require('chai')
@@ -130,7 +132,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
           SERVICE_EXTERNAL_ID,
           ACCOUNT_TYPE,
           SWITCHING_CREDENTIAL_EXTERNAL_ID,
-          new GatewayAccountCredentialUpdateRequest(USER_EXTERNAL_ID).replace().state('VERIFIED_WITH_LIVE_PAYMENT')
+          new GatewayAccountCredentialUpdateRequest(USER_EXTERNAL_ID).replace().state(VERIFIED)
         )
       })
 
