@@ -3,6 +3,7 @@ import { GatewayAccountFixture } from '@test/fixtures/gateway-account/gateway-ac
 import { PaymentProvider } from '@models/constants/payment-provider'
 import { UserFixture } from '@test/fixtures/user/user.fixture'
 import { ServiceFixture } from '@test/fixtures/service/service.fixture'
+import { MerchantDetailsFixture } from '@test/fixtures/service/merchant-details.fixture'
 import sinon from 'sinon'
 import { expect } from 'chai'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
@@ -11,8 +12,10 @@ import { OrganisationDetailsSession } from './constants'
 
 const SERVICE_EXTERNAL_ID = 'service123abc'
 const SERVICE_TYPE = 'live'
+const TELEPHONE_NUMBER = '01234 567890'
 const serviceFixture = new ServiceFixture({
   externalId: SERVICE_EXTERNAL_ID,
+  merchantDetails: new MerchantDetailsFixture({ telephoneNumber: TELEPHONE_NUMBER }),
 })
 
 const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.STRIPE, PaymentProvider.ADYEN, [], [], {
@@ -21,7 +24,14 @@ const GATEWAY_ACCOUNT = GatewayAccountFixture.forSwitchingPsp(PaymentProvider.ST
 const USER = UserFixture.asServiceAdmin([serviceFixture], { externalId: 'user123abc' }).toUser()
 
 const mockResponse = sinon.stub()
-const createOrganisation = sinon.stub().resolves()
+const createOrganisation = sinon.stub().resolves({
+  legalEntity: { id: 'LE123' },
+  businessLine: { id: 'BL123' },
+  accountHolder: { id: 'AH123' },
+  balanceAccount: { id: 'BA123' },
+})
+const createStore = sinon.stub().resolves({ id: 'ST123' })
+const getStripeStatementDescriptor = sinon.stub().resolves('TEST SERVICE')
 const markTaskAsComplete = sinon.stub().resolves()
 
 const TEMPLATE = 'simplified-account/settings/adyen-details/reason-for-taking-payments'
@@ -40,7 +50,8 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder(
   .withUser(USER)
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/adyen-details.service': { createOrganisation },
+    '@services/adyen-details.service': { createOrganisation, createStore },
+    '@services/stripe-details.service': { getStripeStatementDescriptor },
     '@services/adyen-setup.service': { markTaskAsComplete },
   })
   .build()
@@ -129,7 +140,7 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
           'organisationDetails'
         )
 
-        sinon.assert.callOrder(createOrganisation, markTaskAsComplete)
+        sinon.assert.callOrder(getStripeStatementDescriptor, createOrganisation, createStore, markTaskAsComplete)
 
         sinon.assert.calledOnceWithExactly(
           res.redirect,
@@ -139,6 +150,20 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
             SERVICE_TYPE
           )
         )
+      })
+
+      it('should create a store for the business line using the Stripe statement descriptor', async () => {
+        await call('post')
+
+        sinon.assert.calledOnceWithExactly(getStripeStatementDescriptor, GATEWAY_ACCOUNT)
+        sinon.assert.calledOnceWithExactly(createStore, {
+          businessLineId: 'BL123',
+          balanceAccountId: 'BA123',
+          serviceName: serviceFixture.name,
+          statementDescriptor: 'TEST SERVICE',
+          telephoneNumber: TELEPHONE_NUMBER,
+          organisationDetails: new OrganisationDetailsSession(VALID_SESSION as OrganisationDetailsSession),
+        })
       })
 
       it('should clear the session organisation details', async () => {

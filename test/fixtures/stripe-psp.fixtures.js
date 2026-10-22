@@ -27,6 +27,10 @@ function validRetrieveStripeAccountDetails (opts = {}) {
 
   stripeAccount.id = opts.stripe_account_id
 
+  if (opts.statement_descriptor) {
+    stripeAccount.settings = { payments: { statement_descriptor: opts.statement_descriptor } }
+  }
+
   if (opts.url) {
     stripeAccount.business_profile.url = opts.url
   }

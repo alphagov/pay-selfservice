@@ -25,6 +25,10 @@ describe('Adyen details service', () => {
     createBalanceAccount: sinon.stub(),
   }
 
+  const managementClientMock = {
+    createStore: sinon.stub(),
+  }
+
   const connectorClientMock = {
     gatewayAccounts: {
       patchCredentialsByServiceExternalIdAndAccountType: sinon.stub().resolves({}),
@@ -40,6 +44,7 @@ describe('Adyen details service', () => {
       '@services/clients/pay/ConnectorClient.class': ConnectorClientStub,
       '@services/clients/adyen/adyen-legal-entity-management.client': legalEntityClientMock,
       '@services/clients/adyen/adyen-balance-platform.client': balancePlatformClientMock,
+      '@services/clients/adyen/adyen-management.client': managementClientMock,
     })
   })
 
@@ -477,6 +482,76 @@ describe('Adyen details service', () => {
           )
         })
       })
+    })
+  })
+
+  describe('createStore', () => {
+    const organisationDetails = {
+      organisationName: 'Test Org Ltd',
+      addressLine1: '1 Test St',
+      addressCity: 'London',
+      addressPostcode: 'N1 1NN',
+      addressCountry: 'GB',
+    } as OrganisationDetailsSession
+
+    const storeParams = {
+      businessLineId: 'BL123',
+      balanceAccountId: 'BA123',
+      serviceName: 'Test Service',
+      statementDescriptor: 'TEST SERVICE',
+      telephoneNumber: '01234 567890',
+      organisationDetails,
+    }
+
+    beforeEach(() => {
+      process.env.ADYEN_LIVE_MERCHANT_ACCOUNT_ID = 'MERCHANT123'
+      process.env.ADYEN_LIVE_SPLIT_CONFIGURATION_ID = 'SC123'
+    })
+
+    afterEach(() => {
+      delete process.env.ADYEN_LIVE_MERCHANT_ACCOUNT_ID
+      delete process.env.ADYEN_LIVE_SPLIT_CONFIGURATION_ID
+    })
+
+    it('should create Adyen store linked to the given business line with a split configuration', async () => {
+      const store = { id: 'ST123', businessLineIds: ['BL123'] }
+      managementClientMock.createStore.resolves(store)
+
+      const result = await service.createStore(storeParams)
+
+      sinon.assert.calledOnceWithExactly(managementClientMock.createStore, {
+        merchantId: 'MERCHANT123',
+        description: 'Test Service',
+        shopperStatement: 'TEST SERVICE',
+        phoneNumber: '+441234567890',
+        address: {
+          line1: '1 Test St',
+          line2: undefined,
+          city: 'London',
+          postalCode: 'N1 1NN',
+          country: 'GB',
+        },
+        businessLineIds: ['BL123'],
+        splitConfiguration: {
+          balanceAccountId: 'BA123',
+          splitConfigurationId: 'SC123',
+        },
+      })
+      expect(result).to.equal(store)
+    })
+
+    it('should not create store when ADYEN_LIVE_MERCHANT_ACCOUNT_ID is NOT set', async () => {
+      delete process.env.ADYEN_LIVE_MERCHANT_ACCOUNT_ID
+
+      await expect(service.createStore(storeParams)).to.be.rejectedWith('ADYEN_LIVE_MERCHANT_ACCOUNT_ID is not set')
+      sinon.assert.notCalled(managementClientMock.createStore)
+    })
+
+    it('should not create store when ADYEN_LIVE_SPLIT_CONFIGURATION_ID is NOT set', async () => {
+      delete process.env.ADYEN_LIVE_SPLIT_CONFIGURATION_ID
+
+      await expect(service.createStore(storeParams)).to.be.rejectedWith('ADYEN_LIVE_SPLIT_CONFIGURATION_ID is not set')
+      sinon.assert.notCalled(managementClientMock.createStore)
     })
   })
 
