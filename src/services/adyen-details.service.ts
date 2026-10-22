@@ -467,7 +467,7 @@ const createStore = async ({
     },
   }
   console.log(`creating store....`)
- const storeRes = await createAdyenStore(storeCreationRequest)
+  const storeRes = await createAdyenStore(storeCreationRequest)
   console.log(`store created ${storeRes.id}`)
   return storeRes
 }
