@@ -1,15 +1,15 @@
 'use strict'
 
-function validRetrieveStripeAccountDetails (opts = {}) {
+function validRetrieveStripeAccountDetails(opts = {}) {
   const stripeAccount = {
     object: 'account',
     business_profile: {
-      mcc: '5734'
+      mcc: '5734',
     },
     business_type: 'company',
     capabilities: {
       card_payments: 'active',
-      transfers: 'active'
+      transfers: 'active',
     },
     charges_enabled: opts.charges_enabled,
     company: {
@@ -17,15 +17,19 @@ function validRetrieveStripeAccountDetails (opts = {}) {
       executives_provided: true,
       owners_provided: true,
       tax_id_provided: true,
-      vat_id_provided: true
+      vat_id_provided: true,
     },
     type: 'custom',
     requirements: {
-      current_deadline: opts.current_deadline
-    }
+      current_deadline: opts.current_deadline,
+    },
   }
 
   stripeAccount.id = opts.stripe_account_id
+
+  if (opts.statement_descriptor) {
+    stripeAccount.settings = { payments: { statement_descriptor: opts.statement_descriptor } }
+  }
 
   if (opts.url) {
     stripeAccount.business_profile.url = opts.url
@@ -33,15 +37,15 @@ function validRetrieveStripeAccountDetails (opts = {}) {
   if (opts.entity_verified) {
     stripeAccount.company.verification = {
       document: {
-        front: 'file_id_123'
-      }
+        front: 'file_id_123',
+      },
     }
   }
 
   return stripeAccount
 }
 
-function validListStripePersons (opts = {}) {
+function validListStripePersons(opts = {}) {
   const stripePersons = {
     object: 'list',
     has_more: false,
@@ -53,17 +57,17 @@ function validListStripePersons (opts = {}) {
         dob: {
           day: 1,
           month: 8,
-          year: 1990
+          year: 1990,
         },
         first_name: opts.firstName || null,
         last_name: opts.lastName || null,
         relationship: {
           owner: false,
           percent_ownership: null,
-          title: null
-        }
-      }
-    ]
+          title: null,
+        },
+      },
+    ],
   }
 
   stripePersons.url = `/v1/accounts/${opts.stripe_account_id}/persons`
@@ -76,7 +80,7 @@ function validListStripePersons (opts = {}) {
   return stripePersons
 }
 
-function validStripePerson (opts = {}) {
+function validStripePerson(opts = {}) {
   const stripePerson = {
     id: 'person_1234',
     object: 'person',
@@ -84,15 +88,15 @@ function validStripePerson (opts = {}) {
     dob: {
       day: 1,
       month: 8,
-      year: 1990
+      year: 1990,
     },
     first_name: null,
     last_name: null,
     relationship: {
       owner: false,
       percent_ownership: null,
-      title: null
-    }
+      title: null,
+    },
   }
 
   stripePerson.relationship.director = opts.director
@@ -104,7 +108,7 @@ function validStripePerson (opts = {}) {
   return stripePerson
 }
 
-function validBankAccount (opts = {}) {
+function validBankAccount(opts = {}) {
   const account = opts.stripeAccountId || 'acct_123abc546def789g'
   return {
     object: 'list',
@@ -116,10 +120,7 @@ function validBankAccount (opts = {}) {
         account_holder_name: null,
         account_holder_type: 'company',
         account_type: null,
-        available_payout_methods: [
-          'standard',
-          'instant'
-        ],
+        available_payout_methods: ['standard', 'instant'],
         bank_name: 'STRIPE TEST BANK',
         country: 'GB',
         currency: 'gbp',
@@ -129,7 +130,7 @@ function validBankAccount (opts = {}) {
           currently_due: [],
           errors: [],
           past_due: [],
-          pending_verification: []
+          pending_verification: [],
         },
         last4: '2345',
         metadata: {},
@@ -137,14 +138,14 @@ function validBankAccount (opts = {}) {
           currently_due: [],
           errors: [],
           past_due: [],
-          pending_verification: []
+          pending_verification: [],
         },
         routing_number: '10-88-00',
-        status: 'new'
-      }
+        status: 'new',
+      },
     ],
     has_more: false,
-    url: `/v1/accounts/${account}/external_accounts`
+    url: `/v1/accounts/${account}/external_accounts`,
   }
 }
 
@@ -152,5 +153,5 @@ module.exports = {
   validRetrieveStripeAccountDetails,
   validListStripePersons,
   validStripePerson,
-  validBankAccount
+  validBankAccount,
 }

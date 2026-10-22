@@ -119,3 +119,15 @@ export function acceptTermsOfService(legalEntityId: string, termsOfServiceDocume
     },
   }
 }
+
+export function createStore() {
+  const path = `/v3/stores`
+
+  return {
+    success: function (store: { id: string }) {
+      return stubBuilder('POST', path, 200, {
+        response: store,
+      })
+    },
+  }
+}

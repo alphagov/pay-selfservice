@@ -7,7 +7,10 @@ import { adyenDetailsSchema } from '@utils/simplified-account/validation/adyen-d
 import { validationResult } from 'express-validator'
 import { formatValidationErrors } from '@utils/simplified-account/format'
 import { OrganisationDetailsSession, GovernmentActivity } from './constants'
-import { createOrganisation } from '@services/adyen-details.service'
+import { createOrganisation, createStore } from '@services/adyen-details.service'
+import { getStripeStatementDescriptor } from '@services/stripe-details.service'
+import { PaymentProvider } from '@models/constants/payment-provider'
+import { InvalidConfigurationError } from '@root/errors'
 
 interface ReasonForTakingPaymentsBody {
   governmentActivity: GovernmentActivity
@@ -82,7 +85,10 @@ async function post(req: ServiceRequest<ReasonForTakingPaymentsBody>, res: Servi
 
   const { governmentActivity } = req.body
 
-  await createOrganisation(
+  const storeDetails =
+    req.account.paymentProvider === PaymentProvider.STRIPE ? await getStoreDetailsForStripeMigration(req) : undefined
+
+  const { businessLine, balanceAccount } = await createOrganisation(
     completeSession,
     governmentActivity,
     req.service.name,
@@ -91,6 +97,17 @@ async function post(req: ServiceRequest<ReasonForTakingPaymentsBody>, res: Servi
     switchingCredentialId,
     req.user.externalId
   )
+
+  if (storeDetails) {
+    await createStore({
+      ...storeDetails,
+      businessLineId: businessLine.id,
+      balanceAccountId: balanceAccount.id,
+      serviceName: req.service.name,
+      organisationDetails: completeSession,
+    })
+  }
+
   await markTaskAsComplete(req.service.externalId, req.account.type, switchingCredentialId, 'organisationDetails')
   OrganisationDetailsSession.clear(req)
 
