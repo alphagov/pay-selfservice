@@ -7,13 +7,15 @@ import formatPSPName from '@utils/format-PSP-name'
 import paths from '@root/paths'
 import { createCharge, getCharge } from '@services/charge.service'
 import ChargeRequest from '@models/charge/ChargeRequest.class'
-import CREDENTIAL_STATE from '@models/constants/credential-state'
-import worldpayDetailsService from '@services/worldpay-details.service'
+import { VERIFIED } from '@models/constants/credential-state'
 import formatServiceAndAccountPathsFor from '@utils/simplified-account/format/format-service-and-account-paths-for'
 import urlJoin from '@utils/simplified-account/format/url'
 import { PaymentProvider } from '@models/constants/payment-provider'
+import ConnectorClient from '@services/clients/pay/ConnectorClient.class'
+import { GatewayAccountCredentialUpdateRequest } from '@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class'
 
 const SELFSERVICE_URL = process.env.SELFSERVICE_URL!
+const connectorClient = new ConnectorClient()
 
 function get(req: ServiceRequest, res: ServiceResponse) {
   const account = req.account
@@ -89,6 +91,7 @@ function getInbound(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
   const chargeExternalId = req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY] as string
   delete req.session[VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]
   const targetCredential = account.getSwitchingCredential()
+  const paymentProvider = targetCredential.paymentProvider
   if (!chargeExternalId) {
     throw new Error('No charge found on session')
   }
@@ -96,19 +99,17 @@ function getInbound(req: ServiceRequest, res: ServiceResponse, next: NextFunctio
   getCharge(service.externalId, account.type, chargeExternalId)
     .then(async (charge) => {
       if (charge.state.status === 'success') {
-        // TODO move me to more generic service
-        await worldpayDetailsService.updateCredentialState(
+        await connectorClient.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType(
           service.externalId,
           account.type,
           targetCredential.externalId,
-          user.externalId,
-          CREDENTIAL_STATE.VERIFIED
+          new GatewayAccountCredentialUpdateRequest(user.externalId).replace().state(VERIFIED)
         )
         req.flash('messages', {
           state: 'success',
           icon: '&check;',
           heading: 'Payment verified',
-          body: `This service is ready to switch to ${formatPSPName(targetCredential.paymentProvider)}`,
+          body: `This service is ready to switch to ${formatPSPName(paymentProvider)}`,
         })
       } else {
         req.flash('messages', {
