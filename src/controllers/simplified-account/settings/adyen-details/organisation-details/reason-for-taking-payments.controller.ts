@@ -62,13 +62,8 @@ async function post(req: ServiceRequest<ReasonForTakingPaymentsBody>, res: Servi
     })
   }
 
-  let vatRegistrationNumber = currentSession.vatRegistrationNumber!.replace(/\s/g, '').toUpperCase()
-  if (!vatRegistrationNumber.startsWith('GB')) {
-    vatRegistrationNumber = `GB${vatRegistrationNumber}`
-  }
   const completeSession = new OrganisationDetailsSession({
     ...currentSession,
-    vatRegistrationNumber,
   })
 
   const { governmentActivity } = req.body
