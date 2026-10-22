@@ -147,6 +147,15 @@ describe(`Service director - check your answers`, () => {
             entityAssociations: [],
           }),
           AdyenPspStubs.updateLegalEntity(ORGANISATION_LEGAL_ENTITY_ID).success({ id: ORGANISATION_LEGAL_ENTITY_ID }),
+          AdyenPspStubs.generatePciQuestionnaire(ORGANISATION_LEGAL_ENTITY_ID).success({
+            content: 'base64-encoded-pci-questionnaire',
+            language: 'en',
+            pciTemplateReferences: ['PCI_TEMPLATE_1'],
+          }),
+          AdyenPspStubs.signPciQuestionnaire(ORGANISATION_LEGAL_ENTITY_ID).success({
+            pciQuestionnaireIds: ['PCIQ_123'],
+            signedBy: 'LE_PERSON_456',
+          }),
         ])
 
         cy.get('#service-director-confirm').click()
