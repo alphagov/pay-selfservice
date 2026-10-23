@@ -230,6 +230,18 @@ const getStripeAccountCapabilities = async (gatewayAccount: GatewayAccount) => {
   return undefined
 }
 
+const getStripeStatementDescriptor = async (gatewayAccount: GatewayAccount) => {
+  const stripeAccountId = getStripeAccountIdForGatewayAccount(gatewayAccount)
+  const stripeAccount = await stripeClient.retrieveAccountDetails(stripeAccountId)
+  const statementDescriptor = stripeAccount.settings?.payments.statement_descriptor
+  if (!statementDescriptor) {
+    throw new InvalidConfigurationError(
+      `No statement descriptor set on Stripe account [stripe_account_id: ${stripeAccountId}]`
+    )
+  }
+  return statementDescriptor
+}
+
 function getStripeAccountIdForGatewayAccount(gatewayAccount: GatewayAccount) {
   let stripeAccountId
   if (gatewayAccount.isSwitchingToProvider(STRIPE)) {
@@ -258,5 +270,6 @@ export {
   getStripeAccountOnboardingDetails,
   getStripeAccountCapabilities,
   getStripeAccountIdForGatewayAccount,
+  getStripeStatementDescriptor,
   getConnectorStripeAccountSetup,
 }

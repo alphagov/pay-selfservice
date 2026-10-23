@@ -1,6 +1,10 @@
 import { GatewayAccountCredentialUpdateRequest } from '@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class'
 import ConnectorClient from '@services/clients/pay/ConnectorClient.class'
-import { OrganisationDetailsSession } from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
+import {
+  GovernmentActivity,
+  INDUSTRY_CODE_MAP,
+  OrganisationDetailsSession,
+} from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 import { Types } from '@adyen/api-library'
 import { CreateBankDetailsBody } from '@controllers/simplified-account/settings/adyen-details/bank-details.controller'
 import { BankAccountAccountIdentification } from '@adyen/api-library/lib/src/typings/balancePlatform/bankAccountAccountIdentification'
@@ -8,13 +12,13 @@ import { UKLocalAccountIdentification } from '@adyen/api-library/lib/src/typings
 import { TransferInstrumentInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/transferInstrumentInfo'
 import createLogger from '@utils/logger'
 import {
-  createLegalEntity,
-  getLegalEntity,
-  updateLegalEntity,
-  createTransferInstrument,
-  createBusinessLine,
-  getTermsOfService,
   acceptTermsOfService,
+  createBusinessLine,
+  createLegalEntity,
+  createTransferInstrument,
+  getLegalEntity,
+  getTermsOfService,
+  updateLegalEntity,
   generatePciQuestionnaire,
   signPciQuestionnaire,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
@@ -22,20 +26,27 @@ import {
   createAccountHolder as createAdyenAccountHolder,
   createBalanceAccount as createAdyenBalanceAccount,
 } from '@services/clients/adyen/adyen-balance-platform.client'
+import { createStore as createAdyenStore } from '@services/clients/adyen/adyen-management.client'
 import { ServiceDirectorSession } from '@controllers/simplified-account/settings/adyen-details/service-director/constants'
 import { ResponsiblePersonSession } from '@controllers/simplified-account/settings/adyen-details/responsible-person/constants'
 import { Individual } from '@adyen/api-library/lib/src/typings/legalEntityManagement/individual'
 import { BusinessLineInfo } from '@adyen/api-library/lib/src/typings/legalEntityManagement/businessLineInfo'
-import {
-  INDUSTRY_CODE_MAP,
-  GovernmentActivity,
-} from '@controllers/simplified-account/settings/adyen-details/organisation-details/constants'
 import { SweepSchedule } from '@adyen/api-library/lib/src/typings/balancePlatform/sweepSchedule'
 import { CreateSweepConfigurationV2 } from '@adyen/api-library/lib/src/typings/balancePlatform/createSweepConfigurationV2'
 import { createSweep } from './clients/adyen/adyen-balance-platform.client'
 
 type LegalEntityInfoRequiredType = Types.legalEntityManagement.LegalEntityInfoRequiredType
 type Organization = Types.legalEntityManagement.Organization
+type StoreCreationWithMerchantCodeRequest = Types.management.StoreCreationWithMerchantCodeRequest
+
+export interface CreateStoreParams {
+  businessLineId: string
+  balanceAccountId: string
+  serviceName: string
+  statementDescriptor: string
+  telephoneNumber: string
+  organisationDetails: OrganisationDetailsSession
+}
 type AccountHolderInfo = Types.balancePlatform.AccountHolderInfo
 type BalanceAccountInfo = Types.balancePlatform.BalanceAccountInfo
 type GeneratePciDescriptionResponse = Types.legalEntityManagement.GeneratePciDescriptionResponse
@@ -136,7 +147,7 @@ const createOrganisation = async (
 ) => {
   const legalEntity = await createOrganisationLegalEntity(session)
 
-  await createBusinessLine({
+  const businessLine = await createBusinessLine({
     service: BusinessLineInfo.ServiceEnum.PaymentProcessing,
     industryCode: INDUSTRY_CODE_MAP[governmentActivity],
     legalEntityId: legalEntity.id,
@@ -161,7 +172,7 @@ const createOrganisation = async (
       .accountHolderId(accountHolder.id)
   )
 
-  return { legalEntity, accountHolder, balanceAccount }
+  return { legalEntity, businessLine, accountHolder, balanceAccount }
 }
 
 const getAdyenCredentials = async (serviceExternalId: string, accountType: string, switchingCredentialId: string) => {
@@ -449,6 +460,45 @@ const signTermsOfService = async (legalEntityId: string, termsOfServiceDocumentI
   return acceptTermsOfService(legalEntityId, termsOfServiceDocumentId, acceptTermsOfServiceRequest)
 }
 
+const createStore = async ({
+  businessLineId,
+  balanceAccountId,
+  serviceName,
+  statementDescriptor,
+  telephoneNumber,
+  organisationDetails,
+}: CreateStoreParams) => {
+  const merchantId = process.env.ADYEN_LIVE_MERCHANT_ACCOUNT_ID
+  if (!merchantId) {
+    throw new Error('ADYEN_LIVE_MERCHANT_ACCOUNT_ID is not set')
+  }
+
+  const splitConfigurationId = process.env.ADYEN_LIVE_SPLIT_CONFIGURATION_ID
+  if (!splitConfigurationId) {
+    throw new Error('ADYEN_LIVE_SPLIT_CONFIGURATION_ID is not set')
+  }
+
+  const storeCreationRequest: StoreCreationWithMerchantCodeRequest = {
+    merchantId,
+    description: serviceName,
+    shopperStatement: statementDescriptor,
+    phoneNumber: toUkInternationalNumber(telephoneNumber),
+    address: {
+      line1: organisationDetails.addressLine1,
+      line2: organisationDetails.addressLine2,
+      city: organisationDetails.addressCity,
+      postalCode: organisationDetails.addressPostcode,
+      country: organisationDetails.addressCountry ?? '',
+    },
+    businessLineIds: [businessLineId],
+    splitConfiguration: {
+      balanceAccountId,
+      splitConfigurationId,
+    },
+  }
+  return await createAdyenStore(storeCreationRequest)
+}
+
 export {
   setAdyenLegalEntityId,
   setAdyenStoreId,
@@ -460,4 +510,5 @@ export {
   createServiceDirector,
   createAccountHolder,
   createBalanceAccount,
+  createStore,
 }
