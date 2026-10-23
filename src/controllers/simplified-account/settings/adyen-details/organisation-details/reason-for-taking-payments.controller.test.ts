@@ -150,7 +150,13 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
           'organisationDetails'
         )
 
-        sinon.assert.callOrder(getStripeStatementDescriptor, createOrganisation, createStore, setAdyenStoreId, markTaskAsComplete)
+        sinon.assert.callOrder(
+          getStripeStatementDescriptor,
+          createOrganisation,
+          createStore,
+          setAdyenStoreId,
+          markTaskAsComplete
+        )
 
         sinon.assert.calledOnceWithExactly(
           res.redirect,

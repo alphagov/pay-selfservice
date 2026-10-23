@@ -99,7 +99,6 @@ const setStubs = (additionalStubs = []) => {
       ADYEN_CREDENTIAL_EXTERNAL_ID,
       USER_EXTERNAL_ID,
       [
-
         {
           op: 'replace',
           path: 'credentials',
