@@ -7,7 +7,7 @@ import { adyenDetailsSchema } from '@utils/simplified-account/validation/adyen-d
 import { validationResult } from 'express-validator'
 import { formatValidationErrors } from '@utils/simplified-account/format'
 import { OrganisationDetailsSession, GovernmentActivity } from './constants'
-import { createOrganisation, createStore } from '@services/adyen-details.service'
+import { createOrganisation, createStore, setAdyenStoreId } from '@services/adyen-details.service'
 import { getStripeStatementDescriptor } from '@services/stripe-details.service'
 import { PaymentProvider } from '@models/constants/payment-provider'
 import { InvalidConfigurationError } from '@root/errors'
@@ -88,6 +88,10 @@ async function post(req: ServiceRequest<ReasonForTakingPaymentsBody>, res: Servi
   const storeDetails =
     req.account.paymentProvider === PaymentProvider.STRIPE ? await getStoreDetailsForStripeMigration(req) : undefined
 
+  if (!storeDetails) {
+    throw new Error(`Merchant details not returned from Stripe for [service_external_id: ${req.service.externalId}]`)
+  }
+
   const { businessLine, balanceAccount } = await createOrganisation(
     completeSession,
     governmentActivity,
@@ -98,17 +102,17 @@ async function post(req: ServiceRequest<ReasonForTakingPaymentsBody>, res: Servi
     req.user.externalId
   )
 
-  if (storeDetails) {
-    await createStore({
-      ...storeDetails,
-      businessLineId: businessLine.id,
-      balanceAccountId: balanceAccount.id,
-      serviceName: req.service.name,
-      organisationDetails: completeSession,
-    })
-  }
+  const store = await createStore({
+    ...storeDetails,
+    businessLineId: businessLine.id,
+    balanceAccountId: balanceAccount.id,
+    serviceName: req.service.name,
+    organisationDetails: completeSession,
+  })
 
+  await setAdyenStoreId(req.service.externalId, req.account.type, switchingCredentialId, req.user.externalId, store.id!)
   await markTaskAsComplete(req.service.externalId, req.account.type, switchingCredentialId, 'organisationDetails')
+
   OrganisationDetailsSession.clear(req)
 
   return res.redirect(

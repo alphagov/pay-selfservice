@@ -93,6 +93,19 @@ const setStubs = (additionalStubs = []) => {
         },
       ]
     ),
+    GatewayAccountStubs.patchUpdateCredentialsSuccessByServiceExternalIdAndType(
+      SERVICE_EXTERNAL_ID,
+      LIVE_ACCOUNT_TYPE,
+      ADYEN_CREDENTIAL_EXTERNAL_ID,
+      USER_EXTERNAL_ID,
+      [
+        {
+          op: 'replace',
+          path: 'credentials',
+          value: { store_id: 'store-123' },
+        },
+      ]
+    ),
     AdyenStubs.createBalanceAccount().success({ id: 'balance-account-123', accountHolderId: 'account-holder-123' }),
     AdyenStubs.createBusinessLine().success({ id: 'BL123' }),
     StripeStubs.retrieveAccountDetails({ stripeAccountId: 'a-stripe-account', statementDescriptor: 'TEST SERVICE' }),
