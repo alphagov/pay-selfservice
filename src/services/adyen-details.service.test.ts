@@ -18,6 +18,8 @@ describe('Adyen details service', () => {
     createBusinessLine: sinon.stub(),
     getTermsOfService: sinon.stub(),
     acceptTermsOfService: sinon.stub(),
+    generatePciQuestionnaire: sinon.stub(),
+    signPciQuestionnaire: sinon.stub(),
   }
 
   const balancePlatformClientMock = {
@@ -376,6 +378,7 @@ describe('Adyen details service', () => {
     context('when the organisation legalEntityId is found', () => {
       const ORGANISATION_LEGAL_ENTITY_ID = 'LE_ORG_123'
       const PERSON_LEGAL_ENTITY_ID = 'LE_PERSON_456'
+      const PCI_TEMPLATE_REFERENCES = ['PCI_TEMPLATE_123']
 
       beforeEach(() => {
         legalEntityClientMock.getLegalEntity.resolves({
@@ -388,6 +391,15 @@ describe('Adyen details service', () => {
         })
         legalEntityClientMock.createLegalEntity.resolves({ id: PERSON_LEGAL_ENTITY_ID, type: 'individual' })
         legalEntityClientMock.updateLegalEntity.resolves({ id: ORGANISATION_LEGAL_ENTITY_ID })
+        legalEntityClientMock.generatePciQuestionnaire.resolves({
+          content: 'ZmFrZS1wZGY=', // base64
+          language: 'en',
+          pciTemplateReferences: PCI_TEMPLATE_REFERENCES,
+        })
+        legalEntityClientMock.signPciQuestionnaire.resolves({
+          pciQuestionnaireIds: ['PCID789'],
+          signedBy: PERSON_LEGAL_ENTITY_ID,
+        })
       })
 
       it('should create serviceDirector legal entry and add the entity association', async () => {
@@ -431,6 +443,17 @@ describe('Adyen details service', () => {
         expect(result).to.deep.equal({
           id: PERSON_LEGAL_ENTITY_ID,
           type: 'individual',
+        })
+      })
+
+      it('should generate a PCI questionnaire and sign it', async () => {
+        await service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)
+
+        expect(legalEntityClientMock.generatePciQuestionnaire.firstCall.args[0]).to.equal(ORGANISATION_LEGAL_ENTITY_ID)
+        expect(legalEntityClientMock.signPciQuestionnaire.firstCall.args[0]).to.equal(ORGANISATION_LEGAL_ENTITY_ID)
+        expect(legalEntityClientMock.signPciQuestionnaire.firstCall.args[1]).to.deep.equal({
+          pciTemplateReferences: PCI_TEMPLATE_REFERENCES,
+          signedBy: PERSON_LEGAL_ENTITY_ID,
         })
       })
 
@@ -479,6 +502,47 @@ describe('Adyen details service', () => {
             service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)
           ).to.be.rejectedWith(
             "Couldn't link director (LE_PERSON_456) to organisation (LE_ORG_123): adyen error linking"
+          )
+        })
+      })
+
+      context('when PCI questionnaire cannot be generated', () => {
+        beforeEach(() => {
+          legalEntityClientMock.generatePciQuestionnaire.rejects(new Error('Adyen questionnaire error'))
+        })
+
+        it('should throw an error with the serviceDirector ID included for debugging', async () => {
+          await expect(
+            service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)
+          ).to.be.rejectedWith('Could not create PCI questionnaire for (LE_PERSON_456): Adyen questionnaire error')
+        })
+      })
+
+      context('when PCI questionnaire does not provide PCI templates', () => {
+        beforeEach(() => {
+          legalEntityClientMock.generatePciQuestionnaire.resolves({
+            content: 'ZmFrZS1wZGY=', // base64
+            language: 'en',
+          })
+        })
+
+        it('should throw an error with the serviceDirector ID included for debugging', async () => {
+          await expect(
+            service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)
+          ).to.be.rejectedWith('PCI questionnaire for (LE_PERSON_456) returned no PCI template references')
+        })
+      })
+
+      context('when PCI questionnaire cannot be signed', () => {
+        beforeEach(() => {
+          legalEntityClientMock.signPciQuestionnaire.rejects(new Error('Adyen signing questionnaire error'))
+        })
+
+        it('should throw an error with the serviceDirector ID included for debugging', async () => {
+          await expect(
+            service.createServiceDirector(serviceDirectorSession, ORGANISATION_LEGAL_ENTITY_ID)
+          ).to.be.rejectedWith(
+            'Could not sign PCI questionnaire for (LE_PERSON_456): Adyen signing questionnaire error'
           )
         })
       })

@@ -80,7 +80,7 @@ describe('Switch to Adyen controller tests', () => {
     }
 
     context.currentPsp.should.eq(PaymentProvider.STRIPE)
-    context.adyenTasks.tasks.should.have.length(6)
+    context.adyenTasks.tasks.should.have.length(8)
     context.adyenTasks.confirmOrganisationTasks.should.have.length(1)
     context.adyenTasks.acceptLegalTermsTasks.should.have.length(1)
     context.adyenTasks.completeOrganisationDetailsTasks.should.have.length(4)

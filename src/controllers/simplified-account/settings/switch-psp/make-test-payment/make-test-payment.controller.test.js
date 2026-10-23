@@ -1,3 +1,5 @@
+import { VERIFIED } from '@models/constants/credential-state'
+
 const sinon = require('sinon')
 const ControllerTestBuilder = require('@test/test-helpers/simplified-account/controllers/ControllerTestBuilder.class')
 const { expect } = require('chai')
@@ -12,6 +14,9 @@ const { RESTClientError } = require('@govuk-pay/pay-js-commons/lib/utils/axios-b
 const { CREDENTIAL_STATE } = require('@utils/credentials')
 const Charge = require('@models/charge/Charge.class')
 const { validChargeResponse } = require('@test/fixtures/charge.fixtures')
+const {
+  GatewayAccountCredentialUpdateRequest,
+} = require('@models/gateway-account-credential/GatewayAccountCredentialUpdateRequest.class')
 
 const ACCOUNT_TYPE = 'live'
 const SWITCHING_CREDENTIAL_EXTERNAL_ID = 'credential-id-123abc'
@@ -48,8 +53,15 @@ const mockChargeService = {
     )
   ),
 }
-const mockWorldpayDetailsService = {
-  updateCredentialState: sinon.stub().resolves(),
+
+const patchCredentialsStub = sinon.stub().resolves()
+
+class ConnectorClientStub {
+  constructor() {
+    this.gatewayAccounts = {
+      patchCredentialsByServiceExternalIdAndAccountType: patchCredentialsStub,
+    }
+  }
 }
 
 const { req, res, next, nextRequest, call } = new ControllerTestBuilder(
@@ -73,7 +85,7 @@ const { req, res, next, nextRequest, call } = new ControllerTestBuilder(
   .withStubs({
     '@utils/response': { response: mockResponse },
     '@services/charge.service': mockChargeService,
-    '@services/worldpay-details.service': mockWorldpayDetailsService,
+    '@services/clients/pay/ConnectorClient.class': ConnectorClientStub,
   })
   .build()
 
@@ -116,12 +128,11 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
 
       it('should update the credential state', () => {
         sinon.assert.calledOnceWithExactly(
-          mockWorldpayDetailsService.updateCredentialState,
+          patchCredentialsStub,
           SERVICE_EXTERNAL_ID,
           ACCOUNT_TYPE,
           SWITCHING_CREDENTIAL_EXTERNAL_ID,
-          USER_EXTERNAL_ID,
-          CREDENTIAL_STATE.VERIFIED
+          new GatewayAccountCredentialUpdateRequest(USER_EXTERNAL_ID).replace().state(VERIFIED)
         )
       })
 
@@ -193,7 +204,7 @@ describe('Controller: settings/switch-psp/switch-to-worldpay/make-a-test-payment
     describe('when there is a problem updating the credential', () => {
       beforeEach(async () => {
         const error = new RESTClientError('whoops')
-        mockWorldpayDetailsService.updateCredentialState.rejects(error)
+        patchCredentialsStub.rejects(error)
         nextRequest({
           session: {
             [VERIFY_PSP_INTEGRATION_CHARGE_EXTERNAL_ID_KEY]: CHARGE_EXTERNAL_ID,

@@ -36,6 +36,30 @@ export function updateLegalEntity(legalEntityId: string) {
   }
 }
 
+export function generatePciQuestionnaire(legalEntityId: string) {
+  const path = `/lem/v4/legalEntities/${legalEntityId}/pciQuestionnaires/generatePciTemplates`
+
+  return {
+    success: function (pciQuestionnaire: { content: string; language: string; pciTemplateReferences: string[] }) {
+      return stubBuilder('POST', path, 200, {
+        response: pciQuestionnaire,
+      })
+    },
+  }
+}
+
+export function signPciQuestionnaire(legalEntityId: string) {
+  const path = `/lem/v4/legalEntities/${legalEntityId}/pciQuestionnaires/signPciTemplates`
+
+  return {
+    success: function (signingResponse: { pciQuestionnaireIds: string[]; signedBy: string }) {
+      return stubBuilder('POST', path, 200, {
+        response: signingResponse,
+      })
+    },
+  }
+}
+
 export function createTransferInstrument() {
   const path = `/lem/v4/transferInstruments`
 

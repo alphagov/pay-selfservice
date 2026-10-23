@@ -1,4 +1,4 @@
-FROM node:22.23.3-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 AS base
+FROM node:24.22.1-alpine@sha256:06d7adf3e0ef61a13f1d28682726366f97a15aa1888c934d3ecec86c33918b53 AS base
 
 RUN apk upgrade --no-cache
 
@@ -6,7 +6,7 @@ FROM base AS builder
 
 # Upgrade npm — if updating the Node.js version, check if this
 # is still necessary and make sure it never downgrades npm
-RUN npm install -g npm@11.18.0
+RUN npm install -g npm@11.19.1
 
 WORKDIR /build-stage
 COPY package.json package-lock.json .npmrc ./

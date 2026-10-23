@@ -19,6 +19,8 @@ import {
   getLegalEntity,
   getTermsOfService,
   updateLegalEntity,
+  generatePciQuestionnaire,
+  signPciQuestionnaire,
 } from '@services/clients/adyen/adyen-legal-entity-management.client'
 import {
   createAccountHolder as createAdyenAccountHolder,
@@ -47,6 +49,7 @@ export interface CreateStoreParams {
 }
 type AccountHolderInfo = Types.balancePlatform.AccountHolderInfo
 type BalanceAccountInfo = Types.balancePlatform.BalanceAccountInfo
+type GeneratePciDescriptionResponse = Types.legalEntityManagement.GeneratePciDescriptionResponse
 
 const connectorClient = new ConnectorClient()
 const logger = createLogger(__filename)
@@ -397,6 +400,33 @@ const createServiceDirector = async (
     throw new Error(
       `Couldn't link director (${serviceDirector.id}) to organisation (${organisationLegalEntityId}): ${errorMessage}`
     )
+  }
+
+  // Generate PCI questionnaire
+  let pciQuestionnaire: GeneratePciDescriptionResponse
+
+  try {
+    pciQuestionnaire = await generatePciQuestionnaire(organisationLegalEntityId)
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    throw new Error(`Could not create PCI questionnaire for (${serviceDirector.id}): ${errorMessage}`)
+  }
+
+  const pciTemplateReferences = pciQuestionnaire.pciTemplateReferences
+
+  if (!pciTemplateReferences?.length) {
+    throw new Error(`PCI questionnaire for (${serviceDirector.id}) returned no PCI template references`)
+  }
+
+  // Sign PCI questionnaire
+  try {
+    await signPciQuestionnaire(organisationLegalEntityId, {
+      pciTemplateReferences,
+      signedBy: serviceDirector.id,
+    })
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    throw new Error(`Could not sign PCI questionnaire for (${serviceDirector.id}): ${errorMessage}`)
   }
 
   return serviceDirector

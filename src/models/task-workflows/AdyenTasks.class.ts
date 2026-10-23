@@ -147,7 +147,9 @@ class AdyenTask extends Task {
   static paymentTask(
     service: Service,
     gatewayAccount: GatewayAccount,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     accountSetup: AdyenAccountSetup,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     switchingCredentialId: string
   ) {
     const status = TaskStatus.NOT_STARTED
@@ -156,10 +158,9 @@ class AdyenTask extends Task {
       'Make a £1 payment using a debit or credit card',
       AdyenTaskIdentifier.PAYMENT,
       formatServiceAndAccountPathsFor(
-        paths.simplifiedAccount.settings.switchPsp.switchToAdyen.index,
+        paths.simplifiedAccount.settings.switchPsp.makeTestPayment.outbound,
         service.externalId,
-        gatewayAccount.type,
-        switchingCredentialId
+        gatewayAccount.type
       )
     ).setStatus(status)
   }
@@ -197,7 +198,12 @@ export class AdyenTasks extends Tasks<AdyenTask> {
     completeOrganisationDetailsTasks: AdyenTask[],
     completeFinalTasks: AdyenTask[]
   ) {
-    super([...confirmOrganisationTasks, ...acceptLegalTermsTasks, ...completeOrganisationDetailsTasks])
+    super([
+      ...confirmOrganisationTasks,
+      ...acceptLegalTermsTasks,
+      ...completeOrganisationDetailsTasks,
+      ...completeFinalTasks,
+    ])
     this.confirmOrganisationTasks = confirmOrganisationTasks
     this.acceptLegalTermsTasks = acceptLegalTermsTasks
     this.completeOrganisationDetailsTasks = completeOrganisationDetailsTasks
