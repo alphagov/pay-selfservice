@@ -33,6 +33,7 @@ const createOrganisation = sinon.stub().resolves({
 const createStore = sinon.stub().resolves({ id: 'ST123' })
 const getStripeStatementDescriptor = sinon.stub().resolves('TEST SERVICE')
 const markTaskAsComplete = sinon.stub().resolves()
+const setAdyenStoreId = sinon.stub().resolves()
 
 const TEMPLATE = 'simplified-account/settings/adyen-details/reason-for-taking-payments'
 const BACK_LINK = formatServiceAndAccountPathsFor(
@@ -50,7 +51,7 @@ const { req, res, call, nextRequest } = new ControllerTestBuilder(
   .withUser(USER)
   .withStubs({
     '@utils/response': { response: mockResponse },
-    '@services/adyen-details.service': { createOrganisation, createStore },
+    '@services/adyen-details.service': { createOrganisation, createStore, setAdyenStoreId },
     '@services/stripe-details.service': { getStripeStatementDescriptor },
     '@services/adyen-setup.service': { markTaskAsComplete },
   })
@@ -133,6 +134,15 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
         )
 
         sinon.assert.calledOnceWithExactly(
+          setAdyenStoreId,
+          SERVICE_EXTERNAL_ID,
+          SERVICE_TYPE,
+          GATEWAY_ACCOUNT.getSwitchingCredential().externalId,
+          USER.externalId,
+          'ST123'
+        )
+
+        sinon.assert.calledOnceWithExactly(
           markTaskAsComplete,
           SERVICE_EXTERNAL_ID,
           SERVICE_TYPE,
@@ -140,7 +150,7 @@ describe('Controller: settings/adyen-details/reason-for-taking-payments', () => 
           'organisationDetails'
         )
 
-        sinon.assert.callOrder(getStripeStatementDescriptor, createOrganisation, createStore, markTaskAsComplete)
+        sinon.assert.callOrder(getStripeStatementDescriptor, createOrganisation, createStore, setAdyenStoreId, markTaskAsComplete)
 
         sinon.assert.calledOnceWithExactly(
           res.redirect,

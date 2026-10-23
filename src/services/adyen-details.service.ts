@@ -54,21 +54,6 @@ type GeneratePciDescriptionResponse = Types.legalEntityManagement.GeneratePciDes
 const connectorClient = new ConnectorClient()
 const logger = createLogger(__filename)
 
-const setAdyenLegalEntityId = async (
-  serviceExternalId: string,
-  accountType: string,
-  credentialExternalId: string,
-  userExternalId: string,
-  legalEntityId: string
-) => {
-  return connectorClient.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType(
-    serviceExternalId,
-    accountType,
-    credentialExternalId,
-    new GatewayAccountCredentialUpdateRequest(userExternalId).replace().credentials().legalEntityId(legalEntityId)
-  )
-}
-
 const setAdyenStoreId = async (
   serviceExternalId: string,
   accountType: string,
@@ -81,36 +66,6 @@ const setAdyenStoreId = async (
     accountType,
     credentialExternalId,
     new GatewayAccountCredentialUpdateRequest(userExternalId).replace().credentials().storeId(storeId)
-  )
-}
-
-const setAdyenAccountHolderId = async (
-  serviceExternalId: string,
-  accountType: string,
-  credentialExternalId: string,
-  userExternalId: string,
-  accountHolderId: string
-) => {
-  return connectorClient.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType(
-    serviceExternalId,
-    accountType,
-    credentialExternalId,
-    new GatewayAccountCredentialUpdateRequest(userExternalId).replace().credentials().accountHolderId(accountHolderId)
-  )
-}
-
-const setAdyenBalanceAccountId = async (
-  serviceExternalId: string,
-  accountType: string,
-  credentialExternalId: string,
-  userExternalId: string,
-  balanceAccountId: string
-) => {
-  return connectorClient.gatewayAccounts.patchCredentialsByServiceExternalIdAndAccountType(
-    serviceExternalId,
-    accountType,
-    credentialExternalId,
-    new GatewayAccountCredentialUpdateRequest(userExternalId).replace().credentials().balanceAccountId(balanceAccountId)
   )
 }
 
@@ -500,10 +455,7 @@ const createStore = async ({
 }
 
 export {
-  setAdyenLegalEntityId,
   setAdyenStoreId,
-  setAdyenAccountHolderId,
-  setAdyenBalanceAccountId,
   createOrganisation,
   createResponsiblePerson,
   createBankDetails,
